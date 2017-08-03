@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,数据列]-->
+<body>
+    <p>
+        . 支持成员选择配置，默认选择所有公共字段成员。
+        <!--Include:Include\GetCode[Example,0,选择所有字段成员,OrmModel\InstanceField.cs]-->
+        <!--Include:Include\GetCode[Example,1,忽略成员,OrmModel\IgnoreMember.cs]-->
+    </p>
+    <p>
+        . 支持默认自增标识，数据列名称必须为 <b>Id</b>，否则需要使用 <b>[AutoCSer.Sql.Member(IsIdentity = true)]</b> 申明为自增标识。
+        <!--Include:Include\GetCode[Example,2,,OrmModel\IdentityMember.cs]-->
+    </p>
+    <p>
+        . 支持多关键字，关键字<a href="/OrmCache/Column.html">数据列</a>必须使用 <b>[AutoCSer.Sql.Member(PrimaryKeyIndex = ?)]</b> 申明，同时必须保证实现 <b>IEquatable&lt;T&gt;</b> 接口用于 Hash 应用。
+        <br />多关键字表格模型会在<b>表格数据模型</b>中生成一个名称为 <b>DataPrimaryKey</b> 的关键字组合 struct 的嵌套类型，默认实现接口 <b>IEquatable&lt;DataPrimaryKey&gt;</b> 用于 Hash 应用。
+        <!--Include:Include\GetCode[Example,3,,OrmModel\ManyPrimaryKey.cs]-->
+        <br />对于存在排序需求的多关键字表格模型，需要添加申明配置 <b>[AutoCSer.Data.PrimaryKey(IsComparable = true)]</b> 并且保证每个关键字数据列都实现 <b>IComparable&lt;T&gt;</b> 接口。
+        <!--Include:Include\GetCode[Example,4,,OrmModel\ComparablePrimaryKey.cs]-->
+    </p>
+    <p>
+        . 数据列默认不允许空值 null，可以通过 <b>[AutoCSer.Sql.Member(IsNull = true)]</b> 申明允许空值 null
+        <!--Include:Include\GetCode[Example,5,,OrmModel\NullMember.cs]-->
+    </p>
+    <p>
+        . 对于最终映射为字符串的数据列，应该设置最大长度避免被用户输入数据攻击。
+        <!--Include:Include\GetCode[Example,6,,OrmModel\NullMember.cs]-->
+        <br />字符串的物理存储默认采用宽字符（一个字符占用两个字节），对于支持字节字符（一个字符只占用一字节）的物理存储在特殊需求下可以使用字节字符减少存储空间。
+        <!--Include:Include\GetCode[Example,7,,OrmModel\AsciiMember.cs]-->
+    </p>
+    <p>
+        . 支持枚举类型，自动映射为数据库支持的整数类型。
+        <!--Include:Include\GetCode[Example,8,,OrmModel\EnumMember.cs]-->
+    </p>
+    <p>
+        . 支持基于强制类型转换的自定义数据类型，必须保证直接映射为当前数据库支持的数据类型。
+        <!--Include:Include\GetCode[Example,9,,OrmModel\Member\Ipv4.cs]-->
+        <!--Include:Include\GetCode[Example,a,,OrmModel\CastMember.cs]-->
+    </p>
+    <p>
+        . 对于存在强关联需求的多个数据列，可以使用自定义组合列处理，为了防止循环嵌套问题只支持 struct
+        <!--Include:Include\GetCode[Example,b,,OrmModel\Member\Range.cs]-->
+        <!--Include:Include\GetCode[Example,c,,OrmModel\CombinationMember.cs]-->
+        <br />自定义组合列最终将展开映射成多个表格数据列，比如这个 IndexRange 字段将映射为 IndexRange_Start 与 IndexRange_End 两个数据列，每个层级名称之间使用下划线（_）连接，对于自定义组合列数据的更新只能进行整体操作。
+    </p>
+    <p>
+        . 对于不能识别映射类型的数据列将自动进行 JSON 序列化处理并映射为 string 类型。
+        <!--Include:Include\GetCode[Example,d,,OrmModel\JsonMember.cs]-->
+    </p>
+    <p>
+        . 由于数据库时间类型数据可能存在精度问题（比如 SQL Server 两个不同的时间差有 3ms+），而应用中可能要求每条记录的时间不重复（当然同时也会限制添加数据操作的吞吐，比如 SQL Server 吞吐只能到 200+/s），这时候就不能直接使用 <b>DateTime.Now</b>
+        <!--Include:Include\GetCode[Example,e,表格数据模型,OrmModel\NowTime.cs]-->
+        <!--Include:Include\GetCode[Example,f,数据表格,OrmTable\NowTime.cs]-->
+    </p>
+    <p>
+        . 对于存在成员位图需求的数据列，可以生成成员索引。
+        <!--Include:Include\GetCode[Example,g,表格数据模型,OrmModel\MemberIndex.cs]-->
+        <!--Include:Include\GetCode[Example,h,数据表格,OrmTable\MemberIndex.cs]-->
+    </p>
+</body>
+</html>

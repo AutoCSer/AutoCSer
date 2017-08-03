@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,Xamarin.Forms Android]-->
+<body>
+    <p>从安装 Android 环境到成功调试第一个 Android 项目的过程中可能存在一些坑，下面一步一步来：</p>
+    <p><b>1.</b> 安装 JDK 8</p>
+    <p>打开<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank">官网</a>找到 Java SE Development Kit 8u101，选择 Accept License Agreement，然后找到 Windows x86 对应大小为 188.32 MB 的 <a href="http://download.oracle.com/otn-pub/java/jdk/8u101-b13/jdk-8u101-windows-i586.exe" target="_blank">jdk-8u101-windows-i586.exe</a> 点击下载。</p>
+    <p>另外你也可以把 64 位版本的 <a href="http://download.oracle.com/otn-pub/java/jdk/8u101-b13/jdk-8u101-windows-x64.exe" target="_blank">jdk-8u101-windows-x64.exe</a> 下载下来以备后用，考虑到兼容性问题所以选择安装 32 位版本的 JDK。</p>
+    <p>安装 JDK 的时候记住安装目录，打开 VS 菜单 -> 工具 -> 选项 -> Xamarin，设置 Java Development Kit Location 到 JDK 8 的安装目录。</p>
+    <p><b>2.</b> 安装 Android SDK</p>
+    <p>由于 developer.android.com 已被墙，打开百度搜索 android sdk，打开百度快照，找到 Windows <a href="http://dl.google.com/android/android-sdk_r24.4.1-windows.zip">android-sdk_r24.4.1-windows.zip</a> No installer（<b>SHA-1 66b6a6433053c152b22bf8cab19c0f3fef4eba49</b>）然后点击下载，为了防止百度快照失效找不到其它工具的下载地址，可以同时把其它包都下载一份以备后用。</p>
+    <p>Windows <a href="http://dl.google.com/android/installer_r24.4.1-windows.exe">installer_r24.4.1-windows.exe</a> <b>SHA-1 f9b59d72413649d31e633207e31f456443e7ea0b</b></p>
+    <p>Mac OS X <a href="http://dl.google.com/android/android-sdk_r24.4.1-macosx.zip">android-sdk_r24.4.1-macosx.zip</a> <b>SHA-1 85a9cccb0b1f9e6f1f616335c5f07107553840cd</b></p>
+    <p>Linux <a href="http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz">android-sdk_r24.4.1-linux.tgz</a> <b>SHA-1 725bb360f0f7d04eaccff5a2d57abdd49061326d</b></p>
+    <p>另外可以把 Android Studio 也下载一份</p>
+    <p>Windows <a href="https://dl.google.com/dl/android/studio/install/2.1.1.0/android-studio-bundle-143.2821654-windows.exe">android-studio-bundle-143.2821654-windows.exe</a>  Includes Android SDK (recommended) <b>SHA-1 6f7fcdc30800bd8b3fbd5a14c2b9857243144650</b></p>
+    <p>Windows <a href="https://dl.google.com/dl/android/studio/install/2.1.1.0/android-studio-ide-143.2821654-windows.exe">android-studio-ide-143.2821654-windows.exe</a> No Android SDK <b>SHA-1 d8cb3968814b6155f4effe727baf23b18b9f8360</b></p>
+    <p>Windows <a href="https://dl.google.com/dl/android/studio/ide-zips/2.1.1.0/android-studio-ide-143.2821654-windows.zip">android-studio-ide-143.2821654-windows.zip</a> No Android SDK, no installer <b>SHA-1 9bec4905e40f0ac16ac7fde63a50f3fbc1eec4d9</b></p>
+    <p>Mac OS X <a href="https://dl.google.com/dl/android/studio/install/2.1.1.0/android-studio-ide-143.2821654-mac.dmg">android-studio-ide-143.2821654-mac.dmg</a> <b>SHA-1 4a7ca7532a95c65ee59ed50193c0e976f0272472</b></p>
+    <p>Linux <a href="https://dl.google.com/dl/android/studio/ide-zips/2.1.1.0/android-studio-ide-143.2821654-linux.zip">android-studio-ide-143.2821654-linux.zip</a> <b>SHA-1 55d69ad2da0068d818718b26ba43550fbcbeb7e9</b></p>
+    <p>至少准备 42G 硬盘空间（小容量的 SSD 系统盘就另外找盘吧），将刚才下载的 android-sdk_r24.4.1-windows.zip 复制到这里解压缩，然后执行 android-sdk-windows\SDK Manager.exe，默认会安装 7.0（API 24），注意需要勾选安装 6.0（API 23）。</p>
+    <p>安装完后打开 VS 菜单 -> 工具 -> 选项 -> Xamarin，设置 Android SDK Location 到刚才解压缩的文件夹 android-sdk-windows。</p>
+    <p><b>3.</b> 安装 Hyper-V</p>
+    <p>打开 控制面板 -> 卸载程序 -> 启动或关闭 Windows 功能，勾选 Hyper-V 然后确定安装。可能需要您的 CPU 支持虚拟化功能，现在的机器一般来说应该问题不大。</p>
+    <p>Hyper-V 与 VMWare 不能共存，如果安装了 VMWare 就要做好不再使用它的准备，因为反复安装 Hyper-V 会安装一堆多余的虚拟网络设备造成虚拟网络故障，每次都要在设备管理器中清除掉才能重新安装好，比较麻烦。</p>
+    <p>当然你也可以不卸载 VMWare，使用管理员模式的命令行 禁用或者启用 Hyper-V，不过每次都需要重新启动操作系统才能生效。</p>
+    <p>比如 <a href="//__STATICDOMAIN__/Hyper-v/Hyper-v.off.bat?__VERSIONNAME__=0" target="_blank">Hyper-v\Hyper-v.off.bat</a> 与 <a href="//__STATICDOMAIN__/Hyper-v/Hyper-v.auto.bat?__VERSIONNAME__=0" target="_blank">Hyper-v\Hyper-v.auto.bat</a></p>
+    <div name="ace" mode="sh">
+        <pre>bcdedit /set hypervisorlaunchtype off</pre>
+    </div>
+    <div name="ace" mode="sh">
+        <pre>bcdedit /set hypervisorlaunchtype auto</pre>
+    </div>
+    <p><b>4.</b> VS 安装 Android 模拟器</p>
+    <p>如果有更新通知，在 VS 界面右上角有个小旗帜带个小数字，点开安装所有移动应用相关的更新，其中包括 Emulator Android 模拟器。</p>
+    <p>如果没有更新通知，可能需要在第一次创建移动应用项目的时候弹出更新通知，那么 VS 菜单 -> 文件 -> 新建 -> 项目 -> Visual C# -> Cross-Platform，任选一种 Xamarin.Forms APP（个人推荐 Shared），然后一路确定。</p>
+    <p>现在假定你已经安装好了 Android 模拟器，如果没有安装好就要自己想办法解决了。</p>
+    <p><b>5.</b> 编译 Android 项目</p>
+    <p>编译刚才创建的 Android（.Droid）项目，在编译的时候 VS 可能会被卡死（具体症状表现为 IDE 没有使用 CPU 也没有使用网络却无法完成编译），因为编译需要下载一个 zip 压缩包，然而这个压缩包可能被墙了。</p>
+    <p>如果你的 VS 被卡死了，可能需要在任务管理器中手动结束 IDE 进程 devenv.exe，然后重启 VS 重新编译 Android 项目，然后打开输出窗口，可能看到类似以下错误信息：</p>
+    <div name="ace" mode="text">
+        <pre>Reason: C:\Users\用户名\AppData\Local\Xamarin\zips\96659D653BDE0FAEDB818170891F2BB0.zip is not a valid zip file
+Unzipping failed. Please download https://dl-ssl.google.com/android/repository/android_m2repository_r22.zip ...</pre>
+    </div>
+    <p>根据提示打开文件夹 C:\Users\用户名\AppData\Local\Xamarin\zips\ 你会看到一个 0 字节的文件 96659D653BDE0FAEDB818170891F2BB0.zip，然后你需要下载 <a href="https://dl-ssl.google.com/android/repository/android_m2repository_r22.zip">android_m2repository_r22.zip</a> 并且重命名用来替换这个 0 字节文件。</p>
+    <p>下载这个文件需要翻墙，你也可以到 <a href="http://jq.qq.com/?_wv=1027&k=2HbDxVX" target="_blank"> QQ群275679001</a> 里面下载，或者在 <a href="http://wpa.qq.com/msgrd?v=3&uin=472179624&site=qq&menu=yes" target="_blank">QQ</a> 上传给你。</p>
+    <p>关闭 VS 再次重启并编译 Android 项目，由于需要处理刚才下载的压缩包可能需要等上一段时间，有点像刚才卡死的症状，区别在于 IDE 会占用一些 CPU 表明正在工作，然后正常情况下就完成了编译。</p>
+    <p><b>6.</b> 调试 Android 项目</p>
+    <p>需要将 Android 项目设置为启动项目，然后可以看到 VS 的绿色启动按钮变成了可选的模拟 Android 设备，选择启动一个模拟 Android 设备，第一次运行可能会弹出一个确认权限的对话框，第一次启动模拟 Android 设备可能会比较慢。</p>
+    <p>正常情况下模拟器中的 Android 操作系统启动完以后就会接着安装你调试的 Android 项目并运行。如果没能成功运行说明模拟器环境还有些问题，这时候需要查看 VS 的输出窗口，看看最后的输出是不是下面这种：</p>
+    <div name="ace" mode="text">
+        <pre>Launching emulator...
+Emulator launched successfully.</pre>
+    </div>
+    <p>如果是，你可能要将注册表 HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Android SDK Tools 的 Path 数据修改为你安装 Android SDK 的目录，比如 C:\Xamarin\android-sdk_r24.4.1-windows\android-sdk-windows\。 </p>
+    <p>如果修改注册表不能解决这个问题，你可能需要在模拟器的 Android 系统中找到 Setting（如果锁界面可能需要鼠标按住界面向上拖动解锁），一般点击 Android 界面下方中间的按钮就能找到 Setting 了。</p>
+    <p>在 Setting 中点击 Wi-Fi，然后点开连接信息，记下 IP 地址，比如 192.168.115.132，然后返回到主界面。</p>
+    <p>在 Windows 中建立一个批处理文件然后运行它，正常情况下会在 VS 的输出窗口逐步看到编译与部署成功的信息就说明没问题了。下面的目录需要修改为你安装 Android SDK 的目录，比如</p>
+    <div name="ace" mode="text">
+        <pre>C:\Xamarin\android-sdk_r24.4.1-windows\android-sdk-windows\platform-tools\adb connect 192.168.115.132</pre>
+    </div>
+    <p>以后每次启动模拟 Android 设备后都需要使用这个批处理才能调试项目，确实有点麻烦。</p>
+    <p>如果是下面这种提示</p>
+    <div name="ace" mode="text">
+        <pre>Could not connect to the debugger.</pre>
+    </div>
+    <p>你可以参考 <a href="http://stackoverflow.com/questions/32589438/xamarin-android-visual-studio-2015-could-not-connect-to-the-debugger" target="_blank">http://stackoverflow.com/questions/32589438/xamarin-android-visual-studio-2015-could-not-connect-to-the-debugger</a></p>
+    <div name="ace" mode="text">
+        <pre>Disable "Use fast deployment (debug mode only)" in Android project -> Properties -> Android options -> Packaging
+Enable "Migrate to a physical computer with a different processor version" in Hyper-V manager go to VM -> Settings -> Processor -> Compatibility</pre>
+    </div>
+    <p>如果不是就需要你自己找原因，我可能帮不到你了。</p>
+    <p><b>7.</b> Hello</p>
+    <p>跟着教程 <a href="https://developer.xamarin.com/guides/xamarin-forms/creating-mobile-apps-xamarin-forms/" target="_blank">https://developer.xamarin.com/guides/xamarin-forms/creating-mobile-apps-xamarin-forms/</a> 一步一步来，应该不难吧；另外还可以<a href="https://github.com/xamarin/xamarin-forms-samples" target="_blank">下载示例</a>作为参考。</p>
+</body>
+</html>

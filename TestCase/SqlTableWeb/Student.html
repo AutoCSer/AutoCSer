@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--Client-->
+<script language="javascript" type="text/javascript" src="//127.0.0.1:12303/js/loadPage.js?v=887095" async="async"></script>
+<!--Client-->
+<title>=@@StudentInfo.Name - 学生 - AutoCSer Demo</title>
+<!--At:ViewMetaKeywords--><!--At:ViewMetaKeywords-->
+<!--At:ViewMetaDescription--><!--At:ViewMetaDescription-->
+</head>
+<body>
+    <div>
+<!--Not:FalseFlag--><a href="=@PubPath.ClassList">班级列表</a><!--Not:FalseFlag-->
+</div>
+<br />
+
+    <!--Value:StudentInfo-->
+    <div>
+        <div>班级：=@@Name 邮箱：=@@Email 性别：=@@Gender 出生日期：=@Birthday.DateTime#Birthday.DateTime.ToDateString</div>
+        <!--Loop:Remote.Classes-->
+        <div>
+            =@ClassDate.Date.DateTime#ClassDate.Date.DateTime.ToDateString 进入 <!--Value:Class--><a href="=@@Path.Index">=@@Name</a>（=@Discipline）<!--Value:Class-->
+        </div>
+        <!--Loop:Remote.Classes-->
+    </div>
+    <!--Value:StudentInfo-->
+</body>
+</html>

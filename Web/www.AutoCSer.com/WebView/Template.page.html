@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\ViewVersionHeader[前后端一体 WEB 视图框架 HTML 模板]-->
+<body>
+    <p>
+        HTML 模板分为<b>页面模板</b>与<b>控件模板</b>，它们都匹配绑定一个同名的 js / ts 文件，区别在于页面模板扩展名为 <b>.page.html</b> 并且最终将生成模板展开后的 .html 文件。
+        <br />HTML 模板在浏览器端依赖于配套的<a href="/WebView/Script.html">基础脚本类库</a>，所以需要在<b>页面模板</b>中引用引导脚本。
+        <br />绑定了服务端 .cs 的页面模板引用 <b>/Js/loadPage.js</b>，否则引用 <b>/Js/load.js</b>，<b>Page</b> 可以通过 <b>Include</b> 参数来处理。
+        <!--Include:Include\GetCode[Example,0,,WebView\Include\Header.html]-->
+    </p>
+    <p>
+        . <b>模板标签</b>，为了保持 HTML 的“干净”，模板标签采用 HTML 注释格式，以冒号（:）分割标签名称与标签参数，没有标签参数的情况下也不需要冒号（:），比如 <b>&lt;!--标签名称:标签参数--&gt;</b> 或者 <b>&lt;!--标签名称--&gt;</b>。
+        <br />某些模板标签需要成对出现用于标识作用域的开始与结束，开始与结束标签不允许跨 HTML tag 层级，否则可能造成模板渲染错乱。
+        <br />为了简化模板规则，AutoCSer 的 WEB 视图只支持几个必要的模板标签，比如 <b>Include</b> / <b>Value</b> / <b>Loop</b> / <b>If</b> / <b>Client</b> / <b>NoMark</b>。
+    </p>
+    <p>
+        <b>数据值表达式</b>由服务端表达式与客户端表达式组合而成，当两个表达式不相同时，中间用（#）连接起来。
+        <br />服务端表达式用于引用服务端数据的相关字段与属性，除了连接符（.），只支持 数字 / 字母 / 下划线（_）。
+        <br />客户端表达式用于引用客户端数据的相关属性与无参函数，除了连接符（.），只支持 数字 / 字母 / 下划线（_）。
+        <br />如果表达式为空字符串（字符串长度为 0），则表示当前数据作用域上的数据对象。
+        <br />第一个名称前面的小数点（.）表示跳过当前数据作用域向外回溯，几个点就表示回溯几层，最后回溯到最外层的数据作用域的根对象。
+        <br />当多个数据作用域中的数据对象存在相同的属性名称，而当前需要引用的数据作用域不符合最近原则，则可以使用小数点（.）跳过这些数据作用域对象。
+        <!--Include:Include\GetCode[Example,1,,WebView\Template\Expression.page.html]-->
+        <!--Include:Include\GetCode[Example,2,,WebView\Template\Expression.cs]-->
+    </p>
+    <p>
+        . <b>Include</b> 表示引用某个控件模板，标签参数是相对于项目路径的绝对路径文件名（忽略扩展名 .html），支持静态字符串数组传参，在模板中使用 =@At[索引编号] 替换为数组数据。
+        <!--Include:Include\GetCode[Example,3,,WebView\Template\Include.page.html]-->
+        <!--Include:Include\GetCode[Example,4,,WebView\Include\AjaxReturnSkin.html]-->
+        <!--Include:Include\GetCode[Example,g,数组传参定义,WebView\Include\Header.html]-->
+        <br />单纯的 <b>.js</b> 也支持 <b>Include</b> 引用，但不支持传参，且必须写在文件开始位置，同一个页面多次引用同一个 <b>.js</b> 在展开时会自动去重。
+        <br />参考示例中的引用仅作为示例存在，因为页面已经引用了控件模板 <b>Include\AjaxReturnSkin</b>，会自动绑定引用它的脚本。
+        <!--Include:Include\GetCode[Example,5,,WebView\Template\Include.page.ts]-->
+        <br /><b>.css</b> 也支持 <b>Include</b> 引用，但不支持传参，多个引用之间用 <b>,</b> 分隔。
+        <!--Include:Include\GetCode[Example,6,,WebView\Template\IncludeCss.page.css]-->
+    </p>
+    <p>
+        . <b>Value</b> 表示使用某个数据建立一个数据作用域，标签参数是一个<b>数据值表达式</b>，标签<b>必须成对</b>。
+        <br />模板引擎在搜索数据时优先搜索最近的数据作用域，当数据查找失败时将回溯到最近的上一个数据作用域，直到根对象建立最外层的数据作用域（对于页面模板而言就是页面绑定的 class）。
+        <!--Include:Include\GetCode[Example,7,,WebView\Template\Value.page.html]-->
+        <!--Include:Include\GetCode[Example,8,,WebView\Template\Value.cs]-->
+    </p>
+    <p>
+        . <b>Loop</b> 表示循环使用某个数组对象的子元素数据建立数据作用域（用于列表操作），标签参数是一个<b>数据值表达式</b>，标签<b>必须成对</b>。
+        <!--Include:Include\GetCode[Example,9,,WebView\Template\Loop.page.html]-->
+        <!--Include:Include\GetCode[Example,a,,WebView\Template\Loop.cs]-->
+    </p>
+    <p>
+        . <b>If</b> 表示如果某个数据对象符合 JavaScript 的 if 判定则继续输出 HTML，标签参数是一个<b>逻辑值表达式</b>，标签<b>必须成对</b>。
+        <br />对于 JavaScript 的 if 判定，数据对象为 null 返回 false，数字为 0 返回 false，对于长度为 0 的字符串返回 false。
+        <br /><b>逻辑值表达式</b>用于<b>If</b>标签参数，允许使用 <b>&amp;</b> 或者 <b>|</b> 拼接若干<b>子逻辑值表达式</b>，不允许在同一个表达式中混合使用 <b>&amp;</b> 与 <b>|</b>。
+        <br />可选的感叹号 <b>!</b> 前缀用于取反操作，比如 <b>If:!</b> 等价于 <b>Not:</b>
+        <br /><b>子逻辑值表达式</b> 可选后缀 <b>=字符串</b> 用于判断<b>数据值表达式</b>转换成字符串以后是否等于指定的字符串。
+        <!--Include:Include\GetCode[Example,b,,WebView\Template\If.page.html]-->
+        <!--Include:Include\GetCode[Example,c,,WebView\Template\If.cs]-->
+    </p>
+    <p>
+        . <b>Client</b> 没有标签参数，表示该段 HTML 模板仅对客户端有效（客户端模板引擎忽略这个标签），标签<b>必须成对</b>。
+        <br />服务端模板引擎在输出 HTML 或者 JSON 的时候跳过这个标签不输出（可用于 SEO 过滤输出）。
+        <!--Include:Include\GetCode[Example,d,,WebView\Template\Client.page.html]-->
+        <!--Include:Include\GetCode[Example,e,,WebView\Template\Client.cs]-->
+    </p>
+    <p>
+        . <b>NoMark</b> 没有标签参数，表示客户端模板引擎在解析该段 HTML 模板时禁止输出范围标识，服务端模板引擎则忽略这个标签，标签<b>必须成对</b>。
+        <br />正常情况下，AutoCSer 的客户端模板引擎在输出 HTML 的时候会附加输出一些成对的隐藏的 span 用来标识某个子模版在 document 中的开始与结束位置，用于在数据更新时快速定位需要更新的 document 节点。
+        <br />但是某些情况可能需要生成“干净”的 HTML（比如 textarea），又或者可能想减少生成的 HTML 的 document 节点数量以减轻浏览器的压力，这时候就可以使用 NoMark 标签将这段 HTML 模板包起来。
+        <br />需要知道的是，使用了 NoMark 以后，里面包含的任何数据的更新都需要处理整个被 NoMark 包起来的 HTML 模板重新生成 HTML 代码。
+        <!--Include:Include\GetCode[Example,f,,WebView\Template\NoMark.page.html]-->
+        <!--Include:Include\GetCode[Example,h,,WebView\Template\NoMark.cs]-->
+    </p>
+    <p>
+        <b>=@At</b>，作为<b>数据值表达式</b>的前缀使用，用于将数据转换成字符串输出。
+        <br />=@At* 作为<b>数据值表达式</b>的前缀使用，先将数据转换成字符串，然后调用 .ToTextArea() 输出。
+        <div name="ace" mode="javascript">
+            <pre>String.prototype.ToTextArea = function () {
+    return this.replace(/&amp;/g, '&amp;amp;').replace(/&lt;/g, '&amp;lt;').replace(/&gt;/g, '&amp;gt;');
+};</pre>
+        </div>
+        <br />=@At@ 作为<b>数据值表达式</b>的前缀使用，先将数据转换成字符串，然后调用 .ToHTML() 输出。
+        <div name="ace" mode="javascript">
+            <pre>String.prototype.ToHTML = function () {
+    return this.ToTextArea().replace(/ /g, '&amp;nbsp;').replace(/"/g, '&amp;#34;').replace(/'/g, '&amp;#39;');
+};</pre>
+        </div>
+    </p>
+</body>
+</html>

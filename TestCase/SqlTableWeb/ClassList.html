@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--Client-->
+<script language="javascript" type="text/javascript" src="//127.0.0.1:12303/js/loadPage.js?v=887095" async="async"></script>
+<!--Client-->
+<title>班级列表 - AutoCSer Demo</title>
+<!--At:ViewMetaKeywords--><!--At:ViewMetaKeywords-->
+<!--At:ViewMetaDescription--><!--At:ViewMetaDescription-->
+</head>
+<body>
+    <div>
+<!--Not:IsClassList--><a href="=@PubPath.ClassList">班级列表</a><!--Not:IsClassList-->
+</div>
+<br />
+
+    <!--Loop:Classes-->
+    <div>
+        <div>班级名称：<a href="=@@Path.Index">=@@Name</a> 专业：=@Discipline 学生数量：=@StudentCount 年份：=@DateRange.Start.DateTime#DateRange.Start.DateTime.getFullYear</div>
+        <div>
+            学生：<!--Loop:Remote.Students--><a href="=@@Path.Index">=@@Name</a> <!--Loop:Remote.Students-->
+        </div>
+    </div>
+    <!--Loop:Classes-->
+</body>
+</html>

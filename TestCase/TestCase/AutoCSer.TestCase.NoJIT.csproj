@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DC375102-8D8B-4A13-971E-23ED9CD221C7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer.TestCase</RootNamespace>
+    <AssemblyName>AutoCSer.TestCase</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NOJIT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NOJIT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\AutoCSer.TestCase.XML</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\NoJIT\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BinarySerialize.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="DiskBlock\File.cs" />
+    <Compile Include="Json.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerPort.cs" />
+    <Compile Include="SimpleSerialize.cs" />
+    <Compile Include="TcpInternalServer\Json.cs" />
+    <Compile Include="TcpInternalServer\Member.cs" />
+    <Compile Include="TcpInternalServer\Session.cs" />
+    <Compile Include="TcpOpenServer\Json.cs" />
+    <Compile Include="TcpOpenServer\Member.cs" />
+    <Compile Include="TcpOpenServer\Session.cs" />
+    <Compile Include="TcpStaticServer\Json.cs" />
+    <Compile Include="TcpStaticServer\Member.cs" />
+    <Compile Include="TcpStaticServer\Session.cs" />
+    <Compile Include="Xml.cs" />
+    <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DiskBlock.NoJIT.csproj">
+      <Project>{2e20aeca-b2e6-4dcb-9ee3-47d8036b6626}</Project>
+      <Name>AutoCSer.DiskBlock.NoJIT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.FieldEquals.JIT.csproj">
+      <Project>{cbc830a4-fbf8-45c4-8218-8574a1377a3f}</Project>
+      <Name>AutoCSer.FieldEquals.JIT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.JIT.csproj">
+      <Project>{fcda7d3a-a440-42c4-85c0-da0fe404154b}</Project>
+      <Name>AutoCSer.RandomObject.JIT</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

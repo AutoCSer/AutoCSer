@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--include:Include\ViewHead[=@@StudentInfo.Name - 学生]-->
+</head>
+<body>
+    <!--include:Include\HeaderMenu[FalseFlag]-->
+    <!--Value:StudentInfo-->
+    <div>
+        <div>班级：=@@Name 邮箱：=@@Email 性别：=@@Gender 出生日期：=@Birthday.DateTime#Birthday.DateTime.ToDateString</div>
+        <!--Loop:Remote.Classes-->
+        <div>
+            =@ClassDate.Date.DateTime#ClassDate.Date.DateTime.ToDateString 进入 <!--Value:Class--><a href="=@@Path.Index">=@@Name</a>（=@Discipline）<!--Value:Class-->
+        </div>
+        <!--Loop:Remote.Classes-->
+    </div>
+    <!--Value:StudentInfo-->
+</body>
+</html>

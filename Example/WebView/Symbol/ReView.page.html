@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\Header[Page,预定义符号 重新加载视图]-->
+<body>
+    <div>
+        IsReView = =@IsReView
+        <br />IsMobileReView = =@IsMobileReView
+    </div>
+    <div>
+        ViewOnly 默认为 false 正常输出数据
+        <!--Value:OutputData-->
+        <br />Value1 = =@Value1
+        <br />Value2 = =@Value2
+        <!--Value:OutputData-->
+    </div>
+    <div>
+        ViewOnly 设置为 true 表示通过 AJAX 重新加载页面时不覆盖客户端数据
+        <!--Value:ViewOnlyData-->
+        <br />Value1 = =@Value1
+        <br />Value2 = =@Value2
+        <!--Value:ViewOnlyData-->
+    </div>
+    <div>
+        根据 IsReView 状态输出输出数据
+        <!--Value:ReViewData-->
+        <br />Value1 = =@Value1
+        <br />Value2 = =@Value2
+        <!--Value:ReViewData-->
+    </div>
+</body>
+</html>

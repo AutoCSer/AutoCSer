@@ -1,0 +1,3 @@
+﻿		static @Type.Type.Name(/*LOOP:LoadMethod.Parameters*/@ParameterName,/*LOOP:LoadMethod.Parameters*/Callback = null) {
+			AutoCSer.Pub.GetAjaxGet()('@View.CallName',/*IF:LoadMethod.Parameters.Length*/{/*LOOP:LoadMethod.Parameters*/@ParameterName: @ParameterJoinName/*LOOP:LoadMethod.Parameters*/ }/*IF:LoadMethod.Parameters.Length*//*NOT:LoadMethod.Parameters.Length*/null/*NOT:LoadMethod.Parameters.Length*/, Callback);	
+		}

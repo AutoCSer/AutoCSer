@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,XML 数据序列化]-->
+<body>
+    <p>AutoCSer 包含一个高性能 XML 序列化组件，支持若干<a href="/Config/Index.html">全局默认配置</a>，支持 31 种常用数据类型组合的随机对象 <a href="/Serialize/Performance.html">单线程 30W+/s 序列化 与 15W+/s 反序列化</a> 操作，需要引用 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。</p>
+    <p>
+        . 支持成员选择配置，默认选择所有公共字段与属性成员。
+        <!--Include:Include\GetCode[Example,0,仅选择公共字段成员,Xml\PublicInstanceField.cs]-->
+        <!--Include:Include\GetCode[Example,1,支持匿名类型序列化,Xml\AnonymousType.cs]-->
+        <!--Include:Include\GetCode[Example,2,忽略成员,Xml\IgnoreMember.cs]-->
+    </p>
+    <p>
+        . 除了成员选择配置，还默认支持临时性的成员位图选择序列化成员。成员位图选择仅对数据根节点有效，如果需要在子节点中支持成员位图选择，需要自定义成员位图数据对象。
+        <!--Include:Include\GetCode[Example,3,成员位图选择,Xml\MemberMap.cs]-->
+        <!--Include:Include\GetCode[Example,4,成员位图数据对象,Xml\MemberMapValue.cs]-->
+    </p>
+    <p>
+        . 为了方便数据类型的抽象重用，默认支持数据基类配置入侵数据派生类型，也就是该数据基类的所有派生类型的序列化处理都默认当成该数据基类处理。
+        <!--Include:Include\GetCode[Example,5,,Xml\BaseType.cs]-->
+    </p>
+    <p>
+        . 支持自定义序列化函数，对于引用类型必须是静态函数，对于值类型必须是成员函数，定义的序列化与反序列化两个函数并自行保证序列化数据的可逆性。
+        <!--Include:Include\GetCode[Example,6,引用类型,Xml\CustomClass.cs]-->
+        <!--Include:Include\GetCode[Example,7,值类型,Xml\CustomStruct.cs]-->
+    </p>
+    <p>
+        . 对于找不到默认构造函数的数据类型的反序列化支持自定义构造函数，比如抽象类型。
+        <!--Include:Include\GetCode[Example,8,,Xml\NoConstructor.cs]-->
+    </p>
+</body>
+</html>

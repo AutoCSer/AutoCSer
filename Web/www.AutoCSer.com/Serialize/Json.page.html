@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,JSON 数据序列化]-->
+<body>
+    <p>AutoCSer 包含一个高性能 JSON 序列化组件，支持若干<a href="/Config/Index.html">全局默认配置</a>，支持 31 种常用数据类型组合的随机对象 <a href="/Serialize/Performance.html">单线程 30W+/s 序列化</a> 操作，需要引用 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。</p>
+    <p>
+        . 支持成员选择配置，默认选择所有公共字段与属性成员。为了兼容数据结构定义更新，序列化与反序列化的忽略成员配置可以分别配置。
+        <!--Include:Include\GetCode[Example,0,仅选择公共字段成员,Json\PublicInstanceField.cs]-->
+        <!--Include:Include\GetCode[Example,1,支持匿名类型序列化,Json\AnonymousType.cs]-->
+        <!--Include:Include\GetCode[Example,2,忽略成员,Json\IgnoreMember.cs]-->
+        <!--Include:Include\GetCode[Example,3,序列化忽略成员,Json\SerializeIgnoreMember.cs]-->
+        <!--Include:Include\GetCode[Example,4,反序列化忽略成员,Json\ParseIgnoreMember.cs]-->
+    </p>
+    <p>
+        . 除了成员选择配置，还默认支持临时性的成员位图选择序列化成员。成员位图选择仅对数据根节点有效，如果需要在子节点中支持成员位图选择，需要自定义成员位图数据对象。
+        <!--Include:Include\GetCode[Example,5,成员位图选择,Json\MemberMap.cs]-->
+        <!--Include:Include\GetCode[Example,6,成员位图数据对象,Json\MemberMapValue.cs]-->
+    </p>
+    <p>
+        . 为了方便数据类型的抽象重用，默认支持数据基类配置入侵数据派生类型，也就是该数据基类的所有派生类型的序列化处理都默认当成该数据基类处理。
+        <!--Include:Include\GetCode[Example,7,,Json\BaseType.cs]-->
+    </p>
+    <p>
+        . 支持自定义序列化函数，对于引用类型必须是静态函数，对于值类型必须是成员函数，定义的序列化与反序列化两个函数并自行保证序列化数据的可逆性。
+        <!--Include:Include\GetCode[Example,8,引用类型,Json\CustomClass.cs]-->
+        <!--Include:Include\GetCode[Example,9,值类型,Json\CustomStruct.cs]-->
+    </p>
+    <p>
+        . 对于找不到默认构造函数的数据类型的反序列化支持自定义构造函数，比如抽象类型。
+        <!--Include:Include\GetCode[Example,a,,Json\NoConstructor.cs]-->
+    </p>
+    <p>
+        . 对于不符合 C# 类型规范的 JSON 字符串支持 JSON 节点解析。
+        <!--Include:Include\GetCode[Example,b,,Json\SerializeNode.cs]-->
+    </p>
+    <!--
+    <p>. 默认支持 <a href="/WebView/View.html">WEB 视图</a>中 JSONP 调用的循环引用，用于将服务端数据对象映射到客户端数据对象。</p>
+    <p>. 在 <a href="/WebView/View.html">WEB 视图</a>调用参数反序列化场景中支持默认解析成员，也就是空字符串名称的成员解析映射。</p>
+    -->
+</body>
+</html>

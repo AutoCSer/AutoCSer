@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{74FCBFA7-C1A6-48E6-B15F-524DB26AD671}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer.Web</RootNamespace>
+    <AssemblyName>AutoCSer.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.WebView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.WebView.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ajax\Code.cs" />
+    <Compile Include="Ajax\Example.cs" />
+    <Compile Include="Ajax\TestCase.cs" />
+    <Compile Include="FileServer.cs" />
+    <Compile Include="HttpDomain.cs" />
+    <Compile Include="LocationIndex.cs" />
+    <Compile Include="LocationServer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebConfig.cs" />
+    <Compile Include="WebServer.cs" />
+    <Compile Include="WebView\Template.cs" />
+    <Compile Include="{AutoCSer.Web}.AutoCSer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Android\Index.page.html" />
+    <Content Include="Android\Index.page.js" />
+    <Content Include="CodeGenerator.page.html" />
+    <Content Include="CodeGenerator.png" />
+    <Content Include="Config\Index.page.html" />
+    <Content Include="Include\Baidu.js" />
+    <Content Include="Include\51Nod.html" />
+    <Content Include="Include\SimpleSerialize.html" />
+    <Content Include="Include\HighPerformance.html" />
+    <Content Include="Include\BaiduFoot.html" />
+    <Content Include="Include\GetCode.html" />
+    <Content Include="Include\Style.html" />
+    <Content Include="Include\LoadHeader.html" />
+    <Content Include="Include\ViewVersionHeader.html" />
+    <Content Include="Global.page.html" />
+    <Content Include="404.page.html" />
+    <Content Include="Joke.page.html" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615.page.html" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615.page.js" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_ab.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_ab100.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_ab_19.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_http.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_js.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_t1.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_t2.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_t3.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_t4.png" />
+    <Content Include="Joke\PhpDictionaryPerformance20170615_t5.png" />
+    <Content Include="OrmCache\Column.page.html" />
+    <Content Include="OrmCache\Cache.page.html" />
+    <Content Include="Serialize\Binary.page.html" />
+    <Content Include="Serialize\Performance.page.html" />
+    <Content Include="Serialize\Performance.png" />
+    <Content Include="Serialize\Xml.page.html" />
+    <Content Include="Serialize\Json.page.html" />
+    <Content Include="OrmCache\Index.page.html" />
+    <Content Include="TcpServer\InterfaceServer.png" />
+    <Content Include="TcpServer\InterfaceOpenServer.png" />
+    <Content Include="TcpServer\MethodServer.png" />
+    <Content Include="TcpServer\MethodOpenServer.png" />
+    <Content Include="TcpServer\Register.page.html" />
+    <Content Include="WebView\Ajax.page.html" />
+    <Content Include="WebView\Call.page.html" />
+    <Content Include="WebView\Index.page.html" />
+    <Content Include="Include\Header.html" />
+    <Content Include="TcpServer\MethodServer.page.html" />
+    <Content Include="TcpServer\InterfaceServer.page.html" />
+    <Content Include="Index.page.html" />
+    <Content Include="WebView\Index1000.png" />
+    <Content Include="WebView\Index1000ab.png" />
+    <Content Include="WebView\Index100KeepAlive.png" />
+    <Content Include="WebView\Symbol.page.html" />
+    <Content Include="WebView\Script.page.html" />
+    <Content Include="WebView\HttpServer.page.html" />
+    <Content Include="WebView\Template.page.html" />
+    <Content Include="WebView\View.page.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Download\AutoCSer.Example.zip" />
+    <None Include="Hyper-v\Hyper-v.auto.bat" />
+    <None Include="Hyper-v\Hyper-v.off.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Config\AutoCSer.Web.Config.csproj">
+      <Project>{c9cb96f4-a9f3-4af0-af17-e1fa7a8abbbb}</Project>
+      <Name>AutoCSer.Web.Config</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Include\GetCode.ts" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if exist "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" @(TypeScriptCompile ->'"%(fullpath)"', ' ')</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

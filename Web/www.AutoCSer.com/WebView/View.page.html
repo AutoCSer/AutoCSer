@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,前后端一体 WEB 视图框架 WEB 视图页面]-->
+<body>
+    <p>
+        一个 WEB 视图页面，由 3 个部分组成。
+    </p>
+    <p>
+        1. <b>.cs</b> 文件用于定义页面数据，需要添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html">静态代码生成</a>需要使用它生成页面输出与 JSON 输出代理函数。
+        <br />添加继承自 <b>AutoCSer.WebView.View</b> 的 class，并且申明为 WEB 视图页面 <b>[AutoCSer.WebView.View]</b>，支持<a href="/Config/Index.html">全局默认配置</a>。
+        <br />也可以添加继承自基于对象池支持实现 <b>AutoCSer.WebView.View&lt;viewType&gt;</b> 的 class，viewType 用于标识当前类型。
+        <br />对于没有使用服务端数据与逻辑的纯客户端 HTML 页面模板，这个文件不是必须的。
+    </p>
+    <p>
+        2. <b>.page.html</b> 文件仅用于编译期定义<a href="/WebView/Template.html">HTML 模板</a>，部署与运行时使用的是 <b>Include</b> 或者<a href="/WebView/Symbol.html">预定义符号</a>展开后生成的页面模板文件 <b>.html</b>
+        <br />如果存在 <b>.cs</b> 文件，需要添加一个与 class 同名的 <b>类型名称.page.html</b>，用于匹配页面服务端数据。
+    </p>
+    <p>
+        3. <b>.page.js</b> / <b>.page.ts</b> 文件必须与 <b>.page.html</b> 同名，用于定义页面脚本，部署与运行时使用的是 <b>Include</b> 或者<a href="/WebView/Symbol.html">预定义符号</a>展开后生成的脚本文件 <b>.js</b>
+        <br />当页面没有脚本需求的时候，这个文件不是必须的。
+        <br />推荐使用 TypeScript 取代 JavaScript，虽然它生成的代码不够简洁，在使用上某些时候不如 JavaScript 来的直接，但是对于需要长期维护的项目，我觉得这些代价是值得的。
+    </p>
+    <p>
+        . 在某些应用中，页面可能需要接收参数或者存在某些依赖关系的数据，需要在初始化处理中手动处理；某些存在访问权限的页面，可能需要在初始化处理逻辑中决定是否继续访问当前页面。
+        <!--Include:Include\GetCode[Example,0,无参初始化,WebView\LoadView.cs]-->
+        <!--Include:Include\GetCode[Example,1,带参数初始化,WebView\LoadViewQuery.cs]-->
+        <!--Include:Include\GetCode[Example,2,指定查询参数名称,WebView\LoadViewQueryName.cs]-->
+    </p>
+    <p>
+        . 设置 <b>IsAsynchronous = true</b> 支持异步输出，服务端必须保证 <b>AsynchronousResponse()</b> 被调用。
+        <!--Include:Include\GetCode[Example,3,,WebView\ViewAsynchronous.cs]-->
+    </p>
+    <p>
+        . 默认生成输出 HTML 的函数，是为了搜索引擎的抓取，对于需要权限才能访问的页面，建议使用 <b>IsPage = false</b> 禁用这个生成的函数，因为对于页面比较多的项目，生成的代码过多可能会在一定程度上影响编译效率。
+        <!--Include:Include\GetCode[Example,4,,WebView\LoadView.cs]-->
+    </p>
+</body>
+</html>

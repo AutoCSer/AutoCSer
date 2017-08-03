@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3AC38CD2-81E1-41FE-9140-2BEC11DC2B03}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AutoCSer.TestCase.Mono</RootNamespace>
+    <AssemblyName>AutoCSer.TestCase</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DiskBlock\File.cs" />
+    <Compile Include="TcpInternalServer\Json.cs" />
+    <Compile Include="TcpInternalServer\Member.cs" />
+    <Compile Include="TcpInternalServer\Session.cs" />
+    <Compile Include="TcpOpenServer\Json.cs" />
+    <Compile Include="TcpOpenServer\Member.cs" />
+    <Compile Include="TcpOpenServer\Session.cs" />
+    <Compile Include="TcpStaticServer\Json.cs" />
+    <Compile Include="TcpStaticServer\Member.cs" />
+    <Compile Include="TcpStaticServer\Session.cs" />
+    <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
+    <Compile Include="BinarySerialize.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="Json.cs" />
+    <Compile Include="ServerPort.cs" />
+    <Compile Include="Xml.cs" />
+    <Compile Include="TcpInternalServer\Emit\IServer.cs" />
+    <Compile Include="TcpInternalServer\Emit\Server.cs" />
+    <Compile Include="TcpInternalServer\Emit\Sum.cs" />
+    <Compile Include="TcpOpenServer\Emit\Server.cs" />
+    <Compile Include="SimpleSerialize.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCser.Mono.csproj">
+      <Project>{8F2C11B3-5F14-4696-A3CB-F00A1B0B1837}</Project>
+      <Name>AutoCser.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DiskBlock.Mono.csproj">
+      <Project>{8F2C11B3-5F14-4696-A3CB-F00A1B0B183E}</Project>
+      <Name>AutoCSer.DiskBlock.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.Mono.csproj">
+      <Project>{F71355A6-87A6-44C2-A7F0-BAD9DE93975C}</Project>
+      <Name>AutoCSer.RandomObject.Mono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.FieldEquals.Mono.csproj">
+      <Project>{F71355A6-87A6-44C2-A7F0-BAD9DE93975B}</Project>
+      <Name>AutoCSer.FieldEquals.Mono</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

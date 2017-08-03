@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--include:Include\ViewHead[班级列表]-->
+</head>
+<body>
+    <!--include:Include\HeaderMenu[IsClassList]-->
+    <!--Loop:Classes-->
+    <div>
+        <div>班级名称：<a href="=@@Path.Index">=@@Name</a> 专业：=@Discipline 学生数量：=@StudentCount 年份：=@DateRange.Start.DateTime#DateRange.Start.DateTime.getFullYear</div>
+        <div>
+            学生：<!--Loop:Remote.Students--><a href="=@@Path.Index">=@@Name</a> <!--Loop:Remote.Students-->
+        </div>
+    </div>
+    <!--Loop:Classes-->
+</body>
+</html>

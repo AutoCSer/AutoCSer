@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,前后端一体 WEB 视图框架 预定义符号]-->
+<body>
+    <p>
+        <b>预定义符号</b>用于在<a href="/WebView/Template.html">HTML 页面模板</a>展开后，生成目标 .html 文件之前做一些与配置环境相关的字符串替换。
+    </p>
+    <p>
+        <b>__VERSIONNAME__</b> 用于定义网站 html / js / css 文件的版本号的查询名称，替换为字符串 <b>v</b>，用于 <b>.html</b> / <b>.ts</b> / <b>.js</b>
+        <b>__VERSION__</b> 用于定义网站 html / js / css 文件的版本号，替换为网站最后一次更新的时间戳的十六进制字符串，防止浏览器文件缓存造成资源不匹配的问题，也可以用于标识静态文件的更新，用于 <b>.html</b>
+        <!--Include:Include\GetCode[Example,0,,WebView\Symbol\Version.page.html]-->
+        <br />在引用基础框架引导脚本的时候添加名称为 <b>v</b> 的版本号参数，可以在脚本中使用 <b>AutoCSer.Loader.Version</b> 访问它
+        <!--Include:Include\GetCode[Example,1,,WebView\Include\Header.html]-->
+        <!--Include:Include\GetCode[Example,2,脚本访问,WebView\Symbol\Version.page.ts]-->
+    </p>
+
+    <p>
+        <b>__MAINDOMAIN__</b> 用于定义<b>默认主域名</b>，替换为网站生成配置中的 <b>AutoCSer.WebView.Config.MainDomain</b>，用于 <b>.html</b> / <b>.ts</b> / <b>.js</b>
+        <br /><b>__STATICDOMAIN__</b> 用于定义<b>静态文件域名</b>，替换为网站生成配置中的 <b>AutoCSer.WebView.Config.StaticFileDomain</b>，用于 <b>.html</b> / <b>.ts</b> / <b>.js</b> / <b>.css</b>
+        <br /><b>__IMAGEDOMAIN__</b> 用于定义<b>图片文件域名</b>，替换为网站生成配置中的 <b>AutoCSer.WebView.Config.ImageDomain</b>，用于 <b>.html</b> / <b>.ts</b> / <b>.js</b> / <b>.css</b>
+        <!--Include:Include\GetCode[Example,3,,WebView\Symbol\MainDomain.page.html]-->
+        <!--Include:Include\GetCode[Example,4,,WebView\Symbol\MainDomain.page.ts]-->
+    </p>
+    <p>
+        <b>__POLLDOMAIN__</b> 用于定义<b>轮询域名</b>，替换为网站生成配置中的 <b>AutoCSer.WebView.Config.PollDomain</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br />参考示例 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\poll.ts
+    </p>
+
+    <p>
+        <b>__VIEWLOCATION__</b> 用于定义<b>视图加载失败重定向</b>，替换为网站生成配置中的 <b>AutoCSer.WebView.Config.NoViewLocation</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br /><b>__PUBERROR__</b> 用于定义<b>公用错误处理函数名称</b>，替换为字符串 <b>Pub.Error</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br />参考示例 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts
+    </p>
+    <p>
+        <b>__REVIEW__</b> 用于定义<b>重新加载视图查询名称</b>，一般用于列表页的更新，替换为字符串 <b>r</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br /><b>__MOBILEREVIEW__</b> 用于定义手机端<b>重新加载视图查询名称</b>，一般用于列表页的更新，替换为字符串 <b>m</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br /><b>__VIEWONLY__</b> 用于配合 <b>AutoCSer.Net.Http.HeaderFlag.IsReView</b> 在通过 AJAX 重新加载页面时不覆盖客户端数据，替换为字符串 <b>ViewOnly</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br />参考示例 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts
+        <br /><a href="/WebView/View.html">WEB 视图页面</a>服务端通过 <b>HeaderFlag</b> 属性访问它们
+        <!--Include:Include\GetCode[Example,5,,WebView\Symbol\ReView.cs]-->
+        <!--Include:Include\GetCode[Example,6,,WebView\Symbol\ReView.page.html]-->
+    </p>
+    <p>
+        <b>__LOADPAGECACHE__</b> 用于定义<b>第一次加载页面缓存名称</b>，替换为字符串 <b>l</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br />这个预定义符号用于通知服务端当前请求用于网站重启以后第一次加载页面缓存，服务端可能不需要当成真实请求来处理，可能不应该修改某些访问状态。
+        <!--Include:Include\GetCode[Example,7,,WebView\Symbol\ReView.cs]-->
+    </p>
+
+    <p>
+        <b>__AJAX__</b> 用于定义默认 AJAX 调用名称，替换为字符串 <b>/Ajax</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br /><b>__AJAXCALL__</b> 用于定义 AJAX 调用函数映射名称，替换为字符串 <b>n</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br /><b>__CALLBACK__</b> 用于定义 AJAX 回调函数名称，替换为字符串 <b>c</b>，用于 <b>.ts</b> / <b>.js</b>
+        <br /><a href="/WebView/Ajax.html">AJAX 调用函数</a>客户端调用处理依赖于这些预定义符号
+        <br />参考示例 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts
+        <br /><b>__AJAXRETURN__</b> 用于定义 AJAX 调用返回值属性名称，替换为字符串 <b>Return</b>，用于 <b>.ts</b> / <b>.js</b>
+        <!--Include:Include\GetCode[Example,8,,WebView\Include\AjaxReturnSkin.html]-->
+        <!--Include:Include\GetCode[Example,9,,WebView\Include\AjaxReturnSkin.ts]-->
+    </p>
+    <p>
+        <b>__JSON__</b> 用于定义 JSON 查询名称，替换为字符串 <b>j</b>，用于 <b>.html</b> / <b>.ts</b> / <b>.js</b>
+        <br /><b>__XML__</b> 用于定义 XML 查询名称，替换为字符串 <b>x</b>，用于 <b>.html</b> / <b>.ts</b> / <b>.js</b>
+        <br />参考示例 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts
+    </p>
+</body>
+</html>

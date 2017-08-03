@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,前后端一体 WEB 视图框架 HTTP 调用函数]-->
+<body>
+    <p>
+        HTTP 调用函数，用于手动处理 HTTP 响应，比如 单纯的重定向、文件上传。
+    </p>
+    <p>
+        1. 添加继承自 <b>AutoCSer.WebView.Call</b> 或者 <b>AutoCSer.WebView.CallAsynchronous</b> 的 class，并且申明为 HTTP 调用函数容器 <b>[AutoCSer.WebView.Call]</b>，支持<a href="/Config/Index.html">全局默认配置</a>。
+        <br />也可以添加继承自基于对象池支持实现 <b>AutoCSer.WebView.Call&lt;callType&gt;</b> 或者 <b>AutoCSer.WebView.CallAsynchronous&lt;callType&gt;</b> 的 class，callType 用于标识当前类型。
+    </p>
+    <p>
+        2. 根据需求在 class 中添加 public 实例方法（注意不要添加名称相同的重载方法），返回值类型必须为 void，项目编译后将生成这些方法的服务端调用代理。
+    </p>
+    <p>
+        . 默认支持 GET / POST 请求，输入参数解析支持参考 <a href="/WebView/Ajax.html">AJAX 调用函数</a>。
+        <!--Include:Include\GetCode[Example,0,,WebView\Call.cs]-->
+    </p>
+    <p>
+        . 支持异步模式，必须保证调用 RepsonseEnd 函数一次性输出数据。文件输出必须使用异步模式。
+        <!--Include:Include\GetCode[Example,1,,WebView\CallAsynchronous.cs]-->
+        <!--Include:Include\GetCode[Example,2,文件输出,WebView\File.cs]-->
+    </p>
+    <p>
+        . 对于只有一个输入参数的情况下，支持类似 <b>[AutoCSer.Emit.BoxSerialize]</b> 的序列化拆包，直接操作该参数。
+        <!--Include:Include\GetCode[Example,3,,WebView\CallBoxSerialize.cs]-->
+    </p>
+    <p>
+        . 调用函数默认 URL 为 <b>类型名称/函数名称</b>，支持自定义调用名称。
+        <!--Include:Include\GetCode[Example,4,,WebView\CallName.cs]-->
+    </p>
+    <p>
+        <!--Include:Include\GetCode[Example,5,文件上传,WebView\Upload.cs]-->
+    </p>
+    <p>
+        <!--Include:Include\GetCode[Example,6,URL 重定向,WebView\Location.cs]-->
+    </p>
+</body>
+</html>

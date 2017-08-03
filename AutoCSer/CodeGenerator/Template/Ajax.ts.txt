@@ -1,0 +1,9 @@
+﻿module @Namespace {
+	export class @Type.Type.Name {
+		/*LOOP:Methods*/
+		static @Method.Method.Name(/*LOOP:NotOutParameters*/@ParameterName/*IF:ParameterType.ScriptType*/:@ParameterType.ScriptType/*IF:ParameterType.ScriptType*/,/*LOOP:NotOutParameters*/Callback = null) {
+			AutoCSer.Pub./*IF:Attribute.IsOnlyPost*/GetAjaxPost/*IF:Attribute.IsOnlyPost*//*NOT:Attribute.IsOnlyPost*/GetAjaxGet/*NOT:Attribute.IsOnlyPost*/()('@CallName',/*IF:NotOutParameters.Length*/{/*LOOP:NotOutParameters*/@ParameterName: @ParameterJoinName/*LOOP:NotOutParameters*/ }/*IF:NotOutParameters.Length*//*NOT:MethodParameters.Length*/null/*NOT:MethodParameters.Length*/, Callback/*NOT:Attribute.IsOnlyPost*//*IF:Attribute.IsVersion*/, true/*IF:Attribute.IsVersion*//*NOT:Attribute.IsVersion*/, false/*NOT:Attribute.IsVersion*//*NOT:Attribute.IsOnlyPost*/);	
+		}
+		/*LOOP:Methods*/
+	}
+}

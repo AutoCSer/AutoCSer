@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,HTTP 服务器]-->
+<body>
+    <p>
+        AutoCSer 包含一个可嵌入的高性能 <a href="/WebView/HttpServer.html">HTTP 服务器</a>组件，支持若干<a href="/Config/Index.html">全局默认配置</a>。
+        <!--Include:Include\GetCode[Example,0,嵌入模式,WebView\Program.cs]-->
+    </p>
+    <p>
+        对于 AutoCSer 的 WEB 应用而言，<b>服务模式</b>相当于一个没有界面的轻量级 IIS，用于管理 WEB 应用的监听 IP 地址、端口、域名 等信息。
+        <br />以当前网站 www.AutoCSer.com 涉及的项目项目为例，<a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer.Example.DotNet2.sln 的 Web 解决方案文件夹包含以下项目：
+    </p>
+    <p>
+        . <b>AutoCSer.Web.Config.DotNet2</b> 是一个公共配置项目，其它项目都依赖于它。如果需要在本地试运行这个项目，需要适当修改这些文件中的一些静态变量配置。
+    </p>
+    <p>
+        . <b>AutoCSer.Web.TcpRegister.DotNet2</b> 用于运行 <a href="/TcpServer/Register.html">TCP 注册服务</a> 与 进程监视服务 <b>AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer</b>
+    </p>
+    <p>
+        . <b>AutoCSer.Web.DeployServer.DotNet2</b> 用于运行 AutoCSer 的更新部署服务。
+    </p>
+    <p>
+        . <b>AutoCSer.Web.DeployClient.DotNet2</b> 是当前网站项目的部署客户端。
+    </p>
+    <p>
+        . <b>AutoCSer.Web.HttpServer.DotNet2</b> 用于运行 HTTP 注册服务。
+    </p>
+    <p>
+        . <b>AutoCSer.Web.DotNet2</b> 当前网站项目。
+    </p>
+    <p>
+        <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer.Example.sln 的 Web 解决方案文件夹包含以下项目：
+    </p>
+    <p>
+        . <b>AutoCSer.Web.ExamplePack</b> 用于打包 <a href="//__STATICDOMAIN__/Download/AutoCSer.Example.zip" target="_blank">AutoCSer 样例包</a>，因为 .NET 2.0 不支持 <b>System.IO.Compression</b>
+    </p>
+    <p>
+        . <b>AutoCSer.Web</b> 用于编译当前网站项目中的 TypeScript，因为 VS2010 不支持。
+    </p>
+    <p>
+        1. 运行 AutoCSer.Web.TcpRegister.DotNet2 项目启动 <a href="/TcpServer/Register.html">TCP 注册服务</a>，否则 HTTP 服务器将启动失败。
+    </p>
+    <p>
+        2. 运行 AutoCSer.Web.HttpServer.DotNet2 项目启动 HTTP 服务器，由于 AutoCSer.Web.TcpRegister.DotNet2 项目会自动启动 HTTP 服务器，所以这一步可以忽略。
+    </p>
+    <p>
+        3. 运行 AutoCSer.Web.DotNet2 将网站项目挂载到 HTTP 服务器。
+    </p>
+    <p>
+        <b>这是一个简易的 HTTP 服务器，对于多个 WEB 应用之间并无隔离处理，所以只适合同时挂载同一个公司的多个 WEB 应用项目，不可以当成 WEB 虚拟主机来使用。</b>
+    </p>
+</body>
+</html>

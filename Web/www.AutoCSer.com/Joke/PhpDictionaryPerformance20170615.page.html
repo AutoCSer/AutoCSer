@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,PHP 字典性能对比]-->
+<body>
+    <p>
+        在知乎问题 <a href="https://www.zhihu.com/question/60155879/answer/182112021" target="_blank">.NET技术栈比Java便宜而且有诸多优势，为什么不流行?</a> 某人回答的评论下，有个 PHP 狂热粉 <a href="https://www.zhihu.com/people/eechen-php" target="_blank">eechen</a> 贴了一个图片（<a href="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615.png" target="_blank">备份</a>）对比 PHP 与 Node.js 的性能差异，并多次挑战 C# 字典 System.Collections.Generic.Dictionary&lt;KT, VT&gt; 的性能，想要证明 PHP 的映射性能比 C# 的字典性能更好，看这架势是已经做过性能测试对比气势满满的样子。
+        <br /><img src="https://static.oschina.net/uploads/space/2017/0507/114545_l2Gp_561214.png" alt="PHP 与 Node.js 字典性能对比" />
+    </p>
+    <p>
+        <br />从图片中看到，对空字典添加 100W 数据，Node.js 耗时 1.537s，PHP 耗时 0.47s。我觉的这个测试有一些问题：
+        <br />1. 大家都知道性能结果不仅仅与代码有关，而且与软硬件环境有关，不提供内存信息没关系，竟然连 CPU 型号都没有提到，这是一个测试外行才能干出来的事。
+        <br />2. 既然是测试字典性能，却要夹杂 toString 与拼接这种“重量级”的额外操作，看来是醉翁之意不在酒。
+        <br />3. 两份代码逻辑不一致，Node.js 的 time 是一个 Date 类型，而 PHP 的 time 竟然是毫秒时间戳，两者转化成字符串的效率是不同的，我觉得这是明显在偏袒 PHP 的行为。
+        <br />由于我没有合适 Node.js 环境，只能在 Chrome 浏览器里面验证两者的性能差异。
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_js.png" alt="Date 与 时间戳 的性能差异" />
+        <br />在测试结果中可以看到两者的性能差异相差 1 倍左右，当然就算性能提升 1 倍，对于这个测试而言 PHP 的性能还是要好一些。
+    </p>
+    <p>
+        由于我对 Linux 不熟，对 PHP 只有十多年前用过几个月经验，妄加测试，只怕难以展示它的真实性能。
+        <br />所以我只能针对 C# 做单方面的性能测试，本地主要环境为 Win10 + i5 6400 + 8GB
+        <br />由于 DateTime 做计时操作可能会有个 15ms 的精确度问题，所以使用高精度的 Stopwatch 计时。
+    </p>
+    <p>
+        我们来看第 1 个测试
+         <div name="ace" mode="csharp">
+            <pre>            Console.WriteLine("TEST 1");
+            long ticks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            var arr = new System.Collections.Generic.Dictionary&lt;string, long&gt;();
+            for (int i = 0; i &lt; 100 * 10000; ++i)
+            {
+                long time = DateTime.Now.Ticks / ticks;
+                arr[i.ToString() + "_" + time.ToString()] = time;
+            }
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            Console.ReadKey();</pre>
+        </div>
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_t1.png" alt="C# 字典性能测试 1" />
+        <br />运行时间接近 1s，占用内存 100MB，对于编译型的强类型语言来说，时间跑分偏低，对于平时不怎么关心性能问题的人也许有点意外。
+    </p>
+    <p>
+        来看第 2 个测试
+        <div name="ace" mode="csharp">
+            <pre>            Console.WriteLine("TEST 2");
+            long ticks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            var values = new System.Collections.Generic.KeyValuePair&lt;string, long&gt;[100 * 10000];
+            for (int i = 0; i &lt; 100 * 10000; ++i)
+            {
+                long time = DateTime.Now.Ticks / ticks;
+                values[i] = new System.Collections.Generic.KeyValuePair&lt;string, long&gt;(i.ToString() + "_" + time.ToString(), time);
+            }
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            var arr = new System.Collections.Generic.Dictionary&lt;string, long&gt;();
+            foreach (var value in values) arr[value.Key] = value.Value;
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            Console.ReadKey();</pre>
+        </div>
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_t2.png" alt="C# 字典性能测试 2" />
+        <br />占用内存 130MB，可以看到构造数据用了绝大多数的时间，字典处理只有不到 0.2s，测试说明 x.ToString() 与 字符串拼接的代价远比字典访问代价要大得多。
+    </p>
+    <p>
+        那么现有一个问题，你真的在意这个测试中存在的性能问题吗？
+        <br />如果不在乎，我想 100W/s 的处理速度应该可以应对绝大多数需求了，就算性能再高 1 倍也许你也不会关心了。
+        <br />如果你在乎，对于这种组合键的需求，你就不应该写出如此不堪的代码，也许你应该定义一个通用的组合键，比如
+        <div name="ace" mode="csharp">
+            <pre>        struct Key&lt;T1, T2&gt; : IEquatable&lt;Key&lt;T1, T2&gt;&gt;
+            where T1 : IEquatable&lt;T1&gt;
+            where T2 : IEquatable&lt;T2&gt;
+        {
+            public T1 Value1;
+            public T2 Value2;
+            public bool Equals(Key&lt;T1, T2&gt; other) { return Value1.Equals(other.Value1) && Value2.Equals(other.Value2); }
+            public override bool Equals(object obj) { return Equals((Key&lt;T1, T2&gt;)obj); }
+            public override int GetHashCode() { return (Value1 == null ? 0 : Value1.GetHashCode()) ^ (Value2 == null ? 0 : Value2.GetHashCode()); }
+        }</pre>
+        </div>
+    </p>
+    <p>
+        来看第 3 个测试
+        <div name="ace" mode="csharp">
+            <pre>            Console.WriteLine("TEST 3");
+            long ticks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            var arr = new System.Collections.Generic.Dictionary&lt;Key&lt;int, long&gt;, long&gt;();
+            for (int i = 0; i &lt; 100 * 10000; ++i)
+            {
+                long time = DateTime.Now.Ticks / ticks;
+                arr[new Key&lt;int, long&gt; { Value1 = i, Value2 = time }] = time;
+            }
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            Console.ReadKey();</pre>
+        </div>
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_t3.png" alt="C# 字典性能测试 3" />
+        <br />占用内存降到 70MB 以下，字典处理不到 0.2s，这才接近字典的真实性能。
+    </p>
+    <p>
+        我相信很多人都知道 Dictionary 在构造的时候如果可以预估容器大小，减少重组开销，是可以提高性能的。
+        <br />来看第 4 个测试
+        <div name="ace" mode="csharp">
+            <pre>            Console.WriteLine("TEST 4");
+            long ticks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            var arr = new System.Collections.Generic.Dictionary&lt;Key&lt;int, long&gt;, long&gt;(100 * 10000);
+            for (int i = 0; i &lt; 100 * 10000; ++i)
+            {
+                long time = DateTime.Now.Ticks / ticks;
+                arr[new Key&lt;int, long&gt; { Value1 = i, Value2 = time }] = time;
+            }
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            Console.ReadKey();</pre>
+        </div>
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_t4.png" alt="C# 字典性能测试 4" />
+        <br />占用内存降到 40MB 以下，处理时间进一步降低。
+    </p>
+    <p>
+        很多人都知道 DateTime.Now 是一个“比较重”的 API，很多时候我们可能不需要精确到 15ms 的时间，比如这里我们需要测试的是 Dictionary 的性能，而不是 DateTime.Now
+        <br />来看第 5 个测试
+        <div name="ace" mode="csharp">
+            <pre>            Console.WriteLine("TEST 5");
+            long ticks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            var arr = new System.Collections.Generic.Dictionary&lt;Key&lt;int, long&gt;, long&gt;(100 * 10000);
+            for (int i = 0; i &lt; 100 * 10000; ++i)
+            {
+                long time = AutoCSer.Date.Now.Ticks / ticks;
+                arr[new Key&lt;int, long&gt; { Value1 = i, Value2 = time }] = time;
+            }
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            Console.ReadKey();</pre>
+        </div>
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_t5.png" alt="C# 字典性能测试 5" />
+        <br />这里我们把 <b>DateTime.Now.Ticks</b> 换成了 <b><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>.Date.Now.Ticks</b>，运行时间降到 0.1s 以下。
+    </p>
+    <p>
+        其实对于有性能洁癖的人可能会看到测试代码中还有一个 <b>/</b> 没有被干掉，我就不再继续往下测试了。
+        <br />也许 .NET 自带的 number.ToString() 与字符串拼接性能比不过 PHP；也许 PHP 已经把 CharStream 当成了基础的字符串处理手段，而 .NET 默认却要傻傻的一个一个装箱转成字符串然后再写入 CharStream
+        <br />而字符串拼接的性能优化，也确实能够提升 PHP 这种以拼接字符串的方式输出 HTML 的应用性能。
+        <br />然而 PHP 的性能问题在于只能依赖于 C 写的底层 API 与数据结构，相对于 C 而言 PHP 几乎就是一个胶水语言的存在。
+        <br />C# 提供更多的选择，当你需要开发效率的时候可以随手写代码，当你需要运行效率的时候可以靠自己的代码来处理性能问题。
+        <br />拼凑出来的统一，有时候是灵活、简单、强大，有时候是臃肿、模糊、限制，利弊的权衡不是单向的。
+        <br />不可否认 PHP 比 C# 更适合写 hello world 这类简单的程序；然而对 PHP 的短处视而不见，拿着少有的几个长处当成一切，就有点井底之蛙了。
+    </p>
+    <p>
+        没有什么语言自带类库能保证提供性能最好的 API，.NET 自带类库与框架某些时候可能存在一些性能问题，但不代表 C# 存在这些性能问题。
+        <br />最后悄悄告诉你，除了临时性的需求，我从来不用 .NET 自带的 int.ToString()，基本不用 .NET 的字符串拼接，基本不用 DateTime.Now
+        <br />我在评论中提到的 31 种常用数据类型组合的随机对象单线程序列化操作 200W+/s，RPC 应答吞吐 200W+/s 的测试用例你可以在 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 下载。
+        <br />不知道纯粹的 PHP 代码做出来的通用框架是否能做到 1/10 的性能？
+        <br />另外 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 里面也包含一个可嵌入的 <a href="/WebView/HttpServer.html">HTTP 服务器</a>与一个 <a href="/WebView/Index.html">WEB 框架</a>，你可以拿你的 Apache + PHP 比比看。
+    </p>
+    <p>
+        你摆出一个 C 写的 HTTP 服务器 Swoole 想证明 PHP 比 C# 性能更好吗？我想 PHP 不过就是作为胶水语言做个调用而已吧。
+        <br />我这里用 C# 写的 <a href="/WebView/HttpServer.html">HTTP 服务器</a>，同样 200 并发长连接 20W 次请求，在 windows 2012 虚拟机中的测试结果，物理机 CPU 还是 i5 6400
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_http.png" alt="HTTP 长连接性能测试" />
+        <br />很庆幸没有低于 11W/s 的测试结果，而且所有的请求都是动态带参数的，是一个通用的 WEB 框架，其中还包含一些简单攻击防御策略，不是专门定制的应用服务器。
+        <br />压力山大啊，本来在讨论 PHP 与 C# 的性能问题，结果变成和 C 比性能，当然我并不会说 C# 的性能比 C 好，因为我知道那是找死。
+    </p>
+    <p>
+        以前听说 Apache 的工具在 Windows 下表现不行，这两天群里有人上传了一个 httpd.zip 看起来还不错，所以试了一下里面的 ab，貌似效果还不错。
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_ab.png" alt="HTTP 长连接性能测试" />
+        <br />单纯从测试结果看，貌似比自己写的测试客户端要好，原因有两方面：
+        <br />1. 自己写的客户端请求地址不是固定的，需要随机构造，带有两个随机参数。
+        <br />2. 自己写的客户端会使用 <a href="/Serialize/Json.html">JSON 反序列化</a>验证计算结果。
+    </p>
+    <p>
+        说实在的 <a href="https://wiki.swoole.com/wiki/page/508.html" target="_blank">Swoole 这个测试结果</a>看起来确实不错，但是要说 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 的 <a href="/WebView/HttpServer.html">HTTP 服务器</a>和它差距明显的说法实在太草率了，真要为了这种没有实际意义的跑分做类似的定制还指不定谁的跑分高。
+        <br />1. 17.5W 是 200*1000 测试结果，你怎么能拿来和 100*10000 对比？我刚才跑了一下 100*10000 大概是 22.2W 的样子。
+        <br /><img src="//__STATICDOMAIN__/Joke/PhpDictionaryPerformance20170615_ab100.png" alt="HTTP 长连接性能测试" />
+        <br />2. 我测试的 CPU 主频是 2.71G，而你给的 CPU 主频是 3.3G，两者相差 18%
+        <br />3. 我用的是虚拟机测试（暂时没有物理机环境，以后有了再做测试），虚拟 CPU 占用只能到 95%-96% 之间，还不包括虚拟损耗。
+        <br />4. 我测试的是一个 <a href="/WebView/Index.html">WEB 框架</a> 的性能，请求还带参数的自动解析功能。
+        <br />你看看那个 SWOOLE_BASE 测试是干什么的，基本就是一个披着 HTTP 皮的 Socket，连路由都没有，输出操作完全手动，我不知道这样的东西除了做跑分测试还能用来做什么？
+        <br />为了跑分做这种定制并不难，但是我真的看不出有什么实际意义，敢问你写 PHP 用的就是这个 SWOOLE_BASE 吗？
+    </p>
+</body>
+</html>

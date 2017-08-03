@@ -1,0 +1,6 @@
+﻿    export class @Type.Type.Name {/*LOOP:PathMembers*/
+        @Member.MemberName: string;/*LOOP:PathMembers*/
+        constructor(Id: number) {/*LOOP:PathMembers*/
+            this.@Member.MemberName = '@Path/*IF:IsIdentity*//*IF:IsHash*/#!/*IF:IsHash*/@OtherQuery@QueryName=/*IF:IsIdentity*/'/*IF:IsIdentity*/ + Id/*IF:IsIdentity*/;/*LOOP:PathMembers*/
+        }
+    }

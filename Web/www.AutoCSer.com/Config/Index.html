@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=088716D"></script>
+    <title>代码配置 - C# 高性能自动化服务端框架 - 凹凸架构</title>
+        <style type="text/css">
+        a{text-decoration: none;}
+        a:hover{text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <p>
+        AutoCSer 只支持代码配置（需要文件配置的自行处理），可以利用 C# 的语言特性可以支持各种抽象行为，相对于文件配置，有更强的健壮性与灵活性。当然代码配置并不能完全替换文件配置，比如同一个执行程序需要不同配置的时候可能就需要文件配置作为辅助配置存在。
+        <br />可以在程序集名称为 <b>AutoCSer.Config</b> 或者以 <b>AutoCSer.Config.</b> 开头的项目中添加<b>公用配置</b>，也可以在当前可执行项目中添加<b>个性化配置</b>。
+        <br /><b>个性化配置</b>的优先级高于<b>公用配置</b>，<b>公用配置</b>的优先级高于 AutoCSer <b>默认配置</b>。
+    </p>
+    <p>
+        添加一个配置容器类型，需要给该类型添加配置容器类型声明 <b>[AutoCSer.Config.Type]</b>。
+        <br />在配置容器类型中添加具体的配置项，支持静态字段或者不带参数的静态属性，需要给该配置项添加配置项申明 <b>[AutoCSer.Config.Member]</b>
+        <br />配置项申明有一个 string 类型的参数 <b>Name</b> 用于标识该配置的名称，默认为 string.Empty 表示全局默认配置，否则表示特定应用配置的唯一标识。
+        <br />获取配置可以访问 <b>AutoCSer.Config.Loader</b> 下的两个静态方法，<b>Type</b> 表示需要获取的目标配置数据类型，也就是配置项的字段或者属性的定义类型。
+        <div name="ace" mode="csharp">
+            <pre>        /// &lt;summary&gt;
+        /// 获取配置项数据
+        /// &lt;/summary&gt;
+        /// &lt;typeparam name="valueType"&gt;配置数据类型&lt;/typeparam&gt;
+        /// &lt;param name="name" /&gt;配置名称&lt;/param&gt;
+        /// &lt;returns&gt;配置项数据&lt;/returns&gt;
+        public static valueType Get&lt;valueType&gt;(string name)</pre>
+        </div>
+        <div name="ace" mode="csharp">
+            <pre>        /// &lt;summary&gt;
+        /// 获取配置项数据
+        /// &lt;/summary&gt;
+        /// &lt;param name="type" /&gt;配置类型&lt;/param&gt;
+        /// &lt;param name="name" /&gt;配置名称&lt;/param&gt;
+        /// &lt;returns&gt;配置项数据&lt;/returns&gt;
+        public static object GetObject(Type type, string name = "")</pre>
+        </div>
+    </p>
+    <p>
+        下面列出 AutoCSer 各组件中可配置的全局默认配置类型：
+    </p>
+    <p>
+        <a href="/TcpServer/InterfaceServer.html?v=88716D">TCP 接口服务框架</a> <a href="/TcpServer/MethodServer.html?v=88716D">TCP 函数服务框架</a>
+        <br />. <b>AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig</b> TCP 内部服务端套接字任务处理配置
+        <br />. <b>AutoCSer.Net.TcpServer.TaskConfig</b> TCP 任务处理配置
+        <div> 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\TestCase\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('TestCase','0');">ChatServer\Config.cs</a></div>
+        <br />. <b>AutoCSer.Net.TcpRegister.Config</b> TCP 内部注册服务配置
+        <div>TCP 内部注册服务配置 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpRegisterServer\Config.cs</a></div>
+        <div>TCP 内部注册服务客户端配置 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpRegisterClient\Config.cs</a></div>
+        <br />. <b>AutoCSer.Threading.LinkTaskConfig</b> 链表任务配置
+    </p>
+    <p>
+        <a href="/WebView/Index.html?v=88716D">前后端一体 WEB 视图框架</a>
+        <br />. <b>AutoCSer.Net.Http.Config</b> HTTP 配置
+        <div> 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\TestCase\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('TestCase','3');">WebPerformance\WebConfig.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\TestCase\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('TestCase','4');">WebPerformance\HttpFileConfig.cs</a></div>
+        <br />. <b>AutoCSer.Net.HttpRegister.Config</b> HTTP 服务器配置
+        <br />. <b>AutoCSer.WebView.ViewAttribute</b> WEB 视图配置
+        <br />. <b>AutoCSer.WebView.AjaxAttribute</b> AJAX 调用函数配置
+        <br />. <b>AutoCSer.WebView.CallAttribute</b> HTTP 调用函数配置
+    </p>
+    <p>
+        <a href="/OrmCache/Index.html?v=88716D">ORM 内存索引缓存框架</a>
+        <br />. <b>AutoCSer.Sql.Config</b> SQL 数据库配置
+        <div> 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\TestCase\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('TestCase','5');">SqlTableCacheServer\Config.cs</a></div>
+    </p>
+    <p>
+        <a href="/Serialize/Binary.html?v=88716D">二进制数据序列化</a>
+        <br />. <b>AutoCSer.BinarySerialize.SerializeAttribute</b> 序列化类型配置申明
+        <br />. <b>AutoCSer.BinarySerialize.SerializeConfig</b> 序列化配置参数
+        <br />. <b>AutoCSer.BinarySerialize.DeSerializeConfig</b> 反序列化配置参数
+    </p>
+    <p>
+        <a href="/Serialize/Json.html?v=88716D">JSON 序列化</a>
+        <br />. <b>AutoCSer.Json.SerializeAttribute</b> 序列化类型配置申明
+        <br />. <b>AutoCSer.Json.SerializeConfig</b> 序列化配置参数
+        <br />. <b>AutoCSer.Json.ParseAttribute</b> 解析类型配置申明
+        <br />. <b>AutoCSer.Json.ParseConfig</b> 解析配置参数
+    </p>
+    <p>
+        <a href="/Serialize/Xml.html?v=88716D">XML 序列化</a>
+        <br />. <b>AutoCSer.Xml.SerializeAttribute</b> 序列化类型配置申明
+        <br />. <b>AutoCSer.Xml.SerializeConfig</b> 序列化配置参数
+        <br />. <b>AutoCSer.Xml.ParseConfig</b> 解析配置参数
+    </p>
+    <p>
+        . <b>AutoCSer.Log.Config</b> 日志配置
+        <div> 参考示例 <a href="/Index.html?v=88716D" title="Go to the home page to download">AutoCSer</a>\TestCase\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('TestCase','6');">TestCase\Config.cs</a></div>
+        <br />. <b>AutoCSer.Diagnostics.ProcessCopyConfig</b> 进程复制配置
+        <br />. <b>AutoCSer.DiskBlock.ClientConfig</b> 磁盘块服务客户端配置
+    </p>
+</body>
+</html>

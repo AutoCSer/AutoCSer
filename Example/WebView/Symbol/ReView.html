@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script language="javascript" type="text/javascript" src="/Js/loadPage.js?v=88707B"></script>
+    <title>预定义符号 重新加载视图 - 前后端一体 WEB 视图框架示例 - C# 高性能自动化服务端框架 - 凹凸架构</title>
+    <style type="text/css">
+        a{text-decoration: none;}
+        a:hover{text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <div>
+        IsReView = =@IsReView
+        <br />IsMobileReView = =@IsMobileReView
+    </div>
+    <div>
+        ViewOnly 默认为 false 正常输出数据
+        <!--Value:OutputData-->
+        <br />Value1 = =@Value1
+        <br />Value2 = =@Value2
+        <!--Value:OutputData-->
+    </div>
+    <div>
+        ViewOnly 设置为 true 表示通过 AJAX 重新加载页面时不覆盖客户端数据
+        <!--Value:ViewOnlyData-->
+        <br />Value1 = =@Value1
+        <br />Value2 = =@Value2
+        <!--Value:ViewOnlyData-->
+    </div>
+    <div>
+        根据 IsReView 状态输出输出数据
+        <!--Value:ReViewData-->
+        <br />Value1 = =@Value1
+        <br />Value2 = =@Value2
+        <!--Value:ReViewData-->
+    </div>
+</body>
+</html>

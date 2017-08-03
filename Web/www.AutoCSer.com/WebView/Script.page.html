@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,前后端一体 WEB 视图框架 脚本库]-->
+<body>
+    <p>
+        <a href="/WebView/View.html">WEB 视图页面</a>的自动渲染需要客户端脚本的支持，所以需要在<b>页面模板</b>中引用引导脚本。
+        <!--Include:Include\GetCode[Example,0,,WebView\Include\Header.html]-->
+        <br /><b>/Js/loadPage.js</b> 或者 <b>/Js/load.js</b> 仅用于引导加载基础核心类库 <b>/Js/base.js</b>，<b>/Js/base.js</b> 主要是为了配套 <a href="/WebView/View.html">WEB 视图页面</a>数据 API 的自动绑定与浏览器端 MV 的实现。
+        <br /><b>/Js/base.js</b> 不仅包括由 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts 生成的代码，还会将网站项目目录 <b>ViewJs</b> 中的 js 文件打包到文件尾部，所以 <b>ViewJs</b> 中的 js 不应该也不需要被其它 js <b>Include</b> 引用。 
+        <br />对于存在前端脚本交互开发需求的开发者需要了解框架中 MV 的实现方案与相关 API 的使用。
+    </p>
+    <p>
+        . <b>页面模板</b>就是 <a href="/WebView/View.html">WEB 视图页面</a>的 <b>body</b>，对应的脚本对象为 <b>AutoCSer.Skin</b> 类型的 <b>AutoCSer.Skin.Body</b>，是页面的主模板，这个模板会在页面初始化的时候自动匹配服务端数据 API 并渲染页面。
+    </p>
+    <p>
+        . <b>命名模板</b>用于临时性脚本交互产生的 HTML 渲染需求（比如弹出层），需要开发者在需求逻辑中构造数据对象与初始化操作。
+        <br />一般情况下，必须使用 <b>skin=""</b> 申明为<b>命名模板</b>，必须指定 id 用于标识模板名称，对应的脚本对象为 <b>AutoCSer.Skin</b> 类型的 <b>AutoCSer.Skin.Skins["模板名称"]</b>。
+        <br />示例中的 <b>body=""</b> 用于在<b>页面模板</b>初始化之前临时性的删除 DOM 节点避免被<b>页面模板</b>渲染，在<b>页面模板</b>初始化之后会将这些 DOM 节点追加到 <b>body</b> 节点的最后。
+        <!--Include:Include\GetCode[Example,1,,WebView\Script\Skins.page.html]-->
+        <!--Include:Include\GetCode[Example,2,,WebView\Script\Skins.page.ts]-->
+    </p>
+    <p>
+        . <b>模板数据节点</b>是由原始视图数据绑定到<b>页面模板</b>或者<b>命名模板</b>以后在渲染过程中产生的与原始视图数据定义组织结构匹配的 <b>AutoCSer.SkinData</b> 类型的数据节点，该节点用于修改原始视图数据并控制 UI 渲染。
+        <br /><b>页面模板</b>与<b>命名模板</b>都可以通过 <b>AutoCSer.Skin</b> 的实例函数 <b>SkinData()</b> 获取<b>模板数据节点</b>的根节点，<b>页面模板</b>也可以直接通过 <b>AutoCSer.Skin.BodyData()</b> 这个封装获取根节点。
+        <br /><b>SkinData()</b>有一个 <b>string</b> 类型的可选参数，用于指定数据属性名称直接获取根节点的下级节点。
+        <br />下面主要介绍 <b>AutoCSer.SkinData</b> 类型在开发中需要用到的几个实例方法：
+    </p>
+    <p>
+        <b>$(Name: string) : AutoCSer.SkinData</b> 用于指定数据属性名称获取子节点。
+    </p>
+    <p>
+        <b>$Set(Data: Object, IsReShow = true)</b> 用于修改原始视图数据。
+        <br /><b>IsReShow</b> 默认为 true 表示修改数据以后触发 UI 渲染事件，否则修改不会马上反应到 UI 上。
+    </p>
+    <p>
+        <b>$Copy(Data: Object, IsReShow = true)</b> 用于将参数 <b>Data</b> 的属性复制到原始视图数据中。
+    </p>
+    <p>
+        <b>$Add(Data: number, IsReShow = true)</b> 用于原始视图数据类型为 <b>number</b> 的情况下，使用加法修改原始视图数据。
+    </p>
+    <p>
+        <b>$Not(IsReShow = true): boolean</b> 用于对原始视图数据进行逻辑取反操作。
+    </p>
+    <p>
+        在原始视图数据为数组的情况下，可以使用以下 API 操作：
+    </p>
+    <p>
+        <b>$Push(Value: Object, IsReShow = true)</b> 用于在数组的最后添加一个新的子节点。
+    </p>
+    <p>
+        <b>$Pushs(Datas: Object[], IsReShow = true)</b> 用于在数组的最后添加若干子节点。
+    </p>
+    <p>
+        <b>$PushExpand(Value: Object, IsReShow = true)</b> 用于在数组的前面添加一个新的子节点。
+    </p>
+    <p>
+        <b>$PushExpands(Datas: Object[], IsReShow = true)</b> 用于在数组的前面添加若干子节点。
+    </p>
+    <p>
+        <b>$Remove(IsValue: (Data: any) => boolean, IsReShow = true)</b> 用于删除符合指定条件的所有子节点。
+    </p>
+    <p>
+        <b>$RemoveAt(Index: number, Count: number = 1, IsReShow = true)</b> 用于删除指定位置开始的子节点。
+    </p>
+    <p>
+        <b>$Sort(Function: (Left: any, Right: any) => number)</b> 用于子节点排序操作。
+    </p>
+    <p>
+        <b>$Replace(Value: Object, IsValue: (Data: any) => boolean, IsReShow = true)</b> 用于替换符合指定条件的子节点。
+    </p>
+    <p>
+        <b>$For(Function: (Data: SkinData) => void)</b> 用于遍历子节点并对子节点做指定操作。
+    </p>
+    <p>
+        <b>$Array(): AutoCSer.SkinData[]</b> 用于以数组的形式获取子节点集合。
+    </p>
+    <p>
+        <b>$Find(IsValue: (Data: any) => boolean): AutoCSer.SkinData[]</b> 用于查找所有符合指定条件的子节点集合。
+    </p>
+</body>
+</html>

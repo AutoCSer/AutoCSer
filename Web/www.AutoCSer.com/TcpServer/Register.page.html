@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,TCP 注册服务]-->
+<body>
+    <p>AutoCSer 包含一个 TCP 内部服务注册组件，支持若干<a href="/Config/Index.html">全局默认配置</a>，需要引用 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。</p>
+    <p>
+        为了方便区分服务注册信息的读写权限，该组件由 <b>注册信息读取服务</b>与<b>注册服务</b>两部分组成。
+        <br />前者负责实时推送服务的注册更新信息，后者负责<b>服务端口分配</b>与<b>服务注册</b>信息的管理。
+    </p>
+    <p>
+        一般情况下，一台服务器开启一个 TCP 注册服务，用于为该服务器上的 TCP 服务动态分配端口并提供服务注册。
+        <br />同一个 IP 地址的 TCP 服务应该由同一个 TCP 注册服务来管理，对于需要跨 IP 地址的分布式并行服务，需要规划好端口分配分段，防止端口冲突。
+    </p>
+    <p>
+        TCP 注册服务端需要启动<b>注册信息读取服务</b>与<b>注册服务</b>两个服务，你也可以使用 <b>AutoCSer.Net.TcpRegister.DefaultServer.Create()</b> 创建默认配置 TCP 注册服务包装。
+        <!--Include:Include\GetCode[Example,0,,TcpRegisterServer\Program.cs]-->
+        <!--Include:Include\GetCode[Example,1,配置,TcpRegisterServer\Config.cs]-->
+    </p>
+    <p>
+        TCP 服务端（注册服务客户端）建议使用 IP 地址来标识该 TCP 注册服务的配置名称，注册信息读取服务配置名称必须添加后缀 <b>AutoCSer.Net.TcpRegister.ReaderServer.ServerNameSuffix</b>
+        <!--Include:Include\GetCode[Example,2,配置,TcpRegisterClient\Config.cs]-->
+        <!--Include:Include\GetCode[Example,3,,TcpRegisterClient\Program.cs]-->
+    </p>
+</body>
+</html>

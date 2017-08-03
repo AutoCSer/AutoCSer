@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,静态代码生成]-->
+<body>
+    <div>
+        <p>
+            静态代码生成模块，通过在相关工程项目的生成事件中执行并读取相关程序集元数据信息，匹配 AutoCSer 中的代码模板视图，在项目中生成需求的源代码文件。
+            <br />由于静态代码生成模块需要通过动态加载程序集的方式访问目标程序集的元数据信息，建议目标工程项目的生成目标平台配置为 Any CPU，否则可能造成程序集访问错误而无法生成需求的源代码。
+            <br />如果您在使用静态代码生成模块的时候出现“试图加载格式不正确的程序”类似错误，请将问题反馈给我。
+        </p>
+        <p>1. 在 VS 的 <b>解决方案资源管理器</b> 中右键单击 <b>目标工程项目</b>，在弹出的菜单中点击底部的 <b>属性(R) Alt+Enter</b> 打开项目属性编辑器。</p>
+        <p>2. 在项目属性编辑器左侧选择 <b>生成事件</b> 选项卡，打开项目的生成事件编辑器。</p>
+        <p>
+            3. 在 <b>后期生成事件命令行</b> 输入框中输入如下命令。
+            <div>
+                <pre>"<b>PATH</b>\Packet\<b>FRAMEWORK</b>\AutoCSer.CodeGenerator.exe" "$(ProjectName) " "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</pre>
+            </div>
+            <b>PATH</b> 请修改为 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 解压的真实路径，<b>FRAMEWORK</b> 请修改为目标项目匹配的框架路径。
+            <br /><img src="//__STATICDOMAIN__/CodeGenerator.png" alt="静态代码生成 后期生成事件命令行" />
+        </p>
+        <p>
+            4. 对于存在代码注释的生成需求，请将 <b>运行后期生成事件(N)</b> 的下拉菜单选项修改为 <b>生成更新项目输出时</b>。
+            <br />然后在项目属性编辑器左侧选择 <b>生成</b> 选项卡，找到并勾选 <b>XML 文档文件(X)</b>。
+        </p>
+        <p>5. 编译目标项目，正常情况下会在工程项目文件夹下生成一个源代码文件 <b>{项目名称}.AutoCSer.cs</b>，将这个 cs 文件添加到项目中就可以使用了。</p>
+        <p>如果你不想在每次编译工程项目的时候都调用静态代码生成模块，可以忽略上面 4 个步骤，使用批处理或者其它方式手动调用 AutoCSer.CodeGenerator.exe</p>
+        <p>
+            <b>注意：</b>对于生成了相关静态源代码的各种元数据（包括类型、字段、属性、函数等）不能随便修改或者删除，因为生成的代码可能对它的定义存在依赖。
+            <br />一般的正确的处理方法是，先将相关代码生成的 Attribute 申明配置删除或者注释，重新编译项目生成新的源代码，没有了相关依赖以后再进行修改或者删除。
+            <br />另外生成的静态源代码会使用预定义符号 <b>NoAutoCSer</b>，你可以在目标项目中定义预定义符号 <b>NoAutoCSer</b> 禁用生成的源代码以及依赖它的其它代码，等重新编译项目生成新的源代码后再删除预定义符号 <b>NoAutoCSer</b>。
+            <br />如果某些时候你觉得前面的方法过于麻烦，你也可以直接修改或者删除代码，等到 IDE 报错的时候去注释相关的依赖代码，因为通过编译以后会自动生成新的代码。
+        </p>
+    </div>
+    <div><h1>自定义代码生成模板</h1></div>
+    <div>
+        <p>
+            <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 的静态代码生成是基于 .NET 元数据的，模板规则是基于 C# 语法扩展的类 DSL。
+            <br />. 可以制作<b>可编译</b>的 C# 源代码模板，对于确定性逻辑代码拥有普通 C# 源代码一样的特性，编写与维护都可以得到 VS 或者其它 IDE 的全面支持，可以很方便的重构模板代码以及感应依赖模块代码的修改，个人认为这是将代码生成应用于大规模的复杂需求基础。当然对于某些特殊需求要让模板满足 C# 语法需求，可能需要一些特殊的技巧与经验。
+            <br />. 代码生成模板引擎与 <a href="/WebView/View.html">WEB 视图页面</a>的模板引擎实际上是同一个基础模板引擎下的两个特例实现，所以 C# 代码生成也是“前后端分离”模式，一个代码生成实例分为模板与数据两个部分。
+        </p>
+    </div>
+    <div>
+        <p><b>创建模板项目</b></p>
+        <p>
+            1. 新建一个名称为 <b>AutoCSer.CodeGenerator.Custom</b> 且默认命名空间为 <b>AutoCSer.CodeGenerator.Custom</b> 的类库项目（否则可能无法访问 <b>AutoCSer.CodeGenerator</b> 中 internal 修饰的代码资源），并引用项目 <b>AutoCSer.CodeGenerator</b> 。
+        </p>
+        <p>
+            2. 新建一个名称为 <b>Template</b> 的目录用于存放模板代码，并根据需求添加继承自 <b>AutoCSer.CodeGenerator.Template.Pub</b>（里面有一些方便模板编写的预定义扩展）的模板代码文件，并使用 <b>#region PART CLASS</b> 定义默认生成代码段。
+            <!--Include:Include\GetCode[Example,0,,CustomCodeGenerator\Template\ClearFields.cs]-->
+        </p>
+        <p>
+            3. 根据需求添加继承自 <b>AutoCSer.CodeGenerator.TemplateGenerator.Generator</b> 与 <b>AutoCSer.CodeGenerator.IGenerator</b> 的模板数据类型，并添加默认执行代码生成申明配置 <b>[AutoCSer.CodeGenerator.Generator(IsAuto = true)]</b> 。
+            <!--Include:Include\GetCode[Example,1,,CustomCodeGenerator\ClearFields.cs]-->
+            <br />一般可能需要配合 Attribute 用于申明需要代码生成处理的目标类型，正常情况下该 Attribute 应该定义在其它项目中使目标项目在运行时不依赖于代码生成项目，因为这里仅仅是示例所以就不另建项目了。
+            <!--Include:Include\GetCode[Example,2,辅助自定义配置,CustomCodeGenerator\ClearFieldsAttribute.cs]-->
+        </p>
+        <p>
+            4. 给该工程项目配置静态代码生成并编译项目，然后将生成的模板代理层代码源文件 <b>{AutoCSer}.CSharper.cs</b> 添加到项目中，然后重新编译该项目。
+            <!--Include:Include\GetCode[Example,3,,CustomCodeGenerator\{AutoCSer}.CSharper.cs]-->
+        </p>
+        <p>
+            5. 可以添加一个映射到 <b>AutoCSer.CodeGenerator.CustomConfig</b> 的自定义配置文件 <b>AutoCSer.CodeGenerator.CustomConfig.json</b> 用于屏蔽 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 默认的代码生成处理。
+            <br />因为这是示例 <b>bin\Release\</b> 目录会被过滤掉，所以直接放在了项目目录下面，正常情况下应该放在 <b>AutoCSer.CodeGenerator.Custom.dll</b> 一起。
+            <!--Include:Include\GetCode[Example,4,,CustomCodeGenerator\AutoCSer.CodeGenerator.CustomConfig.json]-->
+        </p>
+    </div>
+    <div>
+        <p><b>使用自定义模板</b></p>
+        <p>
+            1. 在目标项目中为需要生成代码的类型添加 Attribute 申明，这个示例中需要对目标类型使用 <b>partial</b> 修饰符，因为需要和生成的目标代码共用同一个类型。
+            <!--Include:Include\GetCode[Example,5,,CustomCodeGeneratorApply\Data.cs]-->
+        </p>
+        <p>
+            2. 给该工程项目配置静态代码生成并编译项目，然后将生成的代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
+            <!--Include:Include\GetCode[Example,6,,CustomCodeGeneratorApply\{AutoCSer.CodeGenerator.CustomApply}.AutoCSer.cs]-->
+        </p>
+    </div>
+</body>
+</html>
