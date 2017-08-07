@@ -48,10 +48,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packet\DotNet4.5\AutoCSer.Sort.dll</HintPath>
     </Reference>
-    <Reference Include="AutoCSer.Sql, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Packet\DotNet4.5\AutoCSer.Sql.dll</HintPath>
-    </Reference>
     <Reference Include="AutoCSer.WebView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packet\DotNet4.5\AutoCSer.WebView.dll</HintPath>
@@ -158,6 +154,12 @@
     <TypeScriptCompile Include="Js\timerShow.ts" />
     <TypeScriptCompile Include="Js\touchTop.ts" />
     <TypeScriptCompile Include="Js\verifyImage.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="AutoCSer.Sql.csproj">
+      <Project>{6d9b5bd4-a71b-4b21-8a33-761f948eed55}</Project>
+      <Name>AutoCSer.Sql</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

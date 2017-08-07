@@ -52,7 +52,7 @@
             3. 根据需求添加继承自 <b>AutoCSer.CodeGenerator.TemplateGenerator.Generator</b> 与 <b>AutoCSer.CodeGenerator.IGenerator</b> 的模板数据类型，并添加默认执行代码生成申明配置 <b>[AutoCSer.CodeGenerator.Generator(IsAuto = true)]</b> 。
             <!--Include:Include\GetCode[Example,1,,CustomCodeGenerator\ClearFields.cs]-->
             <br />一般可能需要配合 Attribute 用于申明需要代码生成处理的目标类型，正常情况下该 Attribute 应该定义在其它项目中使目标项目在运行时不依赖于代码生成项目，因为这里仅仅是示例所以就不另建项目了。
-            <!--Include:Include\GetCode[Example,2,辅助自定义配置,CustomCodeGenerator\ClearFieldsAttribute.cs]-->
+            <!--Include:Include\GetCode[Example,2,辅助自定义配置,CustomCodeGenerator\Attribute\ClearFieldsAttribute.cs]-->
         </p>
         <p>
             4. 给该工程项目配置静态代码生成并编译项目，然后将生成的模板代理层代码源文件 <b>{AutoCSer}.CSharper.cs</b> 添加到项目中，然后重新编译该项目。

@@ -36,7 +36,7 @@ namespace AutoCSer.TestCase.ChatServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.TestCase.ChatServer.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.ChatServer.Server", typeof(AutoCSer.TestCase.ChatServer.Server))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.ChatServer.Server", typeof(AutoCSer.TestCase.ChatServer.Server))), verify, onCustomData, log, false)
                 {
                     Value = value ?? new AutoCSer.TestCase.ChatServer.Server();
                     setCommandData(5);
@@ -125,12 +125,8 @@ namespace AutoCSer.TestCase.ChatServer
                             {
                                 {
                                     _p4 outputParameter = new _p4();
-                                    Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>, bool> callbackReturn = sender.GetCallback<_p4, AutoCSer.TestCase.ChatData.UserLogin>(_c3, ref outputParameter);
-                                    if (callbackReturn != null)
-                                    {
-                                        
-                                        Value.getUser(sender, callbackReturn);
-                                    }
+                                    
+                                    Value.getUser(sender,  sender.GetCallback<_p4, AutoCSer.TestCase.ChatData.UserLogin>(_c3, ref outputParameter));
                                     return;
                                 }
                             }
@@ -147,12 +143,8 @@ namespace AutoCSer.TestCase.ChatServer
                             {
                                 {
                                     _p5 outputParameter = new _p5();
-                                    Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>, bool> callbackReturn = sender.GetCallback<_p5, AutoCSer.TestCase.ChatData.Message>(_c4, ref outputParameter);
-                                    if (callbackReturn != null)
-                                    {
-                                        
-                                        Value.getMessage(sender, callbackReturn);
-                                    }
+                                    
+                                    Value.getMessage(sender,  sender.GetCallback<_p5, AutoCSer.TestCase.ChatData.Message>(_c4, ref outputParameter));
                                     return;
                                 }
                             }

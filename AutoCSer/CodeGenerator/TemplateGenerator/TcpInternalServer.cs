@@ -127,7 +127,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     MethodIndexs = TcpMethod.CheckIdentity(MethodIndexs, getRememberIdentityName(Attribute.GenericType ?? Type), method => method.Method.MethodKeyFullName);
                     if (MethodIndexs == null) return;
                     int methodIndex = 0;
-                    IsVerifyMethod = false;
+                    IsVerifyMethod = IsCallQueue = false;
                     ParameterBuilder parameterBuilder = new ParameterBuilder { IsSimpleSerialize  = Attribute.IsSimpleSerialize };
                     foreach (TcpMethod method in MethodIndexs)
                     {
@@ -141,6 +141,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 method.Attribute.ServerTask = Net.TcpServer.ServerTaskType.Synchronous;
                             }
                             parameterBuilder.Add(method);
+
+                            IsCallQueue |= method.Attribute.ServerTask == Net.TcpServer.ServerTaskType.Queue;
                         }
                     }
                     ParameterTypes = parameterBuilder.Get();

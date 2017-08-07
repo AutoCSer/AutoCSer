@@ -14907,7 +14907,7 @@
             TCP 服务注册信息
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.Server.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.Server.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,System.Boolean)">
             <summary>
             TCP 内部服务端
             </summary>
@@ -14915,6 +14915,7 @@
             <param name="verify">同步验证接口</param>
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
+            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.Server.StopListen">
             <summary>
@@ -15558,6 +15559,12 @@
             TCP 内部服务端套接字任务处理
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketTask.#ctor(System.Int64)">
+            <summary>
+            TCP 内部服务端套接字任务处理
+            </summary>
+            <param name="taskTicks">线程切换超时时钟周期</param>
+        </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketTask.Add(AutoCSer.Net.TcpInternalServer.ServerSocket)">
             <summary>
             添加任务
@@ -15579,11 +15586,10 @@
             TCP 内部服务端套接字任务处理集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketTask.check(System.Object)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketTask.check">
             <summary>
             线程切换检测
             </summary>
-            <param name="state"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig">
             <summary>
@@ -15598,6 +15604,16 @@
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig.NewThreadMilliseconds">
             <summary>
             线程切换检测毫秒数量，默认为 100 毫秒
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig.set">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig.Default">
+            <summary>
+            TCP 内部服务端套接字任务处理配置
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.StartState">
@@ -16188,7 +16204,7 @@
             套接字链表头部
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.Server.#ctor(AutoCSer.Net.TcpOpenServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.Server.#ctor(AutoCSer.Net.TcpOpenServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,System.Boolean)">
             <summary>
             TCP 服务端
             </summary>
@@ -16196,6 +16212,7 @@
             <param name="verify">同步验证接口</param>
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
+            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
         <member name="M:AutoCSer.Net.TcpOpenServer.Server.GetSocket">
             <summary>
@@ -16813,6 +16830,12 @@
             TCP 服务端套接字任务处理
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketTask.#ctor(System.Int64)">
+            <summary>
+            TCP 服务端套接字任务处理
+            </summary>
+            <param name="taskTicks">线程切换超时时钟周期</param>
+        </member>
         <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketTask.Add(AutoCSer.Net.TcpOpenServer.ServerSocket)">
             <summary>
             添加任务
@@ -16834,11 +16857,10 @@
             TCP 内部服务端套接字任务处理集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketTask.check(System.Object)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketTask.check">
             <summary>
             线程切换检测
             </summary>
-            <param name="state"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpOpenServer.TimeVerifyClient">
             <summary>
@@ -18272,7 +18294,7 @@
             </summary>
             <param name="outputParameter">是否调用成功</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.AutoWaitReturnValue.callback(AutoCSer.Net.TcpServer.ReturnValue)">
+        <member name="M:AutoCSer.Net.TcpServer.AutoWaitReturnValue.CallbackSet(AutoCSer.Net.TcpServer.ReturnValue)">
             <summary>
             回调处理
             </summary>
@@ -18421,29 +18443,6 @@
             </summary>
             <param name="count">保留缓存数据数量</param>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.CallbackReturnValue`1">
-            <summary>
-            异步回调
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.CallbackReturnValue`1.callback">
-            <summary>
-            回调委托
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.CallbackReturnValue`1.#ctor(System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
-            <summary>
-            异步回调
-            </summary>
-            <param name="callback"></param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.CallbackReturnValue`1.Call(AutoCSer.Net.TcpServer.ReturnValue{`0}@)">
-            <summary>
-            异步回调返回值
-            </summary>
-            <param name="outputParameter">输出参数</param>
-        </member>
         <member name="T:AutoCSer.Net.TcpServer.CallbackReturnValue`2">
             <summary>
             异步回调
@@ -18577,18 +18576,6 @@
             <param name="callback">回调委托</param>
             <returns>异步回调</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Client`1.GetAutoWait">
-            <summary>
-            获取同步等待调用
-            </summary>
-            <returns>同步等待调用</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Client`1.GetAutoWait``1">
-            <summary>
-            获取同步等待调用
-            </summary>
-            <returns>同步等待调用</returns>
-        </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientCallQueue">
             <summary>
             TCP 客户端回调队列处理
@@ -18615,6 +18602,12 @@
             TCP 客户端回调任务处理
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCallTask.#ctor(System.Int64)">
+            <summary>
+            TCP 客户端回调任务处理
+            </summary>
+            <param name="taskTicks">线程切换超时时钟周期</param>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCallTask.Add(AutoCSer.Net.TcpServer.ClientCommand.Command)">
             <summary>
             添加任务
@@ -18631,16 +18624,15 @@
             TCP 客户端回调任务处理
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCallTask.Tasks">
+        <member name="F:AutoCSer.Net.TcpServer.ClientCallTask.tasks">
             <summary>
             TCP 客户端回调任务处理集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCallTask.check(System.Object)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientCallTask.check">
             <summary>
             线程切换检测
             </summary>
-            <param name="state"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientCheckTimer">
             <summary>
@@ -19171,6 +19163,17 @@
             心跳检测
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender.nullCallback(AutoCSer.Net.TcpServer.ReturnValue)">
+            <summary>
+            默认空回调委托
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.NullCallback">
+            <summary>
+            默认空回调委托
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender`1">
             <summary>
             TCP 服务客户端套接字数据发送
@@ -19246,6 +19249,24 @@
             <returns>保持回调</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue,``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue)">
             <summary>
             TCP调用
             </summary>
@@ -19780,24 +19801,14 @@
             申明验证方法，客户端只有通过了验证才能调用其它函数。一个 TCP 服务只能指定一个验证方法（对于跨类型单例服务只能定义在 AutoCSer.code.cSharp.tcpCall.IsServer = true 的 class 中），且返回值类型必须为 bool。从安全的角度考虑，实际项目中的服务都应该定义验证方法，除非你能保证该服务绝对不会被其它人建立非法连接。比如参考 AutoCSer.net.tcp.timeVerifyServer。
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask">
-            <summary>
-            默认客户端异步任务类型
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.ServerTask">
             <summary>
-            服务端任务类型，默认为 ThreadPool
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask">
-            <summary>
-            默认客户端异步任务类型
+            服务端任务类型，默认为 Timeout
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.ClientTask">
             <summary>
-            客户端异步任务类型，默认为 ThreadPool
+            客户端异步任务类型，默认为 Timeout
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.IsServerSerialize">
@@ -20304,7 +20315,7 @@
             是否服务处于监听状态
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType)">
+        <member name="M:AutoCSer.Net.TcpServer.Server`1.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType,System.Boolean)">
             <summary>
             TCP 服务客户端
             </summary>
@@ -20313,6 +20324,7 @@
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
             <param name="getSocketThreadCallType">同步验证接口</param>
+            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.Server`1.Dispose">
             <summary>
@@ -20406,7 +20418,7 @@
             <typeparam name="attributeType"></typeparam>
             <typeparam name="serverSocketSenderType"></typeparam>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`2.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType)">
+        <member name="M:AutoCSer.Net.TcpServer.Server`2.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType,System.Boolean)">
             <summary>
             TCP 服务客户端
             </summary>
@@ -20415,6 +20427,7 @@
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
             <param name="getSocketThreadCallType">同步验证接口</param>
+            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.Server`2.DoCommand(System.Int32,`1,AutoCSer.SubArray{System.Byte}@)">
             <summary>
@@ -20588,11 +20601,6 @@
             默认为 false 表示传输原始数据，否则传输简单变换处理后的数据，作用于继承自 AutoCSer.Net.Tcp.TimeVerifyServer 的服务端。
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.IsCallQueue">
-            <summary>
-            是否提供独占的 TCP 服务器端同步调用队列
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.IsSimpleSerialize">
             <summary>
             默认为 true 表示支持简单序列化操作
@@ -20682,7 +20690,7 @@
             <param name="socket"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.set(`1)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.setKeep(`1)">
             <summary>
             异步回调
             </summary>
@@ -20741,7 +20749,7 @@
             <param name="outputParameter"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`4.set(`1,AutoCSer.Net.TcpServer.OutputInfo,`2@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`4.setKeep(`1,AutoCSer.Net.TcpServer.OutputInfo,`2@)">
             <summary>
             异步回调
             </summary>
@@ -20800,6 +20808,12 @@
             TCP 服务器端同步调用任务处理
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallTask.#ctor(System.Int64)">
+            <summary>
+            TCP 服务器端同步调用任务处理
+            </summary>
+            <param name="taskTicks">线程切换超时时钟周期</param>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerCallTask.Add(AutoCSer.Net.TcpServer.ServerCall)">
             <summary>
             添加任务
@@ -20821,11 +20835,10 @@
             TCP 服务器端同步调用任务处理集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerCallTask.check(System.Object)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallTask.check">
             <summary>
             线程切换检测
             </summary>
-            <param name="state"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ServerSocket">
             <summary>
@@ -21426,6 +21439,16 @@
         <member name="F:AutoCSer.Net.TcpServer.TaskConfig.NewThreadMilliseconds">
             <summary>
             线程切换检测毫秒数量，默认为 10 毫秒
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.TaskConfig.set">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.TaskConfig.Default">
+            <summary>
+            TCP 任务处理配置
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.TimeVerifyServer">
@@ -22552,6 +22575,16 @@
             TCP 服务客户端调用函数信息
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderCallWaitMethod">
+            <summary>
+            TCP 服务客户端调用函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderCallInputWaitMethod">
+            <summary>
+            TCP 服务客户端调用函数信息
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderGetAsynchronousMethod">
             <summary>
             TCP 服务客户端调用函数信息
@@ -22575,16 +22608,6 @@
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientGetCallbackMethod">
             <summary>
             TCP 服务客户端获取异步回调函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientGetAutoWaitMethod">
-            <summary>
-            TCP 服务客户端获取同步等待调用函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientGetAutoWaitOutputMethod">
-            <summary>
-            TCP 服务客户端获取同步等待调用函数信息
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.Identity">
@@ -22615,14 +22638,14 @@
             同步等待调用添加节点函数信息
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.AutoWaitReturnValuePopMethod">
+            <summary>
+            TCP 服务客户端获取同步等待调用函数信息
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ReturnValueTypeField">
             <summary>
             返回值类型字段信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.AutoWaitReturnValueCallbackHandleField">
-            <summary>
-            同步等待调用回调委托字段信息
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ReturnTypeStrings">
@@ -23554,6 +23577,28 @@
             获取 await
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1">
+            <summary>
+            异步空回调
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.#ctor">
+            <summary>
+            异步空回调
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.Call(AutoCSer.Net.TcpServer.ReturnValue{`0}@)">
+            <summary>
+            异步回调返回值
+            </summary>
+            <param name="outputParameter">输出参数</param>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.Default">
+            <summary>
+            异步空回调
+            </summary>
         </member>
         <member name="T:AutoCSer.Net.Callback`1">
             <summary>
@@ -26068,48 +26113,86 @@
             链表任务集合
             </summary>
         </member>
-        <member name="F:AutoCSer.Threading.LinkTask.timer">
-            <summary>
-            线程切换检测定时器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Threading.LinkTask.stopwatch">
-            <summary>
-            线程切换检测计时器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Threading.LinkTask.ThreadCount">
-            <summary>
-            线程数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Threading.LinkTask.taskTicks">
-            <summary>
-            线程切换超时时钟周期
-            </summary>
-        </member>
         <member name="F:AutoCSer.Threading.LinkTask.taskIndex">
             <summary>
             当前任务处理索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Threading.LinkTask.isCheck">
+        <member name="F:AutoCSer.Threading.LinkTask.isAllTask">
+            <summary>
+            是否已经创建所有任务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTask.check">
+            <summary>
+            线程切换检测
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Threading.LinkTaskConfigBase">
+            <summary>
+            链表任务配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.LinkTaskConfigBase.timer">
+            <summary>
+            线程切换检测定时器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.LinkTaskConfigBase.Stopwatch">
+            <summary>
+            线程切换检测计时器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.LinkTaskConfigBase.TaskTicks">
+            <summary>
+            线程切换超时时钟周期
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.LinkTaskConfigBase.taskIndex">
+            <summary>
+            当前任务处理索引
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.LinkTaskConfigBase.isCheck">
             <summary>
             是否正在检测线程切换
             </summary>
         </member>
-        <member name="M:AutoCSer.Threading.LinkTask.check(System.Object)">
+        <member name="E:AutoCSer.Threading.LinkTaskConfigBase.onCheck">
+            <summary>
+            检测线程切换事件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTaskConfigBase.set(System.Int32,System.Int32)">
+            <summary>
+            初始化
+            </summary>
+            <param name="threadCount"></param>
+            <param name="newThreadMilliseconds"></param>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTaskConfigBase.check(System.Object)">
             <summary>
             线程切换检测
             </summary>
             <param name="state"></param>
         </member>
-        <member name="M:AutoCSer.Threading.LinkTask.Add(AutoCSer.Threading.ILinkTask,System.Int32@)">
+        <member name="M:AutoCSer.Threading.LinkTaskConfigBase.OnCheck(System.Action)">
             <summary>
-            添加任务
+            检测线程切换事件
             </summary>
-            <param name="value"></param>
-            <param name="taskIndex"></param>
+            <param name="onCheck"></param>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTaskConfigBase.IsCheck(System.Int64)">
+            <summary>
+            判断是否切换线程
+            </summary>
+            <param name="currentTaskTicks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTaskConfigBase.nullCheck">
+            <summary>
+            线程切换检测
+            </summary>
         </member>
         <member name="T:AutoCSer.Threading.LinkTaskConfig">
             <summary>
@@ -26124,6 +26207,16 @@
         <member name="F:AutoCSer.Threading.LinkTaskConfig.NewThreadMilliseconds">
             <summary>
             线程切换检测毫秒数量，默认为 100 毫秒
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTaskConfig.set">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.LinkTaskConfig.Default">
+            <summary>
+            链表任务配置
             </summary>
         </member>
         <member name="T:AutoCSer.Threading.LinkTaskThread`1">
@@ -26152,29 +26245,20 @@
             当前处理任务时钟周期
             </summary>
         </member>
-        <member name="M:AutoCSer.Threading.LinkTaskThread`1.#ctor">
+        <member name="F:AutoCSer.Threading.LinkTaskThread`1.taskTicks">
+            <summary>
+            线程切换超时时钟周期
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Threading.LinkTaskThread`1.#ctor(System.Int64)">
             <summary>
             TCP 服务器端同步调用任务处理
             </summary>
+            <param name="taskTicks">线程切换超时时钟周期</param>
         </member>
         <member name="M:AutoCSer.Threading.LinkTaskThread`1.run">
             <summary>
             任务线程处理
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Threading.LinkTaskThread`1.timer">
-            <summary>
-            线程切换检测定时器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Threading.LinkTaskThread`1.stopwatch">
-            <summary>
-            线程切换检测计时器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Threading.LinkTaskThread`1.taskTicks">
-            <summary>
-            线程切换超时时钟周期
             </summary>
         </member>
         <member name="F:AutoCSer.Threading.LinkTaskThread`1.taskIndex">
@@ -26182,9 +26266,9 @@
             当前任务处理索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Threading.LinkTaskThread`1.isCheck">
+        <member name="F:AutoCSer.Threading.LinkTaskThread`1.isAllTask">
             <summary>
-            是否正在检测线程切换
+            是否已经创建所有任务
             </summary>
         </member>
         <member name="T:AutoCSer.Threading.LockDictionary`2">

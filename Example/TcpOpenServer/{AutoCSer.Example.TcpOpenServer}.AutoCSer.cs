@@ -31,7 +31,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Asynchronous", typeof(AutoCSer.Example.TcpOpenServer.Asynchronous))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Asynchronous", typeof(AutoCSer.Example.TcpOpenServer.Asynchronous))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.Asynchronous();
                     setCommandData(1);
@@ -57,12 +57,8 @@ namespace AutoCSer.Example.TcpOpenServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p2 outputParameter = new _p2();
-                                    Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> callbackReturn = sender.GetCallback<_p2, int>(_c0, ref outputParameter);
-                                    if (callbackReturn != null)
-                                    {
-                                        
-                                        Value.Add(inputParameter.left, inputParameter.right, callbackReturn);
-                                    }
+                                    
+                                    Value.Add(inputParameter.left, inputParameter.right,  sender.GetCallback<_p2, int>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -141,7 +137,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpOpenServer.ClientAsynchronous))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpOpenServer.ClientAsynchronous))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.ClientAsynchronous();
                     setCommandData(1);
@@ -166,7 +162,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -277,7 +273,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpOpenServer.ClientTaskAsync))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpOpenServer.ClientTaskAsync))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.ClientTaskAsync();
                     setCommandData(1);
@@ -302,7 +298,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -415,7 +411,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Field", typeof(AutoCSer.Example.TcpOpenServer.Field))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Field", typeof(AutoCSer.Example.TcpOpenServer.Field))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.Field();
                     setCommandData(3);
@@ -440,7 +436,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             try
                             {
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -456,7 +452,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             try
                             {
                                 {
-                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -474,7 +470,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -645,7 +641,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.KeepCallback", typeof(AutoCSer.Example.TcpOpenServer.KeepCallback))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.KeepCallback", typeof(AutoCSer.Example.TcpOpenServer.KeepCallback))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.KeepCallback();
                     setCommandData(1);
@@ -671,12 +667,8 @@ namespace AutoCSer.Example.TcpOpenServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p2 outputParameter = new _p2();
-                                    Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> callbackReturn = sender.GetCallback<_p2, int>(_c0, ref outputParameter);
-                                    if (callbackReturn != null)
-                                    {
-                                        
-                                        Value.Add(inputParameter.left, inputParameter.right, inputParameter.count, callbackReturn);
-                                    }
+                                    
+                                    Value.Add(inputParameter.left, inputParameter.right, inputParameter.count,  sender.GetCallback<_p2, int>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -756,7 +748,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.NoAttribute", typeof(AutoCSer.Example.TcpOpenServer.NoAttribute))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.NoAttribute", typeof(AutoCSer.Example.TcpOpenServer.NoAttribute))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.NoAttribute();
                     setCommandData(1);
@@ -781,7 +773,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -896,7 +888,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Property", typeof(AutoCSer.Example.TcpOpenServer.Property))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Property", typeof(AutoCSer.Example.TcpOpenServer.Property))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.Property();
                     setCommandData(5);
@@ -923,7 +915,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             try
                             {
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -941,7 +933,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -960,7 +952,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -977,7 +969,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             try
                             {
                                 {
-                                    _s3/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s3/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -995,7 +987,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p4 inputParameter = new _p4();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s4/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s4/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1241,7 +1233,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.RefOut", typeof(AutoCSer.Example.TcpOpenServer.RefOut))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.RefOut", typeof(AutoCSer.Example.TcpOpenServer.RefOut))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.RefOut();
                     setCommandData(1);
@@ -1266,7 +1258,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1382,7 +1374,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.SendOnly", typeof(AutoCSer.Example.TcpOpenServer.SendOnly))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.SendOnly", typeof(AutoCSer.Example.TcpOpenServer.SendOnly))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.SendOnly();
                     setCommandData(1);
@@ -1406,7 +1398,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                             }
@@ -1480,7 +1472,7 @@ namespace AutoCSer.Example.TcpOpenServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Static", typeof(AutoCSer.Example.TcpOpenServer.Static))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.Static", typeof(AutoCSer.Example.TcpOpenServer.Static))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpOpenServer.Static();
                     setCommandData(1);
@@ -1505,7 +1497,7 @@ namespace AutoCSer.Example.TcpOpenServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;

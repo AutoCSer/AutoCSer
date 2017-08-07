@@ -80,7 +80,7 @@ namespace AutoCSer.Web.DeployClient
                             Type = AutoCSer.Deploy.TaskType.File,
                             ClientPath = new DirectoryInfo(@"..\..\..\..\Example\").FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"Example\",
-                            FileSearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js", "*.css" },
+                            FileSearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js", "*.css", "*.json" },
                         },
                         new AutoCSer.Deploy.ClientTask
                         {

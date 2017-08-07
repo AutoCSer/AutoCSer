@@ -64,7 +64,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>("AutoCSer.Example.TcpOpenServer.Field") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@"{""CheckSeconds"":59,""ClientOutputSleep"":1,""ClientSegmentationCopyPath"":null,""ClientSendBufferMaxSize"":0x100000,""ClientTryCreateSleep"":1000,""CommandPoolBitSize"":0x03,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":false,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsCallQueue"":false,""IsJsonSerialize"":true,""IsMarkData"":false,""IsSegmentation"":true,""IsServerBuildOutputThread"":false,""IsSimpleSerialize"":true,""MaxCustomDataSize"":0x3FF4,""MaxInputSize"":0x3FF4,""MaxVerifyDataSize"":1024,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":0x32CA,""ReceiveBufferSize"":""Kilobyte8"",""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte8"",""ServerOutputSleep"":1,""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}");
+                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>("AutoCSer.Example.TcpOpenServer.Field") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@"{""CheckSeconds"":59,""ClientOutputSleep"":1,""ClientSegmentationCopyPath"":null,""ClientSendBufferMaxSize"":0x100000,""ClientTryCreateSleep"":1000,""CommandPoolBitSize"":0x03,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":false,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsJsonSerialize"":true,""IsMarkData"":false,""IsSegmentation"":true,""IsServerBuildOutputThread"":false,""IsSimpleSerialize"":true,""MaxCustomDataSize"":0x3FF4,""MaxInputSize"":0x3FF4,""MaxVerifyDataSize"":1024,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":0x32CA,""ReceiveBufferSize"":""Kilobyte8"",""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte8"",""ServerOutputSleep"":1,""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}");
                         if (attribute.Name == null) attribute.Name = "AutoCSer.Example.TcpOpenServer.Field";
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log);
@@ -78,26 +78,23 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpOpenServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
-                                {
-                                    _socket_.Get<TcpOpenServer._p1>(_c0, _wait_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                _socket_.Get<TcpOpenServer._p1>(_c0, _wait_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
@@ -109,56 +106,50 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpOpenServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
-                                {
-                                    _socket_.Get<TcpOpenServer._p1>(_c1, _wait_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                _socket_.Get<TcpOpenServer._p1>(_c1, _wait_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                     set
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = _TcpClient_.GetAutoWait();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
+                                TcpOpenServer._p2 _inputParameter_ = new TcpOpenServer._p2
                                 {
-                                    TcpOpenServer._p2 _inputParameter_ = new TcpOpenServer._p2
-                                    {
-                                        
-                                        value = value,
-                                    };
-                                    _socket_.Call(_c2, _wait_, ref _inputParameter_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
-                                    if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
-                                    throw new Exception(_returnType_.ToString());
-                                }
+                                    
+                                    value = value,
+                                };
+                                _socket_.Call(_c2, _wait_, ref _inputParameter_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
+                                if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                                throw new Exception(_returnType_.ToString());
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                         }
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }

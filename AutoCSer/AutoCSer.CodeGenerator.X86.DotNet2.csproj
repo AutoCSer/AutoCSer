@@ -47,17 +47,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packet\DotNet2\AutoCSer.dll</HintPath>
     </Reference>
-    <Reference Include="AutoCSer.CodeGenerator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\Packet\DotNet2\AutoCSer.CodeGenerator.exe</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGenerator\Config.cs" />
     <Compile Include="Program.X86.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="AutoCSer.CodeGenerator.DotNet2.csproj">
+      <Project>{9C257405-20F3-41DF-80D4-74976AAA6C6B}</Project>
+      <Name>AutoCSer.CodeGenerator.DotNet2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

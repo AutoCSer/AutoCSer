@@ -168,8 +168,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get
                     {
                         AutoCSer.Net.TcpServer.ServerTaskType taskType = Attribute.ServerTask;
-                        if (taskType == AutoCSer.Net.TcpServer.ServerTaskType.Queue && !ServiceAttribute.IsCallQueue) taskType = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue;
-                        if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask";
+                        //if (taskType == AutoCSer.Net.TcpServer.ServerTaskType.Queue && !ServiceAttribute.IsCallQueue) taskType = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue;
+                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask";
                         return serverTaskTypeName + "." + taskType.ToString();
                     }
                 }
@@ -186,7 +186,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         //IsClientAsynchronous
                         AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTask : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
-                        if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
+                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
                         return clientTaskTypeName + "." + taskType.ToString();
                     }
                 }
@@ -708,6 +708,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 是否存在验证函数
             /// </summary>
             public bool IsVerifyMethod;
+            /// <summary>
+            /// 是否提供独占的 TCP 服务器端同步调用队列
+            /// </summary>
+            public bool IsCallQueue;
             /// <summary>
             /// 命令序号记忆字段名称
             /// </summary>

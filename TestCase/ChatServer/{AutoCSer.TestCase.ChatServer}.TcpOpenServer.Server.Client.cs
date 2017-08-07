@@ -125,7 +125,7 @@ namespace AutoCSer.TestCase.ChatServer.TcpClient
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>("AutoCSer.TestCase.ChatServer.Server") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@"{""CheckSeconds"":59,""ClientOutputSleep"":0,""ClientSegmentationCopyPath"":""..\\..\\..\\ChatClient\\"",""ClientSendBufferMaxSize"":0x100000,""ClientTryCreateSleep"":1000,""CommandPoolBitSize"":0x03,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":true,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsCallQueue"":false,""IsJsonSerialize"":true,""IsMarkData"":false,""IsSegmentation"":true,""IsServerBuildOutputThread"":false,""IsSimpleSerialize"":true,""MaxCustomDataSize"":0x3FF4,""MaxInputSize"":0x3FF4,""MaxVerifyDataSize"":1024,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":0x3070,""ReceiveBufferSize"":""Kilobyte"",""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte"",""ServerOutputSleep"":1,""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}");
+                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>("AutoCSer.TestCase.ChatServer.Server") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@"{""CheckSeconds"":59,""ClientOutputSleep"":0,""ClientSegmentationCopyPath"":""..\\..\\..\\ChatClient\\"",""ClientSendBufferMaxSize"":0x100000,""ClientTryCreateSleep"":1000,""CommandPoolBitSize"":0x03,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":true,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsJsonSerialize"":true,""IsMarkData"":false,""IsSegmentation"":true,""IsServerBuildOutputThread"":false,""IsSimpleSerialize"":true,""MaxCustomDataSize"":0x3FF4,""MaxInputSize"":0x3FF4,""MaxVerifyDataSize"":1024,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":0x3070,""ReceiveBufferSize"":""Kilobyte"",""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte"",""ServerOutputSleep"":1,""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}");
                         if (attribute.Name == null) attribute.Name = "AutoCSer.TestCase.ChatServer.Server";
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, verifyMethod);
@@ -141,34 +141,31 @@ namespace AutoCSer.TestCase.ChatServer.TcpClient
                 /// <returns>是否成功</returns>
                 public AutoCSer.Net.TcpServer.ReturnValue<bool> login(AutoCSer.Net.TcpOpenServer.ClientSocketSender _sender_, string userName)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpOpenServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _sender_;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _sender_;
-                            if (_socket_ != null)
+                            TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
                             {
-                                TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
-                                {
-                                    
-                                    userName = userName,
-                                };
-                                TcpOpenServer._p2 _outputParameter_ = new TcpOpenServer._p2
-                                {
-                                };
-                                _socket_.Get<TcpOpenServer._p1, TcpOpenServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
-                                return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                
+                                userName = userName,
+                            };
+                            TcpOpenServer._p2 _outputParameter_ = new TcpOpenServer._p2
+                            {
+                            };
+                            _socket_.Get<TcpOpenServer._p1, TcpOpenServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -180,24 +177,21 @@ namespace AutoCSer.TestCase.ChatServer.TcpClient
                 /// </summary>
                 public AutoCSer.Net.TcpServer.ReturnValue logout()
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = _TcpClient_.GetAutoWait();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
-                            {
-                                _socket_.Call(_c1, _wait_);
-                                _isWait_ = 1;
-                                return new AutoCSer.Net.TcpServer.ReturnValue { Type = _wait_.Wait() };
-                            }
+                            _socket_.Call(_c1, _wait_);
+                            _isWait_ = 1;
+                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _wait_.Wait() };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -210,35 +204,32 @@ namespace AutoCSer.TestCase.ChatServer.TcpClient
                 /// <param name="content">消息内容</param>
                 public AutoCSer.Net.TcpServer.ReturnValue send(string content)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = _TcpClient_.GetAutoWait();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpOpenServer._p3 _inputParameter_ = new TcpOpenServer._p3
                             {
-                                TcpOpenServer._p3 _inputParameter_ = new TcpOpenServer._p3
-                                {
-                                    
-                                    content = content,
-                                };
-                                _socket_.Call(_c2, _wait_, ref _inputParameter_);
-                                _isWait_ = 1;
-                                return new AutoCSer.Net.TcpServer.ReturnValue { Type = _wait_.Wait() };
-                            }
+                                
+                                content = content,
+                            };
+                            _socket_.Call(_c2, _wait_, ref _inputParameter_);
+                            _isWait_ = 1;
+                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _wait_.Wait() };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsKeepCallback = 1 };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsKeepCallback = 1 };
                 /// <summary>
                 /// 获取用户信息
                 /// </summary>
@@ -246,33 +237,30 @@ namespace AutoCSer.TestCase.ChatServer.TcpClient
                 public AutoCSer.Net.TcpServer.KeepCallback getUser(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.ChatData.UserLogin, TcpOpenServer._p4>(_onReturn_);
-                    if (_onReturn_ == null || _onOutput_ != null)
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
-                            {
-                                AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpOpenServer._p4>(_ac3, _onOutput_);
-                                _isWait_ = 1;
-                                return _keepCallback_;
-                            }
+                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpOpenServer._p4>(_ac3, _onOutput_);
+                            _isWait_ = 1;
+                            return _keepCallback_;
                         }
-                        finally
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0)
                         {
-                            if (_isWait_ == 0)
-                            {
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                                if (_onOutput_ != null) _onOutput_.Call(ref _outputParameter_);
-                            }
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                     return null;
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsKeepCallback = 1 };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsKeepCallback = 1 };
                 /// <summary>
                 /// 获取消息
                 /// </summary>
@@ -280,26 +268,23 @@ namespace AutoCSer.TestCase.ChatServer.TcpClient
                 public AutoCSer.Net.TcpServer.KeepCallback getMessage(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p5>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.ChatData.Message, TcpOpenServer._p5>(_onReturn_);
-                    if (_onReturn_ == null || _onOutput_ != null)
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
-                            {
-                                AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpOpenServer._p5>(_ac4, _onOutput_);
-                                _isWait_ = 1;
-                                return _keepCallback_;
-                            }
+                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpOpenServer._p5>(_ac4, _onOutput_);
+                            _isWait_ = 1;
+                            return _keepCallback_;
                         }
-                        finally
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0)
                         {
-                            if (_isWait_ == 0)
-                            {
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p5> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p5> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                                if (_onOutput_ != null) _onOutput_.Call(ref _outputParameter_);
-                            }
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p5> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p5> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                     return null;

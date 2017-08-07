@@ -32,7 +32,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Asynchronous", typeof(AutoCSer.Example.TcpInternalServer.Asynchronous))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Asynchronous", typeof(AutoCSer.Example.TcpInternalServer.Asynchronous))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Asynchronous();
                     setCommandData(1);
@@ -58,12 +58,8 @@ namespace AutoCSer.Example.TcpInternalServer
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
                                     _p2 outputParameter = new _p2();
-                                    Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> callbackReturn = sender.GetCallback<_p2, int>(_c0, ref outputParameter);
-                                    if (callbackReturn != null)
-                                    {
-                                        
-                                        Value.Add(inputParameter.p0, inputParameter.p1, callbackReturn);
-                                    }
+                                    
+                                    Value.Add(inputParameter.p0, inputParameter.p1, sender.GetCallback<_p2, int>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -140,69 +136,63 @@ namespace AutoCSer.Example.TcpInternalServer
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                                {
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
-                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                            {
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 public void Add(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<int>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2>> _onOutput_ = _TcpClient_.GetCallback<int, TcpInternalServer._p2>(_onReturn_);
-                    if (_onReturn_ == null || _onOutput_ != null)
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
-                                _isWait_ = 1;
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
+                            _isWait_ = 1;
                         }
-                        finally
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0)
                         {
-                            if (_isWait_ == 0 && _onOutput_ != null)
-                            {
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                                _onOutput_.Call(ref _outputParameter_);
-                            }
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                 }
@@ -236,7 +226,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalServer.ClientAsynchronous))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalServer.ClientAsynchronous))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.ClientAsynchronous();
                     setCommandData(1);
@@ -261,7 +251,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -370,69 +360,63 @@ namespace AutoCSer.Example.TcpInternalServer
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                                {
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
-                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                            {
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 public void Add(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<int>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2>> _onOutput_ = _TcpClient_.GetCallback<int, TcpInternalServer._p2>(_onReturn_);
-                    if (_onReturn_ == null || _onOutput_ != null)
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
-                                _isWait_ = 1;
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
+                            _isWait_ = 1;
                         }
-                        finally
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0)
                         {
-                            if (_isWait_ == 0 && _onOutput_ != null)
-                            {
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                                _onOutput_.Call(ref _outputParameter_);
-                            }
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                 }
@@ -466,7 +450,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalServer.ClientTaskAsync))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalServer.ClientTaskAsync))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.ClientTaskAsync();
                     setCommandData(1);
@@ -491,7 +475,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -600,36 +584,33 @@ namespace AutoCSer.Example.TcpInternalServer
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                                {
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
-                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                            {
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -643,22 +624,19 @@ namespace AutoCSer.Example.TcpInternalServer
                     if (_socket_ != null)
                     {
                         AutoCSer.Net.TcpServer.TaskAsyncReturnValue<TcpInternalServer._p2> _wait_ = new AutoCSer.Net.TcpServer.TaskAsyncReturnValue<TcpInternalServer._p2>();
-                        if (_wait_ != null)
+                        TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                         {
-                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                            {
-                                
-                                p0 = left,
-                                
-                                p1 = right,
-                            };
-                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                            {
-                            };
-                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_ = await _wait_;
-                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                        }
+                            
+                            p0 = left,
+                            
+                            p1 = right,
+                        };
+                        TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                        {
+                        };
+                        _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                        AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_ = await _wait_;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -696,7 +674,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Field", typeof(AutoCSer.Example.TcpInternalServer.Field))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Field", typeof(AutoCSer.Example.TcpInternalServer.Field))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Field();
                     setCommandData(3);
@@ -721,7 +699,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             try
                             {
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -737,7 +715,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             try
                             {
                                 {
-                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -755,7 +733,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -927,26 +905,23 @@ namespace AutoCSer.Example.TcpInternalServer
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
-                                {
-                                    _socket_.Get<TcpInternalServer._p1>(_c0, _wait_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                _socket_.Get<TcpInternalServer._p1>(_c0, _wait_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
@@ -958,56 +933,50 @@ namespace AutoCSer.Example.TcpInternalServer
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
-                                {
-                                    _socket_.Get<TcpInternalServer._p1>(_c1, _wait_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                _socket_.Get<TcpInternalServer._p1>(_c1, _wait_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                     set
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = _TcpClient_.GetAutoWait();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
+                                TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
                                 {
-                                    TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
-                                    {
-                                        
-                                        p0 = value,
-                                    };
-                                    _socket_.Call(_c2, _wait_, ref _inputParameter_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
-                                    if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
-                                    throw new Exception(_returnType_.ToString());
-                                }
+                                    
+                                    p0 = value,
+                                };
+                                _socket_.Call(_c2, _wait_, ref _inputParameter_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
+                                if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                                throw new Exception(_returnType_.ToString());
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                         }
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
@@ -1044,7 +1013,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.KeepCallback", typeof(AutoCSer.Example.TcpInternalServer.KeepCallback))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.KeepCallback", typeof(AutoCSer.Example.TcpInternalServer.KeepCallback))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.KeepCallback();
                     setCommandData(1);
@@ -1070,12 +1039,8 @@ namespace AutoCSer.Example.TcpInternalServer
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
                                     _p2 outputParameter = new _p2();
-                                    Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> callbackReturn = sender.GetCallback<_p2, int>(_c0, ref outputParameter);
-                                    if (callbackReturn != null)
-                                    {
-                                        
-                                        Value.Add(inputParameter.p0, inputParameter.p1, inputParameter.p2, callbackReturn);
-                                    }
+                                    
+                                    Value.Add(inputParameter.p0, inputParameter.p1, inputParameter.p2, sender.GetCallback<_p2, int>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1150,40 +1115,37 @@ namespace AutoCSer.Example.TcpInternalServer
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask, IsKeepCallback = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 /// <returns>保持异步回调</returns>
                 public AutoCSer.Net.TcpServer.KeepCallback Add(int left, int right, int count, Action<AutoCSer.Net.TcpServer.ReturnValue<int>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2>> _onOutput_ = _TcpClient_.GetCallback<int, TcpInternalServer._p2>(_onReturn_);
-                    if (_onReturn_ == null || _onOutput_ != null)
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                    
-                                    p2 = count,
-                                };
-                                AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
-                                _isWait_ = 1;
-                                return _keepCallback_;
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                                
+                                p2 = count,
+                            };
+                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
+                            _isWait_ = 1;
+                            return _keepCallback_;
                         }
-                        finally
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0)
                         {
-                            if (_isWait_ == 0 && _onOutput_ != null)
-                            {
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                                _onOutput_.Call(ref _outputParameter_);
-                            }
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                     return null;
@@ -1218,7 +1180,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalServer.NoAttribute))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalServer.NoAttribute))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.NoAttribute();
                     setCommandData(1);
@@ -1243,7 +1205,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1352,36 +1314,33 @@ namespace AutoCSer.Example.TcpInternalServer
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                                {
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
-                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                            {
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -1419,7 +1378,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Property", typeof(AutoCSer.Example.TcpInternalServer.Property))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Property", typeof(AutoCSer.Example.TcpInternalServer.Property))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Property();
                     setCommandData(5);
@@ -1446,7 +1405,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             try
                             {
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -1464,7 +1423,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s1/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1483,7 +1442,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s2/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1500,7 +1459,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             try
                             {
                                 {
-                                    _s3/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask);
+                                    _s3/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -1518,7 +1477,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s4/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s4/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1759,26 +1718,23 @@ namespace AutoCSer.Example.TcpInternalServer
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
-                                {
-                                    _socket_.Get<TcpInternalServer._p1>(_c0, _wait_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                _socket_.Get<TcpInternalServer._p1>(_c0, _wait_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
@@ -1790,63 +1746,57 @@ namespace AutoCSer.Example.TcpInternalServer
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
+                                TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
                                 {
-                                    TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
-                                    {
-                                        
-                                        p0 = index,
-                                    };
-                                    _socket_.Get<TcpInternalServer._p2, TcpInternalServer._p1>(_c1, _wait_, ref _inputParameter_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                    
+                                    p0 = index,
+                                };
+                                _socket_.Get<TcpInternalServer._p2, TcpInternalServer._p1>(_c1, _wait_, ref _inputParameter_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                     set
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = _TcpClient_.GetAutoWait();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
+                                TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                                 {
-                                    TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
-                                    {
-                                        
-                                        p0 = index,
-                                        
-                                        p1 = value,
-                                    };
-                                    _socket_.Call(_c2, _wait_, ref _inputParameter_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
-                                    if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
-                                    throw new Exception(_returnType_.ToString());
-                                }
+                                    
+                                    p0 = index,
+                                    
+                                    p1 = value,
+                                };
+                                _socket_.Call(_c2, _wait_, ref _inputParameter_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
+                                if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                                throw new Exception(_returnType_.ToString());
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                         }
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
@@ -1861,56 +1811,50 @@ namespace AutoCSer.Example.TcpInternalServer
                 {
                     get
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p1>();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
-                                {
-                                    _socket_.Get<TcpInternalServer._p1>(_c3, _wait_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
-                                    _wait_.Get(out _outputParameter_);
-                                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
-                                }
+                                _socket_.Get<TcpInternalServer._p1>(_c3, _wait_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p1>();
+                                _wait_.Get(out _outputParameter_);
+                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p1>.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                     set
                     {
-                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = _TcpClient_.GetAutoWait();
-                        if (_wait_ != null)
+                        AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                        int _isWait_ = 0;
+                        try
                         {
-                            int _isWait_ = 0;
-                            try
+                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                            if (_socket_ != null)
                             {
-                                AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                if (_socket_ != null)
+                                TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
                                 {
-                                    TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
-                                    {
-                                        
-                                        p0 = value,
-                                    };
-                                    _socket_.Call(_c4, _wait_, ref _inputParameter_);
-                                    _isWait_ = 1;
-                                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
-                                    if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
-                                    throw new Exception(_returnType_.ToString());
-                                }
+                                    
+                                    p0 = value,
+                                };
+                                _socket_.Call(_c4, _wait_, ref _inputParameter_);
+                                _isWait_ = 1;
+                                AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
+                                if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                                throw new Exception(_returnType_.ToString());
                             }
-                            finally
-                            {
-                                if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
-                            }
+                        }
+                        finally
+                        {
+                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                         }
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
@@ -1947,7 +1891,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.RefOut", typeof(AutoCSer.Example.TcpInternalServer.RefOut))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.RefOut", typeof(AutoCSer.Example.TcpInternalServer.RefOut))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.RefOut();
                     setCommandData(1);
@@ -1972,7 +1916,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2086,42 +2030,39 @@ namespace AutoCSer.Example.TcpInternalServer
 
                 public AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add(int left, ref int right, out int product)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                                {
-                                    
-                                    p0 = right,
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
                                 
-                                right = _returnOutputParameter_.Value.p0;
+                                p0 = left,
                                 
-                                product = _returnOutputParameter_.Value.p1;
-                                return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                p1 = right,
+                            };
+                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                            {
+                                
+                                p0 = right,
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            
+                            right = _returnOutputParameter_.Value.p0;
+                            
+                            product = _returnOutputParameter_.Value.p1;
+                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     product = default(int);
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
@@ -2156,7 +2097,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.SendOnly", typeof(AutoCSer.Example.TcpInternalServer.SendOnly))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.SendOnly", typeof(AutoCSer.Example.TcpInternalServer.SendOnly))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.SendOnly();
                     setCommandData(1);
@@ -2180,7 +2121,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                             }
@@ -2292,7 +2233,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Static", typeof(AutoCSer.Example.TcpInternalServer.Static))), verify, onCustomData, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Static", typeof(AutoCSer.Example.TcpInternalServer.Static))), verify, onCustomData, log, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Static();
                     setCommandData(1);
@@ -2317,7 +2258,7 @@ namespace AutoCSer.Example.TcpInternalServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask, ref inputParameter);
+                                    _s0/**/.Call(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2426,36 +2367,33 @@ namespace AutoCSer.Example.TcpInternalServer
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer._p2>();
-                    if (_wait_ != null)
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
+                    int _isWait_ = 0;
+                    try
                     {
-                        int _isWait_ = 0;
-                        try
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
                         {
-                            AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                            if (_socket_ != null)
+                            TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                             {
-                                TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
-                                {
-                                    
-                                    p0 = left,
-                                    
-                                    p1 = right,
-                                };
-                                TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
-                                {
-                                };
-                                _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
-                                _wait_.Get(out _returnOutputParameter_);
-                                return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
-                            }
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
+                            {
+                            };
+                            _socket_.Get<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_);
+                            _isWait_ = 1;
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_;
+                            _wait_.Get(out _returnOutputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };
                         }
-                        finally
-                        {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
-                        }
+                    }
+                    finally
+                    {
+                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
