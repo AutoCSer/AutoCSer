@@ -4203,6 +4203,21 @@
             客户端命令
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.outputParameters">
+            <summary>
+            输出参数集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.OutputLock">
+            <summary>
+            输出参数访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.isOutput">
+            <summary>
+            是否正在输出
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.Callback">
             <summary>
             回调委托
@@ -4214,24 +4229,9 @@
             </summary>
             <param name="commandIndex">命令会话标识</param>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.outputParameters">
-            <summary>
-            输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.OutputLock">
-            <summary>
-            输出参数访问锁
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.currentOutputParameters">
             <summary>
             当前输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.CurrentOutputLock">
-            <summary>
-            当前输出参数访问锁
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.OnReceive(AutoCSer.SubArray{System.Byte}@)">
@@ -14700,6 +14700,11 @@
             服务名称
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpRegister.ReaderServer._identityCommandNames_">
+            <summary>
+            命令序号记忆数据
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpRegister.ReaderServer.register">
             <summary>
             TCP 服务端注册
@@ -14718,11 +14723,6 @@
             创建 TCP 注册服务目标对象
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpRegister.ReaderServer._identityCommandNames_">
-            <summary>
-            命令序号记忆数据
-            </summary>
         </member>
         <member name="P:AutoCSer.Net.TcpRegister.ReaderServer.Server">
             <summary>
@@ -23729,9 +23729,34 @@
             </summary>
             <typeparam name="outputParameterType">输出参数类型</typeparam>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.outputParameters">
+            <summary>
+            输出参数集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputLock">
+            <summary>
+            输出参数访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputParameter">
+            <summary>
+            输出参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.isOutput">
+            <summary>
+            是否正在输出
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.Callback">
             <summary>
             异步回调
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.currentOutputParameters">
+            <summary>
+            当前输出参数集合
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.CancelKeep(System.Int32)">
@@ -23746,31 +23771,6 @@
             </summary>
             <param name="data"></param>
             <param name="outputParameter"></param>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputParameter">
-            <summary>
-            输出参数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.outputParameters">
-            <summary>
-            输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputLock">
-            <summary>
-            输出参数访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.currentOutputParameters">
-            <summary>
-            当前输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.CurrentOutputLock">
-            <summary>
-            当前输出参数访问锁
-            </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OnReceive(AutoCSer.SubArray{System.Byte}@)">
             <summary>
@@ -34144,6 +34144,28 @@
             套接字处理
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1">
+            <summary>
+            异步空回调
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.#ctor">
+            <summary>
+            异步空回调
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.Call(AutoCSer.Net.TcpServer.ReturnValue{`0}@)">
+            <summary>
+            异步回调返回值
+            </summary>
+            <param name="outputParameter">输出参数</param>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.Default">
+            <summary>
+            异步空回调
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommand`1">
             <summary>
             客户端命令
@@ -34859,28 +34881,6 @@
         <member name="P:AutoCSer.ArrayHeap`2.Count">
             <summary>
             数据数量
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1">
-            <summary>
-            异步空回调
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.#ctor">
-            <summary>
-            异步空回调
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.Call(AutoCSer.Net.TcpServer.ReturnValue{`0}@)">
-            <summary>
-            异步回调返回值
-            </summary>
-            <param name="outputParameter">输出参数</param>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1.Default">
-            <summary>
-            异步空回调
             </summary>
         </member>
     </members>

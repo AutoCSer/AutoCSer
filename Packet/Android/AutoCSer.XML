@@ -21935,6 +21935,21 @@
             客户端命令
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.outputParameters">
+            <summary>
+            输出参数集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.OutputLock">
+            <summary>
+            输出参数访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.isOutput">
+            <summary>
+            是否正在输出
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.Callback">
             <summary>
             回调委托
@@ -21946,24 +21961,9 @@
             </summary>
             <param name="commandIndex">命令会话标识</param>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.outputParameters">
-            <summary>
-            输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.OutputLock">
-            <summary>
-            输出参数访问锁
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.currentOutputParameters">
             <summary>
             当前输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.CurrentOutputLock">
-            <summary>
-            当前输出参数访问锁
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CallKeepCommandBase.OnReceive(AutoCSer.SubArray{System.Byte}@)">
@@ -22530,9 +22530,34 @@
             </summary>
             <typeparam name="outputParameterType">输出参数类型</typeparam>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.outputParameters">
+            <summary>
+            输出参数集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputLock">
+            <summary>
+            输出参数访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputParameter">
+            <summary>
+            输出参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.isOutput">
+            <summary>
+            是否正在输出
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.Callback">
             <summary>
             异步回调
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.currentOutputParameters">
+            <summary>
+            当前输出参数集合
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.CancelKeep(System.Int32)">
@@ -22547,31 +22572,6 @@
             </summary>
             <param name="data"></param>
             <param name="outputParameter"></param>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputParameter">
-            <summary>
-            输出参数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.outputParameters">
-            <summary>
-            输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OutputLock">
-            <summary>
-            输出参数访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.currentOutputParameters">
-            <summary>
-            当前输出参数集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.CurrentOutputLock">
-            <summary>
-            当前输出参数访问锁
-            </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.OutputKeepCommandBase`1.OnReceive(AutoCSer.SubArray{System.Byte}@)">
             <summary>

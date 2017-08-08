@@ -6838,6 +6838,408 @@
             字符串
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1">
+            <summary>
+            会话标识
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.Session">
+            <summary>
+            会话标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.ServerName">
+            <summary>
+            服务名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.timeoutTicks">
+            <summary>
+            超时时钟周期
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.refreshSeconds">
+            <summary>
+            超时刷新秒数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.isDisposed">
+            <summary>
+            是否释放资源
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.#ctor(System.Int32,System.Int32)">
+            <summary>
+            会话标识
+            </summary>
+            <param name="timeoutMinutes">超时分钟数</param>
+            <param name="refreshMinutes">超时刷新分钟数</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.isTimer">
+            <summary>
+            是否已经触发定时任务
+            </summary> 
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.OnTimer">
+            <summary>
+            定时器触发日志写入
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.RefreshTimeout">
+            <summary>
+            超时检测
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.DoubleLinkNext">
+            <summary>
+            下一个节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.DoubleLinkPrevious">
+            <summary>
+            上一个节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.SessionEnd">
+            <summary>
+            链表尾部
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session.sessionLinkLock">
+            <summary>
+            链表访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.PushNotNull(AutoCSer.Net.HttpDomainServer.Session)">
+            <summary>
+            添加节点
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.PopNotNull(AutoCSer.Net.HttpDomainServer.Session)">
+            <summary>
+            弹出节点
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session.freeNotEnd">
+            <summary>
+            弹出节点
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.ISession`1">
+            <summary>
+            会话标识接口
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.ISession">
+            <summary>
+            会话标识接口
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ISession.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            删除Session
+            </summary>
+            <param name="sessionId">Session名称</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ISession.Set(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>Session是否被更新</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ISession.Get(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="nullValue">失败返回值</param>
+            <returns>Session值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ISession`1.Set(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>Session是否被更新</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ISession`1.Get(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="nullValue">失败返回值</param>
+            <returns>Session值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1._identityCommandNames_">
+            <summary>
+            命令序号记忆数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.valuePool">
+            <summary>
+            Session 值索引池
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.#ctor">
+            <summary>
+            会话标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.RefreshTimeout">
+            <summary>
+            超时检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Set(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>Session是否被更新</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Set(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>Session是否被更新</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Set(AutoCSer.Net.HttpDomainServer.SessionId,`0)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>Session名称</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Get(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="nullValue">失败返回值</param>
+            <returns>Session值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Get(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="nullValue">失败返回值</param>
+            <returns>Session值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TryGet(AutoCSer.Net.HttpDomainServer.SessionId,`0@)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">返回值</param>
+            <returns>是否存在返回值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TryGet(AutoCSer.Net.HttpDomainServer.SessionId@,`0@)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">返回值</param>
+            <returns>是否存在返回值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Remove(AutoCSer.Net.HttpDomainServer.SessionId)">
+            <summary>
+            删除Session
+            </summary>
+            <param name="sessionId">Session名称</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            删除Session
+            </summary>
+            <param name="sessionId">Session名称</param>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalServer">
+            <summary>
+            HttpSession TCP服务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalServer.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.Net.HttpDomainServer.Session{`0},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+            <summary>
+            HttpSession TCP调用服务端
+            </summary>
+            <param name="attribute">TCP 调用服务器端配置信息</param>
+            <param name="verify">套接字验证委托</param>
+            <param name="value">TCP 服务目标对象</param>
+            <param name="log">日志接口</param>
+            <param name="onCustomData">自定义数据包处理</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalServer.DoCommand(System.Int32,AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            命令处理
+            </summary>
+            <param name="index">命令序号</param>
+            <param name="sender">TCP 内部服务套接字数据发送</param>
+            <param name="data">命令数据</param>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalClient">
+            <summary>
+            TCP客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalClient.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{AutoCSer.Net.HttpDomainServer.Session{`0}.TcpInternalClient,AutoCSer.Net.TcpInternalServer.ClientSocketSender,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+            <summary>
+            TCP调用客户端
+            </summary>
+            <param name="attribute">TCP 调用服务器端配置信息</param>
+            <param name="verifyMethod">TCP 验证方法</param>
+            <param name="onCustomData">自定义数据包处理</param>
+            <param name="log">日志接口</param>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.Value">
+            <summary>
+            Session值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.Timeout">
+            <summary>
+            超时时间
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.Low">
+            <summary>
+            随机数低64位
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.High">
+            <summary>
+            随机数高64位
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.SessionValue">
+            <summary>
+            Session值集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.Identity">
+            <summary>
+            索引标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Check(AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            检测会话是否有效
+            </summary>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Set(AutoCSer.Net.HttpDomainServer.SessionId@,System.DateTime,`0)">
+            <summary>
+            设置会话信息
+            </summary>
+            <param name="sessionId"></param>
+            <param name="timeout"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.New(AutoCSer.Net.HttpDomainServer.SessionId@,System.DateTime,`0)">
+            <summary>
+            新建会话信息
+            </summary>
+            <param name="sessionId"></param>
+            <param name="timeout"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Get(AutoCSer.Net.HttpDomainServer.SessionId@,System.DateTime,`0@)">
+            <summary>
+            获取会话信息
+            </summary>
+            <param name="sessionId"></param>
+            <param name="timeout"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            删除会话信息
+            </summary>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.CheckTimeout(System.DateTime)">
+            <summary>
+            超时检测
+            </summary>
+            <param name="now"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.Pool">
+            <summary>
+            Session值索引池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Pool.IndexPool">
+            <summary>
+            Session值索引池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Pool.timeoutTicks">
+            <summary>
+            超时时钟周期
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Set(System.Int64)">
+            <summary>
+            设置Session值索引池
+            </summary>
+            <param name="timeoutTicks"></param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Refresh">
+            <summary>
+            超时检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Set(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>是否设置成功</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.New(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
+            <summary>
+            设置Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">值</param>
+            <returns>Session是否被更新</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.TryGet(AutoCSer.Net.HttpDomainServer.SessionId@,`0@)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="value">返回值</param>
+            <returns>是否存在返回值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            删除Session
+            </summary>
+            <param name="sessionId">Session名称</param>
+        </member>
         <member name="T:AutoCSer.Net.Http.SendType">
             <summary>
             发送数据下一步操作类型
@@ -9557,408 +9959,6 @@
             <summary>
             空值判断参数
             </summary>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.ISession">
-            <summary>
-            会话标识接口
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ISession.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
-            <summary>
-            删除Session
-            </summary>
-            <param name="sessionId">Session名称</param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ISession.Set(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>Session是否被更新</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ISession.Get(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="nullValue">失败返回值</param>
-            <returns>Session值</returns>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.ISession`1">
-            <summary>
-            会话标识接口
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ISession`1.Set(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>Session是否被更新</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ISession`1.Get(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="nullValue">失败返回值</param>
-            <returns>Session值</returns>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.Session">
-            <summary>
-            会话标识
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.ServerName">
-            <summary>
-            服务名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.timeoutTicks">
-            <summary>
-            超时时钟周期
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.refreshSeconds">
-            <summary>
-            超时刷新秒数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.isDisposed">
-            <summary>
-            是否释放资源
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.#ctor(System.Int32,System.Int32)">
-            <summary>
-            会话标识
-            </summary>
-            <param name="timeoutMinutes">超时分钟数</param>
-            <param name="refreshMinutes">超时刷新分钟数</param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.Dispose">
-            <summary>
-            释放资源
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.isTimer">
-            <summary>
-            是否已经触发定时任务
-            </summary> 
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.OnTimer">
-            <summary>
-            定时器触发日志写入
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.RefreshTimeout">
-            <summary>
-            超时检测
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.DoubleLinkNext">
-            <summary>
-            下一个节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.DoubleLinkPrevious">
-            <summary>
-            上一个节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.SessionEnd">
-            <summary>
-            链表尾部
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session.sessionLinkLock">
-            <summary>
-            链表访问锁
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.PushNotNull(AutoCSer.Net.HttpDomainServer.Session)">
-            <summary>
-            添加节点
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.PopNotNull(AutoCSer.Net.HttpDomainServer.Session)">
-            <summary>
-            弹出节点
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session.freeNotEnd">
-            <summary>
-            弹出节点
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1">
-            <summary>
-            会话标识
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.valuePool">
-            <summary>
-            Session 值索引池
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.#ctor">
-            <summary>
-            会话标识
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.RefreshTimeout">
-            <summary>
-            超时检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Set(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>Session是否被更新</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Set(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>Session是否被更新</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Set(AutoCSer.Net.HttpDomainServer.SessionId,`0)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>Session名称</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Get(AutoCSer.Net.HttpDomainServer.SessionId@,System.Object)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="nullValue">失败返回值</param>
-            <returns>Session值</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Get(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="nullValue">失败返回值</param>
-            <returns>Session值</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TryGet(AutoCSer.Net.HttpDomainServer.SessionId,`0@)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">返回值</param>
-            <returns>是否存在返回值</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TryGet(AutoCSer.Net.HttpDomainServer.SessionId@,`0@)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">返回值</param>
-            <returns>是否存在返回值</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Remove(AutoCSer.Net.HttpDomainServer.SessionId)">
-            <summary>
-            删除Session
-            </summary>
-            <param name="sessionId">Session名称</param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
-            <summary>
-            删除Session
-            </summary>
-            <param name="sessionId">Session名称</param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1._identityCommandNames_">
-            <summary>
-            命令序号记忆数据
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.Value">
-            <summary>
-            Session值
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.Timeout">
-            <summary>
-            超时时间
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.Low">
-            <summary>
-            随机数低64位
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.High">
-            <summary>
-            随机数高64位
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.SessionValue">
-            <summary>
-            Session值集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Value.Identity">
-            <summary>
-            索引标识
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Check(AutoCSer.Net.HttpDomainServer.SessionId@)">
-            <summary>
-            检测会话是否有效
-            </summary>
-            <param name="sessionId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Set(AutoCSer.Net.HttpDomainServer.SessionId@,System.DateTime,`0)">
-            <summary>
-            设置会话信息
-            </summary>
-            <param name="sessionId"></param>
-            <param name="timeout"></param>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.New(AutoCSer.Net.HttpDomainServer.SessionId@,System.DateTime,`0)">
-            <summary>
-            新建会话信息
-            </summary>
-            <param name="sessionId"></param>
-            <param name="timeout"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Get(AutoCSer.Net.HttpDomainServer.SessionId@,System.DateTime,`0@)">
-            <summary>
-            获取会话信息
-            </summary>
-            <param name="sessionId"></param>
-            <param name="timeout"></param>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
-            <summary>
-            删除会话信息
-            </summary>
-            <param name="sessionId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Value.CheckTimeout(System.DateTime)">
-            <summary>
-            超时检测
-            </summary>
-            <param name="now"></param>
-            <returns></returns>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.Pool">
-            <summary>
-            Session值索引池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Pool.IndexPool">
-            <summary>
-            Session值索引池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpDomainServer.Session`1.Pool.timeoutTicks">
-            <summary>
-            超时时钟周期
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Set(System.Int64)">
-            <summary>
-            设置Session值索引池
-            </summary>
-            <param name="timeoutTicks"></param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Refresh">
-            <summary>
-            超时检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Set(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>是否设置成功</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.New(AutoCSer.Net.HttpDomainServer.SessionId@,`0)">
-            <summary>
-            设置Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">值</param>
-            <returns>Session是否被更新</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.TryGet(AutoCSer.Net.HttpDomainServer.SessionId@,`0@)">
-            <summary>
-            获取Session值
-            </summary>
-            <param name="sessionId">Session名称</param>
-            <param name="value">返回值</param>
-            <returns>是否存在返回值</returns>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Pool.Remove(AutoCSer.Net.HttpDomainServer.SessionId@)">
-            <summary>
-            删除Session
-            </summary>
-            <param name="sessionId">Session名称</param>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalServer">
-            <summary>
-            HttpSession TCP服务
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalServer.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.Net.HttpDomainServer.Session{`0},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
-            <summary>
-            HttpSession TCP调用服务端
-            </summary>
-            <param name="attribute">TCP 调用服务器端配置信息</param>
-            <param name="verify">套接字验证委托</param>
-            <param name="value">TCP 服务目标对象</param>
-            <param name="log">日志接口</param>
-            <param name="onCustomData">自定义数据包处理</param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalServer.DoCommand(System.Int32,AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
-            <summary>
-            命令处理
-            </summary>
-            <param name="index">命令序号</param>
-            <param name="sender">TCP 内部服务套接字数据发送</param>
-            <param name="data">命令数据</param>
-        </member>
-        <member name="T:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalClient">
-            <summary>
-            TCP客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TcpInternalClient.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{AutoCSer.Net.HttpDomainServer.Session{`0}.TcpInternalClient,AutoCSer.Net.TcpInternalServer.ClientSocketSender,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
-            <summary>
-            TCP调用客户端
-            </summary>
-            <param name="attribute">TCP 调用服务器端配置信息</param>
-            <param name="verifyMethod">TCP 验证方法</param>
-            <param name="onCustomData">自定义数据包处理</param>
-            <param name="log">日志接口</param>
         </member>
         <member name="T:AutoCSer.IO.CreateFlieTimeoutType">
             <summary>
