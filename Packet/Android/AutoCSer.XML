@@ -8081,15 +8081,14 @@
             <param name="valueLocalBuilder"></param>
             <param name="field"></param>
         </member>
-        <member name="M:AutoCSer.Extension.EmitGenerator.outParameterFromReturnValueField(System.Reflection.Emit.ILGenerator,System.Reflection.ParameterInfo,System.Int32,System.Reflection.Emit.LocalBuilder,System.Reflection.FieldInfo,System.Reflection.FieldInfo)">
+        <member name="M:AutoCSer.Extension.EmitGenerator.outParameterFromValueField(System.Reflection.Emit.ILGenerator,System.Reflection.ParameterInfo,System.Int32,System.Reflection.Emit.LocalBuilder,System.Reflection.FieldInfo)">
             <summary>
             输出参数从返回值类型局部变量读取字段
             </summary>
             <param name="generator"></param>
             <param name="parameter"></param>
             <param name="index"></param>
-            <param name="returnValueLocalBuilder"></param>
-            <param name="valueField"></param>
+            <param name="returnValueBuilder"></param>
             <param name="field"></param>
         </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.outParameterDefault(System.Reflection.Emit.ILGenerator,System.Reflection.ParameterInfo,System.Int32)">
@@ -18601,7 +18600,7 @@
             服务器目标对象
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`2.set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`2.Set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType)">
             <summary>
             设置参数
             </summary>
@@ -18609,13 +18608,11 @@
             <param name="serverValue">服务器目标对象</param>
             <param name="taskType"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`2.Call(AutoCSer.Net.TcpInternalServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`2.Pop">
             <summary>
             获取服务器端调用
             </summary>
-            <param name="socket"></param>
-            <param name="serverValue"></param>
-            <param name="taskType"></param>
+            <returns>服务器端调用</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`2.push(`0)">
             <summary>
@@ -18636,7 +18633,7 @@
             输入参数
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`3.set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType,`2@)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`3.Set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType,`2@)">
             <summary>
             设置参数
             </summary>
@@ -18644,15 +18641,6 @@
             <param name="serverValue">服务器目标对象</param>
             <param name="taskType">任务类型</param>
             <param name="inputParameter">输入参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`3.Call(AutoCSer.Net.TcpInternalServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType,`2@)">
-            <summary>
-            获取服务器端调用
-            </summary>
-            <param name="socket"></param>
-            <param name="serverValue"></param>
-            <param name="taskType"></param>
-            <param name="inputParameter"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerCall`3.push(`0)">
             <summary>
@@ -19853,7 +19841,7 @@
             服务器目标对象
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`2.set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`2.Set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType)">
             <summary>
             设置参数
             </summary>
@@ -19868,6 +19856,12 @@
             <param name="socket"></param>
             <param name="serverValue"></param>
             <param name="taskType"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`2.Pop">
+            <summary>
+            获取服务器端调用
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`2.push(`0)">
             <summary>
@@ -19888,7 +19882,7 @@
             输入参数
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`3.set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType,`2@)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`3.Set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType,`2@)">
             <summary>
             设置参数
             </summary>
@@ -21551,6 +21545,19 @@
             输出参数
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.AutoWaitReturnValue`1.Get">
+            <summary>
+            调用返回值（警告：每次调用只能使用一次）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.AutoWaitReturnValue`1.Get(`0@)">
+            <summary>
+            调用返回值（警告：每次调用只能使用一次）
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.AutoWaitReturnValue`1.Get(AutoCSer.Net.TcpServer.ReturnValue{`0}@)">
             <summary>
             调用返回值（警告：每次调用只能使用一次）
@@ -21661,6 +21668,11 @@
             TCP 服务客户端
             </summary>
             <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Client`1.OutputSleep">
+            <summary>
+            批量处理休眠毫秒数
+            </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Client`1.SocketWait">
             <summary>
@@ -23168,7 +23180,7 @@
             释放资源
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}})">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
             <summary>
             TCP调用并返回参数值
             </summary>
@@ -23177,7 +23189,24 @@
             <param name="callback">异步回调</param>
             <returns>保持回调</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}},``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``0}@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}}@,``0@)">
             <summary>
             TCP调用并返回参数值
             </summary>
@@ -23188,7 +23217,28 @@
             <param name="inputParameter">输入参数</param>
             <returns>保持回调</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}},``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}}@,``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``0}@,``0@)">
             <summary>
             TCP调用并返回参数值
             </summary>
@@ -23198,7 +23248,7 @@
             <param name="outputParameter">输出参数</param>
             <returns>保持回调</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}},``0@,``1@)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@,``1@)">
             <summary>
             TCP调用并返回参数值
             </summary>
@@ -23218,17 +23268,8 @@
             <param name="identityCommand">命令信息</param>
             <param name="onCall">回调委托</param>
             <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
-            <summary>
-            TCP调用
-            </summary>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue,``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallKeep``1(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue},``0@)">
             <summary>
             TCP调用
             </summary>
@@ -23238,7 +23279,43 @@
             <param name="inputParameter">输入参数</param>
             <returns>保持回调</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallKeep(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue@,``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@)">
+            <summary>
+            TCP调用（用于代码生成编译）
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue@)">
             <summary>
             TCP调用
             </summary>
@@ -23489,11 +23566,6 @@
         <member name="F:AutoCSer.Net.TcpServer.CommandBase`1.ClientTryCreateSleep">
             <summary>
             客户端重建连接休眠毫秒数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.CommandBase`1.OutputSleep">
-            <summary>
-            批量处理休眠毫秒数
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.CommandBase`1.#ctor(`0,AutoCSer.SubBuffer.Size,AutoCSer.SubBuffer.Size,System.Int32,System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
@@ -23962,12 +24034,22 @@
             TCP 服务客户端调用函数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderCallWaitMethod">
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderCallKeepMethod">
             <summary>
             TCP 服务客户端调用函数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderCallInputWaitMethod">
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderCallKeepInputMethod">
+            <summary>
+            TCP 服务客户端调用函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderWaitCallMethod">
+            <summary>
+            TCP 服务客户端调用函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderWaitCallInputMethod">
             <summary>
             TCP 服务客户端调用函数信息
             </summary>
@@ -23982,12 +24064,22 @@
             TCP 服务客户端调用函数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderGetMethod">
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderGetKeepAsynchronousMethod">
             <summary>
             TCP 服务客户端调用函数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderGetInputMethod">
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderGetKeepInputAsynchronousMethod">
+            <summary>
+            TCP 服务客户端调用函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderWaitGetMethod">
+            <summary>
+            TCP 服务客户端调用函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientSocketSenderWaitGetInputMethod">
             <summary>
             TCP 服务客户端调用函数信息
             </summary>
@@ -24013,11 +24105,6 @@
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.ClientCallbackGetMethod">
             <summary>
             TCP 客户端回调转换函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.AutoWaitReturnValueWaitMethod">
-            <summary>
-            同步等待调用等待返回函数信息
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Emit.ClientMetadata.AutoWaitReturnValuePushNotNullMethod">
@@ -26414,12 +26501,19 @@
             </summary>
             <param name="error"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.GetOutput(System.UInt32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryGetOutput(System.UInt32)">
             <summary>
             获取输出信息
             </summary>
             <param name="commandIndex">会话索引</param>
             <returns>输出信息</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryPush(System.UInt32)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="commandIndex">会话索引</param>
+            <returns>是否成功加入输出队列</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(System.UInt32)">
             <summary>
@@ -26449,6 +26543,16 @@
             <param name="returnValue">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryGetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
+            <summary>
+            获取输出信息
+            </summary>
+            <typeparam name="outputParameterType"></typeparam>
+            <param name="commandIndex">会话标识</param>
+            <param name="outputInfo">服务端输出信息</param>
+            <param name="outputParameter">输出参数</param>
+            <returns>输出信息</returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.GetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
             <summary>
             获取输出信息
@@ -26458,6 +26562,16 @@
             <param name="outputInfo">服务端输出信息</param>
             <param name="outputParameter">输出参数</param>
             <returns>输出信息</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryPush``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
+            <summary>
+            发送数据
+            </summary>
+            <typeparam name="outputParameterType">输出数据类型</typeparam>
+            <param name="commandIndex">会话标识</param>
+            <param name="outputInfo">服务端输出信息</param>
+            <param name="outputParameter">返回值</param>
+            <returns>是否成功加入输出队列</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
             <summary>
@@ -26488,12 +26602,6 @@
             <summary>
             尝试启动创建输出线程
             </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.getCustomDataOutput">
-            <summary>
-            获取 TCP 服务端套接字输出信息
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.CustomData(System.Byte[])">
             <summary>
@@ -26586,6 +26694,12 @@
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.TaskAsyncReturnValue.Call(AutoCSer.Net.TcpServer.ReturnValue@)">
+            <summary>
+            回调处理
+            </summary>
+            <param name="outputParameter">输出参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.TaskAsyncReturnValue.Call(AutoCSer.Net.TcpServer.ReturnValue)">
             <summary>
             回调处理
             </summary>
@@ -26979,19 +27093,18 @@
             </summary>
             <typeparam name="callType">调用类型</typeparam>
         </member>
-        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`1.set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType)">
+        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`1.Set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType)">
             <summary>
             设置参数
             </summary>
             <param name="socket">套接字</param>
             <param name="taskType"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`1.Call(AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType)">
+        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`1.Pop">
             <summary>
             获取服务器端调用
             </summary>
-            <param name="socket"></param>
-            <param name="taskType"></param>
+            <returns>服务器端调用</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`1.push(`0)">
             <summary>
@@ -27011,21 +27124,13 @@
             输入参数
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`2.set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,`1@)">
+        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`2.Set(AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,`1@)">
             <summary>
             设置参数
             </summary>
             <param name="sender">套接字</param>
             <param name="taskType"></param>
             <param name="inputParameter">输入参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`2.Call(AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,`1@)">
-            <summary>
-            获取服务器端调用
-            </summary>
-            <param name="socket"></param>
-            <param name="taskType"></param>
-            <param name="inputParameter"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpStaticServer.ServerCall`2.push(`0)">
             <summary>
@@ -29290,24 +29395,8 @@
             <summary>
             原子操作扩张
             </summary>
-            <summary>
-            原子操作扩张
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Threading.Interlocked.CompareExchangeYield(System.Int32@,AutoCSer.Threading.ThreadYield.Type)">
-            <summary>
-            将目标值从0改置为1,循环等待周期切换(适应于等待时间极短的情况)
-            </summary>
-            <param name="value">目标值</param>
-            <param name="type">统计类型</param>
         </member>
         <member name="M:AutoCSer.Threading.Interlocked.CompareExchangeYield(System.Int32@)">
-            <summary>
-            将目标值从0改置为1,循环等待周期切换(适应于等待时间极短的情况)
-            </summary>
-            <param name="value">目标值</param>
-        </member>
-        <member name="M:AutoCSer.Threading.Interlocked.CompareExchangeYieldOnly(System.Int32@)">
             <summary>
             将目标值从0改置为1,循环等待周期切换(适应于等待时间极短的情况)
             </summary>

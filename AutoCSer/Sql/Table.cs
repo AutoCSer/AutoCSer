@@ -91,11 +91,11 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 是否已经加载缓存
         /// </summary>
-        protected int isLoadCache;
+        protected volatile int isLoadCache;
         /// <summary>
         /// 日志流数据是否加载完成
         /// </summary>
-        protected int isLoadLogStream;
+        protected volatile int isLoadLogStream;
         /// <summary>
         /// 成员名称是否忽略大小写
         /// </summary>

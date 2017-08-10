@@ -23,7 +23,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 时间访问锁
         /// </summary>
-        private int timeLock;
+        private volatile int timeLock;
         /// <summary>
         /// 获取下一个时间
         /// </summary>
@@ -32,7 +32,7 @@ namespace AutoCSer.Sql
             get
             {
                 DateTime now = Date.NowTime.Now;
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref timeLock, Threading.ThreadYield.Type.SqlNowTimeSet);
+                while (System.Threading.Interlocked.CompareExchange(ref timeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlNowTimeSet);
                 if (now < minTime) now = minTime;
                 minTime = now.AddTicks(ticks);
                 timeLock = 0;
@@ -54,7 +54,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Set(DateTime time)
         {
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref timeLock, Threading.ThreadYield.Type.SqlNowTimeSet);
+            while (System.Threading.Interlocked.CompareExchange(ref timeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlNowTimeSet);
             minTime = time.AddTicks(ticks);
             timeLock = 0;
         }

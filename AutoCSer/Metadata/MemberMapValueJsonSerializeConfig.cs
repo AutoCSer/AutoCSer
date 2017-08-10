@@ -24,7 +24,7 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private volatile static int popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -62,8 +62,8 @@ namespace AutoCSer.Metadata
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static MemberMapValueJsonSerializeConfig Pop()
         {
+            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
             MemberMapValueJsonSerializeConfig headValue;
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref popLock, AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
             do
             {
                 if ((headValue = head) == null)

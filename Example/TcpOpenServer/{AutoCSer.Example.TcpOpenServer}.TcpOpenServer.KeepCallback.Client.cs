@@ -79,7 +79,6 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 public AutoCSer.Net.TcpServer.KeepCallback Add(int left, int right, int count, Action<AutoCSer.Net.TcpServer.ReturnValue<int>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p2>> _onOutput_ = _TcpClient_.GetCallback<int, TcpOpenServer._p2>(_onReturn_);
-                    int _isWait_ = 0;
                     try
                     {
                         AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -94,14 +93,12 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                                 
                                 count = count,
                             };
-                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get<TcpOpenServer._p1, TcpOpenServer._p2>(_ac0, _onOutput_, ref _inputParameter_);
-                            _isWait_ = 1;
-                            return _keepCallback_;
+                            return _socket_.GetKeep<TcpOpenServer._p1, TcpOpenServer._p2>(_ac0, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
                     {
-                        if (_isWait_ == 0)
+                        if (_onOutput_ != null)
                         {
                             AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p2> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p2> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                             _onOutput_.Call(ref _outputParameter_);

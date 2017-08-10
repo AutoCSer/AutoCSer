@@ -149,7 +149,6 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.Pop();
-                    int _isWait_ = 0;
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*NOT:IsVerifyMethod*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender/*NOT:IsVerifyMethod*//*NOTE*/ ?? /*NOTE*//*IF:IsVerifyMethod*/_sender_/*IF:IsVerifyMethod*/;
@@ -181,28 +180,23 @@ namespace AutoCSer.CodeGenerator.Template
                                 Ret = @ParameterName
                                 #endregion PUSH ReturnInputParameter
                             };
-                            _socket_.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
-                            _isWait_ = 1;
-                            AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _returnOutputParameter_;
-                            _wait_.Get(out _returnOutputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticMethodIdentityCommand, ref _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
                             #region LOOP OutputParameters
                             #region IF InputMethodParameter.IsRefOrOut
                             /*PUSH:MethodParameter*/
-                            @ParameterName/*PUSH:MethodParameter*/ = _returnOutputParameter_.Value./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*/;
+                            @ParameterName/*PUSH:MethodParameter*/ = _outputParameter_./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*/;
                             #endregion IF InputMethodParameter.IsRefOrOut
                             #endregion LOOP OutputParameters
-                            return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnOutputParameter_.Type/*IF:MethodIsReturn*/, Value = _returnOutputParameter_.Value.Return/*IF:MethodIsReturn*/ };
+                            return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_/*IF:MethodIsReturn*/, Value = _outputParameter_.Return/*IF:MethodIsReturn*/ };
                             #endregion IF OutputParameterIndex
                             #region NOT OutputParameterIndex
-                            _socket_.Call(@StaticMethodIdentityCommand, /*NOTE*/(Action<AutoCSer.Net.TcpServer.ReturnValue>)(object)/*NOTE*/_wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
-                            _isWait_ = 1;
-                            return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _wait_.Wait() };
+                            return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _socket_.WaitCall(@StaticMethodIdentityCommand, ref _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/) };
                             #endregion NOT OutputParameterIndex
                         }
                     }
                     finally
                     {
-                        if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.PushNotNull(_wait_);
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.PushNotNull(_wait_);
                     }
                     #region LOOP InputParameters
                     #region PUSH MethodParameter
@@ -263,6 +257,7 @@ namespace AutoCSer.CodeGenerator.Template
                             #endregion LOOP InputParameters
                         };
                         #endregion IF InputParameterIndex
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         #region IF OutputParameterIndex
                         /*PUSH:AutoParameter*/
                         @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName _outputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName
@@ -277,19 +272,22 @@ namespace AutoCSer.CodeGenerator.Template
                             Ret = @ParameterName
                             #endregion PUSH ReturnInputParameter
                         };
-                        _socket_.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
-                        AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _returnOutputParameter_ = await _wait_;
-                        #region LOOP OutputParameters
-                        #region IF InputMethodParameter.IsRefOrOut
-                        /*PUSH:MethodParameter*/
-                        @ParameterName/*PUSH:MethodParameter*/ = _returnOutputParameter_.Value./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*/;
-                        #endregion IF InputMethodParameter.IsRefOrOut
-                        #endregion LOOP OutputParameters
-                        return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnOutputParameter_.Type/*IF:MethodIsReturn*/, Value = _returnOutputParameter_.Value.Return/*IF:MethodIsReturn*/ };
+                        if ((_returnType_ = _socket_.GetAsync</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_)) == Net.TcpServer.ReturnType.Success)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _returnOutputParameter_ = await _wait_;
+                            #region LOOP OutputParameters
+                            #region IF InputMethodParameter.IsRefOrOut
+                            /*PUSH:MethodParameter*/
+                            @ParameterName/*PUSH:MethodParameter*/ = _returnOutputParameter_.Value./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*/;
+                            #endregion IF InputMethodParameter.IsRefOrOut
+                            #endregion LOOP OutputParameters
+                            return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnOutputParameter_.Type/*IF:MethodIsReturn*/, Value = _returnOutputParameter_.Value.Return/*IF:MethodIsReturn*/ };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_ };
                         #endregion IF OutputParameterIndex
                         #region NOT OutputParameterIndex
-                        _socket_.Call(@StaticMethodIdentityCommand, /*NOTE*/(Action<AutoCSer.Net.TcpServer.ReturnValue>)(object)/*NOTE*/_wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
-                        return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = /*NOTE*/(AutoCSer.Net.TcpServer.ReturnType)(object)/*NOTE*/await _wait_ };
+                        _returnType_ = _socket_.CallAsync(@StaticMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                        return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success ? /*NOTE*/(AutoCSer.Net.TcpServer.ReturnType)(object)/*NOTE*/await _wait_ : _returnType_ };
                         #endregion NOT OutputParameterIndex
                     }
                     #region LOOP InputParameters
@@ -335,7 +333,6 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/> _onOutput_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.GetCallback</*IF:MethodIsReturn*/@MethodReturnType.FullName, /*IF:MethodIsReturn*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(_onReturn_);
-                    int _isWait_ = 0;
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender;
@@ -352,19 +349,16 @@ namespace AutoCSer.CodeGenerator.Template
                             };
                             #endregion IF InputParameterIndex
                             #region IF IsKeepCallback
-                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@AsynchronousStaticMethodIdentityCommand, _onOutput_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
-                            _isWait_ = 1;
-                            return /*NOTE*/(KeepCallbackType)(object)/*NOTE*/_keepCallback_;
+                            return /*NOTE*/(KeepCallbackType)(object)/*NOTE*/_socket_.GetKeep</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@AsynchronousStaticMethodIdentityCommand, ref _onOutput_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
                             #endregion IF IsKeepCallback
                             #region NOT IsKeepCallback
-                            _socket_.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@AsynchronousStaticMethodIdentityCommand, _onOutput_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
-                            _isWait_ = 1;
+                            _socket_.Get</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@AsynchronousStaticMethodIdentityCommand, ref _onOutput_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
                             #endregion NOT IsKeepCallback
                         }
                     }
                     finally
                     {
-                        if (_isWait_ == 0)
+                        if (_onOutput_ != null)
                         {
                             AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                             _onOutput_.Call(ref _outputParameter_);
@@ -384,7 +378,6 @@ namespace AutoCSer.CodeGenerator.Template
                     _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired });
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
-                    int _isCall_ = 0;
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender;
@@ -400,19 +393,19 @@ namespace AutoCSer.CodeGenerator.Template
                             };
                             #endregion IF InputParameterIndex
                             #region IF IsKeepCallback
-                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.Call(@AsynchronousStaticMethodIdentityCommand, _onReturn_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
-                            _isCall_ = 1;
+                            AutoCSer.Net.TcpServer.KeepCallback _keepCallback_ = _socket_.CallKeep(@AsynchronousStaticMethodIdentityCommand, _onReturn_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                            _onReturn_ = null;
                             return /*NOTE*/(KeepCallbackType)(object)/*NOTE*/_keepCallback_;
                             #endregion IF IsKeepCallback
                             #region NOT IsKeepCallback
                             _socket_.Call(@AsynchronousStaticMethodIdentityCommand, _onReturn_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
-                            _isCall_ = 1;
+                            _onReturn_ = null;
                             #endregion NOT IsKeepCallback
                         }
                     }
                     finally
                     {
-                        if (_isCall_ == 0 && _onReturn_ != null) _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException });
+                        if (_onReturn_ != null) _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException });
                     }
                     #region IF IsKeepCallback
                     return null;
@@ -440,22 +433,18 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.Pop();
-                        int _isWait_ = 0;
                         try
                         {
                             AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender;
                             if (_socket_ != null)
                             {
-                                _socket_.Get(@StaticMethodIdentityCommand, _wait_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/();
-                                _wait_.Get(out _outputParameter_);
+                                AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _outputParameter_ = _socket_.WaitGet(@StaticMethodIdentityCommand, ref _wait_);
                                 return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = _outputParameter_.Type, Value = _outputParameter_.Value.Return };
                             }
                         }
                         finally
                         {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.PushNotNull(_wait_);
+                            if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.PushNotNull(_wait_);
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                         #endregion NOT Attribute.IsExpired
@@ -479,7 +468,6 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion IF IsClientSendOnly
                         #region NOT IsClientSendOnly
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
-                        int _isWait_ = 0;
                         try
                         {
                             AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender;
@@ -493,16 +481,14 @@ namespace AutoCSer.CodeGenerator.Template
                                     @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
                                     #endregion LOOP InputParameters
                                 };
-                                _socket_.Call(@StaticMethodIdentityCommand, _wait_, ref _inputParameter_);
-                                _isWait_ = 1;
-                                AutoCSer.Net.TcpServer.ReturnType _returnType_ = _wait_.Wait();
+                                AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitCall(@StaticMethodIdentityCommand, ref _wait_, ref _inputParameter_);
                                 if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
                                 throw new Exception(_returnType_.ToString());
                             }
                         }
                         finally
                         {
-                            if (_isWait_ == 0) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
+                            if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                         }
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                         #endregion NOT IsClientSendOnly
@@ -605,7 +591,7 @@ namespace AutoCSer.CodeGenerator.Template
                                 #endregion IF IsAsynchronousCallback
                                 #region NOT IsAsynchronousCallback
                                 #region IF IsMethodServerCall
-                                @MethodStreamName/**/.Call(sender, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                 #endregion IF IsMethodServerCall
                                 #region NOT IsMethodServerCall
                                 #region NOT IsClientSendOnly

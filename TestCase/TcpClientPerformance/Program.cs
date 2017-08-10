@@ -135,7 +135,8 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
                 Client.WaitHandle.Set();
                 Console.WriteLine("thread 1");
                 wait();
-                sleep();                
+                sleep();
+                                
 #if DOTNET2
 #else
 #if DOTNET4

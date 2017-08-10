@@ -29,11 +29,11 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 任务队列访问锁
         /// </summary>
-        private int queueLock;
+        private volatile int queueLock;
         /// <summary>
         /// 是否启动线程
         /// </summary>
-        private int isThread;
+        private volatile int isThread;
         /// <summary>
         /// 链表任务队列
         /// </summary>
@@ -50,7 +50,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         internal void Add(LinkQueueTaskNode value)
         {
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref queueLock, AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPush);
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPush);
             if (head == null) head = end = value;
             else
             {
@@ -81,21 +81,22 @@ namespace AutoCSer.Sql
             DbConnection connection = null;
             do
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref queueLock, AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
                 LinkQueueTaskNode value = head;
                 head = end = null;
                 queueLock = 0;
                 if (value == null)
                 {
                     System.Threading.Thread.Sleep(0);
-                    AutoCSer.Threading.Interlocked.CompareExchangeYield(ref queueLock, AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
                     value = head;
                     head = end = null;
                     queueLock = 0;
                     if (value == null)
                     {
                         client.FreeConnection(ref connection);
-                        isThread = 0;
+                        //isThread = 0;
+                        System.Threading.Interlocked.Exchange(ref isThread, 0);
                         if (head != null && System.Threading.Interlocked.CompareExchange(ref isThread, 1, 0) == 0) goto START;
                         return;
                     }

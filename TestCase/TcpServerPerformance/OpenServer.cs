@@ -11,7 +11,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12101, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ClientOutputSleep = 0, MinCompressSize = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12101, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ServerOutputSleep = 0, ClientOutputSleep = 0, MinCompressSize = 0, IsJsonSerialize = true)]
     public partial class OpenServer
     {
         /// <summary>
@@ -21,12 +21,12 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
         /// <param name="right"></param>
         /// <returns></returns>
 #if DOTNET2
-        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
 #else
 #if DOTNET4
-        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
 #else
-        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout, IsClientTaskAsync = true)]
+        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientTaskAsync = true)]
 #endif
 #endif
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

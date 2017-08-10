@@ -68,7 +68,7 @@ namespace AutoCSer.DiskBlock
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
-        private int isDisposed;
+        private volatile int isDisposed;
         /// <summary>
         /// 文件块
         /// </summary>

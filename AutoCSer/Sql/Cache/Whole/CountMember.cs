@@ -257,7 +257,7 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
-        private int isDisposed;
+        private volatile int isDisposed;
         /// <summary>
         /// 浏览计数
         /// </summary>

@@ -21,7 +21,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 连接数组访问锁
         /// </summary>
-        private int arrayLock;
+        private volatile int arrayLock;
         /// <summary>
         /// 连接池
         /// </summary>
@@ -36,7 +36,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal DbConnection Pop()
         {
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref arrayLock, Threading.ThreadYield.Type.SqlConnectionPoolPop);
+            while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPop);
             if (index != 0)
             {
                 DbConnection value = array[--index];
@@ -55,7 +55,7 @@ namespace AutoCSer.Sql
         {
             if (connection != null)
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref arrayLock, Threading.ThreadYield.Type.SqlConnectionPoolPush);
+                while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPush);
                 if (index != array.Length)
                 {
                     array[index++] = connection;

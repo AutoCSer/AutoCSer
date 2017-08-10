@@ -2128,18 +2128,6 @@
             <param name="name">配置名称</param>
             <returns></returns>
         </member>
-        <member name="T:AutoCSer.Threading.Interlocked">
-            <summary>
-            原子操作扩张
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Threading.Interlocked.CompareExchangeYield(System.Int32@,AutoCSer.Threading.ThreadYield.Type)">
-            <summary>
-            将目标值从0改置为1,循环等待周期切换(适应于等待时间极短的情况)
-            </summary>
-            <param name="value">目标值</param>
-            <param name="type">统计类型</param>
-        </member>
         <member name="T:AutoCSer.Extension.MemberCopy">
             <summary>
             成员复制扩展操作

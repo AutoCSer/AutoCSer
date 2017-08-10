@@ -27,7 +27,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
         /// <summary>
         /// 是否已经加载数据库客户端缓存
         /// </summary>
-        private int isSqlClientCache;
+        private volatile int isSqlClientCache;
         /// <summary>
         /// 数据库客户端缓存初始化
         /// </summary>

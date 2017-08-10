@@ -15,7 +15,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
         AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right);
         /// <summary>
         /// 异步计算测试

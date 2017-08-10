@@ -24,7 +24,7 @@ namespace AutoCSer.Sql.LogStream
             /// <summary>
             /// 是否错误
             /// </summary>
-            protected int isError;
+            protected volatile int isError;
             /// <summary>
             /// 数据是否加载完成
             /// </summary>

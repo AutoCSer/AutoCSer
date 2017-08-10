@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.TcpServerPerformance
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12103, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ClientOutputSleep = 0, MinCompressSize = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12103, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ClientOutputSleep = 0, ServerOutputSleep = 0, MinCompressSize = 0, IsJsonSerialize = true)]
     public interface IOpenServer
     {
         /// <summary>
@@ -14,7 +14,7 @@ namespace AutoCSer.TestCase.TcpServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
         AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right);
         /// <summary>
         /// 简单计算测试

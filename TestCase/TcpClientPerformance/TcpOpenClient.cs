@@ -13,6 +13,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
             TcpInternalClientPerformance.Client.Start("AutoCSer.TestCase.TcpOpenClientPerformance", test);
         }
 
+        private static int testCount;
         /// <summary>
         /// 测试
         /// </summary>
@@ -100,6 +101,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 TcpInternalClientPerformance.Client.Start(TcpInternalClientPerformance.TestType.ClientSynchronous, TcpInternalClientPerformance.Client.Count / 100);
                 for (int right = TcpInternalClientPerformance.Client.Count / 100; right != 0;)
                 {
+                    ++testCount;
                     if (client.add(left, --right).Value != left + right) ++TcpInternalClientPerformance.Client.ErrorCount;
                 }
                 TcpInternalClientPerformance.Client.Time.Stop();
@@ -107,6 +109,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 Console.WriteLine("thread 1");
                 wait();
                 sleep();
+
 #if DOTNET2
 #else
 #if DOTNET4

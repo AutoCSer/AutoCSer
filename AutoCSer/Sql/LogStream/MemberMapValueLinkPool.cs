@@ -21,7 +21,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        private static int popLock;
+        private volatile static int popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>
@@ -59,8 +59,8 @@ namespace AutoCSer.Sql.LogStream
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static valueType Pop()
         {
+            while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
             valueType headValue;
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref popLock, AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
             do
             {
                 if ((headValue = head) == null)

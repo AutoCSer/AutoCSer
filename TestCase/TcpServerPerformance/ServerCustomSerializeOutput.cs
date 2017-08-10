@@ -31,7 +31,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <summary>
         /// 是否正在输出
         /// </summary>
-        private int isOutput;
+        private volatile int isOutput;
         /// <summary>
         /// 自定义序列化计算回调输出缓冲区访问锁
         /// </summary>
@@ -64,7 +64,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 append(ref value);
                 if (Interlocked.CompareExchange(ref isOutput, 1, 0) == 0)
                 {
-                    if (headBuffer == null && currentBuffer == null) isOutput = 0;
+                    if (headBuffer == null && currentBuffer == null) Interlocked.Exchange(ref isOutput, 0);
                     else onCustomSerialize(new ServerCustomSerialize { Output = this });
                 }
             }
@@ -131,7 +131,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     bufferLock = 0;
                     if (buffer == null)
                     {
-                        isOutput = 0;
+                        Interlocked.Exchange(ref isOutput, 0);
                         if ((headBuffer == null && currentBuffer == null) || Interlocked.CompareExchange(ref isOutput, 1, 0) != 0)
                         {
                             stream.MoveSize(*(int*)start = (outputCount * (sizeof(int) * 3)) + sizeof(int));
@@ -178,7 +178,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     stream.MoveSize(*(int*)start = (outputCount * (sizeof(int) * 3)) + sizeof(int));
                     if (headBuffer == null && currentBuffer == null)
                     {
-                        isOutput = 0;
+                        Interlocked.Exchange(ref isOutput, 0);
                         if ((headBuffer == null && currentBuffer == null) || Interlocked.CompareExchange(ref isOutput, 1, 0) != 0) return;
                     }
                     onCustomSerialize(new ServerCustomSerialize { Output = this });

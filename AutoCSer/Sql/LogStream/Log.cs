@@ -28,7 +28,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 等待加载成员位图访问锁
         /// </summary>
-        private int waitMapLock;
+        private volatile int waitMapLock;
         /// <summary>
         /// 日志回调委托索引
         /// </summary>
@@ -40,7 +40,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 是否开始处理日志
         /// </summary>
-        protected int isStart;
+        protected volatile int isStart;
         /// <summary>
         /// 是否加载完成
         /// </summary>
@@ -81,7 +81,7 @@ namespace AutoCSer.Sql.LogStream
         {
             if ((uint)memberIndex < waitMap.Length << 3)
             {
-                AutoCSer.Threading.Interlocked.CompareExchangeYield(ref waitMapLock, Threading.ThreadYield.Type.SqlLogStreamLoadMember);
+                while (System.Threading.Interlocked.CompareExchange(ref waitMapLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLogStreamLoadMember);
                 if ((waitMap[memberIndex >> 3] & (1 << (int)(memberIndex & 7))) == 0) waitMapLock = 0;
                 else
                 {
@@ -101,7 +101,7 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         protected void loadCount()
         {
-            AutoCSer.Threading.Interlocked.CompareExchangeYield(ref waitMapLock, Threading.ThreadYield.Type.SqlLogStreamLoadMember);
+            while (System.Threading.Interlocked.CompareExchange(ref waitMapLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLogStreamLoadMember);
             if (--waitCount == 0)
             {
                 waitMapLock = 0;
