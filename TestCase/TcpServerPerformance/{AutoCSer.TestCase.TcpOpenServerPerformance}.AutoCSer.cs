@@ -471,6 +471,30 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 客户端同步计算测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
+                        {
+                            
+                            left = left,
+                            
+                            right = right,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpOpenServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 #if DOTNET2
 #else
 #if DOTNET4

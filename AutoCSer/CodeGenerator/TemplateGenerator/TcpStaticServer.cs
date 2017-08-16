@@ -25,7 +25,17 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 客户端位置
             /// </summary>
-            public string ClientPart = "TcpStaticClient";
+            public string ClientPart
+            {
+                get { return "TcpStaticClient"; }
+            }
+            /// <summary>
+            /// 调用参数位置
+            /// </summary>
+            public string ParameterPart
+            {
+                get { return ServiceAttribute.IsSegmentation ? ClientPart : serverPart; }
+            }
             /// <summary>
             /// TCP 静态服务
             /// </summary>
@@ -81,13 +91,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 配置类型
             /// </summary>
             public string TcpServerAttributeType;
-            /// <summary>
-            /// 调用参数位置
-            /// </summary>
-            public string ParameterPart
-            {
-                get { return ServiceAttribute.IsSegmentation ? ClientPart : serverPart; }
-            }
             /// <summary>
             /// TCP 静态服务集合
             /// </summary>
@@ -273,11 +276,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 {
                                     IsVerifyMethod = true;
                                     if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
-                                    method.Attribute.ServerTask = Net.TcpServer.ServerTaskType.Synchronous;
+                                    method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                                 }
                                 parameterBuilder.Add(method);
 
-                                IsCallQueue |= method.Attribute.ServerTask == Net.TcpServer.ServerTaskType.Queue;
+                                IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
                             }
                         }
                         ParameterTypes = parameterBuilder.Get();

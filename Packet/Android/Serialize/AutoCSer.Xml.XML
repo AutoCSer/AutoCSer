@@ -317,7 +317,7 @@
         </member>
         <member name="F:AutoCSer.Config.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Config.UnionType.Pub">
@@ -1221,6 +1221,14 @@
             <param name="target"></param>
             <param name="value">字符串起始位置</param>
             <param name="count">写入字符数</param>
+        </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator.initobj(System.Reflection.Emit.ILGenerator,System.Type,System.Reflection.Emit.LocalBuilder)">
+            <summary>
+            对象初始化
+            </summary>
+            <param name="generator"></param>
+            <param name="type"></param>
+            <param name="local"></param>
         </member>
         <member name="T:AutoCSer.Extension.Enumerable">
             <summary>
@@ -2629,6 +2637,11 @@
         <member name="F:AutoCSer.Metadata.BoxSerializeAttribute.IsXml">
             <summary>
             XML序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.BoxSerializeAttribute.#ctor">
+            <summary>
+            值类型序列化包装处理
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.FieldIndex">
@@ -8724,7 +8737,7 @@
         </member>
         <member name="F:AutoCSer.Xml.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Xml.UnionType.ParseConfig">

@@ -19,11 +19,27 @@ namespace AutoCSer.TestCase
         TcpInternalServer_Emit = 12009,
         TcpOpenServer_Emit = 12010,
 
+        TcpInternalSimpleServer_Session = 12020,
+        TcpInternalSimpleServer_Member = 12021,
+        TcpInternalSimpleServer_Json = 12022,
+        TcpStaticSimpleServer_Session = 12023,
+        TcpStaticSimpleServer_Member = 12024,
+        TcpStaticSimpleServer_Json = 12025,
+        TcpOpenSimpleServer_Session = 12026,
+        TcpOpenSimpleServer_Member = 12027,
+        TcpOpenSimpleServer_Json = 12028,
+        TcpInternalSimpleServer_Emit = 12029,
+        TcpOpenSimpleServer_Emit = 12030,
+
         TcpInternalServerPerformance = 12100,
         TcpOpenServerPerformance = 12101,
         TcpInternalServerPerformance_Emit = 12102,
         TcpOpenServerPerformance_Emit = 12103,
-        Nuget_Emit = 12104,
+        TcpInternalSimpleServerPerformance = 12104,
+        TcpOpenSimpleServerPerformance = 12105,
+        TcpInternalSimpleServerPerformance_Emit = 12106,
+        TcpOpenSimpleServerPerformance_Emit = 12107,
+        Nuget_Emit = 12108,
 
         HttpFilePerformance = 12200,
         WebPerformance = 12201,
@@ -73,6 +89,29 @@ namespace AutoCSer.TestCase
         Example_TcpOpenServer_Asynchronous = 13007,
         Example_TcpOpenServer_KeepCallback = 13008,
         Example_TcpOpenServer_ClientTaskAsync = 13009,
+
+        Example_TcpInternalSimpleServer_NoAttribute = 13100,
+        Example_TcpInternalSimpleServer_Static = 13101,
+        Example_TcpInternalSimpleServer_Field = 13102,
+        Example_TcpInternalSimpleServer_Property = 13103,
+        Example_TcpInternalSimpleServer_RefOut = 13104,
+        Example_TcpInternalSimpleServer_Asynchronous = 13105,
+
+        Example_TcpStaticSimpleServer_1 = 13200,
+        Example_TcpStaticSimpleServer_2 = 13201,
+
+        Example_TcpOpenSimpleServer_NoAttribute = 13300,
+        Example_TcpOpenSimpleServer_Static = 13301,
+        Example_TcpOpenSimpleServer_Field = 13302,
+        Example_TcpOpenSimpleServer_Property = 13303,
+        Example_TcpOpenSimpleServer_RefOut = 13304,
+        Example_TcpOpenSimpleServer_Asynchronous = 13305,
+
+        Example_TcpInterfaceSimpleServer_RefOut = 13400,
+        Example_TcpInterfaceSimpleServer_Inherit = 13401,
+
+        Example_TcpInterfaceOpenSimpleServer_RefOut = 13500,
+        Example_TcpInterfaceOpenSimpleServer_Inherit = 13501,
 
         Example_WebView = 14000,
     }

@@ -5112,7 +5112,7 @@
         </member>
         <member name="F:AutoCSer.BinarySerialize.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.UnionType.DeSerializeConfig">
@@ -5533,7 +5533,7 @@
         </member>
         <member name="F:AutoCSer.Config.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Config.UnionType.Pub">
@@ -8257,6 +8257,11 @@
         <member name="P:AutoCSer.Json.IgnoreMemberAttribute.GetIsIgnoreCurrent">
             <summary>
             禁止当前安装
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.IgnoreMemberAttribute.#ctor">
+            <summary>
+            JSON 序列化成员忽略配置
             </summary>
         </member>
         <member name="T:AutoCSer.Json.Node">
@@ -11056,7 +11061,7 @@
         </member>
         <member name="F:AutoCSer.Json.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Json.UnionType.ParseConfig">
@@ -11745,6 +11750,11 @@
         <member name="F:AutoCSer.Metadata.BoxSerializeAttribute.IsXml">
             <summary>
             XML序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.BoxSerializeAttribute.#ctor">
+            <summary>
+            值类型序列化包装处理
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.FieldIndex">

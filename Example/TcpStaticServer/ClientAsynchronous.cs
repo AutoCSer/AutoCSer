@@ -32,7 +32,15 @@ namespace AutoCSer.Example.TcpStaticServer
         {
             #region 同步代理调用
             AutoCSer.Net.TcpServer.ReturnValue<int> sum = AutoCSer.Example.TcpStaticServer.TcpCall.ClientAsynchronous.Add(2, 3);
-            if (sum.Type != Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3)
+            if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+            {
+                return false;
+            }
+            #endregion
+
+            #region Awaiter.Wait()
+            sum = AutoCSer.Example.TcpStaticServer.TcpCall.ClientAsynchronous.AddAwaiter(2, 3).Wait().Result;
+            if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
             {
                 return false;
             }
@@ -47,7 +55,7 @@ namespace AutoCSer.Example.TcpStaticServer
                 sumWait.Set();
             });
             sumWait.WaitOne();
-            if (sum.Type != Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3)
+            if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
             {
                 return false;
             }

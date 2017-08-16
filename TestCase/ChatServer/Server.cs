@@ -24,7 +24,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// <param name="socket">TCP 内部服务套接字数据发送</param>
         /// <param name="userName">用户名称</param>
         /// <returns>是否成功</returns>
-        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, IsVerifyMethod = true)]
+        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, IsVerifyMethod = true, IsClientAwaiter = false)]
         private bool login(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, string userName)
         {
             bool isLogin = false;
@@ -46,7 +46,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// 用户退出
         /// </summary>
         /// <param name="socket">TCP 内部服务套接字数据发送</param>
-        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
+        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, IsClientAwaiter = false)]
         private void logout(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket)
         {
             string userName = (string)socket.ClientObject;
@@ -107,7 +107,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// </summary>
         /// <param name="socket">TCP 内部服务套接字数据发送</param>
         /// <param name="content">消息内容</param>
-        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
+        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, IsClientAwaiter = false)]
         private void send(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, string content)
         {
             User currentUser = getCurrentUser(socket);

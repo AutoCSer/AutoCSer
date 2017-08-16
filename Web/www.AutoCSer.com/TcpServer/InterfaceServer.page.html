@@ -5,10 +5,7 @@
     <p>
         高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html">全局默认配置</a>，需要引用 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。
         <br />TCP 接口服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html">静态代码生成</a>的 <a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>上手简单，但功能支持相对简单，服务端与客户端的同异步模式只能保持一致。
-        <br />框架根据应用场景分为<b>内部服务</b>与<b>开放服务</b>，两种服务的默认配置参数与防御攻击策略不同。
-        <br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html">服务注册</a>。
-        <br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出休眠等待时间 1ms，使用 <a href="/Serialize/Json.html">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
-        <br />注意：interface 接口定义必须使用 public 修饰，而且对于其它程序集可见。
+        <!--Include:Include\InterfaceInternalOpenDifference-->
     </p>
     <div><h1>内部服务</h1></div>
     <div>
@@ -39,7 +36,7 @@
             性能测试项目
             <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerPerformance\AutoCSer.TestCase.TcpInternalServerPerformance.Emit
             <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientPerformance\AutoCSer.TestCase.TcpInternalClientPerformance.Emit
-            <br /><img src="//__STATICDOMAIN__/TcpServer/InterfaceServer.png" alt="TCP 接口服务框架 内部服务 吞吐性能测试" />
+            <br /><img src="//__STATICDOMAIN__/TcpServer/InterfaceServer.png?v=1" alt="TCP 接口服务框架 内部服务 吞吐性能测试" />
         </p>
     </div>
     <div><h1>开放服务</h1></div>
@@ -71,7 +68,7 @@
             性能测试项目
             <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerPerformance\AutoCSer.TestCase.TcpOpenServerPerformance.Emit
             <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientPerformance\AutoCSer.TestCase.TcpOpenClientPerformance.Emit
-            <br /><img src="//__STATICDOMAIN__/TcpServer/InterfaceOpenServer.png" alt="TCP 接口服务框架 开放服务 吞吐性能测试" />
+            <br /><img src="//__STATICDOMAIN__/TcpServer/InterfaceOpenServer.png?v=1" alt="TCP 接口服务框架 开放服务 吞吐性能测试" />
         </p>
     </div>
 </body>

@@ -1,0 +1,15 @@
+﻿<p>
+    内部静态服务的远程调用函数（只支持 <b>静态函数</b> / <b>静态属性</b> / <b>静态字段</b>）可以分布在同一个程序集的各个 class 中，用于整合大量零碎的远程调用函数，而无需定义一个单独的服务类型。
+</p>
+<p>1. 在需要支持远程函数调用的 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
+<p>
+    2. 给 class 添加 TCP 服务申明配置 <b>[AutoCSer.Net.TcpStatic=@[0]Server.Server(Name = "SERVER")]</b>，必须指定所属服务名称，该名称必须符合 C# 类型命名规范，因为<a href="/CodeGenerator.html">静态代码生成</a>需要使用它作为服务类型名称使用。
+    <br />同一个服务名称的多个 TCP 服务申明配置，有且只能有其中一个绑定为该 TCP 服务配置 <b>IsServer = true</b>，其它申明配置仅用于通知<a href="/CodeGenerator.html">静态代码生成</a>模块该 class 中存在需要<a href="/CodeGenerator.html">静态代码生成</a>处理的远程函数。
+</p>
+<p>
+    3. 给函数添加 TCP 远程函数申明配置 <b>[AutoCSer.Net.TcpStatic=@[0]Server.Method(ServerName = "SERVER")]</b>，为了防止调用者混淆远程函数与本地函数产生误调用，默认配置下远程函数必须对于其它程序集不可见（private / protected / internal）
+    <br />如果没有指定所属服务名称 <b>ServerName</b>，则默认配置为当前 class 的 TCP 服务申明配置中指定的服务名称。
+</p>
+<p>
+    4. 给该工程项目配置<a href="/CodeGenerator.html">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
+</p>

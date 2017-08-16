@@ -81,6 +81,13 @@ namespace AutoCSer.CodeGenerator.Metadata
             get { return MethodName + "Async"; }
         }
         /// <summary>
+        /// 异步函数名称
+        /// </summary>
+        public string AwaiterMethodName
+        {
+            get { return MethodName + "Awaiter"; }
+        }
+        /// <summary>
         /// 方法全称标识
         /// </summary>
         public string MethodKeyFullName

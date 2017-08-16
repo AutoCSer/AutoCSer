@@ -21,7 +21,7 @@ namespace AutoCSer.Example.TcpRegisterServer
                     try
                     {
                         AutoCSer.Net.TcpRegister.ReaderServer reader = AutoCSer.Net.TcpRegister.ReaderServer.Create();
-                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalServer(null, null, reader.Server))
+                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalSimpleServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalSimpleServer(null, null, reader.Server))
                         using (AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer registerReaderServer = new AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer(null, null, reader))
                         //using (AutoCSer.Net.TcpRegister.DefaultServer server = AutoCSer.Net.TcpRegister.DefaultServer.Create())
                         {

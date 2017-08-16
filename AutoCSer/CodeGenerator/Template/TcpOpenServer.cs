@@ -511,6 +511,59 @@ namespace AutoCSer.CodeGenerator.Template
                     return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     #endregion NOT Attribute.IsExpired
                 }
+                #endregion IF IsClientSynchronous
+                #region IF IsClientAwaiter
+                #region IF Method.XmlDocument
+                /// <summary>
+                /// @Method.XmlDocument
+                /// </summary>
+                #endregion IF Method.XmlDocument
+                #region LOOP InputParameters
+                #region PUSH MethodParameter
+                #region IF XmlDocument
+                /// <param name="@ParameterName">@XmlDocument</param>
+                #endregion IF XmlDocument
+                #endregion PUSH MethodParameter
+                #endregion LOOP InputParameters
+                #region IF Method.ReturnXmlDocument
+                /// <returns>@Method.ReturnXmlDocument</returns>
+                #endregion IF Method.ReturnXmlDocument
+                public AutoCSer.Net.TcpServer.@Awaiter/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ /*PUSH:Method*/@AwaiterMethodName/*PUSH:Method*/(/*IF:IsVerifyMethod*/AutoCSer.Net.TcpOpenServer.ClientSocketSender _sender_, /*IF:IsVerifyMethod*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
+                {
+                    AutoCSer.Net.TcpServer.@Awaiter/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ _awaiter_ = new AutoCSer.Net.TcpServer.@Awaiter/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/();
+                    #region IF Attribute.IsExpired
+                    _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                    #endregion IF Attribute.IsExpired
+                    #region NOT Attribute.IsExpired
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = /*NOT:IsVerifyMethod*/_TcpClient_.Sender/*NOT:IsVerifyMethod*//*NOTE*/ ?? /*NOTE*//*IF:IsVerifyMethod*/_sender_/*IF:IsVerifyMethod*/;
+                    if (_socket_ != null)
+                    {
+                        #region IF InputParameterIndex
+                        TcpOpenServer.@InputParameterTypeName _inputParameter_ = new TcpOpenServer.@InputParameterTypeName
+                        {
+                            #region LOOP InputParameters
+                            #region NOT MethodParameter.IsOut
+                            /*PUSH:Parameter*/
+                            @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
+                            #endregion NOT MethodParameter.IsOut
+                            #endregion LOOP InputParameters
+                        };
+                        #endregion IF InputParameterIndex
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        #region IF MethodIsReturn
+                        AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName> _outputParameter_ = default(AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>);
+                        _returnType_ = _socket_.GetAwaiter</*IF:InputParameterIndex*/TcpOpenServer.@InputParameterTypeName, /*IF:InputParameterIndex*/AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>>(@MethodIdentityCommand, _awaiter_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
+                        #endregion IF MethodIsReturn
+                        #region NOT MethodIsReturn
+                        _returnType_ = _socket_.GetAwaiter(@MethodIdentityCommand, _awaiter_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                        #endregion NOT MethodIsReturn
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    #endregion NOT Attribute.IsExpired
+                    return _awaiter_;
+                }
+                #endregion IF IsClientAwaiter
                 #region IF IsClientTaskAsync
 #if DOTNET2
 #else
@@ -604,7 +657,6 @@ namespace AutoCSer.CodeGenerator.Template
 #endif
 #endif
                 #endregion IF IsClientTaskAsync
-                #endregion IF IsClientSynchronous
                 #region IF IsClientAsynchronous
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodAsynchronousIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex, TaskType = @ClientTask/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsKeepCallback*/, IsKeepCallback = @IsKeepCallback/*IF:IsKeepCallback*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #region IF Method.XmlDocument

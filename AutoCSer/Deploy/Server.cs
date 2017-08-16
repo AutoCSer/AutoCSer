@@ -36,7 +36,7 @@ namespace AutoCSer.Deploy
         /// 注册客户端
         /// </summary>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, IsClientAwaiter = false)]
         private IndexIdentity register()
         {
             int index, identity;

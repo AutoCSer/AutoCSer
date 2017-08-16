@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,TCP 函数应答服务框架]-->
+<body>
+    <p>
+        高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html">全局默认配置</a>，需要引用 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。
+        <br />我认为 TCP 服务的本质就是远程函数调用，所以 AutoCSer 的 TCP 服务设计是基于函数原型定义的，目标是让远程函数调用和本地函数调用一样简单。
+        <!--Include:Include\InternalOpenDifference-->
+    </p>
+    <div><h1>内部静态服务</h1></div>
+    <div>
+        <!--Include:Include\TcpStaticServer[Simple]-->
+        <p>
+            . 支持函数成员选择配置，默认选择其它程序集不可见函数成员，而且必须申明 TCP 远程函数配置 <b>[AutoCSer.Net.TcpStaticSimpleServer.Method]</b>
+            <!--Include:Include\GetCode[Example,0,无需 TCP 远程函数申明配置,TcpStaticSimpleServer\NoAttribute.cs]-->
+            <!--Include:Include\GetCode[Example,1,公共函数支持,TcpStaticSimpleServer\Static.cs]-->
+        </p>
+        <p>
+            . 支持静态字段与可读静态属性，默认支持取值操作，不支持赋值操作
+            <!--Include:Include\GetCode[Example,2,字段支持,TcpStaticSimpleServer\Field.cs]-->
+            <!--Include:Include\GetCode[Example,3,可读属性支持,TcpStaticSimpleServer\Property.cs]-->
+        </p>
+        <p>
+            . 同步函数支持 ref / out 参数。
+            <!--Include:Include\GetCode[Example,4,,TcpStaticSimpleServer\RefOut.cs]-->
+        </p>
+        <p>
+            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
+            <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
+            <!--Include:Include\GetCode[Example,7,,TcpStaticSimpleServer\Asynchronous.cs]-->
+        </p>
+        <!--Include:Include\SimpleSerialize-->
+        <p>
+            由于 <b>内部静态服务</b> 与 <b>内部实例服务</b> 对于性能影响的区别仅仅在于静态函数与实例函数调用的差别，不存在本质性的差别，所以性能测试项目请参考 <b>内部实例服务</b>。
+        </p>
+    </div>
+    <div><h1>内部实例服务</h1></div>
+    <div>
+        <!--Include:Include\TcpInternalServer[Simple]-->
+        <p>
+            . 支持函数成员选择配置，默认选择其它程序集不可见函数成员，而且必须申明 TCP 远程函数配置 <b>[AutoCSer.Net.TcpSimpleServer.Method]</b>
+            <!--Include:Include\GetCode[Example,9,无需 TCP 远程函数申明配置,TcpInternalSimpleServer\NoAttribute.cs]-->
+            <!--Include:Include\GetCode[Example,a,公共函数支持,TcpInternalSimpleServer\Static.cs]-->
+        </p>
+        <p>
+            . 支持静态字段与可读静态属性，默认支持取值操作，不支持赋值操作
+            <!--Include:Include\GetCode[Example,b,字段支持,TcpInternalSimpleServer\Field.cs]-->
+            <!--Include:Include\GetCode[Example,c,可读属性支持,TcpInternalSimpleServer\Property.cs]-->
+        </p>
+        <p>
+            . 同步函数支持 ref / out 参数。
+            <!--Include:Include\GetCode[Example,d,,TcpInternalSimpleServer\RefOut.cs]-->
+        </p>
+        <p>
+            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
+            <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
+            <!--Include:Include\GetCode[Example,g,,TcpInternalSimpleServer\Asynchronous.cs]-->
+        </p>
+        <!--Include:Include\SimpleSerialize-->
+        <p>
+            性能测试项目
+            <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance
+            <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleClientPerformance
+            <br /><img src="//__STATICDOMAIN__/TcpServer/SimpleMethodServer.png" alt="TCP 函数应答服务框架 内部服务 吞吐性能测试" />
+        </p>
+    </div>
+    <div><h1>开放服务</h1></div>
+    <div>
+        <!--Include:Include\TcpOpenServer[Simple]-->
+        <p>
+            . 支持函数成员选择配置，默认选择其它程序集不可见函数成员，而且必须申明 TCP 远程函数配置 <b>[AutoCSer.Net.TcpSimpleServer.Method]</b>
+            <!--Include:Include\GetCode[Example,i,无需 TCP 远程函数申明配置,TcpOpenSimpleServer\NoAttribute.cs]-->
+            <!--Include:Include\GetCode[Example,j,公共函数支持,TcpOpenSimpleServer\Static.cs]-->
+        </p>
+        <p>
+            . 支持静态字段与可读静态属性，默认支持取值操作，不支持赋值操作
+            <!--Include:Include\GetCode[Example,k,字段支持,TcpOpenSimpleServer\Field.cs]-->
+            <!--Include:Include\GetCode[Example,l,可读属性支持,TcpOpenSimpleServer\Property.cs]-->
+        </p>
+        <p>
+            . 同步函数支持 ref / out 参数。
+            <!--Include:Include\GetCode[Example,m,,TcpOpenSimpleServer\RefOut.cs]-->
+        </p>
+        <p>
+            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
+            <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
+            <!--Include:Include\GetCode[Example,p,,TcpOpenSimpleServer\Asynchronous.cs]-->
+        </p>
+        <!--Include:Include\SimpleSerialize-->
+        <p>
+            性能测试项目
+            <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance
+            <br /><a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleClientPerformance
+            <br /><img src="//__STATICDOMAIN__/TcpServer/SimpleMethodOpenServer.png" alt="TCP 函数服务框架 开放服务 吞吐性能测试" />
+        </p>
+    </div>
+    <div>
+        <!--Include:Include\SimpleSerialize-->
+    </div>
+</body>
+</html>

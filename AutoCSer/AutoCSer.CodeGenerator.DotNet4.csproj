@@ -145,9 +145,13 @@
     <Compile Include="CodeGenerator\TemplateGenerator\TcpInternalServer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CodeGenerator\TemplateGenerator\TcpInternalSimpleServer.cs" />
+    <Compile Include="CodeGenerator\TemplateGenerator\TcpOpenSimpleServer.cs" />
     <Compile Include="CodeGenerator\TemplateGenerator\TcpServer.cs" />
+    <Compile Include="CodeGenerator\TemplateGenerator\TcpSimpleServer.cs" />
     <Compile Include="CodeGenerator\TemplateGenerator\TcpStaticServer.cs" />
     <Compile Include="CodeGenerator\TemplateGenerator\TcpOpenServer.cs" />
+    <Compile Include="CodeGenerator\TemplateGenerator\TcpStaticSimpleServer.cs" />
     <Compile Include="CodeGenerator\TemplateGenerator\WebCall.cs" />
     <Compile Include="CodeGenerator\TemplateGenerator\WebPath.cs" />
     <Compile Include="CodeGenerator\TemplateGenerator\WebView.cs">
@@ -164,10 +168,13 @@
     <Compile Include="CodeGenerator\Template\TcpInternalServer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CodeGenerator\Template\TcpInternalSimpleServer.cs" />
     <Compile Include="CodeGenerator\Template\TcpOpenServer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CodeGenerator\Template\TcpOpenSimpleServer.cs" />
     <Compile Include="CodeGenerator\Template\TcpStaticServer.cs" />
+    <Compile Include="CodeGenerator\Template\TcpStaticSimpleServer.cs" />
     <Compile Include="CodeGenerator\Template\WebCall.cs" />
     <Compile Include="CodeGenerator\Template\WebView.cs" />
     <Compile Include="CodeGenerator\TreeTemplate.cs" />
@@ -185,6 +192,7 @@
     <Compile Include="Extension\MethodInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extension\TcpStaticServerAttribute.cs" />
     <Compile Include="Extension\Type.CodeGenerator.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -55,6 +55,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="ClientSynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
+    <Compile Include="ClientAwaiter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

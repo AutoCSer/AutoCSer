@@ -160,6 +160,7 @@ namespace AutoCSer.Web.DeployClient
                             else if (index == deploys.Length)
                             {
                                 openDirectory(@"..\..\..\..\TestCase\TcpServerPerformance\bin\Release\");
+                                openDirectory(@"..\..\..\..\TestCase\TcpSimpleServerPerformance\bin\Release\");
                                 openDirectory(@"..\..\..\..\TestCase\WebPerformance\bin\Release\");
 
                                 openProcess(@"..\..\..\..\Example\BinarySerialize\bin\Release\AutoCSer.Example.BinarySerialize.exe");
@@ -172,6 +173,12 @@ namespace AutoCSer.Web.DeployClient
                                 openProcess(@"..\..\..\..\Example\TcpOpenServer\bin\Release\AutoCSer.Example.TcpOpenServer.exe");
                                 openProcess(@"..\..\..\..\Example\TcpStaticServer\bin\Release\AutoCSer.Example.TcpStaticServer.exe");
                                 openProcess(@"..\..\..\..\Example\TcpRegisterServer\bin\Release\AutoCSer.Example.TcpRegisterServer.exe");
+
+                                openProcess(@"..\..\..\..\Example\TcpInterfaceOpenSimpleServer\bin\Release\AutoCSer.Example.TcpInterfaceOpenSimpleServer.exe");
+                                openProcess(@"..\..\..\..\Example\TcpInterfaceSimpleServer\bin\Release\AutoCSer.Example.TcpInterfaceSimpleServer.exe");
+                                openProcess(@"..\..\..\..\Example\TcpInternalSimpleServer\bin\Release\AutoCSer.Example.TcpInternalSimpleServer.exe");
+                                openProcess(@"..\..\..\..\Example\TcpOpenSimpleServer\bin\Release\AutoCSer.Example.TcpOpenSimpleServer.exe");
+                                openProcess(@"..\..\..\..\Example\TcpStaticSimpleServer\bin\Release\AutoCSer.Example.TcpStaticSimpleServer.exe");
 
                                 openProcess(@"..\..\..\..\Example\WebView\bin\Release\AutoCSer.Example.WebView.exe");
 

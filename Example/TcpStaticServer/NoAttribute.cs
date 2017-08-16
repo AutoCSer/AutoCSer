@@ -27,7 +27,20 @@ namespace AutoCSer.Example.TcpStaticServer
         internal static bool TestCase()
         {
             AutoCSer.Net.TcpServer.ReturnValue<int> sum = AutoCSer.Example.TcpStaticServer.TcpCall.NoAttribute.Add(2, 3);
-            return sum.Type == AutoCSer.Net.TcpServer.ReturnType.Success && sum.Value == 2 + 3;
+            if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+            {
+                return false;
+            }
+
+            #region Awaiter.Wait()
+            sum = AutoCSer.Example.TcpStaticServer.TcpCall.NoAttribute.AddAwaiter(2, 3).Wait().Result;
+            if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+            {
+                return false;
+            }
+            #endregion
+
+            return true;
         }
     }
 }

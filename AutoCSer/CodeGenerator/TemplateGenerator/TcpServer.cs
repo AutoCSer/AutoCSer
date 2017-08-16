@@ -7,25 +7,25 @@ using AutoCSer.CodeGenerator.Metadata;
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
     /// <summary>
-    /// TCP调用代码生成基类
+    /// TCP 服务代码生成基类
     /// </summary>
     internal abstract partial class TcpServer
     {
         /// <summary>
-        /// TCP 调用代码生成
+        /// TCP 服务代码生成
         /// </summary>
         /// <typeparam name="attributeType">TCP 服务配置</typeparam>
         /// <typeparam name="methodAttributeType">TCP 调用函数配置</typeparam>
-        /// <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送</typeparam>
-        internal abstract class Generator<attributeType, methodAttributeType, serverSocketSenderType> : TemplateGenerator.Generator<attributeType>
-            where attributeType : AutoCSer.Net.TcpServer.ServerAttribute
-            where methodAttributeType : AutoCSer.Net.TcpServer.MethodAttribute
-            where serverSocketSenderType : AutoCSer.Net.TcpServer.ServerSocketSender
+        /// <typeparam name="serverSocketType">TCP 服务套接字类型</typeparam>
+        internal abstract class GeneratorBase<attributeType, methodAttributeType, serverSocketType> : TemplateGenerator.Generator<attributeType>
+            where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
+            where methodAttributeType : AutoCSer.Net.TcpServer.MethodBaseAttribute
+            where serverSocketType : class
         {
             /// <summary>
             /// 方法索引信息
             /// </summary>
-            public sealed class TcpMethod : AsynchronousMethod
+            public abstract class TcpMethod : AsynchronousMethod
             {
                 /// <summary>
                 /// 获取该方法的类型
@@ -65,16 +65,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public int MethodIndex;
                 /// <summary>
-                /// 方法索引名称
-                /// </summary>
-                public string MethodIndexName
-                {
-                    get
-                    {
-                        return "_M" + MethodIndex.toString();
-                    }
-                }
-                /// <summary>
                 /// TCP调用命令名称
                 /// </summary>
                 public string MethodIdentityCommand
@@ -82,36 +72,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get
                     {
                         return "_c" + MethodIndex.toString();
-                    }
-                }
-                /// <summary>
-                /// TCP调用命令名称
-                /// </summary>
-                public string StaticMethodIdentityCommand
-                {
-                    get
-                    {
-                        return "_c" + StaticMethodIndex.toString();
-                    }
-                }
-                /// <summary>
-                /// TCP调用命令名称
-                /// </summary>
-                public string MethodAsynchronousIdentityCommand
-                {
-                    get
-                    {
-                        return "_ac" + MethodIndex.toString();
-                    }
-                }
-                /// <summary>
-                /// TCP调用命令名称
-                /// </summary>
-                public string AsynchronousStaticMethodIdentityCommand
-                {
-                    get
-                    {
-                        return "_ac" + StaticMethodIndex.toString();
                     }
                 }
                 /// <summary>
@@ -139,16 +99,29 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 /// <summary>
+                /// TCP调用命令名称
+                /// </summary>
+                public string StaticMethodIdentityCommand
+                {
+                    get
+                    {
+                        return "_c" + StaticMethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// 验证方法是否支持异步
+                /// </summary>
+                public virtual bool IsVerifyMethodAsynchronous { get { return false; } }
+                /// <summary>
                 /// 是否验证方法
                 /// </summary>
                 public bool IsVerifyMethod
                 {
                     get
                     {
-
                         if (Attribute.IsVerifyMethod)
                         {
-                            if (IsAsynchronousCallback) Messages.Message("方法 " + MemberFullName + " 为异步回调方法,不符合验证方法要求");
+                            if (IsAsynchronousCallback && !IsVerifyMethodAsynchronous) Messages.Message("方法 " + MemberFullName + " 为异步回调方法,不符合验证方法要求");
                             else if (MethodReturnType.Type != typeof(bool)) Messages.Message("方法 " + MemberFullName + " 的返回值类型为 " + MethodReturnType.Type.fullName() + " ,不符合验证方法要求");
                             else if (MethodParameters.Length == 0) Messages.Message("方法 " + MemberFullName + " 没有输入参数,不符合验证方法要求");
                             else return true;
@@ -156,39 +129,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return false;
                     }
                 }
+                ///// <summary>
+                ///// 设置验证方法服务端任务类型
+                ///// </summary>
+                //public void CheckVerifyMethodServerTaskType()
+                //{
+                //    if (!IsVerifyMethodAsynchronous) Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
+                //}
                 /// <summary>
-                /// 任务类型名称
+                /// 是否使用 JSON 序列化
                 /// </summary>
-                private static readonly string serverTaskTypeName = typeof(AutoCSer.Net.TcpServer.ServerTaskType).fullName();
-                /// <summary>
-                /// 服务端任务类型
-                /// </summary>
-                public string ServerTask
+                public bool IsJsonSerialize
                 {
-                    get
-                    {
-                        AutoCSer.Net.TcpServer.ServerTaskType taskType = Attribute.ServerTask;
-                        //if (taskType == AutoCSer.Net.TcpServer.ServerTaskType.Queue && !ServiceAttribute.IsCallQueue) taskType = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue;
-                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask";
-                        return serverTaskTypeName + "." + taskType.ToString();
-                    }
-                }
-                /// <summary>
-                /// 任务类型名称
-                /// </summary>
-                private static readonly string clientTaskTypeName = typeof(AutoCSer.Net.TcpServer.ClientTaskType).fullName();
-                /// <summary>
-                /// 客户端任务类型
-                /// </summary>
-                public string ClientTask
-                {
-                    get 
-                    {
-                        //IsClientAsynchronous
-                        AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTask : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
-                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
-                        return clientTaskTypeName + "." + taskType.ToString();
-                    }
+                    get { return ServiceAttribute.GetIsJsonSerialize ^ !Attribute.IsServerSerialize; }
                 }
                 /// <summary>
                 /// 返回值绑定输入参数
@@ -212,6 +165,42 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 /// <summary>
+                /// 输入参数索引
+                /// </summary>
+                public int InputParameterIndex;
+                /// <summary>
+                /// 输入参数名称
+                /// </summary>
+                public string InputParameterTypeName
+                {
+                    get
+                    {
+                        return MethodParameterTypes.GetParameterTypeName(InputParameterIndex);
+                    }
+                }
+                /// <summary>
+                /// 是否简单序列化输入参数
+                /// </summary>
+                public bool IsSimpleSerializeInputParamter;
+                /// <summary>
+                /// 输入参数索引
+                /// </summary>
+                public int OutputParameterIndex;
+                /// <summary>
+                /// 输出参数名称
+                /// </summary>
+                public string OutputParameterTypeName
+                {
+                    get
+                    {
+                        return MethodParameterTypes.GetParameterTypeName(OutputParameterIndex);
+                    }
+                }
+                /// <summary>
+                /// 是否简单序列化输出参数
+                /// </summary>
+                public bool IsSimpleSerializeOutputParamter;
+                /// <summary>
                 /// 客户端标识参数名称
                 /// </summary>
                 private string clientParameterName;
@@ -227,83 +216,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 /// <summary>
-                /// 属性或者字段设置值函数信息
+                /// 任务类型名称
                 /// </summary>
-                public TcpMethod SetMethod;
+                private static readonly string serverTaskTypeName = typeof(AutoCSer.Net.TcpServer.ServerTaskType).fullName();
                 /// <summary>
-                /// 输入参数索引
+                /// 服务端任务类型
                 /// </summary>
-                public int InputParameterIndex;
-                /// <summary>
-                /// 是否简单序列化输入参数
-                /// </summary>
-                public bool IsSimpleSerializeInputParamter;
-                ///// <summary>
-                ///// 是否存在输入参数
-                ///// </summary>
-                //public bool IsInputParameter
-                //{
-                //    get
-                //    {
-                //        return MethodParameters.Length != 0 || Method.GenericParameters.Length != 0 || (IsAsynchronousCallback && MethodReturnType.Type.IsGenericParameter);
-                //    }
-                //}
-                ///// <summary>
-                ///// 输入参数类型名称class/struct
-                ///// </summary>
-                //public string InputParameterClassType
-                //{
-                //    get
-                //    {
-                //        return (Attribute.ParameterFlags & Net.TcpServer.ParameterFlags.InputClass) == 0 ? "struct" : "sealed class";
-                //    }
-                //}
-                /// <summary>
-                /// 输入参数名称
-                /// </summary>
-                public string InputParameterTypeName
+                public string ServerTask
                 {
                     get
                     {
-                        return MethodParameterTypes.GetParameterTypeName(InputParameterIndex);
-                    }
-                }
-                /// <summary>
-                /// 输入参数索引
-                /// </summary>
-                public int OutputParameterIndex;
-                /// <summary>
-                /// 是否简单序列化输出参数
-                /// </summary>
-                public bool IsSimpleSerializeOutputParamter;
-                /// <summary>
-                /// 是否存在输出参数
-                /// </summary>
-                public bool IsOutputParameter
-                {
-                    get
-                    {
-                        return MethodReturnType.Type != typeof(void) || Method.OutputParameters.Length != 0;
-                    }
-                }
-                ///// <summary>
-                ///// 输出参数类型名称class/struct
-                ///// </summary>
-                //public string OutputParameterClassType
-                //{
-                //    get
-                //    {
-                //        return (Attribute.ParameterFlags & Net.TcpServer.ParameterFlags.OutputClass) == 0 ? "struct" : "sealed class";
-                //    }
-                //}
-                /// <summary>
-                /// 输出参数名称
-                /// </summary>
-                public string OutputParameterTypeName
-                {
-                    get
-                    {
-                        return MethodParameterTypes.GetParameterTypeName(OutputParameterIndex);
+                        AutoCSer.Net.TcpServer.ServerTaskType taskType = Attribute.ServerTaskType;
+                        //if (taskType == AutoCSer.Net.TcpServer.ServerTaskType.Queue && !ServiceAttribute.IsCallQueue) taskType = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue;
+                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask";
+                        return serverTaskTypeName + "." + taskType.ToString();
                     }
                 }
                 /// <summary>
@@ -313,111 +239,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return !IsAsynchronousCallback && Attribute.ServerTask != Net.TcpServer.ServerTaskType.Synchronous;
+                        return !IsAsynchronousCallback && Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous;
                         //return !IsAsynchronousCallback && (Attribute.IsServerTask || MemberIndex != null || IsClientSendOnly == 0 || Method.Method.IsGenericMethod);
                     }
                 }
                 /// <summary>
-                /// 是否仅发送数据
-                /// </summary>
-                public int IsClientSendOnly
-                {
-                    get
-                    {
-                        if (Attribute.IsClientSendOnly && !IsClientAsynchronous)
-                        {
-                            checkAsynchronousReturn();
-                            if (MethodReturnType.Type == typeof(void)) return 1;
-                        }
-                        return 0;
-                    }
-                }
-                /// <summary>
-                /// 客户端调用是否支持异步
-                /// </summary>
-                public bool IsClientAsynchronous
-                {
-                    get
-                    {
-                        return (Attribute.GetIsClientAsynchronous && IsOutputParameter) || IsKeepCallback != 0;
-                        //return IsOutputParameter || IsKeepCallback;
-                    }
-                }
-                /// <summary>
-                /// 客户端调用是否支持同步
-                /// </summary>
-                public bool IsClientSynchronous
-                {
-                    get
-                    {
-                        return Attribute.GetIsClientSynchronous && IsKeepCallback == 0 && IsClientSendOnly == 0;
-                    }
-                }
-                /// <summary>
-                /// 客户端是否支持 async Task
-                /// </summary>
-                public bool IsClientTaskAsync
-                {
-                    get { return Attribute.IsClientTaskAsync; }
-                }
-                /// <summary>
-                /// 是否生成同步 TCP 调用命令名称
-                /// </summary>
-                public bool IsSynchronousMethodIdentityCommand
-                {
-                    get
-                    {
-                        return MemberIndex != null || IsClientSendOnly != 0 || IsClientSynchronous;
-                    }
-                }
-                /// <summary>
-                /// 是否保持异步回调
-                /// </summary>
-                public int IsKeepCallback
-                {
-                    get
-                    {
-                        //return IsAsynchronousCallback && Method.Method.ReturnType == typeof(AutoCSer.Net.TcpServer.KeepCallback) && !IsVerifyMethod ? 1 : 0;
-                        return Attribute.GetIsKeepCallback && !IsVerifyMethod ? 1 : 0;
-                    }
-                }
-                /// <summary>
-                /// 保持异步回调类型名称
-                /// </summary>
-                private static readonly string keepCallbackType = typeof(AutoCSer.Net.TcpServer.KeepCallback).fullName();
-                /// <summary>
-                /// 保持异步回调类型名称
-                /// </summary>
-                public string KeepCallbackType
-                {
-                    get
-                    {
-                        return IsKeepCallback == 0 ? "void" : keepCallbackType;
-                    }
-                }
-                /// <summary>
-                /// 是否使用 JSON 序列化
-                /// </summary>
-                public bool IsJsonSerialize
-                {
-                    get { return ServiceAttribute.GetIsJsonSerialize ^ !Attribute.IsServerSerialize; }
-                }
-                ///// <summary>
-                ///// HTTP调用名称
-                ///// </summary>
-                //public string HttpMethodName
-                //{
-                //    get
-                //    {
-                //        if (Attribute.HttpName != null) return Attribute.HttpName;
-                //        if (typeof(attributeType) == typeof(AutoCSer.Net.Tcp.CommandServerAttribute)) return MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name;
-                //        return MethodType.Type.Name + "." + (MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name);
-                //    }
-                //}
-                /// <summary>
                 /// 是否空方法
                 /// </summary>
                 public bool IsNullMethod;
+
                 /// <summary>
                 /// 检测异步回调方法
                 /// </summary>
@@ -428,7 +258,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         base.checkAsynchronousReturn();
                         if (methodParameters.Length != 0)
                         {
-                            if (!methodParameters[0].IsRefOrOut && methodParameters[0].ParameterType.Type == typeof(serverSocketSenderType))
+                            if (!methodParameters[0].IsRefOrOut && methodParameters[0].ParameterType.Type == typeof(serverSocketType))
                             {
                                 clientParameterName = methodParameters[0].ParameterName;
                                 methodParameters = MethodParameter.Get(methodParameters.getSub(1, methodParameters.Length - 1));
@@ -436,28 +266,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                     }
                 }
-
+            }
+            /// <summary>
+            /// 方法索引信息
+            /// </summary>
+            /// <typeparam name="methodType">方法索引信息类型</typeparam>
+            public abstract class TcpMethod<methodType> : TcpMethod
+                where methodType : TcpMethod<methodType>
+            {
                 /// <summary>
-                /// 空方法索引信息
+                /// 属性或者字段设置值函数信息
                 /// </summary>
-                private static readonly TcpMethod nullMethod = new TcpMethod { IsNullMethod = true };
+                public methodType SetMethod;
+
                 /// <summary>
                 /// 检测方法序号
                 /// </summary>
                 /// <param name="methodIndexs">方法集合</param>
                 /// <param name="rememberIdentityCommand">命令序号记忆数据</param>
                 /// <param name="getMethodKeyName">获取命令名称的委托</param>
+                /// <param name="nullMethod">空方法索引信息</param>
                 /// <returns>方法集合,失败返回null</returns>
-                public static TcpMethod[] CheckIdentity(TcpMethod[] methodIndexs, Dictionary<HashString, int> rememberIdentityCommand, Func<TcpMethod, string> getMethodKeyName)
+                public static methodType[] CheckIdentity(methodType[] methodIndexs, Dictionary<HashString, int> rememberIdentityCommand, Func<methodType, string> getMethodKeyName, methodType nullMethod)
                 {
                     int maxIdentity = methodIndexs.Length - 1;
-                    Dictionary<int, TcpMethod> identitys = DictionaryCreator.CreateInt<TcpMethod>();
-                    foreach (TcpMethod method in methodIndexs)
+                    Dictionary<int, methodType> identitys = DictionaryCreator.CreateInt<methodType>();
+                    foreach (methodType method in methodIndexs)
                     {
                         int identity = method.Attribute.CommandIdentity;
                         if (identity >= 0)
                         {
-                            TcpMethod identityMethod;
+                            methodType identityMethod;
                             if (identitys.TryGetValue(identity, out identityMethod))
                             {
                                 Messages.Add(method.MethodType.FullName + " 命令序号重复 " + method.MemberFullName + " [" + identity.toString() + "] " + identityMethod.MemberFullName);
@@ -469,7 +308,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                     if (rememberIdentityCommand.Count != 0)
                     {
-                        foreach (TcpMethod method in methodIndexs)
+                        foreach (methodType method in methodIndexs)
                         {
                             int identity = method.Attribute.CommandIdentity;
                             if (identity < 0 && rememberIdentityCommand.TryGetValue(getMethodKeyName(method), out identity))
@@ -479,10 +318,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                         }
                     }
-                    TcpMethod[] sortMethodIndexs = new TcpMethod[maxIdentity + 1];
-                    foreach (KeyValuePair<int, TcpMethod> methods in identitys) sortMethodIndexs[methods.Key] = methods.Value;
+                    methodType[] sortMethodIndexs = new methodType[maxIdentity + 1];
+                    foreach (KeyValuePair<int, methodType> methods in identitys) sortMethodIndexs[methods.Key] = methods.Value;
                     maxIdentity = 0;
-                    foreach (TcpMethod method in methodIndexs)
+                    foreach (methodType method in methodIndexs)
                     {
                         if (method.Attribute.CommandIdentity < 0)
                         {
@@ -497,65 +336,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         ++maxIdentity;
                     }
                     return sortMethodIndexs;
-                    //if (rememberIdentityCommand.Count != 0)
-                    //{
-                    //    foreach (TcpMethod method in methodIndexs)
-                    //    {
-                    //        if (method.Attribute.CommandIentity == int.MaxValue)
-                    //        {
-                    //            int identity;
-                    //            if (rememberIdentityCommand.TryGetValue(getMethodKeyName(method), out identity)) method.Attribute.CommandIentity = identity;
-                    //        }
-                    //    }
-                    //}
-                    //TcpMethod[] setMethodIndexs = methodIndexs.getFindArray(value => value.Attribute.CommandIentity != int.MaxValue);
-                    //int count = 0;
-                    //foreach (TcpMethod method in setMethodIndexs)
-                    //{
-                    //    int identity = method.Attribute.CommandIentity;
-                    //    if (identity != int.MaxValue && identity > count) count = identity;
-                    //}
-                    //if (++count < methodIndexs.Length) count = methodIndexs.Length;
-                    //TcpMethod[] sortMethodIndexs = new TcpMethod[count];
-                    //foreach (TcpMethod method in setMethodIndexs)
-                    //{
-                    //    int identity = method.Attribute.CommandIentity;
-                    //    if (sortMethodIndexs[identity] == null) sortMethodIndexs[identity] = method;
-                    //    else
-                    //    {
-                    //        Messages.Add(method.MethodType.FullName + " 命令序号重复 " + method.MemberFullName + "[" + identity.toString() + "]" + sortMethodIndexs[identity].MemberFullName);
-                    //        return null;
-                    //    }
-                    //}
-                    //count = 0;
-                    //foreach (TcpMethod method in methodIndexs.getFind(value => value.Attribute.CommandIentity == int.MaxValue))
-                    //{
-                    //    while (sortMethodIndexs[count] != null) ++count;
-                    //    (sortMethodIndexs[count] = method).Attribute.CommandIentity = count;
-                    //    ++count;
-                    //}
-                    //while (count != sortMethodIndexs.Length)
-                    //{
-                    //    if (sortMethodIndexs[count] == null) sortMethodIndexs[count] = nullMethod;
-                    //    ++count;
-                    //}
-                    //return sortMethodIndexs;
                 }
-                ///// <summary>
-                ///// HTTP调用名称冲突检测
-                ///// </summary>
-                ///// <param name="methodIndexs">方法集合</param>
-                ///// <returns>是否成功</returns>
-                //public static bool CheckHttpMethodName(TcpMethod[] methodIndexs)
-                //{
-                //    Dictionary<string, ListArray<TcpMethod>> groups = methodIndexs.getFindArray(value => !value.IsNullMethod).group(value => value.HttpMethodName);
-                //    if (groups.Count == methodIndexs.Length) return true;
-                //    foreach (KeyValuePair<string, ListArray<TcpMethod>> group in groups)
-                //    {
-                //        if (group.Value.Length != 1) Messages.Add("HTTP调用命令冲突 " + group.Key + "[" + group.Value.Length.toString() + "]");
-                //    }
-                //    return false;
-                //}
             }
             /// <summary>
             /// 参数创建器
@@ -634,7 +415,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 ParameterIndexs.Add(inputParameterTypes, historyInputParameterIndex = inputParameterTypes);
                             }
                             method.InputParameterIndex = historyInputParameterIndex.Index;
-                            if(IsSimpleSerialize) method.IsSimpleSerializeInputParamter = historyInputParameterIndex.IsSimpleSerialize;
+                            if (IsSimpleSerialize) method.IsSimpleSerializeInputParamter = historyInputParameterIndex.IsSimpleSerialize;
                         }
                         if (outputParameterTypes.IsParameter)
                         {
@@ -697,10 +478,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
             /// <summary>
-            /// 方法索引集合
-            /// </summary>
-            public TcpMethod[] MethodIndexs;
-            /// <summary>
             /// 函数参数类型集合关键字
             /// </summary>
             public MethodParameterTypes[] ParameterTypes;
@@ -708,10 +485,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 是否存在验证函数
             /// </summary>
             public bool IsVerifyMethod;
-            /// <summary>
-            /// 是否提供独占的 TCP 服务器端同步调用队列
-            /// </summary>
-            public bool IsCallQueue;
             /// <summary>
             /// 命令序号记忆字段名称
             /// </summary>
@@ -727,19 +500,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get { return AutoCSer.Net.TcpServer.Server.CommandStartIndex; }
             }
             /// <summary>
-            /// 异步关键字
+            /// 是否提供独占的 TCP 服务器端同步调用队列
             /// </summary>
-            public string Async
-            {
-                get { return "async"; }
-            }
-            /// <summary>
-            /// 异步等待关键字
-            /// </summary>
-            public string Await
-            {
-                get { return "await"; }
-            }
+            public bool IsCallQueue;
+
             /// <summary>
             /// 命令序号记忆数据
             /// </summary>
@@ -766,6 +530,324 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 return nullRememberIdentityName;
+            }
+        }
+        /// <summary>
+        /// TCP 服务代码生成
+        /// </summary>
+        /// <typeparam name="attributeType">TCP 服务配置</typeparam>
+        /// <typeparam name="methodAttributeType">TCP 调用函数配置</typeparam>
+        /// <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送</typeparam>
+        internal abstract class Generator<attributeType, methodAttributeType, serverSocketSenderType> : GeneratorBase<attributeType, methodAttributeType, serverSocketSenderType>
+            where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
+            where methodAttributeType : AutoCSer.Net.TcpServer.MethodBaseAttribute
+            where serverSocketSenderType : AutoCSer.Net.TcpServer.ServerSocketSender
+        {
+            /// <summary>
+            /// 方法索引信息
+            /// </summary>
+            public new sealed class TcpMethod : TcpMethod<TcpMethod>
+            {
+                /// <summary>
+                /// 方法索引名称
+                /// </summary>
+                public string MethodIndexName
+                {
+                    get
+                    {
+                        return "_M" + MethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// TCP调用命令名称
+                /// </summary>
+                public string MethodAsynchronousIdentityCommand
+                {
+                    get
+                    {
+                        return "_ac" + MethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// TCP调用命令名称
+                /// </summary>
+                public string AsynchronousStaticMethodIdentityCommand
+                {
+                    get
+                    {
+                        return "_ac" + StaticMethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// 任务类型名称
+                /// </summary>
+                private static readonly string clientTaskTypeName = typeof(AutoCSer.Net.TcpServer.ClientTaskType).fullName();
+                /// <summary>
+                /// 客户端任务类型
+                /// </summary>
+                public string ClientTask
+                {
+                    get 
+                    {
+                        //IsClientAsynchronous
+                        AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
+                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
+                        return clientTaskTypeName + "." + taskType.ToString();
+                    }
+                }
+                ///// <summary>
+                ///// 是否存在输入参数
+                ///// </summary>
+                //public bool IsInputParameter
+                //{
+                //    get
+                //    {
+                //        return MethodParameters.Length != 0 || Method.GenericParameters.Length != 0 || (IsAsynchronousCallback && MethodReturnType.Type.IsGenericParameter);
+                //    }
+                //}
+                ///// <summary>
+                ///// 输入参数类型名称class/struct
+                ///// </summary>
+                //public string InputParameterClassType
+                //{
+                //    get
+                //    {
+                //        return (Attribute.ParameterFlags & Net.TcpServer.ParameterFlags.InputClass) == 0 ? "struct" : "sealed class";
+                //    }
+                //}
+                /// <summary>
+                /// 是否存在输出参数
+                /// </summary>
+                public bool IsOutputParameter
+                {
+                    get
+                    {
+                        return MethodReturnType.Type != typeof(void) || Method.OutputParameters.Length != 0;
+                    }
+                }
+                ///// <summary>
+                ///// 输出参数类型名称class/struct
+                ///// </summary>
+                //public string OutputParameterClassType
+                //{
+                //    get
+                //    {
+                //        return (Attribute.ParameterFlags & Net.TcpServer.ParameterFlags.OutputClass) == 0 ? "struct" : "sealed class";
+                //    }
+                //}
+                /// <summary>
+                /// 是否仅发送数据
+                /// </summary>
+                public int IsClientSendOnly
+                {
+                    get
+                    {
+                        if (Attribute.GetIsClientSendOnly && !IsClientAsynchronous)
+                        {
+                            checkAsynchronousReturn();
+                            if (MethodReturnType.Type == typeof(void)) return 1;
+                        }
+                        return 0;
+                    }
+                }
+                /// <summary>
+                /// 客户端调用是否支持异步
+                /// </summary>
+                public bool IsClientAsynchronous
+                {
+                    get
+                    {
+                        return (Attribute.GetIsClientAsynchronous && IsOutputParameter) || IsKeepCallback != 0;
+                        //return IsOutputParameter || IsKeepCallback;
+                    }
+                }
+                /// <summary>
+                /// 客户端调用是否支持同步
+                /// </summary>
+                public bool IsClientSynchronous
+                {
+                    get
+                    {
+                        return Attribute.GetIsClientSynchronous && IsKeepCallback == 0 && IsClientSendOnly == 0;
+                    }
+                }
+                /// <summary>
+                /// 客户端是否支持 async Task
+                /// </summary>
+                public bool IsClientTaskAsync
+                {
+                    get { return Attribute.GetIsClientTaskAsync && IsKeepCallback == 0 && IsClientSendOnly == 0; }
+                }
+                /// <summary>
+                /// 客户端是否支持 await
+                /// </summary>
+                public bool IsClientAwaiter
+                {
+                    get
+                    {
+                        if (IsKeepCallback == 0 && IsClientSendOnly == 0)
+                        {
+                            if (Attribute.GetIsClientAwaiter)
+                            {
+                                foreach (MethodParameter parameter in MethodParameters)
+                                {
+                                    if (parameter.IsRefOrOut)
+                                    {
+                                        //Messages.Message(Method.Method.fullName() + " 存在 ref / out 参数不支持 await");
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterTypeName = typeof(AutoCSer.Net.TcpServer.Awaiter<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBox<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReference<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBoxReference<>).onlyName();
+                /// <summary>
+                /// await 类型
+                /// </summary>
+                public string Awaiter
+                {
+                    get
+                    {
+                        if (MethodIsReturn)
+                        {
+                            if (Attribute.IsOutputSerializeReferenceMember)
+                            {
+                                return Attribute.IsOutputSerializeBox ? awaiterBoxReferenceTypeName : awaiterReferenceTypeName;
+                            }
+                            return Attribute.IsOutputSerializeBox ? awaiterBoxTypeName : awaiterTypeName;
+                        }
+                        return typeof(AutoCSer.Net.TcpServer.Awaiter).Name;
+                    }
+                }
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValue<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueReference<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<>).onlyName();
+                /// <summary>
+                /// await 返回值包装类型
+                /// </summary>
+                public string AwaiterReturnValue
+                {
+                    get
+                    {
+                        if (Attribute.IsOutputSerializeReferenceMember)
+                        {
+                            return Attribute.IsOutputSerializeBox ? awaiterReturnValueBoxReferenceTypeName : awaiterReturnValueReferenceTypeName;
+                        }
+                        return Attribute.IsOutputSerializeBox ? awaiterReturnValueBoxTypeName : awaiterReturnValueTypeName;
+                    }
+                }
+                /// <summary>
+                /// 是否生成同步 TCP 调用命令名称
+                /// </summary>
+                public bool IsSynchronousMethodIdentityCommand
+                {
+                    get
+                    {
+                        return MemberIndex != null || IsClientSendOnly != 0 || IsClientSynchronous || IsClientAwaiter || IsClientTaskAsync;
+                    }
+                }
+                /// <summary>
+                /// 是否保持异步回调
+                /// </summary>
+                public int IsKeepCallback
+                {
+                    get
+                    {
+                        //return IsAsynchronousCallback && Method.Method.ReturnType == typeof(AutoCSer.Net.TcpServer.KeepCallback) && !IsVerifyMethod ? 1 : 0;
+                        return Attribute.GetIsKeepCallback && !IsVerifyMethod ? 1 : 0;
+                    }
+                }
+                /// <summary>
+                /// 保持异步回调类型名称
+                /// </summary>
+                private static readonly string keepCallbackType = typeof(AutoCSer.Net.TcpServer.KeepCallback).fullName();
+                /// <summary>
+                /// 保持异步回调类型名称
+                /// </summary>
+                public string KeepCallbackType
+                {
+                    get
+                    {
+                        return IsKeepCallback == 0 ? "void" : keepCallbackType;
+                    }
+                }
+                ///// <summary>
+                ///// HTTP调用名称
+                ///// </summary>
+                //public string HttpMethodName
+                //{
+                //    get
+                //    {
+                //        if (Attribute.HttpName != null) return Attribute.HttpName;
+                //        if (typeof(attributeType) == typeof(AutoCSer.Net.Tcp.CommandServerAttribute)) return MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name;
+                //        return MethodType.Type.Name + "." + (MemberIndex == null ? Method.Method.Name : MemberIndex.Member.Name);
+                //    }
+                //}
+
+                /// <summary>
+                /// 空方法索引信息
+                /// </summary>
+                private static readonly TcpMethod nullMethod = new TcpMethod { IsNullMethod = true };
+                /// <summary>
+                /// 检测方法序号
+                /// </summary>
+                /// <param name="methodIndexs">方法集合</param>
+                /// <param name="rememberIdentityCommand">命令序号记忆数据</param>
+                /// <param name="getMethodKeyName">获取命令名称的委托</param>
+                /// <returns>方法集合,失败返回null</returns>
+                public static TcpMethod[] CheckIdentity(TcpMethod[] methodIndexs, Dictionary<HashString, int> rememberIdentityCommand, Func<TcpMethod, string> getMethodKeyName)
+                {
+                    return CheckIdentity(methodIndexs, rememberIdentityCommand, getMethodKeyName, nullMethod);
+                }
+            }
+            /// <summary>
+            /// 方法索引集合
+            /// </summary>
+            public TcpMethod[] MethodIndexs;
+            /// <summary>
+            /// 异步关键字
+            /// </summary>
+            public string Async
+            {
+                get { return "async"; }
+            }
+            /// <summary>
+            /// 异步等待关键字
+            /// </summary>
+            public string Await
+            {
+                get { return "await"; }
             }
         }
     }

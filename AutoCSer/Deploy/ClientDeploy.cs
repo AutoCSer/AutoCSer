@@ -9,7 +9,7 @@ namespace AutoCSer.Deploy
     /// 客户端部署信息
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    public struct ClientDeploy
+    public partial struct ClientDeploy
     {
         /// <summary>
         /// 部署名称

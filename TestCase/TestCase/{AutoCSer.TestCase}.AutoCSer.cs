@@ -682,6 +682,22 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 无参数无返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c0, _awaiter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -709,6 +725,27 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 单参数无返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c1, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -740,6 +777,29 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 多参数无返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c2, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -766,6 +826,23 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 无参数有返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c3, _awaiter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -798,6 +875,28 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 单参数有返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -832,6 +931,30 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 多参数有返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p2 _inputParameter_ = new TcpInternalServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p2, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c5, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -1914,6 +2037,30 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 服务器端写客户端标识测试+服务器端验证函数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string user, string password)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<bool>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
+                        {
+                            
+                            p0 = user,
+                            
+                            p1 = password,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool>>(_c0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
 
@@ -1938,6 +2085,1281 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     finally
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 服务器端读客户端标识测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<string> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<string>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string>>(_c1, _awaiter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpInternalSimpleServer
+{
+        internal partial class Json
+        {
+            /// <summary>
+            /// AutoCSer.TestCase.TcpInternalSimpleServer.Json TCP服务
+            /// </summary>
+            public sealed class TcpInternalSimpleServer : AutoCSer.Net.TcpInternalSimpleServer.Server
+            {
+                public readonly AutoCSer.TestCase.TcpInternalSimpleServer.Json Value;
+                /// <summary>
+                /// AutoCSer.TestCase.TcpInternalSimpleServer.Json TCP调用服务端
+                /// </summary>
+                /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="verify">套接字验证委托</param>
+                /// <param name="log">日志接口</param>
+                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Json", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Json))), verify, log, false)
+                {
+                    Value =new AutoCSer.TestCase.TcpInternalSimpleServer.Json();
+                    setCommandData(9);
+                    setCommand(0);
+                    setCommand(1);
+                    setCommand(2);
+                    setCommand(3);
+                    setCommand(4);
+                    setCommand(5);
+                    setCommand(6);
+                    setCommand(7);
+                    setCommand(8);
+                    if (attribute.IsAutoServer) Start();
+                }
+                /// <summary>
+                /// 命令处理
+                /// </summary>
+                /// <param name="index">命令序号</param>
+                /// <param name="socket">TCP 内部服务套接字数据发送</param>
+                /// <param name="data">命令数据</param>
+                /// <returns>是否成功</returns>
+                public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+                {
+                    AutoCSer.Net.TcpServer.ReturnType returnType;
+                    switch (index - 128)
+                    {
+                        case 0:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    
+                                    Value.Inc();
+                                    return socket.Send();
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 1:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.Set(inputParameter.a);
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 2:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.Add(inputParameter.a, inputParameter.b);
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 3:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc();
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c3, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 4:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc(inputParameter.a);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c4, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 5:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.add(inputParameter.a, inputParameter.b);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c5, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 6:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p4 _outputParameter_ = new _p4();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc(out _outputParameter_.a);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c6, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 7:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p5 _outputParameter_ = new _p5();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc(inputParameter.a, out _outputParameter_.b);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c7, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 8:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p7 _outputParameter_ = new _p7();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.add(inputParameter.a, inputParameter.b, out _outputParameter_.c);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c8, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        default: return false;
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c3 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c4 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c5 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c6 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 4 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c7 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 5 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c8 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 7 };
+
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p1
+                {
+                    public int a;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+                {
+                    public int a;
+                    public int b;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p4
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    public int a;
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p5
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    public int b;
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p6
+                {
+                    public int a;
+                    public int b;
+                    public int c;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p7
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    public int c;
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+            }
+            /// <summary>
+            /// TCP客户端
+            /// </summary>
+            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            {
+                /// <summary>
+                /// TCP调用客户端
+                /// </summary>
+                /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="log">日志接口</param>
+                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                {
+                    if (attribute == null)
+                    {
+                        attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Json", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Json));
+                    }
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalSimpleServer.Client<TcpInternalSimpleClient>(this, attribute, log);
+                    if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 无参数无返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue Inc()
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        return new AutoCSer.Net.TcpServer.ReturnValue { Type = _TcpClient_.Call(_c0) };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 单参数无返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue Set(int a)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p1 _inputParameter_ = new TcpInternalSimpleServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        return new AutoCSer.Net.TcpServer.ReturnValue { Type = _TcpClient_.Call(_c1, ref _inputParameter_) };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 多参数无返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p2 _inputParameter_ = new TcpInternalSimpleServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        return new AutoCSer.Net.TcpServer.ReturnValue { Type = _TcpClient_.Call(_c2, ref _inputParameter_) };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 无参数有返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc()
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p3 _outputParameter_ = new TcpInternalSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p3>(_c3, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 单参数有返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p1 _inputParameter_ = new TcpInternalSimpleServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        TcpInternalSimpleServer._p3 _outputParameter_ = new TcpInternalSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p1, TcpInternalSimpleServer._p3>(_c4, ref _inputParameter_, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 多参数有返回值调用测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p2 _inputParameter_ = new TcpInternalSimpleServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        TcpInternalSimpleServer._p3 _outputParameter_ = new TcpInternalSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p2, TcpInternalSimpleServer._p3>(_c5, ref _inputParameter_, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 输出参数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p1 _inputParameter_ = new TcpInternalSimpleServer._p1
+                        {
+                        };
+                        TcpInternalSimpleServer._p4 _outputParameter_ = new TcpInternalSimpleServer._p4
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p1, TcpInternalSimpleServer._p4>(_c6, ref _inputParameter_, ref _outputParameter_);
+                        
+                        a = _outputParameter_.a;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    a = default(int);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 混合输出参数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p2 _inputParameter_ = new TcpInternalSimpleServer._p2
+                        {
+                            
+                            a = a,
+                        };
+                        TcpInternalSimpleServer._p5 _outputParameter_ = new TcpInternalSimpleServer._p5
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p2, TcpInternalSimpleServer._p5>(_c7, ref _inputParameter_, ref _outputParameter_);
+                        
+                        b = _outputParameter_.b;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    b = default(int);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 6 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 混合输出参数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p6 _inputParameter_ = new TcpInternalSimpleServer._p6
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        TcpInternalSimpleServer._p7 _outputParameter_ = new TcpInternalSimpleServer._p7
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p6, TcpInternalSimpleServer._p7>(_c8, ref _inputParameter_, ref _outputParameter_);
+                        
+                        c = _outputParameter_.c;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    c = default(int);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpInternalSimpleServer
+{
+        public partial class Member
+        {
+            /// <summary>
+            /// AutoCSer.TestCase.TcpInternalSimpleServer.Member TCP服务
+            /// </summary>
+            public sealed class TcpInternalSimpleServer : AutoCSer.Net.TcpInternalSimpleServer.Server
+            {
+                public readonly AutoCSer.TestCase.TcpInternalSimpleServer.Member Value;
+                /// <summary>
+                /// AutoCSer.TestCase.TcpInternalSimpleServer.Member TCP调用服务端
+                /// </summary>
+                /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="verify">套接字验证委托</param>
+                /// <param name="value">TCP 服务目标对象</param>
+                /// <param name="log">日志接口</param>
+                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.TestCase.TcpInternalSimpleServer.Member value = null, AutoCSer.Log.ILog log = null)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Member", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Member))), verify, log, false)
+                {
+                    Value = value ?? new AutoCSer.TestCase.TcpInternalSimpleServer.Member();
+                    setCommandData(8);
+                    setCommand(0);
+                    setCommand(1);
+                    setCommand(2);
+                    setCommand(3);
+                    setCommand(4);
+                    setCommand(5);
+                    setCommand(6);
+                    setCommand(7);
+                    if (attribute.IsAutoServer) Start();
+                }
+                /// <summary>
+                /// 命令处理
+                /// </summary>
+                /// <param name="index">命令序号</param>
+                /// <param name="socket">TCP 内部服务套接字数据发送</param>
+                /// <param name="data">命令数据</param>
+                /// <returns>是否成功</returns>
+                public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+                {
+                    AutoCSer.Net.TcpServer.ReturnType returnType;
+                    switch (index - 128)
+                    {
+                        case 0:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.field;
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c0, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 1:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    
+                                    Value.field = inputParameter.p0;
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 2:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.getProperty;
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c2, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 3:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value[inputParameter.p0];
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c3, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 4:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p3 inputParameter = new _p3();
+                                if (socket.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value[inputParameter.p0, inputParameter.p1];
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c4, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 5:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p4 inputParameter = new _p4();
+                                if (socket.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    
+                                    Value[inputParameter.p0, inputParameter.p1] = inputParameter.p2;
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 6:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.property;
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c6, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 7:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    
+                                    Value.property = inputParameter.p0;
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        default: return false;
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c3 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c4 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c5 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c6 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c7 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p1
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+                {
+                    public int p0;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
+                {
+                    public int p0;
+                    public int p1;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p4
+                {
+                    public int p0;
+                    public int p1;
+                    public int p2;
+                }
+            }
+            /// <summary>
+            /// TCP客户端
+            /// </summary>
+            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            {
+                /// <summary>
+                /// TCP调用客户端
+                /// </summary>
+                /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="log">日志接口</param>
+                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                {
+                    if (attribute == null)
+                    {
+                        attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Member", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Member));
+                    }
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalSimpleServer.Client<TcpInternalSimpleClient>(this, attribute, log);
+                    if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+
+                /// <summary>
+                /// 测试字段
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> field
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p1 _outputParameter_ = default(TcpInternalSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p1>(_c0, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                    set
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p2 _inputParameter_ = new TcpInternalSimpleServer._p2
+                            {
+                                
+                                p0 = value,
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Call(_c1, ref _inputParameter_);
+                            if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                            throw new Exception(_returnType_.ToString());
+                        }
+                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true };
+
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+
+                /// <summary>
+                /// 只读属性[不支持不可读属性]
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p1 _outputParameter_ = default(TcpInternalSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p1>(_c2, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p2 _inputParameter_ = new TcpInternalSimpleServer._p2
+                            {
+                                
+                                p0 = index,
+                            };
+                            TcpInternalSimpleServer._p1 _outputParameter_ = default(TcpInternalSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p2, TcpInternalSimpleServer._p1>(_c3, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 3, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p3 _inputParameter_ = new TcpInternalSimpleServer._p3
+                            {
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            TcpInternalSimpleServer._p1 _outputParameter_ = default(TcpInternalSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p3, TcpInternalSimpleServer._p1>(_c4, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                    set
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p4 _inputParameter_ = new TcpInternalSimpleServer._p4
+                            {
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                                
+                                p2 = value,
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Call(_c5, ref _inputParameter_);
+                            if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                            throw new Exception(_returnType_.ToString());
+                        }
+                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 4, IsSimpleSerializeInputParamter = true };
+
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+
+                /// <summary>
+                /// 测试属性
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<int> property
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p1 _outputParameter_ = default(TcpInternalSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p1>(_c6, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                    set
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpInternalSimpleServer._p2 _inputParameter_ = new TcpInternalSimpleServer._p2
+                            {
+                                
+                                p0 = value,
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Call(_c7, ref _inputParameter_);
+                            if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                            throw new Exception(_returnType_.ToString());
+                        }
+                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true };
+
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpInternalSimpleServer
+{
+        internal partial class Session
+        {
+            /// <summary>
+            /// AutoCSer.TestCase.TcpInternalSimpleServer.Session TCP服务
+            /// </summary>
+            public sealed class TcpInternalSimpleServer : AutoCSer.Net.TcpInternalSimpleServer.Server
+            {
+                public readonly AutoCSer.TestCase.TcpInternalSimpleServer.Session Value;
+                /// <summary>
+                /// AutoCSer.TestCase.TcpInternalSimpleServer.Session TCP调用服务端
+                /// </summary>
+                /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="verify">套接字验证委托</param>
+                /// <param name="log">日志接口</param>
+                public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Session", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Session))), verify, log, false)
+                {
+                    Value =new AutoCSer.TestCase.TcpInternalSimpleServer.Session();
+                    setCommandData(2);
+                    setVerifyCommand(0);
+                    setCommand(1);
+                    if (attribute.IsAutoServer) Start();
+                }
+                /// <summary>
+                /// 命令处理
+                /// </summary>
+                /// <param name="index">命令序号</param>
+                /// <param name="socket">TCP 内部服务套接字数据发送</param>
+                /// <param name="data">命令数据</param>
+                /// <returns>是否成功</returns>
+                public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+                {
+                    AutoCSer.Net.TcpServer.ReturnType returnType;
+                    switch (index - 128)
+                    {
+                        case 0:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    bool Return;
+                                    
+                                    Return = Value.login(socket, inputParameter.p0, inputParameter.p1);
+                                    if (Return) socket.SetVerifyMethod();
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c0, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 1:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    string Return;
+                                    
+                                    Return = Value.myName(socket);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c1, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        default: return false;
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3, IsSimpleSerializeOutputParamter = true };
+
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p1
+                {
+                    public string p0;
+                    public string p1;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<bool>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public bool Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public bool Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (bool)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<string>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public string Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public string Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (string)value; }
+                    }
+#endif
+                }
+            }
+            /// <summary>
+            /// TCP客户端
+            /// </summary>
+            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            {
+                /// <summary>
+                /// TCP调用客户端
+                /// </summary>
+                /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="verifyMethod">TCP 验证方法</param>
+                /// <param name="log">日志接口</param>
+                public TcpInternalSimpleClient(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<TcpInternalSimpleClient, bool> verifyMethod = null, AutoCSer.Log.ILog log = null)
+                {
+                    if (attribute == null)
+                    {
+                        attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Session", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Session));
+                    }
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalSimpleServer.Client<TcpInternalSimpleClient>(this, attribute, log, verifyMethod);
+                    if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, IsVerifyMethod = true, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+
+                /// <summary>
+                /// 服务器端写客户端标识测试+服务器端验证函数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<bool> login(string user, string password)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p1 _inputParameter_ = new TcpInternalSimpleServer._p1
+                        {
+                            
+                            p0 = user,
+                            
+                            p1 = password,
+                        };
+                        TcpInternalSimpleServer._p2 _outputParameter_ = new TcpInternalSimpleServer._p2
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p1, TcpInternalSimpleServer._p2>(_c0, ref _inputParameter_, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+                /// <summary>
+                /// 服务器端读客户端标识测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<string> myName()
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpInternalSimpleServer._p3 _outputParameter_ = new TcpInternalSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpInternalSimpleServer._p3>(_c1, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = _returnType_, Value = _outputParameter_.Return };
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -2634,6 +4056,19 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                public AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c0, _awaiter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -2658,6 +4093,24 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                public AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c1, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -2686,6 +4139,26 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                public AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpOpenServer._p2 _inputParameter_ = new TcpOpenServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c2, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -2709,6 +4182,20 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c3, _awaiter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -2738,6 +4225,25 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpOpenServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -2769,6 +4275,27 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpOpenServer._p2 _inputParameter_ = new TcpOpenServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpOpenServer._p2, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c5, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -3863,6 +5390,30 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 服务器端写客户端标识测试+服务器端验证函数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpOpenServer.ClientSocketSender _sender_, string user, string password)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<bool>();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _sender_;
+                    if (_socket_ != null)
+                    {
+                        TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
+                        {
+                            
+                            user = user,
+                            
+                            password = password,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool>);
+                        _returnType_ = _socket_.GetAwaiter<TcpOpenServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool>>(_c0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -3887,6 +5438,1291 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     finally
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p3>.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 服务器端读客户端标识测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<string> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<string>();
+                    AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string>>(_c1, _awaiter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpOpenSimpleServer
+{
+        internal partial class Json
+        {
+            /// <summary>
+            /// 命令序号记忆数据
+            /// </summary>
+            private static KeyValue<string, int>[] _identityCommandNames_()
+            {
+                KeyValue<string, int>[] names = new KeyValue<string, int>[9];
+                names[0].Set(@"()Inc", 0);
+                names[1].Set(@"(int)Set", 1);
+                names[2].Set(@"(int,int)Add", 2);
+                names[3].Set(@"()inc", 3);
+                names[4].Set(@"(int)inc", 4);
+                names[5].Set(@"(int,int)add", 5);
+                names[6].Set(@"(out int)inc", 6);
+                names[7].Set(@"(int,out int)inc", 7);
+                names[8].Set(@"(int,int,out int)add", 8);
+                return names;
+            }
+            /// <summary>
+            /// AutoCSer.TestCase.TcpOpenSimpleServer.Json TCP服务
+            /// </summary>
+            public sealed class TcpOpenSimpleServer : AutoCSer.Net.TcpOpenSimpleServer.Server
+            {
+                public readonly AutoCSer.TestCase.TcpOpenSimpleServer.Json Value;
+                /// <summary>
+                /// AutoCSer.TestCase.TcpOpenSimpleServer.Json TCP调用服务端
+                /// </summary>
+                /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="log">日志接口</param>
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Json", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Json))), verify, log, false)
+                {
+                    Value =new AutoCSer.TestCase.TcpOpenSimpleServer.Json();
+                    setCommandData(9);
+                    setCommand(0);
+                    setCommand(1);
+                    setCommand(2);
+                    setCommand(3);
+                    setCommand(4);
+                    setCommand(5);
+                    setCommand(6);
+                    setCommand(7);
+                    setCommand(8);
+                    if (attribute.IsAutoServer) Start();
+                }
+                /// <summary>
+                /// 命令处理
+                /// </summary>
+                /// <param name="index">命令序号</param>
+                /// <param name="socket">TCP 内部服务套接字数据发送</param>
+                /// <param name="data">命令数据</param>
+                /// <returns>是否成功</returns>
+                public override bool DoCommand(int index, AutoCSer.Net.TcpOpenSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+                {
+                    AutoCSer.Net.TcpServer.ReturnType returnType;
+                    switch (index - 128)
+                    {
+                        case 0:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    
+                                    Value.Inc();
+                                    return socket.Send();
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 1:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.Set(inputParameter.a);
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 2:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.Add(inputParameter.a, inputParameter.b);
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 3:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc();
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c3, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 4:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc(inputParameter.a);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c4, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 5:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.add(inputParameter.a, inputParameter.b);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c5, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 6:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p4 _outputParameter_ = new _p4();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc(out _outputParameter_.a);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c6, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 7:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p5 _outputParameter_ = new _p5();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.inc(inputParameter.a, out _outputParameter_.b);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c7, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 8:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p7 _outputParameter_ = new _p7();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.add(inputParameter.a, inputParameter.b, out _outputParameter_.c);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c8, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        default: return false;
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c3 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c4 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c5 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c6 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 4 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c7 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 5 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c8 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 7 };
+
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p1
+                {
+                    public int a;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+                {
+                    public int a;
+                    public int b;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p4
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    public int a;
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p5
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    public int b;
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p6
+                {
+                    public int a;
+                    public int b;
+                    public int c;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p7
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    public int c;
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+            }
+            /// <summary>
+            /// TCP客户端
+            /// </summary>
+            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            {
+                /// <summary>
+                /// TCP调用客户端
+                /// </summary>
+                /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="log">日志接口</param>
+                public TcpOpenSimpleClient(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                {
+                    if (attribute == null)
+                    {
+                        attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Json", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Json));
+                    }
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenSimpleServer.Client<TcpOpenSimpleClient>(this, attribute, log);
+                    if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue Inc()
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        return new AutoCSer.Net.TcpServer.ReturnValue { Type = _TcpClient_.Call(_c0) };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue Set(int a)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p1 _inputParameter_ = new TcpOpenSimpleServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        return new AutoCSer.Net.TcpServer.ReturnValue { Type = _TcpClient_.Call(_c1, ref _inputParameter_) };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p2 _inputParameter_ = new TcpOpenSimpleServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        return new AutoCSer.Net.TcpServer.ReturnValue { Type = _TcpClient_.Call(_c2, ref _inputParameter_) };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc()
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p3 _outputParameter_ = new TcpOpenSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p3>(_c3, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p1 _inputParameter_ = new TcpOpenSimpleServer._p1
+                        {
+                            
+                            a = a,
+                        };
+                        TcpOpenSimpleServer._p3 _outputParameter_ = new TcpOpenSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p1, TcpOpenSimpleServer._p3>(_c4, ref _inputParameter_, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p2 _inputParameter_ = new TcpOpenSimpleServer._p2
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        TcpOpenSimpleServer._p3 _outputParameter_ = new TcpOpenSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p2, TcpOpenSimpleServer._p3>(_c5, ref _inputParameter_, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p1 _inputParameter_ = new TcpOpenSimpleServer._p1
+                        {
+                        };
+                        TcpOpenSimpleServer._p4 _outputParameter_ = new TcpOpenSimpleServer._p4
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p1, TcpOpenSimpleServer._p4>(_c6, ref _inputParameter_, ref _outputParameter_);
+                        
+                        a = _outputParameter_.a;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    a = default(int);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p2 _inputParameter_ = new TcpOpenSimpleServer._p2
+                        {
+                            
+                            a = a,
+                        };
+                        TcpOpenSimpleServer._p5 _outputParameter_ = new TcpOpenSimpleServer._p5
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p2, TcpOpenSimpleServer._p5>(_c7, ref _inputParameter_, ref _outputParameter_);
+                        
+                        b = _outputParameter_.b;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    b = default(int);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 6 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p6 _inputParameter_ = new TcpOpenSimpleServer._p6
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        TcpOpenSimpleServer._p7 _outputParameter_ = new TcpOpenSimpleServer._p7
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p6, TcpOpenSimpleServer._p7>(_c8, ref _inputParameter_, ref _outputParameter_);
+                        
+                        c = _outputParameter_.c;
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    c = default(int);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpOpenSimpleServer
+{
+        public partial class Member
+        {
+            /// <summary>
+            /// 命令序号记忆数据
+            /// </summary>
+            private static KeyValue<string, int>[] _identityCommandNames_()
+            {
+                KeyValue<string, int>[] names = new KeyValue<string, int>[8];
+                names[0].Set(@"()get_field", 0);
+                names[1].Set(@"(int)set_field", 1);
+                names[2].Set(@"()get_getProperty", 2);
+                names[3].Set(@"(int)get_Item", 3);
+                names[4].Set(@"(int,int)get_Item", 4);
+                names[5].Set(@"(int,int,int)set_Item", 5);
+                names[6].Set(@"()get_property", 6);
+                names[7].Set(@"(int)set_property", 7);
+                return names;
+            }
+            /// <summary>
+            /// AutoCSer.TestCase.TcpOpenSimpleServer.Member TCP服务
+            /// </summary>
+            public sealed class TcpOpenSimpleServer : AutoCSer.Net.TcpOpenSimpleServer.Server
+            {
+                public readonly AutoCSer.TestCase.TcpOpenSimpleServer.Member Value;
+                /// <summary>
+                /// AutoCSer.TestCase.TcpOpenSimpleServer.Member TCP调用服务端
+                /// </summary>
+                /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="value">TCP服务目标对象</param>
+                /// <param name="log">日志接口</param>
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.TestCase.TcpOpenSimpleServer.Member value = null, AutoCSer.Log.ILog log = null)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Member", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Member))), verify, log, false)
+                {
+                    Value = value ?? new AutoCSer.TestCase.TcpOpenSimpleServer.Member();
+                    setCommandData(8);
+                    setCommand(0);
+                    setCommand(1);
+                    setCommand(2);
+                    setCommand(3);
+                    setCommand(4);
+                    setCommand(5);
+                    setCommand(6);
+                    setCommand(7);
+                    if (attribute.IsAutoServer) Start();
+                }
+                /// <summary>
+                /// 命令处理
+                /// </summary>
+                /// <param name="index">命令序号</param>
+                /// <param name="socket">TCP 内部服务套接字数据发送</param>
+                /// <param name="data">命令数据</param>
+                /// <returns>是否成功</returns>
+                public override bool DoCommand(int index, AutoCSer.Net.TcpOpenSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+                {
+                    AutoCSer.Net.TcpServer.ReturnType returnType;
+                    switch (index - 128)
+                    {
+                        case 0:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.field;
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c0, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 1:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.field = inputParameter.value;
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 2:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.getProperty;
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c2, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 3:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p3 inputParameter = new _p3();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value[inputParameter.index];
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c3, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 4:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p4 inputParameter = new _p4();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value[inputParameter.left, inputParameter.right];
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c4, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 5:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p5 inputParameter = new _p5();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value[inputParameter.left, inputParameter.right] = inputParameter.value;
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        case 6:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.property;
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c6, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 7:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p2 inputParameter = new _p2();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.property = inputParameter.value;
+                                    return socket.Send();
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.Send(returnType);
+                        default: return false;
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c3 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c4 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c5 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c6 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c7 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p1
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public int Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public int Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (int)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+                {
+                    public int value;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
+                {
+                    public int index;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p4
+                {
+                    public int left;
+                    public int right;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p5
+                {
+                    public int left;
+                    public int right;
+                    public int value;
+                }
+            }
+            /// <summary>
+            /// TCP客户端
+            /// </summary>
+            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            {
+                /// <summary>
+                /// TCP调用客户端
+                /// </summary>
+                /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="log">日志接口</param>
+                public TcpOpenSimpleClient(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                {
+                    if (attribute == null)
+                    {
+                        attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Member", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Member));
+                    }
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenSimpleServer.Client<TcpOpenSimpleClient>(this, attribute, log);
+                    if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> field
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p1 _outputParameter_ = default(TcpOpenSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p1>(_c0, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                    set
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p2 _inputParameter_ = new TcpOpenSimpleServer._p2
+                            {
+                                
+                                value = value,
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Call(_c1, ref _inputParameter_);
+                            if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                            throw new Exception(_returnType_.ToString());
+                        }
+                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p1 _outputParameter_ = default(TcpOpenSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p1>(_c2, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 3 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p3 _inputParameter_ = new TcpOpenSimpleServer._p3
+                            {
+                                
+                                index = index,
+                            };
+                            TcpOpenSimpleServer._p1 _outputParameter_ = default(TcpOpenSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p3, TcpOpenSimpleServer._p1>(_c3, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p4 _inputParameter_ = new TcpOpenSimpleServer._p4
+                            {
+                                
+                                left = left,
+                                
+                                right = right,
+                            };
+                            TcpOpenSimpleServer._p1 _outputParameter_ = default(TcpOpenSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p4, TcpOpenSimpleServer._p1>(_c4, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                    set
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p5 _inputParameter_ = new TcpOpenSimpleServer._p5
+                            {
+                                
+                                left = left,
+                                
+                                right = right,
+                                
+                                value = value,
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Call(_c5, ref _inputParameter_);
+                            if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                            throw new Exception(_returnType_.ToString());
+                        }
+                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+                public AutoCSer.Net.TcpServer.ReturnValue<int> property
+                {
+                    get
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p1 _outputParameter_ = default(TcpOpenSimpleServer._p1);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p1>(_c6, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    }
+                    set
+                    {
+                        if (_isDisposed_ == 0)
+                        {
+                            TcpOpenSimpleServer._p2 _inputParameter_ = new TcpOpenSimpleServer._p2
+                            {
+                                
+                                value = value,
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Call(_c7, ref _inputParameter_);
+                            if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                            throw new Exception(_returnType_.ToString());
+                        }
+                        throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpOpenSimpleServer
+{
+        internal partial class Session
+        {
+            /// <summary>
+            /// 命令序号记忆数据
+            /// </summary>
+            private static KeyValue<string, int>[] _identityCommandNames_()
+            {
+                KeyValue<string, int>[] names = new KeyValue<string, int>[2];
+                names[0].Set(@"(AutoCSer.Net.TcpOpenSimpleServer.ServerSocket,string,string)login", 0);
+                names[1].Set(@"(AutoCSer.Net.TcpOpenSimpleServer.ServerSocket)myName", 1);
+                return names;
+            }
+            /// <summary>
+            /// AutoCSer.TestCase.TcpOpenSimpleServer.Session TCP服务
+            /// </summary>
+            public sealed class TcpOpenSimpleServer : AutoCSer.Net.TcpOpenSimpleServer.Server
+            {
+                public readonly AutoCSer.TestCase.TcpOpenSimpleServer.Session Value;
+                /// <summary>
+                /// AutoCSer.TestCase.TcpOpenSimpleServer.Session TCP调用服务端
+                /// </summary>
+                /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="log">日志接口</param>
+                public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Session", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Session))), verify, log, false)
+                {
+                    Value =new AutoCSer.TestCase.TcpOpenSimpleServer.Session();
+                    setCommandData(2);
+                    setVerifyCommand(0);
+                    setCommand(1);
+                    if (attribute.IsAutoServer) Start();
+                }
+                /// <summary>
+                /// 命令处理
+                /// </summary>
+                /// <param name="index">命令序号</param>
+                /// <param name="socket">TCP 内部服务套接字数据发送</param>
+                /// <param name="data">命令数据</param>
+                /// <returns>是否成功</returns>
+                public override bool DoCommand(int index, AutoCSer.Net.TcpOpenSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+                {
+                    AutoCSer.Net.TcpServer.ReturnType returnType;
+                    switch (index - 128)
+                    {
+                        case 0:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p1 inputParameter = new _p1();
+                                if (socket.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    bool Return;
+                                    
+                                    Return = Value.login(socket, inputParameter.user, inputParameter.password);
+                                    if (Return) socket.SetVerifyMethod();
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c0, ref _outputParameter_);
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        case 1:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    _p3 _outputParameter_ = new _p3();
+                                    
+                                    string Return;
+                                    
+                                    Return = Value.myName(socket);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c1, ref _outputParameter_);
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                socket.Log(error);
+                            }
+                            return socket.SendOutput(returnType);
+                        default: return false;
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3 };
+
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p1
+                {
+                    public string password;
+                    public string user;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<bool>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public bool Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public bool Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (bool)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<string>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public string Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public string Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (string)value; }
+                    }
+#endif
+                }
+            }
+            /// <summary>
+            /// TCP客户端
+            /// </summary>
+            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            {
+                /// <summary>
+                /// TCP调用客户端
+                /// </summary>
+                /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="verifyMethod">TCP验证方法</param>
+                /// <param name="log">日志接口</param>
+                public TcpOpenSimpleClient(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<TcpOpenSimpleClient, bool> verifyMethod = null, AutoCSer.Log.ILog log = null)
+                {
+                    if (attribute == null)
+                    {
+                        attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Session", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Session));
+                    }
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenSimpleServer.Client<TcpOpenSimpleClient>(this, attribute, log, verifyMethod);
+                    if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsVerifyMethod = true };
+
+                /// <summary>
+                /// 服务器端写客户端标识测试+服务器端验证函数测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<bool> login(string user, string password)
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p1 _inputParameter_ = new TcpOpenSimpleServer._p1
+                        {
+                            
+                            user = user,
+                            
+                            password = password,
+                        };
+                        TcpOpenSimpleServer._p2 _outputParameter_ = new TcpOpenSimpleServer._p2
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p1, TcpOpenSimpleServer._p2>(_c0, ref _inputParameter_, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 服务器端读客户端标识测试
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue<string> myName()
+                {
+                    if (_isDisposed_ == 0)
+                    {
+                        TcpOpenSimpleServer._p3 _outputParameter_ = new TcpOpenSimpleServer._p3
+                        {
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = _TcpClient_.Get<TcpOpenSimpleServer._p3>(_c1, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = _returnType_, Value = _outputParameter_.Return };
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -3946,6 +6782,23 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p1>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 服务器端读客户端标识测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<string> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<string>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.SessionServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<string>>(_c1, _awaiter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
             }
@@ -4011,6 +6864,31 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p3>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 服务器端写客户端标识测试+服务器端验证函数测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string user, string password)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<bool>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
+                    if (_socket_ != null)
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p2 _inputParameter_ = new AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p2
+                        {
+                            
+                            p0 = user,
+                            
+                            p1 = password,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p2, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<bool>>(_c2, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
             }
@@ -4319,6 +7197,22 @@ namespace AutoCSer.TestCase.TcpStaticClient
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 无参数无返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.JsonServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c3, _awaiter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -4347,6 +7241,28 @@ namespace AutoCSer.TestCase.TcpStaticClient
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 单参数无返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.JsonServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p4 _inputParameter_ = new AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p4
+                        {
+                            
+                            a = a,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c4, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -4379,6 +7295,30 @@ namespace AutoCSer.TestCase.TcpStaticClient
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 多参数无返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.JsonServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p5 _inputParameter_ = new AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p5
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c5, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -4406,6 +7346,23 @@ namespace AutoCSer.TestCase.TcpStaticClient
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p6>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 无参数有返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.JsonServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c6, _awaiter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -4440,6 +7397,29 @@ namespace AutoCSer.TestCase.TcpStaticClient
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p6>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 单参数有返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.JsonServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p4 _inputParameter_ = new AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p4
+                        {
+                            
+                            a = a,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p4, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c7, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -4476,6 +7456,31 @@ namespace AutoCSer.TestCase.TcpStaticClient
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p6>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 多参数有返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.TcpStaticClient/**/.JsonServer/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p5 _inputParameter_ = new AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p5
+                        {
+                            
+                            a = a,
+                            
+                            b = b,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.TcpStaticServer/**/.JsonServer/**/._p5, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c8, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
             }
@@ -5902,6 +8907,1373 @@ namespace AutoCSer.TestCase.TcpStaticClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 MemberServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        internal partial class GetSession
+        {
+            internal static partial class TcpStaticSimpleServer
+            {
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static string _M1(AutoCSer.Net.TcpInternalSimpleServer.ServerSocket _socket_)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.GetSession.myName(_socket_);
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public static partial class TcpCallSimple
+        {
+            /// <summary>
+            /// TCP 服务客户端识别测试
+            /// </summary>
+            public partial class GetSession
+            {
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+                /// <summary>
+                /// 服务器端读客户端标识测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<string> myName()
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p1 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p1
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleSessionServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p1>(_c1, ref _outputParameter_);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<string> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        internal partial class Session
+        {
+            internal static partial class TcpStaticSimpleServer
+            {
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static bool _M2(AutoCSer.Net.TcpInternalSimpleServer.ServerSocket _socket_, string user, string password)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.Session.login(_socket_, user, password);
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public static partial class TcpCallSimple
+        {
+            /// <summary>
+            /// TCP 服务客户端识别测试
+            /// </summary>
+            public partial class Session
+            {
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 2, IsVerifyMethod = true, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+
+                /// <summary>
+                /// 服务器端写客户端标识测试+服务器端验证函数测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<bool> login(string user, string password)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p2 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p2
+                    {
+                        
+                        p0 = user,
+                        
+                        p1 = password,
+                    };
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p3 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p3
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleSessionServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p2, AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleSessionServer/**/._p3>(_c2, ref _inputParameter_, ref _outputParameter_);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+            }
+        }
+}
+namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+
+        /// <summary>
+        /// TCP调用服务端
+        /// </summary>
+        public partial class SimpleSessionServer : AutoCSer.Net.TcpInternalSimpleServer.Server
+        {
+            /// <summary>
+            /// TCP调用服务端
+            /// </summary>
+            /// <param name="attribute">TCP调用服务器端配置信息</param>
+            /// <param name="verify">TCP验证实例</param>
+            /// <param name="log">日志接口</param>
+            public SimpleSessionServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleSessionServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Session), true)), verify, log, false)
+            {
+                setCommandData(2);
+                setCommand(0);
+                setVerifyCommand(1);
+                if (attribute.IsAutoServer) Start();
+            }
+            /// <summary>
+            /// 命令处理
+            /// </summary>
+            /// <param name="index">命令序号</param>
+            /// <param name="socket">TCP 内部服务套接字数据发送</param>
+            /// <param name="data">命令数据</param>
+            /// <returns>是否成功</returns>
+            public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+            {
+                AutoCSer.Net.TcpServer.ReturnType returnType;
+                switch (index - 128)
+                {
+                    case 0:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            {
+                                _p1 _outputParameter_ = new _p1();
+                                
+                                string Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.GetSession/**/.TcpStaticSimpleServer._M1(socket);
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c1, ref _outputParameter_);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 1:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p2 inputParameter = new _p2();
+                            if (socket.DeSerialize(ref data, ref inputParameter, true))
+                            {
+                                _p3 _outputParameter_ = new _p3();
+                                
+                                bool Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.Session/**/.TcpStaticSimpleServer._M2(socket, inputParameter.p0, inputParameter.p1);
+                                if (Return) socket.SetVerifyMethod();
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c2, ref _outputParameter_);
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    default: return false;
+                }
+            }
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 3, IsSimpleSerializeOutputParamter = true };
+
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p1
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<string>
+#endif
+            {
+                [AutoCSer.Json.IgnoreMember]
+                public string Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public string Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (string)value; }
+                }
+#endif
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p2
+            {
+                public string p0;
+                public string p1;
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p3
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<bool>
+#endif
+            {
+                [AutoCSer.Json.IgnoreMember]
+                public bool Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public bool Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (bool)value; }
+                }
+#endif
+            }
+        }
+}
+namespace AutoCSer.TestCase.TcpStaticSimpleClient
+{
+
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public class SimpleSessionServer
+        {
+            /// <summary>
+            /// TCP 静态调用客户端参数
+            /// </summary>
+            public sealed class ClientConfig
+            {
+                /// <summary>
+                /// TCP 内部服务配置
+                /// </summary>
+                public AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute ServerAttribute;
+                /// <summary>
+                /// 日志接口
+                /// </summary>
+                public AutoCSer.Log.ILog Log;
+                /// <summary>
+                /// 验证委托
+                /// </summary>
+                public Func<bool> VerifyMethod;
+            }
+            /// <summary>
+            /// 默认客户端TCP调用
+            /// </summary>
+            public static readonly AutoCSer.Net.TcpStaticSimpleServer.Client TcpClient;
+            static SimpleSessionServer()
+            {
+                ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
+                if (config.ServerAttribute == null)
+                {
+                    config.ServerAttribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleSessionServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Session));
+                }
+                if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SimpleSessionServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
+                TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        internal partial class Json
+        {
+            internal static partial class TcpStaticSimpleServer
+            {
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static void _M3()
+                {
+
+                    AutoCSer.TestCase.TcpStaticSimpleServer.Json.Inc();
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static void _M4(int a)
+                {
+
+                    AutoCSer.TestCase.TcpStaticSimpleServer.Json.Set(a);
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static void _M5(int a, int b)
+                {
+
+                    AutoCSer.TestCase.TcpStaticSimpleServer.Json.Add(a, b);
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M6()
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.Json.inc();
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M7(int a)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.Json.inc(a);
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M8(int a, int b)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.Json.add(a, b);
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public static partial class TcpCallSimple
+        {
+            /// <summary>
+            /// TCP服务JSON序列化支持测试，必须指定[IsJsonSerialize = true]，否则默认为二进制序列化
+            /// </summary>
+            public partial class Json
+            {
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 无参数无返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue Inc()
+                {
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Call(_c3) };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 单参数无返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue Set(int a)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4
+                    {
+                        
+                        a = a,
+                    };
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Call(_c4, ref _inputParameter_) };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 多参数无返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5
+                    {
+                        
+                        a = a,
+                        
+                        b = b,
+                    };
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Call(_c5, ref _inputParameter_) };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 无参数有返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> inc()
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6>(_c6, ref _outputParameter_);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 单参数有返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4
+                    {
+                        
+                        a = a,
+                    };
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4, AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6>(_c7, ref _inputParameter_, ref _outputParameter_);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 多参数有返回值调用测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5
+                    {
+                        
+                        a = a,
+                        
+                        b = b,
+                    };
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5, AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p6>(_c8, ref _inputParameter_, ref _outputParameter_);
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        internal partial class JsonOut
+        {
+            internal static partial class TcpStaticSimpleServer
+            {
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M9(out int a)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut.inc(out a);
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M10(int a, out int b)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut.inc(a, out b);
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M11(int a, int b, out int c)
+                {
+
+                    
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut.add(a, b, out c);
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public static partial class TcpCallSimple
+        {
+            /// <summary>
+            /// TCP服务JSON序列化支持测试，必须指定[IsJsonSerialize = true]，否则默认为二进制序列化
+            /// </summary>
+            public partial class JsonOut
+            {
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c9 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 输出参数测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4
+                    {
+                    };
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p7 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p7
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p4, AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p7>(_c9, ref _inputParameter_, ref _outputParameter_);
+                    
+                    a = _outputParameter_.a;
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c10 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 混合输出参数测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5
+                    {
+                        
+                        a = a,
+                    };
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p8 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p8
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p5, AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p8>(_c10, ref _inputParameter_, ref _outputParameter_);
+                    
+                    b = _outputParameter_.b;
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c11 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 9 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+
+                /// <summary>
+                /// 混合输出参数测试
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
+                {
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p9 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p9
+                    {
+                        
+                        a = a,
+                        
+                        b = b,
+                    };
+                    
+                    AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p10 _outputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p10
+                    {
+                    };
+                    AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Get<AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p9, AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleJsonServer/**/._p10>(_c11, ref _inputParameter_, ref _outputParameter_);
+                    
+                    c = _outputParameter_.c;
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                }
+
+            }
+        }
+}
+namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+
+        /// <summary>
+        /// TCP调用服务端
+        /// </summary>
+        public partial class SimpleJsonServer : AutoCSer.Net.TcpInternalSimpleServer.Server
+        {
+            /// <summary>
+            /// 命令序号记忆数据
+            /// </summary>
+            private static KeyValue<string, int>[] _identityCommandNames_()
+            {
+                KeyValue<string, int>[] names = new KeyValue<string, int>[9];
+                names[0].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.Json()Inc", 0);
+                names[1].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.Json(int)Set", 1);
+                names[2].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.Json(int,int)Add", 2);
+                names[3].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.Json()inc", 3);
+                names[4].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.Json(int)inc", 4);
+                names[5].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.Json(int,int)add", 5);
+                names[6].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut(out int)inc", 6);
+                names[7].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut(int,out int)inc", 7);
+                names[8].Set(@"AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut(int,int,out int)add", 8);
+                return names;
+            }
+            /// <summary>
+            /// TCP调用服务端
+            /// </summary>
+            /// <param name="attribute">TCP调用服务器端配置信息</param>
+            /// <param name="verify">TCP验证实例</param>
+            /// <param name="log">日志接口</param>
+            public SimpleJsonServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleJsonServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut), true)), verify, log, false)
+            {
+                setCommandData(9);
+                setCommand(0);
+                setCommand(1);
+                setCommand(2);
+                setCommand(3);
+                setCommand(4);
+                setCommand(5);
+                setCommand(6);
+                setCommand(7);
+                setCommand(8);
+                if (attribute.IsAutoServer) Start();
+            }
+            /// <summary>
+            /// 命令处理
+            /// </summary>
+            /// <param name="index">命令序号</param>
+            /// <param name="socket">TCP 内部服务套接字数据发送</param>
+            /// <param name="data">命令数据</param>
+            /// <returns>是否成功</returns>
+            public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+            {
+                AutoCSer.Net.TcpServer.ReturnType returnType;
+                switch (index - 128)
+                {
+                    case 0:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            {
+                                
+                                 AutoCSer.TestCase.TcpStaticSimpleServer.Json/**/.TcpStaticSimpleServer._M3();
+                                return socket.Send();
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.Send(returnType);
+                    case 1:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p4 inputParameter = new _p4();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                
+                                 AutoCSer.TestCase.TcpStaticSimpleServer.Json/**/.TcpStaticSimpleServer._M4(inputParameter.a);
+                                return socket.Send();
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.Send(returnType);
+                    case 2:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p5 inputParameter = new _p5();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                
+                                 AutoCSer.TestCase.TcpStaticSimpleServer.Json/**/.TcpStaticSimpleServer._M5(inputParameter.a, inputParameter.b);
+                                return socket.Send();
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.Send(returnType);
+                    case 3:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            {
+                                _p6 _outputParameter_ = new _p6();
+                                
+                                int Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.Json/**/.TcpStaticSimpleServer._M6();
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c6, ref _outputParameter_);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 4:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p4 inputParameter = new _p4();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                _p6 _outputParameter_ = new _p6();
+                                
+                                int Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.Json/**/.TcpStaticSimpleServer._M7(inputParameter.a);
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c7, ref _outputParameter_);
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 5:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p5 inputParameter = new _p5();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                _p6 _outputParameter_ = new _p6();
+                                
+                                int Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.Json/**/.TcpStaticSimpleServer._M8(inputParameter.a, inputParameter.b);
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c8, ref _outputParameter_);
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 6:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p4 inputParameter = new _p4();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                _p7 _outputParameter_ = new _p7();
+                                
+                                int Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut/**/.TcpStaticSimpleServer._M9(out _outputParameter_.a);
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c9, ref _outputParameter_);
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 7:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p5 inputParameter = new _p5();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                _p8 _outputParameter_ = new _p8();
+                                
+                                int Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut/**/.TcpStaticSimpleServer._M10(inputParameter.a, out _outputParameter_.b);
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c10, ref _outputParameter_);
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 8:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p9 inputParameter = new _p9();
+                            if (socket.DeSerialize(ref data, ref inputParameter))
+                            {
+                                _p10 _outputParameter_ = new _p10();
+                                
+                                int Return;
+                                
+                                Return =  AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut/**/.TcpStaticSimpleServer._M11(inputParameter.a, inputParameter.b, out _outputParameter_.c);
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c11, ref _outputParameter_);
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    default: return false;
+                }
+            }
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c3 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c4 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c5 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c6 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 6 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c7 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 6 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c8 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 6 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c9 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 7 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c10 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 8 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c11 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 10 };
+
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p4
+            {
+                public int a;
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p5
+            {
+                public int a;
+                public int b;
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p6
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+            {
+                [AutoCSer.Json.IgnoreMember]
+                public int Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public int Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (int)value; }
+                }
+#endif
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p7
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+            {
+                public int a;
+                [AutoCSer.Json.IgnoreMember]
+                public int Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public int Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (int)value; }
+                }
+#endif
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p8
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+            {
+                public int b;
+                [AutoCSer.Json.IgnoreMember]
+                public int Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public int Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (int)value; }
+                }
+#endif
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p9
+            {
+                public int a;
+                public int b;
+                public int c;
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p10
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+            {
+                public int c;
+                [AutoCSer.Json.IgnoreMember]
+                public int Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public int Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (int)value; }
+                }
+#endif
+            }
+        }
+}
+namespace AutoCSer.TestCase.TcpStaticSimpleClient
+{
+
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public class SimpleJsonServer
+        {
+            /// <summary>
+            /// TCP 静态调用客户端参数
+            /// </summary>
+            public sealed class ClientConfig
+            {
+                /// <summary>
+                /// TCP 内部服务配置
+                /// </summary>
+                public AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute ServerAttribute;
+                /// <summary>
+                /// 日志接口
+                /// </summary>
+                public AutoCSer.Log.ILog Log;
+                /// <summary>
+                /// 验证委托
+                /// </summary>
+                public Func<bool> VerifyMethod;
+            }
+            /// <summary>
+            /// 默认客户端TCP调用
+            /// </summary>
+            public static readonly AutoCSer.Net.TcpStaticSimpleServer.Client TcpClient;
+            static SimpleJsonServer()
+            {
+                ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
+                if (config.ServerAttribute == null)
+                {
+                    config.ServerAttribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleJsonServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut));
+                }
+                if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SimpleJsonServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
+                TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        public partial class Member
+        {
+            internal static partial class TcpStaticSimpleServer
+            {
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M12()
+                {
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.Member/**/.field;
+
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static void _M13(int value)
+                {
+                    AutoCSer.TestCase.TcpStaticSimpleServer.Member/**/.field = value;
+
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public static partial class TcpCallSimple
+        {
+            /// <summary>
+            /// TCP服务字段与属性支持测试
+            /// </summary>
+            public partial class Member
+            {
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c12 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+
+                /// <summary>
+                /// 测试字段
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> field
+                {
+                    get
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p8 _outputParameter_ = default(AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p8);
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleMemberServer/**/.TcpClient.Get(_c12, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    set
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p9 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p9
+                        {
+                            
+                            p0 = value,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleMemberServer/**/.TcpClient.Call(_c13, ref _inputParameter_);
+                        if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                        throw new Exception(_returnType_.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c13 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 9, IsSimpleSerializeInputParamter = true };
+
+
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        public partial class MemberProperty
+        {
+            internal static partial class TcpStaticSimpleServer
+            {
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M14()
+                {
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.MemberProperty/**/.getProperty;
+
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M15()
+                {
+                    return AutoCSer.TestCase.TcpStaticSimpleServer.MemberProperty/**/.property;
+
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static void _M16(int value)
+                {
+                    AutoCSer.TestCase.TcpStaticSimpleServer.MemberProperty/**/.property = value;
+
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public static partial class TcpCallSimple
+        {
+            /// <summary>
+            /// TCP服务字段与属性支持测试
+            /// </summary>
+            public partial class MemberProperty
+            {
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c14 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+
+                /// <summary>
+                /// 只读属性[不支持不可读属性]
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
+                {
+                    get
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p8 _outputParameter_ = default(AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p8);
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleMemberServer/**/.TcpClient.Get(_c14, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c15 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+
+
+                /// <summary>
+                /// 测试属性
+                /// </summary>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> property
+                {
+                    get
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p8 _outputParameter_ = default(AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p8);
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleMemberServer/**/.TcpClient.Get(_c15, ref _outputParameter_);
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                    }
+                    set
+                    {
+                        
+                        AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p9 _inputParameter_ = new AutoCSer.TestCase.TcpStaticSimpleServer/**/.SimpleMemberServer/**/._p9
+                        {
+                            
+                            p0 = value,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_ = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleMemberServer/**/.TcpClient.Call(_c16, ref _inputParameter_);
+                        if (_returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success) return;
+                        throw new Exception(_returnType_.ToString());
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c16 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 9, IsSimpleSerializeInputParamter = true };
+
+
+            }
+        }
+}
+namespace AutoCSer.TestCase.TcpStaticSimpleServer
+{
+
+        /// <summary>
+        /// TCP调用服务端
+        /// </summary>
+        public partial class SimpleMemberServer : AutoCSer.Net.TcpInternalSimpleServer.Server
+        {
+            /// <summary>
+            /// TCP调用服务端
+            /// </summary>
+            /// <param name="attribute">TCP调用服务器端配置信息</param>
+            /// <param name="verify">TCP验证实例</param>
+            /// <param name="log">日志接口</param>
+            public SimpleMemberServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleMemberServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Member), true)), verify, log, false)
+            {
+                setCommandData(5);
+                setCommand(0);
+                setCommand(1);
+                setCommand(2);
+                setCommand(3);
+                setCommand(4);
+                if (attribute.IsAutoServer) Start();
+            }
+            /// <summary>
+            /// 命令处理
+            /// </summary>
+            /// <param name="index">命令序号</param>
+            /// <param name="socket">TCP 内部服务套接字数据发送</param>
+            /// <param name="data">命令数据</param>
+            /// <returns>是否成功</returns>
+            public override bool DoCommand(int index, AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket, ref SubArray<byte> data)
+            {
+                AutoCSer.Net.TcpServer.ReturnType returnType;
+                switch (index - 128)
+                {
+                    case 0:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            {
+                                _p8 _outputParameter_ = new _p8();
+                                
+                                int Return;
+                                Return = AutoCSer.TestCase.TcpStaticSimpleServer.Member/**/.TcpStaticSimpleServer._M12();
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c12, ref _outputParameter_);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 1:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p9 inputParameter = new _p9();
+                            if (socket.DeSerialize(ref data, ref inputParameter, true))
+                            {
+                                
+                                AutoCSer.TestCase.TcpStaticSimpleServer.Member/**/.TcpStaticSimpleServer._M13(inputParameter.p0);
+                                return socket.Send();
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.Send(returnType);
+                    case 2:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            {
+                                _p8 _outputParameter_ = new _p8();
+                                
+                                int Return;
+                                Return = AutoCSer.TestCase.TcpStaticSimpleServer.MemberProperty/**/.TcpStaticSimpleServer._M14();
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c14, ref _outputParameter_);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 3:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            {
+                                _p8 _outputParameter_ = new _p8();
+                                
+                                int Return;
+                                Return = AutoCSer.TestCase.TcpStaticSimpleServer.MemberProperty/**/.TcpStaticSimpleServer._M15();
+                                _outputParameter_.Return = Return;
+                                return socket.Send(_c15, ref _outputParameter_);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.SendOutput(returnType);
+                    case 4:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
+                            _p9 inputParameter = new _p9();
+                            if (socket.DeSerialize(ref data, ref inputParameter, true))
+                            {
+                                
+                                AutoCSer.TestCase.TcpStaticSimpleServer.MemberProperty/**/.TcpStaticSimpleServer._M16(inputParameter.p0);
+                                return socket.Send();
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            socket.Log(error);
+                        }
+                        return socket.Send(returnType);
+                    default: return false;
+                }
+            }
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c12 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 8, IsSimpleSerializeOutputParamter = true };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c13 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c14 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 8, IsSimpleSerializeOutputParamter = true };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c15 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 8, IsSimpleSerializeOutputParamter = true };
+            private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c16 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p8
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+            {
+                [AutoCSer.Json.IgnoreMember]
+                public int Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public int Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (int)value; }
+                }
+#endif
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p9
+            {
+                public int p0;
+            }
+        }
+}
+namespace AutoCSer.TestCase.TcpStaticSimpleClient
+{
+
+        /// <summary>
+        /// TCP调用客户端
+        /// </summary>
+        public class SimpleMemberServer
+        {
+            /// <summary>
+            /// TCP 静态调用客户端参数
+            /// </summary>
+            public sealed class ClientConfig
+            {
+                /// <summary>
+                /// TCP 内部服务配置
+                /// </summary>
+                public AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute ServerAttribute;
+                /// <summary>
+                /// 日志接口
+                /// </summary>
+                public AutoCSer.Log.ILog Log;
+                /// <summary>
+                /// 验证委托
+                /// </summary>
+                public Func<bool> VerifyMethod;
+            }
+            /// <summary>
+            /// 默认客户端TCP调用
+            /// </summary>
+            public static readonly AutoCSer.Net.TcpStaticSimpleServer.Client TcpClient;
+            static SimpleMemberServer()
+            {
+                ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
+                if (config.ServerAttribute == null)
+                {
+                    config.ServerAttribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleMemberServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Member));
+                }
+                if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SimpleMemberServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
+                TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
             }
         }
 }

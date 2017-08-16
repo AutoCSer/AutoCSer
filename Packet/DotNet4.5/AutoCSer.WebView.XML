@@ -1228,6 +1228,21 @@
             <param name="value">返回值</param>
             <returns>是否存在返回值</returns>
         </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Get(AutoCSer.Net.HttpDomainServer.SessionId)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <returns>返回值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.Get(AutoCSer.Net.HttpDomainServer.SessionId,`0)">
+            <summary>
+            获取Session值
+            </summary>
+            <param name="sessionId">Session名称</param>
+            <param name="nullValue">默认空值</param>
+            <returns>返回值</returns>
+        </member>
         <member name="M:AutoCSer.Net.HttpDomainServer.Session`1.TryGet(AutoCSer.Net.HttpDomainServer.SessionId@,`0@)">
             <summary>
             获取Session值
@@ -2659,7 +2674,27 @@
             <param name="isShareAssembly">是否共享程序集</param>
             <returns>域名服务启动状态</returns>
         </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.startAwaiter(System.String,System.String,AutoCSer.Net.HttpRegister.Domain,System.Boolean)">
+            <summary>
+            启动域名服务
+            </summary>
+            <param name="assemblyFile">程序集文件名,包含路径</param>
+            <param name="serverTypeName">服务程序类型名称</param>
+            <param name="domain">域名信息</param>
+            <param name="isShareAssembly">是否共享程序集</param>
+            <returns>域名服务启动状态</returns>
+        </member>
         <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.start(System.String,System.String,AutoCSer.Net.HttpRegister.Domain[],System.Boolean)">
+            <summary>
+            启动域名服务
+            </summary>
+            <param name="assemblyFile">程序集文件名,包含路径</param>
+            <param name="serverTypeName">服务程序类型名称</param>
+            <param name="domains">域名信息集合</param>
+            <param name="isShareAssembly">是否共享程序集</param>
+            <returns>域名服务启动状态</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.startAwaiter(System.String,System.String,AutoCSer.Net.HttpRegister.Domain[],System.Boolean)">
             <summary>
             启动域名服务
             </summary>
@@ -2675,13 +2710,30 @@
             </summary>
             <param name="domains">域名信息集合</param>
         </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopAwaiter(AutoCSer.Net.HttpRegister.Domain[])">
+            <summary>
+            停止域名服务
+            </summary>
+            <param name="domains">域名信息集合</param>
+        </member>
         <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stop(AutoCSer.Net.HttpRegister.Domain)">
             <summary>
             停止域名服务
             </summary>
             <param name="domain">域名信息</param>
         </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopAwaiter(AutoCSer.Net.HttpRegister.Domain)">
+            <summary>
+            停止域名服务
+            </summary>
+            <param name="domain">域名信息</param>
+        </member>
         <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopListen(System.Boolean)">
+            <summary>
+            停止所有端口监听
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopListenAwaiter(System.Boolean)">
             <summary>
             停止所有端口监听
             </summary>

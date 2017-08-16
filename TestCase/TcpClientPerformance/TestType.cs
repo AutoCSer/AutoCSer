@@ -40,6 +40,10 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// </summary>
         ClientTaskAsync,
         /// <summary>
+        /// 客户端 await
+        /// </summary>
+        ClientAwaiter,
+        /// <summary>
         /// 无限制线程池
         /// </summary>
         NewThread,

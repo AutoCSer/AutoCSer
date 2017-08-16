@@ -811,6 +811,22 @@ namespace AutoCSer.Deploy
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 清除所有部署任务
+                /// </summary>
+                public AutoCSer.Net.TcpServer.Awaiter clearAwaiter()
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c3, _awaiter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -845,6 +861,30 @@ namespace AutoCSer.Deploy
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.IndexIdentity> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 创建部署
+                /// </summary>
+                /// <param name="clientId">部署服务端标识</param>
+                /// <returns>部署信息索引标识</returns>
+                public AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.Net.IndexIdentity> createAwaiter(AutoCSer.Net.IndexIdentity clientId)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.Net.IndexIdentity> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.Net.IndexIdentity>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p4 _inputParameter_ = new TcpInternalServer._p4
+                        {
+                            
+                            p0 = clientId,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p4, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity>>(_c4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 4, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -873,6 +913,28 @@ namespace AutoCSer.Deploy
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 清除部署信息
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                public AutoCSer.Net.TcpServer.Awaiter clearAwaiter(AutoCSer.Net.IndexIdentity identity)
+                {
+                    AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p4 _inputParameter_ = new TcpInternalServer._p4
+                        {
+                            
+                            p0 = identity,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        _returnType_ = _socket_.GetAwaiter(_c5, _awaiter_, ref _inputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 6, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
@@ -910,6 +972,32 @@ namespace AutoCSer.Deploy
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 启动部署
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                /// <param name="time">启动时间</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<bool> startAwaiter(AutoCSer.Net.IndexIdentity identity, System.DateTime time)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<bool>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                        {
+                            
+                            p0 = identity,
+                            
+                            p1 = time,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p6, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>>(_c6, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 8, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
 
@@ -946,6 +1034,32 @@ namespace AutoCSer.Deploy
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 设置文件数据源
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                /// <param name="files">文件数据源</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<bool> setFileSourceAwaiter(AutoCSer.Net.IndexIdentity identity, byte[][] files)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<bool>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                        {
+                            
+                            p0 = identity,
+                            
+                            p1 = files,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p8, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>>(_c7, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 9, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
@@ -981,6 +1095,32 @@ namespace AutoCSer.Deploy
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p10>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.Directory> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 比较文件最后修改时间
+                /// </summary>
+                /// <param name="directory">目录信息</param>
+                /// <param name="serverPath">服务器端路径</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.Deploy.Directory> getFileDifferentAwaiter(AutoCSer.Deploy.Directory directory, string serverPath)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.Deploy.Directory> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.Deploy.Directory>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p9 _inputParameter_ = new TcpInternalServer._p9
+                        {
+                            
+                            p0 = directory,
+                            
+                            p1 = serverPath,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p9, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory>>(_c8, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 11, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
@@ -1025,6 +1165,39 @@ namespace AutoCSer.Deploy
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 添加web任务(css/js/html)
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                /// <param name="directory">目录信息</param>
+                /// <param name="serverPath">服务器端路径</param>
+                /// <param name="taskType">任务类型</param>
+                /// <returns>任务索引编号,-1表示失败</returns>
+                public AutoCSer.Net.TcpServer.AwaiterBox<int> addFilesAwaiter(AutoCSer.Net.IndexIdentity identity, AutoCSer.Deploy.Directory directory, string serverPath, AutoCSer.Deploy.TaskType taskType)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p11 _inputParameter_ = new TcpInternalServer._p11
+                        {
+                            
+                            p2 = identity,
+                            
+                            p0 = directory,
+                            
+                            p3 = serverPath,
+                            
+                            p1 = taskType,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p11, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c9, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 13, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
 
@@ -1064,6 +1237,36 @@ namespace AutoCSer.Deploy
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p12>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 写文件
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                /// <param name="files">文件集合</param>
+                /// <param name="serverPath">服务器端路径</param>
+                /// <returns>任务索引编号,-1表示失败</returns>
+                public AutoCSer.Net.TcpServer.AwaiterBox<int> addAssemblyFilesAwaiter(AutoCSer.Net.IndexIdentity identity, AutoCSer.KeyValue<string,int>[] files, string serverPath)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p13 _inputParameter_ = new TcpInternalServer._p13
+                        {
+                            
+                            p1 = identity,
+                            
+                            p0 = files,
+                            
+                            p2 = serverPath,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p13, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c10, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 14, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
@@ -1108,6 +1311,39 @@ namespace AutoCSer.Deploy
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 写文件并运行程序
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                /// <param name="files">文件集合</param>
+                /// <param name="serverPath">服务器端路径</param>
+                /// <param name="runSleep">运行前休眠</param>
+                /// <returns>任务索引编号,-1表示失败</returns>
+                public AutoCSer.Net.TcpServer.AwaiterBox<int> addRunAwaiter(AutoCSer.Net.IndexIdentity identity, AutoCSer.KeyValue<string,int>[] files, string serverPath, int runSleep)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p14 _inputParameter_ = new TcpInternalServer._p14
+                        {
+                            
+                            p1 = identity,
+                            
+                            p0 = files,
+                            
+                            p3 = serverPath,
+                            
+                            p2 = runSleep,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p14, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c11, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 15, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
 
@@ -1144,6 +1380,33 @@ namespace AutoCSer.Deploy
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p12>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 等待运行程序切换结束
+                /// </summary>
+                /// <param name="identity">部署信息索引标识</param>
+                /// <param name="taskIndex">任务索引位置</param>
+                /// <returns>任务索引编号,-1表示失败</returns>
+                public AutoCSer.Net.TcpServer.AwaiterBox<int> addWaitRunSwitchAwaiter(AutoCSer.Net.IndexIdentity identity, int taskIndex)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p15 _inputParameter_ = new TcpInternalServer._p15
+                        {
+                            
+                            p0 = identity,
+                            
+                            p1 = taskIndex,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p15, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c12, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
             }

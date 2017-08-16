@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="ClientAwaiter.Open.cs" />
     <Compile Include="ClientSynchronous.Open.cs" />
     <Compile Include="ClientTaskAsync.Open.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

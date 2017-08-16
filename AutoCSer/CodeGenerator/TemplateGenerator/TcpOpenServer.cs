@@ -15,7 +15,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// <summary>
         /// TCP 服务代码生成
         /// </summary>
-        [Generator(Name = "TCP 服务", DependType = typeof(CSharper), IsAuto = true)]
+        [Generator(Name = "TCP 开放服务", DependType = typeof(CSharper), IsAuto = true)]
         internal sealed partial class Generator : Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute, AutoCSer.Net.TcpOpenServer.MethodAttribute, AutoCSer.Net.TcpOpenServer.ServerSocketSender>
         {
             /// <summary>
@@ -138,11 +138,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else if (method.IsVerifyMethod)
                             {
                                 IsVerifyMethod = true;
-                                method.Attribute.ServerTask = Net.TcpServer.ServerTaskType.Synchronous;
+                                method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                             }
                             parameterBuilder.Add(method);
 
-                            IsCallQueue |= method.Attribute.ServerTask == Net.TcpServer.ServerTaskType.Queue;
+                            IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
                         }
                     }
                     ParameterTypes = parameterBuilder.Get();

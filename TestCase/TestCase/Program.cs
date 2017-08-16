@@ -18,6 +18,7 @@ namespace AutoCSer.TestCase
                 {
                     Console.WriteLine(@"http://www.AutoCSer.com/
 ");
+
                     Type errorType = typeof(Program);
 #if NoAutoCSer
 #else
@@ -27,8 +28,11 @@ namespace AutoCSer.TestCase
                     using (AutoCSer.TestCase.TcpStaticServer.JsonServer jsonServer = new AutoCSer.TestCase.TcpStaticServer.JsonServer())
                     using (AutoCSer.TestCase.TcpStaticServer.MemberServer memberServer = new AutoCSer.TestCase.TcpStaticServer.MemberServer())
                     using (AutoCSer.TestCase.TcpStaticServer.SessionServer sessionServer = new AutoCSer.TestCase.TcpStaticServer.SessionServer())
+                    using (AutoCSer.TestCase.TcpStaticSimpleServer.SimpleJsonServer jsonSimpleServer = new AutoCSer.TestCase.TcpStaticSimpleServer.SimpleJsonServer())
+                    using (AutoCSer.TestCase.TcpStaticSimpleServer.SimpleMemberServer memberSimpleServer = new AutoCSer.TestCase.TcpStaticSimpleServer.SimpleMemberServer())
+                    using (AutoCSer.TestCase.TcpStaticSimpleServer.SimpleSessionServer sessionSimpleServer = new AutoCSer.TestCase.TcpStaticSimpleServer.SimpleSessionServer())
                     {
-                        if (fileBlockServer.IsListen && jsonServer.IsListen && memberServer.IsListen && sessionServer.IsListen)
+                        if (fileBlockServer.IsListen && jsonServer.IsListen && memberServer.IsListen && sessionServer.IsListen && jsonSimpleServer.IsListen && memberSimpleServer.IsListen && sessionSimpleServer.IsListen)
                         {
 #endif
                             do
@@ -41,6 +45,8 @@ namespace AutoCSer.TestCase
 #else
                                 if (!TcpInternalServer.Emit.Server.TestCase()) { errorType = typeof(TcpInternalServer.Emit.Server); break; }
                                 if (!TcpOpenServer.Emit.Server.TestCase()) { errorType = typeof(TcpOpenServer.Emit.Server); break; }
+                                if (!TcpInternalSimpleServer.Emit.Server.TestCase()) { errorType = typeof(TcpInternalSimpleServer.Emit.Server); break; }
+                                if (!TcpOpenSimpleServer.Emit.Server.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Emit.Server); break; }
 #endif
 #if NoAutoCSer
 #else
@@ -53,6 +59,16 @@ namespace AutoCSer.TestCase
                                 if (!TcpOpenServer.Session.TestCase()) { errorType = typeof(TcpOpenServer.Session); break; }
                                 if (!TcpOpenServer.Member.TestCase()) { errorType = typeof(TcpOpenServer.Member); break; }
                                 if (!TcpOpenServer.Json.TestCase()) { errorType = typeof(TcpOpenServer.Json); break; }
+                                if (!TcpInternalSimpleServer.Session.TestCase()) { errorType = typeof(TcpInternalSimpleServer.Session); break; }
+                                if (!TcpInternalSimpleServer.Member.TestCase()) { errorType = typeof(TcpInternalSimpleServer.Member); break; }
+                                if (!TcpInternalSimpleServer.Json.TestCase()) { errorType = typeof(TcpInternalSimpleServer.Json); break; }
+                                if (!TcpStaticSimpleServer.Session.TestClient()) { errorType = typeof(TcpStaticSimpleServer.Session); break; }
+                                if (!TcpStaticSimpleServer.Member.TestClient()) { errorType = typeof(TcpStaticSimpleServer.Member); break; }
+                                if (!TcpStaticSimpleServer.Json.TestClient()) { errorType = typeof(TcpStaticSimpleServer.Json); break; }
+                                if (!TcpOpenSimpleServer.Session.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Session); break; }
+                                if (!TcpOpenSimpleServer.Member.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Member); break; }
+                                if (!TcpOpenSimpleServer.Json.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Json); break; }
+
                                 if (!DiskBlock.File.TestCase()) { errorType = typeof(DiskBlock.File); break; }
 #endif
                                 Console.Write('.');

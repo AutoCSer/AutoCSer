@@ -27,6 +27,14 @@ namespace AutoCSer.TestCase
             get { return new TcpStaticClient.SessionServer.ClientConfig { VerifyMethod = TcpStaticServer.Session.Verify }; }
         }
         /// <summary>
+        /// TCP 静态调用客户端参数
+        /// </summary>
+        [AutoCSer.Config.Member]
+        public static AutoCSer.TestCase.TcpStaticSimpleClient.SimpleSessionServer.ClientConfig SimpleSessionClientConfig
+        {
+            get { return new TcpStaticSimpleClient.SimpleSessionServer.ClientConfig { VerifyMethod = TcpStaticSimpleServer.Session.Verify }; }
+        }
+        /// <summary>
         /// 文件块服务 TCP 静态服务配置
         /// </summary>
         [AutoCSer.Config.Member(Name = AutoCSer.DiskBlock.Server.ServerName)]

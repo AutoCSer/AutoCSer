@@ -34,7 +34,20 @@ namespace AutoCSer.Example.TcpOpenServer
                     using (AutoCSer.Example.TcpOpenServer.TcpClient.Static.TcpOpenClient client = new AutoCSer.Example.TcpOpenServer.TcpClient.Static.TcpOpenClient())
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<int> sum = client.Add(2, 3);
-                        return sum.Type == AutoCSer.Net.TcpServer.ReturnType.Success && sum.Value == 2 + 3;
+                        if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+                        {
+                            return false;
+                        }
+
+                        #region Awaiter.Wait()
+                        sum = client.AddAwaiter(2, 3).Wait().Result;
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+                        {
+                            return false;
+                        }
+                        #endregion
+
+                        return true;
                     }
                 }
             }

@@ -36,11 +36,11 @@ namespace AutoCSer.Web.HttpServer
         /// TCP 内部注册写服务配置
         /// </summary>
         [AutoCSer.Config.Member(Name = AutoCSer.Web.Config.Pub.TcpRegister)]
-        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterServerAttribute
+        internal static AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute TcpRegisterServerAttribute
         {
             get
             {
-                return AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.Server));
+                return AutoCSer.Web.Config.Pub.GetVerifyTcpServerSimpleAttribute(typeof(AutoCSer.Net.TcpRegister.Server));
             }
         }
         /// <summary>

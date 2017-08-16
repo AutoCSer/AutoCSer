@@ -268,7 +268,7 @@ namespace AutoCSer.TestCase.WebPerformance
                 asyncType = ClientSocketAsyncType.Receive;
                 recieveAsyncEventArgs.SetBuffer(0, bufferSize);
                 pipelineReceiveSize = receiveKeepAliveSize;
-                if (socket.ReceiveAsync(recieveAsyncEventArgs) || checkReceive()) return true;
+                return socket.ReceiveAsync(recieveAsyncEventArgs) || checkReceive();
             }
             return false;
         }

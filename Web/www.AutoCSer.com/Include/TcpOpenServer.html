@@ -1,0 +1,5 @@
+﻿<p>开放服务只支持实例方法，需要定义一个服务类 class ，用于整合少量的远程调用函数，服务的客户端也是一个单独的类型。</p>
+<p>1. 在服务类 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
+<p>2. 给 class 添加 TCP 服务申明配置 <b>[AutoCSer.Net.TcpOpen=@[0]Server.Server(Host = "127.0.0.1", Port = 12345)]</b></p>
+<p>3. 给实例方法添加 TCP 远程函数申明配置 <b>[AutoCSer.Net.TcpOpen=@[0]Server.Method]</b>，为了防止调用者混淆远程函数与本地函数产生误调用，默认配置下远程函数必须对于其它程序集不可见（private / protected / internal）</p>
+<p>4. 给该工程项目配置<a href="/CodeGenerator.html">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。</p>

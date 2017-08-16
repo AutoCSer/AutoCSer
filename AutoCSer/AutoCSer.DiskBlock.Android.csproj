@@ -62,6 +62,7 @@
     <Compile Include="DiskBlock\MemberIndex.cs" />
     <Compile Include="DiskBlock\MemberState.cs" />
     <Compile Include="DiskBlock\MemberValue.cs" />
+    <Compile Include="DiskBlock\NET4.5\Member.cs" />
     <Compile Include="DiskBlock\ReadRequest.cs" />
     <Compile Include="DiskBlock\Server.cs" />
     <Compile Include="DiskBlock\UnionType.cs" />

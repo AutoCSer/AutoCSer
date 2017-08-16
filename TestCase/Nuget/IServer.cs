@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.Nuget
     /// <summary>
     /// TCP 服务接口
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12104)]
+    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12108)]
     public interface IServer
     {
         /// <summary>

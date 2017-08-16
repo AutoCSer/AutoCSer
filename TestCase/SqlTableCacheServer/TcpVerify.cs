@@ -11,7 +11,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// TCP 服务验证字符串
         /// </summary>
-        internal const string VerifyString = "!2#4%6&8QwErTyAsDfZx";
+        internal const string VerifyString = "1";
     }
     /// <summary>
     /// TCP 调用验证

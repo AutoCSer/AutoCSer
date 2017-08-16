@@ -58,6 +58,7 @@
     <Compile Include="Deploy\FileTime.cs" />
     <Compile Include="Deploy\Log.cs" />
     <Compile Include="Deploy\LogType.cs" />
+    <Compile Include="Deploy\NET4.5\ClientDeploy.cs" />
     <Compile Include="Deploy\Server.cs" />
     <Compile Include="Deploy\Task.cs" />
     <Compile Include="Deploy\TaskType.cs" />

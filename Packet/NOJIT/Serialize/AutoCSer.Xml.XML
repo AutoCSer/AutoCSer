@@ -317,7 +317,7 @@
         </member>
         <member name="F:AutoCSer.Config.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Config.UnionType.Pub">
@@ -2714,6 +2714,11 @@
         <member name="F:AutoCSer.Metadata.BoxSerializeAttribute.IsXml">
             <summary>
             XML序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.BoxSerializeAttribute.#ctor">
+            <summary>
+            值类型序列化包装处理
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.FieldIndex">
@@ -9160,7 +9165,7 @@
         </member>
         <member name="F:AutoCSer.Xml.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Xml.UnionType.ParseConfig">

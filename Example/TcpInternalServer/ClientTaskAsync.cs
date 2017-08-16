@@ -20,7 +20,7 @@ namespace AutoCSer.Example.TcpInternalServer
 #if DOTNET4
         [AutoCSer.Net.TcpServer.Method]
 #else
-        [AutoCSer.Net.TcpServer.Method(IsClientTaskAsync = true)]
+        [AutoCSer.Net.TcpServer.Method(IsClientTaskAsync = true, IsClientAwaiter = true)]
 #endif
 #endif
         int Add(int left, int right)
@@ -47,7 +47,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         #region 同步代理调用
                         AutoCSer.Net.TcpServer.ReturnValue<int> sum = client.Add(2, 3);
-                        if (sum.Type != Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3)
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
                         {
                             return false;
                         }
@@ -55,7 +55,15 @@ namespace AutoCSer.Example.TcpInternalServer
 
                         #region async 同步调用
                         sum = client.AddAsync(2, 3).Result;
-                        if (sum.Type != Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3)
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+                        {
+                            return false;
+                        }
+                        #endregion
+
+                        #region Awaiter.Wait()
+                        sum = client.AddAwaiter(2, 3).Wait().Result;
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
                         {
                             return false;
                         }

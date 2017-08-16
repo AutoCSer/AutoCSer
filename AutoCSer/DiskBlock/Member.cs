@@ -8,7 +8,7 @@ namespace AutoCSer.DiskBlock
     /// </summary>
     /// <typeparam name="valueType"></typeparam>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    public struct Member<valueType> where valueType : class
+    public partial struct Member<valueType> where valueType : class
     {
         /// <summary>
         /// 磁盘块索引位置
@@ -56,28 +56,37 @@ namespace AutoCSer.DiskBlock
                         try
                         {
                             AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer> clientBuffer = client.read(new ClientBuffer { Buffer = new SubArray<byte>(buffer.Buffer, buffer.StartIndex, Size), IsClient = true }, Index);
-                            if (clientBuffer.Type == Net.TcpServer.ReturnType.Success)
-                            {
-                                if ((state = clientBuffer.Value.State) == MemberState.Remote)
-                                {
-                                    deSerializeState = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<valueType>(ref clientBuffer.Value.Buffer, ref value).State;
-                                    if (deSerializeState != BinarySerialize.DeSerializeState.Success)
-                                    {
-                                        value = null;
-                                        state = MemberState.DeSerializeError;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                tcpReturnType = clientBuffer.Type;
-                                state = MemberState.TcpError;
-                            }
+                            onRead(ref clientBuffer);
                         }
                         finally { buffer.Free(); }
                         break;
                 }
                 return new MemberValue<valueType> { Value = value, State = state };
+            }
+        }
+        /// <summary>
+        /// 设置数据
+        /// </summary>
+        /// <param name="clientBuffer">客户端缓冲区</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private void onRead(ref AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer> clientBuffer)
+        {
+            if (clientBuffer.Type == Net.TcpServer.ReturnType.Success)
+            {
+                if ((state = clientBuffer.Value.State) == MemberState.Remote)
+                {
+                    deSerializeState = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<valueType>(ref clientBuffer.Value.Buffer, ref value).State;
+                    if (deSerializeState != BinarySerialize.DeSerializeState.Success)
+                    {
+                        value = null;
+                        state = MemberState.DeSerializeError;
+                    }
+                }
+            }
+            else
+            {
+                tcpReturnType = clientBuffer.Type;
+                state = MemberState.TcpError;
             }
         }
         /// <summary>
@@ -152,22 +161,17 @@ namespace AutoCSer.DiskBlock
                 SubBuffer.Pool.GetPool(bufferSize).Get(ref buffer);
                 try
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    int size;
+                    AppendBuffer appendBuffer = getAppendBuffer(ref value, serializer, ref buffer, out size);
+                    appendBuffer.BlockIndex = (ushort)blockIndex;
+                    AutoCSer.Net.TcpServer.ReturnValue<ulong> index = client.append(appendBuffer);
+                    if (index.Type == Net.TcpServer.ReturnType.Success && index.Value != 0)
                     {
-                        byte* start = bufferFixed + buffer.StartIndex;
-                        serializer.SerializeNotNull(value, start, buffer.PoolBuffer.Pool.Size, ClientConfig.BinarySerializeConfig);
-                        AutoCSer.Net.TcpServer.ReturnValue<ulong> index;
-                        int size = serializer.Stream.ByteSize;
-                        if (serializer.Stream.Data.Data == start) index = client.append(new AppendBuffer { Buffer = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = size }, Index = size == Size ? Index : 0, BlockIndex = (ushort)blockIndex });
-                        else index = client.append(new AppendBuffer { Buffer = new SubArray<byte> { Array = serializer.Stream.GetArray(), Length = size }, Index = size == Size ? Index : 0, BlockIndex = (ushort)blockIndex });
-                        if (index.Type == Net.TcpServer.ReturnType.Success && index.Value != 0)
-                        {
-                            Index = index.Value;
-                            Size = size;
-                            value = Value;
-                            state = MemberState.Remote;
-                            return true;
-                        }
+                        Index = index.Value;
+                        Size = size;
+                        value = Value;
+                        state = MemberState.Remote;
+                        return true;
                     }
                 }
                 finally
@@ -177,6 +181,26 @@ namespace AutoCSer.DiskBlock
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 获取添加数据缓冲区
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="serializer"></param>
+        /// <param name="buffer"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private unsafe AppendBuffer getAppendBuffer(ref valueType value, BinarySerialize.Serializer serializer, ref SubBuffer.PoolBufferFull buffer, out int size)
+        {
+            fixed (byte* bufferFixed = buffer.Buffer)
+            {
+                byte* start = bufferFixed + buffer.StartIndex;
+                serializer.SerializeNotNull(value, start, buffer.PoolBuffer.Pool.Size, ClientConfig.BinarySerializeConfig);
+                size = serializer.Stream.ByteSize;
+                if (serializer.Stream.Data.Data == start) return new AppendBuffer { Buffer = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = size }, Index = size == Size ? Index : 0 };
+                else return new AppendBuffer { Buffer = new SubArray<byte> { Array = serializer.Stream.GetArray(), Length = size }, Index = size == Size ? Index : 0 };
+            }
         }
     }
 }

@@ -39,7 +39,15 @@ namespace AutoCSer.Example.TcpOpenServer
                     {
                         #region 同步代理调用
                         AutoCSer.Net.TcpServer.ReturnValue<int> sum = client.Add(2, 3);
-                        if (sum.Type != Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3)
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+                        {
+                            return false;
+                        }
+                        #endregion
+
+                        #region Awaiter.Wait()
+                        sum = client.AddAwaiter(2, 3).Wait().Result;
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
                         {
                             return false;
                         }
@@ -54,7 +62,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             sumWait.Set();
                         });
                         sumWait.WaitOne();
-                        if (sum.Type != Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3)
+                        if (sum.Type != Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
                         {
                             return false;
                         }

@@ -282,7 +282,7 @@ namespace AutoCSer.TestCase.WebPerformance
             {
                 asyncType = ClientSocketAsyncType.Receive;
                 recieveAsyncEventArgs.SetBuffer(0, bufferSize);
-                if (socket.ReceiveAsync(recieveAsyncEventArgs) || next()) return true;
+                return socket.ReceiveAsync(recieveAsyncEventArgs) || next();
             }
             return false;
         }

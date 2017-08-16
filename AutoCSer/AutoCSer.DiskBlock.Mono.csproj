@@ -61,6 +61,7 @@
     <Compile Include="DiskBlock\UnionType.cs" />
     <Compile Include="DiskBlock\WriteRequest.cs" />
     <Compile Include="{AutoCSer.DiskBlock}.AutoCSer.cs" />
+    <Compile Include="DiskBlock\NET4.5\Member.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

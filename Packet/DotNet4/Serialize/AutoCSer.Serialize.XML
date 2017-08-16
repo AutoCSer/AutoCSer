@@ -3299,6 +3299,14 @@
             <param name="value">字符串起始位置</param>
             <param name="count">写入字符数</param>
         </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator.initobj(System.Reflection.Emit.ILGenerator,System.Type,System.Reflection.Emit.LocalBuilder)">
+            <summary>
+            对象初始化
+            </summary>
+            <param name="generator"></param>
+            <param name="type"></param>
+            <param name="local"></param>
+        </member>
         <member name="T:AutoCSer.BinarySerialize.SerializeMemberAttribute">
             <summary>
             二进制数据序列化成员配置
@@ -10062,7 +10070,7 @@
         </member>
         <member name="F:AutoCSer.BinarySerialize.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.UnionType.DeSerializeConfig">
@@ -12839,6 +12847,11 @@
             XML序列化
             </summary>
         </member>
+        <member name="M:AutoCSer.Metadata.BoxSerializeAttribute.#ctor">
+            <summary>
+            值类型序列化包装处理
+            </summary>
+        </member>
         <member name="T:AutoCSer.Json.UnionType">
             <summary>
             类型转换
@@ -12846,7 +12859,7 @@
         </member>
         <member name="F:AutoCSer.Json.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Json.UnionType.ParseConfig">
@@ -15773,6 +15786,11 @@
             JSON 序列化成员忽略配置
             </summary>
         </member>
+        <member name="M:AutoCSer.Json.IgnoreMemberAttribute.#ctor">
+            <summary>
+            JSON 序列化成员忽略配置
+            </summary>
+        </member>
         <member name="P:AutoCSer.Json.IgnoreMemberAttribute.GetIsIgnoreCurrent">
             <summary>
             禁止当前安装
@@ -15878,7 +15896,7 @@
         </member>
         <member name="F:AutoCSer.Xml.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Xml.UnionType.ParseConfig">
@@ -16782,7 +16800,7 @@
         </member>
         <member name="F:AutoCSer.Config.UnionType.Value">
             <summary>
-            回调对象
+            目标对象
             </summary>
         </member>
         <member name="F:AutoCSer.Config.UnionType.Pub">

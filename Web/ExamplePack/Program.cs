@@ -206,7 +206,7 @@ namespace AutoCSer.Tool.OpenPack
         /// <summary>
         /// Extension 程序文件
         /// </summary>
-        private static readonly string[] extensionFileNames = new string[] { "EmitGenerator.Sql.cs", "Expression.cs", "SqlTable.cs", "Type.Sql.cs"/**/, "MethodInfo.cs", "Type.CodeGenerator.cs" };
+        private static readonly string[] extensionFileNames = new string[] { "EmitGenerator.Sql.cs", "Expression.cs", "SqlTable.cs", "Type.Sql.cs"/**/, "MethodInfo.cs", "Type.CodeGenerator.cs", "TcpStaticServerAttribute.cs" };
         /// <summary>
         /// Metadata 程序文件
         /// </summary>

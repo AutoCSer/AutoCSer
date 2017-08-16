@@ -14,7 +14,6 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <returns>和</returns>
-        [AutoCSer.Net.TcpServer.Method(IsClientSendOnly = true)]
         AutoCSer.Net.TcpServer.ReturnValue<int> AddOnly(int left, int right);
     }
     /// <summary>
@@ -28,7 +27,6 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <returns>和</returns>
-        [AutoCSer.Net.TcpServer.Method(IsClientSendOnly = true)]
         AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right);
     }
     /// <summary>
@@ -42,7 +40,6 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <returns>和</returns>
-        [AutoCSer.Net.TcpServer.Method(IsClientSendOnly = true)]
         AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right);
     }
     /// <summary>
@@ -56,7 +53,6 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <returns>和</returns>
-        [AutoCSer.Net.TcpServer.Method(IsClientSendOnly = true)]
         public AutoCSer.Net.TcpServer.ReturnValue<int> AddOnly(int left, int right)
         {
             return left + right;
@@ -67,7 +63,6 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <returns>和</returns>
-        [AutoCSer.Net.TcpServer.Method(IsClientSendOnly = true)]
         AutoCSer.Net.TcpServer.ReturnValue<int> IInheritA.Add(int left, int right)
         {
             return left + right + 1;
@@ -78,7 +73,6 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <returns>和</returns>
-        [AutoCSer.Net.TcpServer.Method(IsClientSendOnly = true)]
         AutoCSer.Net.TcpServer.ReturnValue<int> IInheritB.Add(int left, int right)
         {
             return left + right + 2;
@@ -99,19 +93,24 @@ namespace AutoCSer.Example.TcpInterfaceServer
                     using (client as IDisposable)
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<int> sum = ((IInheritA)client).Add(2, 3);
-                        if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3 + 1)
+                        if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3 + 1)
                         {
                             return false;
                         }
 
                         sum = ((IInheritB)client).Add(2, 3);
-                        if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success && sum.Value != 2 + 3 + 2)
+                        if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3 + 2)
                         {
                             return false;
                         }
 
                         sum = client.AddOnly(2, 3);
-                        return sum.Type == AutoCSer.Net.TcpServer.ReturnType.Success && sum.Value == 2 + 3;
+                        if (sum.Type != AutoCSer.Net.TcpServer.ReturnType.Success || sum.Value != 2 + 3)
+                        {
+                            return false;
+                        }
+
+                        return true;
                     }
                 }
             }

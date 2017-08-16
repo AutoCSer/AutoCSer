@@ -303,6 +303,32 @@ namespace AutoCSer.DiskBlock
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="buffer">缓冲区，Start 指定字节数量</param>
+                /// <param name="index">索引位置</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer> readAwaiter(AutoCSer.DiskBlock.ClientBuffer buffer, ulong index)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
+                        {
+                            
+                            p0 = buffer,
+                            
+                            p1 = index,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer>>(_c0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, IsSendOnly = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
@@ -372,6 +398,29 @@ namespace AutoCSer.DiskBlock
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p6>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<ulong> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 添加数据
+                /// </summary>
+                /// <param name="buffer">数据</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<ulong> appendAwaiter(AutoCSer.DiskBlock.AppendBuffer buffer)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<ulong> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<ulong>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p5 _inputParameter_ = new TcpInternalServer._p5
+                        {
+                            
+                            p0 = buffer,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p5, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong>>(_c2, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
                 }
 
             }

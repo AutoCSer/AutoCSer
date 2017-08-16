@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Client.TcpInternal.cs" />
+    <Compile Include="ClientAwaiter.cs" />
     <Compile Include="ClientSynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
     <Compile Include="Program.cs" />
