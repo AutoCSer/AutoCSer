@@ -19,9 +19,6 @@ namespace AutoCSer.TestCase.SerializePerformance
         public long Long;
         public ulong ULong;
         public DateTime DateTime;
-        public float Float;
-        public double Double;
-        public decimal Decimal;
         public Guid Guid;
         public char Char;
         public string String;
@@ -35,9 +32,6 @@ namespace AutoCSer.TestCase.SerializePerformance
         public long? LongNull;
         public ulong? ULongNull;
         public DateTime? DateTimeNull;
-        public float? FloatNull;
-        public double? DoubleNull;
-        public decimal? DecimalNull;
         public Guid? GuidNull;
         public char? CharNull;
     }

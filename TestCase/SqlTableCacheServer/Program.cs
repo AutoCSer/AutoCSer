@@ -8,16 +8,20 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
             EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.SqlTableCacheServer", out createdProcessWait);
             if (createdProcessWait)
             {
-#if NoAutoCSer
-#else
-                Console.WriteLine("http://www.AutoCSer.com/OrmCache/Index.html");
-                bool isServer = false;
                 using (processWait)
                 {
+#endif
+#if NoAutoCSer
+#else
+                    Console.WriteLine("http://www.AutoCSer.com/OrmCache/Index.html");
+                    bool isServer = false;
                     try
                     {
                         using (AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer.DataReader dataReaderServer = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer.DataReader())
@@ -42,9 +46,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                         if (isServer) Console.WriteLine("数据库连接失败，请检测 Config.cs 连接字符串等配置是否正确。");
                     }
                     Console.ReadKey();
-                }
 #endif
+#if NETCOREAPP2_0
+#else
+                }
             }
+#endif
         }
     }
 }

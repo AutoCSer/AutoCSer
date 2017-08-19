@@ -62,7 +62,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// HTML模板建树器
             /// </summary>
             /// <param name="html">HTML</param>
-            /// <param name="isOnlyHtml">是否仅仅解析HTML（不生成AJAX数据）</param>
             public ViewTreeBuilder(string html)
                 : base(html, false)
             {
@@ -268,6 +267,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 检测成员名称
             /// </summary>
             /// <param name="memberName"></param>
+            /// <param name="isClient"></param>
             protected override void checkMemberName(ref SubString memberName, ref bool isClient)
             {
                 int index = memberName.IndexOf('#');
@@ -314,6 +314,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 输出绑定的数据
             /// </summary>
             /// <param name="member">成员节点</param>
+            /// <param name="isToHtml"></param>
+            /// <param name="isToTextArea"></param>
             protected void at(MemberNode member, bool isToHtml, bool isToTextArea)
             {
                 if (ignoreCode == 0)
@@ -895,7 +897,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         }
         /// <summary>
         /// WEB视图代码生成
-        /// </summary
+        /// </summary>
         [Generator(Name = "WEB 视图", DependType = typeof(Html), IsAuto = true)]
         internal partial class Generator : Generator<AutoCSer.WebView.ViewAttribute>
         {
@@ -1302,6 +1304,7 @@ namespace " + AutoParameter.DefaultNamespace + @"
             /// <summary>
             /// 创建代码
             /// </summary>
+            /// <param name="parameter"></param>
             /// <param name="type"></param>
             /// <param name="view"></param>
             /// <param name="loadMethod"></param>

@@ -7,12 +7,16 @@ namespace AutoCSer.Example.TcpInterfaceServer
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
-            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.Example.TcpInterfaceServer", out createdProcessWait);
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.TcpInterfaceServer", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)
                 {
+#endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/InterfaceServer.html
 ");
                     Console.WriteLine(RefOut.TestCase());
@@ -22,8 +26,11 @@ namespace AutoCSer.Example.TcpInterfaceServer
                     Console.WriteLine(Inherit.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
     }
 }

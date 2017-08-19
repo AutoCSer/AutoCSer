@@ -222,7 +222,11 @@ namespace AutoCSer.CodeGenerator
         private static readonly string AutoCSerScriptPath;
         static Html()
         {
+#if NETCOREAPP2_0
+            string path = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath).Parent.Parent.Parent.fullName(), jsPath = path + @"AutoCSer\Js\";
+#else
             string path = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath).Parent.Parent.fullName(), jsPath = path + @"AutoCSer\Js\";
+#endif
             if (!Directory.Exists(jsPath))
             {
                 jsPath = AutoCSer.PubPath.ApplicationPath + @"Js\";

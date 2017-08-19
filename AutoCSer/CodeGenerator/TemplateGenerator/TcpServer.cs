@@ -540,7 +540,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送</typeparam>
         internal abstract class Generator<attributeType, methodAttributeType, serverSocketSenderType> : GeneratorBase<attributeType, methodAttributeType, serverSocketSenderType>
             where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
-            where methodAttributeType : AutoCSer.Net.TcpServer.MethodBaseAttribute
+            where methodAttributeType : AutoCSer.Net.TcpServer.MethodAttribute
             where serverSocketSenderType : AutoCSer.Net.TcpServer.ServerSocketSender
         {
             /// <summary>
@@ -800,6 +800,21 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get
                     {
                         return IsKeepCallback == 0 ? "void" : keepCallbackType;
+                    }
+                }
+                /// <summary>
+                /// 服务端创建输出是否开启线程
+                /// </summary>
+                public bool IsServerBuildOutputThread
+                {
+                    get
+                    {
+                        if (!Attribute.IsExpired)
+                        {
+                            if (IsAsynchronousCallback) return Attribute.IsServerAsynchronousCallbackBuildOutputThread;
+                            if (IsMethodServerCall && Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.ThreadPool) return false;
+                        }
+                        return true;
                     }
                 }
                 ///// <summary>

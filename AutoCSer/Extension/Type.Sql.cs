@@ -10,16 +10,6 @@ namespace AutoCSer.Extension
     internal static partial class Type_Sql
     {
         /// <summary>
-        /// 判断类型是否可空类型
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns>是否可空类型</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static bool isNull(this Type type)
-        {
-            return type != null && (!type.IsValueType || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)));
-        }
-        /// <summary>
         /// 值类型转换为可空类型
         /// </summary>
         /// <param name="type">值类型</param>

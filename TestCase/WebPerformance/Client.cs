@@ -152,7 +152,16 @@ namespace AutoCSer.TestCase.WebPerformance
         public void CloseSocket()
         {
             keepAliveCount = 0;
+#if NETCOREAPP2_0
+            try
+            {
+                socket.Shutdown(SocketShutdown.Both);
+            }
+            catch { }
+            finally { socket.Dispose(); }
+#else
             socket.Dispose();
+#endif
         }
     }
 }

@@ -104,6 +104,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         return true;
                     }
                 }
+                Console.WriteLine("IsListen ERROR");
             }
 #endif
             return false;

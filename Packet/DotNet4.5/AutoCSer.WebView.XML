@@ -1993,6 +1993,11 @@
             域名搜索数据
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.HttpRegister.DomainSearchData.searcher">
+            <summary>
+            字节数组搜索器
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.HttpRegister.DomainSearchData.lastDomain">
             <summary>
             最后一次查询域名
@@ -2080,7 +2085,7 @@
             字节数组搜索器
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.HttpRegister.DomainSearcher.state">
+        <member name="F:AutoCSer.Net.HttpRegister.DomainSearcher.State">
             <summary>
             状态集合
             </summary>
@@ -2088,11 +2093,6 @@
         <member name="F:AutoCSer.Net.HttpRegister.DomainSearcher.bytes">
             <summary>
             字节查找表
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.HttpRegister.DomainSearcher.currentState">
-            <summary>
-            当前状态
             </summary>
         </member>
         <member name="F:AutoCSer.Net.HttpRegister.DomainSearcher.tableType">
@@ -4903,11 +4903,6 @@
             名称状态查找器
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.parser">
-            <summary>
-            查询解析器
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.state">
             <summary>
             状态集合
@@ -4923,27 +4918,22 @@
             特殊字符串查找表
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.tableType">
             <summary>
             查询矩阵单位尺寸类型
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.#ctor(AutoCSer.Net.Http.HeaderQueryParser,AutoCSer.Pointer)">
+        <member name="M:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.#ctor(AutoCSer.Pointer)">
             <summary>
             名称查找器
             </summary>
-            <param name="parser">查询解析器</param>
             <param name="data">数据起始位置</param>
         </member>
-        <member name="M:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.SearchName">
+        <member name="M:AutoCSer.Net.Http.HeaderQueryParseStateSearcher.SearchName(AutoCSer.Net.Http.HeaderQueryParser)">
             <summary>
             获取名称索引
             </summary>
+            <param name="parser">查询解析器</param>
             <returns>名称索引,失败返回-1</returns>
         </member>
         <member name="T:AutoCSer.Net.Http.HeaderQueryTypeParser`1">
@@ -5881,6 +5871,43 @@
             </summary>
             <param name="data"></param>
         </member>
+        <member name="T:AutoCSer.Net.Http.OnSendTask">
+            <summary>
+            HTTP 套接字数据发送完成后的任务处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.Http.OnSendTask.#ctor(System.Int64)">
+            <summary>
+            HTTP 套接字数据发送完成后的任务处理
+            </summary>
+            <param name="taskTicks">线程切换超时时钟周期</param>
+        </member>
+        <member name="M:AutoCSer.Net.Http.OnSendTask.Add(AutoCSer.Net.Http.Socket)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.Http.OnSendTask.run">
+            <summary>
+            HTTP 套接字数据发送完成后的任务处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.Http.OnSendTask.Task">
+            <summary>
+            HTTP 套接字数据发送完成后的任务处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.Http.OnSendTask.tasks">
+            <summary>
+            HTTP 套接字数据发送完成后的任务处理集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.Http.OnSendTask.check">
+            <summary>
+            线程切换检测
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.Http.ResponseType">
             <summary>
             HTTP 响应输出类型
@@ -6089,12 +6116,6 @@
             获取客户端请求
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.Http.Server.push(AutoCSer.Net.Http.SocketLink)">
-            <summary>
-            添加新的套接字
-            </summary>
-            <param name="socket"></param>
-        </member>
         <member name="M:AutoCSer.Net.Http.Server.OnSocket">
             <summary>
             套接字处理
@@ -6231,6 +6252,23 @@
             <param name="sender"></param>
             <param name="async">异步回调参数</param>
         </member>
+        <member name="F:AutoCSer.Net.Http.Socket.maxSendDepth">
+            <summary>
+            最大同步发送数据深度
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.Http.Socket.sendDepth">
+            <summary>
+            可同步发送数据深度
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.Http.Socket.SingleRunTask(System.Int64@)">
+            <summary>
+            数据发送完成后的任务处理
+            </summary>
+            <param name="currentTaskTicks"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Net.Http.Socket.onSend">
             <summary>
             数据发送完成后的处理
@@ -6263,6 +6301,11 @@
         <member name="F:AutoCSer.Net.Http.SocketBase.ResponseSize">
             <summary>
             当前输出 HTTP 响应字节数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.Http.SocketBase.TaskTicks">
+            <summary>
+            线程切换检测时间
             </summary>
         </member>
         <member name="F:AutoCSer.Net.Http.SocketBase.Timeout">
@@ -6706,7 +6749,7 @@
             </summary>
             <typeparam name="valueType"></typeparam>
         </member>
-        <member name="F:AutoCSer.Net.Http.SocketBase`1.poolNext">
+        <member name="F:AutoCSer.Net.Http.SocketBase`1.NextTask">
             <summary>
             下一个节点
             </summary>
@@ -6989,12 +7032,6 @@
             <summary>
             套接字
             </summary>
-        </member>
-        <member name="M:AutoCSer.Net.Http.SocketLink.#ctor(System.Net.Sockets.Socket@)">
-            <summary>
-            套接字链表
-            </summary>
-            <param name="socket">套接字</param>
         </member>
         <member name="M:AutoCSer.Net.Http.SocketLink.Cancel">
             <summary>

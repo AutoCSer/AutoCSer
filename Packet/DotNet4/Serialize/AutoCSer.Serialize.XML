@@ -312,6 +312,13 @@
             <param name="type">类型</param>
             <returns>自定义属性</returns>
         </member>
+        <member name="M:AutoCSer.Extension.TypeExtension.isNull(System.Type)">
+            <summary>
+            判断类型是否可空类型
+            </summary>
+            <param name="type">类型</param>
+            <returns>是否可空类型</returns>
+        </member>
         <member name="T:AutoCSer.Extension.TypeExtension.NameBuilder">
             <summary>
             类型名称生成器
@@ -1442,11 +1449,6 @@
             特殊字符串查找表结束位置
             </summary>
         </member>
-        <member name="F:AutoCSer.StateSearcher.CharSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.StateSearcher.CharSearcher.charIndex">
             <summary>
             特殊字符起始值
@@ -1668,7 +1670,12 @@
             枚举值集合
             </summary>
         </member>
-        <member name="F:AutoCSer.Emit.EnumParser`1.enumSearcher">
+        <member name="F:AutoCSer.Emit.EnumParser`1.enumSearchData">
+            <summary>
+            枚举名称查找数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.TypeParser`1.EnumParser.enumSearcher">
             <summary>
             枚举名称查找数据
             </summary>
@@ -1680,13 +1687,12 @@
             <param name="parser">Json解析器</param>
             <param name="value">目标数据</param>
         </member>
-        <member name="M:AutoCSer.Json.TypeParser`1.EnumParser.getIndex(AutoCSer.Json.Parser,`0@,AutoCSer.Json.StateSearcher@,System.Int32@,System.Int32@)">
+        <member name="M:AutoCSer.Json.TypeParser`1.EnumParser.getIndex(AutoCSer.Json.Parser,`0@,System.Int32@,System.Int32@)">
             <summary>
             枚举值解析
             </summary>
             <param name="parser">Json解析器</param>
             <param name="value">目标数据</param>
-            <param name="searcher">名称状态查找器</param>
             <param name="index">第一个枚举索引</param>
             <param name="nextIndex">第二个枚举索引</param>
         </member>
@@ -3365,11 +3371,6 @@
             字符状态位查询表格
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.Parser.decoder">
-            <summary>
-            字符解码器
-            </summary>
-        </member>
         <member name="F:AutoCSer.Xml.Parser.attributes">
             <summary>
             属性
@@ -4017,9 +4018,9 @@
             字符状态位
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.Parser.decodeChars">
+        <member name="F:AutoCSer.Xml.Parser.decodeSearcher">
             <summary>
-            字符Decode转码
+            字符 Decode 转码
             </summary>
         </member>
         <member name="M:AutoCSer.Xml.Parser.Parse(System.Boolean@)">
@@ -8247,11 +8248,6 @@
             ASCII字符查找表
             </summary>
         </member>
-        <member name="F:AutoCSer.StateSearcher.AsciiSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.StateSearcher.AsciiSearcher.tableType">
             <summary>
             查询矩阵单位尺寸类型
@@ -12425,12 +12421,7 @@
             枚举状态查找器
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.StateSearcher.parser">
-            <summary>
-            XML解析器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Xml.StateSearcher.state">
+        <member name="F:AutoCSer.Xml.StateSearcher.State">
             <summary>
             状态集合
             </summary>
@@ -12450,11 +12441,6 @@
             特殊字符串查找表结束位置
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.StateSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.Xml.StateSearcher.charIndex">
             <summary>
             特殊字符起始值
@@ -12465,11 +12451,10 @@
             查询矩阵单位尺寸类型
             </summary>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.#ctor(AutoCSer.Xml.Parser,AutoCSer.Pointer)">
+        <member name="M:AutoCSer.Xml.StateSearcher.#ctor(AutoCSer.Pointer)">
             <summary>
             名称查找器
             </summary>
-            <param name="parser">XML解析器</param>
             <param name="data">数据起始位置</param>
         </member>
         <member name="M:AutoCSer.Xml.StateSearcher.getCharIndex(System.Char)">
@@ -12479,46 +12464,53 @@
             <param name="value">特殊字符</param>
             <returns>索引值,匹配失败返回0</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.SearchEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.SearchEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchEnumOnly">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchEnumOnly(AutoCSer.Xml.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.SearchFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.SearchFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.NextFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.NextFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
         <member name="T:AutoCSer.Xml.Node">
@@ -13309,6 +13301,11 @@
             枚举值解析
             </summary>
         </member>
+        <member name="F:AutoCSer.Xml.TypeParser`1.EnumParser.enumSearcher">
+            <summary>
+            枚举名称查找数据
+            </summary>
+        </member>
         <member name="M:AutoCSer.Xml.TypeParser`1.EnumParser.parse(AutoCSer.Xml.Parser,`0@)">
             <summary>
             枚举值解析
@@ -13316,13 +13313,12 @@
             <param name="parser">XML解析器</param>
             <param name="value">目标数据</param>
         </member>
-        <member name="M:AutoCSer.Xml.TypeParser`1.EnumParser.getIndex(AutoCSer.Xml.Parser,`0@,AutoCSer.Xml.StateSearcher@,System.Int32@,System.Int32@)">
+        <member name="M:AutoCSer.Xml.TypeParser`1.EnumParser.getIndex(AutoCSer.Xml.Parser,`0@,System.Int32@,System.Int32@)">
             <summary>
             枚举值解析
             </summary>
             <param name="parser">XML解析器</param>
             <param name="value"></param>
-            <param name="searcher">名称查找</param>
             <param name="index">第一个枚举索引</param>
             <param name="nextIndex">第二个枚举索引</param>
         </member>
@@ -16147,12 +16143,7 @@
             名称状态查找器
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.StateSearcher.parser">
-            <summary>
-            Json解析器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Json.StateSearcher.state">
+        <member name="F:AutoCSer.Json.StateSearcher.State">
             <summary>
             状态集合
             </summary>
@@ -16172,11 +16163,6 @@
             特殊字符串查找表结束位置
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.StateSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.Json.StateSearcher.charIndex">
             <summary>
             特殊字符起始值
@@ -16187,24 +16173,25 @@
             查询矩阵单位尺寸类型
             </summary>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.#ctor(AutoCSer.Json.Parser,AutoCSer.Pointer)">
+        <member name="M:AutoCSer.Json.StateSearcher.#ctor(AutoCSer.Pointer)">
             <summary>
             名称查找器
             </summary>
-            <param name="parser">Json解析器</param>
             <param name="data">数据起始位置</param>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.SearchName(System.Boolean@)">
+        <member name="M:AutoCSer.Json.StateSearcher.SearchName(AutoCSer.Json.Parser,System.Boolean@)">
             <summary>
             获取名称索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <param name="isQuote">名称是否带引号</param>
             <returns>名称索引,失败返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.searchString(System.Char)">
+        <member name="M:AutoCSer.Json.StateSearcher.searchString(AutoCSer.Json.Parser,System.Char)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <param name="value">第一个字符</param>
             <returns>目标索引,null返回-1</returns>
         </member>
@@ -16215,29 +16202,33 @@
             <param name="value">特殊字符</param>
             <returns>索引值,匹配失败返回0</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.SearchString">
+        <member name="M:AutoCSer.Json.StateSearcher.SearchString(AutoCSer.Json.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.SearchFlagEnum">
+        <member name="M:AutoCSer.Json.StateSearcher.SearchFlagEnum(AutoCSer.Json.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.flagEnum(System.Char)">
+        <member name="M:AutoCSer.Json.StateSearcher.flagEnum(AutoCSer.Json.Parser,System.Char)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <param name="value">当前字符</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.NextFlagEnum">
+        <member name="M:AutoCSer.Json.StateSearcher.NextFlagEnum(AutoCSer.Json.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
         <member name="F:AutoCSer.Json.StateSearcher.memberSearchers">

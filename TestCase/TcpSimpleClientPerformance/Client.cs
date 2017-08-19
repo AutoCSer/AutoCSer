@@ -17,14 +17,24 @@ namespace AutoCSer.TestCase.TcpInternalSimpleClientPerformance
         /// <param name="runTest"></param>
         internal static void Start(string name, Action runTest)
         {
-            using (EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, name, out IsCreatedProcessWait))
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+            IsCreatedProcessWait = true;
             {
-                do
+#else
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, name, out IsCreatedProcessWait);
+            if (IsCreatedProcessWait)
+            {
+                using (processWait)
+#endif
                 {
-                    Left = AutoCSer.Random.Default.Next();
-                    runTest();
+                    do
+                    {
+                        Left = AutoCSer.Random.Default.Next();
+                        runTest();
+                    }
+                    while (true);
                 }
-                while (true);
             }
         }
         /// <summary>

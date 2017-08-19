@@ -1549,6 +1549,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 }
 #if DOTNET2
 #else
+#if MONO
+#else
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
     internal abstract partial class SqlModel
@@ -5167,6 +5169,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
 }
 #endif
+#endif
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
     internal partial class TcpInternalServer
@@ -7184,7 +7187,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         if (Sender.IsSocket)
                         {
-                            get(ref value);
+                            get(ref value);");
+            _if_ = false;
+                    if (_value2_.OutputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                             Sender.Push(CommandIndex");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -7196,7 +7207,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", ");
             _code_.Add(_value2_.MethodIdentityCommand);
             }
-            _code_.Add(@", ref value);
+            _code_.Add(@", ref value);");
+            }
+            _if_ = false;
+                if (_value2_.OutputParameterIndex == 0)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.IsServerBuildOutputThread)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            Sender.Push(CommandIndex, ref value);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsServerBuildOutputThread)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            Sender.PushNoThread(CommandIndex, ref value);");
+            }
+            }
+            _code_.Add(@"
                         }");
             }
             _code_.Add(@"
@@ -7217,8 +7258,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsKeepCallback = ");
-            _code_.Add(_value2_.IsKeepCallback.ToString());
+            _code_.Add(@", IsKeepCallback = 1");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -7227,8 +7267,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsClientSendOnly = ");
-            _code_.Add(_value2_.IsClientSendOnly.ToString());
+            _code_.Add(@", IsClientSendOnly = 1");
             }
             _if_ = false;
                     if (_value2_.IsSimpleSerializeOutputParamter)
@@ -7238,6 +7277,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@", IsSimpleSerializeOutputParamter = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsServerBuildOutputThread)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsBuildOutputThread = true");
             }
             _code_.Add(@" };");
             }
@@ -7571,8 +7619,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
-            _code_.Add(@", IsSendOnly = ");
-            _code_.Add(_value2_.IsClientSendOnly.ToString());
+            _if_ = false;
+                    if (_value2_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSendOnly = 1");
+            }
             _code_.Add(@", TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous");
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -9830,8 +9885,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsKeepCallback = ");
-            _code_.Add(_value2_.IsKeepCallback.ToString());
+            _code_.Add(@", IsKeepCallback = 1");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -17321,7 +17375,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         if (Sender.IsSocket)
                         {
-                            get(ref value);
+                            get(ref value);");
+            _if_ = false;
+                    if (_value2_.OutputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                             Sender.Push(CommandIndex");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -17333,7 +17395,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", ");
             _code_.Add(_value2_.MethodIdentityCommand);
             }
-            _code_.Add(@", ref value);
+            _code_.Add(@", ref value);");
+            }
+            _if_ = false;
+                if (_value2_.OutputParameterIndex == 0)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.IsServerBuildOutputThread)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            Sender.Push(CommandIndex, ref value);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsServerBuildOutputThread)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            Sender.PushNoThread(CommandIndex, ref value);");
+            }
+            }
+            _code_.Add(@"
                         }");
             }
             _code_.Add(@"
@@ -17354,8 +17446,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsKeepCallback = ");
-            _code_.Add(_value2_.IsKeepCallback.ToString());
+            _code_.Add(@", IsKeepCallback = 1");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -17364,8 +17455,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsClientSendOnly = ");
-            _code_.Add(_value2_.IsClientSendOnly.ToString());
+            _code_.Add(@", IsClientSendOnly = 1");
             }
             _if_ = false;
                     if (_value2_.IsSimpleSerializeOutputParamter)
@@ -17375,6 +17465,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@", IsSimpleSerializeOutputParamter = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsServerBuildOutputThread)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsBuildOutputThread = true");
             }
             _code_.Add(@" };");
             }
@@ -17708,8 +17807,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
-            _code_.Add(@", IsSendOnly = ");
-            _code_.Add(_value2_.IsClientSendOnly.ToString());
+            _if_ = false;
+                    if (_value2_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSendOnly = 1");
+            }
             _code_.Add(@", TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous");
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -19981,8 +20087,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsKeepCallback = ");
-            _code_.Add(_value2_.IsKeepCallback.ToString());
+            _code_.Add(@", IsKeepCallback = 1");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -26012,9 +26117,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
-            _code_.Add(@", IsSendOnly = ");
-            _code_.Add(_value2_.IsClientSendOnly.ToString());
-            _code_.Add(@", TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous");
+            _code_.Add(@", IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous");
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
                     {
@@ -28773,8 +28876,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsKeepCallback = ");
-            _code_.Add(_value2_.IsKeepCallback.ToString());
+            _code_.Add(@", IsKeepCallback = 1");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -31787,7 +31889,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                     if (Sender.IsSocket)
                     {
-                        get(ref value);
+                        get(ref value);");
+            _if_ = false;
+                    if (_value2_.OutputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                         Sender.Push(CommandIndex");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -31799,7 +31909,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", ");
             _code_.Add(_value2_.StaticMethodIdentityCommand);
             }
-            _code_.Add(@", ref value);
+            _code_.Add(@", ref value);");
+            }
+            _if_ = false;
+                if (_value2_.OutputParameterIndex == 0)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.IsServerBuildOutputThread)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        Sender.Push(CommandIndex, ref value);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsServerBuildOutputThread)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        Sender.PushNoThread(CommandIndex, ref value);");
+            }
+            }
+            _code_.Add(@"
                     }");
             }
             _code_.Add(@"
@@ -31820,8 +31960,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsKeepCallback = ");
-            _code_.Add(_value2_.IsKeepCallback.ToString());
+            _code_.Add(@", IsKeepCallback = 1");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -31830,8 +31969,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _code_.Add(@", IsClientSendOnly = ");
-            _code_.Add(_value2_.IsClientSendOnly.ToString());
+            _code_.Add(@", IsClientSendOnly = 1");
             }
             _if_ = false;
                     if (_value2_.IsSimpleSerializeOutputParamter)
@@ -31841,6 +31979,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@", IsSimpleSerializeOutputParamter = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsServerBuildOutputThread)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsBuildOutputThread = true");
             }
             _code_.Add(@" };");
             }

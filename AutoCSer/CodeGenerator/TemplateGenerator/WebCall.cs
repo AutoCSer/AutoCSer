@@ -16,7 +16,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         internal static readonly AutoCSer.WebView.CallMethodAttribute Null = new AutoCSer.WebView.CallMethodAttribute();
         /// <summary>
         /// web调用代码生成
-        /// </summary
+        /// </summary>
         [Generator(Name = "WEB 调用", DependType = typeof(CSharper), IsAuto = true)]
         internal sealed partial class Generator : WebView.Generator<AutoCSer.WebView.CallAttribute>
         {

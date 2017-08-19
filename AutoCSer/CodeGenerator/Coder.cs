@@ -122,7 +122,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 根据类型名称获取CSharp代码树节点
         /// </summary>
-        /// <param name="typeName">类型名称</param>
+        /// <param name="fileName"></param>
         /// <returns>CSharp代码树节点</returns>
         internal TreeBuilder.Node GetNode(string fileName)
         {
@@ -297,7 +297,7 @@ using AutoCSer;
             //}
             codeTypes.Clear();
             if (Messages.IsError) return;
-            string message = string.Empty;
+            //string message = string.Empty;
             for (int index = builders.Length; index != 0; )
             {
                 StringArray builder = builders[--index];
@@ -306,56 +306,35 @@ using AutoCSer;
                     switch (index)
                     {
                         case (int)CodeLanguage.CSharp:
-                            string code = builder.ToString(), AutoCSerFileName = null, rememberFileName = null;
-                            bool isAutoCSer = false, isRemember = false;
+                            string code = builder.ToString(), AutoCSerFileName = null;
+#if NETCOREAPP2_0
+#else
+                            bool isAutoCSer = false;
+#endif
                             if (!string.IsNullOrEmpty(code))
                             {
                                 string fileName = parameter.ProjectPath + (AutoCSerFileName = "{" + parameter.DefaultNamespace + "}.AutoCSer.cs");
                                 if (WriteFile(fileName, WarningCode + code + FileEndCode))
                                 {
+#if NETCOREAPP2_0
+#else
                                     isAutoCSer = true;
-                                    message = fileName + " 被修改";
+#endif
+                                    Messages.Message(fileName + " 被修改");
+                                    //message = fileName + " 被修改";
                                 }
                             }
-//                            if (rememberCodeBuilder != null && !string.IsNullOrEmpty(code = rememberCodeBuilder.ToString()))
-//                            {
-//                                string fileName = parameter.ProjectPath + (rememberFileName = "{" + parameter.DefaultNamespace + "}.Remember.AutoCSer.cs");
-//                                if (WriteFile(fileName, WarningCode + code + FileEndCode))
-//                                {
-//                                    isRemember = true;
-//                                    message += @"
-//" + fileName + " 被修改";
-//                                }
-//                            }
-                            if (parameter.IsProjectFile && (isAutoCSer | isRemember))
+#if NETCOREAPP2_0
+#else
+                            if (parameter.IsProjectFile && isAutoCSer)
                             {
                                 string projectFile = parameter.AssemblyPath + parameter.ProjectName + ".csproj";
                                 if (File.Exists(projectFile))
                                 {
                                     string projectXml = File.ReadAllText(projectFile, System.Text.Encoding.UTF8);
                                     if (isAutoCSer) AutoCSerFileName = @"<Compile Include=""" + AutoCSerFileName + @""" />";
-                                    if (isRemember) rememberFileName = @"<Compile Include=""" + rememberFileName + @""" />";
                                     int fileIndex;
-                                    if (isAutoCSer && (fileIndex = projectXml.IndexOf(AutoCSerFileName)) != -1)
-                                    {
-                                        if (isRemember && projectXml.IndexOf(rememberFileName) == -1)
-                                        {
-                                            projectXml = projectXml.Insert(fileIndex + AutoCSerFileName.Length, @"
-    " + rememberFileName);
-                                            MoveFile(projectFile, projectXml);
-                                        }
-                                        break;
-                                    }
-                                    if (isRemember && (fileIndex = projectXml.IndexOf(rememberFileName)) != -1)
-                                    {
-                                        if (isAutoCSer && projectXml.IndexOf(AutoCSerFileName) == -1)
-                                        {
-                                            projectXml = projectXml.Insert(fileIndex + rememberFileName.Length, @"
-    " + AutoCSerFileName);
-                                            MoveFile(projectFile, projectXml);
-                                        }
-                                        break;
-                                    }
+                                    if (isAutoCSer && (fileIndex = projectXml.IndexOf(AutoCSerFileName)) != -1) break;
                                     string csFileName = @".cs"" />
 ";
                                     if ((fileIndex = projectXml.IndexOf(csFileName)) != -1)
@@ -364,24 +343,18 @@ using AutoCSer;
                                         {
                                             AutoCSerFileName += @"
     ";
-                                            if (isRemember)
-                                            {
-                                                AutoCSerFileName += rememberFileName + @"
-    ";
-                                            }
                                         }
-                                        else AutoCSerFileName = rememberFileName + @"
-    ";
                                         projectXml = projectXml.Insert(fileIndex + csFileName.Length, AutoCSerFileName);
                                         MoveFile(projectFile, projectXml);
                                     }
                                 }
                             }
+#endif
                             break;
                     }
                 }
             }
-            if (message.Length != 0) AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, message);
+            //if (message.Length != 0) AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, message);
         }
         /// <summary>
         /// 输出代码

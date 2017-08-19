@@ -12,6 +12,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// 类定义生成
         /// </summary>
         /// <param name="type">类型</param>
+        /// <param name="isPartial"></param>
+        /// <param name="isClass"></param>
+        /// <param name="typeNamespace"></param>
         public CSharpTypeDefinition(Type type, bool isPartial, bool isClass, string typeNamespace = null)
         {
             create(type, isPartial, isClass, typeNamespace);
@@ -23,6 +26,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// <param name="type">类型</param>
         /// <param name="isPartial">是否部分定义</param>
         /// <param name="isClass">是否建立类定义</param>
+        /// <param name="typeNamespace"></param>
         private void create(Type type, bool isPartial, bool isClass, string typeNamespace)
         {
             if (type.ReflectedType == null)

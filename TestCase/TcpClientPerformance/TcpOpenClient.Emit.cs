@@ -68,7 +68,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
         {
             TcpInternalClientPerformance.Client.WaitHandle.WaitOne();
             long milliseconds = Math.Max(TcpInternalClientPerformance.Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(TcpInternalClientPerformance.Client.LoopCount.toString() + " / " + milliseconds.toString() + " = " + (TcpInternalClientPerformance.Client.LoopCount / milliseconds) + "/ms send[" + TcpInternalClientPerformance.Client.GetSendCount(tcpClient.SendCount).toString() + "] receive[" + TcpInternalClientPerformance.Client.GetReceiveCount(tcpClient.ReceiveCount).toString() + "]" + (TcpInternalClientPerformance.Client.ErrorCount == 0 ? null : (" ERROR[" + TcpInternalClientPerformance.Client.ErrorCount.toString() + "]")) + " " + TcpInternalClientPerformance.Client.TestType.ToString());
+            Console.WriteLine(TcpInternalClientPerformance.Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (TcpInternalClientPerformance.Client.LoopCount / milliseconds) + "/ms send[" + TcpInternalClientPerformance.Client.GetSendCount(tcpClient.SendCount).toString() + "] receive[" + TcpInternalClientPerformance.Client.GetReceiveCount(tcpClient.ReceiveCount).toString() + "]" + (TcpInternalClientPerformance.Client.ErrorCount == 0 ? null : (" ERROR[" + TcpInternalClientPerformance.Client.ErrorCount.toString() + "]")) + " " + TcpInternalClientPerformance.Client.TestType.ToString());
         }
         /// <summary>
         /// 休息 3 秒

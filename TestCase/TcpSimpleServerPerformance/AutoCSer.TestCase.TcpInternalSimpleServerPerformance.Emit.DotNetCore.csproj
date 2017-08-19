@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>AutoCSer.TestCase.TcpInternalSimpleServerPerformance.Emit</AssemblyName>
+    <RootNamespace>AutoCSer.TestCase.TcpInternalSimpleServerPerformance</RootNamespace>
+    <Description>AutoCSer.TestCase.TcpInternalSimpleServerPerformance.Emit 是 TCP 接口应答服务框架 内部服务 性能测试服务端。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.TestCase.TcpInternalSimpleServerPerformance.Emit.DotNetCore</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/TcpServer/SimpleInterfaceServer.html</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;Emit;MONO;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;Emit;MONO;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="InternalSimpleServer.Main.cs" />
+    <Compile Include="ISimpleServer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="InternalSimpleServer.Emit.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\DotNetCore\netcoreapp2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

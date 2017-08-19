@@ -25,13 +25,17 @@ namespace AutoCSer.CodeGenerator
         /// </summary>
         public CodeLanguage Language = CodeLanguage.CSharp;
         /// <summary>
+        /// 是否自动生成
+        /// </summary>
+        public bool IsAuto;
+        /// <summary>
         /// 是否支持 .NET 2.0
         /// </summary>
         public bool IsDotNet2 = true;
         /// <summary>
-        /// 是否自动生成
+        /// 是否支持 MONO
         /// </summary>
-        public bool IsAuto;
+        public bool IsMono = true;
         /// <summary>
         /// 是否生成模板代码
         /// </summary>

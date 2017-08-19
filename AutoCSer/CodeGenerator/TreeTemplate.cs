@@ -1335,8 +1335,6 @@ namespace AutoCSer.CodeGenerator
             --currentMembers.Length;
             return true;
         }
-#if MONO
-#else
         /// <summary>
         /// 子段模板处理
         /// </summary>
@@ -1367,7 +1365,6 @@ namespace AutoCSer.CodeGenerator
             }
             if (node != null && node.ChildCount != 0) skin(node);
         }
-#endif
         /// <summary>
         /// 根据类型名称获取子段模板
         /// </summary>

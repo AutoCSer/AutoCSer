@@ -20,7 +20,11 @@ namespace AutoCSer.Example.WebView
         /// <summary>
         /// 测试文件名称
         /// </summary>
+#if NETCOREAPP2_0
+        private const string fileName = @"File.cs";
+#else
         private const string fileName = @"..\..\File.cs";
+#endif
         /// <summary>
         /// 文件输出 测试
         /// </summary>

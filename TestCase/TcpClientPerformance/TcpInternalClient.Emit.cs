@@ -96,7 +96,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         {
             Client.WaitHandle.WaitOne();
             long milliseconds = Math.Max(Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + " = " + (Client.LoopCount / milliseconds) + "/ms send[" + Client.GetSendCount(tcpClient.SendCount).toString() + "] receive[" + Client.GetReceiveCount(tcpClient.ReceiveCount).toString() + "]" + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
+            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (Client.LoopCount / milliseconds) + "/ms send[" + Client.GetSendCount(tcpClient.SendCount).toString() + "] receive[" + Client.GetReceiveCount(tcpClient.ReceiveCount).toString() + "]" + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
         }
         /// <summary>
         /// 休息 3 秒

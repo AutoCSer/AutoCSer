@@ -17,6 +17,10 @@
             </div>
             <b>PATH</b> 请修改为 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 解压的真实路径，<b>FRAMEWORK</b> 请修改为目标项目匹配的框架路径。
             <br /><img src="//__STATICDOMAIN__/CodeGenerator.png" alt="静态代码生成 后期生成事件命令行" />
+            <br /><b>.NET Core 2.0</b> 的项目需要由 <b>dotnet</b> 命令引导 <b>AutoCSer.CodeGenerator.dll</b>（注意这里不是 <b>.exe</b>），比如
+            <div>
+                <pre>dotnet "<b>PATH</b>\Packet\DotNetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll" "$(ProjectName) " "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</pre>
+            </div>
         </p>
         <p>
             4. 对于存在代码注释的生成需求，请将 <b>运行后期生成事件(N)</b> 的下拉菜单选项修改为 <b>生成更新项目输出时</b>。

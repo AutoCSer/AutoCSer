@@ -6368,13 +6368,6 @@
             类型扩展操作
             </summary>
         </member>
-        <member name="M:AutoCSer.Extension.Type_Sql.isNull(System.Type)">
-            <summary>
-            判断类型是否可空类型
-            </summary>
-            <param name="type">类型</param>
-            <returns>是否可空类型</returns>
-        </member>
         <member name="M:AutoCSer.Extension.Type_Sql.toNullableType(System.Type)">
             <summary>
             值类型转换为可空类型

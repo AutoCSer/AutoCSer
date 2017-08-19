@@ -11,7 +11,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12101, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ServerOutputSleep = 0, ClientOutputSleep = 0, MinCompressSize = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12101, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ServerOutputSleep = 0, ClientOutputSleep = 0, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
     public partial class OpenServer
     {
         /// <summary>
@@ -110,38 +110,62 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
 
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
             EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.TcpOpenServerPerformance", out createdProcessWait);
             if (createdProcessWait)
             {
-                Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodServer.html
+                using (processWait)
+                {
+#endif
+                    Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodServer.html
 ");
 #if NoAutoCSer
 #else
-                using (processWait)
-                using (OpenServer.TcpOpenServer server = new OpenServer.TcpOpenServer())
-                {
-                    if (server.IsListen)
+                    using (OpenServer.TcpOpenServer server = new OpenServer.TcpOpenServer())
                     {
+                        if (server.IsListen)
+                        {
+#if NETCOREAPP2_0
+#if DEBUG
+                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpClientPerformance\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.TcpOpenClientPerformance.dll".pathSeparator()));
+#else
+                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpClientPerformance\bin\Release\netcoreapp2.0\AutoCSer.TestCase.TcpOpenClientPerformance.dll".pathSeparator()));
+#endif
+                        if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.TcpOpenClientPerformance.dll"));
+                        if (clientFile.Exists)
+                        {
+                            ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName);
+                            process.UseShellExecute = true;
+                            Process.Start(process);
+                        }
+#else
 #if DEBUG
                         FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpClientPerformance\bin\Debug\AutoCSer.TestCase.TcpOpenClientPerformance.exe".pathSeparator()));
 #else
-                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpClientPerformance\bin\Release\AutoCSer.TestCase.TcpOpenClientPerformance.exe".pathSeparator()));
+                            FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpClientPerformance\bin\Release\AutoCSer.TestCase.TcpOpenClientPerformance.exe".pathSeparator()));
 #endif
-                        if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.TcpOpenClientPerformance.exe"));
-                        if (clientFile.Exists) Process.Start(clientFile.FullName);
-                        else Console.WriteLine("未找到 TCP 服务性能测试服务 客户端程序");
-                        Console.WriteLine("Press quit to exit.");
-                        while (Console.ReadLine() != "quit") ;
+                            if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.TcpOpenClientPerformance.exe"));
+                            if (clientFile.Exists) Process.Start(clientFile.FullName);
+#endif
+                            else Console.WriteLine("未找到 TCP 服务性能测试服务 客户端程序");
+                            Console.WriteLine("Press quit to exit.");
+                            while (Console.ReadLine() != "quit") ;
+                        }
+                        else
+                        {
+                            Console.WriteLine("TCP 服务性能测试服务 启动失败");
+                            Console.ReadKey();
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("TCP 服务性能测试服务 启动失败");
-                        Console.ReadKey();
-                    }
+#endif
+#if NETCOREAPP2_0
+#else
                 }
-#endif
             }
+#endif
         }
     }
 }

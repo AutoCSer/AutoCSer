@@ -55,6 +55,12 @@ namespace AutoCSer.CodeGenerator
 #if DOTNET2
 #else");
                 }
+                if (!Auto.IsMono)
+                {
+                    codeBuilder.Append(@"
+#if MONO
+#else");
+                }
                 codeBuilder.Append(@"
 ", typeDefinition.Start, @"
         /// <summary>
@@ -86,6 +92,11 @@ namespace AutoCSer.CodeGenerator
             }
         }", typeDefinition.End);
                 if (!Auto.IsDotNet2)
+                {
+                    codeBuilder.Append(@"
+#endif");
+                }
+                if (!Auto.IsMono)
                 {
                     codeBuilder.Append(@"
 #endif");
@@ -137,12 +148,30 @@ namespace AutoCSer.CodeGenerator
                     if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.ToArray()) + Coder.FileEndCode))
                     {
                         Messages.Add(fileName + " 被修改");
-                        throw new Exception();
+#if NETCOREAPP2_0
+                        string path = new System.IO.FileInfo(parameter.AssemblyPath).Directory.fullName();
+                        copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.deps.json");
+                        copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.dev.json");
+                        copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.json");
+#endif
+                        return false;
                     }
                 }
                 return true;
             }
             return false;
         }
+#if NETCOREAPP2_0
+        /// <summary>
+        /// 复制 JSON 文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileName"></param>
+        private void copyDotNetCoreJson(string path, string fileName)
+        {
+            System.IO.FileInfo file = new System.IO.FileInfo(AutoCSer.PubPath.ApplicationPath + fileName);
+            if (file.Exists) file.CopyTo(path + fileName, true);
+        }
+#endif
     }
 }

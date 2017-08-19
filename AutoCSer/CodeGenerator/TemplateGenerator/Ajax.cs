@@ -17,7 +17,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         
         /// <summary>
         /// AJAX调用代码生成
-        /// </summary
+        /// </summary>
         [Generator(Name = "AJAX 调用", DependType = typeof(WebView.Generator), IsAuto = true)]
         internal partial class Generator : WebView.Generator<AutoCSer.WebView.AjaxAttribute>
         {
@@ -407,6 +407,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 创建代码
             /// </summary>
+            /// <param name="parameter"></param>
             /// <param name="type"></param>
             /// <param name="methodIndexs"></param>
             public void Create(ProjectParameter parameter, ExtensionType type, AjaxMethod[] methodIndexs)

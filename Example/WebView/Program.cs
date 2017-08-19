@@ -8,12 +8,16 @@ namespace AutoCSer.Example.WebView
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
-            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.Example.WebView", out createdProcessWait);
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.WebView", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)
                 {
+#endif
                     Console.WriteLine(@"http://www.AutoCSer.com/WebView/Index.html
 ");
                     try
@@ -39,7 +43,11 @@ namespace AutoCSer.Example.WebView
                                 Console.WriteLine(Upload.TestCase());
                                 Console.WriteLine(File.TestCase());
 
+#if NETCOREAPP2_0
+                                Console.WriteLine("http://" + webConfig.MainDomain + "/");
+#else
                                 Process.Start("http://" + webConfig.MainDomain + "/");
+#endif
                                 Console.WriteLine("press quit to exit.");
                                 while (Console.ReadLine() != "quit") ;
                             }
@@ -50,8 +58,11 @@ namespace AutoCSer.Example.WebView
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
     }
 }

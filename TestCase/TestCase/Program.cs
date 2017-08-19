@@ -10,12 +10,16 @@ namespace AutoCSer.TestCase
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
             EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)
                 {
+#endif
                     Console.WriteLine(@"http://www.AutoCSer.com/
 ");
 
@@ -83,8 +87,11 @@ namespace AutoCSer.TestCase
                     testCount = 0;
                     Console.WriteLine(errorType.FullName + " ERROR");
                     Console.ReadKey();
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
         private static int testCount = 1;
         private static void check()

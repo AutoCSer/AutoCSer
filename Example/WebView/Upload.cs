@@ -40,7 +40,11 @@ namespace AutoCSer.Example.WebView
         /// <summary>
         /// 测试文件名称
         /// </summary>
+#if NETCOREAPP2_0
+        private const string fileName = @"Upload.cs";
+#else
         private const string fileName = @"..\..\Upload.cs";
+#endif
         /// <summary>
         /// 文件上传 测试
         /// </summary>

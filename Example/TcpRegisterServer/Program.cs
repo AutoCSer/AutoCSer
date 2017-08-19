@@ -10,12 +10,16 @@ namespace AutoCSer.Example.TcpRegisterServer
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
-            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.Example.TcpRegisterServer", out createdProcessWait);
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.TcpRegisterServer", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)
                 {
+#endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/Register.html
 ");
                     try
@@ -27,6 +31,21 @@ namespace AutoCSer.Example.TcpRegisterServer
                         {
                             if (registerServer.IsListen && registerReaderServer.IsListen)
                             {
+#if NETCOREAPP2_0
+#if DEBUG
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpRegisterClient\bin\Debug\netcoreapp2.0\AutoCSer.Example.TcpRegisterClient.dll".pathSeparator()));
+#else
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpRegisterClient\bin\Release\netcoreapp2.0\AutoCSer.Example.TcpRegisterClient.dll".pathSeparator()));
+#endif
+                                Console.WriteLine(clientFile.FullName);
+                                if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.Example.TcpRegisterClient.dll"));
+                                if (clientFile.Exists)
+                                {
+                                    ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName);
+                                    process.UseShellExecute = true;
+                                    Process.Start(process);
+                                }
+#else
 #if DEBUG
                                 FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpRegisterClient\bin\Debug\AutoCSer.Example.TcpRegisterClient.exe".pathSeparator()));
 #else
@@ -34,6 +53,7 @@ namespace AutoCSer.Example.TcpRegisterServer
 #endif
                                 if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.Example.TcpRegisterClient.exe"));
                                 if (clientFile.Exists) Process.Start(clientFile.FullName);
+#endif
                                 else Console.WriteLine("未找到 TCP 注册服务客户端测试程序");
 
                                 Console.WriteLine("Press quit to exit.");
@@ -47,8 +67,11 @@ namespace AutoCSer.Example.TcpRegisterServer
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
     }
 }

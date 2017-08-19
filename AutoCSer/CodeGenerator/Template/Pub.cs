@@ -63,7 +63,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// <summary>
         /// 函数调用
         /// </summary>
-        /// <param name="value">参数</param>
+        /// <param name="name">参数</param>
         /// <returns>返回值</returns>
         public object this[params object[] name]
         {

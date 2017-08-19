@@ -14,7 +14,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// <summary>
         /// 数据模型 代码生成
         /// </summary>
-        [Generator(Name = "数据模型", DependType = typeof(CSharper), IsAuto = true, IsDotNet2 = false)]
+        [Generator(Name = "数据模型", DependType = typeof(CSharper), IsAuto = true, IsDotNet2 = false, IsMono = false)]
         internal partial class Generator : Generator<AutoCSer.Sql.ModelAttribute>
         {
             /// <summary>

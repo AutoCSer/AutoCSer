@@ -130,6 +130,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 安装入口
             /// </summary>
             /// <param name="exportPathType">导出引导类型</param>
+            /// <param name="outputFileName"></param>
             /// <returns>是否安装成功</returns>
             public bool Run(Type exportPathType, string outputFileName)
             {

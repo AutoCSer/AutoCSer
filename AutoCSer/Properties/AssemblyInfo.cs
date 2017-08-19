@@ -5,12 +5,28 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
+#if NETCOREAPP2_0
+#else
 [assembly: AssemblyTitle("AutoCSer")]
+[assembly: AssemblyCopyright("Copyright © 肖进 2017")]
 [assembly: AssemblyDescription("AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP 接口服务框架、TCP 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AutoCSer")]
-[assembly: AssemblyCopyright("Copyright © 肖进 2017")]
+[assembly: AssemblyCompany("")]
+
+// 程序集的版本信息由下面四个值组成:
+//
+//      主版本
+//      次版本 
+//      内部版本号
+//      修订号
+//
+// 可以指定所有这些值，也可以使用“内部版本号”和“修订号”的默认值，
+// 方法是按如下所示使用“*”:
+// [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
+#endif
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -71,19 +87,6 @@ using System.Runtime.InteropServices;
 #if MySql
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0010")]
 #endif
-
-// 程序集的版本信息由下面四个值组成:
-//
-//      主版本
-//      次版本 
-//      内部版本号
-//      修订号
-//
-// 可以指定所有这些值，也可以使用“内部版本号”和“修订号”的默认值，
-// 方法是按如下所示使用“*”:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("AutoCSer.DynamicAssembly")]
 [assembly: InternalsVisibleTo("AutoCSer.TcpServer.Emit")]

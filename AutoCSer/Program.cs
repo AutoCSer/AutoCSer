@@ -13,7 +13,7 @@ namespace AutoCSer.CodeGenerator
 #if X64
        private const string platform = "X64";
 #else
-       private const string platform = "X86";
+        private const string platform = "X86";
 #endif
 
         static void Main(string[] args)
@@ -33,6 +33,8 @@ namespace AutoCSer.CodeGenerator
                         if (exception == null) parameter.Start();
                         else
                         {
+#if NETCOREAPP2_0
+#else
                             FileInfo file = new FileInfo(AutoCSer.PubPath.ApplicationPath + "AutoCSer.CodeGenerator." + platform + ".exe");
                             if (file.Exists)
                             {
@@ -42,7 +44,11 @@ namespace AutoCSer.CodeGenerator
                                 process.WaitForExit();
                                 File.Delete(fileName);
                             }
-                            else Messages.Add(exception);
+                            else
+#endif
+                            {
+                                Messages.Add(exception);
+                            }
                         }
                     }
                     else Messages.Add("未找到程序集文件 : " + parameter.AssemblyPath);

@@ -22,14 +22,12 @@ namespace AutoCSer.CodeGenerator.Template
             private const int MaxCommandLength = 0;
             private static FullName[] MethodIndexs = null;
             private const int MethodIndex = 0;
-            private const byte IsClientSendOnly = 0;
             private static FullName ParameterName = null;
             private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
             private const AutoCSer.Net.TcpServer.ClientTaskType ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Timeout;
             private const int CommandStartIndex = 0;
             private const int InputParameterIndex = 0;
             private const int OutputParameterIndex = 0;
-            private const byte IsKeepCallback = 0;
             private const bool IsCallQueue = false;
             public void SetTcpServer(AutoCSer.Net.TcpInternalServer.Server commandServer) { }
             #endregion NOTE
@@ -277,7 +275,17 @@ namespace AutoCSer.CodeGenerator.Template
                         if (Sender.IsSocket)
                         {
                             get(ref value);
+                            #region IF OutputParameterIndex
                             Sender.Push(CommandIndex/*IF:OutputParameterIndex*/, @MethodIdentityCommand/*IF:OutputParameterIndex*/, ref value);
+                            #endregion IF OutputParameterIndex
+                            #region NOT OutputParameterIndex
+                            #region IF IsServerBuildOutputThread
+                            Sender.Push(CommandIndex/*NOTE*/, null/*NOTE*/, ref value);
+                            #endregion IF IsServerBuildOutputThread
+                            #region NOT IsServerBuildOutputThread
+                            Sender.PushNoThread(CommandIndex, ref value);
+                            #endregion NOT IsServerBuildOutputThread
+                            #endregion NOT OutputParameterIndex
                         }
                         #endregion NOT IsClientSendOnly
                         push(this);
@@ -285,7 +293,7 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 #endregion IF IsMethodServerCall
                 #endregion NOT IsAsynchronousCallback
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsKeepCallback*/, IsKeepCallback = @IsKeepCallback/*IF:IsKeepCallback*//*IF:IsClientSendOnly*/, IsClientSendOnly = @IsClientSendOnly/*IF:IsClientSendOnly*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsClientSendOnly*/, IsClientSendOnly = 1/*IF:IsClientSendOnly*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*//*IF:IsServerBuildOutputThread*/, IsBuildOutputThread = true/*IF:IsServerBuildOutputThread*/ };
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
                 #endregion IF IsServerCode
@@ -389,7 +397,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
                 #region IF IsSynchronousMethodIdentityCommand
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*/, IsSendOnly = @IsClientSendOnly, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsClientSendOnly*/, IsSendOnly = 1/*IF:IsClientSendOnly*/, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion IF IsSynchronousMethodIdentityCommand
 
                 #region NOT MemberIndex
@@ -659,7 +667,7 @@ namespace AutoCSer.CodeGenerator.Template
 #endif
                 #endregion IF IsClientTaskAsync
                 #region IF IsClientAsynchronous
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodAsynchronousIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex, TaskType = @ClientTask/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsKeepCallback*/, IsKeepCallback = @IsKeepCallback/*IF:IsKeepCallback*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodAsynchronousIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex, TaskType = @ClientTask/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #region IF Method.XmlDocument
                 /// <summary>
                 /// @Method.XmlDocument

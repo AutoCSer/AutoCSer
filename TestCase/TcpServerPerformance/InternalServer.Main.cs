@@ -10,35 +10,59 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
             EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.TcpInternalServerPerformance.Emit", out createdProcessWait);
             if (createdProcessWait)
             {
-                Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/InterfaceServer.html
-");
                 using (processWait)
-                using (AutoCSer.Net.TcpInternalServer.Server server = AutoCSer.Net.TcpInternalServer.Emit.Server<IServer>.Create(new InternalServer()))
                 {
-                    if (server.IsListen)
+#endif
+                    Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/InterfaceServer.html
+");
+                    using (AutoCSer.Net.TcpInternalServer.Server server = AutoCSer.Net.TcpInternalServer.Emit.Server<IServer>.Create(new InternalServer()))
                     {
+                        if (server.IsListen)
+                        {
+#if NETCOREAPP2_0
+#if DEBUG
+                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpClientPerformance\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.TcpInternalClientPerformance.Emit.dll".pathSeparator()));
+#else
+                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpClientPerformance\bin\Release\netcoreapp2.0\AutoCSer.TestCase.TcpInternalClientPerformance.Emit.dll".pathSeparator()));
+#endif
+                        if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.TcpInternalClientPerformance.Emit.dll"));
+                        if (clientFile.Exists)
+                        {
+                            ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName);
+                            process.UseShellExecute = true;
+                            Process.Start(process);
+                        }
+#else
 #if DEBUG
                         FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpClientPerformance\bin\Debug\AutoCSer.TestCase.TcpInternalClientPerformance.Emit.exe".pathSeparator()));
 #else
-                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpClientPerformance\bin\Release\AutoCSer.TestCase.TcpInternalClientPerformance.Emit.exe".pathSeparator()));
+                            FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\TcpClientPerformance\bin\Release\AutoCSer.TestCase.TcpInternalClientPerformance.Emit.exe".pathSeparator()));
 #endif
-                        if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.TcpInternalClientPerformance.Emit.exe"));
-                        if (clientFile.Exists) Process.Start(clientFile.FullName);
-                        else Console.WriteLine("未找到 TCP 内部服务性能测试服务 客户端程序");
-                        Console.WriteLine("Press quit to exit.");
-                        while (Console.ReadLine() != "quit") ;
+                            if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.TcpInternalClientPerformance.Emit.exe"));
+                            if (clientFile.Exists) Process.Start(clientFile.FullName);
+#endif
+                            else Console.WriteLine("未找到 TCP 内部服务性能测试服务 客户端程序");
+                            Console.WriteLine("Press quit to exit.");
+                            while (Console.ReadLine() != "quit") ;
+                        }
+                        else
+                        {
+                            Console.WriteLine("TCP 内部服务性能测试服务 启动失败");
+                            Console.ReadKey();
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("TCP 内部服务性能测试服务 启动失败");
-                        Console.ReadKey();
-                    }
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
     }
 }

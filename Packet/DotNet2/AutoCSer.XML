@@ -971,11 +971,12 @@
             <param name="commandIndex">会话索引</param>
             <returns>输出信息</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryPush(System.UInt32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryPush(System.UInt32,System.Boolean)">
             <summary>
             发送数据
             </summary>
             <param name="commandIndex">会话索引</param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns>是否成功加入输出队列</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(System.UInt32)">
@@ -983,6 +984,14 @@
             发送数据
             </summary>
             <param name="commandIndex">会话索引</param>
+            <returns>是否成功加入输出队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(System.UInt32,System.Boolean)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="commandIndex">会话索引</param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns>是否成功加入输出队列</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(AutoCSer.Net.TcpServer.ReturnType)">
@@ -1004,6 +1013,23 @@
             </summary>
             <param name="commandIndex">会话标识</param>
             <param name="returnValue">返回值</param>
+            <returns>是否成功加入输出队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.PushNoThread(System.UInt32,AutoCSer.Net.TcpServer.ReturnValue@)">
+            <summary>
+            发送数据
+            </summary>
+            <param name="commandIndex">会话标识</param>
+            <param name="returnValue">返回值</param>
+            <returns>是否成功加入输出队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.PushNoThread``1(System.UInt32,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
+            <summary>
+            发送数据，用于代码生成
+            </summary>
+            <typeparam name="outputParameterType">输出数据类型</typeparam>
+            <param name="commandIndex">会话标识</param>
+            <param name="outputParameter">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryGetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
@@ -1061,10 +1087,23 @@
             </summary>
             <param name="output">当前输出信息</param>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.push(AutoCSer.Net.TcpServer.ServerOutput.OutputLink,System.Boolean)">
+            <summary>
+            添加输出信息
+            </summary>
+            <param name="output">当前输出信息</param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryBuildOutput">
             <summary>
             尝试启动创建输出线程
             </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryBuildOutput(System.Boolean)">
+            <summary>
+            尝试启动创建输出线程
+            </summary>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.CustomData(System.Byte[])">
             <summary>
@@ -2684,6 +2723,13 @@
             <param name="type">类型</param>
             <returns>自定义属性</returns>
         </member>
+        <member name="M:AutoCSer.Extension.TypeExtension.isNull(System.Type)">
+            <summary>
+            判断类型是否可空类型
+            </summary>
+            <param name="type">类型</param>
+            <returns>是否可空类型</returns>
+        </member>
         <member name="T:AutoCSer.Extension.TypeExtension.NameBuilder">
             <summary>
             类型名称生成器
@@ -4247,7 +4293,12 @@
             </summary>
             <param name="error"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.CommandBase.Close(System.Net.Sockets.Socket)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.CommandBase.CloseClient(System.Net.Sockets.Socket)">
+            <summary>
+            关闭套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpSimpleServer.CommandBase.CloseClientNotNull(System.Net.Sockets.Socket)">
             <summary>
             关闭套接字
             </summary>
@@ -4545,7 +4596,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerTaskType.Timeout">
             <summary>
-            公用任务池，默认最大并行数量为 AutoCSer.Threading.Pub.CpuCount * 32，定时检测任务超时调度线程（默认为 100 毫秒）
+            公用任务池，默认最大并行数量为 AutoCSer.Threading.Pub.CpuCount * 32，定时检测任务超时调度线程（默认为 10 毫秒）
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerTaskType.TcpTask">
@@ -4984,13 +5035,6 @@
             <summary>
             获取客户端套接字
             </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.listenError(System.Exception,System.Net.Sockets.Socket@)">
-            <summary>
-            错误处理
-            </summary>
-            <param name="error"></param>
-            <param name="socket"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.Server`1.setCommandData(System.Int32)">
             <summary>
@@ -7476,11 +7520,6 @@
             特殊字符串查找表结束位置
             </summary>
         </member>
-        <member name="F:AutoCSer.StateSearcher.CharSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.StateSearcher.CharSearcher.charIndex">
             <summary>
             特殊字符起始值
@@ -7600,6 +7639,12 @@
             <param name="state"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerCallBase.SingleRunTask">
+            <summary>
+            TCP 服务器端同步调用
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallBase.SingleRunTask(System.Int64@)">
             <summary>
             TCP 服务器端同步调用
             </summary>
@@ -7958,11 +8003,10 @@
             套接字
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SocketLink.#ctor(System.Net.Sockets.Socket@)">
+        <member name="M:AutoCSer.Net.SocketLink.DisposeSocket">
             <summary>
-            套接字链表
+            释放套接字
             </summary>
-            <param name="socket">套接字</param>
         </member>
         <member name="M:AutoCSer.Net.SocketLink.Cancel">
             <summary>
@@ -8162,7 +8206,12 @@
             枚举值集合
             </summary>
         </member>
-        <member name="F:AutoCSer.Emit.EnumParser`1.enumSearcher">
+        <member name="F:AutoCSer.Emit.EnumParser`1.enumSearchData">
+            <summary>
+            枚举名称查找数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.TypeParser`1.EnumParser.enumSearcher">
             <summary>
             枚举名称查找数据
             </summary>
@@ -8174,13 +8223,12 @@
             <param name="parser">Json解析器</param>
             <param name="value">目标数据</param>
         </member>
-        <member name="M:AutoCSer.Json.TypeParser`1.EnumParser.getIndex(AutoCSer.Json.Parser,`0@,AutoCSer.Json.StateSearcher@,System.Int32@,System.Int32@)">
+        <member name="M:AutoCSer.Json.TypeParser`1.EnumParser.getIndex(AutoCSer.Json.Parser,`0@,System.Int32@,System.Int32@)">
             <summary>
             枚举值解析
             </summary>
             <param name="parser">Json解析器</param>
             <param name="value">目标数据</param>
-            <param name="searcher">名称状态查找器</param>
             <param name="index">第一个枚举索引</param>
             <param name="nextIndex">第二个枚举索引</param>
         </member>
@@ -10085,6 +10133,11 @@
             默认为 true 表示生成 await 代理，不支持 ref / out
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.IsServerAsynchronousCallbackBuildOutputThread">
+            <summary>
+            默认为 true 表示服务端异步回调创建输出需要开启线程任务
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodAttribute.IsClientTaskAsync">
             <summary>
             默认为 false 表示不支持 async Task
@@ -10248,6 +10301,11 @@
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Emit.ServerMetadata.ServerSocketSenderPushReturnValueMethod">
+            <summary>
+            TCP 服务器端同步调用套接字发送数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Emit.ServerMetadata.ServerSocketSenderPushNoThreadMethod">
             <summary>
             TCP 服务器端同步调用套接字发送数据函数信息
             </summary>
@@ -11632,11 +11690,6 @@
             字符状态位查询表格
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.Parser.decoder">
-            <summary>
-            字符解码器
-            </summary>
-        </member>
         <member name="F:AutoCSer.Xml.Parser.attributes">
             <summary>
             属性
@@ -12284,9 +12337,9 @@
             字符状态位
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.Parser.decodeChars">
+        <member name="F:AutoCSer.Xml.Parser.decodeSearcher">
             <summary>
-            字符Decode转码
+            字符 Decode 转码
             </summary>
         </member>
         <member name="M:AutoCSer.Xml.Parser.Parse(System.Boolean@)">
@@ -12663,11 +12716,6 @@
         <member name="F:AutoCSer.StateSearcher.AsciiSearcher.charsAscii">
             <summary>
             ASCII字符查找表
-            </summary>
-        </member>
-        <member name="F:AutoCSer.StateSearcher.AsciiSearcher.currentState">
-            <summary>
-            当前状态
             </summary>
         </member>
         <member name="F:AutoCSer.StateSearcher.AsciiSearcher.tableType">
@@ -16473,11 +16521,6 @@
             线程切换超时时钟周期
             </summary>
         </member>
-        <member name="F:AutoCSer.Threading.LinkTaskConfigBase.taskIndex">
-            <summary>
-            当前任务处理索引
-            </summary>
-        </member>
         <member name="F:AutoCSer.Threading.LinkTaskConfigBase.isCheck">
             <summary>
             是否正在检测线程切换
@@ -16531,7 +16574,7 @@
         </member>
         <member name="F:AutoCSer.Threading.LinkTaskConfig.NewThreadMilliseconds">
             <summary>
-            线程切换检测毫秒数量，默认为 100 毫秒
+            线程切换检测毫秒数量，默认为 10 毫秒
             </summary>
         </member>
         <member name="M:AutoCSer.Threading.LinkTaskConfig.set">
@@ -16667,13 +16710,6 @@
             <summary>
             获取客户端套接字
             </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.listenError(System.Exception,System.Net.Sockets.Socket@)">
-            <summary>
-            错误处理
-            </summary>
-            <param name="error"></param>
-            <param name="socket"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpSimpleServer.Server.setCommandData(System.Int32)">
             <summary>
@@ -21339,7 +21375,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientTaskType.Timeout">
             <summary>
-            公用任务池，默认最大并行数量为 AutoCSer.Threading.Pub.CpuCount * 32，定时检测任务超时调度线程（默认为 100 毫秒）
+            公用任务池，默认最大并行数量为 AutoCSer.Threading.Pub.CpuCount * 32，定时检测任务超时调度线程（默认为 10 毫秒）
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientTaskType.TcpTask">
@@ -24491,6 +24527,11 @@
             是否保持异步回调
             </summary>
         </member>
+        <member name="P:AutoCSer.Net.TcpServer.Emit.Method`3.IsServerBuildOutputThread">
+            <summary>
+            创建输出是否开启线程
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.Emit.Method`3.ServerBuilder">
             <summary>
             创建 TCP 服务端
@@ -24506,7 +24547,7 @@
             服务端输出信息集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Emit.Method`3.ServerBuilder.Build(System.Type,AutoCSer.Net.TcpServer.ServerBaseAttribute,System.Type,System.Type,System.Type[],AutoCSer.Net.TcpServer.Emit.Method{`0,`1,`2}[])">
+        <member name="M:AutoCSer.Net.TcpServer.Emit.Method`3.ServerBuilder.Build(System.Type,AutoCSer.Net.TcpServer.ServerAttribute,System.Type,System.Type,System.Type[],AutoCSer.Net.TcpServer.Emit.Method{`0,`1,`2}[])">
             <summary>
             创建 TCP 服务端
             </summary>
@@ -24750,6 +24791,17 @@
         <member name="F:AutoCSer.Net.TcpServer.ClientSocketReceiveType.BigData">
             <summary>
             获取临时数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.AwaiterResult`1">
+            <summary>
+            await 模拟返回值
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.AwaiterResult`1.Result">
+            <summary>
+            返回值
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpRegister.ServerSetCache">
@@ -25291,13 +25343,6 @@
             <summary>
             类型扩展操作
             </summary>
-        </member>
-        <member name="M:AutoCSer.Extension.Type_Sql.isNull(System.Type)">
-            <summary>
-            判断类型是否可空类型
-            </summary>
-            <param name="type">类型</param>
-            <returns>是否可空类型</returns>
         </member>
         <member name="M:AutoCSer.Extension.Type_Sql.toNullableType(System.Type)">
             <summary>
@@ -26062,23 +26107,30 @@
             保持回调访问锁
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerCallback`2.isBuildOutputThread">
+            <summary>
+            尝试启动创建输出线程
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerCallback`2.onReturnHandle">
             <summary>
             异步回调
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.Set(`1)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.Set(`1,System.Boolean)">
             <summary>
             异步回调
             </summary>
             <param name="socket"></param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.setKeep(`1)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.setKeep(`1,System.Boolean)">
             <summary>
             异步回调
             </summary>
             <param name="socket"></param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerCallback`2.CancelKeep">
             <summary>
@@ -26110,11 +26162,12 @@
             取消保持调用
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCallback.SetKeep(AutoCSer.Net.TcpOpenServer.ServerSocketSender)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCallback.SetKeep(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Boolean)">
             <summary>
             异步回调
             </summary>
             <param name="socket"></param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.TcpOpenServer.ServerCallback`2">
@@ -26276,7 +26329,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig.NewThreadMilliseconds">
             <summary>
-            线程切换检测毫秒数量，默认为 100 毫秒
+            线程切换检测毫秒数量，默认为 10 毫秒
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketTaskConfig.set">
@@ -26299,12 +26352,11 @@
             TCP 内部服务套接字数据发送
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.#ctor(AutoCSer.Net.TcpInternalServer.Server,System.Net.Sockets.Socket@)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.#ctor(AutoCSer.Net.TcpInternalServer.Server)">
             <summary>
             TCP 内部服务端套接字
             </summary>
             <param name="server">TCP调用服务端</param>
-            <param name="socket">客户端信息</param>
         </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.close">
             <summary>
@@ -28323,12 +28375,6 @@
             获取客户端请求
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.Server.push(AutoCSer.Net.SocketLink)">
-            <summary>
-            添加新的套接字
-            </summary>
-            <param name="socket"></param>
-        </member>
         <member name="M:AutoCSer.Net.TcpOpenSimpleServer.Server.OnSocket">
             <summary>
             套接字处理
@@ -28546,12 +28592,11 @@
             <param name="outputInfo"></param>
             <param name="outputParameter"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalSimpleServer.ServerSocket.#ctor(AutoCSer.Net.TcpInternalSimpleServer.Server,System.Net.Sockets.Socket@)">
+        <member name="M:AutoCSer.Net.TcpInternalSimpleServer.ServerSocket.#ctor(AutoCSer.Net.TcpInternalSimpleServer.Server)">
             <summary>
             TCP 内部服务端套接字
             </summary>
             <param name="server">TCP调用服务端</param>
-            <param name="socket">客户端信息</param>
         </member>
         <member name="M:AutoCSer.Net.TcpInternalSimpleServer.ServerSocket.close">
             <summary>
@@ -29131,12 +29176,7 @@
             枚举状态查找器
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.StateSearcher.parser">
-            <summary>
-            XML解析器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Xml.StateSearcher.state">
+        <member name="F:AutoCSer.Xml.StateSearcher.State">
             <summary>
             状态集合
             </summary>
@@ -29156,11 +29196,6 @@
             特殊字符串查找表结束位置
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.StateSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.Xml.StateSearcher.charIndex">
             <summary>
             特殊字符起始值
@@ -29171,11 +29206,10 @@
             查询矩阵单位尺寸类型
             </summary>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.#ctor(AutoCSer.Xml.Parser,AutoCSer.Pointer)">
+        <member name="M:AutoCSer.Xml.StateSearcher.#ctor(AutoCSer.Pointer)">
             <summary>
             名称查找器
             </summary>
-            <param name="parser">XML解析器</param>
             <param name="data">数据起始位置</param>
         </member>
         <member name="M:AutoCSer.Xml.StateSearcher.getCharIndex(System.Char)">
@@ -29185,46 +29219,53 @@
             <param name="value">特殊字符</param>
             <returns>索引值,匹配失败返回0</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.SearchEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.SearchEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchEnumOnly">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchEnumOnly(AutoCSer.Xml.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.SearchFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.SearchFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.searchCDataFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Xml.StateSearcher.NextFlagEnum">
+        <member name="M:AutoCSer.Xml.StateSearcher.NextFlagEnum(AutoCSer.Xml.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">XML解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
         <member name="T:AutoCSer.Xml.Node">
@@ -29744,6 +29785,11 @@
             客户端是否仅仅发送数据(不需要应答)
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.OutputInfo.IsBuildOutputThread">
+            <summary>
+            创建输出是否开启线程
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.OutputInfo.MaxDataSize">
             <summary>
             最大输出数据字节长度
@@ -30173,11 +30219,12 @@
             取消保持调用
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCallback.SetKeep(AutoCSer.Net.TcpInternalServer.ServerSocketSender)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerCallback.SetKeep(AutoCSer.Net.TcpInternalServer.ServerSocketSender,System.Boolean)">
             <summary>
             异步回调
             </summary>
             <param name="socket"></param>
+            <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.ServerCallback`2">
@@ -31015,6 +31062,11 @@
             枚举值解析
             </summary>
         </member>
+        <member name="F:AutoCSer.Xml.TypeParser`1.EnumParser.enumSearcher">
+            <summary>
+            枚举名称查找数据
+            </summary>
+        </member>
         <member name="M:AutoCSer.Xml.TypeParser`1.EnumParser.parse(AutoCSer.Xml.Parser,`0@)">
             <summary>
             枚举值解析
@@ -31022,13 +31074,12 @@
             <param name="parser">XML解析器</param>
             <param name="value">目标数据</param>
         </member>
-        <member name="M:AutoCSer.Xml.TypeParser`1.EnumParser.getIndex(AutoCSer.Xml.Parser,`0@,AutoCSer.Xml.StateSearcher@,System.Int32@,System.Int32@)">
+        <member name="M:AutoCSer.Xml.TypeParser`1.EnumParser.getIndex(AutoCSer.Xml.Parser,`0@,System.Int32@,System.Int32@)">
             <summary>
             枚举值解析
             </summary>
             <param name="parser">XML解析器</param>
             <param name="value"></param>
-            <param name="searcher">名称查找</param>
             <param name="index">第一个枚举索引</param>
             <param name="nextIndex">第二个枚举索引</param>
         </member>
@@ -33813,6 +33864,11 @@
             
             </summary>
         </member>
+        <member name="F:AutoCSer.Log.CatchCount.Type.TcpServerSocket_Dispose">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="F:AutoCSer.Log.CatchCount.Type.TcpServerClientSocket_Dispose">
             <summary>
             
@@ -36180,12 +36236,7 @@
             名称状态查找器
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.StateSearcher.parser">
-            <summary>
-            Json解析器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Json.StateSearcher.state">
+        <member name="F:AutoCSer.Json.StateSearcher.State">
             <summary>
             状态集合
             </summary>
@@ -36205,11 +36256,6 @@
             特殊字符串查找表结束位置
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.StateSearcher.currentState">
-            <summary>
-            当前状态
-            </summary>
-        </member>
         <member name="F:AutoCSer.Json.StateSearcher.charIndex">
             <summary>
             特殊字符起始值
@@ -36220,24 +36266,25 @@
             查询矩阵单位尺寸类型
             </summary>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.#ctor(AutoCSer.Json.Parser,AutoCSer.Pointer)">
+        <member name="M:AutoCSer.Json.StateSearcher.#ctor(AutoCSer.Pointer)">
             <summary>
             名称查找器
             </summary>
-            <param name="parser">Json解析器</param>
             <param name="data">数据起始位置</param>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.SearchName(System.Boolean@)">
+        <member name="M:AutoCSer.Json.StateSearcher.SearchName(AutoCSer.Json.Parser,System.Boolean@)">
             <summary>
             获取名称索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <param name="isQuote">名称是否带引号</param>
             <returns>名称索引,失败返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.searchString(System.Char)">
+        <member name="M:AutoCSer.Json.StateSearcher.searchString(AutoCSer.Json.Parser,System.Char)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <param name="value">第一个字符</param>
             <returns>目标索引,null返回-1</returns>
         </member>
@@ -36248,29 +36295,33 @@
             <param name="value">特殊字符</param>
             <returns>索引值,匹配失败返回0</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.SearchString">
+        <member name="M:AutoCSer.Json.StateSearcher.SearchString(AutoCSer.Json.Parser)">
             <summary>
             根据字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.SearchFlagEnum">
+        <member name="M:AutoCSer.Json.StateSearcher.SearchFlagEnum(AutoCSer.Json.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.flagEnum(System.Char)">
+        <member name="M:AutoCSer.Json.StateSearcher.flagEnum(AutoCSer.Json.Parser,System.Char)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <param name="value">当前字符</param>
             <returns>目标索引,null返回-1</returns>
         </member>
-        <member name="M:AutoCSer.Json.StateSearcher.NextFlagEnum">
+        <member name="M:AutoCSer.Json.StateSearcher.NextFlagEnum(AutoCSer.Json.Parser)">
             <summary>
             根据枚举字符串查找目标索引
             </summary>
+            <param name="parser">JSON 解析器</param>
             <returns>目标索引,null返回-1</returns>
         </member>
         <member name="F:AutoCSer.Json.StateSearcher.memberSearchers">
@@ -37453,26 +37504,6 @@
             </summary>
             <param name="stream"></param>
         </member>
-        <member name="F:AutoCSer.EncodingCache.Gb2312">
-            <summary>
-            gb2312 编码
-            </summary>
-        </member>
-        <member name="F:AutoCSer.EncodingCache.Gb18030">
-            <summary>
-            gb18030 编码
-            </summary>
-        </member>
-        <member name="F:AutoCSer.EncodingCache.Gbk">
-            <summary>
-            gbk 编码
-            </summary>
-        </member>
-        <member name="F:AutoCSer.EncodingCache.Big5">
-            <summary>
-            big5 编码
-            </summary>
-        </member>
         <member name="F:AutoCSer.EncodingCache.Utf8">
             <summary>
             UTF8 编码
@@ -37487,13 +37518,6 @@
             <summary>
             Unicode 编码
             </summary>
-        </member>
-        <member name="M:AutoCSer.EncodingCache.getEncoding(System.String)">
-            <summary>
-            获取字符编码
-            </summary>
-            <param name="name"></param>
-            <returns></returns>
         </member>
         <member name="F:AutoCSer.EncodingCache.urlHashUnicode">
             <summary>
@@ -37519,6 +37543,38 @@
             <summary>
             是否 Unicode
             </summary>
+        </member>
+        <member name="T:AutoCSer.EncodingCacheOther">
+            <summary>
+            编码类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.EncodingCacheOther.Gb2312">
+            <summary>
+            gb2312 编码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.EncodingCacheOther.Gb18030">
+            <summary>
+            gb18030 编码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.EncodingCacheOther.Gbk">
+            <summary>
+            gbk 编码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.EncodingCacheOther.Big5">
+            <summary>
+            big5 编码
+            </summary>
+        </member>
+        <member name="M:AutoCSer.EncodingCacheOther.getEncoding(System.String)">
+            <summary>
+            获取字符编码
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Diagnostics.ProcessCopyer">
             <summary>
@@ -38454,12 +38510,6 @@
             获取客户端请求
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.Server.push(AutoCSer.Net.SocketLink)">
-            <summary>
-            添加新的套接字
-            </summary>
-            <param name="socket"></param>
-        </member>
         <member name="M:AutoCSer.Net.TcpOpenServer.Server.OnSocket">
             <summary>
             套接字处理
@@ -38989,17 +39039,6 @@
         <member name="P:AutoCSer.ArrayHeap`2.Count">
             <summary>
             数据数量
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.TcpServer.AwaiterResult`1">
-            <summary>
-            await 模拟返回值
-            </summary>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.AwaiterResult`1.Result">
-            <summary>
-            返回值
             </summary>
         </member>
     </members>

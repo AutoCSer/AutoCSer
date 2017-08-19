@@ -13,6 +13,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// </summary>
         /// <typeparam name="attributeType">TCP 服务配置</typeparam>
         /// <typeparam name="methodAttributeType">TCP 调用函数配置</typeparam>
+        /// <typeparam name="serverSocketType"></typeparam>
         internal abstract class Generator<attributeType, methodAttributeType, serverSocketType> : TcpServer.GeneratorBase<attributeType, methodAttributeType, serverSocketType>
             where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
             where methodAttributeType : AutoCSer.Net.TcpServer.MethodBaseAttribute

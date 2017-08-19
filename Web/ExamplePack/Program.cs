@@ -277,6 +277,9 @@ namespace AutoCSer.Tool.OpenPack
                                 if (string.Compare(fileName, "ip.txt", true) == 0) fileName = null;
                                 else if (fileName.StartsWith("log_default", StringComparison.OrdinalIgnoreCase)) isDelete = true;
                                 break;
+                            case ".json":
+                                if (fileName.EndsWith(".runtimeconfig.dev.json", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".runtimeconfig.json", StringComparison.OrdinalIgnoreCase)) fileName = null;
+                                break;
                         }
                     }
                     if (isDelete)

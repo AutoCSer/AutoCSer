@@ -51,7 +51,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <summary>
         /// 函数参数类型集合关键字
         /// </summary>
-        /// <param name="types"></param>
+        /// <param name="parameters"></param>
         /// <param name="isSerializeReferenceMember">二进制序列化是否需要检测循环引用</param>
         /// <param name="isSerializeBox">二进制序列化是否需要检测循环引用</param>
         public MethodParameterTypeNames(MethodParameter[] parameters, bool isSerializeReferenceMember, bool isSerializeBox)
@@ -69,7 +69,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <summary>
         /// 函数参数类型集合关键字
         /// </summary>
-        /// <param name="types"></param>
+        /// <param name="parameters"></param>
         /// <param name="returnType"></param>
         /// <param name="isSerializeReferenceMember">二进制序列化是否需要检测循环引用</param>
         /// <param name="isSerializeBox">二进制序列化是否需要检测循环引用</param>

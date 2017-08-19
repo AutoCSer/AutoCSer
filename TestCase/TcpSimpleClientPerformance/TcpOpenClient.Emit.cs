@@ -62,7 +62,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleClientPerformance
         private static void sleep()
         {
             long milliseconds = Math.Max(TcpInternalSimpleClientPerformance.Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(TcpInternalSimpleClientPerformance.Client.LoopCount.toString() + " / " + milliseconds.toString() + " = " + (TcpInternalSimpleClientPerformance.Client.LoopCount / milliseconds) + "/ms " + (TcpInternalSimpleClientPerformance.Client.ErrorCount == 0 ? null : (" ERROR[" + TcpInternalSimpleClientPerformance.Client.ErrorCount.toString() + "]")) + " " + TcpInternalSimpleClientPerformance.Client.TestType.ToString());
+            Console.WriteLine(TcpInternalSimpleClientPerformance.Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (TcpInternalSimpleClientPerformance.Client.LoopCount / milliseconds) + "/ms " + (TcpInternalSimpleClientPerformance.Client.ErrorCount == 0 ? null : (" ERROR[" + TcpInternalSimpleClientPerformance.Client.ErrorCount.toString() + "]")) + " " + TcpInternalSimpleClientPerformance.Client.TestType.ToString());
 
             Console.WriteLine(@"Sleep 3000ms
 ");

@@ -7,12 +7,16 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
-            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.Example.TcpInternalSimpleServer", out createdProcessWait);
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.TcpInternalSimpleServer", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)
                 {
+#endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/SimpleMethodServer.html
 ");
                     Console.WriteLine(NoAttribute.TestCase());
@@ -23,8 +27,11 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                     Console.WriteLine(Asynchronous.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
     }
 }

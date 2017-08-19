@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FieldData.cs" />
+    <Compile Include="FloatFieldData.cs" />
+    <Compile Include="FloatPropertyData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyData.cs" />

@@ -17,20 +17,30 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// <param name="runTest"></param>
         internal static void Start(string name, Action runTest)
         {
-            using (EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, name, out IsCreatedProcessWait))
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+            IsCreatedProcessWait = true;
             {
-                mapPointer = AutoCSer.Unmanaged.GetSize64((Count + 7) >> 3);
-                try
+#else
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, name, out IsCreatedProcessWait);
+            if (IsCreatedProcessWait)
+            {
+                using (processWait)
+#endif
                 {
-                    addMap = new AutoCSer.MemoryMap(mapPointer.Byte);
-                    do
+                    mapPointer = AutoCSer.Unmanaged.GetSize64((Count + 7) >> 3);
+                    try
                     {
-                        Left = AutoCSer.Random.Default.Next();
-                        runTest();
+                        addMap = new AutoCSer.MemoryMap(mapPointer.Byte);
+                        do
+                        {
+                            Left = AutoCSer.Random.Default.Next();
+                            runTest();
+                        }
+                        while (true);
                     }
-                    while (true);
+                    finally { AutoCSer.Unmanaged.Free(ref mapPointer); }
                 }
-                finally { AutoCSer.Unmanaged.Free(ref mapPointer); }
             }
         }
         /// <summary>

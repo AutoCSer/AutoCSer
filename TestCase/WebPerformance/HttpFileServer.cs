@@ -12,12 +12,16 @@ namespace AutoCSer.TestCase.HttpFilePerformance
     {
         static void Main(string[] args)
         {
+#if NETCOREAPP2_0
+            Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
+#else
             bool createdProcessWait;
             EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.HttpFilePerformance", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)
                 {
+#endif
                     Console.WriteLine(@"http://www.AutoCSer.com/WebView/Index.html
 ");
                     try
@@ -27,8 +31,18 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                             if (server == null) Console.WriteLine("HTTP服务启动失败");
                             else
                             {
+#if NETCOREAPP2_0
+                                FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.dll"));
+                                if (clientFile.Exists)
+                                {
+                                    ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName);
+                                    process.UseShellExecute = true;
+                                    Process.Start(process);
+                                }
+#else
                                 FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.exe"));
                                 if (clientFile.Exists) Process.Start(clientFile.FullName);
+#endif
                                 else Console.WriteLine("未找到 HTTP 文件测试客户端程序");
 
                                 Console.WriteLine("Press quit to exit.");
@@ -41,8 +55,11 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
+#if NETCOREAPP2_0
+#else
                 }
             }
+#endif
         }
     }
 }

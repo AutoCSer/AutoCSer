@@ -97,7 +97,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleClientPerformance
         private static void sleep()
         {
             long milliseconds = Math.Max(Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + " = " + (Client.LoopCount / milliseconds) + "/ms " + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
+            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (Client.LoopCount / milliseconds) + "/ms " + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
 
             Console.WriteLine(@"Sleep 3000ms
 ");
