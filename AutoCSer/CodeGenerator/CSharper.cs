@@ -148,7 +148,7 @@ namespace AutoCSer.CodeGenerator
                     if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.ToArray()) + Coder.FileEndCode))
                     {
                         Messages.Add(fileName + " 被修改");
-#if NETCOREAPP2_0
+#if DotNetStandard
                         string path = new System.IO.FileInfo(parameter.AssemblyPath).Directory.fullName();
                         copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.deps.json");
                         copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.dev.json");
@@ -161,7 +161,7 @@ namespace AutoCSer.CodeGenerator
             }
             return false;
         }
-#if NETCOREAPP2_0
+#if DotNetStandard
         /// <summary>
         /// 复制 JSON 文件
         /// </summary>

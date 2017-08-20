@@ -68,7 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.Drawing.Gif.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\Drawing\Gif\AutoCSer.Drawing.Gif.DotNet2.csproj">
       <Project>{9B147694-97D6-44D9-94B3-D284BC14558B}</Project>
       <Name>AutoCSer.Drawing.Gif.DotNet2</Name>
     </ProjectReference>

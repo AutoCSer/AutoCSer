@@ -8,7 +8,7 @@ namespace AutoCSer.Example.WebView
     {
         static void Main(string[] args)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
@@ -43,7 +43,7 @@ namespace AutoCSer.Example.WebView
                                 Console.WriteLine(Upload.TestCase());
                                 Console.WriteLine(File.TestCase());
 
-#if NETCOREAPP2_0
+#if DotNetStandard
                                 Console.WriteLine("http://" + webConfig.MainDomain + "/");
 #else
                                 Process.Start("http://" + webConfig.MainDomain + "/");
@@ -58,7 +58,7 @@ namespace AutoCSer.Example.WebView
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                 }
             }

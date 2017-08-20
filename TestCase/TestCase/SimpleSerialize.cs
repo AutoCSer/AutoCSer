@@ -67,21 +67,29 @@ namespace AutoCSer.TestCase
 #endif
         internal unsafe static bool TestCase()
         {
-            Data data = AutoCSer.RandomObject.Creator<Data>.Create();
-            using (UnmanagedStream stream = new UnmanagedStream())
+            try
             {
-                AutoCSer.Net.SimpleSerialize.TypeSerializer<Data>.Serializer(stream, ref data);
-                Data newData = default(Data);
-                if (AutoCSer.Net.SimpleSerialize.TypeDeSerializer<Data>.DeSerialize(stream.Data.Byte, ref newData, stream.CurrentData) != stream.CurrentData)
+                Data data = AutoCSer.RandomObject.Creator<Data>.Create();
+                using (UnmanagedStream stream = new UnmanagedStream())
                 {
-                    return false;
+                    AutoCSer.Net.SimpleSerialize.TypeSerializer<Data>.Serializer(stream, ref data);
+                    Data newData = default(Data);
+                    if (AutoCSer.Net.SimpleSerialize.TypeDeSerializer<Data>.DeSerialize(stream.Data.Byte, ref newData, stream.CurrentData) != stream.CurrentData)
+                    {
+                        return false;
+                    }
+                    if (!AutoCSer.FieldEquals.Comparor<Data>.Equals(data, newData))
+                    {
+                        return false;
+                    }
                 }
-                if (!AutoCSer.FieldEquals.Comparor<Data>.Equals(data, newData))
-                {
-                    return false;
-                }
+                return true;
             }
-            return true;
+            catch (Exception error)
+            {
+                Console.WriteLine(error.ToString());
+                return false;
+            }
         }
     }
 }

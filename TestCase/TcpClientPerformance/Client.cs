@@ -17,7 +17,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// <param name="runTest"></param>
         internal static void Start(string name, Action runTest)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
             IsCreatedProcessWait = true;
             {

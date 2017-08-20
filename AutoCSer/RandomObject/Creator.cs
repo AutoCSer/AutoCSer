@@ -299,7 +299,14 @@ namespace AutoCSer.RandomObject
                 dynamicMethod.Push(field);
             }
             dynamicMethod.Base();
-            MemberCreator = (creator)dynamicMethod.Create<creator>();
+            try
+            {
+                MemberCreator = (creator)dynamicMethod.Create<creator>();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.ToString());
+            }
 #endif
         }
     }

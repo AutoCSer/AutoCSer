@@ -39,7 +39,7 @@ namespace AutoCSer.CodeGenerator
             else if (File.Exists(configFileName + ".xml")) Default = AutoCSer.Xml.Parser.Parse<CustomConfig>(File.ReadAllText(configFileName + ".xml"));
             else if (jsonFile.Directory.Name == "Release" && jsonFile.Directory.Parent.Name == "bin")
             {
-#if NETCOREAPP2_0
+#if DotNetStandard
                 string fileName = jsonFile.Directory.Parent.Parent.Parent.fullName() + configFileName;
 #else
                 string fileName = jsonFile.Directory.Parent.Parent.Parent.fullName() + configFileName;

@@ -2,7 +2,10 @@
 using System.Runtime.InteropServices;
 using System.Linq.Expressions;
 using System.Data.SqlClient;
+#if NETSTANDARD2_0
+#else
 using System.Data.OleDb;
+#endif
 
 namespace AutoCSer.Sql
 {
@@ -37,6 +40,8 @@ namespace AutoCSer.Sql
         /// </summary>
         [FieldOffset(0)]
         public SqlConnection SqlConnection;
+#if NETSTANDARD2_0
+#else
         /// <summary>
         /// 数据库命令
         /// </summary>
@@ -47,6 +52,7 @@ namespace AutoCSer.Sql
         /// </summary>
         [FieldOffset(0)]
         public OleDbConnection OleDbConnection;
+#endif
 
         /// <summary>
         /// 表示包含二元运算符的表达式

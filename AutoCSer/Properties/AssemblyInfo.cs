@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
 [assembly: AssemblyTitle("AutoCSer")]
 [assembly: AssemblyCopyright("Copyright © 肖进 2017")]
@@ -39,15 +39,6 @@ using System.Runtime.InteropServices;
 #if AutoCSer
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0000")]
 #endif
-#if CodeGenerator
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0001")]
-#endif
-#if CodeGeneratorX64
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0002")]
-#endif
-#if CodeGeneratorX86
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0003")]
-#endif
 #if AllSerialize
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0004")]
 #endif
@@ -59,33 +50,6 @@ using System.Runtime.InteropServices;
 #endif
 #if Xml
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0007")]
-#endif
-#if WebView
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0008")]
-#endif
-#if Sort
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0009")]
-#endif
-#if Sql
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e000a")]
-#endif
-#if Deploy
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e000b")]
-#endif
-#if DiskBlock
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e000c")]
-#endif
-#if Gif
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e000d")]
-#endif
-#if RandomObject
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e000e")]
-#endif
-#if FieldEquals
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e000f")]
-#endif
-#if MySql
-[assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0010")]
 #endif
 
 [assembly: InternalsVisibleTo("AutoCSer.DynamicAssembly")]

@@ -119,7 +119,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.CodeGenerator.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\CodeGenerator\AutoCSer.CodeGenerator.DotNet4.csproj">
       <Project>{E9E460FF-2D26-4C9F-A474-576582594796}</Project>
       <Name>AutoCSer.CodeGenerator.DotNet4</Name>
     </ProjectReference>

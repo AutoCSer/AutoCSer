@@ -76,15 +76,15 @@
     <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DiskBlock.NoJIT.csproj">
+    <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.NoJIT.csproj">
       <Project>{2e20aeca-b2e6-4dcb-9ee3-47d8036b6626}</Project>
       <Name>AutoCSer.DiskBlock.NoJIT</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.FieldEquals.JIT.csproj">
+    <ProjectReference Include="..\..\AutoCSer\FieldEquals\AutoCSer.FieldEquals.JIT.csproj">
       <Project>{cbc830a4-fbf8-45c4-8218-8574a1377a3f}</Project>
       <Name>AutoCSer.FieldEquals.JIT</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.JIT.csproj">
+    <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.JIT.csproj">
       <Project>{fcda7d3a-a440-42c4-85c0-da0fe404154b}</Project>
       <Name>AutoCSer.RandomObject.JIT</Name>
     </ProjectReference>

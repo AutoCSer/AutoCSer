@@ -33,16 +33,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCser.Mono.csproj">
-      <Project>{8F2C11B3-5F14-4696-A3CB-F00A1B0B1837}</Project>
-      <Name>AutoCser.Mono</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.WebView.Mono.csproj">
-      <Project>{8F2C11B3-5F14-4696-A3CB-F00A1B0B1838}</Project>
-      <Name>AutoCSer.WebView.Mono</Name>
-    </ProjectReference>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\Mono\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.WebView">
+      <HintPath>..\..\Packet\Mono\AutoCSer.WebView.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />

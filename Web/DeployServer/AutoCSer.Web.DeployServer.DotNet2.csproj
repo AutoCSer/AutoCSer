@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.Deploy.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\Deploy\AutoCSer.Deploy.DotNet2.csproj">
       <Project>{7B97EF4D-B898-4A06-822A-632EF70B20F7}</Project>
       <Name>AutoCSer.Deploy.DotNet2</Name>
     </ProjectReference>

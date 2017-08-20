@@ -14,7 +14,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 自定义模板相对项目路径
         /// </summary>
-        public static readonly string DefaultTemplatePath = (@"CodeGenerator\CombinationTemplate\").pathSeparator();
+        public static readonly string DefaultTemplatePath = (@"Sort\CombinationTemplate\").pathSeparator();
         /// <summary>
         /// 安装入口
         /// </summary>
@@ -31,7 +31,7 @@ namespace AutoCSer.CodeGenerator
                     LeftArray<string>[] codes = Directory.GetFiles(path, "*.cs").getArray(name => code(name));
                     if (!codes.any(code => code.Length == 0))
                     {
-                        string fileName = parameter.ProjectPath + @"{AutoCSer}.CombinationTemplate.cs";
+                        string fileName = parameter.ProjectPath + @"Sort\{AutoCSer}.CombinationTemplate.cs";
                         if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.getArray(code => code.ToArray()).getArray()) + Coder.FileEndCode))
                         {
                             Messages.Message(fileName + " 被修改");

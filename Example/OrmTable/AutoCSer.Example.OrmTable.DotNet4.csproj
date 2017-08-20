@@ -126,7 +126,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.Sql.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\Sql\AutoCSer.Sql.DotNet4.csproj">
       <Project>{66846742-7F6E-468E-B6D6-19BC2F51AD61}</Project>
       <Name>AutoCSer.Sql.DotNet4</Name>
     </ProjectReference>

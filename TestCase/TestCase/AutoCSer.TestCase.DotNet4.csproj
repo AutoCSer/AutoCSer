@@ -165,15 +165,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DiskBlock.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.DotNet4.csproj">
       <Project>{469F2B22-0258-4688-BDBF-31027F253B9A}</Project>
       <Name>AutoCSer.DiskBlock.DotNet4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.FieldEquals.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\FieldEquals\AutoCSer.FieldEquals.DotNet4.csproj">
       <Project>{4C2ADD34-4294-4A15-BF4D-42C0158F0C0F}</Project>
       <Name>AutoCSer.FieldEquals.DotNet4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.DotNet4.csproj">
       <Project>{8937DE06-DBE0-49B8-BF25-732E95329EEB}</Project>
       <Name>AutoCSer.RandomObject.DotNet4</Name>
     </ProjectReference>

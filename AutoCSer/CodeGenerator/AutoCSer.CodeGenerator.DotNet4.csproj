@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E9E460FF-2D26-4C9F-A474-576582594796}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.CodeGenerator</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DotNet2</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DOTNET4;CodeGenerator</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\AutoCSer.CodeGenerator.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\..\Packet\DotNet4\</OutputPath>
+    <DefineConstants>TRACE;DOTNET4;CodeGenerator</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\AutoCSer.CodeGenerator.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\AutoCSer.CodeGenerator.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\AutoCSer.CodeGenerator.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.Sort, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4\AutoCSer.Sort.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.WebView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4\AutoCSer.WebView.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AsynchronousMethod.cs" />
+    <Compile Include="CodeLanguage.cs" />
+    <Compile Include="Coder.cs" />
+    <Compile Include="CombinationTemplate.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="CSharper.cs" />
+    <Compile Include="CustomConfig.cs" />
+    <Compile Include="GeneratorAttribute.cs" />
+    <Compile Include="Html.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HtmlJs.cs" />
+    <Compile Include="IGenerator.cs" />
+    <Compile Include="Metadata\MemberIndex.cs" />
+    <Compile Include="Metadata\StaticMemberIndexGroup.cs" />
+    <Compile Include="Metadata\MethodParameterPair.cs" />
+    <Compile Include="Metadata\MethodParameterTypeNames.cs" />
+    <Compile Include="Metadata\MethodParameterTypes.cs" />
+    <Compile Include="TemplateGenerator\Ajax.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TemplateGenerator\DataPrimaryKey.cs" />
+    <Compile Include="TemplateGenerator\JavaScriptTypeDefinition.cs" />
+    <Compile Include="TemplateGenerator\MemberGenerator.cs" />
+    <Compile Include="TemplateGenerator\SqlModel.cs" />
+    <Compile Include="TemplateGenerator\TcpInternalServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpOpenSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpServer.cs" />
+    <Compile Include="TemplateGenerator\TcpSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStaticServer.cs" />
+    <Compile Include="TemplateGenerator\TcpOpenServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStaticSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\WebCall.cs" />
+    <Compile Include="TemplateGenerator\WebPath.cs" />
+    <Compile Include="TemplateGenerator\WebView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Template\Ajax.cs" />
+    <Compile Include="Template\DataPrimaryKey.cs" />
+    <Compile Include="Template\Pub.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Template\SqlModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Template\TcpInternalServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Template\TcpInternalSimpleServer.cs" />
+    <Compile Include="Template\TcpOpenServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Template\TcpOpenSimpleServer.cs" />
+    <Compile Include="Template\TcpStaticServer.cs" />
+    <Compile Include="Template\TcpStaticSimpleServer.cs" />
+    <Compile Include="Template\WebCall.cs" />
+    <Compile Include="Template\WebView.cs" />
+    <Compile Include="TreeTemplate.cs" />
+    <Compile Include="TemplateGenerator\CSharpTypeDefinition.cs" />
+    <Compile Include="TemplateGenerator\Generator.cs" />
+    <Compile Include="TemplateGenerator\TypeDefinition.cs" />
+    <Compile Include="TreeBuilder.cs" />
+    <Compile Include="Metadata\ExtensionType.cs" />
+    <Compile Include="Metadata\MethodIndex.cs" />
+    <Compile Include="Metadata\MethodParameter.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="ProjectParameter.cs" />
+    <Compile Include="XmlDocument.cs" />
+    <Compile Include="XmlDocumentAssembly.cs" />
+    <Compile Include="Extension\MethodInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extension\TcpStaticServerAttribute.cs" />
+    <Compile Include="Extension\Type.CodeGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Program.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="{AutoCSer}.CSharper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Template\Ajax.ts.txt" />
+    <Content Include="Template\WebPath.js" />
+    <Content Include="Template\WebPath.ts.txt" />
+    <Content Include="Template\WebView.ts.txt" />
+    <Content Include="Js\ace\ace.js" />
+    <Content Include="Js\ace\load.ts" />
+    <Content Include="Js\autoHeight.ts" />
+    <Content Include="Js\base.page.ts" />
+    <Content Include="Js\color.ts" />
+    <Content Include="Js\color512_64.bmp" />
+    <Content Include="Js\crawlTitle.ts" />
+    <Content Include="Js\defaultInput.ts" />
+    <Content Include="Js\defaultPassword.ts" />
+    <Content Include="Js\emailDomain.ts" />
+    <Content Include="Js\fileClicker.ts" />
+    <Content Include="Js\floatCenter.ts" />
+    <Content Include="Js\form.ts" />
+    <Content Include="Js\highcharts\highcharts.js" />
+    <Content Include="Js\htmlEditor.page.ts" />
+    <Content Include="Js\inputKeyCode.ts" />
+    <Content Include="Js\inputLength.ts" />
+    <Content Include="Js\load.page.ts" />
+    <Content Include="Js\manyClickMenu.ts" />
+    <Content Include="Js\mathJax\load.ts" />
+    <Content Include="Js\mathJax\MathJax.js" />
+    <Content Include="Js\menu.ts" />
+    <Content Include="Js\mouseImage.ts" />
+    <Content Include="Js\mouseMenu.ts" />
+    <Content Include="Js\mouseMove.ts" />
+    <Content Include="Js\mouseOver.ts" />
+    <Content Include="Js\openApi.ts" />
+    <Content Include="Js\overDiv.ts" />
+    <Content Include="Js\overIframe.ts" />
+    <Content Include="Js\poll.ts" />
+    <Content Include="Js\socket.ts" />
+    <Content Include="Js\textHeight.ts" />
+    <Content Include="Js\timerShow.ts" />
+    <Content Include="Js\touchTop.ts" />
+    <Content Include="Js\verifyImage.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sql\AutoCSer.Sql.DotNet4.csproj">
+      <Project>{66846742-7F6E-468E-B6D6-19BC2F51AD61}</Project>
+      <Name>AutoCSer.Sql.DotNet4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

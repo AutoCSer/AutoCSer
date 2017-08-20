@@ -51,7 +51,7 @@
     <Compile Include="TestType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TcpServerPerformance\AutoCSer.TestCase.TcpInternalServerPerformance.csproj">
+    <ProjectReference Include="..\TcpServerPerformance\AutoCSer.TestCase.TcpInternalServerPerformance.NoJIT.csproj">
       <Project>{354f5be9-e0ff-4ff9-a064-fdb3f7444891}</Project>
       <Name>AutoCSer.TestCase.TcpInternalServerPerformance</Name>
     </ProjectReference>

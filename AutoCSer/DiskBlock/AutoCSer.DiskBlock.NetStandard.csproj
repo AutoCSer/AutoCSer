@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.DiskBlock</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.DiskBlock.NetStandard</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.DiskBlock 是一个日志型磁盘数据块服务组件。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;DiskBlock;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;DiskBlock;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.DiskBlock.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="AppendBuffer.cs" />
+    <Compile Include="BlockBase.cs" />
+    <Compile Include="ClientBuffer.cs" />
+    <Compile Include="ClientConfig.cs" />
+    <Compile Include="ClientPool.cs" />
+    <Compile Include="ConfigLoader.cs" />
+    <Compile Include="DataCache.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="FileWriteRequest.cs" />
+    <Compile Include="IBlock.cs" />
+    <Compile Include="Member.cs" />
+    <Compile Include="MemberIndex.cs" />
+    <Compile Include="MemberState.cs" />
+    <Compile Include="MemberValue.cs" />
+    <Compile Include="NET4.5\Member.cs" />
+    <Compile Include="ReadRequest.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="UnionType.cs" />
+    <Compile Include="WriteRequest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="{AutoCSer.DiskBlock}.AutoCSer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

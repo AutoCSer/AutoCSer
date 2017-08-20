@@ -7,7 +7,7 @@ namespace AutoCSer.TestCase.ChatServer
     /// <summary>
     /// 群聊客户端
     /// </summary>
-#if NETCOREAPP2_0
+#if DotNetStandard
     [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\..\ChatClient\", ClientOutputSleep = 0, IsJsonSerialize = true)]
 #else
     [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\ChatClient\", ClientOutputSleep = 0, IsJsonSerialize = true)]

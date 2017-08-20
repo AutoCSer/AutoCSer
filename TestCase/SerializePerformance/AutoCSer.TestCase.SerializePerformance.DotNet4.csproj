@@ -117,7 +117,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.DotNet4.csproj">
       <Project>{8937DE06-DBE0-49B8-BF25-732E95329EEB}</Project>
       <Name>AutoCSer.RandomObject.DotNet4</Name>
     </ProjectReference>

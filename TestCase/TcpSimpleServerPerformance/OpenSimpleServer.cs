@@ -89,7 +89,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
 
         static void Main(string[] args)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
@@ -107,7 +107,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
                     {
                         if (server.IsListen)
                         {
-#if NETCOREAPP2_0
+#if DotNetStandard
 #if DEBUG
                         FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpSimpleClientPerformance\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.TcpOpenSimpleClientPerformance.dll".pathSeparator()));
 #else
@@ -140,7 +140,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
                         }
                     }
 #endif
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                 }
             }

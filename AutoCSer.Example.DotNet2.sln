@@ -81,23 +81,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.Web.DotNet2", "Web
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{7AA2F0B1-7164-4E32-8F4C-4270850FE0ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.DiskBlock.DotNet2", "AutoCSer\AutoCSer.DiskBlock.DotNet2.csproj", "{45E7C3C5-52AA-477E-814F-4D52CA6D758A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.DiskBlock.DotNet2", "AutoCSer\DiskBlock\AutoCSer.DiskBlock.DotNet2.csproj", "{45E7C3C5-52AA-477E-814F-4D52CA6D758A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{C0E490A3-1E9A-42A9-8F01-F5B18BCFA0D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.Deploy.DotNet2", "AutoCSer\AutoCSer.Deploy.DotNet2.csproj", "{7B97EF4D-B898-4A06-822A-632EF70B20F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.Deploy.DotNet2", "AutoCSer\Deploy\AutoCSer.Deploy.DotNet2.csproj", "{7B97EF4D-B898-4A06-822A-632EF70B20F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.Drawing.Gif.DotNet2", "AutoCSer\AutoCSer.Drawing.Gif.DotNet2.csproj", "{9B147694-97D6-44D9-94B3-D284BC14558B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.Drawing.Gif.DotNet2", "AutoCSer\Drawing\Gif\AutoCSer.Drawing.Gif.DotNet2.csproj", "{9B147694-97D6-44D9-94B3-D284BC14558B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.FieldEquals.DotNet2", "AutoCSer\AutoCSer.FieldEquals.DotNet2.csproj", "{4C2ADD34-4294-4A15-BF4D-42C0158F0C0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.FieldEquals.DotNet2", "AutoCSer\FieldEquals\AutoCSer.FieldEquals.DotNet2.csproj", "{4C2ADD34-4294-4A15-BF4D-42C0158F0C0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.RandomObject.DotNet2", "AutoCSer\AutoCSer.RandomObject.DotNet2.csproj", "{8937DE06-DBE0-49B8-BF25-732E95329EEB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.RandomObject.DotNet2", "AutoCSer\RandomObject\AutoCSer.RandomObject.DotNet2.csproj", "{8937DE06-DBE0-49B8-BF25-732E95329EEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeGenerator", "CodeGenerator", "{CB3FBE3E-59FE-4A0E-97D0-6B96291D1AFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.CodeGenerator.DotNet2", "AutoCSer\AutoCSer.CodeGenerator.DotNet2.csproj", "{9C257405-20F3-41DF-80D4-74976AAA6C6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.CodeGenerator.DotNet2", "AutoCSer\CodeGenerator\AutoCSer.CodeGenerator.DotNet2.csproj", "{9C257405-20F3-41DF-80D4-74976AAA6C6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.CodeGenerator.X86.DotNet2", "AutoCSer\AutoCSer.CodeGenerator.X86.DotNet2.csproj", "{51A37CFF-227D-40DB-A9FE-094C6DA3773E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.CodeGenerator.X86.DotNet2", "AutoCSer\CodeGenerator\AutoCSer.CodeGenerator.X86.DotNet2.csproj", "{51A37CFF-227D-40DB-A9FE-094C6DA3773E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.CodeGenerator.Custom.DotNet2", "Example\CustomCodeGenerator\AutoCSer.CodeGenerator.Custom.DotNet2.csproj", "{5C9A7965-BB79-4C4D-A6E7-9E4604064941}"
 EndProject

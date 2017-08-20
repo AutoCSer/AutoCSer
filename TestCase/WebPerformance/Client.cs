@@ -152,7 +152,7 @@ namespace AutoCSer.TestCase.WebPerformance
         public void CloseSocket()
         {
             keepAliveCount = 0;
-#if NETCOREAPP2_0
+#if DotNetStandard
             try
             {
                 socket.Shutdown(SocketShutdown.Both);

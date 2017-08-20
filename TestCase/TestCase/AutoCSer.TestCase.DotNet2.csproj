@@ -101,15 +101,15 @@
     <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DiskBlock.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.DotNet2.csproj">
       <Project>{45E7C3C5-52AA-477E-814F-4D52CA6D758A}</Project>
       <Name>AutoCSer.DiskBlock.DotNet2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.FieldEquals.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\FieldEquals\AutoCSer.FieldEquals.DotNet2.csproj">
       <Project>{4C2ADD34-4294-4A15-BF4D-42C0158F0C0F}</Project>
       <Name>AutoCSer.FieldEquals.DotNet2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.DotNet2.csproj">
       <Project>{8937DE06-DBE0-49B8-BF25-732E95329EEB}</Project>
       <Name>AutoCSer.RandomObject.DotNet2</Name>
     </ProjectReference>

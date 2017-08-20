@@ -1,0 +1,153 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>AutoCSer.CodeGenerator</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Description>AutoCSer.CodeGenerator 是一个静态代码生成组件，TCP 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架 这些组件都依赖于它。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.CodeGenerator.NetCore</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/CodeGenerator.html</PackageProjectUrl>
+    <Version>1.1.0</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;CodeGenerator;MONO;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.xml</DocumentationFile>
+    <OutputPath>..\..\Packet\NetCore\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;CodeGenerator;MONO;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="AsynchronousMethod.cs" />
+    <Compile Include="CodeLanguage.cs" />
+    <Compile Include="Coder.cs" />
+    <Compile Include="CombinationTemplate.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="CSharper.cs" />
+    <Compile Include="CustomConfig.cs" />
+    <Compile Include="GeneratorAttribute.cs" />
+    <Compile Include="Html.cs" />
+    <Compile Include="HtmlJs.cs" />
+    <Compile Include="IGenerator.cs" />
+    <Compile Include="Messages.cs" />
+    <Compile Include="Metadata\ExtensionType.cs" />
+    <Compile Include="Metadata\MemberIndex.cs" />
+    <Compile Include="Metadata\MethodIndex.cs" />
+    <Compile Include="Metadata\MethodParameter.cs" />
+    <Compile Include="Metadata\MethodParameterPair.cs" />
+    <Compile Include="Metadata\MethodParameterTypeNames.cs" />
+    <Compile Include="Metadata\MethodParameterTypes.cs" />
+    <Compile Include="Metadata\StaticMemberIndexGroup.cs" />
+    <Compile Include="ProjectParameter.cs" />
+    <Compile Include="TemplateGenerator\Ajax.cs" />
+    <Compile Include="TemplateGenerator\CSharpTypeDefinition.cs" />
+    <Compile Include="TemplateGenerator\DataPrimaryKey.cs" />
+    <Compile Include="TemplateGenerator\Generator.cs" />
+    <Compile Include="TemplateGenerator\JavaScriptTypeDefinition.cs" />
+    <Compile Include="TemplateGenerator\MemberGenerator.cs" />
+    <Compile Include="TemplateGenerator\TcpInternalServer.cs" />
+    <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpOpenServer.cs" />
+    <Compile Include="TemplateGenerator\TcpOpenSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpServer.cs" />
+    <Compile Include="TemplateGenerator\TcpSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStaticServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStaticSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TypeDefinition.cs" />
+    <Compile Include="TemplateGenerator\WebCall.cs" />
+    <Compile Include="TemplateGenerator\WebPath.cs" />
+    <Compile Include="TemplateGenerator\WebView.cs" />
+    <Compile Include="Template\Ajax.cs" />
+    <Compile Include="Template\DataPrimaryKey.cs" />
+    <Compile Include="Template\Pub.cs" />
+    <Compile Include="Template\TcpInternalServer.cs" />
+    <Compile Include="Template\TcpInternalSimpleServer.cs" />
+    <Compile Include="Template\TcpOpenSimpleServer.cs" />
+    <Compile Include="Template\TcpOpenServer.cs" />
+    <Compile Include="Template\TcpStaticSimpleServer.cs" />
+    <Compile Include="Template\TcpStaticServer.cs" />
+    <Compile Include="Template\WebCall.cs" />
+    <Compile Include="Template\WebView.cs" />
+    <Compile Include="TreeBuilder.cs" />
+    <Compile Include="TreeTemplate.cs" />
+    <Compile Include="XmlDocument.cs" />
+    <Compile Include="XmlDocumentAssembly.cs" />
+    <Compile Include="Extension\MethodInfo.cs" />
+    <Compile Include="Extension\TcpStaticServerAttribute.cs" />
+    <Compile Include="Extension\Type.CodeGenerator.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="{AutoCSer}.CSharper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Js\color512_64.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Js\ace\ace.js" />
+    <None Include="Js\ace\load.ts" />
+    <None Include="Js\autoHeight.ts" />
+    <None Include="Js\base.page.ts" />
+    <None Include="Js\color.ts" />
+    <None Include="Js\crawlTitle.ts" />
+    <None Include="Js\defaultInput.ts" />
+    <None Include="Js\defaultPassword.ts" />
+    <None Include="Js\emailDomain.ts" />
+    <None Include="Js\fileClicker.ts" />
+    <None Include="Js\floatCenter.ts" />
+    <None Include="Js\form.ts" />
+    <None Include="Js\highcharts\highcharts.js" />
+    <None Include="Js\htmlEditor.page.ts" />
+    <None Include="Js\inputKeyCode.ts" />
+    <None Include="Js\inputLength.ts" />
+    <None Include="Js\load.page.ts" />
+    <None Include="Js\manyClickMenu.ts" />
+    <None Include="Js\mathJax\load.ts" />
+    <None Include="Js\mathJax\MathJax.js" />
+    <None Include="Js\menu.ts" />
+    <None Include="Js\mouseImage.ts" />
+    <None Include="Js\mouseMenu.ts" />
+    <None Include="Js\mouseMove.ts" />
+    <None Include="Js\mouseOver.ts" />
+    <None Include="Js\openApi.ts" />
+    <None Include="Js\overDiv.ts" />
+    <None Include="Js\overIframe.ts" />
+    <None Include="Js\poll.ts" />
+    <None Include="Js\socket.ts" />
+    <None Include="Js\textHeight.ts" />
+    <None Include="Js\timerShow.ts" />
+    <None Include="Js\touchTop.ts" />
+    <None Include="Js\verifyImage.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.Sort">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.WebView">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.WebView.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -25339,18 +25339,6 @@
             文件块
             </summary>
         </member>
-        <member name="T:AutoCSer.Extension.Type_Sql">
-            <summary>
-            类型扩展操作
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Extension.Type_Sql.toNullableType(System.Type)">
-            <summary>
-            值类型转换为可空类型
-            </summary>
-            <param name="type">值类型</param>
-            <returns>可空类型,失败返回null</returns>
-        </member>
         <member name="T:AutoCSer.Emit.ConstructorAttribute">
             <summary>
             默认构造函数

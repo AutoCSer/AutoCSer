@@ -1,4 +1,4 @@
-/// <reference path = "../../../AutoCSer/js/base.page.ts" />
+/// <reference path = "../../../AutoCSer/CodeGenerator/js/base.page.ts" />
 /// <reference path = "./WebPath.ts" />
 'use strict';
 var Demo;

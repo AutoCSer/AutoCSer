@@ -10,7 +10,7 @@ namespace AutoCSer.Example.TcpRegisterServer
     {
         static void Main(string[] args)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
@@ -31,7 +31,7 @@ namespace AutoCSer.Example.TcpRegisterServer
                         {
                             if (registerServer.IsListen && registerReaderServer.IsListen)
                             {
-#if NETCOREAPP2_0
+#if DotNetStandard
 #if DEBUG
                                 FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\TcpRegisterClient\bin\Debug\netcoreapp2.0\AutoCSer.Example.TcpRegisterClient.dll".pathSeparator()));
 #else
@@ -67,7 +67,7 @@ namespace AutoCSer.Example.TcpRegisterServer
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                 }
             }

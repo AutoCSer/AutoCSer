@@ -7,7 +7,7 @@ namespace AutoCSer.Example.TcpOpenServer
     {
         static void Main(string[] args)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
@@ -37,7 +37,7 @@ namespace AutoCSer.Example.TcpOpenServer
                     Console.WriteLine(KeepCallback.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                 }
             }

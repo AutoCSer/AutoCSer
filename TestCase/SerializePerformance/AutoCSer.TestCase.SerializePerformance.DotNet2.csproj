@@ -70,7 +70,7 @@
     <Compile Include="PropertyData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.DotNet2.csproj">
       <Project>{8937DE06-DBE0-49B8-BF25-732E95329EEB}</Project>
       <Name>AutoCSer.RandomObject.DotNet2</Name>
     </ProjectReference>

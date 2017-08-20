@@ -72,7 +72,7 @@
     <None Include="AutoCSer.CodeGenerator.CustomConfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.CodeGenerator.DotNet2.csproj">
+    <ProjectReference Include="..\..\AutoCSer\CodeGenerator\AutoCSer.CodeGenerator.DotNet2.csproj">
       <Project>{9C257405-20F3-41DF-80D4-74976AAA6C6B}</Project>
       <Name>AutoCSer.CodeGenerator.DotNet2</Name>
     </ProjectReference>

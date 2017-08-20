@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6D9B5BD4-A71B-4B21-8A33-761F948EED55}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.Sql</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Sql</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Packet\DotNet4.5\</OutputPath>
+    <DefineConstants>TRACE;Sql</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Packet\DotNet4.5\AutoCSer.Sql.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.Sort, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.Sort.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Emit\CastType.cs" />
+    <Compile Include="Emit\NullableConstructor.cs" />
+    <Compile Include="Excel\Client.cs" />
+    <Compile Include="Excel\Connection.cs" />
+    <Compile Include="Excel\DbType.cs" />
+    <Compile Include="Excel\Intermixed.cs" />
+    <Compile Include="Excel\Provider.cs" />
+    <Compile Include="Excel\ProviderAttribute.cs" />
+    <Compile Include="Extension\EmitGenerator.Sql.cs" />
+    <Compile Include="Extension\Expression.cs" />
+    <Compile Include="Extension\SqlTable.cs" />
+    <Compile Include="Extension\Type.Sql.cs" />
+    <Compile Include="Metadata\MemberMapValue.cs" />
+    <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AnyCancel.cs" />
+    <Compile Include="Cache\Copy.cs" />
+    <Compile Include="Cache\Counter\Cache.cs" />
+    <Compile Include="Cache\Counter\Event\Cache.cs" />
+    <Compile Include="Cache\Counter\Event\Identity.cs" />
+    <Compile Include="Cache\Counter\Event\Identity64.cs" />
+    <Compile Include="Cache\Counter\Event\Member.cs" />
+    <Compile Include="Cache\Counter\Event\MemberIdentity.cs" />
+    <Compile Include="Cache\Counter\Event\MemberIdentity64.cs" />
+    <Compile Include="Cache\Counter\Event\PrimaryKey.cs" />
+    <Compile Include="Cache\Counter\MemberQueue.cs" />
+    <Compile Include="Cache\Counter\Queue.cs" />
+    <Compile Include="Cache\Counter\QueueDictionary.cs" />
+    <Compile Include="Cache\Counter\QueueExpression.cs" />
+    <Compile Include="Cache\Counter\QueueList.cs" />
+    <Compile Include="Cache\Counter\Type.cs" />
+    <Compile Include="Cache\DictionaryArray.cs" />
+    <Compile Include="Cache\IdentityArray.cs" />
+    <Compile Include="Cache\LadyOrderArray.cs" />
+    <Compile Include="Cache\Table.cs" />
+    <Compile Include="Cache\Whole\ArrayList.cs" />
+    <Compile Include="Cache\Whole\ArraySearchTreeDictionary.cs" />
+    <Compile Include="Cache\Whole\ArraySearchTreeDictionaryWhere.cs" />
+    <Compile Include="Cache\Whole\CountMember.cs" />
+    <Compile Include="Cache\Whole\Dictionary.cs" />
+    <Compile Include="Cache\Whole\DictionaryArray.cs" />
+    <Compile Include="Cache\Whole\DictionaryDictionary.cs" />
+    <Compile Include="Cache\Whole\DictionaryWhere.cs" />
+    <Compile Include="Cache\Whole\DictionaryArrayWhere.cs" />
+    <Compile Include="Cache\Whole\Event\Cache.cs" />
+    <Compile Include="Cache\Whole\Event\IdentityArray.cs" />
+    <Compile Include="Cache\Whole\Event\IdentityArrayWhere.cs" />
+    <Compile Include="Cache\Whole\Event\IdentityArrayWhereExpression.cs" />
+    <Compile Include="Cache\Whole\Event\IdentityCache.cs" />
+    <Compile Include="Cache\Whole\Event\IdentityMemberMap.cs" />
+    <Compile Include="Cache\Whole\Event\IdentityTree.cs" />
+    <Compile Include="Cache\Whole\Event\Key.cs" />
+    <Compile Include="Cache\Whole\Event\MemberKey.cs" />
+    <Compile Include="Cache\Whole\Event\PrimaryKeyArray.cs" />
+    <Compile Include="Cache\Whole\Event\PrimaryKey.cs" />
+    <Compile Include="Cache\Whole\Event\Type.cs" />
+    <Compile Include="Cache\Whole\Member.cs" />
+    <Compile Include="Cache\Whole\MemberArrayLadyOrderArray.cs" />
+    <Compile Include="Cache\Whole\MemberArrayList.cs" />
+    <Compile Include="Cache\Whole\MemberCache.cs" />
+    <Compile Include="Cache\Whole\MemberCacheCounter.cs" />
+    <Compile Include="Cache\Whole\MemberDictionary.cs" />
+    <Compile Include="Cache\Whole\MemberDictionaryList.cs" />
+    <Compile Include="Cache\Whole\MemberDictionaryListWhere.cs" />
+    <Compile Include="Cache\Whole\MemberLadyOrderArray.cs" />
+    <Compile Include="Cache\Whole\MemberLadyOrderArrayWhere.cs" />
+    <Compile Include="Cache\Whole\MemberList.cs" />
+    <Compile Include="Cache\Whole\MemberListWhere.cs" />
+    <Compile Include="Cache\Whole\MemberOrderList.cs" />
+    <Compile Include="Cache\Whole\SearchTreeDictionary.cs" />
+    <Compile Include="Cache\Whole\SearchTreeDictionaryWhere.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="ClientType.cs" />
+    <Compile Include="Column.cs" />
+    <Compile Include="ColumnAttribute.cs" />
+    <Compile Include="ColumnBuilder.cs" />
+    <Compile Include="ColumnCollection.cs" />
+    <Compile Include="ColumnCollectionType.cs" />
+    <Compile Include="ColumnGroup\Column.cs" />
+    <Compile Include="ColumnGroup\CustomAttribute.cs" />
+    <Compile Include="ColumnGroup\ICustom.cs" />
+    <Compile Include="ColumnGroup\Inserter.cs" />
+    <Compile Include="ColumnGroup\Setter.cs" />
+    <Compile Include="ColumnGroup\ToArray.cs" />
+    <Compile Include="ColumnGroup\Updater.cs" />
+    <Compile Include="ColumnGroup\Verifyer.cs" />
+    <Compile Include="ColumnGroup\Where.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="ConfigLoader.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionPool.cs" />
+    <Compile Include="ConstantConverter.cs" />
+    <Compile Include="CountAttribute.cs" />
+    <Compile Include="CreateSelectQuery.cs" />
+    <Compile Include="DataModel\Inserter.cs" />
+    <Compile Include="DataModel\Model.cs" />
+    <Compile Include="DataModel\PrimaryKeyWhere.cs" />
+    <Compile Include="DataModel\Setter.cs" />
+    <Compile Include="DataModel\ToArray.cs" />
+    <Compile Include="DataModel\Updater.cs" />
+    <Compile Include="DataModel\Verifyer.cs" />
+    <Compile Include="DataReader.cs" />
+    <Compile Include="DbType.cs" />
+    <Compile Include="ExpressionCall.cs" />
+    <Compile Include="Field.cs" />
+    <Compile Include="GetQuery.cs" />
+    <Compile Include="IgnoreMemberAttribute.cs" />
+    <Compile Include="InsertQuery.cs" />
+    <Compile Include="IVerify.cs" />
+    <Compile Include="LinkQueueTask.cs" />
+    <Compile Include="LinkQueueTaskNode.cs" />
+    <Compile Include="LogAttribute.cs" />
+    <Compile Include="LogStream\Client.cs" />
+    <Compile Include="LogStream\IdentityClient.cs" />
+    <Compile Include="LogStream\IMemberMapValueLink.cs" />
+    <Compile Include="LogStream\LoadedType.cs" />
+    <Compile Include="LogStream\Log.cs" />
+    <Compile Include="LogStream\LogType.cs" />
+    <Compile Include="LogStream\MemberMapValue.cs" />
+    <Compile Include="LogStream\MemberMapValueLinkPool.cs" />
+    <Compile Include="LogStream\PrimaryKeyClient.cs" />
+    <Compile Include="MemberAttribute.cs" />
+    <Compile Include="MemberExpression.cs" />
+    <Compile Include="Member\IntDate.cs" />
+    <Compile Include="ModelAttribute.cs" />
+    <Compile Include="ModelTable.cs" />
+    <Compile Include="MsSql\DbType.cs" />
+    <Compile Include="MsSql\ExpressionConverter.cs" />
+    <Compile Include="MsSql\Sql2000.cs" />
+    <Compile Include="MsSql\Sql2005.cs" />
+    <Compile Include="NowTime.cs" />
+    <Compile Include="OnTime.cs" />
+    <Compile Include="SelectQuery.cs" />
+    <Compile Include="Table.cs" />
+    <Compile Include="TableAttribute.cs" />
+    <Compile Include="TableColumnCollection.cs" />
+    <Compile Include="UnionType.cs" />
+    <Compile Include="UpdateQuery.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

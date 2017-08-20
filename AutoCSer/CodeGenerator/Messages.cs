@@ -136,7 +136,7 @@ namespace AutoCSer.CodeGenerator
                 string fileName = (AutoCSer.Log.Pub.Log as AutoCSer.Log.File).UnsafeMoveBak();
                 if (fileName != null)
                 {
-#if NETCOREAPP2_0
+#if DotNetStandard
                     string notepad = new System.IO.DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.System)).fullName() + "notepad.exe";
                     if (System.IO.File.Exists(notepad)) Process.Start(notepad, fileName);
                     else

@@ -1,4 +1,4 @@
-/// <reference path = "../../../AutoCSer/Js/ace/load.ts" />
+/// <reference path = "../../../AutoCSer/CodeGenerator/Js/ace/load.ts" />
 /// <reference path = "../ViewJs/Api.ts" />
 /*Include:js\ace\load*/
 /*Include:Include\Baidu*/

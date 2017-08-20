@@ -48,7 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.Drawing.Gif.NoJIT.csproj">
+    <ProjectReference Include="..\..\AutoCSer\Drawing\Gif\AutoCSer.Drawing.Gif.NoJIT.csproj">
       <Project>{980e7554-fe31-4116-933a-a0849e2e21e0}</Project>
       <Name>AutoCSer.Drawing.Gif.NoJIT</Name>
     </ProjectReference>

@@ -9,7 +9,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
     {
         static void Main(string[] args)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
@@ -44,7 +44,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                 }
             }

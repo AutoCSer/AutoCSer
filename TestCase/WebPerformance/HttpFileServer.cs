@@ -12,7 +12,7 @@ namespace AutoCSer.TestCase.HttpFilePerformance
     {
         static void Main(string[] args)
         {
-#if NETCOREAPP2_0
+#if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
@@ -31,7 +31,7 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                             if (server == null) Console.WriteLine("HTTP服务启动失败");
                             else
                             {
-#if NETCOREAPP2_0
+#if DotNetStandard
                                 FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.HttpFilePerformanceClient.dll"));
                                 if (clientFile.Exists)
                                 {
@@ -55,7 +55,7 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                 }
             }

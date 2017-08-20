@@ -68,236 +68,320 @@
             可空类型构造函数
             </summary>
         </member>
-        <member name="T:AutoCSer.Extension.EmitGenerator_Sql">
+        <member name="T:AutoCSer.Sql.Excel.Client">
             <summary>
-            MSIL生成
+            Excel 客户端
             </summary>
         </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.charStreamWriteCharMethod">
+        <member name="M:AutoCSer.Sql.Excel.Client.#ctor(AutoCSer.Sql.Connection)">
             <summary>
-            内存字符流写入字符方法信息
+            SQL客户端操作
             </summary>
+            <param name="connection">SQL连接信息</param>
         </member>
-        <member name="M:AutoCSer.Extension.EmitGenerator_Sql.charStreamWriteChar(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Char)">
+        <member name="M:AutoCSer.Sql.Excel.Client.createConnection(System.Data.Common.DbConnection@)">
             <summary>
-            写入字符
+            创建 SQL 连接
             </summary>
-            <param name="generator"></param>
-            <param name="target"></param>
-            <param name="value"></param>
+            <param name="connection"></param>
         </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.charStreamSimpleWriteNotNullMethod">
+        <member name="M:AutoCSer.Sql.Excel.Client.getCommand(System.Data.Common.DbConnection,System.String)">
             <summary>
-            内存字符流写入字符串方法信息
+            获取SQL命令
             </summary>
+            <param name="connection"></param>
+            <param name="sql">SQL语句</param>
+            <returns>SQL命令</returns>
         </member>
-        <member name="M:AutoCSer.Extension.EmitGenerator_Sql.charStreamSimpleWriteNotNull(System.Reflection.Emit.ILGenerator)">
+        <member name="M:AutoCSer.Sql.Excel.Client.getAdapter(System.Data.Common.DbCommand)">
             <summary>
-            写入字符串
+            获取数据适配器
             </summary>
-            <param name="generator"></param>
+            <param name="command">SQL命令</param>
+            <returns>数据适配器</returns>
         </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.emptyStringField">
+        <member name="M:AutoCSer.Sql.Excel.Client.GetColumn(System.Type,AutoCSer.Sql.MemberAttribute)">
             <summary>
-            string.Empty
+            成员信息转换为数据列
             </summary>
+            <param name="type">成员类型</param>
+            <param name="memberAttribute">SQL成员信息</param>
+            <returns>数据列</returns>
         </member>
-        <member name="M:AutoCSer.Extension.EmitGenerator_Sql.nullStringEmpty(System.Reflection.Emit.ILGenerator)">
+        <member name="M:AutoCSer.Sql.Excel.Client.GetValue(System.Data.Common.DbConnection,System.String)">
             <summary>
-            字符串 null 转 string.Empty
+            查询单值数据
             </summary>
-            <param name="generator"></param>
-        </member>
-        <member name="T:AutoCSer.Extension.ExpressionExtension">
-            <summary>
-            表达式扩展
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Extension.ExpressionExtension.IsSimple(System.Linq.Expressions.Expression)">
-            <summary>
-            是否简单表达式（不需要括号）
-            </summary>
-            <param name="expression"></param>
+            <param name="connection"></param>
+            <param name="sql"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Extension.ExpressionExtension.IsConstantNull(System.Linq.Expressions.Expression)">
+        <member name="M:AutoCSer.Sql.Excel.Client.GetTable(System.Data.Common.DbConnection,System.String)">
             <summary>
-            是否常量 null
+            根据表格名称获取表格信息
             </summary>
-            <param name="expression"></param>
+            <param name="connection">SQL连接</param>
+            <param name="tableName">表格名称</param>
+            <returns>表格信息</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.CreateTable(System.Data.Common.DbConnection,AutoCSer.Sql.TableColumnCollection)">
+            <summary>
+            创建表格
+            </summary>
+            <param name="connection">SQL连接</param>
+            <param name="table">表格信息</param>
+        </member>
+        <member name="P:AutoCSer.Sql.Excel.Client.IsIndex">
+            <summary>
+            是否支持索引
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.CreateIndex(System.Data.Common.DbConnection,System.String,AutoCSer.Sql.ColumnCollection)">
+            <summary>
+            创建索引
+            </summary>
+            <param name="connection"></param>
+            <param name="tableName">表格名称</param>
+            <param name="columnCollection">索引列集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.DeleteFields(System.Data.Common.DbConnection,AutoCSer.Sql.ColumnCollection)">
+            <summary>
+            删除列集合
+            </summary>
+            <param name="connection">SQL连接</param>
+            <param name="columnCollection">删除列集合</param>
+        </member>
+        <member name="P:AutoCSer.Sql.Excel.Client.IsAddField">
+            <summary>
+            是否支持新增列
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.AddFields(System.Data.Common.DbConnection,AutoCSer.Sql.ColumnCollection)">
+            <summary>
+            新增列集合
+            </summary>
+            <param name="connection">SQL连接</param>
+            <param name="columnCollection">新增列集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.GetSql``1(System.Linq.Expressions.LambdaExpression,AutoCSer.CharStream,AutoCSer.Sql.SelectQuery{``0}@)">
+            <summary>
+            委托关联表达式转SQL表达式
+            </summary>
+            <param name="expression">委托关联表达式</param>
+            <param name="sqlStream">SQL表达式流</param>
+            <param name="query">查询信息</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.Select``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,AutoCSer.Sql.SelectQuery{``1}@)">
+            <summary>
+            获取查询信息
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="connection"></param>
+            <param name="query">查询信息</param>
+            <returns>对象集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.GetByIdentity``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.GetQuery{``1}@)">
+            <summary>
+            查询对象
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="value">匹配成员值</param>
+            <param name="memberMap">成员位图</param>
+            <param name="query">查询信息</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.GetByPrimaryKey``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.GetQuery{``1}@)">
+            <summary>
+            查询对象
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="value">匹配成员值</param>
+            <param name="memberMap">成员位图</param>
+            <param name="query">查询信息</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Client.Update``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.UpdateQuery{``1}@)">
+            <summary>
+            更新数据
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="value">匹配成员值</param>
+            <param name="memberMap">成员位图</param>
+            <param name="query">查询信息</param>
             <returns></returns>
         </member>
-        <member name="T:AutoCSer.Extension.SqlTable">
+        <member name="M:AutoCSer.Sql.Excel.Client.Update``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.UpdateQuery{``1}@)">
             <summary>
-            数据库表格扩展
+            更新数据
             </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="connection">SQL连接</param>
+            <param name="value">匹配成员值</param>
+            <param name="memberMap">成员位图</param>
+            <param name="query">查询信息</param>
+            <returns>更新是否成功</returns>
         </member>
-        <member name="M:AutoCSer.Extension.SqlTable.CreateMemberMap``1(AutoCSer.Sql.Table{``0})">
+        <member name="M:AutoCSer.Sql.Excel.Client.insert``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.InsertQuery@)">
             <summary>
-            创建成员位图
+            获取添加数据 SQL 语句
             </summary>
-            <typeparam name="valueType">表格模型类型</typeparam>
-            <param name="sqlTable">数据库表格操作工具</param>
-            <returns>创建成员位图</returns>
+            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="value">添加数据</param>
+            <param name="memberMap">成员位图</param>
+            <param name="query">添加数据查询信息</param>
         </member>
-        <member name="M:AutoCSer.Extension.SqlTable.CreateMemberIndex``2(AutoCSer.Sql.Table{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+        <member name="M:AutoCSer.Sql.Excel.Client.Insert``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,``0,AutoCSer.Sql.InsertQuery@)">
             <summary>
-            创建成员索引
+            添加数据
             </summary>
-            <typeparam name="valueType"></typeparam>
-            <typeparam name="returnType"></typeparam>
-            <param name="sqlTable">数据库表格操作工具</param>
-            <param name="member">字段表达式</param>
-            <returns>成员索引</returns>
-        </member>
-        <member name="T:AutoCSer.Extension.Type_Sql">
-            <summary>
-            类型扩展操作
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Extension.Type_Sql.toNullableType(System.Type)">
-            <summary>
-            值类型转换为可空类型
-            </summary>
-            <param name="type">值类型</param>
-            <returns>可空类型,失败返回null</returns>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMapValue`1">
-            <summary>
-            成员位图对象绑定
-            </summary>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValue`1.MemberMap">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValue`1.Value">
-            <summary>
-            目标数据
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`1.ToJson(AutoCSer.Json.Serializer)">
-            <summary>
-            对象转换成JSON字符串
-            </summary>
-            <param name="serializer">对象转换成JSON字符串</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`1.parseJson(AutoCSer.Json.Parser)">
-            <summary>
-            对象转换成JSON字符串
-            </summary>
-            <param name="parser">Json解析器</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`1.Serialize(AutoCSer.BinarySerialize.Serializer)">
-            <summary>
-            对象序列化
-            </summary>
-            <param name="serializer"></param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`1.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
-            <summary>
-            反序列化
-            </summary>
-            <param name="deSerializer"></param>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMapValue`2">
-            <summary>
-            成员位图对象绑定
-            </summary>
-            <typeparam name="memberMapType"></typeparam>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValue`2.MemberMap">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValue`2.Value">
-            <summary>
-            目标数据
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`2.toJson(AutoCSer.Json.Serializer)">
-            <summary>
-            对象转换成JSON字符串
-            </summary>
-            <param name="toJsoner">对象转换成JSON字符串</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`2.parseJson(AutoCSer.Json.Parser)">
-            <summary>
-            对象转换成JSON字符串
-            </summary>
-            <param name="parser">Json解析器</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`2.serialize(AutoCSer.BinarySerialize.Serializer)">
-            <summary>
-            对象序列化
-            </summary>
-            <param name="serializer"></param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValue`2.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
-            <summary>
-            反序列化
-            </summary>
-            <param name="deSerializer"></param>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig">
-            <summary>
-            JSON 序列化配置参数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.LinkNext">
-            <summary>
-            下一个节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.maxCount">
-            <summary>
-            缓存数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.head">
-            <summary>
-            链表头部
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.popLock">
-            <summary>
-            弹出节点访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.count">
-            <summary>
-            缓存数量
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.PushNotNull(AutoCSer.Metadata.MemberMapValueJsonSerializeConfig)">
-            <summary>
-            添加节点
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.Pop">
-            <summary>
-            弹出节点
-            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="connection">SQL连接</param>
+            <param name="value">添加数据</param>
+            <param name="query">添加数据查询信息</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.pushLink(AutoCSer.Metadata.MemberMapValueJsonSerializeConfig,AutoCSer.Metadata.MemberMapValueJsonSerializeConfig,System.Int32)">
+        <member name="M:AutoCSer.Sql.Excel.Client.Delete``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Sql.InsertQuery@)">
             <summary>
-            添加链表
+            获取删除数据 SQL 语句
             </summary>
-            <param name="value">链表头部</param>
-            <param name="end">链表尾部</param>
-            <param name="pushCount">数据数量</param>
+            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="value">删除数据</param>
+            <param name="query">删除数据查询信息</param>
+            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.clearCache(System.Int32)">
+        <member name="M:AutoCSer.Sql.Excel.Client.Delete``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,``0,AutoCSer.Sql.InsertQuery@)">
             <summary>
-            清除缓存数据
+            删除数据
             </summary>
-            <param name="saveCount">保留缓存数据数量</param>
+            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="connection">SQL连接</param>
+            <param name="value">添加数据</param>
+            <param name="query">添加数据查询信息</param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Excel.Connection">
+            <summary>
+            Excel连接信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Connection.Provider">
+            <summary>
+            数据接口属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Connection.DataSource">
+            <summary>
+            数据源
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Connection.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Connection.Intermixed">
+            <summary>
+            混合数据处理方式
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Connection.IsTitleColumn">
+            <summary>
+            第一行是否列名
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.Connection.Get">
+            <summary>
+            获取数据库连接信息
+            </summary>
+            <returns>数据库连接信息</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Excel.DbType">
+            <summary>
+            SQL数据类型相关操作
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.DbType.sqlTypeNames">
+            <summary>
+            数据类型集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Excel.DbType.getSqlTypeName(System.Data.SqlDbType)">
+            <summary>
+            获取数据类型名称
+            </summary>
+            <param name="type">数据类型</param>
+            <returns>数据类型名称</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Excel.Intermixed">
+            <summary>
+            混合数据处理方式
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Intermixed.Write">
+            <summary>
+            输出模式，此情况下只能用作写入Excel
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Intermixed.Read">
+            <summary>
+            输入模式，此情况下只能用作读取Excel，并且始终将Excel数据作为文本类型读取
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Intermixed.WriteAndRead">
+            <summary>
+            连接模式，此情况下既可用作写入、也可用作读取
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Excel.Provider">
+            <summary>
+            Excel接口类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Provider.Unknown">
+            <summary>
+            未知接口类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Provider.Jet4">
+            <summary>
+            只能操作Excel2007之前的.xls文件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.Provider.Ace12">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Excel.ProviderAttribute">
+            <summary>
+            数据接口属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.ProviderAttribute.Name">
+            <summary>
+            连接名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Excel.ProviderAttribute.Excel">
+            <summary>
+            Excel版本号
+            </summary>
         </member>
         <member name="T:AutoCSer.Sql.AnyCancel">
             <summary>
@@ -6815,321 +6899,6 @@
             SQL数据类型最大枚举值
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.Excel.Client">
-            <summary>
-            Excel 客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.#ctor(AutoCSer.Sql.Connection)">
-            <summary>
-            SQL客户端操作
-            </summary>
-            <param name="connection">SQL连接信息</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.createConnection(System.Data.Common.DbConnection@)">
-            <summary>
-            创建 SQL 连接
-            </summary>
-            <param name="connection"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.getCommand(System.Data.Common.DbConnection,System.String)">
-            <summary>
-            获取SQL命令
-            </summary>
-            <param name="connection"></param>
-            <param name="sql">SQL语句</param>
-            <returns>SQL命令</returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.getAdapter(System.Data.Common.DbCommand)">
-            <summary>
-            获取数据适配器
-            </summary>
-            <param name="command">SQL命令</param>
-            <returns>数据适配器</returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.GetColumn(System.Type,AutoCSer.Sql.MemberAttribute)">
-            <summary>
-            成员信息转换为数据列
-            </summary>
-            <param name="type">成员类型</param>
-            <param name="memberAttribute">SQL成员信息</param>
-            <returns>数据列</returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.GetValue(System.Data.Common.DbConnection,System.String)">
-            <summary>
-            查询单值数据
-            </summary>
-            <param name="connection"></param>
-            <param name="sql"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.GetTable(System.Data.Common.DbConnection,System.String)">
-            <summary>
-            根据表格名称获取表格信息
-            </summary>
-            <param name="connection">SQL连接</param>
-            <param name="tableName">表格名称</param>
-            <returns>表格信息</returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.CreateTable(System.Data.Common.DbConnection,AutoCSer.Sql.TableColumnCollection)">
-            <summary>
-            创建表格
-            </summary>
-            <param name="connection">SQL连接</param>
-            <param name="table">表格信息</param>
-        </member>
-        <member name="P:AutoCSer.Sql.Excel.Client.IsIndex">
-            <summary>
-            是否支持索引
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.CreateIndex(System.Data.Common.DbConnection,System.String,AutoCSer.Sql.ColumnCollection)">
-            <summary>
-            创建索引
-            </summary>
-            <param name="connection"></param>
-            <param name="tableName">表格名称</param>
-            <param name="columnCollection">索引列集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.DeleteFields(System.Data.Common.DbConnection,AutoCSer.Sql.ColumnCollection)">
-            <summary>
-            删除列集合
-            </summary>
-            <param name="connection">SQL连接</param>
-            <param name="columnCollection">删除列集合</param>
-        </member>
-        <member name="P:AutoCSer.Sql.Excel.Client.IsAddField">
-            <summary>
-            是否支持新增列
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.AddFields(System.Data.Common.DbConnection,AutoCSer.Sql.ColumnCollection)">
-            <summary>
-            新增列集合
-            </summary>
-            <param name="connection">SQL连接</param>
-            <param name="columnCollection">新增列集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.GetSql``1(System.Linq.Expressions.LambdaExpression,AutoCSer.CharStream,AutoCSer.Sql.SelectQuery{``0}@)">
-            <summary>
-            委托关联表达式转SQL表达式
-            </summary>
-            <param name="expression">委托关联表达式</param>
-            <param name="sqlStream">SQL表达式流</param>
-            <param name="query">查询信息</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.Select``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,AutoCSer.Sql.SelectQuery{``1}@)">
-            <summary>
-            获取查询信息
-            </summary>
-            <typeparam name="valueType">对象类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="connection"></param>
-            <param name="query">查询信息</param>
-            <returns>对象集合</returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.GetByIdentity``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.GetQuery{``1}@)">
-            <summary>
-            查询对象
-            </summary>
-            <typeparam name="valueType">对象类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="value">匹配成员值</param>
-            <param name="memberMap">成员位图</param>
-            <param name="query">查询信息</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.GetByPrimaryKey``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.GetQuery{``1}@)">
-            <summary>
-            查询对象
-            </summary>
-            <typeparam name="valueType">对象类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="value">匹配成员值</param>
-            <param name="memberMap">成员位图</param>
-            <param name="query">查询信息</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.Update``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.UpdateQuery{``1}@)">
-            <summary>
-            更新数据
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="value">匹配成员值</param>
-            <param name="memberMap">成员位图</param>
-            <param name="query">查询信息</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.Update``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.UpdateQuery{``1}@)">
-            <summary>
-            更新数据
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="connection">SQL连接</param>
-            <param name="value">匹配成员值</param>
-            <param name="memberMap">成员位图</param>
-            <param name="query">查询信息</param>
-            <returns>更新是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.insert``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Metadata.MemberMap{``1},AutoCSer.Sql.InsertQuery@)">
-            <summary>
-            获取添加数据 SQL 语句
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="value">添加数据</param>
-            <param name="memberMap">成员位图</param>
-            <param name="query">添加数据查询信息</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.Insert``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,``0,AutoCSer.Sql.InsertQuery@)">
-            <summary>
-            添加数据
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="connection">SQL连接</param>
-            <param name="value">添加数据</param>
-            <param name="query">添加数据查询信息</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.Delete``2(AutoCSer.Sql.Table{``0,``1},``0,AutoCSer.Sql.InsertQuery@)">
-            <summary>
-            获取删除数据 SQL 语句
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="value">删除数据</param>
-            <param name="query">删除数据查询信息</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Client.Delete``2(AutoCSer.Sql.Table{``0,``1},System.Data.Common.DbConnection@,``0,AutoCSer.Sql.InsertQuery@)">
-            <summary>
-            删除数据
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <typeparam name="modelType">模型类型</typeparam>
-            <param name="sqlTool">SQL操作工具</param>
-            <param name="connection">SQL连接</param>
-            <param name="value">添加数据</param>
-            <param name="query">添加数据查询信息</param>
-            <returns></returns>
-        </member>
-        <member name="T:AutoCSer.Sql.Excel.Connection">
-            <summary>
-            Excel连接信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Connection.Provider">
-            <summary>
-            数据接口属性
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Connection.DataSource">
-            <summary>
-            数据源
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Connection.Password">
-            <summary>
-            密码
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Connection.Intermixed">
-            <summary>
-            混合数据处理方式
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Connection.IsTitleColumn">
-            <summary>
-            第一行是否列名
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.Connection.Get">
-            <summary>
-            获取数据库连接信息
-            </summary>
-            <returns>数据库连接信息</returns>
-        </member>
-        <member name="T:AutoCSer.Sql.Excel.DbType">
-            <summary>
-            SQL数据类型相关操作
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.DbType.sqlTypeNames">
-            <summary>
-            数据类型集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Excel.DbType.getSqlTypeName(System.Data.SqlDbType)">
-            <summary>
-            获取数据类型名称
-            </summary>
-            <param name="type">数据类型</param>
-            <returns>数据类型名称</returns>
-        </member>
-        <member name="T:AutoCSer.Sql.Excel.Intermixed">
-            <summary>
-            混合数据处理方式
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Intermixed.Write">
-            <summary>
-            输出模式，此情况下只能用作写入Excel
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Intermixed.Read">
-            <summary>
-            输入模式，此情况下只能用作读取Excel，并且始终将Excel数据作为文本类型读取
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Intermixed.WriteAndRead">
-            <summary>
-            连接模式，此情况下既可用作写入、也可用作读取
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.Excel.Provider">
-            <summary>
-            Excel接口类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Provider.Unknown">
-            <summary>
-            未知接口类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Provider.Jet4">
-            <summary>
-            只能操作Excel2007之前的.xls文件
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.Provider.Ace12">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.Excel.ProviderAttribute">
-            <summary>
-            数据接口属性
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.ProviderAttribute.Name">
-            <summary>
-            连接名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Excel.ProviderAttribute.Excel">
-            <summary>
-            Excel版本号
-            </summary>
-        </member>
         <member name="T:AutoCSer.Sql.ExpressionCall">
             <summary>
             SQL函数调用
@@ -10423,6 +10192,237 @@
             <summary>
             释放成员位图
             </summary>
+        </member>
+        <member name="T:AutoCSer.Extension.EmitGenerator_Sql">
+            <summary>
+            MSIL生成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.charStreamWriteCharMethod">
+            <summary>
+            内存字符流写入字符方法信息
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator_Sql.charStreamWriteChar(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Char)">
+            <summary>
+            写入字符
+            </summary>
+            <param name="generator"></param>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.charStreamSimpleWriteNotNullMethod">
+            <summary>
+            内存字符流写入字符串方法信息
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator_Sql.charStreamSimpleWriteNotNull(System.Reflection.Emit.ILGenerator)">
+            <summary>
+            写入字符串
+            </summary>
+            <param name="generator"></param>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.emptyStringField">
+            <summary>
+            string.Empty
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator_Sql.nullStringEmpty(System.Reflection.Emit.ILGenerator)">
+            <summary>
+            字符串 null 转 string.Empty
+            </summary>
+            <param name="generator"></param>
+        </member>
+        <member name="T:AutoCSer.Extension.ExpressionExtension">
+            <summary>
+            表达式扩展
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.ExpressionExtension.IsSimple(System.Linq.Expressions.Expression)">
+            <summary>
+            是否简单表达式（不需要括号）
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.ExpressionExtension.IsConstantNull(System.Linq.Expressions.Expression)">
+            <summary>
+            是否常量 null
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Extension.SqlTable">
+            <summary>
+            数据库表格扩展
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.SqlTable.CreateMemberMap``1(AutoCSer.Sql.Table{``0})">
+            <summary>
+            创建成员位图
+            </summary>
+            <typeparam name="valueType">表格模型类型</typeparam>
+            <param name="sqlTable">数据库表格操作工具</param>
+            <returns>创建成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.SqlTable.CreateMemberIndex``2(AutoCSer.Sql.Table{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            创建成员索引
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <typeparam name="returnType"></typeparam>
+            <param name="sqlTable">数据库表格操作工具</param>
+            <param name="member">字段表达式</param>
+            <returns>成员索引</returns>
+        </member>
+        <member name="T:AutoCSer.Extension.Type_Sql">
+            <summary>
+            类型扩展操作
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.Type_Sql.toNullableType(System.Type)">
+            <summary>
+            值类型转换为可空类型
+            </summary>
+            <param name="type">值类型</param>
+            <returns>可空类型,失败返回null</returns>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMapValue`1">
+            <summary>
+            成员位图对象绑定
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValue`1.MemberMap">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValue`1.Value">
+            <summary>
+            目标数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`1.ToJson(AutoCSer.Json.Serializer)">
+            <summary>
+            对象转换成JSON字符串
+            </summary>
+            <param name="serializer">对象转换成JSON字符串</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`1.parseJson(AutoCSer.Json.Parser)">
+            <summary>
+            对象转换成JSON字符串
+            </summary>
+            <param name="parser">Json解析器</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`1.Serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            对象序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`1.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            反序列化
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMapValue`2">
+            <summary>
+            成员位图对象绑定
+            </summary>
+            <typeparam name="memberMapType"></typeparam>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValue`2.MemberMap">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValue`2.Value">
+            <summary>
+            目标数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`2.toJson(AutoCSer.Json.Serializer)">
+            <summary>
+            对象转换成JSON字符串
+            </summary>
+            <param name="toJsoner">对象转换成JSON字符串</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`2.parseJson(AutoCSer.Json.Parser)">
+            <summary>
+            对象转换成JSON字符串
+            </summary>
+            <param name="parser">Json解析器</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`2.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            对象序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValue`2.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            反序列化
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig">
+            <summary>
+            JSON 序列化配置参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.LinkNext">
+            <summary>
+            下一个节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.maxCount">
+            <summary>
+            缓存数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.head">
+            <summary>
+            链表头部
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.popLock">
+            <summary>
+            弹出节点访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.count">
+            <summary>
+            缓存数量
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.PushNotNull(AutoCSer.Metadata.MemberMapValueJsonSerializeConfig)">
+            <summary>
+            添加节点
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.Pop">
+            <summary>
+            弹出节点
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.pushLink(AutoCSer.Metadata.MemberMapValueJsonSerializeConfig,AutoCSer.Metadata.MemberMapValueJsonSerializeConfig,System.Int32)">
+            <summary>
+            添加链表
+            </summary>
+            <param name="value">链表头部</param>
+            <param name="end">链表尾部</param>
+            <param name="pushCount">数据数量</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMapValueJsonSerializeConfig.clearCache(System.Int32)">
+            <summary>
+            清除缓存数据
+            </summary>
+            <param name="saveCount">保留缓存数据数量</param>
         </member>
     </members>
 </doc>

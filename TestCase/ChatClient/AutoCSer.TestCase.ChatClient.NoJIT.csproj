@@ -54,7 +54,7 @@
     <Compile Include="{AutoCSer.TestCase.ChatServer}.TcpOpenServer.Server.Client.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChatData\AutoCSer.TestCase.ChatData.csproj">
+    <ProjectReference Include="..\ChatData\AutoCSer.TestCase.ChatData.NoJIT.csproj">
       <Project>{b4e320f9-01c2-4682-a203-6e529873be6d}</Project>
       <Name>AutoCSer.TestCase.ChatData</Name>
     </ProjectReference>

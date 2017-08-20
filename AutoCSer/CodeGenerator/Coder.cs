@@ -14,11 +14,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 模板文件路径
         /// </summary>
-        private static readonly string templatePath = (@"CodeGenerator\Template\").pathSeparator();
-        /// <summary>
-        /// 自定义代码生成模板路径
-        /// </summary>
-        private static readonly string customTemplatePath = (@"Template\").pathSeparator();
+        private static readonly string templatePath = (@"Template\").pathSeparator();
         /// <summary>
         /// 模板命令类型
         /// </summary>
@@ -146,7 +142,7 @@ namespace AutoCSer.CodeGenerator
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private string getTemplateFileName(string typeName)
         {
-            return new DirectoryInfo(parameter.ProjectPath).fullName() + (parameter.IsCustomCodeGenerator? customTemplatePath : templatePath) + typeName + extensionName;
+            return new DirectoryInfo(parameter.ProjectPath).fullName() + templatePath + typeName + extensionName;
         }
 
 
@@ -307,7 +303,7 @@ using AutoCSer;
                     {
                         case (int)CodeLanguage.CSharp:
                             string code = builder.ToString(), AutoCSerFileName = null;
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                             bool isAutoCSer = false;
 #endif
@@ -316,7 +312,7 @@ using AutoCSer;
                                 string fileName = parameter.ProjectPath + (AutoCSerFileName = "{" + parameter.DefaultNamespace + "}.AutoCSer.cs");
                                 if (WriteFile(fileName, WarningCode + code + FileEndCode))
                                 {
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                                     isAutoCSer = true;
 #endif
@@ -324,7 +320,7 @@ using AutoCSer;
                                     //message = fileName + " 被修改";
                                 }
                             }
-#if NETCOREAPP2_0
+#if DotNetStandard
 #else
                             if (parameter.IsProjectFile && isAutoCSer)
                             {

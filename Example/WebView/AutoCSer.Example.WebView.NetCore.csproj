@@ -1,0 +1,122 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Example.WebView</AssemblyName>
+    <RootNamespace>AutoCSer.Example.WebView</RootNamespace>
+    <Description>AutoCSer.Example.WebView 是前后端一体 WEB 视图框架的示例项目。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.Example.WebView.NetCore</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/WebView/Index.html</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;MONO;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;MONO;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="AddParameter.cs" />
+    <Compile Include="Ajax\AddReturn.cs" />
+    <Compile Include="Ajax\Asynchronous.cs" />
+    <Compile Include="Ajax\BoxSerialize.cs" />
+    <Compile Include="Ajax\Get.cs" />
+    <Compile Include="Ajax\Name.cs" />
+    <Compile Include="Ajax\Post.cs" />
+    <Compile Include="Ajax\RefOut.cs" />
+    <Compile Include="CallAsynchronous.cs" />
+    <Compile Include="Call.cs" />
+    <Compile Include="CallBoxSerialize.cs" />
+    <Compile Include="CallName.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="Index.cs" />
+    <Compile Include="LoadView.cs" />
+    <Compile Include="LoadViewQuery.cs" />
+    <Compile Include="LoadViewQueryName.cs" />
+    <Compile Include="Location.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Symbol\ReView.cs" />
+    <Compile Include="Symbol\ViewOnlyData.cs" />
+    <Compile Include="Template\Client.cs" />
+    <Compile Include="Template\Expression.cs" />
+    <Compile Include="Template\If.cs" />
+    <Compile Include="Template\Loop.cs" />
+    <Compile Include="Template\NoMark.cs" />
+    <Compile Include="Template\Value.cs" />
+    <Compile Include="Upload.cs" />
+    <Compile Include="ViewAsynchronous.cs" />
+    <Compile Include="WebConfig.cs" />
+    <Compile Include="{AutoCSer.Example.WebView}.AutoCSer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Include\AjaxReturnSkin.html" />
+    <Content Include="Include\Header.html" />
+    <Content Include="Index.page.html" />
+    <Content Include="LoadView.page.html" />
+    <Content Include="LoadViewQuery.page.html" />
+    <Content Include="LoadViewQueryName.page.html" />
+    <Content Include="Script\Skins.page.html" />
+    <Content Include="Symbol\AjaxReturn.page.html" />
+    <Content Include="Symbol\MainDomain.page.html" />
+    <Content Include="Symbol\ReView.page.html" />
+    <Content Include="Symbol\Version.page.html" />
+    <Content Include="Template\Client.page.html" />
+    <Content Include="Template\Expression.page.html" />
+    <Content Include="Template\If.page.html" />
+    <Content Include="Template\Include.page.html" />
+    <Content Include="Template\IncludeCss.page.css" />
+    <Content Include="Template\IncludeCss1.css" />
+    <Content Include="Template\IncludeCss2.css" />
+    <Content Include="Template\Loop.page.html" />
+    <Content Include="Template\NoMark.page.html" />
+    <Content Include="Template\Value.page.html" />
+    <Content Include="ViewAsynchronous.page.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Include\AjaxReturnSkin.ts" />
+    <None Include="Script\Skins.page.ts" />
+    <None Include="Symbol\MainDomain.page.ts" />
+    <None Include="Symbol\Version.page.ts" />
+    <None Include="Template\Client.page.ts" />
+    <None Include="Template\Expression.page.ts" />
+    <None Include="Template\Include.page.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.WebView">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.WebView.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if exist &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; dotnet &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; &quot;$(ProjectName)&quot; &quot;$(ProjectDir) &quot; &quot;$(TargetPath) &quot; &quot;$(TargetName)&quot;" />
+  </Target>
+
+</Project>

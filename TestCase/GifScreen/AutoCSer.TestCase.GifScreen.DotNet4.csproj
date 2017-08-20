@@ -128,7 +128,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.Drawing.Gif.DotNet4.csproj">
+    <ProjectReference Include="..\..\AutoCSer\Drawing\Gif\AutoCSer.Drawing.Gif.DotNet4.csproj">
       <Project>{83F7FAF7-F95F-47D9-BD49-4999ED89F251}</Project>
       <Name>AutoCSer.Drawing.Gif.DotNet4</Name>
     </ProjectReference>

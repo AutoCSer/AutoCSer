@@ -47,7 +47,7 @@
     <Compile Include="PropertyData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\AutoCSer.RandomObject.JIT.csproj">
+    <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.JIT.csproj">
       <Project>{fcda7d3a-a440-42c4-85c0-da0fe404154b}</Project>
       <Name>AutoCSer.RandomObject.JIT</Name>
     </ProjectReference>

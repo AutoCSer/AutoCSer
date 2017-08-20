@@ -50,7 +50,7 @@
     <Compile Include="TestType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TcpServerPerformance\AutoCSer.TestCase.TcpOpenServerPerformance.csproj">
+    <ProjectReference Include="..\TcpServerPerformance\AutoCSer.TestCase.TcpOpenServerPerformance.NoJIT.csproj">
       <Project>{c12fc75c-acbd-44e9-9678-3e4204061da7}</Project>
       <Name>AutoCSer.TestCase.TcpOpenServerPerformance</Name>
     </ProjectReference>

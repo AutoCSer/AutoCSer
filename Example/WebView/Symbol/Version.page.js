@@ -1,4 +1,4 @@
-/// <reference path = "../../../AutoCSer/Js/load.page.ts" />
+/// <reference path = "../../../AutoCSer/CodeGenerator/Js/load.page.ts" />
 var AutoCSer;
 (function (AutoCSer) {
     var Example;

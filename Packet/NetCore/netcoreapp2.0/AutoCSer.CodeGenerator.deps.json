@@ -1,0 +1,58 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "AutoCSer.CodeGenerator/1.1.0": {
+        "dependencies": {
+          "AutoCSer": "1.1.0.0",
+          "AutoCSer.Sort": "1.1.0.0",
+          "AutoCSer.WebView": "1.1.0.0"
+        },
+        "runtime": {
+          "AutoCSer.CodeGenerator.dll": {}
+        }
+      },
+      "AutoCSer/1.1.0.0": {
+        "runtime": {
+          "AutoCSer.dll": {}
+        }
+      },
+      "AutoCSer.Sort/1.1.0.0": {
+        "runtime": {
+          "AutoCSer.Sort.dll": {}
+        }
+      },
+      "AutoCSer.WebView/1.1.0.0": {
+        "runtime": {
+          "AutoCSer.WebView.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AutoCSer.CodeGenerator/1.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutoCSer/1.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutoCSer.Sort/1.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutoCSer.WebView/1.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
