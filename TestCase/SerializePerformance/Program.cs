@@ -10,24 +10,26 @@ namespace AutoCSer.TestCase.SerializePerformance
         {
             do
             {
+                //AOT（NoJIT）模式应该尽量使用属性而非字段
                 PropertyData propertyData = AutoCSer.RandomObject.Creator<PropertyData>.Create(randomConfig);
                 json(propertyData);
+                xml(propertyData);
 
-                //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是 .NET Core 的实现，指数越高性能越低。
+                //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是.NET Core 的实现，指数越高性能越低。
                 FloatPropertyData floatPropertyData = AutoCSer.RandomObject.Creator<FloatPropertyData>.Create(randomConfig);
                 json(floatPropertyData);
+                xml(floatPropertyData);
 
                 FieldData filedData = AutoCSer.RandomObject.Creator<FieldData>.Create(randomConfig);
                 json(filedData);
+                xml(filedData);
 
-                //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是 .NET Core 的实现，指数越高性能越低。
+                //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是.NET Core 的实现，指数越高性能越低。
                 FloatFieldData floatFiledData = AutoCSer.RandomObject.Creator<FloatFieldData>.Create(randomConfig);
                 json(floatFiledData);
-
-                xml(filedData);
-                //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是 .NET Core 的实现，指数越高性能越低。
                 xml(floatFiledData);
 
+                //AOT（NoJIT）模式尽量不要使用二进制序列化
                 //浮点数对二进制序列化无影响
                 fieldSerialize(floatFiledData);
 
@@ -134,6 +136,48 @@ http://www.AutoCSer.com/Serialize/Json.html");
             for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FloatFieldData>(json);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W object + float Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+        }
+        /// <summary>
+        /// XML 序列化测试
+        /// </summary>
+        /// <param name="value"></param>
+        private static void xml(PropertyData value)
+        {
+            Console.WriteLine(@"
+http://www.AutoCSer.com/Serialize/Xml.html");
+            string json = null;
+            Stopwatch time = new Stopwatch();
+            time.Start();
+            for (int index = count; index != 0; --index) json = AutoCSer.Xml.Serializer.Serialize(value);
+            time.Stop();
+            Console.WriteLine((count / 10000).toString() + "W object Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+
+            time.Reset();
+            time.Start();
+            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<PropertyData>(json);
+            time.Stop();
+            Console.WriteLine((count / 10000).toString() + "W object Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
+        }
+        /// <summary>
+        /// XML 序列化测试
+        /// </summary>
+        /// <param name="value"></param>
+        private static void xml(FloatPropertyData value)
+        {
+            Console.WriteLine(@"
+http://www.AutoCSer.com/Serialize/Xml.html");
+            string json = null;
+            Stopwatch time = new Stopwatch();
+            time.Start();
+            for (int index = count; index != 0; --index) json = AutoCSer.Xml.Serializer.Serialize(value);
+            time.Stop();
+            Console.WriteLine((count / 10000).toString() + "W object + float Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+
+            time.Reset();
+            time.Start();
+            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FloatPropertyData>(json);
+            time.Stop();
+            Console.WriteLine((count / 10000).toString() + "W object + float Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// XML序列化测试

@@ -322,12 +322,17 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 #endregion LOOP ParameterTypes
                 #region NOTE
-                public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter<MethodReturnType.FullName>
+                public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
+#if NOJIT
+#else
+                    <MethodReturnType.FullName>
+#endif
                 {
                     public FullName ParameterName;
                     public MethodReturnType.FullName ReturnName;
                     public MethodReturnType.FullName Ret;
                     public MethodReturnType.FullName Return { get; set; }
+                    public object ReturnObject { get; set; }
                 }
                 public struct InputParameterTypeName
                 {
@@ -567,7 +572,11 @@ namespace AutoCSer.CodeGenerator.Template
         /// <summary>
         /// 类型全名
         /// </summary>
-        public partial class FullName : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>
+        public partial class FullName
+#if NOJIT
+#else
+            : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>
+#endif
         {
             /// <summary>
             /// 设置TCP服务端

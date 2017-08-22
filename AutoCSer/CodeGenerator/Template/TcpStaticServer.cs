@@ -836,12 +836,17 @@ namespace AutoCSer.CodeGenerator.Template
 #endregion LOOP ParameterTypes
 #endregion NAME Parameter
 #region NOTE
-            public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter<MethodReturnType.FullName>
+            public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
+#if NOJIT
+#else
+                <MethodReturnType.FullName>
+#endif
             {
                 public FullName ParameterName;
                 public MethodReturnType.FullName ReturnName;
                 public MethodReturnType.FullName Ret;
                 public MethodReturnType.FullName Return { get; set; }
+                public object ReturnObject { get; set; }
             }
             public struct InputParameterTypeName
             {

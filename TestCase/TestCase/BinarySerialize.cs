@@ -57,6 +57,15 @@ namespace AutoCSer.TestCase
             }
             #endregion
 
+            if (AutoCSer.BinarySerialize.DeSerializer.DeSerialize<int>(data = AutoCSer.BinarySerialize.Serializer.Serialize<int>(1)) != 1)
+            {
+                return false;
+            }
+            if (AutoCSer.BinarySerialize.DeSerializer.DeSerialize<string>(data = AutoCSer.BinarySerialize.Serializer.Serialize<string>("1")) != "1")
+            {
+                return false;
+            }
+
             return true;
         }
     }

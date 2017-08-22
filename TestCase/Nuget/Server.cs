@@ -5,7 +5,8 @@ namespace AutoCSer.TestCase.Nuget
     /// <summary>
     /// TCP 服务测试
     /// </summary>
-    class Server : IServer
+    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12108)]
+    sealed partial class Server
     {
         /// <summary>
         /// 加法测试
@@ -13,7 +14,8 @@ namespace AutoCSer.TestCase.Nuget
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
+        [AutoCSer.Net.TcpServer.Method]
+        private int add(int left, int right)
         {
             return left + right;
         }

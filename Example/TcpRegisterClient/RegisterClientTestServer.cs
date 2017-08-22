@@ -5,7 +5,8 @@ namespace AutoCSer.Example.TcpRegisterClient
     /// <summary>
     /// 测试服务
     /// </summary>
-    sealed class RegisterClientTestServer : IRegisterClientTestServer
+    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Name = "ITestServer")]
+    public sealed partial class RegisterClientTestServer
     {
         /// <summary>
         /// 测试数据
@@ -15,7 +16,8 @@ namespace AutoCSer.Example.TcpRegisterClient
         /// 获取测试数据
         /// </summary>
         /// <returns>测试数据</returns>
-        public AutoCSer.Net.TcpServer.ReturnValue<int> Get()
+        [AutoCSer.Net.TcpServer.Method]
+        private int get()
         {
             return Version;
         }

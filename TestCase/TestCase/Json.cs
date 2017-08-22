@@ -84,6 +84,15 @@ namespace AutoCSer.TestCase
             }
             #endregion
 
+            if (AutoCSer.Json.Parser.Parse<int>(jsonString = AutoCSer.Json.Serializer.Serialize<int>(1)) != 1)
+            {
+                return false;
+            }
+            if (AutoCSer.Json.Parser.Parse<string>(jsonString = AutoCSer.Json.Serializer.Serialize<string>("1")) != "1")
+            {
+                return false;
+            }
+
             return true;
         }
     }

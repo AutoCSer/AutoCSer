@@ -84,6 +84,15 @@ namespace AutoCSer.TestCase
             }
             #endregion
 
+            if (AutoCSer.Xml.Parser.Parse<int>(xmlString = AutoCSer.Xml.Serializer.Serialize<int>(1)) != 1)
+            {
+                return false;
+            }
+            if (AutoCSer.Xml.Parser.Parse<string>(xmlString = AutoCSer.Xml.Serializer.Serialize<string>("1")) != "1")
+            {
+                return false;
+            }
+
             return true;
         }
     }

@@ -66,7 +66,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 get
                 {
+#if NOJIT
+                    return isSetTcpServer
+#else
                     return typeof(AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>).IsAssignableFrom(Type.Type)
+#endif
                         || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpOpenSimpleServer.Server) }, null) != null;
                 }
             }

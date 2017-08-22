@@ -20,18 +20,17 @@ namespace AutoCSer.TestCase.Nuget
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/InterfaceServer.html
 ");
 
-                    using (AutoCSer.Net.TcpInternalServer.Server server = AutoCSer.Net.TcpInternalServer.Emit.Server<IServer>.Create(new Server()))
+                    using (Server.TcpInternalServer server = new Server.TcpInternalServer())
                     {
                         if (server.IsListen)
                         {
-
-                            IServer client = AutoCSer.Net.TcpInternalServer.Emit.Client<IServer>.Create();
-                            using (client as IDisposable)
+                            using (Server.TcpInternalClient client = new Server.TcpInternalClient())
                             {
-                                Console.WriteLine(client.Add(2, 3) == 2 + 3);
+                                Console.WriteLine(client.add(2, 3) == 2 + 3);
                             }
                         }
                     }
+                    Console.WriteLine("Over");
                     Console.ReadKey();
 #if DotNetStandard
 #else

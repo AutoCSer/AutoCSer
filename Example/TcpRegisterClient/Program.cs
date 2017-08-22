@@ -27,7 +27,7 @@ namespace AutoCSer.Example.TcpRegisterClient
                         RegisterClientTestServer test = new RegisterClientTestServer();
                         do
                         {
-                            AutoCSer.Net.TcpInternalServer.Server newServer = AutoCSer.Net.TcpInternalServer.Emit.Server<IRegisterClientTestServer>.Create(test, AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute));
+                            AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer.TcpInternalServer newServer = new RegisterClientTestServer.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute), null, test);
                             if (newServer.IsListen)
                             {
                                 if (server != null) server.Dispose();
@@ -67,12 +67,11 @@ Version:" + test.Version.toString());
         /// </summary>
         private static void clientThread()
         {
-            IRegisterClientTestServer client = AutoCSer.Net.TcpInternalServer.Emit.Client<IRegisterClientTestServer>.Create(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute));
-            using (client as IDisposable)
+            using (AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer.TcpInternalClient client = new RegisterClientTestServer.TcpInternalClient(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute)))
             {
                 while (!isEnd)
                 {
-                    AutoCSer.Net.TcpServer.ReturnValue<int> value = client.Get();
+                    AutoCSer.Net.TcpServer.ReturnValue<int> value = client.get();
                     if (value.Type == AutoCSer.Net.TcpServer.ReturnType.Success) Console.Write(value.Value.toString());
                     else Console.WriteLine(value.Type.ToString());
                     Thread.Sleep(100);
@@ -90,7 +89,7 @@ Version:" + test.Version.toString());
         private static readonly AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute;
         static Program()
         {
-            serverAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalServer.ServerAttribute>(typeof(IRegisterClientTestServer), false);
+            serverAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalServer.ServerAttribute>(typeof(RegisterClientTestServer), false);
             serverAttribute.TcpRegister = Config.TcpRegisterConfigName;
         }
     }

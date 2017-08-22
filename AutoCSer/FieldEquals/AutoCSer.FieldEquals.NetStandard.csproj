@@ -8,7 +8,7 @@
     <PackageId>AutoCSer.FieldEquals.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />
-    <Description>AutoCSer.FieldEquals 是一个日志型磁盘数据块服务组件。</Description>
+    <Description>AutoCSer.FieldEquals 用于在测试中判断两个对象数据是否一致。</Description>
     <Copyright>Copyright © 肖进 2017</Copyright>
     <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
   </PropertyGroup>

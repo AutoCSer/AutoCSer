@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.dll</HintPath>
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
     </Reference>
   </ItemGroup>
 

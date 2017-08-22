@@ -144,16 +144,16 @@ namespace AutoCSer.CodeGenerator
                         codes.Add(definition.ToString());
                         if (Messages.IsError) return false;
                     }
+#if DotNetStandard
+                    string path = new System.IO.FileInfo(parameter.AssemblyPath).Directory.fullName();
+                    copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.deps.json");
+                    copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.dev.json");
+                    copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.json");
+#endif
                     string fileName = parameter.ProjectPath + @"{AutoCSer}.CSharper.cs";
                     if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.ToArray()) + Coder.FileEndCode))
                     {
                         Messages.Add(fileName + " 被修改");
-#if DotNetStandard
-                        string path = new System.IO.FileInfo(parameter.AssemblyPath).Directory.fullName();
-                        copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.deps.json");
-                        copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.dev.json");
-                        copyDotNetCoreJson(path, "AutoCSer.CodeGenerator.runtimeconfig.json");
-#endif
                         return false;
                     }
                 }

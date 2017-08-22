@@ -10,9 +10,9 @@ namespace AutoCSer.Example.Xml
 ");
             Console.WriteLine(PublicInstanceField.TestCase());
             Console.WriteLine(AnonymousType.TestCase());
-            Console.WriteLine(IgnoreMember.TestCase());
             Console.WriteLine(MemberMap.TestCase());
             Console.WriteLine(MemberMapValue.TestCase());
+            Console.WriteLine(IgnoreMember.TestCase());
             Console.WriteLine(BaseType.TestCase());
             Console.WriteLine(CustomClass.TestCase());
             Console.WriteLine(CustomStruct.TestCase());

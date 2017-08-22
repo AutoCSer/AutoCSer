@@ -5525,12 +5525,12 @@
             </summary>
             <typeparam name="valueType">目标类型</typeparam>
         </member>
-        <member name="F:AutoCSer.Json.TypeSerializer`1.memberSerializer">
+        <member name="F:AutoCSer.Json.TypeSerializer`1.memberMapSerializer">
             <summary>
             成员转换
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.TypeSerializer`1.memberMapSerializer">
+        <member name="F:AutoCSer.Json.TypeSerializer`1.memberSerializer">
             <summary>
             成员转换
             </summary>

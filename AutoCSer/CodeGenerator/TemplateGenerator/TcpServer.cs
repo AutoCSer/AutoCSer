@@ -503,6 +503,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 是否提供独占的 TCP 服务器端同步调用队列
             /// </summary>
             public bool IsCallQueue;
+#if NOJIT
+            /// <summary>
+            /// 是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数
+            /// </summary>
+            protected bool isSetTcpServer
+            {
+                get
+                {
+                    return typeof(AutoCSer.Net.TcpServer.ISetTcpServer).IsAssignableFrom(Type.Type)
+                        || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpServer.CommandBase) }, null) != null;
+                }
+            }
+#endif
 
             /// <summary>
             /// 命令序号记忆数据

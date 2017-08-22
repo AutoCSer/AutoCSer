@@ -11,15 +11,15 @@ namespace AutoCSer.Example.BinarySerialize
             Console.WriteLine(Reference.TestCase());
             Console.WriteLine(DisabledReference.TestCase());
             Console.WriteLine(PublicInstanceField.TestCase());
-            Console.WriteLine(Property.TestCase());
-            Console.WriteLine(IgnoreMember.TestCase());
-            Console.WriteLine(Json.TestCase());
             Console.WriteLine(MemberMap.TestCase());
             Console.WriteLine(DisabledMemberMap.TestCase());
             Console.WriteLine(MemberMapValue.TestCase());
-            Console.WriteLine(BaseType.TestCase());
+            Console.WriteLine(Property.TestCase());
+            Console.WriteLine(IgnoreMember.TestCase());
             Console.WriteLine(CustomClass.TestCase());
             Console.WriteLine(CustomStruct.TestCase());
+            Console.WriteLine(Json.TestCase());
+            Console.WriteLine(BaseType.TestCase());
             Console.WriteLine("Over");
             Console.ReadKey();
         }

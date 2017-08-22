@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.FieldEquals</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.FieldEquals.NetStandard.JIT</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.FieldEquals 用于在测试中判断两个对象数据是否一致。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;FieldEquals;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;FieldEquals;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Comparor.cs" />
+    <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="MemberDynamicMethod.cs" />
+    <Compile Include="MethodCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

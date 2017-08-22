@@ -16,14 +16,14 @@
             <br />以上测试环境为 Hyper-V + Windows 2012 虚拟机 + 4GB + .NET 4.5 ，物理机环境为 Win10 + i5 6400 + 8GB ，<b>不是在 VS 里调试运行</b>。
         </p>
         <p>. <a href="/Joke.html">茶余饭后</a>：在紧张激动愤怒的争吵之中、在冷静理性跳跃的思索之中、在轻快愉悦流畅的编码之中、在残忍无情绝望的调试之中。。。最终都将是多彩的记忆 - 逻辑无道。</p>
-        <p>支持 .NET Standard / Core 2.0</p>
+        <p>支持 .NET Standard / Core 2.0 ，支持 AOT（NoJIT） 模式</p>
         <p>Windows 下最低支持 .NET Framework 2.0 SP2</p>
         <p>Unbuntu / CentOS 下支持 MONO + .NET4.5</p>
         <p>支持基于 Xamarin.Forms 的 <a href="/Android/Index.html">Android</a> / IOS APP 开发</p>
     </div>
 
     <div><h1>下载 Download</h1></div>
-    <div> <a href="https://github.com/AutoCSer/AutoCSer" target="_blank">GitHub</a> | <a href="https://www.nuget.org/packages/AutoCSer.DotNet4.5V/" target="_blank">NuGet</a> | <a href="https://www.nuget.org/packages/AutoCSer.NetStandard/" target="_blank">.Net Standard 2.0 NuGet</a></div>
+    <div> <a href="https://github.com/AutoCSer/AutoCSer" target="_blank">GitHub</a> | <a href="https://www.nuget.org/packages/AutoCSer.DotNet4.5V/" target="_blank">.NET 4.5 NuGet</a> | <a href="https://www.nuget.org/packages/AutoCSer.NetStandard/" target="_blank">.Net Standard 2.0 NuGet</a></div>
     <div>
         <p><a href="//__STATICDOMAIN__/Download/AutoCSer.Example.zip?__VERSIONNAME__=__VERSION__" target="_blank">AutoCSer.zip</a>\Packet\ 中包含各种目标框架下的 dll / pdb / xml 文件：</p>
         <p>. <b>AutoCSer.dll</b> 是核心程序集，主要包括 <a href="/TcpServer/InterfaceServer.html">TCP 接口服务框架</a>、<a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>、<a href="/TcpServer/SimpleInterfaceServer.html">TCP 接口应答服务框架</a>、<a href="/TcpServer/SimpleMethodServer.html">TCP 函数应答服务框架</a>、<a href="/TcpServer/Register.html">TCP 内部服务注册组件</a> 与 <a href="/Serialize/Binary.html">二进制</a> / <a href="/Serialize/Json.html">JSON</a> / <a href="/Serialize/Xml.html">XML</a> 数据序列化组件。</p>
@@ -39,7 +39,6 @@
         <p><b>\Example\</b> 目录中包含各种简单的 DEMO 示例，由于 VS 2017 并发编译存在 BUG 可能造成 .NET Core 项目编译错误可以尝试单独编译这些出错的项目。</p>
         <p><b>\TestCase\</b> 目录中包含各种简单的测试用例。</p>
         <p><b>\Web\</b> 目录是当前网站的源代码，<b>AutoCSer.Example.DotNet2.sln</b> 可以作为 <a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a> 与 <a href="/WebView/Index.html">前后端一体 WEB 视图框架</a> 简单的综合性参考。</p>
-        <p><b>\Packet\NoJIT\</b> 是 IOS 版本使用 .NET 4.5 编译后的 dll，仅用于测试。没有使用 Emit，也没有对反射进行优化，所以序列化的性能相对于其它版本可能不止 10 倍以上的差距。</p>
         <p>因为我个人习惯使用 Release 模式编译项目，<b>如果您在 Debug 编译模式遇到编译错误问题，请切换到 Release 编译模式重试</b>，并将这个问题反馈给我。</p>
         <p>有问题或建议可以在 <a href="http://jq.qq.com/?_wv=1027&k=2HbDxVX" target="_blank">QQ 群 275679001</a>（旧群 4777880 暂时无法加人）或者 <a href="http://wpa.qq.com/msgrd?v=3&uin=472179624&site=qq&menu=yes" target="_blank">QQ</a> 上联系我。</p>
     </div>
