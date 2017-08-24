@@ -65,13 +65,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public int MethodIndex;
                 /// <summary>
-                /// TCP调用命令名称
+                /// TCP 调用命令名称
                 /// </summary>
                 public string MethodIdentityCommand
                 {
                     get
                     {
                         return "_c" + MethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// await TCP 调用命令名称
+                /// </summary>
+                public string AwaiterMethodIdentityCommand
+                {
+                    get
+                    {
+                        return "_a" + MethodIndex.toString();
                     }
                 }
                 /// <summary>
@@ -106,6 +116,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get
                     {
                         return "_c" + StaticMethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// await TCP 调用命令名称
+                /// </summary>
+                public string StaticAwaiterMethodIdentityCommand
+                {
+                    get
+                    {
+                        return "_a" + StaticMethodIndex.toString();
                     }
                 }
                 /// <summary>
@@ -600,7 +620,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public string ClientTask
                 {
-                    get 
+                    get
                     {
                         //IsClientAsynchronous
                         AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
@@ -787,8 +807,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return MemberIndex != null || IsClientSendOnly != 0 || IsClientSynchronous || IsClientAwaiter || IsClientTaskAsync;
+                        return MemberIndex != null || IsClientSendOnly != 0 || IsClientSynchronous || IsClientTaskAsync;
                     }
+                }
+                /// <summary>
+                /// 是否生成 await TCP 调用命令名称
+                /// </summary>
+                public bool IsAwaiterMethodIdentityCommand
+                {
+                    get { return IsClientAwaiter || IsClientTaskAsync; }
                 }
                 /// <summary>
                 /// 是否保持异步回调
@@ -863,20 +890,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 方法索引集合
             /// </summary>
             public TcpMethod[] MethodIndexs;
-            /// <summary>
-            /// 异步关键字
-            /// </summary>
-            public string Async
-            {
-                get { return "async"; }
-            }
-            /// <summary>
-            /// 异步等待关键字
-            /// </summary>
-            public string Await
-            {
-                get { return "await"; }
-            }
         }
     }
 }

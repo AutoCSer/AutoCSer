@@ -299,7 +299,7 @@ in " + this.fileName + @"");
 ", file => file.js);
                     if (code.Length != 0)
                     {
-                        if (fileName == htmlAuto.Parameter.ProjectPath + (@"Js\base").pathSeparator())
+                        if (fileName == htmlAuto.Parameter.ProjectPath + (@"js\base").pathSeparator())
                         {
                             DirectoryInfo viewDirectory = new DirectoryInfo(htmlAuto.Parameter.ProjectPath + htmlAuto.WebConfig.ViewJsDirectory + Path.DirectorySeparatorChar);
                             if (viewDirectory.Exists)

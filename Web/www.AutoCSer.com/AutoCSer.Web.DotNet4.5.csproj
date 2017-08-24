@@ -100,6 +100,7 @@
     <Content Include="Joke\PhpDictionaryPerformance20170615_t5.png" />
     <Content Include="OrmCache\Column.page.html" />
     <Content Include="OrmCache\Cache.page.html" />
+    <Content Include="robots.txt" />
     <Content Include="Serialize\Binary.page.html" />
     <Content Include="Serialize\Performance.page.html" />
     <Content Include="Serialize\Performance.png" />

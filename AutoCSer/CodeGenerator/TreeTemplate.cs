@@ -5,6 +5,7 @@ using AutoCSer.CodeGenerator.Metadata;
 using AutoCSer.Extension;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace AutoCSer.CodeGenerator
 {
@@ -82,6 +83,20 @@ namespace AutoCSer.CodeGenerator
                 get { return OutputAjax.IsIgnoreNull; }
             }
             /// <summary>
+            /// 是否 await 函数
+            /// </summary>
+            internal bool IsAwaitMethod;
+            /// <summary>
+            /// 节点路径
+            /// </summary>
+            internal string AwaitPath
+            {
+                get
+                {
+                    return IsAwaitMethod ? "(" + Type.FullName + ")(await " + Path + "())" : Path;
+                }
+            }
+            /// <summary>
             /// 成员名称+成员信息集合
             /// </summary>
             internal Dictionary<HashString, AutoCSer.Metadata.MemberIndexInfo> Members
@@ -96,6 +111,16 @@ namespace AutoCSer.CodeGenerator
                         {
                             memberCache[type] = values = MemberIndexGroup.Get(Type).Find(Path == "this" ? MemberFilters.Instance : MemberFilters.PublicInstance)
                                 .getDictionary(value => new HashString(value.Member.Name));
+                            foreach (MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+                            {
+                                Type returnType = method.ReturnType;
+                                if (returnType.IsGenericType && !method.IsGenericMethod && (returnType = returnType.BaseType) != null
+                                    && returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(AutoCSer.Net.TcpServer.Awaiter<,>) && method.GetParameters().Length == 0)
+                                {
+                                    HashString name = method.Name;
+                                    if (!values.ContainsKey(name)) values.Add(name, new AutoCSer.CodeGenerator.Metadata.MethodIndex(method, returnType.GetGenericArguments()[0]));
+                                }
+                            }
                         }
                         catch (Exception error)
                         {
@@ -117,11 +142,13 @@ namespace AutoCSer.CodeGenerator
             /// <param name="name">当前节点成员名称</param>
             /// <param name="path">当前节点成员名称</param>
             /// <param name="outputAjax">Ajax视图输出参数</param>
-            internal MemberNode(TreeTemplate template, ExtensionType type, ref SubString name, string path, AutoCSer.WebView.OutputAjaxAttribute outputAjax)
+            /// <param name="isAwaitMethod">是否 await 函数</param>
+            internal MemberNode(TreeTemplate template, ExtensionType type, ref SubString name, string path, AutoCSer.WebView.OutputAjaxAttribute outputAjax, bool isAwaitMethod)
             {
                 this.template = template;
                 this.Type = type;
                 this.name = name;
+                template.IsAwaitMethod |= (this.IsAwaitMethod = isAwaitMethod);
                 Path = path;
                 OutputAjax = outputAjax ?? AutoCSer.WebView.OutputAjaxAttribute.Null;
                 foreach (MemberIndexInfo member in Members.Values)
@@ -154,7 +181,11 @@ namespace AutoCSer.CodeGenerator
                     else if (typeof(ICollection).IsAssignableFrom(Type.Type)) name = "Count";
                 }
                 HashString hashName = name;
-                if (paths.TryGetValue(hashName, out value)) return value;
+                if (paths.TryGetValue(hashName, out value))
+                {
+                    template.IsAwaitMethod |= value.IsAwaitMethod;
+                    return value;
+                }
                 bool isPath = true;
                 if (name.Length != 0)
                 {
@@ -173,21 +204,13 @@ namespace AutoCSer.CodeGenerator
                             }
                             if (!outputAjax.IsSetup) isPath = false;
                         }
-                        value = new MemberNode(template, member.MemberSystemType, ref name, null, outputAjax);
-                        //keyValue<memberIndex, string> propertyIndex;
-                        //if (Template.currentMembers.Unsafer.Array[0] == this
-                        //    && !Template.propertyNames.TryGetValue(name, out propertyIndex))
-                        //{
-                        //    Template.propertyNames.Add(name, new keyValue<memberIndex, string>(member, "_p" + Template.propertyNames.Count.toString()));
-                        //}
-                        //else propertyIndex.Value = name;
-                        //, IsLadyProperty = !member.IsField && member.Member.customAttribute<ladyProperty>(false, false) != null
+                        value = new MemberNode(template, member.TemplateMemberType, ref name, null, outputAjax, member.AwaiterReturnType != null);
                     }
                 }
                 else
                 {
                     SubString nullName = default(SubString);
-                    value = new MemberNode(template, Type.EnumerableArgumentType, ref nullName, null, null);
+                    value = new MemberNode(template, Type.EnumerableArgumentType, ref nullName, null, null, false);
                 }
                 if (value != null)
                 {
@@ -268,6 +291,10 @@ namespace AutoCSer.CodeGenerator
         /// 临时逻辑变量名称
         /// </summary>
         protected string ifName = "_if_";
+        /// <summary>
+        /// 是否 await 函数
+        /// </summary>
+        internal bool IsAwaitMethod;
         /// <summary>
         /// 检测错误成员名称
         /// </summary>
@@ -366,7 +393,7 @@ namespace AutoCSer.CodeGenerator
                         for (int nameIndex = 1; nameIndex != names.Length; ++nameIndex)
                         {
                             if ((value = value.Get(ref nameArray[nameIndex], nameIndex == lastIndex)) == null) break;
-                            value.Path = value.Parent.Path + "." + nameArray[nameIndex].ToString();
+                            value.Path = value.Parent.AwaitPath + "." + nameArray[nameIndex].ToString();
                         }
                         if (value == null) break;
                         else return value;
@@ -404,17 +431,17 @@ namespace AutoCSer.CodeGenerator
                 if (member.Type.IsString)
                 {
                     Code.Append(@"
-            _code_.Add(", member.Path, ");");
+            _code_.Add(", member.AwaitPath, ");");
                 }
                 else if (member.Type.IsBool && member.Type.IsStruct)
                 {
                     Code.Append(@"
-            _code_.Add(", member.Path, @" ? ""true"" : ""false"");");
+            _code_.Add(", member.AwaitPath, @" ? ""true"" : ""false"");");
                 }
                 else
                 {
                     Code.Append(@"
-            _code_.Add(", member.Path, ".ToString());");
+            _code_.Add(", member.AwaitPath, ".ToString());");
                 }
             }
         }
@@ -454,7 +481,7 @@ namespace AutoCSer.CodeGenerator
             {
                 Code.Append(@"
                 {
-                    ", member.Type.FullName, " ", name, " = ", member.Path, ";");
+                    ", member.Type.FullName, " ", name, " = ", member.AwaitPath, ";");
             }
             ifStart(member.Type, name, null);
         }
@@ -580,7 +607,7 @@ namespace AutoCSer.CodeGenerator
             this.onError = onError;
             this.onMessage = onMessage;
             SubString name = default(SubString);
-            currentMembers.Add(new MemberNode(this, viewType = type ?? GetType(), ref name, "this", null));
+            currentMembers.Add(new MemberNode(this, viewType = type ?? GetType(), ref name, "this", null, false));
         }
         /// <summary>
         /// 检测成员名称
@@ -672,7 +699,7 @@ namespace AutoCSer.CodeGenerator
             if (ignoreCode == 0)
             {
                 Code.Append(@"
-                    ", name, " = ", member.Path, ";");
+                    ", name, " = ", member.AwaitPath, ";");
             }
             if (popCount != 0) --currentMembers.Length;
             while (popCount != 0)
@@ -817,8 +844,8 @@ namespace AutoCSer.CodeGenerator
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void ifThen(MemberNode member, nodeType node, string value, string ifName, int popCount, bool isNot)
         {
-            if (value == null) ifThen(node, member.Type, member.Path, ifName, false, popCount, isNot);
-            else ifThen(node, member.Type, member.Path, value, ifName, popCount, isNot);
+            if (value == null) ifThen(node, member.Type, member.AwaitPath, ifName, false, popCount, isNot);
+            else ifThen(node, member.Type, member.AwaitPath, value, ifName, popCount, isNot);
         }
         /// <summary>
         /// if代码段处理
@@ -975,8 +1002,8 @@ namespace AutoCSer.CodeGenerator
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void ifOr(MemberNode member, string value, string ifName, int popCount)
         {
-            if (value == null) ifOr(member.Type, member.Path, ifName, false, popCount);
-            else ifOr(member.Type, member.Path, value, ifName, popCount);
+            if (value == null) ifOr(member.Type, member.AwaitPath, ifName, false, popCount);
+            else ifOr(member.Type, member.AwaitPath, value, ifName, popCount);
         }
         /// <summary>
         /// 绑定的数据为false或者0或者null时输出代码
@@ -1066,28 +1093,30 @@ namespace AutoCSer.CodeGenerator
                     if (value != null)
                     {
                         Code.Append(@"
-                if (", member.Path, @".ToString() != @""", value.Replace(@"""", @""""""), @""")");
+                if (", member.AwaitPath, @".ToString() != @""", value.Replace(@"""", @""""""), @""")");
                     }
                     else if (member.Type.IsBool)
                     {
                         Code.Append(@"
-                if (!(bool)", member.Path, ")");
+                if (!(bool)", member.AwaitPath, ")");
                     }
                     else if (member.Type.IsAjaxToString)
                     {
                         Code.Append(@"
-                if (", member.Path, " == 0)");
+                if (", member.AwaitPath, " == 0)");
                     }
                 }
                 else if (value != null)
                 {
+                    string memberName = path(0);
                     Code.Append(@"
-                if (", member.Path, @" == null || ", member.Path, @".ToString() != @""", value.Replace(@"""", @""""""), @""")");
+                ", member.Type.FullName, " ", memberName, " = ", member.AwaitPath, @";
+                if (", memberName, @" == null || ", memberName, @".ToString() != @""", value.Replace(@"""", @""""""), @""")");
                 }
                 else
                 {
                     Code.Append(@"
-                if (", member.Path, " == null)");
+                if (", member.AwaitPath, " == null)");
                 }
                 Code.Append(@"
                 {
@@ -1268,7 +1297,7 @@ namespace AutoCSer.CodeGenerator
             if (enumerableType != null && ignoreCode == 0)
             {
                 Code.Append(@"
-                    ", name, " = ", member.Path, ";");
+                    ", name, " = ", member.AwaitPath, ";");
             }
             if (popCount != 0) --currentMembers.Length;
             while (popCount != 0)

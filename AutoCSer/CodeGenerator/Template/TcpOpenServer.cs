@@ -401,6 +401,9 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsSynchronousMethodIdentityCommand
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsClientSendOnly*/, IsSendOnly = 1/*IF:IsClientSendOnly*/, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion IF IsSynchronousMethodIdentityCommand
+                #region IF IsAwaiterMethodIdentityCommand
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo @AwaiterMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*/, TaskType = @ClientTask/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                #endregion IF IsAwaiterMethodIdentityCommand
 
                 #region NOT MemberIndex
                 #region IF IsClientSendOnly
@@ -565,10 +568,10 @@ namespace AutoCSer.CodeGenerator.Template
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         #region IF MethodIsReturn
                         AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName> _outputParameter_ = default(AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>);
-                        _returnType_ = _socket_.GetAwaiter</*IF:InputParameterIndex*/TcpOpenServer.@InputParameterTypeName, /*IF:InputParameterIndex*/AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>>(@MethodIdentityCommand, _awaiter_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter</*IF:InputParameterIndex*/TcpOpenServer.@InputParameterTypeName, /*IF:InputParameterIndex*/AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>>(@AwaiterMethodIdentityCommand, _awaiter_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_);
                         #endregion IF MethodIsReturn
                         #region NOT MethodIsReturn
-                        _returnType_ = _socket_.GetAwaiter(@MethodIdentityCommand, _awaiter_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                        _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
                         #endregion NOT MethodIsReturn
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
@@ -639,7 +642,7 @@ namespace AutoCSer.CodeGenerator.Template
                             Ret = @ParameterName
                             #endregion PUSH ReturnInputParameter
                         };
-                        if ((_returnType_ = _socket_.GetAsync</*IF:InputParameterIndex*/TcpOpenServer.@InputParameterTypeName, /*IF:InputParameterIndex*/TcpOpenServer.@OutputParameterTypeName>(@MethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_)) == AutoCSer.Net.TcpServer.ReturnType.Success)
+                        if ((_returnType_ = _socket_.GetAsync</*IF:InputParameterIndex*/TcpOpenServer.@InputParameterTypeName, /*IF:InputParameterIndex*/TcpOpenServer.@OutputParameterTypeName>(@AwaiterMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_)) == AutoCSer.Net.TcpServer.ReturnType.Success)
                         {
                             AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<TcpOpenServer.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _returnOutputParameter_ = await _wait_;
                             #region LOOP OutputParameters
@@ -653,7 +656,7 @@ namespace AutoCSer.CodeGenerator.Template
                         return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_ };
                         #endregion IF OutputParameterIndex
                         #region NOT OutputParameterIndex
-                        _returnType_ = _socket_.CallAsync(@MethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                        _returnType_ = _socket_.CallAsync(@AwaiterMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
                         return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success ? /*NOTE*/(AutoCSer.Net.TcpServer.ReturnType)(object)/*NOTE*/await _wait_ : _returnType_ };
                         #endregion NOT OutputParameterIndex
                     }

@@ -62,7 +62,7 @@ namespace AutoCSer.Sql.LogStream
                 }
                 finally
                 {
-                    if (poolValue != Value) MemberMapValueLinkPool<valueType>.PushNotNull(poolValue);
+                    if (poolValue != null && poolValue != Value) MemberMapValueLinkPool<valueType>.PushNotNull(poolValue);
                 }
             }
             else
@@ -106,7 +106,7 @@ namespace AutoCSer.Sql.LogStream
                         }
                         finally
                         {
-                            if (poolValue != Value) MemberMapValueLinkPool<valueType>.PushNotNull(poolValue);
+                            if (poolValue != null && poolValue != Value) MemberMapValueLinkPool<valueType>.PushNotNull(poolValue);
                         }
                     }
                     else

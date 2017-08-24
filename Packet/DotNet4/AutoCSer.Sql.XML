@@ -3889,6 +3889,11 @@
             获取数据委托
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`3.getValueAwaiter">
+            <summary>
+            获取数据委托
+            </summary>
+        </member>
         <member name="F:AutoCSer.Sql.LogStream.Client`3.getKey">
             <summary>
             获取关键字委托
@@ -3899,13 +3904,14 @@
             日志流客户端
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`1,`2},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Sql.LogStream.Client`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`1,`2},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},System.Func{`2,AutoCSer.Net.TcpServer.AwaiterBox{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
             <summary>
             日志流客户端
             </summary>
             <param name="getLog">获取日志数据委托</param>
             <param name="getKey">获取关键字委托</param>
             <param name="getValue">获取数据委托</param>
+            <param name="getValueAwaiter">获取数据委托</param>
             <param name="custom">客户端自定义绑定</param>
             <param name="log">日志处理</param>
         </member>
@@ -3934,12 +3940,13 @@
             虚拟空日志流客户端
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{System.Int32,AutoCSer.Net.TcpServer.ReturnValue{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{System.Int32,AutoCSer.Net.TcpServer.ReturnValue{`0}},System.Func{System.Int32,AutoCSer.Net.TcpServer.AwaiterBox{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
             <summary>
             日志流客户端
             </summary>
             <param name="getLog">获取日志数据委托</param>
             <param name="getValue">获取数据委托</param>
+            <param name="getValueAwaiter">获取数据委托</param>
             <param name="custom">客户端自定义绑定</param>
             <param name="log">日志处理</param>
         </member>
@@ -3969,6 +3976,14 @@
             </summary>
             <param name="data"></param>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(System.Int32,`0@)">
+            <summary>
+            获取数据，尽量不要在 .NET 4.0 及以下版本中使用
+            </summary>
+            <param name="identity"></param>
+            <param name="value"></param>
+            <returns>null 表示已经同步获取数据</returns>
         </member>
         <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(AutoCSer.Net.TcpServer.ReturnValue{System.Int32[]})">
             <summary>
@@ -5796,12 +5811,13 @@
             虚拟空日志流客户端
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},System.Func{`2,AutoCSer.Net.TcpServer.AwaiterBox{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
             <summary>
             日志流客户端
             </summary>
             <param name="getLog">获取日志数据委托</param>
             <param name="getValue">获取数据委托</param>
+            <param name="getValueAwaiter">获取数据委托</param>
             <param name="custom">客户端自定义绑定</param>
             <param name="log">日志处理</param>
         </member>
@@ -5822,6 +5838,14 @@
             </summary>
             <param name="data"></param>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Get(`2,`0@)">
+            <summary>
+            获取数据，尽量不要在 .NET 4.0 及以下版本中使用
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns>null 表示已经同步获取数据</returns>
         </member>
         <member name="P:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Item(`2)">
             <summary>

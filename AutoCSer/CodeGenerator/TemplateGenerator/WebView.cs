@@ -326,17 +326,17 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (member.Type.IsString || member.Type.IsSubString || member.Type.IsHashUrl || member.Type.IsChar)
                     {
                         Code.Append(@"
-                        _html_.", call, "(", member.Path, ");");
+                        _html_.", call, "(", member.AwaitPath, ");");
                     }
                     else if (member.Type.IsNumberToString)
                     {
                         Code.Append(@"
-                        _html_.Write(", member.Path, ");");
+                        _html_.Write(", member.AwaitPath, ");");
                     }
                     else
                     {
                         Code.Append(@"
-                        _html_.", call, "(", member.Path, ".ToString());");
+                        _html_.", call, "(", member.AwaitPath, ".ToString());");
                     }
                 }
             }
@@ -384,7 +384,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         int ", loopIndex(0), @" = _loopIndex_;
                         _loopIndex_ = 0;
-                        foreach (", type.FullName, " ", path(currentMembers.Length) + " in ", (parentPath ?? member.Path), @")
+                        foreach (", type.FullName, " ", path(currentMembers.Length) + " in ", (parentPath ?? member.AwaitPath), @")
                         {");
                     if (loopMember.Value.IsNextPath)
                     {
@@ -481,7 +481,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             pushMember(member);
                             ajaxCode.Write(@""");
                     {
-                        ", member.Type.FullName, " ", path(0), " = ", member.Path, ";");
+                        ", member.Type.FullName, " ", path(0), " = ", member.AwaitPath, ";");
                             if (member.Type.IsNull)
                             {
                                 ajaxCode.Write(@"
@@ -522,7 +522,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 pushMember(member);
                                 ajaxCode.Write(@"
                     {
-                        ", member.Type.FullName, " ", path(0), " = ", member.Path, ";");
+                        ", member.Type.FullName, " ", path(0), " = ", member.AwaitPath, ";");
                                 if (member.Type.IsNull)
                                 {
                                     ajaxCode.Write(@"
@@ -581,7 +581,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 pushMember(member);
                                 ajaxCode.Write(@""");
                     {
-                        ", member.Type.FullName, " ", path(0), " = ", member.Path, ";");
+                        ", member.Type.FullName, " ", path(0), " = ", member.AwaitPath, ";");
                                 if (member.Type.IsNull)
                                 {
                                     ajaxCode.Write(@"
@@ -708,7 +708,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         int ", loopIndex(0).ToString(), @" = _loopIndex_;
                         _loopIndex_ = 0;
-                        foreach (", type.fullName(), " " + path(currentMembers.Length) + " in ", (parentPath ?? member.Path), @")
+                        foreach (", type.fullName(), " " + path(currentMembers.Length) + " in ", (parentPath ?? member.AwaitPath), @")
                         {
                             if (_loopIndex_ != 0) _js_.Write(',');");
                     if (type.isNull())
@@ -754,7 +754,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         pushMember(member);
                         ajaxCode.Write(@""");
                     {
-                        ", member.Type.FullName, " ", path(0), " = ", member.Path, ";");
+                        ", member.Type.FullName, " ", path(0), " = ", member.AwaitPath, ";");
                         if (member.Type.IsNull)
                         {
                             ajaxCode.Write(@"
@@ -906,6 +906,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             private static readonly TypeScript typeScript = new TypeScript();
             /// <summary>
+            /// ajax 函数存在 await 函数的类型集合
+            /// </summary>
+            internal static HashSet<Type> AjaxAwaitMethodTypes = new HashSet<Type>();
+            /// <summary>
             /// WEB视图类型信息
             /// </summary>
             internal sealed class ViewType
@@ -937,6 +941,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// 页面序号
                 /// </summary>
                 public int PageIndex;
+                /// <summary>
+                /// 页面对象名称
+                /// </summary>
+                public string PageName
+                {
+                    get { return "_p" + PageIndex.toString(); }
+                }
                 /// <summary>
                 /// 是否忽略大小写
                 /// </summary>
@@ -1000,6 +1011,21 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return IgnoreCase ? path.toLower() : path;
                     }
                 }
+                /// <summary>
+                /// 是否 await 函数
+                /// </summary>
+                public bool IsAwaitMethod;
+                /// <summary>
+                /// 是否使用对象池
+                /// </summary>
+                public bool IsPoolType;
+                /// <summary>
+                /// 页面对象是否需要初始化
+                /// </summary>
+                public bool IsSetPage
+                {
+                    get { return IsAwaitMethod || Attribute.IsAsynchronous; }
+                }
             }
             /// <summary>
             /// WEB视图类型集合
@@ -1053,6 +1079,17 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 是否使用对象池
             /// </summary>
             public bool IsPoolType;
+            /// <summary>
+            /// 是否 await 函数
+            /// </summary>
+            public bool IsAwaitMethod;
+            /// <summary>
+            /// 页面对象是否需要初始化
+            /// </summary>
+            public bool IsSetPage
+            {
+                get { return IsAwaitMethod || Attribute.IsAsynchronous; }
+            }
             /// <summary>
             /// HTML 数据字段名称
             /// </summary>
@@ -1109,11 +1146,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     try
                     {
                         TreeTemplate template = new TreeTemplate(Type, File.ReadAllText(fileName, AutoParameter.WebConfig.Encoding));
+                        IsAwaitMethod = template.IsAwaitMethod;
                         if (Attribute.IsPage) PageCode = template.CodeString;
-                        if (Attribute.IsAjax) AjaxCode = template.Ajax();
+                        if (Attribute.IsAjax)
+                        {
+                             AjaxCode = template.Ajax();
+                            if (IsAwaitMethod) AjaxAwaitMethodTypes.Add(Type);
+                        }
                         HtmlCount = template.HtmlCount;
                         int index = views.Length;
-                        ViewType view = new ViewType { Type = Type, Attribute = Attribute, DefaultNamespace = AutoParameter.DefaultNamespace + ".", Index = index, IgnoreCase = AutoParameter.WebConfig.IgnoreCase };
+                        ViewType view = new ViewType { Type = Type, Attribute = Attribute, DefaultNamespace = AutoParameter.DefaultNamespace + ".", Index = index, IgnoreCase = AutoParameter.WebConfig.IgnoreCase, IsAwaitMethod = IsAwaitMethod, IsPoolType = IsPoolType };
                         views.Add(view);
                         Htmls = "_h" + index.toString();
                         HtmlLock = "_l" + index.toString();

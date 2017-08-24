@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.WebView;
 
 namespace AutoCSer.CodeGenerator.Template
 {
@@ -17,6 +18,32 @@ namespace AutoCSer.CodeGenerator.Template
             private static byte[][] @Htmls;
             private static readonly object @HtmlLock = new object();
             #endregion NOT IsPoolType
+            #region IF IsAwaitMethod
+            protected override /*AT:Async*/ void pageAsync(AutoCSer.WebView.Response _html_)
+            {
+                try
+                {
+                    byte[][] htmls;
+                    #region NOT IsPoolType
+                    htmls = loadHtml(@"@HtmlFile", @HtmlCount, @HtmlLock, ref @Htmls);
+                    #endregion NOT IsPoolType
+                    #region IF IsPoolType
+                    htmls = loadHtml(@"@HtmlFile", @HtmlCount);
+                    #endregion IF IsPoolType
+                    if (htmls != null)
+                    {
+                        /*AT:PageCode*/
+                        asyncReturn = true;
+                    }
+                }
+                catch (Exception error)
+                {
+                    addLog(error);
+                }
+                finally { asyncEnd(); }
+            }
+            #endregion IF IsAwaitMethod
+            #region NOT IsAwaitMethod
             protected override bool page(ref AutoCSer.WebView.Response _html_)
             {
                 byte[][] htmls;
@@ -33,13 +60,30 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 return false;
             }
+            #endregion NOT IsAwaitMethod
             #endregion IF Attribute.IsPage
 
             #region IF Attribute.IsAjax
-            protected unsafe override void ajax(CharStream _js_)
+            #region IF IsAwaitMethod
+            protected override /*AT:Async*/ void ajaxAsync(CharStream _js_)
+            {
+                try
+                {
+                    /*AT:AjaxCode*/
+                }
+                catch (Exception error)
+                {
+                    addLog(error);
+                }
+                finally { asyncEnd(); }
+            }
+            #endregion IF IsAwaitMethod
+            #region NOT IsAwaitMethod
+            protected override void ajax(CharStream _js_)
             {
                 /*AT:AjaxCode*/
             }
+            #endregion NOT IsAwaitMethod
             #endregion IF Attribute.IsAjax
 
             #region IF LoadMethod
@@ -130,6 +174,7 @@ namespace AutoCSer.CodeGenerator.Template
             const int RewriteViewCount = 0;
             //const bool IsPool = false;
             const bool IsAsynchronous = false;
+            const bool IsAwaitMethod = false;
             #endregion NOTE
 
             protected override KeyValue<string[], string[]> rewrites
@@ -185,7 +230,21 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     #region LOOP Views
                     #region IF Attribute.IsPage
-                    case @PageIndex: loadPage(socket, /*IF:IsPoolType*/@WebViewMethodType.FullName/**/.Pop() ?? /*IF:IsPoolType*/new @WebViewMethodType.FullName()/*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/); return;
+                    case @PageIndex:
+                        #region IF IsPoolType
+                        #region IF IsSetPage
+                        @WebViewMethodType.FullName @PageName = @WebViewMethodType.FullName/**/.Pop();
+                        if (@PageName == null) setPage(@PageName = new @WebViewMethodType.FullName()/*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod);
+                        loadPage(socket, @PageName);
+                        #endregion IF IsSetPage
+                        #region NOT IsSetPage
+                        loadPage(socket, /*IF:IsPoolType*/@WebViewMethodType.FullName/**/.Pop() ?? /*IF:IsPoolType*/new @WebViewMethodType.FullName());
+                        #endregion NOT IsSetPage
+                        #endregion IF IsPoolType
+                        #region NOT IsPoolType
+                        loadPage(socket, /*NOTE*/(AutoCSer.WebView.View)(object)/*NOTE*/new @WebViewMethodType.FullName()/*IF:IsSetPage*//*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod/*IF:IsSetPage*/);
+                        #endregion NOT IsPoolType
+                        return;
                     #endregion IF Attribute.IsPage
                     #endregion LOOP Views
                 }

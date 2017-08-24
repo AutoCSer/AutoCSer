@@ -7,7 +7,7 @@
     <ProjectGuid>{1E4278A2-9A86-4A1C-90C6-D869B380FF6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoCSer</RootNamespace>
+    <RootNamespace>AutoCSer.Sql.MySql</RootNamespace>
     <AssemblyName>AutoCSer.MySql</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

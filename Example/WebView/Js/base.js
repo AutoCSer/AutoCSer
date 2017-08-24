@@ -3408,21 +3408,4 @@ var AutoCSer;
 	}());
 	AutoCSer.ServerTime = ServerTime;
 })(AutoCSer || (AutoCSer = {}));
-var AutoCSerAPI;
-(function (AutoCSerAPI) {
-	var Ajax;
-	(function (Ajax) {
-		var RefOut = (function () {
-			function RefOut() {
-			}
-			RefOut.Add = function (left, right, Callback) {
-				if (Callback === void 0) { Callback = null; }
-				AutoCSer.Pub.GetAjaxPost()('RefOut.Add', { left: left, right: right }, Callback);
-			};
-			return RefOut;
-		}());
-		Ajax.RefOut = RefOut;
-	})(Ajax = AutoCSerAPI.Ajax || (AutoCSerAPI.Ajax = {}));
-})(AutoCSerAPI || (AutoCSerAPI = {}));
-
 setTimeout(AutoCSer.Pub.LoadIE, 0, 'javascript');

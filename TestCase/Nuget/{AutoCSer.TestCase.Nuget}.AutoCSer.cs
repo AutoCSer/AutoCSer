@@ -57,7 +57,7 @@ namespace AutoCSer.TestCase.Nuget
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop()?? new _s0()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -163,6 +163,7 @@ namespace AutoCSer.TestCase.Nuget
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
                 {
@@ -207,7 +208,7 @@ namespace AutoCSer.TestCase.Nuget
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_a0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);

@@ -383,6 +383,909 @@
             Excel版本号
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.LogStream.IdentityClient`2">
+            <summary>
+            自增标识客户端
+            </summary>
+            <summary>
+            自增标识客户端
+            </summary>
+            <typeparam name="valueType">表格类型</typeparam>
+            <typeparam name="modelType">数据模型类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.GetAsync(AutoCSer.Net.TcpServer.ReturnValue{System.Int32[]})">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="identitys"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.GetAsync(System.Int32[])">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="identitys"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Null">
+            <summary>
+            虚拟空日志流客户端
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.IdentityClient`2.Getter">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.client">
+            <summary>
+            自增标识客户端
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.array">
+            <summary>
+            加载数据缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.#ctor(AutoCSer.Sql.LogStream.IdentityClient{`0,`1})">
+            <summary>
+            自增标识客户端
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.error">
+            <summary>
+            错误处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.onLog(AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data})">
+            <summary>
+            日志流数据处理
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.getter">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.array">
+            <summary>
+            缓存数据
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.LogStream.IdentityClient`2.Item(System.Int32)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="identity"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.LogStream.IdentityClient`2.Count">
+            <summary>
+            数据数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.maxIdentity">
+            <summary>
+            最大自增标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.#ctor">
+            <summary>
+            虚拟空日志流客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{System.Int32,AutoCSer.Net.TcpServer.ReturnValue{`0}},System.Func{System.Int32,AutoCSer.Net.TcpServer.AwaiterBox{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+            <summary>
+            日志流客户端
+            </summary>
+            <param name="getLog">获取日志数据委托</param>
+            <param name="getValue">获取数据委托</param>
+            <param name="getValueAwaiter">获取数据委托</param>
+            <param name="custom">客户端自定义绑定</param>
+            <param name="log">日志处理</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.CreateNull(System.Type,AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+            <summary>
+            虚拟客户端创建自增标识客户端
+            </summary>
+            <param name="tcpCallType">TCP 调用类型</param>
+            <param name="custom">客户端自定义绑定</param>
+            <param name="log">日志处理</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.onError">
+            <summary>
+            错误处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.load(AutoCSer.LeftArray{`0}@)">
+            <summary>
+            加载数据
+            </summary>
+            <param name="array"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.onLog(AutoCSer.Sql.LogStream.Log{`0,`1}.Data@)">
+            <summary>
+            日志流数据处理
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(System.Int32,`0@)">
+            <summary>
+            获取数据，尽量不要在 .NET 4.0 及以下版本中使用
+            </summary>
+            <param name="identity"></param>
+            <param name="value"></param>
+            <returns>null 表示已经同步获取数据</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(AutoCSer.Net.TcpServer.ReturnValue{System.Int32[]})">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="identitys"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(System.Int32[])">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="identitys"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Client">
+            <summary>
+            日志流客户端
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Client.Getter">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client.Getter.keepCallback">
+            <summary>
+            日志流处理保持回调
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client.Getter.isError">
+            <summary>
+            是否错误
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client.Getter.isLoaded">
+            <summary>
+            数据是否加载完成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client.log">
+            <summary>
+            日志处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client.isLoaded">
+            <summary>
+            数据是否加载完成
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client.#ctor(AutoCSer.Log.ILog)">
+            <summary>
+            日志流客户端
+            </summary>
+            <param name="log">日志处理</param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Client`2">
+            <summary>
+            日志流客户端
+            </summary>
+            <typeparam name="valueType">表格类型</typeparam>
+            <typeparam name="modelType">数据模型类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Client`2.Custom">
+            <summary>
+            客户端自定义绑定
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Load(System.Collections.Generic.ICollection{`0})">
+            <summary>
+            重新加载数据
+            </summary>
+            <param name="values">初始化数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Insert(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Update(`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="value">更新之前的数据</param>
+            <param name="updateValue">准备更新的数据</param>
+            <param name="memberMap">准备更新的数据成员</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Delete(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`2.Custom.Null">
+            <summary>
+            虚拟客户端自定义绑定
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`2.getLog">
+            <summary>
+            获取日志数据委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`2.custom">
+            <summary>
+            客户端自定义绑定
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`2.#ctor">
+            <summary>
+            日志流客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`2.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+            <summary>
+            日志流客户端
+            </summary>
+            <param name="getLog">获取日志数据委托</param>
+            <param name="custom">客户端自定义绑定</param>
+            <param name="log">日志处理</param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Client`3">
+            <summary>
+            日志流客户端
+            </summary>
+            <typeparam name="valueType">表格类型</typeparam>
+            <typeparam name="modelType">数据模型类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`3.getValue">
+            <summary>
+            获取数据委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`3.getValueAwaiter">
+            <summary>
+            获取数据委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Client`3.getKey">
+            <summary>
+            获取关键字委托
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`3.#ctor">
+            <summary>
+            日志流客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Client`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`1,`2},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},System.Func{`2,AutoCSer.Net.TcpServer.AwaiterBox{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+            <summary>
+            日志流客户端
+            </summary>
+            <param name="getLog">获取日志数据委托</param>
+            <param name="getKey">获取关键字委托</param>
+            <param name="getValue">获取数据委托</param>
+            <param name="getValueAwaiter">获取数据委托</param>
+            <param name="custom">客户端自定义绑定</param>
+            <param name="log">日志处理</param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.IMemberMapValueLink`1">
+            <summary>
+            成员位图绑定对象链表
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="P:AutoCSer.Sql.LogStream.IMemberMapValueLink`1.MemberMapValueLink">
+            <summary>
+            下一个节点
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.LoadedType">
+            <summary>
+            日志流数据完成类型加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LoadedType.Type">
+            <summary>
+            数据模型类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LoadedType.TableNumber">
+            <summary>
+            表格编号，主要使用枚举识别同一数据模型下的不同表格
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.#ctor(System.Type,System.Int32)">
+            <summary>
+            日志流数据完成类型加载
+            </summary>
+            <param name="type">数据模型类型</param>
+            <param name="tableNumber">表格编号</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Equals(System.Type,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <param name="tableNumber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Equals(AutoCSer.Sql.LogStream.LoadedType)">
+            <summary>
+            
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Equals(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.GetHashCode">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LoadedType.loadedTypes">
+            <summary>
+            已经加载的数据完成类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LoadedType.loadTypes">
+            <summary>
+            数据完成类型加载集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LoadedType.loadedLock">
+            <summary>
+            数据完成类型加载集合访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Add(System.Type,System.Int32,System.Action{AutoCSer.Sql.LogStream.LoadedType},AutoCSer.Sql.LogStream.LoadedType[])">
+            <summary>
+            数据完成类型注册
+            </summary>
+            <param name="modelType">数据模型类型</param>
+            <param name="tableNumber">表格编号</param>
+            <param name="onLoaded">数据完成操作</param>
+            <param name="types">待加载类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Add(System.Type,System.Int32)">
+            <summary>
+            数据完成类型注册
+            </summary>
+            <param name="modelType">数据模型类型</param>
+            <param name="tableNumber">表格编号</param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Log">
+            <summary>
+            日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.table">
+            <summary>
+            数据表格
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.waitMap">
+            <summary>
+            等待加载成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.waitCount">
+            <summary>
+            等待加载成员数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.waitMapLock">
+            <summary>
+            等待加载成员位图访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.onLogIndex">
+            <summary>
+            日志回调委托索引
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.onLogLock">
+            <summary>
+            日志回调委托访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.isStart">
+            <summary>
+            是否开始处理日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.isLoaded">
+            <summary>
+            是否加载完成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.isMemberMap">
+            <summary>
+            是否支持成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.#ctor(AutoCSer.Sql.Table,System.Int32[])">
+            <summary>
+            日志
+            </summary>
+            <param name="table"></param>
+            <param name="memberIndexs"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.cacheLoaded">
+            <summary>
+            缓存加载完毕事件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.LoadMember(System.Int32)">
+            <summary>
+            加载成员处理
+            </summary>
+            <param name="memberIndex"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.loadCount">
+            <summary>
+            加载完成检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.Start">
+            <summary>
+            开始处理日志
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            执行任务
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.onLoaded">
+            <summary>
+            缓存加载完毕
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Log`2">
+            <summary>
+            日志
+            </summary>
+            <typeparam name="valueType">表格类型</typeparam>
+            <typeparam name="modelType">数据模型类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Log`2.Data">
+            <summary>
+            日志数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.Data.Value">
+            <summary>
+            数据库更新记录
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.Data.Type">
+            <summary>
+            日志类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask">
+            <summary>
+            添加日志处理委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.Log">
+            <summary>
+            日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.OnLog">
+            <summary>
+            日志处理委托
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            执行任务
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.Log`2.UpdateTask">
+            <summary>
+            手动更新数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.UpdateTask.Log">
+            <summary>
+            日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.UpdateTask.Value">
+            <summary>
+            数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.UpdateTask.MemberMap">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.UpdateTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            执行任务
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.cache">
+            <summary>
+            缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.onLogs">
+            <summary>
+            日志回调委托集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.insertLog">
+            <summary>
+            添加数据日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.updateLog">
+            <summary>
+            更新数据日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.updateMemberMapLog">
+            <summary>
+            更新数据日志
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.deleteLog">
+            <summary>
+            删除数据日志
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Int32[])">
+            <summary>
+            日志
+            </summary>
+            <param name="table"></param>
+            <param name="memberIndexs"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.Set(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Boolean)">
+            <summary>
+            设置缓存
+            </summary>
+            <param name="cache"></param>
+            <param name="isMemberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.CreateMemberMap``1(System.Linq.Expressions.Expression{System.Func{`1,``0}})">
+            <summary>
+            创建数据更新成员位图
+            </summary>
+            <typeparam name="memberType"></typeparam>
+            <param name="member"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.onLoaded">
+            <summary>
+            缓存加载完毕
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.start(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
+            <summary>
+            日志委托初始化处理
+            </summary>
+            <param name="onLog"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.Add(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
+            <summary>
+            添加日志处理委托
+            </summary>
+            <param name="onLog"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.add(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
+            <summary>
+            添加日志处理委托
+            </summary>
+            <param name="onLog"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value"></param>
+            <param name="oldValue"></param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.onLog(AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}@)">
+            <summary>
+            日志处理
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.Update(`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            手动更新数据
+            </summary>
+            <param name="value"></param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.update(`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            手动更新数据
+            </summary>
+            <param name="value"></param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.LogType">
+            <summary>
+            日志类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LogType.CountError">
+            <summary>
+            客户端数量超限
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LogType.Loaded">
+            <summary>
+            数据加载完毕
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LogType.Insert">
+            <summary>
+            添加数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LogType.Update">
+            <summary>
+            更新数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.LogType.Delete">
+            <summary>
+            删除数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.MemberMapValue`2">
+            <summary>
+            反序列化池对象
+            </summary>
+            <typeparam name="memberMapType"></typeparam>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.MemberMapValue`2.MemberMap">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.MemberMapValue`2.Value">
+            <summary>
+            目标数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.Set(`1,AutoCSer.Metadata.MemberMap{`0})">
+            <summary>
+            设置数据
+            </summary>
+            <param name="value"></param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.toJson(AutoCSer.Json.Serializer)">
+            <summary>
+            对象转换成JSON字符串
+            </summary>
+            <param name="toJsoner">对象转换成JSON字符串</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.parseJson(AutoCSer.Json.Parser)">
+            <summary>
+            对象转换成JSON字符串
+            </summary>
+            <param name="parser">Json解析器</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            对象序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            反序列化
+            </summary>
+            <param name="deSerializer">序列化数据</param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1">
+            <summary>
+            成员位图绑定对象链表池
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.maxCount">
+            <summary>
+            缓存数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.head">
+            <summary>
+            链表头部
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.popLock">
+            <summary>
+            弹出节点访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.count">
+            <summary>
+            缓存数量
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.PushNotNull(`0)">
+            <summary>
+            添加节点
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.Pop">
+            <summary>
+            弹出节点
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.pushLink(`0,`0,System.Int32)">
+            <summary>
+            添加链表
+            </summary>
+            <param name="value">链表头部</param>
+            <param name="end">链表尾部</param>
+            <param name="pushCount">数据数量</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.clearCache(System.Int32)">
+            <summary>
+            清除缓存数据
+            </summary>
+            <param name="saveCount">保留缓存数据数量</param>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.PrimaryKeyClient`3">
+            <summary>
+            自增标识客户端
+            </summary>
+            <typeparam name="valueType">表格类型</typeparam>
+            <typeparam name="modelType">数据模型类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Null">
+            <summary>
+            虚拟空日志流客户端
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.client">
+            <summary>
+            自增标识客户端
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.dictionary">
+            <summary>
+            加载数据缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.#ctor(AutoCSer.Sql.LogStream.PrimaryKeyClient{`0,`1,`2})">
+            <summary>
+            自增标识客户端
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.error">
+            <summary>
+            错误处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.onLog(AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data})">
+            <summary>
+            日志流数据处理
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.dictionary">
+            <summary>
+            数据集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Item(`2)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Count">
+            <summary>
+            数据数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.getter">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.#ctor">
+            <summary>
+            虚拟空日志流客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},System.Func{`2,AutoCSer.Net.TcpServer.AwaiterBox{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
+            <summary>
+            日志流客户端
+            </summary>
+            <param name="getLog">获取日志数据委托</param>
+            <param name="getValue">获取数据委托</param>
+            <param name="getValueAwaiter">获取数据委托</param>
+            <param name="custom">客户端自定义绑定</param>
+            <param name="log">日志处理</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.onError">
+            <summary>
+            错误处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.load(System.Collections.Generic.Dictionary{AutoCSer.RandomKey{`2},`0})">
+            <summary>
+            加载数据
+            </summary>
+            <param name="dictionary">数据集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.onLog(AutoCSer.Sql.LogStream.Log{`0,`1}.Data@)">
+            <summary>
+            日志流数据处理
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Get(`2,`0@)">
+            <summary>
+            获取数据，尽量不要在 .NET 4.0 及以下版本中使用
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns>null 表示已经同步获取数据</returns>
+        </member>
         <member name="T:AutoCSer.Sql.AnyCancel">
             <summary>
             取消操作数据
@@ -7337,868 +8240,6 @@
             <summary>
             SQL 数据库成员
             </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Client">
-            <summary>
-            日志流客户端
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Client.Getter">
-            <summary>
-            获取数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client.Getter.keepCallback">
-            <summary>
-            日志流处理保持回调
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client.Getter.isError">
-            <summary>
-            是否错误
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client.Getter.isLoaded">
-            <summary>
-            数据是否加载完成
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client.log">
-            <summary>
-            日志处理
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client.isLoaded">
-            <summary>
-            数据是否加载完成
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client.#ctor(AutoCSer.Log.ILog)">
-            <summary>
-            日志流客户端
-            </summary>
-            <param name="log">日志处理</param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Client`2">
-            <summary>
-            日志流客户端
-            </summary>
-            <typeparam name="valueType">表格类型</typeparam>
-            <typeparam name="modelType">数据模型类型</typeparam>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Client`2.Custom">
-            <summary>
-            客户端自定义绑定
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Load(System.Collections.Generic.ICollection{`0})">
-            <summary>
-            重新加载数据
-            </summary>
-            <param name="values">初始化数据</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Insert(`0)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Update(`0,`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            更新数据
-            </summary>
-            <param name="value">更新之前的数据</param>
-            <param name="updateValue">准备更新的数据</param>
-            <param name="memberMap">准备更新的数据成员</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`2.Custom.Delete(`0)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client`2.Custom.Null">
-            <summary>
-            虚拟客户端自定义绑定
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client`2.getLog">
-            <summary>
-            获取日志数据委托
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client`2.custom">
-            <summary>
-            客户端自定义绑定
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`2.#ctor">
-            <summary>
-            日志流客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`2.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
-            <summary>
-            日志流客户端
-            </summary>
-            <param name="getLog">获取日志数据委托</param>
-            <param name="custom">客户端自定义绑定</param>
-            <param name="log">日志处理</param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Client`3">
-            <summary>
-            日志流客户端
-            </summary>
-            <typeparam name="valueType">表格类型</typeparam>
-            <typeparam name="modelType">数据模型类型</typeparam>
-            <typeparam name="keyType">关键字类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client`3.getValue">
-            <summary>
-            获取数据委托
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Client`3.getKey">
-            <summary>
-            获取关键字委托
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`3.#ctor">
-            <summary>
-            日志流客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Client`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`1,`2},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
-            <summary>
-            日志流客户端
-            </summary>
-            <param name="getLog">获取日志数据委托</param>
-            <param name="getKey">获取关键字委托</param>
-            <param name="getValue">获取数据委托</param>
-            <param name="custom">客户端自定义绑定</param>
-            <param name="log">日志处理</param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.IdentityClient`2">
-            <summary>
-            自增标识客户端
-            </summary>
-            <typeparam name="valueType">表格类型</typeparam>
-            <typeparam name="modelType">数据模型类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Null">
-            <summary>
-            虚拟空日志流客户端
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.IdentityClient`2.Getter">
-            <summary>
-            获取数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.client">
-            <summary>
-            自增标识客户端
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.array">
-            <summary>
-            加载数据缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.#ctor(AutoCSer.Sql.LogStream.IdentityClient{`0,`1})">
-            <summary>
-            自增标识客户端
-            </summary>
-            <param name="client"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.error">
-            <summary>
-            错误处理
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Getter.onLog(AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data})">
-            <summary>
-            日志流数据处理
-            </summary>
-            <param name="data"></param>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.getter">
-            <summary>
-            获取数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.array">
-            <summary>
-            缓存数据
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.LogStream.IdentityClient`2.Item(System.Int32)">
-            <summary>
-            获取数据
-            </summary>
-            <param name="identity"></param>
-            <returns></returns>
-        </member>
-        <member name="P:AutoCSer.Sql.LogStream.IdentityClient`2.Count">
-            <summary>
-            数据数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.maxIdentity">
-            <summary>
-            最大自增标识
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.#ctor">
-            <summary>
-            虚拟空日志流客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{System.Int32,AutoCSer.Net.TcpServer.ReturnValue{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
-            <summary>
-            日志流客户端
-            </summary>
-            <param name="getLog">获取日志数据委托</param>
-            <param name="getValue">获取数据委托</param>
-            <param name="custom">客户端自定义绑定</param>
-            <param name="log">日志处理</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.CreateNull(System.Type,AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
-            <summary>
-            虚拟客户端创建自增标识客户端
-            </summary>
-            <param name="tcpCallType">TCP 调用类型</param>
-            <param name="custom">客户端自定义绑定</param>
-            <param name="log">日志处理</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.onError">
-            <summary>
-            错误处理
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.load(AutoCSer.LeftArray{`0}@)">
-            <summary>
-            加载数据
-            </summary>
-            <param name="array"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.onLog(AutoCSer.Sql.LogStream.Log{`0,`1}.Data@)">
-            <summary>
-            日志流数据处理
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(AutoCSer.Net.TcpServer.ReturnValue{System.Int32[]})">
-            <summary>
-            获取数据集合
-            </summary>
-            <param name="identitys"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.Get(System.Int32[])">
-            <summary>
-            获取数据集合
-            </summary>
-            <param name="identitys"></param>
-            <returns></returns>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.IMemberMapValueLink`1">
-            <summary>
-            成员位图绑定对象链表
-            </summary>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="P:AutoCSer.Sql.LogStream.IMemberMapValueLink`1.MemberMapValueLink">
-            <summary>
-            下一个节点
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.LoadedType">
-            <summary>
-            日志流数据完成类型加载
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LoadedType.Type">
-            <summary>
-            数据模型类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LoadedType.TableNumber">
-            <summary>
-            表格编号，主要使用枚举识别同一数据模型下的不同表格
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.#ctor(System.Type,System.Int32)">
-            <summary>
-            日志流数据完成类型加载
-            </summary>
-            <param name="type">数据模型类型</param>
-            <param name="tableNumber">表格编号</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Equals(System.Type,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="type"></param>
-            <param name="tableNumber"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Equals(AutoCSer.Sql.LogStream.LoadedType)">
-            <summary>
-            
-            </summary>
-            <param name="other"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Equals(System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.GetHashCode">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LoadedType.loadedTypes">
-            <summary>
-            已经加载的数据完成类型集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LoadedType.loadTypes">
-            <summary>
-            数据完成类型加载集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LoadedType.loadedLock">
-            <summary>
-            数据完成类型加载集合访问锁
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Add(System.Type,System.Int32,System.Action{AutoCSer.Sql.LogStream.LoadedType},AutoCSer.Sql.LogStream.LoadedType[])">
-            <summary>
-            数据完成类型注册
-            </summary>
-            <param name="modelType">数据模型类型</param>
-            <param name="tableNumber">表格编号</param>
-            <param name="onLoaded">数据完成操作</param>
-            <param name="types">待加载类型集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.LoadedType.Add(System.Type,System.Int32)">
-            <summary>
-            数据完成类型注册
-            </summary>
-            <param name="modelType">数据模型类型</param>
-            <param name="tableNumber">表格编号</param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Log">
-            <summary>
-            日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.table">
-            <summary>
-            数据表格
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.waitMap">
-            <summary>
-            等待加载成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.waitCount">
-            <summary>
-            等待加载成员数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.waitMapLock">
-            <summary>
-            等待加载成员位图访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.onLogIndex">
-            <summary>
-            日志回调委托索引
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.onLogLock">
-            <summary>
-            日志回调委托访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.isStart">
-            <summary>
-            是否开始处理日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.isLoaded">
-            <summary>
-            是否加载完成
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log.isMemberMap">
-            <summary>
-            是否支持成员位图
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.#ctor(AutoCSer.Sql.Table,System.Int32[])">
-            <summary>
-            日志
-            </summary>
-            <param name="table"></param>
-            <param name="memberIndexs"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.cacheLoaded">
-            <summary>
-            缓存加载完毕事件
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.LoadMember(System.Int32)">
-            <summary>
-            加载成员处理
-            </summary>
-            <param name="memberIndex"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.loadCount">
-            <summary>
-            加载完成检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.Start">
-            <summary>
-            开始处理日志
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.RunLinkQueueTask(System.Data.Common.DbConnection@)">
-            <summary>
-            执行任务
-            </summary>
-            <param name="connection"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log.onLoaded">
-            <summary>
-            缓存加载完毕
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Log`2">
-            <summary>
-            日志
-            </summary>
-            <typeparam name="valueType">表格类型</typeparam>
-            <typeparam name="modelType">数据模型类型</typeparam>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Log`2.Data">
-            <summary>
-            日志数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.Data.Value">
-            <summary>
-            数据库更新记录
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.Data.Type">
-            <summary>
-            日志类型
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask">
-            <summary>
-            添加日志处理委托
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.Log">
-            <summary>
-            日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.OnLog">
-            <summary>
-            日志处理委托
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
-            <summary>
-            执行任务
-            </summary>
-            <param name="connection"></param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.Log`2.UpdateTask">
-            <summary>
-            手动更新数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.UpdateTask.Log">
-            <summary>
-            日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.UpdateTask.Value">
-            <summary>
-            数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.UpdateTask.MemberMap">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.UpdateTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
-            <summary>
-            执行任务
-            </summary>
-            <param name="connection"></param>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.cache">
-            <summary>
-            缓存
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.onLogs">
-            <summary>
-            日志回调委托集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.insertLog">
-            <summary>
-            添加数据日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.updateLog">
-            <summary>
-            更新数据日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.updateMemberMapLog">
-            <summary>
-            更新数据日志
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.Log`2.deleteLog">
-            <summary>
-            删除数据日志
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Int32[])">
-            <summary>
-            日志
-            </summary>
-            <param name="table"></param>
-            <param name="memberIndexs"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.Set(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Boolean)">
-            <summary>
-            设置缓存
-            </summary>
-            <param name="cache"></param>
-            <param name="isMemberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.CreateMemberMap``1(System.Linq.Expressions.Expression{System.Func{`1,``0}})">
-            <summary>
-            创建数据更新成员位图
-            </summary>
-            <typeparam name="memberType"></typeparam>
-            <param name="member"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.onLoaded">
-            <summary>
-            缓存加载完毕
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.start(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
-            <summary>
-            日志委托初始化处理
-            </summary>
-            <param name="onLog"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.Add(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
-            <summary>
-            添加日志处理委托
-            </summary>
-            <param name="onLog"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.add(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
-            <summary>
-            添加日志处理委托
-            </summary>
-            <param name="onLog"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.onInserted(`0)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            更新数据
-            </summary>
-            <param name="cacheValue"></param>
-            <param name="value"></param>
-            <param name="oldValue"></param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.onDeleted(`0)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.onLog(AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}@)">
-            <summary>
-            日志处理
-            </summary>
-            <param name="data"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.Update(`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            手动更新数据
-            </summary>
-            <param name="value"></param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.update(`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            手动更新数据
-            </summary>
-            <param name="value"></param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.LogType">
-            <summary>
-            日志类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LogType.CountError">
-            <summary>
-            客户端数量超限
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LogType.Loaded">
-            <summary>
-            数据加载完毕
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LogType.Insert">
-            <summary>
-            添加数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LogType.Update">
-            <summary>
-            更新数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.LogType.Delete">
-            <summary>
-            删除数据
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.MemberMapValue`2">
-            <summary>
-            反序列化池对象
-            </summary>
-            <typeparam name="memberMapType"></typeparam>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.MemberMapValue`2.MemberMap">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.MemberMapValue`2.Value">
-            <summary>
-            目标数据
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.Set(`1,AutoCSer.Metadata.MemberMap{`0})">
-            <summary>
-            设置数据
-            </summary>
-            <param name="value"></param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.toJson(AutoCSer.Json.Serializer)">
-            <summary>
-            对象转换成JSON字符串
-            </summary>
-            <param name="toJsoner">对象转换成JSON字符串</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.parseJson(AutoCSer.Json.Parser)">
-            <summary>
-            对象转换成JSON字符串
-            </summary>
-            <param name="parser">Json解析器</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.serialize(AutoCSer.BinarySerialize.Serializer)">
-            <summary>
-            对象序列化
-            </summary>
-            <param name="serializer"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValue`2.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
-            <summary>
-            反序列化
-            </summary>
-            <param name="deSerializer">序列化数据</param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1">
-            <summary>
-            成员位图绑定对象链表池
-            </summary>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.maxCount">
-            <summary>
-            缓存数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.head">
-            <summary>
-            链表头部
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.popLock">
-            <summary>
-            弹出节点访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.count">
-            <summary>
-            缓存数量
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.PushNotNull(`0)">
-            <summary>
-            添加节点
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.Pop">
-            <summary>
-            弹出节点
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.pushLink(`0,`0,System.Int32)">
-            <summary>
-            添加链表
-            </summary>
-            <param name="value">链表头部</param>
-            <param name="end">链表尾部</param>
-            <param name="pushCount">数据数量</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.MemberMapValueLinkPool`1.clearCache(System.Int32)">
-            <summary>
-            清除缓存数据
-            </summary>
-            <param name="saveCount">保留缓存数据数量</param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.PrimaryKeyClient`3">
-            <summary>
-            自增标识客户端
-            </summary>
-            <typeparam name="valueType">表格类型</typeparam>
-            <typeparam name="modelType">数据模型类型</typeparam>
-            <typeparam name="keyType">关键字类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Null">
-            <summary>
-            虚拟空日志流客户端
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter">
-            <summary>
-            获取数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.client">
-            <summary>
-            自增标识客户端
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.dictionary">
-            <summary>
-            加载数据缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.#ctor(AutoCSer.Sql.LogStream.PrimaryKeyClient{`0,`1,`2})">
-            <summary>
-            自增标识客户端
-            </summary>
-            <param name="client"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.error">
-            <summary>
-            错误处理
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Getter.onLog(AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data})">
-            <summary>
-            日志流数据处理
-            </summary>
-            <param name="data"></param>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.dictionary">
-            <summary>
-            数据集合
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Item(`2)">
-            <summary>
-            获取数据
-            </summary>
-            <param name="key"></param>
-            <returns></returns>
-        </member>
-        <member name="P:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.Count">
-            <summary>
-            数据数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.getter">
-            <summary>
-            获取数据
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.#ctor">
-            <summary>
-            虚拟空日志流客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.#ctor(System.Func{System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data}},AutoCSer.Net.TcpServer.KeepCallback},System.Func{`2,AutoCSer.Net.TcpServer.ReturnValue{`0}},AutoCSer.Sql.LogStream.Client{`0,`1}.Custom,AutoCSer.Log.ILog)">
-            <summary>
-            日志流客户端
-            </summary>
-            <param name="getLog">获取日志数据委托</param>
-            <param name="getValue">获取数据委托</param>
-            <param name="custom">客户端自定义绑定</param>
-            <param name="log">日志处理</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.onError">
-            <summary>
-            错误处理
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.load(System.Collections.Generic.Dictionary{AutoCSer.RandomKey{`2},`0})">
-            <summary>
-            加载数据
-            </summary>
-            <param name="dictionary">数据集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LogStream.PrimaryKeyClient`3.onLog(AutoCSer.Sql.LogStream.Log{`0,`1}.Data@)">
-            <summary>
-            日志流数据处理
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
         </member>
         <member name="T:AutoCSer.Sql.MemberAttribute">
             <summary>

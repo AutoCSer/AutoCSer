@@ -23,7 +23,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// <summary>
         /// 
         /// </summary>
-        internal async System.Threading.Tasks.Task Run()
+        internal async void Run()
         {
             for (int left = Left, right = Right; right != 0;)
             {

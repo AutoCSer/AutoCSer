@@ -163,11 +163,21 @@ namespace AutoCSer.CodeGenerator.Metadata
             : base(method, filter, index)
         {
             Method = method;
-            ReturnType = method.ReturnType;
+            ReturnType = MemberSystemType = method.ReturnType;
             Type[] genericParameters = method.GetGenericArguments();
             Parameters = MethodParameter.Get(method, genericParameters);
             OutputParameters = Parameters.getFindArray(value => value.Parameter.ParameterType.IsByRef);
             GenericParameters = genericParameters.getArray(value => (ExtensionType)value);
+        }
+        /// <summary>
+        /// 成员方法
+        /// </summary>
+        /// <param name="method">成员方法信息</param>
+        /// <param name="filter">选择类型</param>
+        internal MethodIndex(MethodInfo method, Type awaiterReturnType)
+            : this(method, MemberFilters.PublicInstance, 0)
+        {
+            this.AwaiterReturnType = awaiterReturnType;
         }
         /// <summary>
         /// 成员方法

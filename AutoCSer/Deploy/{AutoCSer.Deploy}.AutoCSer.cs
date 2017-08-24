@@ -272,7 +272,7 @@ namespace AutoCSer.Deploy
                                 _p9 inputParameter = new _p9();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s8/**/.Pop()?? new _s8()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    (_s8/**/.Pop() ?? new _s8()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -790,6 +790,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 清除所有部署任务
@@ -821,7 +822,7 @@ namespace AutoCSer.Deploy
                     if (_socket_ != null)
                     {
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                        _returnType_ = _socket_.GetAwaiter(_c3, _awaiter_);
+                        _returnType_ = _socket_.GetAwaiter(_a3, _awaiter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -829,6 +830,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 创建部署
@@ -879,7 +881,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p4, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity>>(_c4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p4, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Net.IndexIdentity>>(_a4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -887,6 +889,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 清除部署信息
@@ -930,7 +933,7 @@ namespace AutoCSer.Deploy
                             p0 = identity,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                        _returnType_ = _socket_.GetAwaiter(_c5, _awaiter_, ref _inputParameter_);
+                        _returnType_ = _socket_.GetAwaiter(_a5, _awaiter_, ref _inputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -938,6 +941,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 启动部署
@@ -992,7 +996,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p6, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>>(_c6, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p6, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>>(_a6, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1000,6 +1004,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 设置文件数据源
@@ -1054,7 +1059,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p8, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>>(_c7, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p8, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<bool>>(_a7, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1062,6 +1067,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 9, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 9, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 比较文件最后修改时间
@@ -1116,7 +1122,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p9, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory>>(_c8, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p9, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.Deploy.Directory>>(_a8, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1124,6 +1130,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 11, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 11, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 添加web任务(css/js/html)
@@ -1192,7 +1199,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p11, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c9, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p11, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_a9, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1200,6 +1207,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 写文件
@@ -1262,7 +1270,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p13, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c10, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p13, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_a10, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1270,6 +1278,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 写文件并运行程序
@@ -1338,7 +1347,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p14, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c11, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p14, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_a11, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1346,6 +1355,7 @@ namespace AutoCSer.Deploy
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 15, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 15, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 等待运行程序切换结束
@@ -1402,7 +1412,7 @@ namespace AutoCSer.Deploy
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p15, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_c12, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p15, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_a12, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);

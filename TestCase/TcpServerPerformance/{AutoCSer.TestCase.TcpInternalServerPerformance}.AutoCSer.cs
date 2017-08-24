@@ -132,7 +132,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s3/**/.Pop()?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
+                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -151,7 +151,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s4/**/.Pop()?? new _s4()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpTask, ref inputParameter);
+                                    (_s4/**/.Pop() ?? new _s4()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpTask, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -170,7 +170,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s5/**/.Pop()?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -189,7 +189,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s6/**/.Pop()?? new _s6()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
+                                    (_s6/**/.Pop() ?? new _s6()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -568,6 +568,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 客户端同步计算测试
@@ -618,7 +619,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_c0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<int>>(_a0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -648,7 +649,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
                         {
                         };
-                        if ((_returnType_ = _socket_.GetAsync<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, _wait_, ref _inputParameter_, ref _outputParameter_)) == AutoCSer.Net.TcpServer.ReturnType.Success)
+                        if ((_returnType_ = _socket_.GetAsync<TcpInternalServer._p1, TcpInternalServer._p2>(_a0, _wait_, ref _inputParameter_, ref _outputParameter_)) == AutoCSer.Net.TcpServer.ReturnType.Success)
                         {
                             AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p2> _returnOutputParameter_ = await _wait_;
                             return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnOutputParameter_.Type, Value = _returnOutputParameter_.Value.Return };

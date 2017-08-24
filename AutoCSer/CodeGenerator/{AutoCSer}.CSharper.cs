@@ -52,7 +52,120 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                     case ");
             _code_.Add(_value2_.MethodIndex.ToString());
-            _code_.Add(@": loadView(");
+            _code_.Add(@":");
+            _if_ = false;
+                    if (_value2_.IsSetPage)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.IsPoolType)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@" = ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.Pop();
+                        if (");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@" == null) setPage(");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@" = new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"()");
+                {
+                    AutoCSer.WebView.ViewAttribute _value3_ = default(AutoCSer.WebView.ViewAttribute);
+                    _value3_ = _value2_.Attribute;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value3_.IsAsynchronous ? "true" : "false");
+            }
+                }
+            _code_.Add(@", ");
+            _code_.Add(_value2_.IsAwaitMethod ? "true" : "false");
+            _code_.Add(@");
+                        loadView(");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@", ajaxInfo);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsPoolType)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        loadView(new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"(), ajaxInfo");
+                {
+                    AutoCSer.WebView.ViewAttribute _value3_ = default(AutoCSer.WebView.ViewAttribute);
+                    _value3_ = _value2_.Attribute;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value3_.IsAsynchronous ? "true" : "false");
+            }
+                }
+            _code_.Add(@", ");
+            _code_.Add(_value2_.IsAwaitMethod ? "true" : "false");
+            _code_.Add(@");");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsSetPage)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        loadView(");
             _if_ = false;
                     if (_value2_.IsPoolType)
                     {
@@ -77,7 +190,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value3_.FullName);
                     }
                 }
-            _code_.Add(@"(), ajaxInfo); return;");
+            _code_.Add(@"(), ajaxInfo);");
+            }
+            _code_.Add(@"
+                        return;");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -913,14 +1029,35 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", MaxPostDataSize = ");
             _code_.Add(_value3_.MaxPostDataSize.ToString());
-            _code_.Add(@", IsPost = ");
-            _code_.Add(_value3_.IsOnlyPost ? "true" : "false");
-            _code_.Add(@", IsReferer = ");
-            _code_.Add(_value3_.IsReferer ? "true" : "false");
+            _if_ = false;
+                    if (_value3_.IsOnlyPost)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsPost = true");
+            }
+            _if_ = false;
+                    if (_value3_.IsReferer)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsReferer = true");
+            }
             }
                 }
-            _code_.Add(@", IsAsynchronous = ");
-            _code_.Add(_value2_.IsAsynchronousCallback ? "true" : "false");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsAsynchronous = true");
+            }
             _code_.Add(@" };");
                             ++_loopIndex_;
                         }
@@ -962,11 +1099,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", MaxPostDataSize = ");
             _code_.Add(_value3_.MaxPostDataSize.ToString());
-            _code_.Add(@", IsAsynchronous = ");
-            _code_.Add(_value3_.IsAsynchronous ? "true" : "false");
             }
                 }
-            _code_.Add(@", IsReferer = false, IsViewPage = true };");
+            _code_.Add(@", IsViewPage = true };");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -5805,7 +5940,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                                     (");
             _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop()?? new ");
+            _code_.Add(@"/**/.Pop() ?? new ");
             _code_.Add(_value2_.MethodStreamName);
             _code_.Add(@"()).Set(sender, Value, ");
             _code_.Add(_value2_.ServerTask);
@@ -7658,6 +7793,62 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@" };");
             }
+            _if_ = false;
+                    if (_value2_.IsAwaiterMethodIdentityCommand)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo ");
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
+            _code_.Add(@" = new AutoCSer.Net.TcpServer.CommandInfo { Command = ");
+            _code_.Add(_value2_.MethodIndex.ToString());
+            _code_.Add(@" + ");
+            _code_.Add(CommandStartIndex.ToString());
+            _code_.Add(@", InputParameterIndex = ");
+            _code_.Add(_value2_.InputParameterIndex.ToString());
+            _if_ = false;
+                    if (_value2_.IsJsonSerialize)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            }
+            _code_.Add(@", TaskType = ");
+            _code_.Add(_value2_.ClientTask);
+            _if_ = false;
+                    if (_value2_.IsVerifyMethod)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsVerifyMethod = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsSimpleSerializeInputParamter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSimpleSerializeInputParamter = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsSimpleSerializeOutputParamter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSimpleSerializeOutputParamter = true");
+            }
+            _code_.Add(@" };");
+            }
             _code_.Add(@"
 ");
             _if_ = false;
@@ -9039,7 +9230,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@">>(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _awaiter_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -9061,7 +9252,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         _returnType_ = _socket_.GetAwaiter(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _awaiter_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -9595,7 +9786,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"TcpInternalServer.");
             _code_.Add(_value2_.OutputParameterTypeName);
             _code_.Add(@">(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _wait_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -9743,7 +9934,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         _returnType_ = _socket_.CallAsync(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _wait_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -17846,6 +18037,62 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@" };");
             }
+            _if_ = false;
+                    if (_value2_.IsAwaiterMethodIdentityCommand)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo ");
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
+            _code_.Add(@" = new AutoCSer.Net.TcpServer.CommandInfo { Command = ");
+            _code_.Add(_value2_.MethodIndex.ToString());
+            _code_.Add(@" + ");
+            _code_.Add(CommandStartIndex.ToString());
+            _code_.Add(@", InputParameterIndex = ");
+            _code_.Add(_value2_.InputParameterIndex.ToString());
+            _if_ = false;
+                    if (_value2_.IsJsonSerialize)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            }
+            _code_.Add(@", TaskType = ");
+            _code_.Add(_value2_.ClientTask);
+            _if_ = false;
+                    if (_value2_.IsVerifyMethod)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsVerifyMethod = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsSimpleSerializeInputParamter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSimpleSerializeInputParamter = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsSimpleSerializeOutputParamter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSimpleSerializeOutputParamter = true");
+            }
+            _code_.Add(@" };");
+            }
             _code_.Add(@"
 ");
             _if_ = false;
@@ -19241,7 +19488,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@">>(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _awaiter_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -19263,7 +19510,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         _returnType_ = _socket_.GetAwaiter(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _awaiter_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -19797,7 +20044,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"TcpOpenServer.");
             _code_.Add(_value2_.OutputParameterTypeName);
             _code_.Add(@">(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _wait_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -19945,7 +20192,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         _returnType_ = _socket_.CallAsync(");
-            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(_value2_.AwaiterMethodIdentityCommand);
             _code_.Add(@", _wait_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -26117,7 +26364,72 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
-            _code_.Add(@", IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous");
+            _if_ = false;
+                    if (_value2_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSendOnly = 1");
+            }
+            _code_.Add(@", TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous");
+            _if_ = false;
+                    if (_value2_.IsVerifyMethod)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsVerifyMethod = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsSimpleSerializeInputParamter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSimpleSerializeInputParamter = true");
+            }
+            _if_ = false;
+                    if (_value2_.IsSimpleSerializeOutputParamter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", IsSimpleSerializeOutputParamter = true");
+            }
+            _code_.Add(@" };");
+            }
+            _if_ = false;
+                    if (_value2_.IsAwaiterMethodIdentityCommand)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo ");
+            _code_.Add(_value2_.StaticAwaiterMethodIdentityCommand);
+            _code_.Add(@" = new AutoCSer.Net.TcpServer.CommandInfo { Command = ");
+            _code_.Add(_value2_.MethodIndex.ToString());
+            _code_.Add(@" + ");
+            _code_.Add(CommandStartIndex.ToString());
+            _code_.Add(@", InputParameterIndex = ");
+            _code_.Add(_value2_.InputParameterIndex.ToString());
+            _if_ = false;
+                    if (_value2_.IsJsonSerialize)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            }
+            _code_.Add(@", TaskType = ");
+            _code_.Add(_value2_.ClientTask);
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
                     {
@@ -27849,7 +28161,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@">>(");
-            _code_.Add(_value2_.StaticMethodIdentityCommand);
+            _code_.Add(_value2_.StaticAwaiterMethodIdentityCommand);
             _code_.Add(@", _awaiter_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -27871,7 +28183,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         _returnType_ = _socket_.GetAwaiter(");
-            _code_.Add(_value2_.StaticMethodIdentityCommand);
+            _code_.Add(_value2_.StaticAwaiterMethodIdentityCommand);
             _code_.Add(@", _awaiter_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -28568,7 +28880,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"/**/.");
             _code_.Add(_value2_.OutputParameterTypeName);
             _code_.Add(@">(");
-            _code_.Add(_value2_.StaticMethodIdentityCommand);
+            _code_.Add(_value2_.StaticAwaiterMethodIdentityCommand);
             _code_.Add(@", _wait_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -28734,7 +29046,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         _returnType_ = _socket_.CallAsync(");
-            _code_.Add(_value2_.StaticMethodIdentityCommand);
+            _code_.Add(_value2_.StaticAwaiterMethodIdentityCommand);
             _code_.Add(@", _wait_");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -37252,6 +37564,76 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(HtmlLock);
             _code_.Add(@" = new object();");
             }
+            _if_ = false;
+                    if (IsAwaitMethod)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+            protected override ");
+            _code_.Add(Async);
+            _code_.Add(@" void pageAsync(AutoCSer.WebView.Response _html_)
+            {
+                try
+                {
+                    byte[][] htmls;");
+            _if_ = false;
+                if (!(bool)IsPoolType)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    htmls = loadHtml(@""");
+            _code_.Add(HtmlFile);
+            _code_.Add(@""", ");
+            _code_.Add(HtmlCount.ToString());
+            _code_.Add(@", ");
+            _code_.Add(HtmlLock);
+            _code_.Add(@", ref ");
+            _code_.Add(Htmls);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                    if (IsPoolType)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    htmls = loadHtml(@""");
+            _code_.Add(HtmlFile);
+            _code_.Add(@""", ");
+            _code_.Add(HtmlCount.ToString());
+            _code_.Add(@");");
+            }
+            _code_.Add(@"
+                    if (htmls != null)
+                    {
+                        ");
+            _code_.Add(PageCode);
+            _code_.Add(@"
+                        asyncReturn = true;
+                    }
+                }
+                catch (Exception error)
+                {
+                    addLog(error);
+                }
+                finally { asyncEnd(); }
+            }");
+            }
+            _if_ = false;
+                if (!(bool)IsAwaitMethod)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"
             protected override bool page(ref AutoCSer.WebView.Response _html_)
             {
@@ -37299,6 +37681,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 return false;
             }");
             }
+            }
             _code_.Add(@"
 ");
             _if_ = false;
@@ -37314,13 +37697,46 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                    if (IsAwaitMethod)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"
-            protected unsafe override void ajax(CharStream _js_)
+            protected override ");
+            _code_.Add(Async);
+            _code_.Add(@" void ajaxAsync(CharStream _js_)
+            {
+                try
+                {
+                    ");
+            _code_.Add(AjaxCode);
+            _code_.Add(@"
+                }
+                catch (Exception error)
+                {
+                    addLog(error);
+                }
+                finally { asyncEnd(); }
+            }");
+            }
+            _if_ = false;
+                if (!(bool)IsAwaitMethod)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+            protected override void ajax(CharStream _js_)
             {
                 ");
             _code_.Add(AjaxCode);
             _code_.Add(@"
             }");
+            }
             }
             _code_.Add(@"
 ");
@@ -37946,14 +38362,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                     case ");
             _code_.Add(_value2_.PageIndex.ToString());
-            _code_.Add(@": loadPage(socket, ");
+            _code_.Add(@":");
             _if_ = false;
-                    if (IsPoolType)
+                    if (_value2_.IsPoolType)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
+            _if_ = false;
+                    if (_value2_.IsSetPage)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
                     if (_value3_ != null)
@@ -37961,9 +38386,22 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value3_.FullName);
                     }
                 }
-            _code_.Add(@"/**/.Pop() ?? ");
-            }
-            _code_.Add(@"new ");
+            _code_.Add(@" ");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@" = ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.Pop();
+                        if (");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@" == null) setPage(");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@" = new ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
                     if (_value3_ != null)
@@ -37986,7 +38424,94 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value3_.IsAsynchronous ? "true" : "false");
             }
                 }
-            _code_.Add(@"); return;");
+            _code_.Add(@", ");
+            _code_.Add(_value2_.IsAwaitMethod ? "true" : "false");
+            _code_.Add(@");
+                        loadPage(socket, ");
+            _code_.Add(_value2_.PageName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsSetPage)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        loadPage(socket, ");
+            _if_ = false;
+                    if (_value2_.IsPoolType)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.Pop() ?? ");
+            }
+            _code_.Add(@"new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"());");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsPoolType)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        loadPage(socket, new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.WebViewMethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"()");
+            _if_ = false;
+                    if (_value2_.IsSetPage)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.WebView.ViewAttribute _value3_ = default(AutoCSer.WebView.ViewAttribute);
+                    _value3_ = _value2_.Attribute;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value3_.IsAsynchronous ? "true" : "false");
+            }
+                }
+            _code_.Add(@", ");
+            _code_.Add(_value2_.IsAwaitMethod ? "true" : "false");
+            }
+            _code_.Add(@");");
+            }
+            _code_.Add(@"
+                        return;");
             }
                             ++_loopIndex_;
                         }

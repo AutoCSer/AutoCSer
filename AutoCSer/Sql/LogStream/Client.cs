@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Reflection;
 using AutoCSer.Log;
 using AutoCSer.Metadata;
 using System.Collections.Generic;
@@ -130,6 +128,10 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         protected readonly Func<keyType, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue;
         /// <summary>
+        /// 获取数据委托
+        /// </summary>
+        protected readonly Func<keyType, AutoCSer.Net.TcpServer.AwaiterBox<valueType>> getValueAwaiter;
+        /// <summary>
         /// 获取关键字委托
         /// </summary>
         protected readonly Func<modelType, keyType> getKey;
@@ -143,16 +145,19 @@ namespace AutoCSer.Sql.LogStream
         /// <param name="getLog">获取日志数据委托</param>
         /// <param name="getKey">获取关键字委托</param>
         /// <param name="getValue">获取数据委托</param>
+        /// <param name="getValueAwaiter">获取数据委托</param>
         /// <param name="custom">客户端自定义绑定</param>
         /// <param name="log">日志处理</param>
         protected Client(Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback> getLog
-            , Func<modelType, keyType> getKey, Func<keyType, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue, Custom custom, ILog log)
+            , Func<modelType, keyType> getKey, Func<keyType, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue, Func<keyType, AutoCSer.Net.TcpServer.AwaiterBox<valueType>> getValueAwaiter, Custom custom, ILog log)
             : base(getLog, custom, log)
         {
             if (getKey == null) throw new ArgumentNullException("getKey is null");
             if (getValue == null) throw new ArgumentNullException("getValue is null");
+            if (getValueAwaiter == null) throw new ArgumentNullException("getValueAwaiter is null");
             this.getKey = getKey;
             this.getValue = getValue;
+            this.getValueAwaiter = getValueAwaiter;
         }
     }
 }

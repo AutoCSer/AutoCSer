@@ -3408,4 +3408,53 @@ var AutoCSer;
 	}());
 	AutoCSer.ServerTime = ServerTime;
 })(AutoCSer || (AutoCSer = {}));
+var Demo;
+(function (Demo) {
+	var Class = (function () {
+		function Class(Value) {
+			AutoCSer.Pub.Copy(this, Value);
+			this.Path = new AutoCSerPath.Class(this.Id);
+		}
+		return Class;
+	}());
+	Demo.Class = Class;
+})(Demo || (Demo = {}));
+AutoCSer.Pub.LoadViewType(Demo.Class);
+var Demo;
+(function (Demo) {
+	var Student = (function () {
+		function Student(Value) {
+			AutoCSer.Pub.Copy(this, Value);
+			this.Path = new AutoCSerPath.Student(this.Id);
+		}
+		return Student;
+	}());
+	Demo.Student = Student;
+})(Demo || (Demo = {}));
+AutoCSer.Pub.LoadViewType(Demo.Student);
+var AutoCSerPath;
+(function (AutoCSerPath) {
+	var Class = (function () {
+		function Class(Id) {
+			this.Index = '/Class.html#!ClassId=' + Id;
+		}
+		return Class;
+	}());
+	AutoCSerPath.Class = Class;
+	var Pub = (function () {
+		function Pub(Id) {
+			this.ClassList = '/ClassList.html';
+		}
+		return Pub;
+	}());
+	AutoCSerPath.Pub = Pub;
+	var Student = (function () {
+		function Student(Id) {
+			this.Index = '/Student.html#!StudentId=' + Id;
+		}
+		return Student;
+	}());
+	AutoCSerPath.Student = Student;
+})(AutoCSerPath || (AutoCSerPath = {}));
+
 setTimeout(AutoCSer.Pub.LoadIE, 0, 'javascript');

@@ -1688,37 +1688,50 @@
             <param name="callIndex"></param>
             <param name="socket"></param>
         </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.loadPage``1(AutoCSer.Net.Http.SocketBase,``0,System.Boolean)">
+        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.loadPage``1(AutoCSer.Net.Http.SocketBase,``0)">
+            <summary>
+            加载页面视图[TRY]
+            </summary>
+            <param name="socket">HTTP套接字接口</param>
+            <param name="view">WEB视图接口</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.setPage(AutoCSer.WebView.ViewBase,System.Boolean,System.Boolean)">
+            <summary>
+            加载页面视图[TRY]
+            </summary>
+            <param name="view">WEB视图接口</param>
+            <param name="isAsynchronous">是否异步</param>
+            <param name="isAwaitMethod">是否存在 await 函数</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.loadPage(AutoCSer.Net.Http.SocketBase,AutoCSer.WebView.View,System.Boolean,System.Boolean)">
             <summary>
             加载页面视图[TRY]
             </summary>
             <param name="socket">HTTP套接字接口</param>
             <param name="view">WEB视图接口</param>
             <param name="isAsynchronous">是否异步</param>
+            <param name="isAwaitMethod">是否存在 await 函数</param>
         </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.loadPage(AutoCSer.Net.Http.SocketBase,AutoCSer.WebView.View,System.Boolean)">
+        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.loadPage(AutoCSer.Net.Http.SocketBase,AutoCSer.WebView.View)">
             <summary>
             加载页面视图[TRY]
             </summary>
             <param name="socket">HTTP套接字接口</param>
             <param name="view">WEB视图接口</param>
-            <param name="isAsynchronous">是否异步</param>
         </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.LoadAjax``1(AutoCSer.Net.Http.SocketBase,``0,System.Boolean)">
+        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.LoadAjax``1(AutoCSer.Net.Http.SocketBase,``0)">
             <summary>
             加载页面视图
             </summary>
             <param name="socket">HTTP套接字接口</param>
             <param name="view">WEB视图接口</param>
-            <param name="isAsynchronous">是否异步</param>
         </member>
-        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.LoadAjax(AutoCSer.Net.Http.SocketBase,AutoCSer.WebView.View,System.Boolean)">
+        <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.LoadAjax(AutoCSer.Net.Http.SocketBase,AutoCSer.WebView.View)">
             <summary>
             加载页面视图
             </summary>
             <param name="socket">HTTP套接字接口</param>
             <param name="view">WEB视图接口</param>
-            <param name="isAsynchronous">是否异步</param>
         </member>
         <member name="M:AutoCSer.Net.HttpDomainServer.ViewServer.load``1(AutoCSer.Net.Http.SocketBase,``0,AutoCSer.WebView.CallMethodInfo)">
             <summary>
@@ -4286,6 +4299,205 @@
             客户端缓存时间(单位:秒)
             </summary>
         </member>
+        <member name="T:AutoCSer.WebView.ViewBase">
+            <summary>
+            WEB 页面视图
+            </summary>
+            <summary>
+            WEB 页面视图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.pageAsync(AutoCSer.WebView.Response)">
+            <summary>
+            HTTP响应输出处理
+            </summary>
+            <param name="response">页面输出</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.ajaxAsync(AutoCSer.CharStream)">
+            <summary>
+            AJAX响应输出处理
+            </summary>
+            <param name="js">JS输出流</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.addLog(System.Exception)">
+            <summary>
+            添加错误日志
+            </summary>
+            <param name="error"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.asyncEnd">
+            <summary>
+            仅用于代码生成调用，请勿自行调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.SetAsynchronousAwaitMethod(System.Boolean,System.Boolean)">
+            <summary>
+            设置异步与 await 函数状态
+            </summary>
+            <param name="isAsynchronous"></param>
+            <param name="isAwaitMethod"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.ResponsePage(System.Byte*@,System.Byte*@)">
+            <summary>
+            页面输出
+            </summary>
+            <param name="buffer"></param>
+            <param name="encodeBuffer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.ResponseAjax(System.Byte*@)">
+            <summary>
+            AJAX 视图输出
+            </summary>
+            <param name="buffer"></param>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.IsAsynchronous">
+            <summary>
+            是否异步
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.asyncReturn">
+            <summary>
+            异步返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase._if_">
+            <summary>
+            临时逻辑变量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase._loopIndex_">
+            <summary>
+            当前循环索引
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase._loopCount_">
+            <summary>
+            当前循环数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.ResponseStream">
+            <summary>
+            页面输出数据流
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.EncodeStream">
+            <summary>
+            HTML 编码输出数据流
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.AjaxStream">
+            <summary>
+            AJAX 输出数据流
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.LocationPath">
+            <summary>
+            视图错误重定向路径
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewBase.IsLocationPath">
+            <summary>
+            视图错误重定向路径
+            </summary>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.loadHeader">
+            <summary>
+            HTTP请求头部处理
+            </summary>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.loadView">
+            <summary>
+            WEB视图加载
+            </summary>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.page(AutoCSer.WebView.Response@)">
+            <summary>
+            HTTP响应输出处理
+            </summary>
+            <param name="response">页面输出</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.ajax(AutoCSer.CharStream)">
+            <summary>
+            AJAX响应输出处理
+            </summary>
+            <param name="js">JS输出流</param>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.setLocationPath(System.String)">
+            <summary>
+            设置重定向路径
+            </summary>
+            <param name="locationPath">重定向路径</param>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.setErrorPath(System.String,System.String)">
+            <summary>
+            设置错误路径
+            </summary>
+            <param name="errorPath">错误重定向路径</param>
+            <param name="returnPath">返回路径</param>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.LoadHtml(System.String,System.Int32,System.Object,System.Byte[][]@)">
+            <summary>
+            加载HTML数据
+            </summary>
+            <param name="fileName">HTML文件</param>
+            <param name="htmlCount">HTML片段数量验证</param>
+            <param name="htmlLock">HTML 数据创建访问锁</param>
+            <param name="htmls">HTML 数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.ResponseLocationPath(AutoCSer.Net.Http.SocketBase)">
+            <summary>
+            输出视图错误重定向路径
+            </summary>
+            <param name="socket"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.ViewBase.ResponseLocationPathAjax(System.Byte*@)">
+            <summary>
+            输出视图错误重定向路径
+            </summary>
+            <param name="buffer"></param>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.isDefaultToJson">
+            <summary>
+            JSON序列化是否使用默认模式(非视图模式模式)
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.ViewKeywords">
+            <summary>
+            页面关键字
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.ViewMetaKeywords">
+            <summary>
+            页面关键字
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.ViewDescription">
+            <summary>
+            页面描述
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.ViewMetaDescription">
+            <summary>
+            页面描述
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.notFound404">
+            <summary>
+            404 重定向路径
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.ViewBase.serverTime">
+            <summary>
+            当前时间
+            </summary>
+        </member>
         <member name="T:AutoCSer.WebView.ViewTreeCommand">
             <summary>
             HTML模板命令类型
@@ -4544,165 +4756,6 @@
             清除缓存数据
             </summary>
             <param name="count">保留缓存数据数量</param>
-        </member>
-        <member name="T:AutoCSer.WebView.ViewBase">
-            <summary>
-            WEB 页面视图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase.IsAsynchronous">
-            <summary>
-            是否异步
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase._if_">
-            <summary>
-            临时逻辑变量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase._loopIndex_">
-            <summary>
-            当前循环索引
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase._loopCount_">
-            <summary>
-            当前循环数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase.ResponseStream">
-            <summary>
-            页面输出数据流
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase.EncodeStream">
-            <summary>
-            HTML 编码输出数据流
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase.AjaxStream">
-            <summary>
-            AJAX 输出数据流
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase.LocationPath">
-            <summary>
-            视图错误重定向路径
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ViewBase.IsLocationPath">
-            <summary>
-            视图错误重定向路径
-            </summary>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.loadHeader">
-            <summary>
-            HTTP请求头部处理
-            </summary>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.loadView">
-            <summary>
-            WEB视图加载
-            </summary>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.page(AutoCSer.WebView.Response@)">
-            <summary>
-            HTTP响应输出处理
-            </summary>
-            <param name="response">页面输出</param>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.ajax(AutoCSer.CharStream)">
-            <summary>
-            AJAX响应输出处理
-            </summary>
-            <param name="js">JS输出流</param>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.setLocationPath(System.String)">
-            <summary>
-            设置重定向路径
-            </summary>
-            <param name="locationPath">重定向路径</param>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.setErrorPath(System.String,System.String)">
-            <summary>
-            设置错误路径
-            </summary>
-            <param name="errorPath">错误重定向路径</param>
-            <param name="returnPath">返回路径</param>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.LoadHtml(System.String,System.Int32,System.Object,System.Byte[][]@)">
-            <summary>
-            加载HTML数据
-            </summary>
-            <param name="fileName">HTML文件</param>
-            <param name="htmlCount">HTML片段数量验证</param>
-            <param name="htmlLock">HTML 数据创建访问锁</param>
-            <param name="htmls">HTML 数据</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.ResponsePage(System.Byte*@,System.Byte*@)">
-            <summary>
-            页面输出
-            </summary>
-            <param name="buffer"></param>
-            <param name="encodeBuffer"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.ResponseLocationPath(AutoCSer.Net.Http.SocketBase)">
-            <summary>
-            输出视图错误重定向路径
-            </summary>
-            <param name="socket"></param>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.ResponseAjax(System.Byte*@)">
-            <summary>
-            AJAX 视图输出
-            </summary>
-            <param name="buffer"></param>
-        </member>
-        <member name="M:AutoCSer.WebView.ViewBase.ResponseLocationPathAjax(System.Byte*@)">
-            <summary>
-            输出视图错误重定向路径
-            </summary>
-            <param name="buffer"></param>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.isDefaultToJson">
-            <summary>
-            JSON序列化是否使用默认模式(非视图模式模式)
-            </summary>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.ViewKeywords">
-            <summary>
-            页面关键字
-            </summary>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.ViewMetaKeywords">
-            <summary>
-            页面关键字
-            </summary>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.ViewDescription">
-            <summary>
-            页面描述
-            </summary>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.ViewMetaDescription">
-            <summary>
-            页面描述
-            </summary>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.notFound404">
-            <summary>
-            404 重定向路径
-            </summary>
-        </member>
-        <member name="P:AutoCSer.WebView.ViewBase.serverTime">
-            <summary>
-            当前时间
-            </summary>
         </member>
         <member name="T:AutoCSer.WebView.ConfigLoader">
             <summary>
@@ -5002,6 +5055,23 @@
             </summary>
             <param name="view">WEB视图接口</param>
             <param name="ajaxInfo"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.AjaxLoader`1.loadView(AutoCSer.WebView.View,AutoCSer.WebView.AjaxMethodInfo,System.Boolean,System.Boolean)">
+            <summary>
+            加载页面视图
+            </summary>
+            <param name="view">WEB视图接口</param>
+            <param name="ajaxInfo"></param>
+            <param name="isAsynchronous"></param>
+            <param name="isAwaitMethod"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.AjaxLoader`1.setPage(AutoCSer.WebView.ViewBase,System.Boolean,System.Boolean)">
+            <summary>
+            加载页面视图[TRY]
+            </summary>
+            <param name="view">WEB视图接口</param>
+            <param name="isAsynchronous">是否异步</param>
+            <param name="isAwaitMethod">是否存在 await 函数</param>
         </member>
         <member name="M:AutoCSer.WebView.AjaxLoader`1.loadAjax(AutoCSer.WebView.AjaxMethodInfo)">
             <summary>
@@ -6938,13 +7008,12 @@
             默认 WEB 视图配置
             </summary>
         </member>
-        <member name="M:AutoCSer.WebView.View.LoadHeader(AutoCSer.Net.HttpDomainServer.ViewServer,AutoCSer.Net.Http.SocketBase,System.Boolean)">
+        <member name="M:AutoCSer.WebView.View.LoadHeader(AutoCSer.Net.HttpDomainServer.ViewServer,AutoCSer.Net.Http.SocketBase)">
             <summary>
             HTTP请求头部处理[TRY+1]
             </summary>
             <param name="domainServer">域名服务</param>
             <param name="socket">HTTP套接字接口</param>
-            <param name="isAsynchronous">是否异步</param>
             <returns>是否成功</returns>
         </member>
         <member name="M:AutoCSer.WebView.View.LoadPage">
@@ -7020,13 +7089,12 @@
             HTML 数据创建访问锁
             </summary>
         </member>
-        <member name="M:AutoCSer.WebView.View`1.LoadHeader(AutoCSer.Net.HttpDomainServer.ViewServer,AutoCSer.Net.Http.SocketBase,System.Boolean,`0)">
+        <member name="M:AutoCSer.WebView.View`1.LoadHeader(AutoCSer.Net.HttpDomainServer.ViewServer,AutoCSer.Net.Http.SocketBase,`0)">
             <summary>
             HTTP请求头部处理[TRY+1]
             </summary>
             <param name="domainServer">域名服务</param>
             <param name="socket">HTTP套接字接口</param>
-            <param name="isAsynchronous">是否异步</param>
             <param name="page"></param>
             <returns>是否成功</returns>
         </member>

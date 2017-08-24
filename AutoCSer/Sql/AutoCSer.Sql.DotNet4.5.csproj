@@ -7,7 +7,7 @@
     <ProjectGuid>{6D9B5BD4-A71B-4B21-8A33-761F948EED55}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoCSer</RootNamespace>
+    <RootNamespace>AutoCSer.Sql</RootNamespace>
     <AssemblyName>AutoCSer.Sql</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -58,6 +58,7 @@
     <Compile Include="Extension\Expression.cs" />
     <Compile Include="Extension\SqlTable.cs" />
     <Compile Include="Extension\Type.Sql.cs" />
+    <Compile Include="LogStream\NET4.5\IdentityClient.cs" />
     <Compile Include="Metadata\MemberMapValue.cs" />
     <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0A1FE08"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0A45B99"></script>
     <title>前后端一体 WEB 视图框架 AJAX 调用函数 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -18,7 +18,7 @@
         <br />因为 AutoCSer 默认 Ajax 调用 class 的命名空间的前缀为 <b>项目名称.Ajax.</b>，便于统一管理与维护 AJAX 调用函数，避免与其它 WEB 应用项混淆。
     </p>
     <p>
-        2. 在 Ajax 目录中添加继承自 <b>AutoCSer.WebView.Ajax</b> 的 class，并且申明为 AJAX 调用函数容器 <b>[AutoCSer.WebView.Ajax]</b>，支持<a href="/Config/Index.html?v=A1FE08">全局默认配置</a>。
+        2. 在 Ajax 目录中添加继承自 <b>AutoCSer.WebView.Ajax</b> 的 class，并且申明为 AJAX 调用函数容器 <b>[AutoCSer.WebView.Ajax]</b>，支持<a href="/Config/Index.html?v=A45B99">全局默认配置</a>。
         <br />也可以添加继承自基于对象池支持实现 <b>AutoCSer.WebView.Ajax&lt;ajaxType&gt;</b> 的 class，ajaxType 用于标识当前类型。
     </p>
     <p>
@@ -33,38 +33,38 @@
         <div name="ace" mode="javascript">
             <pre>AutoCSerAPI.Ajax.Get.Add(1, 2, function(Value) { console.log(Value.Return); });</pre>
         </div>
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\Ajax\RefOut.cs</a></div>
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\ViewJs\Api.ts</a></div>
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">WebView\Include\AjaxReturnSkin.ts</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\Ajax\RefOut.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\ViewJs\Api.ts</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">WebView\Include\AjaxReturnSkin.ts</a></div>
     </p>
     <p>
         . 为了防止 WEB 跨域攻击，默认检测 Referer 域名匹配，并且只支持 POST 调用，输入参数解析支持 JSON / XML 两种数据。
         <br />为了支持浏览器以外的应用程序访问，支持 FORM / POST + JSON / XML 的任意组合，一共 4 种访问模式。
         <br />单纯的 POST 模式必须指定 Content-Type，用与区分 JSON / XML 输入数据。
         <br />FORM 模式，使用 name 区分 JSON / XML 输入数据，<b>j</b> 表示 JSON，<b>x</b> 表示 XML。
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">WebView\Ajax\Post.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">WebView\Ajax\Post.cs</a></div>
     </p>
     <p>
         . 对于非 WEB 调用 API，可以支持 GET 请求，可以忽略 Referer 域名匹配检测，支持 3 种访问模式。
         <br />单纯的 Query 只支持 bool / byte / sbyte / ushort / short / uint / int / long / ulong / float / double / decimal / string / enum / DateTime / Guid 这些基础的数据类型解析，其它类型数据将自动当作 JSON 字符串来解析。
         <br />Query 模式，使用 name 区分 JSON / XML 输入数据，<b>j</b> 表示 JSON，<b>x</b> 表示 XML。
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">WebView\Ajax\Get.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">WebView\Ajax\Get.cs</a></div>
     </p>
     <p>
         . 同步 API 支持 ref / out 参数。
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">WebView\Ajax\RefOut.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">WebView\Ajax\RefOut.cs</a></div>
     </p>
     <p>
         . 支持异步 API，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Action&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;&gt;</b>，服务端必须保证该回调委托被执行。
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">WebView\Ajax\Asynchronous.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">WebView\Ajax\Asynchronous.cs</a></div>
     </p>
     <p>
         . 对于只有一个输入或者一个输出参数的情况下，支持 <b>[AutoCSer.Emit.BoxSerialize]</b> 序列化的拆包，直接操作该参数。
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">WebView\Ajax\BoxSerialize.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">WebView\Ajax\BoxSerialize.cs</a></div>
     </p>
     <p>
         . 由于 API 默认调用名称为 <b>类型名称.函数名称</b>，当函数需要重载时会产生调用冲突，可以自定义调用名称。
-        <div> 参考示例 <a href="/Index.html?v=A1FE08" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','8');">WebView\Ajax\Name.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=A45B99" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','8');">WebView\Ajax\Name.cs</a></div>
     </p>
 </body>
 </html>

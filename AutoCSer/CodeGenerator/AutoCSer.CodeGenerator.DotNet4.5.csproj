@@ -7,7 +7,7 @@
     <ProjectGuid>{A79334C9-31A7-4BE3-84D7-C82018BC1716}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoCSer</RootNamespace>
+    <RootNamespace>AutoCSer.CodeGenerator</RootNamespace>
     <AssemblyName>AutoCSer.CodeGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -169,6 +169,7 @@
       <Name>AutoCSer.Sql.DotNet4.5</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>

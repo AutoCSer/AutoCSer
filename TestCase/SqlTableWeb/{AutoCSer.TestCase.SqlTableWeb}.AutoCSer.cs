@@ -110,7 +110,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 return false;
             }
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{ClassInfo:");
                     {
@@ -387,7 +387,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 return false;
             }
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{Classes:");
                     {
@@ -641,7 +641,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 return false;
             }
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{PubPath:");
                     {
@@ -868,9 +868,15 @@ namespace AutoCSer.TestCase.SqlTableWeb
             {
                 switch (viewIndex)
                 {
-                    case 0: loadPage(socket, new AutoCSer.TestCase.SqlTableWeb.Class(), false); return;
-                    case 1: loadPage(socket, new AutoCSer.TestCase.SqlTableWeb.ClassList(), false); return;
-                    case 2: loadPage(socket, new AutoCSer.TestCase.SqlTableWeb.Student(), false); return;
+                    case 0:
+                        loadPage(socket, AutoCSer.TestCase.SqlTableWeb.Class/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Class());
+                        return;
+                    case 1:
+                        loadPage(socket, AutoCSer.TestCase.SqlTableWeb.ClassList/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.ClassList());
+                        return;
+                    case 2:
+                        loadPage(socket, AutoCSer.TestCase.SqlTableWeb.Student/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Student());
+                        return;
                 }
             }
             /// <summary>
@@ -903,9 +909,15 @@ namespace AutoCSer.TestCase.SqlTableWeb
             {
                 switch (ajaxInfo.MethodIndex)
                 {
-                    case 0: loadView(AutoCSer.TestCase.SqlTableWeb.Class/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Class(), ajaxInfo); return;
-                    case 1: loadView(AutoCSer.TestCase.SqlTableWeb.ClassList/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.ClassList(), ajaxInfo); return;
-                    case 2: loadView(AutoCSer.TestCase.SqlTableWeb.Student/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Student(), ajaxInfo); return;
+                    case 0:
+                        loadView(AutoCSer.TestCase.SqlTableWeb.Class/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Class(), ajaxInfo);
+                        return;
+                    case 1:
+                        loadView(AutoCSer.TestCase.SqlTableWeb.ClassList/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.ClassList(), ajaxInfo);
+                        return;
+                    case 2:
+                        loadView(AutoCSer.TestCase.SqlTableWeb.Student/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Student(), ajaxInfo);
+                        return;
                     default: return;
                 }
             }
@@ -929,11 +941,11 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 string[] names = new string[4];
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[4];
                 names[0] = "/Class.html";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[1] = "/ClassList.html";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[2] = "/Student.html";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[4 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[4 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);

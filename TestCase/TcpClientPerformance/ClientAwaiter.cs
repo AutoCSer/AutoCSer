@@ -29,7 +29,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
 #if DOTNET4
         internal void Run()
 #else
-        internal async System.Threading.Tasks.Task Run()
+        internal async void Run()
 #endif
 #endif
         {

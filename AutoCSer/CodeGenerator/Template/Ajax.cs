@@ -28,6 +28,7 @@ namespace AutoCSer.CodeGenerator.Template
             const bool IsPubError = false;
             const bool IsOnlyPost = false;
             const bool IsAsynchronous = false;
+            const bool IsAwaitMethod = false;
             const bool IsAsynchronousCallback = false;
             const bool IsReferer = false;
             struct InputParameterTypeName
@@ -54,7 +55,21 @@ namespace AutoCSer.CodeGenerator.Template
                 switch (ajaxInfo.MethodIndex)
                 {
                     #region LOOP ViewMethods
-                    case @MethodIndex: loadView(/*IF:IsPoolType*/@WebViewMethodType.FullName/**/.Pop() ?? /*IF:IsPoolType*/new @WebViewMethodType.FullName(), ajaxInfo); return;
+                    case @MethodIndex:
+                        #region IF IsSetPage
+                        #region IF IsPoolType
+                        @WebViewMethodType.FullName @PageName = @WebViewMethodType.FullName/**/.Pop();
+                        if (@PageName == null) setPage(@PageName = new @WebViewMethodType.FullName()/*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod);
+                        loadView(@PageName, ajaxInfo);
+                        #endregion IF IsPoolType
+                        #region NOT IsPoolType
+                        loadView(/*NOTE*/(AutoCSer.WebView.View)(object)/*NOTE*/new @WebViewMethodType.FullName(), ajaxInfo/*PUSH:Attribute*/, @IsAsynchronous/*PUSH:Attribute*/, @IsAwaitMethod);
+                        #endregion NOT IsPoolType
+                        #endregion IF IsSetPage
+                        #region NOT IsSetPage
+                        loadView(/*IF:IsPoolType*/@WebViewMethodType.FullName/**/.Pop() ?? /*IF:IsPoolType*/new @WebViewMethodType.FullName(), ajaxInfo);
+                        #endregion NOT IsSetPage
+                        return;
                     #endregion LOOP ViewMethods
                     default: return;
                 }
@@ -165,11 +180,11 @@ namespace AutoCSer.CodeGenerator.Template
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[@MethodCount];
                 #region LOOP Methods
                 names[@MethodIndex] = "@CallName";
-                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize, IsPost = @IsOnlyPost, IsReferer = @IsReferer/*PUSH:Attribute*/, IsAsynchronous = @IsAsynchronousCallback };
+                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*IF:IsOnlyPost*/, IsPost = true/*IF:IsOnlyPost*//*IF:IsReferer*/, IsReferer = true/*IF:IsReferer*//*PUSH:Attribute*//*IF:IsAsynchronousCallback*/, IsAsynchronous = true/*IF:IsAsynchronousCallback*/ };
                 #endregion LOOP Methods
                 #region LOOP ViewMethods
                 names[@MethodIndex] = "@CallName";
-                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize, IsAsynchronous = @IsAsynchronous/*PUSH:Attribute*/, IsReferer = false, IsViewPage = true };
+                infos[@MethodIndex] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodIndex, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)@MaxMemoryStreamSize/*PUSH:Attribute*/, MaxPostDataSize = @MaxPostDataSize/*PUSH:Attribute*/, IsViewPage = true };
                 #endregion LOOP ViewMethods
                 #region NOT IsPubError
                 names[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = AutoCSer.WebView.AjaxBase.PubErrorCallName/*IF:AutoParameter.WebConfig.IgnoreCase*/.ToLower()/*IF:AutoParameter.WebConfig.IgnoreCase*/;

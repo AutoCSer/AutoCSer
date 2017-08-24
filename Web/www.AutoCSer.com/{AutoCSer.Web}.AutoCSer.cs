@@ -30,7 +30,7 @@ namespace AutoCSer.Web.WebView
                 return false;
             }
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{At:");
                     {
@@ -91,7 +91,9 @@ namespace AutoCSer.Web
             {
                 switch (viewIndex)
                 {
-                    case 0: loadPage(socket, AutoCSer.Web.WebView.Template/**/.Pop() ?? new AutoCSer.Web.WebView.Template(), false); return;
+                    case 0:
+                        loadPage(socket, AutoCSer.Web.WebView.Template/**/.Pop() ?? new AutoCSer.Web.WebView.Template());
+                        return;
                 }
             }
             /// <summary>
@@ -124,7 +126,9 @@ namespace AutoCSer.Web
             {
                 switch (ajaxInfo.MethodIndex)
                 {
-                    case 2: loadView(AutoCSer.Web.WebView.Template/**/.Pop() ?? new AutoCSer.Web.WebView.Template(), ajaxInfo); return;
+                    case 2:
+                        loadView(AutoCSer.Web.WebView.Template/**/.Pop() ?? new AutoCSer.Web.WebView.Template(), ajaxInfo);
+                        return;
                     default: return;
                 }
             }
@@ -194,11 +198,11 @@ namespace AutoCSer.Web
                 string[] names = new string[4];
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[4];
                 names[0] = "Example.GetCode";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = false, IsReferer = false, IsAsynchronous = false };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304 };
                 names[1] = "TestCase.GetCode";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = false, IsReferer = false, IsAsynchronous = false };
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304 };
                 names[2] = "/WebView/Template.html";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[4 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[4 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);

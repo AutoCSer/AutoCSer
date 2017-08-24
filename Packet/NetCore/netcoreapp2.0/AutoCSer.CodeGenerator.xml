@@ -1411,6 +1411,13 @@
             <param name="filter">选择类型</param>
             <param name="index">成员编号</param>
         </member>
+        <member name="M:AutoCSer.CodeGenerator.Metadata.MethodIndex.#ctor(System.Reflection.MethodInfo,System.Type)">
+            <summary>
+            成员方法
+            </summary>
+            <param name="method">成员方法信息</param>
+            <param name="filter">选择类型</param>
+        </member>
         <member name="M:AutoCSer.CodeGenerator.Metadata.MethodIndex.#ctor(System.Reflection.FieldInfo,System.Boolean)">
             <summary>
             成员方法
@@ -2233,6 +2240,11 @@
             方法索引
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ViewMethod.PageName">
+            <summary>
+            页面对象名称
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ViewMethod.CallName">
             <summary>
             调用名称
@@ -2246,6 +2258,16 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ViewMethod.IsPoolType">
             <summary>
             是否使用对象池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ViewMethod.IsAwaitMethod">
+            <summary>
+            是否存在 await 函数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ViewMethod.IsSetPage">
+            <summary>
+            页面对象是否需要初始化
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.methods">
@@ -2486,6 +2508,11 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Generator._loopCount_">
             <summary>
             当前循环数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.Generator.Async">
+            <summary>
+            异步关键字
             </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.Generator.outEnd">
@@ -2855,7 +2882,12 @@
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.MethodIdentityCommand">
             <summary>
-            TCP调用命令名称
+            TCP 调用命令名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.AwaiterMethodIdentityCommand">
+            <summary>
+            await TCP 调用命令名称
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.MethodStreamName">
@@ -2876,6 +2908,11 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.StaticMethodIdentityCommand">
             <summary>
             TCP调用命令名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.StaticAwaiterMethodIdentityCommand">
+            <summary>
+            await TCP 调用命令名称
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsVerifyMethodAsynchronous">
@@ -3212,6 +3249,11 @@
             是否生成同步 TCP 调用命令名称
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsAwaiterMethodIdentityCommand">
+            <summary>
+            是否生成 await TCP 调用命令名称
+            </summary>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsKeepCallback">
             <summary>
             是否保持异步回调
@@ -3249,16 +3291,6 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.MethodIndexs">
             <summary>
             方法索引集合
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.Async">
-            <summary>
-            异步关键字
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.Await">
-            <summary>
-            异步等待关键字
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer">
@@ -4251,6 +4283,11 @@
             WEB 视图 API代码生成
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.AjaxAwaitMethodTypes">
+            <summary>
+            ajax 函数存在 await 函数的类型集合
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType">
             <summary>
             WEB视图类型信息
@@ -4286,6 +4323,11 @@
             页面序号
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.PageName">
+            <summary>
+            页面对象名称
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.IgnoreCase">
             <summary>
             是否忽略大小写
@@ -4314,6 +4356,21 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.RewritePath">
             <summary>
             WEB视图重写路径
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.IsAwaitMethod">
+            <summary>
+            是否 await 函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.IsPoolType">
+            <summary>
+            是否使用对象池
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.IsSetPage">
+            <summary>
+            页面对象是否需要初始化
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.views">
@@ -4364,6 +4421,16 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.IsPoolType">
             <summary>
             是否使用对象池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.IsAwaitMethod">
+            <summary>
+            是否 await 函数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.IsSetPage">
+            <summary>
+            页面对象是否需要初始化
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.Htmls">
@@ -5611,12 +5678,22 @@
             是否忽略null值输出
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.TreeTemplate.MemberNode.IsAwaitMethod">
+            <summary>
+            是否 await 函数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TreeTemplate.MemberNode.AwaitPath">
+            <summary>
+            节点路径
+            </summary>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.TreeTemplate.MemberNode.Members">
             <summary>
             成员名称+成员信息集合
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.TreeTemplate.MemberNode.#ctor(AutoCSer.CodeGenerator.TreeTemplate,AutoCSer.CodeGenerator.Metadata.ExtensionType,AutoCSer.SubString@,System.String,AutoCSer.WebView.OutputAjaxAttribute)">
+        <member name="M:AutoCSer.CodeGenerator.TreeTemplate.MemberNode.#ctor(AutoCSer.CodeGenerator.TreeTemplate,AutoCSer.CodeGenerator.Metadata.ExtensionType,AutoCSer.SubString@,System.String,AutoCSer.WebView.OutputAjaxAttribute,System.Boolean)">
             <summary>
             成员树节点
             </summary>
@@ -5625,6 +5702,7 @@
             <param name="name">当前节点成员名称</param>
             <param name="path">当前节点成员名称</param>
             <param name="outputAjax">Ajax视图输出参数</param>
+            <param name="isAwaitMethod">是否 await 函数</param>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TreeTemplate.MemberNode.Get(AutoCSer.SubString@,System.Boolean)">
             <summary>
@@ -5704,6 +5782,11 @@
         <member name="F:AutoCSer.CodeGenerator.TreeTemplate.ifName">
             <summary>
             临时逻辑变量名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TreeTemplate.IsAwaitMethod">
+            <summary>
+            是否 await 函数
             </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TreeTemplate.checkErrorMemberName(AutoCSer.SubString@)">

@@ -13,7 +13,7 @@ namespace AutoCSer.Sql.LogStream
     /// </summary>
     /// <typeparam name="valueType">表格类型</typeparam>
     /// <typeparam name="modelType">数据模型类型</typeparam>
-    public sealed class IdentityClient<valueType, modelType> : Client<valueType, modelType, int>
+    public sealed partial class IdentityClient<valueType, modelType> : Client<valueType, modelType, int>
         where valueType : class, modelType, IMemberMapValueLink<valueType>
         where modelType : class
     {
@@ -137,11 +137,12 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="getLog">获取日志数据委托</param>
         /// <param name="getValue">获取数据委托</param>
+        /// <param name="getValueAwaiter">获取数据委托</param>
         /// <param name="custom">客户端自定义绑定</param>
         /// <param name="log">日志处理</param>
         public IdentityClient(Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback> getLog
-                , Func<int, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue, Custom custom = null, ILog log = null)
-            : base(getLog, DataModel.Model<modelType>.GetIdentity32, getValue, custom, log)
+                , Func<int, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue, Func<int, AutoCSer.Net.TcpServer.AwaiterBox<valueType>> getValueAwaiter, Custom custom = null, ILog log = null)
+            : base(getLog, DataModel.Model<modelType>.GetIdentity32, getValue, getValueAwaiter, custom, log)
         {
             getter = new Getter(this);
         }
@@ -158,7 +159,8 @@ namespace AutoCSer.Sql.LogStream
             {
                 Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback> getLog = (Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback>)Delegate.CreateDelegate(typeof(Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback>), tcpCallType.GetMethod("onSqlLog", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>) }, null));
                 Func<int, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue = (Func<int, AutoCSer.Net.TcpServer.ReturnValue<valueType>>)Delegate.CreateDelegate(typeof(Func<int, AutoCSer.Net.TcpServer.ReturnValue<valueType>>), tcpCallType.GetMethod("getSqlCache", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(int) }, null));
-                return new IdentityClient<valueType, modelType>(getLog, getValue, custom, log);
+                Func<int, AutoCSer.Net.TcpServer.AwaiterBox<valueType>> getValueAwaiter = (Func<int, AutoCSer.Net.TcpServer.AwaiterBox<valueType>>)Delegate.CreateDelegate(typeof(Func<int, AutoCSer.Net.TcpServer.AwaiterBox<valueType>>), tcpCallType.GetMethod("getSqlCacheAwaiter", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(int) }, null));
+                return new IdentityClient<valueType, modelType>(getLog, getValue, getValueAwaiter, custom, log);
             }
             return this;
         }
@@ -230,6 +232,22 @@ namespace AutoCSer.Sql.LogStream
                     return true;
             }
             return false;
+        }
+        /// <summary>
+        /// 获取数据，尽量不要在 .NET 4.0 及以下版本中使用
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <param name="value"></param>
+        /// <returns>null 表示已经同步获取数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public AutoCSer.Net.TcpServer.AwaiterBox<valueType> Get(int identity, ref valueType value)
+        {
+            if (identity <= maxIdentity)
+            {
+                value = identity > 0 ? array[identity] : null;
+                return null;
+            }
+            return getValueAwaiter(identity);
         }
         /// <summary>
         /// 获取数据集合

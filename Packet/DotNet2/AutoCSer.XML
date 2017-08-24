@@ -11167,6 +11167,16 @@
             成员类型
             </summary>
         </member>
+        <member name="P:AutoCSer.Metadata.MemberIndexInfo.AwaiterReturnType">
+            <summary>
+            AutoCSer.Net.TcpServer.Awaiter[,] 返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberIndexInfo.TemplateMemberType">
+            <summary>
+            模板成员类型
+            </summary>
+        </member>
         <member name="P:AutoCSer.Metadata.MemberIndexInfo.MemberIndex">
             <summary>
             成员编号

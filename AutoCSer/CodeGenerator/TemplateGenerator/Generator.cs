@@ -120,6 +120,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// </summary>
         protected int _loopCount_;
         /// <summary>
+        /// 异步关键字
+        /// </summary>
+        public string Async
+        {
+            get { return "async"; }
+        }
+        ///// <summary>
+        ///// 异步等待关键字
+        ///// </summary>
+        //public string Await
+        //{
+        //    get { return "await"; }
+        //}
+        /// <summary>
         /// 输出类定义结束段代码
         /// </summary>
         protected void outEnd()

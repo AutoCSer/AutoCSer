@@ -80,7 +80,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// </summary>
         /// <param name="id">班级标识</param>
         /// <returns>学生标识集合</returns>
-        [AutoCSer.Net.TcpStaticServer.Method]
+        [AutoCSer.Net.TcpStaticServer.Method(ClientTask = Net.TcpServer.ClientTaskType.Timeout)]
         internal static int[] GetStudentIds(int id)
         {
             return Student.Loader.GetStudentIds(id);

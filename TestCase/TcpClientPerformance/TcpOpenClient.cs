@@ -103,7 +103,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
 #if DOTNET4
                     new System.Threading.Tasks.Task(new ClientAwaiter { Client = client, Left = left, Right = right }.Run).Start();
 #else
-                    System.Threading.Tasks.Task.Run(new ClientAwaiter { Client = client, Left = left, Right = right }.Run);
+                    new ClientAwaiter { Client = client, Left = left, Right = right }.Run();
 #endif
 #endif
                 }
@@ -129,7 +129,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
 #else
                 TcpInternalClientPerformance.Client.ThreadCount = 1;
                 TcpInternalClientPerformance.Client.Start(TcpInternalClientPerformance.TestType.ClientAwaiter, TcpInternalClientPerformance.Client.Count / 100);
-                new ClientAwaiter { Client = client, Left = left, Right = TcpInternalClientPerformance.Client.Count / 100 }.Run().Wait();
+                new ClientAwaiter { Client = client, Left = left, Right = TcpInternalClientPerformance.Client.Count / 100 }.Run();
                 Console.WriteLine("await 1");
                 wait();
                 sleep();
@@ -139,7 +139,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 TcpInternalClientPerformance.Client.Start(TcpInternalClientPerformance.TestType.ClientTaskAsync, TcpInternalClientPerformance.Client.Count / 10);
                 for (int count = TcpInternalClientPerformance.Client.ThreadCount = threadCount, right = TcpInternalClientPerformance.Client.Count / 10 / threadCount; count != 0; --count)
                 {
-                    System.Threading.Tasks.Task.Run(new ClientTaskAsync { Client = client, Left = left, Right = right }.Run);
+                    new ClientTaskAsync { Client = client, Left = left, Right = right }.Run();
                 }
                 Console.WriteLine("task start " + threadCount.toString() + " end " + TcpInternalClientPerformance.Client.Time.ElapsedMilliseconds.toString() + "ms");
                 wait();
@@ -159,7 +159,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
 
                 TcpInternalClientPerformance.Client.ThreadCount = 1;
                 TcpInternalClientPerformance.Client.Start(TcpInternalClientPerformance.TestType.ClientTaskAsync, TcpInternalClientPerformance.Client.Count / 100);
-                new ClientTaskAsync { Client = client, Left = left, Right = TcpInternalClientPerformance.Client.Count / 100 }.Run().Wait();
+                new ClientTaskAsync { Client = client, Left = left, Right = TcpInternalClientPerformance.Client.Count / 100 }.Run();
                 Console.WriteLine("task 1");
                 wait();
                 sleep();

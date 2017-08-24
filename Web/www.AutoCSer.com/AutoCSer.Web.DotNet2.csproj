@@ -107,6 +107,7 @@
     <Content Include="OrmCache\Cache.page.html" />
     <Content Include="OrmCache\Column.page.html" />
     <Content Include="OrmCache\Index.page.html" />
+    <Content Include="robots.txt" />
     <Content Include="Serialize\Binary.page.html" />
     <Content Include="Serialize\Json.page.html" />
     <Content Include="Serialize\Performance.png" />

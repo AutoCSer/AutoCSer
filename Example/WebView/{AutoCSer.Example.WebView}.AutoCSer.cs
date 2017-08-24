@@ -10,7 +10,7 @@ namespace AutoCSer.Example.WebView
         internal partial class LoadView
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{IsView:");
                     {
@@ -27,7 +27,7 @@ namespace AutoCSer.Example.WebView
         internal partial class LoadViewQuery
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{Sum:");
                     {
@@ -87,7 +87,7 @@ namespace AutoCSer.Example.WebView
         internal partial class LoadViewQueryName
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{Sum:");
                     {
@@ -147,7 +147,7 @@ namespace AutoCSer.Example.WebView
         internal partial class ReView
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{IsMobileReView:");
                     {
@@ -244,7 +244,7 @@ namespace AutoCSer.Example.WebView
                 return false;
             }
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{ServerData:");
                     {
@@ -261,7 +261,7 @@ namespace AutoCSer.Example.WebView
         internal partial class Expression
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{ServerData:");
                     {
@@ -296,7 +296,7 @@ namespace AutoCSer.Example.WebView
         internal partial class If
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{False:");
                     {
@@ -331,7 +331,7 @@ namespace AutoCSer.Example.WebView
         internal partial class Loop
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{LoopData:");
                     {
@@ -391,7 +391,7 @@ namespace AutoCSer.Example.WebView
                 return false;
             }
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{Mark:");
                     {
@@ -421,7 +421,7 @@ namespace AutoCSer.Example.WebView
         internal partial class Value
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{Data1:");
                     {
@@ -465,7 +465,7 @@ namespace AutoCSer.Example.WebView
         internal partial class ViewAsynchronous
         {
 
-            protected unsafe override void ajax(CharStream _js_)
+            protected override void ajax(CharStream _js_)
             {
                 _js_.WriteNotNull(@"{Sum:");
                     {
@@ -587,8 +587,12 @@ namespace AutoCSer.Example.WebView
             {
                 switch (viewIndex)
                 {
-                    case 0: loadPage(socket, new AutoCSer.Example.WebView.Template.Client(), false); return;
-                    case 1: loadPage(socket, new AutoCSer.Example.WebView.Template.NoMark(), false); return;
+                    case 0:
+                        loadPage(socket, AutoCSer.Example.WebView.Template.Client/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Client());
+                        return;
+                    case 1:
+                        loadPage(socket, AutoCSer.Example.WebView.Template.NoMark/**/.Pop() ?? new AutoCSer.Example.WebView.Template.NoMark());
+                        return;
                 }
             }
             /// <summary>
@@ -621,17 +625,41 @@ namespace AutoCSer.Example.WebView
             {
                 switch (ajaxInfo.MethodIndex)
                 {
-                    case 8: loadView(AutoCSer.Example.WebView.LoadView/**/.Pop() ?? new AutoCSer.Example.WebView.LoadView(), ajaxInfo); return;
-                    case 9: loadView(AutoCSer.Example.WebView.LoadViewQuery/**/.Pop() ?? new AutoCSer.Example.WebView.LoadViewQuery(), ajaxInfo); return;
-                    case 10: loadView(AutoCSer.Example.WebView.LoadViewQueryName/**/.Pop() ?? new AutoCSer.Example.WebView.LoadViewQueryName(), ajaxInfo); return;
-                    case 11: loadView(AutoCSer.Example.WebView.Symbol.ReView/**/.Pop() ?? new AutoCSer.Example.WebView.Symbol.ReView(), ajaxInfo); return;
-                    case 12: loadView(AutoCSer.Example.WebView.Template.Client/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Client(), ajaxInfo); return;
-                    case 13: loadView(AutoCSer.Example.WebView.Template.Expression/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Expression(), ajaxInfo); return;
-                    case 14: loadView(AutoCSer.Example.WebView.Template.If/**/.Pop() ?? new AutoCSer.Example.WebView.Template.If(), ajaxInfo); return;
-                    case 15: loadView(AutoCSer.Example.WebView.Template.Loop/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Loop(), ajaxInfo); return;
-                    case 16: loadView(AutoCSer.Example.WebView.Template.NoMark/**/.Pop() ?? new AutoCSer.Example.WebView.Template.NoMark(), ajaxInfo); return;
-                    case 17: loadView(AutoCSer.Example.WebView.Template.Value/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Value(), ajaxInfo); return;
-                    case 18: loadView(AutoCSer.Example.WebView.ViewAsynchronous/**/.Pop() ?? new AutoCSer.Example.WebView.ViewAsynchronous(), ajaxInfo); return;
+                    case 8:
+                        loadView(AutoCSer.Example.WebView.LoadView/**/.Pop() ?? new AutoCSer.Example.WebView.LoadView(), ajaxInfo);
+                        return;
+                    case 9:
+                        loadView(AutoCSer.Example.WebView.LoadViewQuery/**/.Pop() ?? new AutoCSer.Example.WebView.LoadViewQuery(), ajaxInfo);
+                        return;
+                    case 10:
+                        loadView(AutoCSer.Example.WebView.LoadViewQueryName/**/.Pop() ?? new AutoCSer.Example.WebView.LoadViewQueryName(), ajaxInfo);
+                        return;
+                    case 11:
+                        loadView(AutoCSer.Example.WebView.Symbol.ReView/**/.Pop() ?? new AutoCSer.Example.WebView.Symbol.ReView(), ajaxInfo);
+                        return;
+                    case 12:
+                        loadView(AutoCSer.Example.WebView.Template.Client/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Client(), ajaxInfo);
+                        return;
+                    case 13:
+                        loadView(AutoCSer.Example.WebView.Template.Expression/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Expression(), ajaxInfo);
+                        return;
+                    case 14:
+                        loadView(AutoCSer.Example.WebView.Template.If/**/.Pop() ?? new AutoCSer.Example.WebView.Template.If(), ajaxInfo);
+                        return;
+                    case 15:
+                        loadView(AutoCSer.Example.WebView.Template.Loop/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Loop(), ajaxInfo);
+                        return;
+                    case 16:
+                        loadView(AutoCSer.Example.WebView.Template.NoMark/**/.Pop() ?? new AutoCSer.Example.WebView.Template.NoMark(), ajaxInfo);
+                        return;
+                    case 17:
+                        loadView(AutoCSer.Example.WebView.Template.Value/**/.Pop() ?? new AutoCSer.Example.WebView.Template.Value(), ajaxInfo);
+                        return;
+                    case 18:
+                        AutoCSer.Example.WebView.ViewAsynchronous _p18 = AutoCSer.Example.WebView.ViewAsynchronous/**/.Pop();
+                        if (_p18 == null) setPage(_p18 = new AutoCSer.Example.WebView.ViewAsynchronous(), true, false);
+                        loadView(_p18, ajaxInfo);
+                        return;
                     default: return;
                 }
             }
@@ -846,43 +874,43 @@ namespace AutoCSer.Example.WebView
                 string[] names = new string[20];
                 AutoCSer.WebView.AjaxMethodInfo[] infos = new AutoCSer.WebView.AjaxMethodInfo[20];
                 names[0] = "Asynchronous.Add";
-                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = false, IsAsynchronous = true };
+                infos[0] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsAsynchronous = true };
                 names[1] = "BoxSerialize.Inc";
-                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = false, IsAsynchronous = false };
+                infos[1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true };
                 names[2] = "Get.Add";
-                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = false, IsReferer = false, IsAsynchronous = false };
+                infos[2] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304 };
                 names[3] = "Name.AddName";
-                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = false, IsAsynchronous = false };
+                infos[3] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true };
                 names[4] = "AddFullName";
-                infos[4] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = false, IsAsynchronous = false };
+                infos[4] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true };
                 names[5] = "Post.Add";
-                infos[5] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true, IsAsynchronous = false };
+                infos[5] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true };
                 names[6] = "Post.Mul";
-                infos[6] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true, IsAsynchronous = false };
+                infos[6] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = true };
                 names[7] = "RefOut.Add";
-                infos[7] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true, IsReferer = false, IsAsynchronous = false };
+                infos[7] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsPost = true };
                 names[8] = "/LoadView.html";
-                infos[8] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[8] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[9] = "/LoadViewQuery.html";
-                infos[9] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[9] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[10] = "/LoadViewQueryName.html";
-                infos[10] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[10] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[11] = "/Symbol/ReView.html";
-                infos[11] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 11, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[11] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 11, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[12] = "/Template/Client.html";
-                infos[12] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 12, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[12] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 12, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[13] = "/Template/Expression.html";
-                infos[13] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 13, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[13] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 13, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[14] = "/Template/If.html";
-                infos[14] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 14, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[14] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 14, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[15] = "/Template/Loop.html";
-                infos[15] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 15, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[15] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 15, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[16] = "/Template/NoMark.html";
-                infos[16] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 16, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[16] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 16, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[17] = "/Template/Value.html";
-                infos[17] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 17, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = false, IsReferer = false, IsViewPage = true };
+                infos[17] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 17, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[18] = "/ViewAsynchronous.html";
-                infos[18] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 18, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsAsynchronous = true, IsReferer = false, IsViewPage = true };
+                infos[18] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 18, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsViewPage = true };
                 names[20 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[20 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 20 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);

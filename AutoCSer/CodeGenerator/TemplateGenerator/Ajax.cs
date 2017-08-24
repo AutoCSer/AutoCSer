@@ -239,6 +239,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public int MethodIndex;
                 /// <summary>
+                /// 页面对象名称
+                /// </summary>
+                public string PageName
+                {
+                    get { return "_p" + MethodIndex.toString(); }
+                }
+                /// <summary>
                 /// 调用名称
                 /// </summary>
                 public string CallName;
@@ -259,7 +266,17 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return typeof(AutoCSer.WebView.View<>).isAssignableFromGenericDefinition(WebViewMethodType);
                     }
                 }
-
+                /// <summary>
+                /// 是否存在 await 函数
+                /// </summary>
+                public bool IsAwaitMethod;
+                /// <summary>
+                /// 页面对象是否需要初始化
+                /// </summary>
+                public bool IsSetPage
+                {
+                    get { return IsAwaitMethod || Attribute.IsAsynchronous; }
+                }
             }
             /// <summary>
             /// AJAX函数
@@ -351,6 +368,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         WebViewMethodType = value.Key,
                         Attribute = value.Value ?? AutoCSer.WebView.View.DefaultAttribute,
                         CallName = new WebView.Generator.ViewType { Type = value.Key, Attribute = value.Value ?? AutoCSer.WebView.View.DefaultAttribute, DefaultNamespace = AutoParameter.DefaultNamespace + ".", IgnoreCase = AutoParameter.WebConfig.IgnoreCase }.CallName,
+                        IsAwaitMethod = WebView.Generator.AjaxAwaitMethodTypes.Contains(value.Key)
                     });
                 if (methodIndex != 0)
                 {

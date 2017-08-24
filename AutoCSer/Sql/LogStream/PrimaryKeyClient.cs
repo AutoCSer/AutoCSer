@@ -5,6 +5,7 @@ using AutoCSer.Log;
 using System.Collections.Generic;
 using System.Threading;
 using AutoCSer.Metadata;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.LogStream
 {
@@ -146,11 +147,12 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="getLog">获取日志数据委托</param>
         /// <param name="getValue">获取数据委托</param>
+        /// <param name="getValueAwaiter">获取数据委托</param>
         /// <param name="custom">客户端自定义绑定</param>
         /// <param name="log">日志处理</param>
         public PrimaryKeyClient(Func<Action<AutoCSer.Net.TcpServer.ReturnValue<Log<valueType, modelType>.Data>>, AutoCSer.Net.TcpServer.KeepCallback> getLog
-                , Func<keyType, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue, Custom custom = null, ILog log = null)
-            : base(getLog, AutoCSer.Data.Model<modelType>.GetPrimaryKeyGetter<keyType>("GetSqlPrimaryKey", DataModel.Model<modelType>.PrimaryKeys.getArray(value => value.FieldInfo)), getValue, custom, log)
+                , Func<keyType, AutoCSer.Net.TcpServer.ReturnValue<valueType>> getValue, Func<keyType, AutoCSer.Net.TcpServer.AwaiterBox<valueType>> getValueAwaiter, Custom custom = null, ILog log = null)
+            : base(getLog, AutoCSer.Data.Model<modelType>.GetPrimaryKeyGetter<keyType>("GetSqlPrimaryKey", DataModel.Model<modelType>.PrimaryKeys.getArray(value => value.FieldInfo)), getValue, getValueAwaiter, custom, log)
         {
             getter = new Getter(this);
         }
@@ -203,6 +205,17 @@ namespace AutoCSer.Sql.LogStream
                     return true;
             }
             return false;
+        }
+        /// <summary>
+        /// 获取数据，尽量不要在 .NET 4.0 及以下版本中使用
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns>null 表示已经同步获取数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public AutoCSer.Net.TcpServer.AwaiterBox<valueType> Get(keyType key, ref valueType value)
+        {
+            return dictionary != null && !dictionary.TryGetValue(key, out value) ? null : getValueAwaiter(key);
         }
     }
 }
