@@ -20307,7 +20307,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpOpenServer.ServerAttribute.ClientOutputSleep">
             <summary>
-            批量处理休眠毫秒数，默认为 1 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数，设置为 0 适应于低延时高频串行调用
+            批量处理休眠毫秒数，默认为 -1 表示不等待，设置为 0 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数，设置为 0 适应于低延时高频串行调用
             </summary>
         </member>
         <member name="P:AutoCSer.Net.TcpOpenServer.ServerAttribute.GetClientOutputSleep">
@@ -20317,7 +20317,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpOpenServer.ServerAttribute.ServerOutputSleep">
             <summary>
-            批量处理休眠毫秒数，默认为 1 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数，设置为 0 适应于低延时高频串行调用
+            批量处理休眠毫秒数，默认为 -1 表示不等待，设置为 0 适应于低延时高频串行调用，大于 0 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数
             </summary>
         </member>
         <member name="P:AutoCSer.Net.TcpOpenServer.ServerAttribute.GetServerOutputSleep">
@@ -26259,6 +26259,11 @@
             发送数据量过低次数
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.SenderBuildInfo.IsClientAwaiter">
+            <summary>
+            客户端是否更注重 await
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.SenderBuildInfo.Clear">
             <summary>
             清除数据
@@ -26564,6 +26569,11 @@
         <member name="P:AutoCSer.Net.TcpServer.ServerAttribute.GetCommandPoolBitSize">
             <summary>
             命令池初始化二进制大小 2^n
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.IsClientAwaiter">
+            <summary>
+            默认为 false 表示更注重客户端异步吞吐性能，否则更注重客户端 await 吞吐性能
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ServerBaseAttribute">

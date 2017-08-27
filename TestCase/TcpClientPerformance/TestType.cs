@@ -63,9 +63,5 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         /// 自定义序列化（作弊模式：非函数调用模式）
         /// </summary>
         CustomSerialize,
-        /// <summary>
-        /// 客户端自定义序列化（客户端作弊模式）
-        /// </summary>
-        ClientCustomSerialize
     }
 }

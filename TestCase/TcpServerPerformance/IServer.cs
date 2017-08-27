@@ -58,12 +58,5 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// </summary>
         [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientSendOnly = true)]
         void AddCustomSerializeFinally();
-
-        /// <summary>
-        /// 计算回调测试
-        /// </summary>
-        /// <param name="value"></param>
-        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientSendOnly = true)]
-        void AddCustomSerializeRegister(ClientCustomSerialize value);
     }
 }

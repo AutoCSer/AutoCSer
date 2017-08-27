@@ -172,7 +172,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// 计算回调测试
         /// </summary>
         /// <param name="value"></param>
-        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientSendOnly = true)]
+        //[AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientSendOnly = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private unsafe void addCustomSerializeRegister(ClientCustomSerialize value)
         {

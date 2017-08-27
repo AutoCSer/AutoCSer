@@ -299,7 +299,7 @@ in " + this.fileName + @"");
 ", file => file.js);
                     if (code.Length != 0)
                     {
-                        if (fileName == htmlAuto.Parameter.ProjectPath + (@"js\base").pathSeparator())
+                        if (string.Compare(fileName, htmlAuto.Parameter.ProjectPath + (@"js\base").pathSeparator(), StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             DirectoryInfo viewDirectory = new DirectoryInfo(htmlAuto.Parameter.ProjectPath + htmlAuto.WebConfig.ViewJsDirectory + Path.DirectorySeparatorChar);
                             if (viewDirectory.Exists)
@@ -342,7 +342,7 @@ in " + this.fileName + @"");
                             }
                             writeFile(fileName + jsExtension, compress(code));
                         }
-                        else if (fileName == htmlAuto.Parameter.ProjectPath + (@"Js\load").pathSeparator())
+                        else if (string.Compare(fileName, htmlAuto.Parameter.ProjectPath + (@"js\load").pathSeparator(), StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             string charset = "Loader.Charset='" + htmlAuto.WebConfig.Encoding.WebName + "';";
                             string pageCode = code.Replace("Loader.PageView = false;", "Loader.PageView = true;" + charset);

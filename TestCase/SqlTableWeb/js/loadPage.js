@@ -22,10 +22,12 @@ var AutoCSer;
 			for (var Nodes = Loader.DocumentHead.childNodes, Index = Nodes.length; Index !== 0;) {
 				var Node = Nodes[--Index];
 				if (Node.tagName && Node.tagName.toLowerCase() === 'script') {
-					var LoadJs = Node.src.match(/^(https?:\/\/[^\/]+\/)js\/load(Page)?\.js\?v=([\dABCDEF]+)$/i);
-					if (LoadJs && LoadJs[1] && LoadJs[3]) {
+					var LoadJs = Node.src.match(/^(https?:\/\/[^\/]+\/)Js\/load(Page)?\.js\?v(v?)=(0?)([\dABCDEF]+)?$/i);
+					if (LoadJs && LoadJs[1] && LoadJs[5]) {
 						Loader.JsDomain = LoadJs[1];
-						Loader.Version = LoadJs[3];
+						Loader.ViewVersion = LoadJs[3];
+						Loader.LoadScript = LoadJs[4];
+						Loader.Version = LoadJs[5];
 						Loader.Charset = Node.charset;
 						break;
 					}
@@ -34,7 +36,7 @@ var AutoCSer;
 			if (!Loader.JsDomain)
 				Loader.JsDomain = '/';
 			Loader.PageView = true;Loader.Charset='utf-8';
-			Loader.AppendJavaScript(Loader.JsDomain + 'js/base.js?v=' + Loader.Version);
+			Loader.AppendJavaScript(Loader.JsDomain + 'Js/base.js?v=' + Loader.Version);
 		};
 		return Loader;
 	}());

@@ -37,15 +37,9 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
                     }
                     sleep();
 
-                    Client.Start(TestType.ClientCustomSerialize, Client.Count);
+                    Client.Start(TestType.Register, Client.Count);
                     using (AutoCSer.Net.TcpServer.KeepCallback sendKeep = client.AddRegister(onAdd))
                     {
-                        new AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerializeOutput(left, Client.Count, client.AddCustomSerializeRegister).Wait();
-                        Console.WriteLine("loop end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                        wait();
-                        sleep();
-
-                        Client.Start(TestType.Register, Client.Count);
                         for (int right = Client.Count; right != 0; client.AddRegister(left, --right)) ;
                         Console.WriteLine("loop end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
                         wait();

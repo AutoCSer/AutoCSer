@@ -35,7 +35,7 @@ var AutoCSer;
 			}
 			if (!Loader.JsDomain)
 				Loader.JsDomain = '/';
-			Loader.PageView = false;
+			Loader.Charset='utf-8';
 			Loader.AppendJavaScript(Loader.JsDomain + 'Js/base.js?v=' + Loader.Version);
 		};
 		return Loader;

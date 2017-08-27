@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.IO;
-using System.Collections.Generic;
-using AutoCSer.Extension;
 
 namespace AutoCSer.TestCase
 {

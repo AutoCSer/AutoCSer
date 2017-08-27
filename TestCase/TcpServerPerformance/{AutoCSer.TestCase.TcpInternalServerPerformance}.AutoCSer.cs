@@ -27,7 +27,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("TcpInternalServerPerformance", typeof(AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer))), verify, onCustomData, log, false)
                 {
                     Value = value ?? new AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer();
-                    setCommandData(13);
+                    setCommandData(12);
                     setCommand(0);
                     setCommand(1);
                     setCommand(2);
@@ -40,7 +40,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     setCommand(9);
                     setCommand(10);
                     setCommand(11);
-                    setCommand(12);
                     if (attribute.IsAutoServer) Start();
                 }
                 /// <summary>
@@ -283,22 +282,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 sender.Log(error);
                             }
                             return;
-                        case 12:
-                            try
-                            {
-                                _p6 inputParameter = new _p6();
-                                if (sender.DeSerialize(ref data, ref inputParameter))
-                                {
-                                    
-                                    Value.addCustomSerializeRegister(inputParameter.p0);
-                                    return;
-                                }
-                            }
-                            catch (Exception error)
-                            {
-                                sender.Log(error);
-                            }
-                            return;
                         default: return;
                     }
                 }
@@ -442,7 +425,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsKeepCallback = 1, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c12 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
@@ -958,22 +940,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 public void addCustomSerializeFinally()
                 {
                     _TcpClient_.Sender.CallOnly(_c11);
-                }
-
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 6, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-
-                /// <summary>
-                /// 计算回调测试
-                /// </summary>
-                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addCustomSerializeRegister(AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize value)
-                {
-                    TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
-                    {
-                        
-                        p0 = value,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c12, ref _inputParameter_);
                 }
 
             }

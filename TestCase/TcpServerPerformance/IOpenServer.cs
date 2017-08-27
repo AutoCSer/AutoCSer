@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.TcpServerPerformance
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12103, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, ClientOutputSleep = 0, ServerOutputSleep = 0, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12103, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
     public interface IOpenServer
     {
         /// <summary>

@@ -8,9 +8,9 @@ namespace AutoCSer.TestCase.ChatServer
     /// 群聊客户端
     /// </summary>
 #if DotNetStandard
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\..\ChatClient\", ClientOutputSleep = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\..\ChatClient\")]
 #else
-    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\ChatClient\", ClientOutputSleep = 0, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\ChatClient\")]
 #endif
     public partial class Server
     {
