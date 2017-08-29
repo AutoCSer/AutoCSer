@@ -4559,7 +4559,12 @@
         </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.viewIndexs">
             <summary>
-            WEB视图页面索引集合
+            WEB 视图页面索引集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.viewSearcher">
+            <summary>
+            WEB 视图页面搜索器
             </summary>
         </member>
         <member name="P:AutoCSer.Net.HttpDomainServer.ViewServer.calls">
@@ -4569,7 +4574,12 @@
         </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.callIndexs">
             <summary>
-            WEB调用处理索引集合
+            WEB 调用处理索引集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.callSearcher">
+            <summary>
+            WEB 调用处理搜索器
             </summary>
         </member>
         <member name="P:AutoCSer.Net.HttpDomainServer.ViewServer.viewRewrites">
@@ -4579,7 +4589,12 @@
         </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.rewriteIndexs">
             <summary>
-            WEB视图URL重写索引集合
+            WEB 视图 URL 重写索引集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.rewriteSearcher">
+            <summary>
+            WEB 视图 URL 重写搜索器
             </summary>
         </member>
         <member name="P:AutoCSer.Net.HttpDomainServer.ViewServer.webSockets">
@@ -4589,7 +4604,12 @@
         </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.webSocketIndexs">
             <summary>
-            WebSocket调用处理委托集合
+            WebSocket 调用处理委托集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.webSocketSearcher">
+            <summary>
+            WebSocket 调用处理搜索器
             </summary>
         </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.ViewServer.NullAjaxResponse">

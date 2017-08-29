@@ -70,7 +70,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> GetField
@@ -86,7 +86,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> SetField
@@ -117,7 +117,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
             }

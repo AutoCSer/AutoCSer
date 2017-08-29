@@ -76,6 +76,10 @@
       <Project>{9C257405-20F3-41DF-80D4-74976AAA6C6B}</Project>
       <Name>AutoCSer.CodeGenerator.DotNet2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet2.csproj">
+      <Project>{68DB0E7A-B4EA-49FA-977D-83164AFFF51D}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

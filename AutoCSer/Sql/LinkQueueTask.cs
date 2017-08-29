@@ -62,7 +62,7 @@ namespace AutoCSer.Sql
             {
                 try
                 {
-                    threadPool.FastStart((Action)run, Threading.Thread.CallType.Action);
+                    threadPool.FastStart(run);
                 }
                 catch (Exception error)
                 {

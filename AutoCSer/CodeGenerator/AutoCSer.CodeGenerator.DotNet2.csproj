@@ -177,6 +177,12 @@
     <Content Include="Js\touchTop.ts" />
     <Content Include="Js\verifyImage.ts" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet2.csproj">
+      <Project>{68DB0E7A-B4EA-49FA-977D-83164AFFF51D}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet2</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

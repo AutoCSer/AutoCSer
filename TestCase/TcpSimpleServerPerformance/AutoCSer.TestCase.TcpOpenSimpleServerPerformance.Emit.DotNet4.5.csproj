@@ -51,6 +51,12 @@
     <Compile Include="OpenSimpleServer.Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.5.csproj">
+      <Project>{e647a356-94ca-496f-8993-bd61c23dcffb}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet4.5</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

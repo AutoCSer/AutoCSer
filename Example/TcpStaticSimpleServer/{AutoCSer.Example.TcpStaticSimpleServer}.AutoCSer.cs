@@ -27,7 +27,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
         {
             public partial class Asynchronous
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
@@ -73,7 +73,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
         {
             public partial class RefOut
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 3, IsSimpleSerializeInputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add2(int left, ref int right, out int product)
                 {
@@ -345,7 +345,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
         {
             public partial class Field
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c3 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> GetField
@@ -358,7 +358,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> SetField
@@ -383,7 +383,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                         throw new Exception(_returnType_.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 6, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c5 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 6, IsSimpleSerializeInputParamter = true };
 
 
             }
@@ -419,7 +419,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
         {
             public partial class NoAttribute
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 7, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c6 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 7, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
@@ -439,7 +439,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c12 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c12 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 9 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<bool> TestCase()
                 {
@@ -488,7 +488,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
         {
             public partial class Property
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c7 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> GetProperty
@@ -501,7 +501,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c8 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 5 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> SetProperty
@@ -526,7 +526,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                         throw new Exception(_returnType_.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c9 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 6, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c9 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 6 + 128, InputParameterIndex = 6, IsSimpleSerializeInputParamter = true };
 
 
             }
@@ -555,7 +555,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
         {
             public partial class RefOut
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c10 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 8, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c10 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 8, IsSimpleSerializeInputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add1(int left, ref int right, out int product)
                 {
@@ -614,7 +614,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
         {
             public partial class Static
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c11 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 7, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c11 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 8 + 128, InputParameterIndex = 7, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
@@ -634,7 +634,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c13 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c13 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 10 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<bool> TestCase()
                 {

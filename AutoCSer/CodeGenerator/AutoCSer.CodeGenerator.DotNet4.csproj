@@ -250,6 +250,10 @@
       <Project>{66846742-7F6E-468E-B6D6-19BC2F51AD61}</Project>
       <Name>AutoCSer.Sql.DotNet4</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.csproj">
+      <Project>{B1C64112-6340-435D-87EC-319091D948BB}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet4</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

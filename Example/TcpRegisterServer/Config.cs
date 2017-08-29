@@ -25,11 +25,11 @@ namespace AutoCSer.Example.TcpRegisterServer
         /// TCP 内部注册写服务 TCP 服务配置
         /// </summary>
         [AutoCSer.Config.Member(Name = AutoCSer.Net.TcpRegister.Server.ServerName)]
-        internal static AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute TcpRegisterServerAttribute
+        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterServerAttribute
         {
             get
             {
-                AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(typeof(AutoCSer.Net.TcpRegister.Server), false);
+                AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalServer.ServerAttribute>(typeof(AutoCSer.Net.TcpRegister.Server), false);
                 attribute.VerifyString = "2";
                 return attribute;
             }

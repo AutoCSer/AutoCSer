@@ -18,9 +18,9 @@ namespace AutoCSer.Web.TcpRegister
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ServerAttribute readerServerAttribute = AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.ReaderServer));
-                        AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetVerifyTcpServerSimpleAttribute(typeof(AutoCSer.Net.TcpRegister.Server)); 
+                        AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.Server)); 
                         AutoCSer.Net.TcpRegister.ReaderServer reader = AutoCSer.Net.TcpRegister.ReaderServer.Create();
-                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalSimpleServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalSimpleServer(serverAttribute, null, reader.Server))
+                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalServer(serverAttribute, null, reader.Server))
                         using (AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer registerReaderServer = new AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer(readerServerAttribute, null, reader))
                         {
                             if (registerServer.IsListen && registerReaderServer.IsListen)

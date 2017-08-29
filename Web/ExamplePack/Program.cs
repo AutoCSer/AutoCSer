@@ -157,6 +157,7 @@ namespace AutoCSer.Tool.OpenPack
                     case 11: isDircectory = string.Compare(nextDircectory.Name, "FieldEquals", true); break;
                     case 12: isDircectory = string.Compare(nextDircectory.Name, "RandomObject", true); break;
                     case 13: isDircectory = string.Compare(nextDircectory.Name, "CodeGenerator", true); break;
+                    case 15: isDircectory = string.Compare(nextDircectory.Name, "TcpSimpleServer", true); break;
                     default: isDircectory = 1; break;
                 }
                 if (isDircectory == 0) copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath);

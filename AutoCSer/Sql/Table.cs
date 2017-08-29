@@ -146,7 +146,7 @@ namespace AutoCSer.Sql
         /// <param name="isUnique">是否唯一值</param>
         internal void CreateIndex(DbConnection connection, string name, bool isUnique)
         {
-            int index = ignoreCase ? NoIndexMemberNames.IndexOfLower(name) : NoIndexMemberNames.IndexOf(name);
+            int index = ignoreCase ? NoIndexMemberNames.Searcher.SearchLower(name) : NoIndexMemberNames.Searcher.Search(name);
             if (index >= 0 && NoIndexMemberNames.Array[index] != null)
             {
                 Exception exception = null;
@@ -387,8 +387,8 @@ namespace AutoCSer.Sql
                     using (AutoCSer.StateSearcher.AsciiSearcher<Column> sqlColumnNames = new AutoCSer.StateSearcher.AsciiSearcher<Column>(ignoreCase ? table.Columns.Columns.getArray(value => value.SqlName.ToLower()) : table.Columns.Columns.getArray(value => value.SqlName), table.Columns.Columns, false))
                     {
                         LeftArray<Column> newColumns;
-                        if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.IndexOfLower(value.SqlName) < 0);
-                        else newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.IndexOf(value.SqlName) < 0);
+                        if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.Searcher.SearchLower(value.SqlName) < 0);
+                        else newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.Searcher.Search(value.SqlName) < 0);
                         if (newColumns.Length != 0 && Client.IsAddField)
                         {
                             Client.AddFields(connection, new ColumnCollection { Name = memberTable.Columns.Name, Columns = newColumns.ToArray() });
@@ -407,9 +407,9 @@ namespace AutoCSer.Sql
                 NoIndexMemberNames = new AutoCSer.StateSearcher.AsciiSearcher<string>(names, names, false);
                 if (table.Indexs != null)
                 {
-                    foreach (ColumnCollection column in table.Indexs) names[ignoreCase ? NoIndexMemberNames.IndexOfLower(column.Columns[0].Name) : NoIndexMemberNames.IndexOf(column.Columns[0].Name)] = null;
+                    foreach (ColumnCollection column in table.Indexs) names[ignoreCase ? NoIndexMemberNames.Searcher.SearchLower(column.Columns[0].Name) : NoIndexMemberNames.Searcher.Search(column.Columns[0].Name)] = null;
                 }
-                if (table.PrimaryKey != null) names[ignoreCase ? NoIndexMemberNames.IndexOfLower(table.PrimaryKey.Columns[0].Name) : NoIndexMemberNames.IndexOf(table.PrimaryKey.Columns[0].Name)] = null;
+                if (table.PrimaryKey != null) names[ignoreCase ? NoIndexMemberNames.Searcher.SearchLower(table.PrimaryKey.Columns[0].Name) : NoIndexMemberNames.Searcher.Search(table.PrimaryKey.Columns[0].Name)] = null;
                 Field identity = DataModel.Model<modelType>.Identity;
                 if (identity != null)
                 {

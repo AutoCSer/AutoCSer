@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.NoJIT.csproj" />
     <ProjectReference Include="..\TcpSimpleServerPerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance.NetCore.NoJIT.csproj" />
   </ItemGroup>
 

@@ -76,6 +76,12 @@
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticSimpleServer}.AutoCSer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet2.csproj">
+      <Project>{68DB0E7A-B4EA-49FA-977D-83164AFFF51D}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet2</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>

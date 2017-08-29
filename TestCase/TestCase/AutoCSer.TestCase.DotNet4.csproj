@@ -177,6 +177,10 @@
       <Project>{8937DE06-DBE0-49B8-BF25-732E95329EEB}</Project>
       <Name>AutoCSer.RandomObject.DotNet4</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.csproj">
+      <Project>{B1C64112-6340-435D-87EC-319091D948BB}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet4</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

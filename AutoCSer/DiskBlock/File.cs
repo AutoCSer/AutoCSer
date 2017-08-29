@@ -123,8 +123,8 @@ namespace AutoCSer.DiskBlock
             }
             writeStream.Seek(0, SeekOrigin.End);
             readWait.Set(0);
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart((Action)read, Threading.Thread.CallType.Action);
-            AutoCSer.Threading.ThreadPool.Tiny.FastStart((Action)write, Threading.Thread.CallType.Action);
+            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(read);
+            AutoCSer.Threading.ThreadPool.Tiny.FastStart(write);
         }
         /// <summary>
         /// 释放资源

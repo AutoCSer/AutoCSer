@@ -78,6 +78,7 @@
     <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.NetStandard.csproj" />
     <ProjectReference Include="..\..\AutoCSer\FieldEquals\AutoCSer.FieldEquals.NetStandard.csproj" />
     <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.NetStandard.csproj" />
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.csproj" />
   </ItemGroup>
 
   <ItemGroup>

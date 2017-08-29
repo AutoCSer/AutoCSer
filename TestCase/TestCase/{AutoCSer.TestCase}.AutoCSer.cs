@@ -2523,7 +2523,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 无参数无返回值调用测试
@@ -2537,7 +2537,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 单参数无返回值调用测试
@@ -2556,7 +2556,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 多参数无返回值调用测试
@@ -2577,7 +2577,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c3 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 无参数有返回值调用测试
@@ -2595,7 +2595,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 单参数有返回值调用测试
@@ -2618,7 +2618,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c5 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 多参数有返回值调用测试
@@ -2643,7 +2643,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c6 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 输出参数测试
@@ -2667,7 +2667,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c7 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 混合输出参数测试
@@ -2693,7 +2693,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 6 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c8 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 8 + 128, InputParameterIndex = 6 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 混合输出参数测试
@@ -3006,7 +3006,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 /// <summary>
@@ -3040,10 +3040,10 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true };
 
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 /// <summary>
@@ -3062,7 +3062,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c3 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
@@ -3083,7 +3083,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 3, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 3, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
@@ -3125,10 +3125,10 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 4, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c5 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 5 + 128, InputParameterIndex = 4, IsSimpleSerializeInputParamter = true };
 
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c6 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 6 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 /// <summary>
@@ -3162,7 +3162,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c7 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true };
 
 
             }
@@ -3337,7 +3337,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, IsVerifyMethod = true, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1, IsVerifyMethod = true, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
@@ -3362,7 +3362,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 服务器端读客户端标识测试
@@ -5908,7 +5908,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue Inc()
                 {
@@ -5919,7 +5919,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue Set(int a)
                 {
@@ -5935,7 +5935,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
                 {
@@ -5953,7 +5953,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c3 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> inc()
                 {
@@ -5968,7 +5968,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
                 {
@@ -5988,7 +5988,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c5 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 5 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
                 {
@@ -6010,7 +6010,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c6 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 6 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
                 {
@@ -6031,7 +6031,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c7 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
                 {
@@ -6054,7 +6054,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 6 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c8 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 8 + 128, InputParameterIndex = 6 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
                 {
@@ -6385,7 +6385,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> field
@@ -6416,10 +6416,10 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
@@ -6435,7 +6435,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 3 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c3 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 3 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
@@ -6456,7 +6456,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
@@ -6498,10 +6498,10 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c5 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c6 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 6 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
                 public AutoCSer.Net.TcpServer.ReturnValue<int> property
@@ -6532,7 +6532,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.ClientException.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c7 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 2 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
             }
@@ -6716,7 +6716,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c0 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsVerifyMethod = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsVerifyMethod = true };
 
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
@@ -6741,7 +6741,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 服务器端读客户端标识测试
@@ -8981,7 +8981,7 @@ namespace AutoCSer.TestCase.TcpStaticClient
             /// </summary>
             public partial class GetSession
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c1 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 服务器端读客户端标识测试
@@ -9025,7 +9025,7 @@ namespace AutoCSer.TestCase.TcpStaticClient
             /// </summary>
             public partial class Session
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c2 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 2, IsVerifyMethod = true, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 2, IsVerifyMethod = true, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
@@ -9298,7 +9298,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
             /// </summary>
             public partial class Json
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c3 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c3 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 无参数无返回值调用测试
@@ -9308,7 +9308,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Call(_c3) };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c4 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 单参数无返回值调用测试
@@ -9324,7 +9324,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Call(_c4, ref _inputParameter_) };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c5 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c5 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 多参数无返回值调用测试
@@ -9342,7 +9342,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.TestCase.TcpStaticSimpleClient/**/.SimpleJsonServer/**/.TcpClient.Call(_c5, ref _inputParameter_) };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c6 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c6 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 无参数有返回值调用测试
@@ -9357,7 +9357,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c7 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c7 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 单参数有返回值调用测试
@@ -9378,7 +9378,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c8 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c8 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 5 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 多参数有返回值调用测试
@@ -9444,7 +9444,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
             /// </summary>
             public partial class JsonOut
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c9 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c9 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 6 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 输出参数测试
@@ -9465,7 +9465,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c10 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c10 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 5 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 混合输出参数测试
@@ -9488,7 +9488,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c11 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 9 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c11 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 8 + 128, InputParameterIndex = 9 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 混合输出参数测试
@@ -9983,7 +9983,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
             /// </summary>
             public partial class Member
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c12 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c12 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 /// <summary>
@@ -10011,7 +10011,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                         throw new Exception(_returnType_.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c13 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 9, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c13 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 9, IsSimpleSerializeInputParamter = true };
 
 
             }
@@ -10054,7 +10054,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
             /// </summary>
             public partial class MemberProperty
             {
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c14 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c14 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 /// <summary>
@@ -10070,7 +10070,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                         return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c15 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c15 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 3 + 128, InputParameterIndex = 0, IsSimpleSerializeOutputParamter = true };
 
 
                 /// <summary>
@@ -10098,7 +10098,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleClient
                         throw new Exception(_returnType_.ToString());
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo _c16 = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 9, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c16 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 9, IsSimpleSerializeInputParamter = true };
 
 
             }

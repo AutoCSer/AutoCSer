@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F2C11B3-5F14-4696-A3CB-F00A1B0B4839}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.TcpSimpleServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Packet\Mono</OutputPath>
+    <DefineConstants>TcpSimpleServer;MONO;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Packet\Mono</OutputPath>
+    <DefineConstants>TcpSimpleServer;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Packet\Mono\AutoCSer.TcpSimpleServer.xml</DocumentationFile>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\Mono\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TcpSimpleServer\OnTime.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpSimpleServer\Emit\SimpleParameterType.cs" />
+    <Compile Include="TcpSimpleServer\SocketLink.cs" />
+    <Compile Include="TcpInternalSimpleServer\Client.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\Client.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\MethodClient.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\MethodGetter.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\Server.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpInternalSimpleServer\MethodClient.cs" />
+    <Compile Include="TcpInternalSimpleServer\Server.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerAttribute.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerBaseAttribute.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerCall.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerCallback.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerSocket.cs" />
+    <Compile Include="TcpInternalSimpleServer\ServerSocketTask.cs" />
+    <Compile Include="TcpInternalSimpleServer\TimeVerifyClient.cs" />
+    <Compile Include="TcpInternalSimpleServer\TimeVerifyServer.cs" />
+    <Compile Include="TcpInternalSimpleServer\UnionType.cs" />
+    <Compile Include="TcpOpenSimpleServer\Client.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\Client.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\MethodClient.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\MethodGetter.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\Server.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpOpenSimpleServer\MethodAttribute.cs" />
+    <Compile Include="TcpOpenSimpleServer\MethodClient.cs" />
+    <Compile Include="TcpOpenSimpleServer\Server.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerAttribute.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerCall.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerCallback.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerSocket.cs" />
+    <Compile Include="TcpOpenSimpleServer\ServerSocketTask.cs" />
+    <Compile Include="TcpOpenSimpleServer\TimeVerifyClient.cs" />
+    <Compile Include="TcpOpenSimpleServer\TimeVerifyServer.cs" />
+    <Compile Include="TcpOpenSimpleServer\UnionType.cs" />
+    <Compile Include="TcpSimpleServer\Client.cs" />
+    <Compile Include="TcpSimpleServer\ClientBuffer.cs" />
+    <Compile Include="TcpSimpleServer\ClientCheckTimer.cs" />
+    <Compile Include="TcpSimpleServer\Emit\ClientBuilder.cs" />
+    <Compile Include="TcpSimpleServer\Emit\ClientMetadata.cs" />
+    <Compile Include="TcpSimpleServer\Emit\Method.cs" />
+    <Compile Include="TcpSimpleServer\Emit\ServerBuilder.cs" />
+    <Compile Include="TcpSimpleServer\Emit\ServerMetadata.cs" />
+    <Compile Include="TcpSimpleServer\ISetTcpServer.cs" />
+    <Compile Include="TcpSimpleServer\MethodAttribute.cs" />
+    <Compile Include="TcpSimpleServer\OutputInfo.cs" />
+    <Compile Include="TcpSimpleServer\Server.cs" />
+    <Compile Include="TcpSimpleServer\ServerAttribute.cs" />
+    <Compile Include="TcpSimpleServer\ServerBuffer.cs" />
+    <Compile Include="TcpSimpleServer\ServerCallback.cs" />
+    <Compile Include="TcpSimpleServer\ServerSocket.cs" />
+    <Compile Include="TcpSimpleServer\ServerSocketType.cs" />
+    <Compile Include="TcpSimpleServer\TimeVerifyServer.cs" />
+    <Compile Include="TcpStaticSimpleServer\Client.cs" />
+    <Compile Include="TcpStaticSimpleServer\MethodAttribute.cs" />
+    <Compile Include="TcpStaticSimpleServer\ServerAttribute.cs" />
+    <Compile Include="TcpStaticSimpleServer\ServerCall.cs" />
+    <Compile Include="TcpStaticSimpleServer\TimeVerify.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

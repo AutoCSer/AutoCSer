@@ -131,6 +131,10 @@
       <Project>{E9E460FF-2D26-4C9F-A474-576582594796}</Project>
       <Name>AutoCSer.CodeGenerator.DotNet4</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.csproj">
+      <Project>{B1C64112-6340-435D-87EC-319091D948BB}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet4</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="AutoCSer.CodeGenerator.CustomConfig.json" />

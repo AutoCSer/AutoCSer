@@ -48,6 +48,10 @@
     <Compile Include="TestType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.5.csproj">
+      <Project>{e647a356-94ca-496f-8993-bd61c23dcffb}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet4.5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TcpSimpleServerPerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance.Emit.DotNet4.5.csproj">
       <Project>{04d19be9-b73b-4e26-800c-cdf1b35fbcd5}</Project>
       <Name>AutoCSer.TestCase.TcpOpenSimpleServerPerformance.Emit.DotNet4.5</Name>

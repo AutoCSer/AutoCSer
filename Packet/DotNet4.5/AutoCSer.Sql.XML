@@ -7961,9 +7961,9 @@
             Json解析函数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.Field.keywords">
+        <member name="F:AutoCSer.Sql.Field.keywordSearcher">
             <summary>
-            SQL关键字
+            SQL 关键字搜索器
             </summary>
         </member>
         <member name="M:AutoCSer.Sql.Field.toSqlName(System.String)">

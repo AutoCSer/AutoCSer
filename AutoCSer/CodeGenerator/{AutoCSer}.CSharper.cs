@@ -14123,9 +14123,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo ");
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase ");
             _code_.Add(_value2_.MethodIdentityCommand);
-            _code_.Add(@" = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = ");
+            _code_.Add(@" = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = ");
             _code_.Add(_value2_.MethodIndex.ToString());
             _code_.Add(@" + ");
             _code_.Add(CommandStartIndex.ToString());
@@ -24365,9 +24365,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo ");
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase ");
             _code_.Add(_value2_.MethodIdentityCommand);
-            _code_.Add(@" = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = ");
+            _code_.Add(@" = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = ");
             _code_.Add(_value2_.MethodIndex.ToString());
             _code_.Add(@" + ");
             _code_.Add(CommandStartIndex.ToString());
@@ -33373,9 +33373,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                private static readonly AutoCSer.Net.TcpSimpleServer.CommandInfo ");
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase ");
             _code_.Add(_value2_.StaticMethodIdentityCommand);
-            _code_.Add(@" = new AutoCSer.Net.TcpSimpleServer.CommandInfo { Command = ");
+            _code_.Add(@" = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = ");
             _code_.Add(_value2_.MethodIndex.ToString());
             _code_.Add(@" + ");
             _code_.Add(CommandStartIndex.ToString());

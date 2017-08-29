@@ -120,6 +120,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.csproj">
+      <Project>{B1C64112-6340-435D-87EC-319091D948BB}</Project>
+      <Name>AutoCSer.TcpSimpleServer.DotNet4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TcpSimpleServerPerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance.Emit.DotNet4.csproj">
       <Project>{79944568-EAC3-4B88-8416-9973CC53A2B3}</Project>
       <Name>AutoCSer.TestCase.TcpOpenSimpleServerPerformance.Emit.DotNet4</Name>

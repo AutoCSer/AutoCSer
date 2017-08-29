@@ -42,17 +42,17 @@ namespace AutoCSer.Web.Config
             attribute.VerifyString = TcpVerifyString;
             return attribute;
         }
-        /// <summary>
-        /// 获取默认 TCP 内部服务配置
-        /// </summary>
-        /// <param name="serverType"></param>
-        /// <returns></returns>
-        public static AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute GetVerifyTcpServerSimpleAttribute(Type serverType)
-        {
-            AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(serverType, false);
-            attribute.VerifyString = TcpVerifyString;
-            return attribute;
-        }
+        ///// <summary>
+        ///// 获取默认 TCP 内部服务配置
+        ///// </summary>
+        ///// <param name="serverType"></param>
+        ///// <returns></returns>
+        //public static AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute GetVerifyTcpServerSimpleAttribute(Type serverType)
+        //{
+        //    AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(serverType, false);
+        //    attribute.VerifyString = TcpVerifyString;
+        //    return attribute;
+        //}
         /// <summary>
         /// 获取默认 TCP 内部服务配置
         /// </summary>

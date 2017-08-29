@@ -4,16 +4,24 @@
 <body>
     <p>
         性能测试项目 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\TestCase\SerializePerformance\AutoCSer.TestCase.SerializePerformance
-        <br /><img src="//__STATICDOMAIN__/Serialize/Performance.png" alt="数据序列化性能测试" />
+        <br /><img src="//__STATICDOMAIN__/Serialize/Performance.png?v=1" alt="数据序列化性能测试" />
+        <br /><img src="//__STATICDOMAIN__/Serialize/Performance.Core.png" alt=".Net Core 数据序列化性能测试" />
+        <br />从测试结果中可以看到 .NET Core 2.0 相对于 .NET Framework 4.5 有一定的性能提升，但是 .NET Core 对于浮点数的处理非常低效且不稳定（指数越高越糟糕）。
     </p>
     <p>
-        <!--Include:Include\GetCode[TestCase,0,字段测试数据定义,SerializePerformance\FieldData.cs]-->
+        <!--Include:Include\GetCode[TestCase,0,25 种常用数据类型字段测试数据定义,SerializePerformance\FieldData.cs]-->
     </p>
     <p>
-        <!--Include:Include\GetCode[TestCase,1,属性测试数据定义,SerializePerformance\PropertyData.cs]-->
+        <!--Include:Include\GetCode[TestCase,1,25 种常用数据类型属性测试数据定义,SerializePerformance\PropertyData.cs]-->
     </p>
     <p>
-        <!--Include:Include\GetCode[TestCase,2,测试程序,SerializePerformance\Program.cs]-->
+        <!--Include:Include\GetCode[TestCase,2,带浮点数的 31 种常用数据类型字段测试数据定义,SerializePerformance\FloatFieldData.cs]-->
+    </p>
+    <p>
+        <!--Include:Include\GetCode[TestCase,3,带浮点数的 31 种常用数据类型属性测试数据定义,SerializePerformance\FloatPropertyData.cs]-->
+    </p>
+    <p>
+        <!--Include:Include\GetCode[TestCase,4,测试程序,SerializePerformance\Program.cs]-->
     </p>
 </body>
 </html>
