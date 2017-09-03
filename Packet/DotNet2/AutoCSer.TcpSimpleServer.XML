@@ -461,11 +461,12 @@
             TCP 内部服务端套接字
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpSimpleServer.ServerSocket`2">
+        <member name="T:AutoCSer.Net.TcpSimpleServer.ServerSocket`3">
             <summary>
             TCP 服务端套接字
             </summary>
             <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+            <typeparam name="serverType">TCP 服务类型</typeparam>
             <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
         </member>
         <member name="T:AutoCSer.Net.TcpSimpleServer.ServerSocket">
@@ -633,34 +634,34 @@
             当前命令
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.ServerSocket`2.TaskTicks">
+        <member name="F:AutoCSer.Net.TcpSimpleServer.ServerSocket`3.TaskTicks">
             <summary>
             线程切换检测时间
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.ServerSocket`2.NextTask">
+        <member name="F:AutoCSer.Net.TcpSimpleServer.ServerSocket`3.NextTask">
             <summary>
             下一个任务
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.ServerSocket`2.Server">
+        <member name="F:AutoCSer.Net.TcpSimpleServer.ServerSocket`3.Server">
             <summary>
             TCP 服务
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.ServerSocket`2.#ctor(AutoCSer.Net.TcpSimpleServer.Server{`0,`1})">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.ServerSocket`3.#ctor(`1)">
             <summary>
             TCP 服务端套接字
             </summary>
             <param name="server">TCP调用服务端</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.ServerSocket`2.Log(System.Exception)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.ServerSocket`3.Log(System.Exception)">
             <summary>
             错误日志处理
             </summary>
             <param name="error"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.ServerSocket`2.BuildOutput``1(AutoCSer.Net.TcpSimpleServer.OutputInfo,``0@)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.ServerSocket`3.BuildOutput``1(AutoCSer.Net.TcpSimpleServer.OutputInfo,``0@)">
             <summary>
             创建输出数据
             </summary>
@@ -1042,241 +1043,45 @@
             是否简单序列化输出参数
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask">
-            <summary>
-            TCP 服务端套接字任务处理
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask.#ctor(System.Int64)">
-            <summary>
-            TCP 服务端套接字任务处理
-            </summary>
-            <param name="taskTicks">线程切换超时时钟周期</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask.Add(AutoCSer.Net.TcpOpenSimpleServer.ServerSocket)">
-            <summary>
-            添加任务
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask.run">
-            <summary>
-            TCP服务端套接字任务处理
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask.Task">
-            <summary>
-            TCP 内部服务端套接字任务处理
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask.tasks">
-            <summary>
-            TCP 内部服务端套接字任务处理集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.ServerSocketTask.check">
-            <summary>
-            线程切换检测
-            </summary>
-        </member>
         <member name="T:AutoCSer.Net.TcpInternalSimpleServer.Server">
             <summary>
             TCP 内部服务端
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpSimpleServer.Server`2">
+        <member name="T:AutoCSer.Net.TcpSimpleServer.Server`3">
             <summary>
             TCP 服务基类
             </summary>
             <typeparam name="attributeType"></typeparam>
+            <typeparam name="serverType"></typeparam>
             <typeparam name="serverSocketType"></typeparam>
         </member>
-        <member name="T:AutoCSer.Net.TcpSimpleServer.Server`1">
-            <summary>
-            TCP 服务基类
-            </summary>
-            <typeparam name="attributeType"></typeparam>
-        </member>
-        <member name="T:AutoCSer.Net.TcpSimpleServer.Server">
-            <summary>
-            TCP 服务基类
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.BufferPool">
-            <summary>
-            数据缓存区池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.verify">
-            <summary>
-            同步验证接口
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.CallQueue">
-            <summary>
-            TCP 服务器端同步调用队列
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.commandData">
-            <summary>
-            命令位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.commands">
-            <summary>
-            命令位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.maxCommand">
-            <summary>
-            最大命令
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.ReceiveVerifyCommandTimeout">
-            <summary>
-            验证超时
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.Socket">
-            <summary>
-            TCP 套接字
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.isStart">
-            <summary>
-            是否已启动服务
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.VerifyCommandIdentity">
-            <summary>
-            验证命令序号
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server.isListen">
-            <summary>
-            是否处于监听状态
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.#ctor(System.String,System.Int32,System.String,AutoCSer.SubBuffer.Pool,System.Int32,System.Int32,AutoCSer.Log.ILog,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`3.#ctor(`0,AutoCSer.Log.ILog,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Boolean)">
             <summary>
             TCP 服务客户端
             </summary>
-            <param name="host">监听主机名称</param>
-            <param name="port">监听端口</param>
-            <param name="serviceName">服务名称</param>
-            <param name="bufferPool">数据缓存区池</param>
-            <param name="sendBufferMaxSize">发送数据缓存区最大字节大小</param>
-            <param name="minCompressSize">压缩启用最低字节数量</param>
-            <param name="log">日志接口</param>
+            <param name="attribute">TCP服务调用配置</param>
             <param name="verify">获取客户端请求线程调用类型</param>
+            <param name="log">日志接口</param>
             <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.Dispose">
-            <summary>
-            停止服务
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.StopListen">
-            <summary>
-            停止服务监听
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.start">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`3.Start">
             <summary>
             启动服务
             </summary>
             <returns>是否成功</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.listen">
-            <summary>
-            服务端监听
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.Start">
-            <summary>
-            启动服务
-            </summary>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.startGetSocket">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`3.startGetSocket">
             <summary>
             获取客户端套接字
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.GetSocket">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`3.GetSocket">
             <summary>
             获取客户端请求
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.setCommandData(System.Int32)">
-            <summary>
-            初始化序号识别命令处理委托集合
-            </summary>
-            <param name="count">命令数量</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.setCommand(System.Int32)">
-            <summary>
-            设置命令索引信息
-            </summary>
-            <param name="methodIndex">命令处理索引</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.IsCommand(System.Int32)">
-            <summary>
-            判断命令是否有效
-            </summary>
-            <param name="index"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.setVerifyCommand(System.Int32)">
-            <summary>
-            设置验证命令序号
-            </summary>
-            <param name="methodIndex"></param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.PushReceiveVerifyCommandTimeout(AutoCSer.Net.TcpSimpleServer.ServerSocket,System.Net.Sockets.Socket)">
-            <summary>
-            添加超时套接字
-            </summary>
-            <param name="serverSocket"></param>
-            <param name="socket"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server.CancelReceiveVerifyCommandTimeout(AutoCSer.Net.TcpSimpleServer.ServerSocket)">
-            <summary>
-            取消超时套接字
-            </summary>
-            <param name="socket"></param>
-        </member>
-        <member name="P:AutoCSer.Net.TcpSimpleServer.Server.IsListen">
-            <summary>
-            是否服务处于监听状态
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.Server`1.Attribute">
-            <summary>
-            TCP 服务调用配置
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`1.#ctor(`0,AutoCSer.Log.ILog,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Boolean)">
-            <summary>
-            TCP 服务客户端
-            </summary>
-            <param name="attribute">TCP服务调用配置</param>
-            <param name="log">日志接口</param>
-            <param name="verify">获取客户端请求线程调用类型</param>
-            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`2.#ctor(`0,AutoCSer.Log.ILog,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Boolean)">
-            <summary>
-            TCP 服务客户端
-            </summary>
-            <param name="attribute">TCP服务调用配置</param>
-            <param name="verify">获取客户端请求线程调用类型</param>
-            <param name="log">日志接口</param>
-            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`2.DoCommand(System.Int32,`1,AutoCSer.SubArray{System.Byte}@)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`3.DoCommand(System.Int32,`2,AutoCSer.SubArray{System.Byte}@)">
             <summary>
             命令处理
             </summary>
@@ -1285,7 +1090,7 @@
             <param name="data">命令数据</param>
             <returns>是否成功</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`2.DoCommand(System.Int32,`1,AutoCSer.SubBuffer.PoolBufferFull@,System.Int32)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Server`3.DoCommand(System.Int32,`2,AutoCSer.SubBuffer.PoolBufferFull@,System.Int32)">
             <summary>
             命令处理委托
             </summary>
@@ -1551,35 +1356,6 @@
             <summary>
             套接字处理
             </summary>
-        </member>
-        <member name="T:AutoCSer.Net.TcpSimpleServer.SocketLink">
-            <summary>
-            套接字链表
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpSimpleServer.SocketLink.Socket">
-            <summary>
-            套接字
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.SocketLink.DisposeSocket">
-            <summary>
-            释放套接字
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.SocketLink.Cancel">
-            <summary>
-            释放套接字
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.SocketLink.Start(AutoCSer.Net.TcpOpenSimpleServer.Server,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket@)">
-            <summary>
-            创建 TCP 服务端套接字
-            </summary>
-            <param name="server"></param>
-            <param name="serverSocket"></param>
-            <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.TcpSimpleServer.Emit.SimpleParameterType">
             <summary>
@@ -2096,7 +1872,7 @@
             TCP 服务端
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpSimpleServer.TimeVerifyServer`3.SetTcpServer(`0)">
+        <member name="M:AutoCSer.Net.TcpSimpleServer.TimeVerifyServer`3.SetTcpServer(`1)">
             <summary>
             设置TCP服务端
             </summary>
@@ -3221,6 +2997,35 @@
             <summary>
             套接字验证
             </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.TcpOpenSimpleServer.SocketLink">
+            <summary>
+            套接字链表
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenSimpleServer.SocketLink.Socket">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.SocketLink.DisposeSocket">
+            <summary>
+            释放套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.SocketLink.Cancel">
+            <summary>
+            释放套接字
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenSimpleServer.SocketLink.Start(AutoCSer.Net.TcpOpenSimpleServer.Server,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket@)">
+            <summary>
+            创建 TCP 服务端套接字
+            </summary>
+            <param name="server"></param>
+            <param name="serverSocket"></param>
             <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.TcpStaticSimpleServer.Client">

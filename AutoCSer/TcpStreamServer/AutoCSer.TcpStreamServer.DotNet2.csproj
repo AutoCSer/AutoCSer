@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{031EF696-7231-4229-B006-BFC123D3116A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.TcpStreamServer</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;TcpStreamServer;DOTNET2</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Packet\DotNet2\</OutputPath>
+    <DefineConstants>TRACE;TcpStreamServer;DOTNET2</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>2</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Packet\DotNet2\AutoCSer.TcpStreamServer.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpInternalStreamServer\Client.cs" />
+    <Compile Include="TcpInternalStreamServer\ClientSocket.cs" />
+    <Compile Include="TcpInternalStreamServer\ClientSocketSender.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\Client.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\MethodClient.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\MethodGetter.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\Server.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpInternalStreamServer\MethodClient.cs" />
+    <Compile Include="TcpInternalStreamServer\Server.cs" />
+    <Compile Include="TcpInternalStreamServer\ServerAttribute.cs" />
+    <Compile Include="TcpInternalStreamServer\ServerBaseAttribute.cs" />
+    <Compile Include="TcpInternalStreamServer\ServerCall.cs" />
+    <Compile Include="TcpInternalStreamServer\ServerSocket.cs" />
+    <Compile Include="TcpInternalStreamServer\ServerSocketSender.cs" />
+    <Compile Include="TcpInternalStreamServer\ServerSocketTask.cs" />
+    <Compile Include="TcpInternalStreamServer\TimeVerifyClient.cs" />
+    <Compile Include="TcpInternalStreamServer\TimeVerifyServer.cs" />
+    <Compile Include="TcpInternalStreamServer\UnionType.cs" />
+    <Compile Include="TcpOpenStreamServer\Client.cs" />
+    <Compile Include="TcpOpenStreamServer\ClientSocket.cs" />
+    <Compile Include="TcpOpenStreamServer\ClientSocketSender.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\Client.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\MethodClient.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\MethodGetter.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\Server.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpOpenStreamServer\MethodAttribute.cs" />
+    <Compile Include="TcpOpenStreamServer\MethodClient.cs" />
+    <Compile Include="TcpOpenStreamServer\Server.cs" />
+    <Compile Include="TcpOpenStreamServer\ServerAttribute.cs" />
+    <Compile Include="TcpOpenStreamServer\ServerCall.cs" />
+    <Compile Include="TcpOpenStreamServer\ServerSocket.cs" />
+    <Compile Include="TcpOpenStreamServer\ServerSocketSender.cs" />
+    <Compile Include="TcpOpenStreamServer\SocketLink.cs" />
+    <Compile Include="TcpOpenStreamServer\TimeVerifyClient.cs" />
+    <Compile Include="TcpOpenStreamServer\TimeVerifyServer.cs" />
+    <Compile Include="TcpOpenStreamServer\UnionType.cs" />
+    <Compile Include="TcpStaticStreamServer\Client.cs" />
+    <Compile Include="TcpStaticStreamServer\MethodAttribute.cs" />
+    <Compile Include="TcpStaticStreamServer\ServerAttribute.cs" />
+    <Compile Include="TcpStaticStreamServer\ServerCall.cs" />
+    <Compile Include="TcpStaticStreamServer\TimeVerify.cs" />
+    <Compile Include="TcpStreamServer\Client.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\CallCommand.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\CheckCommand.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\Command.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\InputCommand.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\InputOutputCommand.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\OutputCommand.cs" />
+    <Compile Include="TcpStreamServer\ClientCommand\SendOnlyCommand.cs" />
+    <Compile Include="TcpStreamServer\ClientSocket.cs" />
+    <Compile Include="TcpStreamServer\ClientSocketSender.cs" />
+    <Compile Include="TcpStreamServer\Emit\ClientBuilder.cs" />
+    <Compile Include="TcpStreamServer\Emit\Method.cs" />
+    <Compile Include="TcpStreamServer\Emit\ServerBuilder.cs" />
+    <Compile Include="TcpStreamServer\Emit\ServerMetadata.cs" />
+    <Compile Include="TcpStreamServer\Emit\StreamParameterType.cs" />
+    <Compile Include="TcpStreamServer\MethodAttribute.cs" />
+    <Compile Include="TcpStreamServer\Server.cs" />
+    <Compile Include="TcpStreamServer\ServerAttribute.cs" />
+    <Compile Include="TcpStreamServer\ServerOutput\Output.cs" />
+    <Compile Include="TcpStreamServer\ServerOutput\OutputLink.cs" />
+    <Compile Include="TcpStreamServer\ServerOutput\ReturnTypeOutput.cs" />
+    <Compile Include="TcpStreamServer\ServerSocket.cs" />
+    <Compile Include="TcpStreamServer\ServerSocketSender.cs" />
+    <Compile Include="TcpStreamServer\ServerTaskType.cs" />
+    <Compile Include="TcpStreamServer\TimeVerifyServer.cs" />
+    <Compile Include="TcpStreamServer\UnionType.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

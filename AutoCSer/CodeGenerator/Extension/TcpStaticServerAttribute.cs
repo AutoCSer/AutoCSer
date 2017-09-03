@@ -46,5 +46,24 @@ namespace AutoCSer.Extension
         {
             AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Copy(value, copyValue, simpleCopyMemberMap);
         }
+
+        /// <summary>
+        /// 复制 TCP 服务配置成员位图
+        /// </summary>
+#if DOTNET2
+        private static readonly MemberMap streamCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
+#else
+        private static readonly MemberMap streamCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
+#endif
+        /// <summary>
+        /// 复制 TCP 服务配置
+        /// </summary>
+        /// <param name="value">TCP 服务配置</param>
+        /// <param name="copyValue">TCP 服务配置</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void CopyFrom(this AutoCSer.Net.TcpStaticStreamServer.ServerAttribute value, AutoCSer.Net.TcpStaticStreamServer.ServerAttribute copyValue)
+        {
+            AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Copy(value, copyValue, streamCopyMemberMap);
+        }
     }
 }

@@ -74,9 +74,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         private void createSocket()
         {
-            if (IpAddress == null) Log.add(AutoCSer.Log.LogType.Error, Host + " IP 解析失败");
-            else if (Port == 0) Log.add(AutoCSer.Log.LogType.Error, ServerName + " 端口号不能为 0");
-            else
+            if (check(IpAddress, Port))
             {
                 Socket socket = null, oldSocket = null;
                 bool isVerifyMethod = false;

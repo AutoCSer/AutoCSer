@@ -31,7 +31,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 当前部署服务客户端 TCP 套接字
         /// </summary>
-        private AutoCSer.Net.TcpServer.ClientSocket socket;
+        private AutoCSer.Net.TcpServer.ClientSocketBase socket;
         /// <summary>
         /// 部署服务客户端标识
         /// </summary>
@@ -65,7 +65,7 @@ namespace AutoCSer.Deploy
         /// TCP 客户端套接字初始化处理
         /// </summary>
         /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocket socket)
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
         {
             Monitor.Enter(newSocketLock);
             try

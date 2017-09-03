@@ -7,7 +7,7 @@
     <ProjectGuid>{E647A356-94CA-496F-8993-BD61C23DCFFB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoCSer</RootNamespace>
+    <RootNamespace>AutoCSer.Net</RootNamespace>
     <AssemblyName>AutoCSer.TcpSimpleServer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -46,7 +46,7 @@
     <Compile Include="TcpSimpleServer\OnTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpSimpleServer\Emit\SimpleParameterType.cs" />
-    <Compile Include="TcpSimpleServer\SocketLink.cs" />
+    <Compile Include="TcpOpenSimpleServer\SocketLink.cs" />
     <Compile Include="TcpInternalSimpleServer\Client.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\Client.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\MethodClient.cs" />

@@ -66,7 +66,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -170,7 +170,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -195,7 +195,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -306,7 +306,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -331,7 +331,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -443,7 +443,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -459,7 +459,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -478,7 +478,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -502,7 +502,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -534,7 +534,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -564,7 +564,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -573,7 +573,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, ref value);
+                            Sender.Push(CommandIndex, value.Type);
                         }
                         push(this);
                     }
@@ -676,7 +676,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -781,7 +781,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -806,7 +806,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -922,7 +922,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -941,7 +941,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -960,7 +960,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -976,7 +976,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -995,7 +995,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -1019,7 +1019,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1051,7 +1051,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1081,7 +1081,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1090,7 +1090,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, ref value);
+                            Sender.Push(CommandIndex, value.Type);
                         }
                         push(this);
                     }
@@ -1113,7 +1113,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1143,7 +1143,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1152,7 +1152,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, ref value);
+                            Sender.Push(CommandIndex, value.Type);
                         }
                         push(this);
                     }
@@ -1266,7 +1266,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -1293,7 +1293,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1404,7 +1404,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             }
                             catch (Exception error)
                             {
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             return;
                         default: return;
@@ -1425,7 +1425,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -1505,7 +1505,7 @@ namespace AutoCSer.Example.TcpOpenServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -1530,7 +1530,7 @@ namespace AutoCSer.Example.TcpOpenServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()

@@ -8,7 +8,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, ServerSocket>
+    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, Server, ServerSocket>
     {
         /// <summary>
         /// 最大输入数据长度
@@ -89,7 +89,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// </summary>
         internal void Start()
         {
-            bufferSize = Server.BufferPool.Size;
+            bufferSize = Server.ReceiveBufferPool.Size;
 #if MONO
 #else
             Socket.ReceiveBufferSize = Socket.SendBufferSize = bufferSize;
@@ -99,7 +99,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #else
             asyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
-            Server.BufferPool.Get(ref Buffer);
+            Server.ReceiveBufferPool.Get(ref Buffer);
             OutputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
 
 #if DOTNET2
@@ -421,6 +421,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// 获取命令
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private bool isReceiveCommand()
         {
             Socket socket = Socket;
@@ -484,11 +485,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                                         }
                                     }
                                 }
-                                else if (receiveCount == sizeof(int))
-                                {
-                                    SubArray<byte> data = default(SubArray<byte>);
-                                    return Server.DoCommand(commandIndex, this, ref data);
-                                }
+                                else if (receiveCount == sizeof(int)) return Server.DoCommand(commandIndex, this, ref SubArray<byte>.Null);
                             }
                             else if (((commandIndex ^ TcpServer.Server.CheckCommandIndex) | (receiveCount ^ sizeof(int))) == 0) return Send(TcpServer.ReturnType.Success);
                         }

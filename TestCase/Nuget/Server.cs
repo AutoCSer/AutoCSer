@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.Nuget
     /// <summary>
     /// TCP 服务测试
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12108)]
+    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12120)]
     sealed partial class Server
     {
         /// <summary>

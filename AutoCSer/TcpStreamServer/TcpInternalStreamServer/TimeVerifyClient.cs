@@ -1,0 +1,64 @@
+﻿using System;
+using AutoCSer.Extension;
+
+namespace AutoCSer.Net.TcpInternalStreamServer
+{
+    /// <summary>
+    /// 时间验证服务客户端
+    /// </summary>
+    public static class TimeVerifyClient
+    {
+        /// <summary>
+        /// 时间验证服务客户端委托
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="randomPrefix">随机前缀</param>
+        /// <param name="md5Data">MD5 数据</param>
+        /// <param name="ticks">验证时钟周期</param>
+        /// <returns></returns>
+        public delegate TcpServer.ReturnValue<bool> Verifier(ClientSocketSender sender, ulong randomPrefix, byte[] md5Data, ref long ticks);
+        /// <summary>
+        /// 时间验证客户端验证
+        /// </summary>
+        /// <param name="verify">时间验证服务客户端委托</param>
+        /// <param name="sender"></param>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, AutoCSer.Net.TcpInternalStreamServer.Client client)
+        {
+            long ticks;
+            ServerAttribute attribute = client.Attribute;
+            string verifyString = attribute.VerifyString;
+            if (verifyString == null)
+            {
+                ticks = 0;
+                return verify(sender, 0, null, ref ticks).Value;
+            }
+            ulong markData = 0;
+            if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
+            ticks = Date.NowTime.SetUtc().Ticks;
+            TcpServer.ClientSocketBase socket = sender.ClientSocket;
+            do
+            {
+                ulong randomPrefix = Random.Default.SecureNextULongNotZero();
+                while (randomPrefix == markData) randomPrefix = Random.Default.SecureNextULongNotZero();
+                socket.ReceiveMarkData = attribute.IsMarkData ? markData ^ randomPrefix : 0UL;
+                sender.SendMarkData = 0;
+                long lastTicks = ticks;
+                TcpServer.ReturnValue<bool> isVerify = verify(sender, randomPrefix, TcpServer.TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), ref ticks);
+                if (isVerify.Value)
+                {
+                    sender.SendMarkData = socket.ReceiveMarkData;
+                    return true;
+                }
+                if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
+                {
+                    socket.Log.add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    return false;
+                }
+                socket.Log.add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+            }
+            while (true);
+        }
+    }
+}

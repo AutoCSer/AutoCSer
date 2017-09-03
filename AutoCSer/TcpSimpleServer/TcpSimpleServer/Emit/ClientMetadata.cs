@@ -46,7 +46,7 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         {
             MethodClientType = methodClientType;
             ClientTypeName = clientType.fullName();
-            MethodClientGetTcpClientMethod = methodClientType.GetProperty(TcpServer.Emit.ClientMetadata.TcpClientName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).GetGetMethod();
+            MethodClientGetTcpClientMethod = methodClientType.GetProperty(TcpServer.Emit.ClientMetadataBase.TcpClientName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).GetGetMethod();
             foreach (MethodInfo method in clientType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
                 switch (method.Name)

@@ -44,10 +44,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TcpOpenSimpleServer\SocketLink.cs" />
     <Compile Include="TcpSimpleServer\OnTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpSimpleServer\Emit\SimpleParameterType.cs" />
-    <Compile Include="TcpSimpleServer\SocketLink.cs" />
     <Compile Include="TcpInternalSimpleServer\Client.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\Client.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\MethodClient.cs" />
@@ -78,7 +78,6 @@
     <Compile Include="TcpOpenSimpleServer\ServerCall.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerCallback.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerSocket.cs" />
-    <Compile Include="TcpOpenSimpleServer\ServerSocketTask.cs" />
     <Compile Include="TcpOpenSimpleServer\TimeVerifyClient.cs" />
     <Compile Include="TcpOpenSimpleServer\TimeVerifyServer.cs" />
     <Compile Include="TcpOpenSimpleServer\UnionType.cs" />

@@ -25,7 +25,11 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <summary>
         /// 客户端访问的主机名称或者 IP 地址，用于需要使用端口映射服务。
         /// </summary>
-        string TcpRegister.IServerAttribute.ClientRegisterHost { get { return RegisterHost; } }
+        string TcpRegister.IServerAttribute.ClientRegisterHost
+        {
+            get { return RegisterHost; }
+            set { RegisterHost = value; }
+        }
         /// <summary>
         /// 客户端访问的监听端口，用于需要使用端口映射服务。
         /// </summary>

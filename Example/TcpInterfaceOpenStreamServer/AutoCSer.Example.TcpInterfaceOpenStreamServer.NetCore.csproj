@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Example.TcpInterfaceOpenStreamServer</AssemblyName>
+    <RootNamespace>AutoCSer.Example.TcpInterfaceOpenStreamServer</RootNamespace>
+    <Description>AutoCSer.Example.TcpInterfaceOpenStreamServer 是 TCP 接口应答流服务框架 开放服务 的示例项目。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.Example.TcpInterfaceOpenStreamServer.NetCore</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/TcpServer/StreamInterfaceServer.html</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;MONO;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;MONO;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Inherit.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RefOut.cs" />
+    <Compile Include="SendOnly.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

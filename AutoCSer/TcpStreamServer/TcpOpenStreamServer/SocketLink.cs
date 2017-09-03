@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Net.Sockets;
 using AutoCSer.Extension;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 
-namespace AutoCSer.Net.TcpSimpleServer
+namespace AutoCSer.Net.TcpOpenStreamServer
 {
     /// <summary>
     /// 套接字链表
@@ -46,9 +46,9 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="serverSocket"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal SocketLink Start(AutoCSer.Net.TcpOpenSimpleServer.Server server, ref AutoCSer.Net.TcpOpenSimpleServer.ServerSocket serverSocket)
+        internal SocketLink Start(Server server, ref ServerSocket serverSocket)
         {
-            serverSocket = new TcpOpenSimpleServer.ServerSocket(server, ref Socket);
+            serverSocket = new ServerSocket(server, ref Socket);
             serverSocket.Start();
             serverSocket = null;
             return LinkNext;

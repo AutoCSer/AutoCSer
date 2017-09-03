@@ -74,7 +74,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -95,7 +95,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -120,7 +120,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -139,7 +139,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -158,7 +158,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -177,7 +177,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -196,7 +196,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -214,7 +214,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -231,7 +231,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             }
                             catch (Exception error)
                             {
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             return;
                         case 9:
@@ -248,7 +248,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -265,7 +265,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             }
                             catch (Exception error)
                             {
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             return;
                         case 11:
@@ -279,7 +279,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             }
                             catch (Exception error)
                             {
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             return;
                         default: return;
@@ -306,7 +306,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -339,7 +339,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -372,7 +372,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -405,7 +405,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()

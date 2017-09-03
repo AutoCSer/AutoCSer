@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0AB050B"></script>
-    <title>TCP 函数应答服务框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0B1E5D9"></script>
+    <title>TCP 函数同步应答服务框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
         a:hover{text-decoration: underline;}
@@ -11,13 +11,13 @@
 </head>
 <body>
     <p>
-        高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html?v=AB050B">全局默认配置</a>，需要引用 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。
+        高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html?v=B1E5D9">全局默认配置</a>，需要引用 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.TcpSimpleServer.dll。
         <br />我认为 TCP 服务的本质就是远程函数调用，所以 AutoCSer 的 TCP 服务设计是基于函数原型定义的，目标是让远程函数调用和本地函数调用一样简单。
         <br />框架根据应用场景分为<b>内部静态服务</b>、<b>内部实例服务</b>与<b>开放服务</b>。
 <br /><b>内部服务</b>与<b>开放服务</b>的默认配置参数与防御攻击策略不同。
-<br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html?v=AB050B">服务注册</a>
-<br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出无等待时间，使用 <a href="/Serialize/Json.html?v=AB050B">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
-<br /><b>该功能需要在工程项目中配置<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>。</b>
+<br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html?v=B1E5D9">服务注册</a>
+<br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出无等待时间，使用 <a href="/Serialize/Json.html?v=B1E5D9">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
+<br /><b>该功能需要在工程项目中配置<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>。</b>
 
     </p>
     <div><h1>内部静态服务</h1></div>
@@ -25,40 +25,40 @@
         <p>
     内部静态服务的远程调用函数（只支持 <b>静态函数</b> / <b>静态属性</b> / <b>静态字段</b>）可以分布在同一个程序集的各个 class 中，用于整合大量零碎的远程调用函数，而无需定义一个单独的服务类型。
 </p>
-<p>1. 在需要支持远程函数调用的 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
+<p>1. 在需要支持远程函数调用的 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
 <p>
-    2. 给 class 添加 TCP 服务申明配置 <b>[AutoCSer.Net.TcpStaticSimpleServer.Server(Name = "SERVER")]</b>，必须指定所属服务名称，该名称必须符合 C# 类型命名规范，因为<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>需要使用它作为服务类型名称使用。
-    <br />同一个服务名称的多个 TCP 服务申明配置，有且只能有其中一个绑定为该 TCP 服务配置 <b>IsServer = true</b>，其它申明配置仅用于通知<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>模块该 class 中存在需要<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>处理的远程函数。
+    2. 给 class 添加 TCP 服务申明配置 <b>[AutoCSer.Net.TcpStaticSimpleServer.Server(Name = "SERVER")]</b>，必须指定所属服务名称，该名称必须符合 C# 类型命名规范，因为<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>需要使用它作为服务类型名称使用。
+    <br />同一个服务名称的多个 TCP 服务申明配置，有且只能有其中一个绑定为该 TCP 服务配置 <b>IsServer = true</b>，其它申明配置仅用于通知<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>模块该 class 中存在需要<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>处理的远程函数。
 </p>
 <p>
     3. 给函数添加 TCP 远程函数申明配置 <b>[AutoCSer.Net.TcpStaticSimpleServer.Method(ServerName = "SERVER")]</b>，为了防止调用者混淆远程函数与本地函数产生误调用，默认配置下远程函数必须对于其它程序集不可见（private / protected / internal）
     <br />如果没有指定所属服务名称 <b>ServerName</b>，则默认配置为当前 class 的 TCP 服务申明配置中指定的服务名称。
 </p>
 <p>
-    4. 给该工程项目配置<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
+    4. 给该工程项目配置<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
 </p>
 
         <p>
             . 支持函数成员选择配置，默认选择其它程序集不可见函数成员，而且必须申明 TCP 远程函数配置 <b>[AutoCSer.Net.TcpStaticSimpleServer.Method]</b>
-            <div>无需 TCP 远程函数申明配置 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpStaticSimpleServer\NoAttribute.cs</a></div>
-            <div>公共函数支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpStaticSimpleServer\Static.cs</a></div>
+            <div>无需 TCP 远程函数申明配置 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpStaticSimpleServer\NoAttribute.cs</a></div>
+            <div>公共函数支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpStaticSimpleServer\Static.cs</a></div>
         </p>
         <p>
             . 支持静态字段与可读静态属性，默认支持取值操作，不支持赋值操作
-            <div>字段支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpStaticSimpleServer\Field.cs</a></div>
-            <div>可读属性支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">TcpStaticSimpleServer\Property.cs</a></div>
+            <div>字段支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpStaticSimpleServer\Field.cs</a></div>
+            <div>可读属性支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">TcpStaticSimpleServer\Property.cs</a></div>
         </p>
         <p>
             . 同步函数支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">TcpStaticSimpleServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">TcpStaticSimpleServer\RefOut.cs</a></div>
         </p>
         <p>
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
-            <div> 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">TcpStaticSimpleServer\Asynchronous.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">TcpStaticSimpleServer\Asynchronous.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
@@ -69,83 +69,83 @@
     <div><h1>内部实例服务</h1></div>
     <div>
         <p>内部实例服务只支持实例方法，需要定义一个服务类 class ，用于整合少量的远程调用函数，服务的客户端也是一个单独的类型。</p>
-<p>1. 在服务类 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
+<p>1. 在服务类 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
 <p>2. 给 class 添加 TCP 服务申明配置 <b>[AutoCSer.Net.TcpInternalSimpleServer.Server(Host = "127.0.0.1", Port = 12345)]</b></p>
 <p>3. 给实例方法添加 TCP 远程函数申明配置 <b>[AutoCSer.Net.TcpSimpleServer.Method]</b>，为了防止调用者混淆远程函数与本地函数产生误调用，默认配置下远程函数必须对于其它程序集不可见（private / protected / internal）</p>
-<p>4. 给该工程项目配置<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。</p>
+<p>4. 给该工程项目配置<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。</p>
         <p>
             . 支持函数成员选择配置，默认选择其它程序集不可见函数成员，而且必须申明 TCP 远程函数配置 <b>[AutoCSer.Net.TcpSimpleServer.Method]</b>
-            <div>无需 TCP 远程函数申明配置 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">TcpInternalSimpleServer\NoAttribute.cs</a></div>
-            <div>公共函数支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','a');">TcpInternalSimpleServer\Static.cs</a></div>
+            <div>无需 TCP 远程函数申明配置 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">TcpInternalSimpleServer\NoAttribute.cs</a></div>
+            <div>公共函数支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','a');">TcpInternalSimpleServer\Static.cs</a></div>
         </p>
         <p>
             . 支持静态字段与可读静态属性，默认支持取值操作，不支持赋值操作
-            <div>字段支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','b');">TcpInternalSimpleServer\Field.cs</a></div>
-            <div>可读属性支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','c');">TcpInternalSimpleServer\Property.cs</a></div>
+            <div>字段支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','b');">TcpInternalSimpleServer\Field.cs</a></div>
+            <div>可读属性支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','c');">TcpInternalSimpleServer\Property.cs</a></div>
         </p>
         <p>
             . 同步函数支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','d');">TcpInternalSimpleServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','d');">TcpInternalSimpleServer\RefOut.cs</a></div>
         </p>
         <p>
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
-            <div> 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeg" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','g');">TcpInternalSimpleServer\Asynchronous.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeg" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','g');">TcpInternalSimpleServer\Asynchronous.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance
-            <br /><a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleClientPerformance
-            <br /><img @src="//f.autocser.com/TcpServer/SimpleMethodServer.png" alt="TCP 函数应答服务框架 内部服务 吞吐性能测试" />
+            <br /><a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance
+            <br /><a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleClientPerformance
+            <br /><img @src="//f.autocser.com/TcpServer/SimpleMethodServer.png" alt="TCP 函数同步应答服务框架 内部服务 吞吐性能测试" />
         </p>
     </div>
     <div><h1>开放服务</h1></div>
     <div>
         <p>开放服务只支持实例方法，需要定义一个服务类 class ，用于整合少量的远程调用函数，服务的客户端也是一个单独的类型。</p>
-<p>1. 在服务类 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
+<p>1. 在服务类 class 定义中添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>需要与它公用同一个类型以访问远程函数。</p>
 <p>2. 给 class 添加 TCP 服务申明配置 <b>[AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 12345)]</b></p>
 <p>3. 给实例方法添加 TCP 远程函数申明配置 <b>[AutoCSer.Net.TcpOpenSimpleServer.Method]</b>，为了防止调用者混淆远程函数与本地函数产生误调用，默认配置下远程函数必须对于其它程序集不可见（private / protected / internal）</p>
-<p>4. 给该工程项目配置<a href="/CodeGenerator.html?v=AB050B">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。</p>
+<p>4. 给该工程项目配置<a href="/CodeGenerator.html?v=B1E5D9">静态代码生成</a>并编译项目，然后将生成的 TCP 代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。</p>
 
         <p>
             . 支持函数成员选择配置，默认选择其它程序集不可见函数成员，而且必须申明 TCP 远程函数配置 <b>[AutoCSer.Net.TcpSimpleServer.Method]</b>
-            <div>无需 TCP 远程函数申明配置 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodei" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','i');">TcpOpenSimpleServer\NoAttribute.cs</a></div>
-            <div>公共函数支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodej" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','j');">TcpOpenSimpleServer\Static.cs</a></div>
+            <div>无需 TCP 远程函数申明配置 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodei" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','i');">TcpOpenSimpleServer\NoAttribute.cs</a></div>
+            <div>公共函数支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodej" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','j');">TcpOpenSimpleServer\Static.cs</a></div>
         </p>
         <p>
             . 支持静态字段与可读静态属性，默认支持取值操作，不支持赋值操作
-            <div>字段支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodek" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','k');">TcpOpenSimpleServer\Field.cs</a></div>
-            <div>可读属性支持 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodel" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','l');">TcpOpenSimpleServer\Property.cs</a></div>
+            <div>字段支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodek" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','k');">TcpOpenSimpleServer\Field.cs</a></div>
+            <div>可读属性支持 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodel" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','l');">TcpOpenSimpleServer\Property.cs</a></div>
         </p>
         <p>
             . 同步函数支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodem" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','m');">TcpOpenSimpleServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodem" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','m');">TcpOpenSimpleServer\RefOut.cs</a></div>
         </p>
         <p>
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
-            <div> 参考示例 <a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodep" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','p');">TcpOpenSimpleServer\Asynchronous.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodep" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','p');">TcpOpenSimpleServer\Asynchronous.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance
-            <br /><a href="/Index.html?v=AB050B" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleClientPerformance
+            <br /><a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance
+            <br /><a href="/Index.html?v=B1E5D9" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleClientPerformance
             <br /><img @src="//f.autocser.com/TcpServer/SimpleMethodOpenServer.png" alt="TCP 函数服务框架 开放服务 吞吐性能测试" />
         </p>
     </div>
     <div>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=AB050B">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=B1E5D9">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>

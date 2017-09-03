@@ -3,14 +3,13 @@ using System.Net.Sockets;
 using System.Threading;
 using AutoCSer.Log;
 using AutoCSer.Extension;
-using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpOpenSimpleServer
 {
     /// <summary>
     /// TCP 服务端
     /// </summary>
-    public abstract unsafe class Server : TcpSimpleServer.Server<ServerAttribute, ServerSocket>
+    public abstract unsafe class Server : TcpSimpleServer.Server<ServerAttribute, Server, ServerSocket>
     {
         /// <summary>
         /// 套接字等待事件
@@ -19,7 +18,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 套接字链表头部
         /// </summary>
-        private TcpSimpleServer.SocketLink socketHead;
+        private SocketLink socketHead;
         /// <summary>
         /// TCP 服务端
         /// </summary>
@@ -38,7 +37,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         internal override void GetSocket()
         {
             //ThreadPriority priority = Thread.CurrentThread.Priority;
-            ReceiveVerifyCommandTimeout = TcpSimpleServer.ServerSocket.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
             socketHandle.Set(0);
             AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(OnSocket);
             //Thread.CurrentThread.Priority = ThreadPriority.Highest;
@@ -46,7 +45,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             else getSocketVerify();
             //Thread.CurrentThread.Priority = priority;
             socketHandle.Set();
-            TcpSimpleServer.ServerSocket.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
+            SocketTimeoutLink.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
         }
         /// <summary>
         /// 获取客户端请求
@@ -54,13 +53,13 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         private void getSocket()
         {
             Socket listenSocket = this.Socket;
-            TcpSimpleServer.SocketLink head, newSocketLink;
+            SocketLink head, newSocketLink;
             while (isListen != 0)
             {
                 try
                 {
                     NEXT:
-                    newSocketLink = new TcpSimpleServer.SocketLink();
+                    newSocketLink = new SocketLink();
                     newSocketLink.Socket = listenSocket.Accept();
                     if (isListen == 0)
                     {
@@ -114,13 +113,13 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         private void getSocketVerify()
         {
             Socket listenSocket = this.Socket;
-            TcpSimpleServer.SocketLink head, newSocketLink;
+            SocketLink head, newSocketLink;
             while (isListen != 0)
             {
                 try
                 {
                     NEXT:
-                    newSocketLink = new TcpSimpleServer.SocketLink();
+                    newSocketLink = new SocketLink();
                     ACCEPT:
                     newSocketLink.Socket = listenSocket.Accept();
                     if (isListen == 0)
@@ -183,7 +182,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             while (isListen != 0)
             {
                 socketHandle.Wait();
-                TcpSimpleServer.SocketLink socket = Interlocked.Exchange(ref socketHead, null);
+                SocketLink socket = Interlocked.Exchange(ref socketHead, null);
                 do
                 {
                     try

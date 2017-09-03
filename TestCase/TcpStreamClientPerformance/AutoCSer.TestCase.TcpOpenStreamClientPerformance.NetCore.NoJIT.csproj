@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>AutoCSer.TestCase.TcpOpenStreamClientPerformance</AssemblyName>
+    <RootNamespace>AutoCSer.TestCase.TcpOpenStreamClientPerformance</RootNamespace>
+    <Description>AutoCSer.TestCase.TcpOpenStreamClientPerformance 是 TCP 函数应答流服务框架 开放服务 性能测试客户端。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.TestCase.TcpOpenStreamClientPerformance.NetCore.NoJIT</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/TcpServer/StreamMethodServer.html</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;Open;MONO;NOJIT;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;Open;MONO;NOJIT;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Client.Asynchronous.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="ClientAwaiter.Open.cs" />
+    <Compile Include="ClientSynchronous.Open.cs" />
+    <Compile Include="ClientTaskAsync.Open.cs" />
+    <Compile Include="ClientTestType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpOpenClient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.NoJIT.csproj" />
+    <ProjectReference Include="..\TcpStreamServerPerformance\AutoCSer.TestCase.TcpOpenStreamServerPerformance.NetCore.NoJIT.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

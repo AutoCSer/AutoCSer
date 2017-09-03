@@ -702,7 +702,7 @@ namespace AutoCSer.CodeGenerator.Template
                             #region NOT IsClientSendOnly
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                             #endregion NOT IsClientSendOnly
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         #region NOT IsClientSendOnly
                         sender.Push(returnType);
@@ -759,7 +759,7 @@ namespace AutoCSer.CodeGenerator.Template
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -773,14 +773,14 @@ namespace AutoCSer.CodeGenerator.Template
                     {
                         get(ref value);
                         #region IF OutputParameterIndex
-                        Sender.Push(CommandIndex/*IF:OutputParameterIndex*/, @StaticMethodIdentityCommand/*IF:OutputParameterIndex*/, ref value);
+                        Sender.Push(CommandIndex, @StaticMethodIdentityCommand, ref value);
                         #endregion IF OutputParameterIndex
                         #region NOT OutputParameterIndex
                         #region IF IsServerBuildOutputThread
-                        Sender.Push(CommandIndex/*NOTE*/, null/*NOTE*/, ref value);
+                        Sender.Push(CommandIndex, value.Type);
                         #endregion IF IsServerBuildOutputThread
                         #region NOT IsServerBuildOutputThread
-                        Sender.PushNoThread(CommandIndex, ref value);
+                        Sender.PushNoThread(CommandIndex, value.Type);
                         #endregion NOT IsServerBuildOutputThread
                         #endregion NOT OutputParameterIndex
                     }

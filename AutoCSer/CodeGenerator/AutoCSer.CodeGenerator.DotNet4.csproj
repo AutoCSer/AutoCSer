@@ -146,12 +146,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpInternalStreamServer.cs" />
     <Compile Include="TemplateGenerator\TcpOpenSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpOpenStreamServer.cs" />
     <Compile Include="TemplateGenerator\TcpServer.cs" />
     <Compile Include="TemplateGenerator\TcpSimpleServer.cs" />
     <Compile Include="TemplateGenerator\TcpStaticServer.cs" />
     <Compile Include="TemplateGenerator\TcpOpenServer.cs" />
     <Compile Include="TemplateGenerator\TcpStaticSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStaticStreamServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStreamServer.cs" />
     <Compile Include="TemplateGenerator\WebCall.cs" />
     <Compile Include="TemplateGenerator\WebPath.cs" />
     <Compile Include="TemplateGenerator\WebView.cs">
@@ -169,12 +173,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Template\TcpInternalSimpleServer.cs" />
+    <Compile Include="Template\TcpInternalStreamServer.cs" />
     <Compile Include="Template\TcpOpenServer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Template\TcpOpenSimpleServer.cs" />
+    <Compile Include="Template\TcpOpenStreamServer.cs" />
     <Compile Include="Template\TcpStaticServer.cs" />
     <Compile Include="Template\TcpStaticSimpleServer.cs" />
+    <Compile Include="Template\TcpStaticStreamServer.cs" />
     <Compile Include="Template\WebCall.cs" />
     <Compile Include="Template\WebView.cs" />
     <Compile Include="TreeTemplate.cs" />
@@ -253,6 +260,10 @@
     <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.csproj">
       <Project>{B1C64112-6340-435D-87EC-319091D948BB}</Project>
       <Name>AutoCSer.TcpSimpleServer.DotNet4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TcpStreamServer\AutoCSer.TcpStreamServer.DotNet4.csproj">
+      <Project>{ABE4842A-504B-4204-A9C8-4AD569A86D25}</Project>
+      <Name>AutoCSer.TcpStreamServer.DotNet4</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

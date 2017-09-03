@@ -25,7 +25,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 客户端位置
             /// </summary>
-            public string SimpleClientPart = "TcpStaticSimpleClient";
+            public string SimpleClientPart
+            {
+                get { return "TcpStaticSimpleClient"; }
+            }
             /// <summary>
             /// 调用参数位置
             /// </summary>

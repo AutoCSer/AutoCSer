@@ -65,6 +65,11 @@
     <Compile Include="TcpInternalSimpleServer\Json.cs" />
     <Compile Include="TcpInternalSimpleServer\Member.cs" />
     <Compile Include="TcpInternalSimpleServer\Session.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\IServer.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\Server.cs" />
+    <Compile Include="TcpInternalStreamServer\Json.cs" />
+    <Compile Include="TcpInternalStreamServer\Member.cs" />
+    <Compile Include="TcpInternalStreamServer\Session.cs" />
     <Compile Include="TcpOpenServer\Emit\Server.cs" />
     <Compile Include="TcpOpenServer\Json.cs" />
     <Compile Include="TcpOpenServer\Member.cs" />
@@ -73,12 +78,19 @@
     <Compile Include="TcpOpenSimpleServer\Json.cs" />
     <Compile Include="TcpOpenSimpleServer\Member.cs" />
     <Compile Include="TcpOpenSimpleServer\Session.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\Server.cs" />
+    <Compile Include="TcpOpenStreamServer\Json.cs" />
+    <Compile Include="TcpOpenStreamServer\Member.cs" />
+    <Compile Include="TcpOpenStreamServer\Session.cs" />
     <Compile Include="TcpStaticServer\Json.cs" />
     <Compile Include="TcpStaticServer\Member.cs" />
     <Compile Include="TcpStaticServer\Session.cs" />
     <Compile Include="TcpStaticSimpleServer\Json.cs" />
     <Compile Include="TcpStaticSimpleServer\Member.cs" />
     <Compile Include="TcpStaticSimpleServer\Session.cs" />
+    <Compile Include="TcpStaticStreamServer\Json.cs" />
+    <Compile Include="TcpStaticStreamServer\Member.cs" />
+    <Compile Include="TcpStaticStreamServer\Session.cs" />
     <Compile Include="Xml.cs" />
     <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
   </ItemGroup>
@@ -99,7 +111,12 @@
       <Project>{e647a356-94ca-496f-8993-bd61c23dcffb}</Project>
       <Name>AutoCSer.TcpSimpleServer.DotNet4.5</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.DotNet4.5.csproj">
+      <Project>{b9aa460a-6b0e-45fb-8fb2-721abcb6d20e}</Project>
+      <Name>AutoCSer.TcpStreamServer.DotNet4.5</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>

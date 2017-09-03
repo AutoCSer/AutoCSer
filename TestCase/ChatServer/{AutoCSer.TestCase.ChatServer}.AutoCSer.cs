@@ -80,7 +80,7 @@ namespace AutoCSer.TestCase.ChatServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -96,7 +96,7 @@ namespace AutoCSer.TestCase.ChatServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -115,7 +115,7 @@ namespace AutoCSer.TestCase.ChatServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -133,7 +133,7 @@ namespace AutoCSer.TestCase.ChatServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -151,7 +151,7 @@ namespace AutoCSer.TestCase.ChatServer
                             catch (Exception error)
                             {
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.Log(error);
+                                sender.AddLog(error);
                             }
                             sender.Push(returnType);
                             return;
@@ -174,7 +174,7 @@ namespace AutoCSer.TestCase.ChatServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -183,7 +183,7 @@ namespace AutoCSer.TestCase.ChatServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, ref value);
+                            Sender.Push(CommandIndex, value.Type);
                         }
                         push(this);
                     }
@@ -204,7 +204,7 @@ namespace AutoCSer.TestCase.ChatServer
                         catch (Exception error)
                         {
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.Log(error);
+                            Sender.AddLog(error);
                         }
                     }
                     public override void Call()
@@ -213,7 +213,7 @@ namespace AutoCSer.TestCase.ChatServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, ref value);
+                            Sender.Push(CommandIndex, value.Type);
                         }
                         push(this);
                     }

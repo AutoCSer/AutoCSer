@@ -194,9 +194,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         public void TryCreateSocket()
         {
-            if (IpAddress == null) Log.add(AutoCSer.Log.LogType.Error, Host + " IP 解析失败");
-            else if (Port == 0) Log.add(AutoCSer.Log.LogType.Error, ServerName + " 端口号不能为 0");
-            else
+            if (check(IpAddress, Port))
             {
                 Monitor.Enter(SocketLock);
                 try

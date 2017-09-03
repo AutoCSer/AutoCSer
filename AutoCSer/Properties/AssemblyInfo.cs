@@ -60,6 +60,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.Sql")]
 [assembly: InternalsVisibleTo("AutoCSer.DiskBlock")]
 [assembly: InternalsVisibleTo("AutoCSer.Deploy")]
+[assembly: InternalsVisibleTo("AutoCSer.TcpStreamServer")]
 [assembly: InternalsVisibleTo("AutoCSer.TcpSimpleServer")]
 [assembly: InternalsVisibleTo("AutoCSer.Drawing.Gif")]
 [assembly: InternalsVisibleTo("AutoCSer.RandomObject")]

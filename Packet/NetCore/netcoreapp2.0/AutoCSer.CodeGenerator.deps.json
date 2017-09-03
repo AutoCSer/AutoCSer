@@ -9,6 +9,7 @@
       "AutoCSer.CodeGenerator/1.1.0": {
         "dependencies": {
           "AutoCSer.TcpSimpleServer.NetStandard": "1.1.0",
+          "AutoCSer.TcpStreamServer.NetStandard": "1.1.0",
           "AutoCSer": "1.1.0.0",
           "AutoCSer.Sort": "1.1.0.0",
           "AutoCSer.WebView": "1.1.0.0"
@@ -88,6 +89,15 @@
         },
         "runtime": {
           "AutoCSer.TcpSimpleServer.dll": {}
+        }
+      },
+      "AutoCSer.TcpStreamServer.NetStandard/1.1.0": {
+        "dependencies": {
+          "System.Reflection.Emit": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.3.0"
+        },
+        "runtime": {
+          "AutoCSer.TcpStreamServer.dll": {}
         }
       },
       "AutoCSer/1.1.0.0": {
@@ -184,6 +194,11 @@
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
     },
     "AutoCSer.TcpSimpleServer.NetStandard/1.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutoCSer.TcpStreamServer.NetStandard/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

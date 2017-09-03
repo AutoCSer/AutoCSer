@@ -119,6 +119,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 /// <summary>
+                /// TCP调用命令名称
+                /// </summary>
+                public string AsynchronousStaticMethodIdentityCommand
+                {
+                    get
+                    {
+                        return "_ac" + StaticMethodIndex.toString();
+                    }
+                }
+                /// <summary>
                 /// await TCP 调用命令名称
                 /// </summary>
                 public string StaticAwaiterMethodIdentityCommand
@@ -255,7 +265,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 是否定义服务器端调用
                 /// </summary>
-                public bool IsMethodServerCall
+                public virtual bool IsMethodServerCall
                 {
                     get
                     {
@@ -263,11 +273,209 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         //return !IsAsynchronousCallback && (Attribute.IsServerTask || MemberIndex != null || IsClientSendOnly == 0 || Method.Method.IsGenericMethod);
                     }
                 }
+
+                /// <summary>
+                /// TCP调用命令名称
+                /// </summary>
+                public string MethodAsynchronousIdentityCommand
+                {
+                    get
+                    {
+                        return "_ac" + MethodIndex.toString();
+                    }
+                }
+                /// <summary>
+                /// 是否存在输出参数
+                /// </summary>
+                public bool IsOutputParameter
+                {
+                    get
+                    {
+                        return MethodReturnType.Type != typeof(void) || Method.OutputParameters.Length != 0;
+                    }
+                }
+                /// <summary>
+                /// 客户端调用是否支持同步
+                /// </summary>
+                public bool IsClientSynchronous
+                {
+                    get
+                    {
+                        return Attribute.GetIsClientSynchronous && IsKeepCallback == 0 && IsClientSendOnly == 0;
+                    }
+                }
+                /// <summary>
+                /// 客户端是否支持 async Task
+                /// </summary>
+                public bool IsClientTaskAsync
+                {
+                    get { return Attribute.GetIsClientTaskAsync && IsKeepCallback == 0 && IsClientSendOnly == 0; }
+                }
+                /// <summary>
+                /// 客户端调用是否支持异步
+                /// </summary>
+                public bool IsClientAsynchronous
+                {
+                    get
+                    {
+                        return (Attribute.GetIsClientAsynchronous && IsOutputParameter) || IsKeepCallback != 0;
+                        //return IsOutputParameter || IsKeepCallback;
+                    }
+                }
+                /// <summary>
+                /// 是否仅发送数据
+                /// </summary>
+                public int IsClientSendOnly
+                {
+                    get
+                    {
+                        if (Attribute.GetIsClientSendOnly && !IsClientAsynchronous)
+                        {
+                            checkAsynchronousReturn();
+                            if (MethodReturnType.Type == typeof(void)) return 1;
+                        }
+                        return 0;
+                    }
+                }
+                /// <summary>
+                /// 是否保持异步回调
+                /// </summary>
+                public int IsKeepCallback
+                {
+                    get
+                    {
+                        //return IsAsynchronousCallback && Method.Method.ReturnType == typeof(AutoCSer.Net.TcpServer.KeepCallback) && !IsVerifyMethod ? 1 : 0;
+                        return Attribute.GetIsKeepCallback && !IsVerifyMethod ? 1 : 0;
+                    }
+                }
+                /// <summary>
+                /// 任务类型名称
+                /// </summary>
+                private static readonly string clientTaskTypeName = typeof(AutoCSer.Net.TcpServer.ClientTaskType).fullName();
+                /// <summary>
+                /// 客户端任务类型
+                /// </summary>
+                public string ClientTask
+                {
+                    get
+                    {
+                        //IsClientAsynchronous
+                        AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
+                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
+                        return clientTaskTypeName + "." + taskType.ToString();
+                    }
+                }
+                /// <summary>
+                /// 客户端是否支持 await
+                /// </summary>
+                public bool IsClientAwaiter
+                {
+                    get
+                    {
+                        if (IsKeepCallback == 0 && IsClientSendOnly == 0)
+                        {
+                            if (Attribute.GetIsClientAwaiter)
+                            {
+                                foreach (MethodParameter parameter in MethodParameters)
+                                {
+                                    if (parameter.IsRefOrOut)
+                                    {
+                                        //Messages.Message(Method.Method.fullName() + " 存在 ref / out 参数不支持 await");
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterTypeName = typeof(AutoCSer.Net.TcpServer.Awaiter<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBox<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReference<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBoxReference<>).onlyName();
+                /// <summary>
+                /// await 类型
+                /// </summary>
+                public string Awaiter
+                {
+                    get
+                    {
+                        if (MethodIsReturn)
+                        {
+                            if (Attribute.IsOutputSerializeReferenceMember)
+                            {
+                                return Attribute.IsOutputSerializeBox ? awaiterBoxReferenceTypeName : awaiterReferenceTypeName;
+                            }
+                            return Attribute.IsOutputSerializeBox ? awaiterBoxTypeName : awaiterTypeName;
+                        }
+                        return typeof(AutoCSer.Net.TcpServer.Awaiter).Name;
+                    }
+                }
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValue<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueReference<>).onlyName();
+                /// <summary>
+                /// await 类型名称
+                /// </summary>
+                private static readonly string awaiterReturnValueBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<>).onlyName();
+                /// <summary>
+                /// await 返回值包装类型
+                /// </summary>
+                public string AwaiterReturnValue
+                {
+                    get
+                    {
+                        if (Attribute.IsOutputSerializeReferenceMember)
+                        {
+                            return Attribute.IsOutputSerializeBox ? awaiterReturnValueBoxReferenceTypeName : awaiterReturnValueReferenceTypeName;
+                        }
+                        return Attribute.IsOutputSerializeBox ? awaiterReturnValueBoxTypeName : awaiterReturnValueTypeName;
+                    }
+                }
+                /// <summary>
+                /// 是否生成同步 TCP 调用命令名称
+                /// </summary>
+                public bool IsSynchronousMethodIdentityCommand
+                {
+                    get
+                    {
+                        return MemberIndex != null || IsClientSendOnly != 0 || IsClientSynchronous || IsClientTaskAsync;
+                    }
+                }
+                /// <summary>
+                /// 是否生成 await TCP 调用命令名称
+                /// </summary>
+                public bool IsAwaiterMethodIdentityCommand
+                {
+                    get { return IsClientAwaiter || IsClientTaskAsync; }
+                }
+
                 /// <summary>
                 /// 是否空方法
                 /// </summary>
                 public bool IsNullMethod;
-
                 /// <summary>
                 /// 检测异步回调方法
                 /// </summary>
@@ -574,7 +782,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         internal abstract class Generator<attributeType, methodAttributeType, serverSocketSenderType> : GeneratorBase<attributeType, methodAttributeType, serverSocketSenderType>
             where attributeType : AutoCSer.Net.TcpServer.ServerBaseAttribute
             where methodAttributeType : AutoCSer.Net.TcpServer.MethodAttribute
-            where serverSocketSenderType : AutoCSer.Net.TcpServer.ServerSocketSender
+            where serverSocketSenderType : AutoCSer.Net.TcpServer.ServerSocketSenderBase
         {
             /// <summary>
             /// 方法索引信息
@@ -589,43 +797,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get
                     {
                         return "_M" + MethodIndex.toString();
-                    }
-                }
-                /// <summary>
-                /// TCP调用命令名称
-                /// </summary>
-                public string MethodAsynchronousIdentityCommand
-                {
-                    get
-                    {
-                        return "_ac" + MethodIndex.toString();
-                    }
-                }
-                /// <summary>
-                /// TCP调用命令名称
-                /// </summary>
-                public string AsynchronousStaticMethodIdentityCommand
-                {
-                    get
-                    {
-                        return "_ac" + StaticMethodIndex.toString();
-                    }
-                }
-                /// <summary>
-                /// 任务类型名称
-                /// </summary>
-                private static readonly string clientTaskTypeName = typeof(AutoCSer.Net.TcpServer.ClientTaskType).fullName();
-                /// <summary>
-                /// 客户端任务类型
-                /// </summary>
-                public string ClientTask
-                {
-                    get
-                    {
-                        //IsClientAsynchronous
-                        AutoCSer.Net.TcpServer.ClientTaskType taskType = MemberIndex == null || !MemberIndex.IsField ? Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous;
-                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultClientTask";
-                        return clientTaskTypeName + "." + taskType.ToString();
                     }
                 }
                 ///// <summary>
@@ -648,16 +819,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 //        return (Attribute.ParameterFlags & Net.TcpServer.ParameterFlags.InputClass) == 0 ? "struct" : "sealed class";
                 //    }
                 //}
-                /// <summary>
-                /// 是否存在输出参数
-                /// </summary>
-                public bool IsOutputParameter
-                {
-                    get
-                    {
-                        return MethodReturnType.Type != typeof(void) || Method.OutputParameters.Length != 0;
-                    }
-                }
                 ///// <summary>
                 ///// 输出参数类型名称class/struct
                 ///// </summary>
@@ -668,166 +829,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 //        return (Attribute.ParameterFlags & Net.TcpServer.ParameterFlags.OutputClass) == 0 ? "struct" : "sealed class";
                 //    }
                 //}
-                /// <summary>
-                /// 是否仅发送数据
-                /// </summary>
-                public int IsClientSendOnly
-                {
-                    get
-                    {
-                        if (Attribute.GetIsClientSendOnly && !IsClientAsynchronous)
-                        {
-                            checkAsynchronousReturn();
-                            if (MethodReturnType.Type == typeof(void)) return 1;
-                        }
-                        return 0;
-                    }
-                }
-                /// <summary>
-                /// 客户端调用是否支持异步
-                /// </summary>
-                public bool IsClientAsynchronous
-                {
-                    get
-                    {
-                        return (Attribute.GetIsClientAsynchronous && IsOutputParameter) || IsKeepCallback != 0;
-                        //return IsOutputParameter || IsKeepCallback;
-                    }
-                }
-                /// <summary>
-                /// 客户端调用是否支持同步
-                /// </summary>
-                public bool IsClientSynchronous
-                {
-                    get
-                    {
-                        return Attribute.GetIsClientSynchronous && IsKeepCallback == 0 && IsClientSendOnly == 0;
-                    }
-                }
-                /// <summary>
-                /// 客户端是否支持 async Task
-                /// </summary>
-                public bool IsClientTaskAsync
-                {
-                    get { return Attribute.GetIsClientTaskAsync && IsKeepCallback == 0 && IsClientSendOnly == 0; }
-                }
-                /// <summary>
-                /// 客户端是否支持 await
-                /// </summary>
-                public bool IsClientAwaiter
-                {
-                    get
-                    {
-                        if (IsKeepCallback == 0 && IsClientSendOnly == 0)
-                        {
-                            if (Attribute.GetIsClientAwaiter)
-                            {
-                                foreach (MethodParameter parameter in MethodParameters)
-                                {
-                                    if (parameter.IsRefOrOut)
-                                    {
-                                        //Messages.Message(Method.Method.fullName() + " 存在 ref / out 参数不支持 await");
-                                        return false;
-                                    }
-                                }
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                }
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterTypeName = typeof(AutoCSer.Net.TcpServer.Awaiter<>).onlyName();
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBox<>).onlyName();
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReference<>).onlyName();
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterBoxReference<>).onlyName();
-                /// <summary>
-                /// await 类型
-                /// </summary>
-                public string Awaiter
-                {
-                    get
-                    {
-                        if (MethodIsReturn)
-                        {
-                            if (Attribute.IsOutputSerializeReferenceMember)
-                            {
-                                return Attribute.IsOutputSerializeBox ? awaiterBoxReferenceTypeName : awaiterReferenceTypeName;
-                            }
-                            return Attribute.IsOutputSerializeBox ? awaiterBoxTypeName : awaiterTypeName;
-                        }
-                        return typeof(AutoCSer.Net.TcpServer.Awaiter).Name;
-                    }
-                }
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterReturnValueTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValue<>).onlyName();
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterReturnValueBoxTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<>).onlyName();
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterReturnValueReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueReference<>).onlyName();
-                /// <summary>
-                /// await 类型名称
-                /// </summary>
-                private static readonly string awaiterReturnValueBoxReferenceTypeName = typeof(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<>).onlyName();
-                /// <summary>
-                /// await 返回值包装类型
-                /// </summary>
-                public string AwaiterReturnValue
-                {
-                    get
-                    {
-                        if (Attribute.IsOutputSerializeReferenceMember)
-                        {
-                            return Attribute.IsOutputSerializeBox ? awaiterReturnValueBoxReferenceTypeName : awaiterReturnValueReferenceTypeName;
-                        }
-                        return Attribute.IsOutputSerializeBox ? awaiterReturnValueBoxTypeName : awaiterReturnValueTypeName;
-                    }
-                }
-                /// <summary>
-                /// 是否生成同步 TCP 调用命令名称
-                /// </summary>
-                public bool IsSynchronousMethodIdentityCommand
-                {
-                    get
-                    {
-                        return MemberIndex != null || IsClientSendOnly != 0 || IsClientSynchronous || IsClientTaskAsync;
-                    }
-                }
-                /// <summary>
-                /// 是否生成 await TCP 调用命令名称
-                /// </summary>
-                public bool IsAwaiterMethodIdentityCommand
-                {
-                    get { return IsClientAwaiter || IsClientTaskAsync; }
-                }
-                /// <summary>
-                /// 是否保持异步回调
-                /// </summary>
-                public int IsKeepCallback
-                {
-                    get
-                    {
-                        //return IsAsynchronousCallback && Method.Method.ReturnType == typeof(AutoCSer.Net.TcpServer.KeepCallback) && !IsVerifyMethod ? 1 : 0;
-                        return Attribute.GetIsKeepCallback && !IsVerifyMethod ? 1 : 0;
-                    }
-                }
                 /// <summary>
                 /// 保持异步回调类型名称
                 /// </summary>

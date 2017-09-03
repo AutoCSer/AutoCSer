@@ -9,6 +9,7 @@
       "AutoCSer.CodeGenerator/1.1.0": {
         "dependencies": {
           "AutoCSer.TcpSimpleServer.NetStandard.NoJIT": "1.1.0",
+          "AutoCSer.TcpStreamServer.NetStandard.NoJIT": "1.1.0",
           "AutoCSer": "1.1.0.0",
           "AutoCSer.Sort": "1.1.0.0",
           "AutoCSer.WebView": "1.1.0.0"
@@ -20,6 +21,11 @@
       "AutoCSer.TcpSimpleServer.NetStandard.NoJIT/1.1.0": {
         "runtime": {
           "AutoCSer.TcpSimpleServer.dll": {}
+        }
+      },
+      "AutoCSer.TcpStreamServer.NetStandard.NoJIT/1.1.0": {
+        "runtime": {
+          "AutoCSer.TcpStreamServer.dll": {}
         }
       },
       "AutoCSer/1.1.0.0": {
@@ -46,6 +52,11 @@
       "sha512": ""
     },
     "AutoCSer.TcpSimpleServer.NetStandard.NoJIT/1.1.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutoCSer.TcpStreamServer.NetStandard.NoJIT/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -217,10 +217,12 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// TCP 服务端套接字
     /// </summary>
     /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+    /// <typeparam name="serverType">TCP 服务类型</typeparam>
     /// <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
-    public abstract class ServerSocket<attributeType, socketType> : ServerSocket
+    public abstract class ServerSocket<attributeType, serverType, socketType> : ServerSocket
         where attributeType : ServerAttribute
-        where socketType : ServerSocket<attributeType, socketType>
+        where serverType : Server<attributeType, serverType, socketType>
+        where socketType : ServerSocket<attributeType, serverType, socketType>
     {
         /// <summary>
         /// 线程切换检测时间
@@ -233,12 +235,12 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// TCP 服务
         /// </summary>
-        internal readonly Server<attributeType, socketType> Server;
+        internal readonly serverType Server;
         /// <summary>
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
-        internal ServerSocket(Server<attributeType, socketType> server)
+        internal ServerSocket(serverType server)
         {
             Server = server;
         }

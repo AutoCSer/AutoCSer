@@ -18377,7 +18377,7 @@
             <param name="log">日志接口</param>
             <param name="verifyMethod">验证委托</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.Client`1.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSender)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client`1.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSenderBase)">
             <summary>
             套接字验证
             </summary>
@@ -18897,6 +18897,11 @@
             TCP 内部服务端套接字
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpInternalServer.ServerSocket.customDataSize">
+            <summary>
+            自定义数据字节长度
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerSocket.Sender">
             <summary>
             TCP 内部服务套接字数据发送
@@ -19007,7 +19012,7 @@
             <param name="isCommand"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.checkCommandDataLoop(System.Boolean@)">
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.receiveCommandData(System.Boolean@)">
             <summary>
             检查命令数据
             </summary>
@@ -19033,12 +19038,6 @@
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.isDoCommandLoop">
             <summary>
             执行命令
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocket.doCommand">
-            <summary>
-            命令处理委托
             </summary>
             <returns></returns>
         </member>
@@ -19335,7 +19334,7 @@
             <param name="log">日志接口</param>
             <param name="verifyMethod">验证委托</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.Client`1.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSender)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client`1.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSenderBase)">
             <summary>
             套接字验证
             </summary>
@@ -19711,14 +19710,6 @@
             <param name="serverValue">服务器目标对象</param>
             <param name="taskType"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`2.Call(AutoCSer.Net.TcpOpenServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType)">
-            <summary>
-            获取服务器端调用
-            </summary>
-            <param name="socket"></param>
-            <param name="serverValue"></param>
-            <param name="taskType"></param>
-        </member>
         <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`2.Pop">
             <summary>
             获取服务器端调用
@@ -19752,15 +19743,6 @@
             <param name="serverValue">服务器目标对象</param>
             <param name="taskType"></param>
             <param name="inputParameter">输入参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`3.Call(AutoCSer.Net.TcpOpenServer.ServerSocketSender,`1,AutoCSer.Net.TcpServer.ServerTaskType,`2@)">
-            <summary>
-            获取服务器端调用
-            </summary>
-            <param name="socket"></param>
-            <param name="serverValue"></param>
-            <param name="taskType"></param>
-            <param name="inputParameter"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpOpenServer.ServerCall`3.push(`0)">
             <summary>
@@ -19850,6 +19832,11 @@
         <member name="T:AutoCSer.Net.TcpOpenServer.ServerSocket">
             <summary>
             TCP 服务端套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.ServerSocket.customDataSize">
+            <summary>
+            自定义数据字节长度
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpOpenServer.ServerSocket.Sender">
@@ -19969,7 +19956,7 @@
             <param name="isCommand"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocket.checkCommandDataLoop(System.Boolean@)">
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocket.receiveCommandData(System.Boolean@)">
             <summary>
             检查命令数据
             </summary>
@@ -19997,12 +19984,6 @@
         <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocket.isDoCommandLoop">
             <summary>
             执行命令
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocket.doCommand">
-            <summary>
-            命令处理委托
             </summary>
             <returns></returns>
         </member>
@@ -20322,7 +20303,7 @@
             关闭 TCP 注册服务客户端
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpRegister.Client.onNewSocket(AutoCSer.Net.TcpServer.ClientSocket)">
+        <member name="M:AutoCSer.Net.TcpRegister.Client.onNewSocket(AutoCSer.Net.TcpServer.ClientSocketBase)">
             <summary>
             TCP 客户端套接字初始化处理
             </summary>
@@ -21848,44 +21829,14 @@
             </summary>
             <typeparam name="attributeType">TCP 服务配置类型</typeparam>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Client`1.OutputSleep">
+        <member name="F:AutoCSer.Net.TcpServer.Client`1.onCustomData">
             <summary>
-            批量处理休眠毫秒数
+            自定义数据包处理
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Client`1.SocketWait">
+        <member name="F:AutoCSer.Net.TcpServer.Client`1.maxCustomDataSize">
             <summary>
-            创建 TCP 客户端套接字等待锁
-            </summary>
-        </member>
-        <member name="E:AutoCSer.Net.TcpServer.Client`1.onSetSocket">
-            <summary>
-            设置 TCP 客户端套接字事件
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Client`1.Socket">
-            <summary>
-            TCP 服务客户端套接字
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Client`1.CreateSocket">
-            <summary>
-            当前正在建立的连接
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Client`1.CreateVersion">
-            <summary>
-            服务更新版本号
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.Client`1.SendCount">
-            <summary>
-            套接字发送数据次数
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.Client`1.ReceiveCount">
-            <summary>
-            套接字接收数据次数
+            客户端最大自定义数据包字节大小
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Client`1.customDataCommandInfo">
@@ -21911,33 +21862,91 @@
             释放资源
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Client`1.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSender)">
-            <summary>
-            套接字验证
-            </summary>
-            <param name="socket">TCP 调用客户端套接字</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Client`1.SetSocket(AutoCSer.Net.TcpServer.ClientSocket)">
-            <summary>
-            设置 TCP 客户端套接字
-            </summary>
-            <param name="socket"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Client`1.OnSetSocket(System.Action{AutoCSer.Net.TcpServer.ClientSocket})">
-            <summary>
-            设置 TCP 客户端套接字事件
-            </summary>
-            <param name="onSetSocket"></param>
-        </member>
         <member name="M:AutoCSer.Net.TcpServer.Client`1.CustomData(AutoCSer.SubArray{System.Byte}@)">
             <summary>
             自定义数据包处理
             </summary>
             <param name="data"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Client`1.GetCallback``2(System.Action{AutoCSer.Net.TcpServer.ReturnValue{``0}})">
+        <member name="T:AutoCSer.Net.TcpServer.ClientBase`1">
+            <summary>
+            TCP 服务客户端
+            </summary>
+            <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.OutputSleep">
+            <summary>
+            批量处理休眠毫秒数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.TryCreateSleep">
+            <summary>
+            重建连接休眠毫秒数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.SocketWait">
+            <summary>
+            创建 TCP 客户端套接字等待锁
+            </summary>
+        </member>
+        <member name="E:AutoCSer.Net.TcpServer.ClientBase`1.onSetSocket">
+            <summary>
+            设置 TCP 客户端套接字事件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.Socket">
+            <summary>
+            TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.CreateSocket">
+            <summary>
+            当前正在建立的连接
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.CreateVersion">
+            <summary>
+            服务更新版本号
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ClientBase`1.SendCount">
+            <summary>
+            套接字发送数据次数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ClientBase`1.ReceiveCount">
+            <summary>
+            套接字接收数据次数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.#ctor(`0,AutoCSer.Log.ILog)">
+            <summary>
+            TCP 服务客户端
+            </summary>
+            <param name="attribute">TCP服务调用配置</param>
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSenderBase)">
+            <summary>
+            套接字验证
+            </summary>
+            <param name="socket">TCP 调用客户端套接字</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.SetSocket(AutoCSer.Net.TcpServer.ClientSocketBase)">
+            <summary>
+            设置 TCP 客户端套接字
+            </summary>
+            <param name="socket"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.OnSetSocket(System.Action{AutoCSer.Net.TcpServer.ClientSocketBase})">
+            <summary>
+            设置 TCP 客户端套接字事件
+            </summary>
+            <param name="onSetSocket"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.GetCallback``2(System.Action{AutoCSer.Net.TcpServer.ReturnValue{``0}})">
             <summary>
             获取异步回调
             </summary>
@@ -21949,7 +21958,7 @@
             TCP 客户端回调队列处理
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCallQueue.Add(AutoCSer.Net.TcpServer.ClientCommand.Command)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientCallQueue.Add(AutoCSer.Net.TcpServer.ClientCommand.CommandBase)">
             <summary>
             添加任务
             </summary>
@@ -21976,7 +21985,7 @@
             </summary>
             <param name="taskTicks">线程切换超时时钟周期</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCallTask.Add(AutoCSer.Net.TcpServer.ClientCommand.Command)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientCallTask.Add(AutoCSer.Net.TcpServer.ClientCommand.CommandBase)">
             <summary>
             添加任务
             </summary>
@@ -22028,7 +22037,7 @@
             </summary>
             <param name="seconds">超时秒数</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCheckTimer.Push(AutoCSer.Net.TcpServer.ClientSocket)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientCheckTimer.Push(AutoCSer.Net.TcpServer.ClientSocketBase)">
             <summary>
             添加心跳检测
             </summary>
@@ -22041,7 +22050,7 @@
             <param name="currentSecond"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCheckTimer.Reset(AutoCSer.Net.TcpServer.ClientSocket)">
+        <member name="M:AutoCSer.Net.TcpServer.ClientCheckTimer.Reset(AutoCSer.Net.TcpServer.ClientSocketBase)">
             <summary>
             重置心跳检测
             </summary>
@@ -22255,14 +22264,86 @@
             <param name="socket">TCP客户端命令流处理套接字</param>
             <returns>心跳检测命令</returns>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.ClientCommand.Command">
+        <member name="T:AutoCSer.Net.TcpServer.ClientCommand.CommandBase">
             <summary>
             TCP 客户端命令
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.Command.StreamStartIndex">
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.StreamStartIndex">
             <summary>
             输出流起始位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.CommandInfo">
+            <summary>
+            TCP调用命令
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.Build(AutoCSer.Net.TcpServer.SenderBuildInfo@)">
+            <summary>
+            创建命令输入数据
+            </summary>
+            <param name="buildInfo">TCP 客户端创建命令参数</param>
+            <returns>下一个命令</returns>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.TaskTicks">
+            <summary>
+            线程切换检测时间
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.AutoCSer#Threading#ILinkTask#LinkTaskTicks">
+            <summary>
+            线程切换检测时间
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.NextTask">
+            <summary>
+            下一个任务
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.AutoCSer#Threading#ILinkTask#NextLinkTask">
+            <summary>
+            下一个任务节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.SingleRunLinkTask">
+            <summary>
+            执行任务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.OnReceive(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            接收数据回调处理
+            </summary>
+            <param name="data">输出数据</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.OnReceiveTask">
+            <summary>
+            接收数据回调处理任务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.onReceiveTask">
+            <summary>
+            回调处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.GetReturnType(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取返回值类型
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.CommandBase.CancelLink(AutoCSer.Net.TcpServer.ClientCommand.CommandBase)">
+            <summary>
+            取消命令调用
+            </summary>
+            <param name="head"></param>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientCommand.Command">
+            <summary>
+            TCP 客户端命令
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCommand.Command.Socket">
@@ -22270,78 +22351,11 @@
             TCP 客户端套接字
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.Command.CommandInfo">
-            <summary>
-            TCP调用命令
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.Build(AutoCSer.Net.TcpServer.SenderBuildInfo@)">
-            <summary>
-            创建命令输入数据
-            </summary>
-            <param name="buildInfo">TCP 客户端创建命令参数</param>
-            <returns>下一个命令</returns>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.Command.TaskTicks">
-            <summary>
-            线程切换检测时间
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.ClientCommand.Command.AutoCSer#Threading#ILinkTask#LinkTaskTicks">
-            <summary>
-            线程切换检测时间
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientCommand.Command.NextTask">
-            <summary>
-            下一个任务
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.ClientCommand.Command.AutoCSer#Threading#ILinkTask#NextLinkTask">
-            <summary>
-            下一个任务节点
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.SingleRunLinkTask">
-            <summary>
-            执行任务
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.OnReceive(AutoCSer.SubArray{System.Byte}@)">
-            <summary>
-            接收数据回调处理
-            </summary>
-            <param name="data">输出数据</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.OnReceiveTask">
-            <summary>
-            接收数据回调处理任务
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.onReceiveTask">
-            <summary>
-            回调处理
-            </summary>
-        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.CancelKeep(System.Int32)">
             <summary>
             终止保持回调
             </summary>
             <param name="commandIndex">命令会话标识</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.GetReturnType(AutoCSer.SubArray{System.Byte}@)">
-            <summary>
-            获取返回值类型
-            </summary>
-            <param name="data"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientCommand.Command.CancelLink(AutoCSer.Net.TcpServer.ClientCommand.Command)">
-            <summary>
-            取消命令调用
-            </summary>
-            <param name="head"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientCommand.CustomDataCommand">
             <summary>
@@ -22859,84 +22873,9 @@
             TCP 服务客户端套接字
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ipAddress">
-            <summary>
-            服务 IP 地址
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.port">
-            <summary>
-            服务端口
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.MaxInputSize">
-            <summary>
-            最大输入数据字节数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.Log">
-            <summary>
-            日志处理接口
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.receiveAsyncEventArgs">
-            <summary>
-            接收数据套接字异步事件对象
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.OutputJsonSerializer">
-            <summary>
-            输出数据 JSON 序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.OutputSerializer">
-            <summary>
-            输出数据二进制序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CheckTimer">
-            <summary>
-            客户端心跳检测定时
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveMarkData">
-            <summary>
-            接收变换数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.Socket">
-            <summary>
-            TCP 套接字
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientSocket.Sender">
             <summary>
             TCP 服务客户端套接字数据发送
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveBuffer">
-            <summary>
-            接收数据缓冲区
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveBigBuffer">
-            <summary>
-            临时接收数据缓冲区
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.receiveBufferSize">
-            <summary>
-            接收数据缓冲区字节大小
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.socketError">
-            <summary>
-            套接字错误
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CreateVersion">
-            <summary>
-            服务更新版本号
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CommandPool">
@@ -22944,94 +22883,9 @@
             命令索引池
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.receiveBigBufferCount">
-            <summary>
-            临时接收数据缓冲区当前接收数据字节数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CheckNext">
-            <summary>
-            下一个心跳检测
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CheckPrevious">
-            <summary>
-            上一个心跳检测
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CheckTimeoutSeconds">
-            <summary>
-            心跳检测超时秒数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.receiveDataStart">
-            <summary>
-            接收数据起始位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.receiveCount">
-            <summary>
-            当前接收数据字节数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.receiveIndex">
-            <summary>
-            当前处理接收数据字节数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.compressionDataSize">
-            <summary>
-            当前数据压缩后的字节大小
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.dataSize">
-            <summary>
-            当前数据字节大小
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientSocket.CommandIndex">
             <summary>
             当前处理会话标识
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveType">
-            <summary>
-            获取命令回调序号
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveCount">
-            <summary>
-            套接字接收数据次数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveDeSerializer">
-            <summary>
-            回调数据二进制反序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.ReceiveJsonParser">
-            <summary>
-            回调数据 JSON 解析
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.serializeParameterIndex">
-            <summary>
-            序列化参数编号
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.isVerifyMethod">
-            <summary>
-            是否通过验证函数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.isClose">
-            <summary>
-            是否已经释放资源
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocket.isSleep">
-            <summary>
-            重建连接是否休眠
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocket.#ctor(System.Net.IPAddress,System.Int32,AutoCSer.Log.ILog,System.Int32)">
@@ -23043,10 +22897,11 @@
             <param name="log"></param>
             <param name="maxInputSize"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.Create">
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.SetSender(AutoCSer.Net.TcpServer.ClientSocketSender)">
             <summary>
-            创建 TCP 服务客户端套接字
+            设置 TCP 服务客户端套接字数据发送
             </summary>
+            <param name="sender"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocket.onReceive(AutoCSer.Net.TcpServer.ReturnType)">
             <summary>
@@ -23089,76 +22944,11 @@
             </summary>
             <param name="data"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.ResetCheck">
-            <summary>
-            重置心跳检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.Check">
-            <summary>
-            心跳检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.FreeCheck">
-            <summary>
-            弹出节点
-            </summary>
-        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocket.CustomData(AutoCSer.SubArray{System.Byte}@)">
             <summary>
             服务端自定义数据处理
             </summary>
             <param name="data"></param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.IsSocketVersion(AutoCSer.Net.TcpServer.ClientSocket@)">
-            <summary>
-            判断服务更新版本号是否有效
-            </summary>
-            <param name="oldSocket"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.FreeOutputSerializer">
-            <summary>
-            释放输出数据序列化
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.Serialize``1(AutoCSer.Net.TcpServer.CommandInfo,``0@)">
-            <summary>
-            序列化
-            </summary>
-            <typeparam name="valueType">目标数据类型</typeparam>
-            <param name="commandInfo"></param>
-            <param name="value">数据对象</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.JsonSerialize``1(``0@)">
-            <summary>
-            序列化
-            </summary>
-            <typeparam name="valueType">目标数据类型</typeparam>
-            <param name="value">数据对象</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.DeSerialize``1(AutoCSer.SubArray{System.Byte}@,``0@)">
-            <summary>
-            反序列化
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <param name="data">数据</param>
-            <param name="value">目标对象</param>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.ParseJson``1(AutoCSer.SubArray{System.Byte}@,``0@)">
-            <summary>
-            反序列化
-            </summary>
-            <typeparam name="valueType">数据类型</typeparam>
-            <param name="data">数据</param>
-            <param name="value">目标对象</param>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocket.FreeReceiveDeSerializer">
-            <summary>
-            释放回调数据反序列化
-            </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientSocket`1">
             <summary>
@@ -23197,9 +22987,20 @@
             合并命令处理错误
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocket`1.CheckCreateVersion">
+            <summary>
+            套接字操作失败重新创建版本检测
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocket`1.CreateNew">
             <summary>
             创建 TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocket`1.CreateSleep">
+            <summary>
+            创建 TCP 服务客户端套接字失败休眠
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocket`1.verifyMethod">
@@ -23260,6 +23061,268 @@
             </summary>
             <param name="data"></param>
         </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketBase">
+            <summary>
+            TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ipAddress">
+            <summary>
+            服务 IP 地址
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.port">
+            <summary>
+            服务端口
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.MaxInputSize">
+            <summary>
+            最大输入数据字节数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.Log">
+            <summary>
+            日志处理接口
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.receiveAsyncEventArgs">
+            <summary>
+            接收数据套接字异步事件对象
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.OutputJsonSerializer">
+            <summary>
+            输出数据 JSON 序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.OutputSerializer">
+            <summary>
+            输出数据二进制序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.CheckTimer">
+            <summary>
+            客户端心跳检测定时
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveMarkData">
+            <summary>
+            接收变换数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.Socket">
+            <summary>
+            TCP 套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.Sender">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveBuffer">
+            <summary>
+            接收数据缓冲区
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveBigBuffer">
+            <summary>
+            临时接收数据缓冲区
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.receiveBufferSize">
+            <summary>
+            接收数据缓冲区字节大小
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.socketError">
+            <summary>
+            套接字错误
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.CreateVersion">
+            <summary>
+            服务更新版本号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.receiveBigBufferCount">
+            <summary>
+            临时接收数据缓冲区当前接收数据字节数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.CheckNext">
+            <summary>
+            下一个心跳检测
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.CheckPrevious">
+            <summary>
+            上一个心跳检测
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.CheckTimeoutSeconds">
+            <summary>
+            心跳检测超时秒数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.receiveCount">
+            <summary>
+            当前接收数据字节数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.receiveIndex">
+            <summary>
+            当前处理接收数据字节数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.receiveDataStart">
+            <summary>
+            接收数据起始位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.compressionDataSize">
+            <summary>
+            当前数据压缩后的字节大小
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.dataSize">
+            <summary>
+            当前数据字节大小
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveType">
+            <summary>
+            获取命令回调序号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveCount">
+            <summary>
+            套接字接收数据次数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveDeSerializer">
+            <summary>
+            回调数据二进制反序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.ReceiveJsonParser">
+            <summary>
+            回调数据 JSON 解析
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.serializeParameterIndex">
+            <summary>
+            序列化参数编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.isVerifyMethod">
+            <summary>
+            是否通过验证函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.isClose">
+            <summary>
+            是否已经释放资源
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketBase.isSleep">
+            <summary>
+            重建连接是否休眠
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.#ctor(System.Net.IPAddress,System.Int32,AutoCSer.Log.ILog,System.Int32)">
+            <summary>
+            TCP 服务客户端套接字
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="port"></param>
+            <param name="log"></param>
+            <param name="maxInputSize"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.Create">
+            <summary>
+            创建 TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.verifyMethod``1(AutoCSer.Net.TcpServer.ClientBase{``0})">
+            <summary>
+            验证函数调用
+            </summary>
+            <typeparam name="attributeType"></typeparam>
+            <param name="client"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.IsSocketVersion(AutoCSer.Net.TcpServer.ClientSocketBase@)">
+            <summary>
+            判断服务更新版本号是否有效
+            </summary>
+            <param name="oldSocket"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.ResetCheck">
+            <summary>
+            重置心跳检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.Check">
+            <summary>
+            心跳检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.FreeCheck">
+            <summary>
+            弹出节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.FreeOutputSerializer">
+            <summary>
+            释放输出数据序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.Serialize``1(AutoCSer.Net.TcpServer.CommandInfo,``0@)">
+            <summary>
+            序列化
+            </summary>
+            <typeparam name="valueType">目标数据类型</typeparam>
+            <param name="commandInfo"></param>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.JsonSerialize``1(``0@)">
+            <summary>
+            序列化
+            </summary>
+            <typeparam name="valueType">目标数据类型</typeparam>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.DeSerialize``1(AutoCSer.SubArray{System.Byte}@,``0@)">
+            <summary>
+            反序列化
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <param name="data">数据</param>
+            <param name="value">目标对象</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.ParseJson``1(AutoCSer.SubArray{System.Byte}@,``0@)">
+            <summary>
+            反序列化
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <param name="data">数据</param>
+            <param name="value">目标对象</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.FreeReceiveDeSerializer">
+            <summary>
+            释放回调数据反序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.CloseFree">
+            <summary>
+            释放资源
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientSocketReceiveType">
             <summary>
             TCP 服务客户端套接字接收数据回调类型
@@ -23280,6 +23343,16 @@
             获取临时数据
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketReceiveType.CompressionData">
+            <summary>
+            获取压缩数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketReceiveType.CompressionBigData">
+            <summary>
+            获取临时压缩数据
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender">
             <summary>
             TCP 服务客户端套接字数据发送
@@ -23290,9 +23363,9 @@
             TCP 服务客户端套接字
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.OutputWaitHandle">
+        <member name="P:AutoCSer.Net.TcpServer.ClientSocketSender.IsSocket">
             <summary>
-            等待事件
+            套接字是否有效
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.Outputs">
@@ -23300,42 +23373,11 @@
             TCP 客户端输出信息链表
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.SendMarkData">
-            <summary>
-            发送变换数据
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.ClientSocketSender.IsSocket">
-            <summary>
-            套接字是否有效
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.SendCount">
-            <summary>
-            套接字发送数据次数
-            </summary>
-        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender.#ctor(AutoCSer.Net.TcpServer.ClientSocket)">
             <summary>
             TCP 服务客户端套接字数据发送
             </summary>
             <param name="socket">TCP 服务客户端套接字</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender.Check">
-            <summary>
-            心跳检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender.nullCallback(AutoCSer.Net.TcpServer.ReturnValue)">
-            <summary>
-            默认空回调委托
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.NullCallback">
-            <summary>
-            默认空回调委托
-            </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender`1">
             <summary>
@@ -23356,11 +23398,6 @@
             TCP 服务客户端套接字数据发送
             </summary>
             <param name="socket">TCP 服务客户端套接字</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Close">
-            <summary>
-            释放资源
-            </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
             <summary>
@@ -23658,6 +23695,58 @@
             <param name="onCall">回调委托</param>
             <returns>保持回调</returns>
         </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSenderBase">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.OutputWaitHandle">
+            <summary>
+            等待事件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.SendMarkData">
+            <summary>
+            发送变换数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.SendCount">
+            <summary>
+            套接字发送数据次数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.#ctor(AutoCSer.Net.TcpServer.ClientSocketBase)">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+            <param name="socket">TCP 服务客户端套接字</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.Close">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.Check">
+            <summary>
+            心跳检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.VirtualBuildOutput">
+            <summary>
+            创建输出
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.nullCallback(AutoCSer.Net.TcpServer.ReturnValue)">
+            <summary>
+            默认空回调委托
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.NullCallback">
+            <summary>
+            默认空回调委托
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientTaskType">
             <summary>
             客户端任务类型
@@ -23767,6 +23856,14 @@
             <param name="host"></param>
             <param name="port"></param>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.CommandBase.check(System.Net.IPAddress,System.Int32)">
+            <summary>
+            检测主机名称是否可用
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="port"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.CommandBase.AddLog(System.Exception)">
             <summary>
             添加日志
@@ -23829,6 +23926,16 @@
             <param name="markData"></param>
             <param name="dataLength"></param>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.CommandBase.GetRegisterClient``1(``0,System.String,AutoCSer.Net.TcpRegister.Client@)">
+            <summary>
+            获取 TCP 内部注册服务客户端
+            </summary>
+            <typeparam name="serverAttributeType"></typeparam>
+            <param name="attribute"></param>
+            <param name="tcpRegisterName"></param>
+            <param name="tcpRegisterClient"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.CommandBuffer">
             <summary>
             TCP 组件基类
@@ -23839,17 +23946,12 @@
             接受数据缓存区池
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.CommandBuffer.onCustomData">
-            <summary>
-            自定义数据包处理
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.CommandBuffer.SendBufferPool">
             <summary>
             发送数据缓存区池
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.CommandBuffer.#ctor(System.String,System.Int32,System.String,AutoCSer.SubBuffer.Pool,AutoCSer.SubBuffer.Pool,System.Int32,System.Int32,System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Net.TcpServer.CommandBuffer.#ctor(System.String,System.Int32,System.String,AutoCSer.SubBuffer.Pool,AutoCSer.SubBuffer.Pool,System.Int32,System.Int32,AutoCSer.Log.ILog)">
             <summary>
             TCP 服务客户端
             </summary>
@@ -23860,7 +23962,6 @@
             <param name="sendBufferPool">发送接受数据缓存区池</param>
             <param name="sendBufferMaxSize">发送数据缓存区最大字节大小</param>
             <param name="minCompressSize">压缩启用最低字节数量</param>
-            <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.CommandBuffer`1">
@@ -23874,17 +23975,7 @@
             TCP 服务调用配置
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.CommandBuffer`1.maxCustomDataSize">
-            <summary>
-            客户端最大自定义数据包字节大小
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.CommandBuffer`1.ClientTryCreateSleep">
-            <summary>
-            客户端重建连接休眠毫秒数
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.CommandBuffer`1.#ctor(`0,AutoCSer.SubBuffer.Size,AutoCSer.SubBuffer.Size,System.Int32,System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+        <member name="M:AutoCSer.Net.TcpServer.CommandBuffer`1.#ctor(`0,AutoCSer.SubBuffer.Size,AutoCSer.SubBuffer.Size,System.Int32,AutoCSer.Log.ILog)">
             <summary>
             TCP 组件基类
             </summary>
@@ -23892,7 +23983,6 @@
             <param name="receiveBufferSize">接受数据缓冲区字节大小</param>
             <param name="sendBufferSize">发送数据缓冲区字节大小</param>
             <param name="sendBufferMaxSize">发送数据缓存区最大字节大小</param>
-            <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.CommandFlags">
@@ -23905,14 +23995,19 @@
             缺省空参数
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize">
+            <summary>
+            是否采用JSON序列化,否则使用二进制序列化
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.CommandFlags.NullData">
             <summary>
             空数据
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize">
+        <member name="F:AutoCSer.Net.TcpServer.CommandFlags._">
             <summary>
-            是否采用JSON序列化,否则使用二进制序列化
+            
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.CommandInfo">
@@ -24174,7 +24269,7 @@
             <param name="index"></param>
             <param name="command"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.CommandPool.Free(AutoCSer.Net.TcpServer.ClientCommand.Command,AutoCSer.Net.TcpServer.ClientCommand.Command,System.Int32)">
+        <member name="M:AutoCSer.Net.TcpServer.CommandPool.Free(AutoCSer.Net.TcpServer.ClientCommand.CommandBase,AutoCSer.Net.TcpServer.ClientCommand.CommandBase,System.Int32)">
             <summary>
             释放所有命令
             </summary>
@@ -24241,7 +24336,7 @@
             完成状态
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.CustomTaskAsyncServerCall.#ctor(AutoCSer.Net.TcpServer.ServerSocketSender,System.Action)">
+        <member name="M:AutoCSer.Net.TcpServer.CustomTaskAsyncServerCall.#ctor(AutoCSer.Net.TcpServer.ServerSocketSenderBase,System.Action)">
             <summary>
             自定义 TCP 服务器端同步调用任务
             </summary>
@@ -24598,7 +24693,7 @@
             是否过期
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.ServerSocketSender">
+        <member name="T:AutoCSer.Net.TcpServer.ServerSocketSenderBase">
             <summary>
             TCP 服务套接字数据发送
             </summary>
@@ -24606,169 +24701,151 @@
             TCP 服务套接字数据发送
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.AddTaskAsync(System.Action)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.AddTaskAsync(System.Action)">
             <summary>
             添加自定义 TCP 服务器端同步调用任务
             </summary>
             <param name="task">任务委托</param>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.ServerSocket">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.ServerSocket">
             <summary>
             TCP 服务套接字
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.BuildOutputThreadCallType">
-            <summary>
-            创建输出线程调用类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.OutputSleep">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.OutputSleep">
             <summary>
             等待输出休眠时间
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.IsBuildOutputThread">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.IsBuildOutputThread">
             <summary>
             创建输出是否开启线程
             </summary>
         </member>
-        <member name="E:AutoCSer.Net.TcpServer.ServerSocketSender.OnClose">
+        <member name="E:AutoCSer.Net.TcpServer.ServerSocketSenderBase.OnClose">
             <summary>
             关闭事件
             </summary>
         </member>
-        <member name="E:AutoCSer.Net.TcpServer.ServerSocketSender.OnCloseTask">
+        <member name="E:AutoCSer.Net.TcpServer.ServerSocketSenderBase.OnCloseTask">
             <summary>
             关闭事件（TCP 服务器端同步调用任务处理）
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.OutputJsonSerializer">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.OutputJsonSerializer">
             <summary>
             输出数据 JSON 序列化
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.OutputSerializer">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.OutputSerializer">
             <summary>
             输出数据二进制序列化
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.KeepCallbacks">
-            <summary>
-            TCP 服务器端异步保持调用集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.Buffer">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.Buffer">
             <summary>
             输出数据缓冲区
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.CopyBuffer">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.CopyBuffer">
             <summary>
             输出复制数据缓冲区
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.CompressBuffer">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.CompressBuffer">
             <summary>
             压缩数据缓冲区
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.ClientObject">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.ClientObject">
             <summary>
             客户端信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.sendData">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.sendData">
             <summary>
             发送数据
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.TimeVerifyTicks">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.TimeVerifyTicks">
             <summary>
             时间验证时钟周期
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.serializeParameterIndex">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.serializeParameterIndex">
             <summary>
             序列化参数编号
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.IsOutput">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSenderBase.IsOutput">
             <summary>
             是否正在输出
             </summary>
         </member>
-        <member name="P:AutoCSer.Net.TcpServer.ServerSocketSender.IsSocket">
+        <member name="P:AutoCSer.Net.TcpServer.ServerSocketSenderBase.IsSocket">
             <summary>
             套接字是否有效
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.Outputs">
-            <summary>
-            TCP 服务端套接字输出信息链表
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.#ctor(AutoCSer.Net.TcpServer.ServerSocket,AutoCSer.Threading.Thread.CallType,System.Boolean,System.Int32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.#ctor(AutoCSer.Net.TcpServer.ServerSocket,System.Boolean,System.Int32)">
             <summary>
             TCP 服务套接字数据发送
             </summary>
             <param name="socket">TCP 服务套接字</param>
-            <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
             <param name="isBuildOutputThread">创建输出是否开启线程</param>
             <param name="outputSleep">等待输出休眠时间</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.callOnClose">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.callOnClose">
             <summary>
             调用关闭事件
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.CallOnCloseTask">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.CallOnCloseTask">
             <summary>
             调用关闭事件
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.AddLog(System.Exception)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.VirtualAddLog(System.Exception)">
             <summary>
             错误日志处理
             </summary>
             <param name="error"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.freeCopyBuffer">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.freeCopyBuffer">
             <summary>
             释放缓冲区
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.SetMarkData(System.UInt64)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.freeSerializer">
+            <summary>
+            释放序列化器
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.SetMarkData(System.UInt64)">
             <summary>
             设置变换数据
             </summary>
             <param name="value"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.SetVerifyMethod">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.SetVerifyMethod">
             <summary>
             通过函数验证处理
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.AddKeepCallback(System.UInt32,AutoCSer.Net.TcpServer.IServerKeepCallback)">
-            <summary>
-            添加 TCP 服务器端异步保持调用
-            </summary>
-            <param name="commandIndex"></param>
-            <param name="keepCallback"></param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.AddTask(System.Action)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.AddTask(System.Action)">
             <summary>
             添加自定义 TCP 服务器端同步调用任务
             </summary>
             <param name="task">任务委托</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.AddWaitTask(System.Action)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.AddWaitTask(System.Action)">
             <summary>
             添加自定义 TCP 服务器端同步调用任务
             </summary>
             <param name="task">任务委托</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.Serialize``1(AutoCSer.Net.TcpServer.OutputInfo,``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.Serialize``1(AutoCSer.Net.TcpServer.OutputInfo,``0@)">
             <summary>
             序列化
             </summary>
@@ -24776,14 +24853,14 @@
             <param name="outputInfo"></param>
             <param name="value">数据对象</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.JsonSerialize``1(``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.JsonSerialize``1(``0@)">
             <summary>
             序列化
             </summary>
             <typeparam name="valueType">目标数据类型</typeparam>
             <param name="value">数据对象</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.DeSerialize``1(AutoCSer.SubArray{System.Byte}@,``0@,System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.DeSerialize``1(AutoCSer.SubArray{System.Byte}@,``0@,System.Boolean)">
             <summary>
             反序列化
             </summary>
@@ -24792,6 +24869,11 @@
             <param name="value">目标对象</param>
             <param name="isSimpleSerialize"></param>
             <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSenderBase.VirtualBuildOutput">
+            <summary>
+            创建输出
+            </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.NullCallbackReturnValue`1">
             <summary>
@@ -24838,6 +24920,11 @@
         <member name="F:AutoCSer.Net.TcpServer.OutputInfo.IsClientSendOnly">
             <summary>
             客户端是否仅仅发送数据(不需要应答)
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.OutputInfo.IsJsonSerialize">
+            <summary>
+            是否采用 JSON 序列化
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.OutputInfo.IsBuildOutputThread">
@@ -25171,7 +25258,7 @@
             会话索引最大值
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server.commandFlagsAnd">
+        <member name="F:AutoCSer.Net.TcpServer.Server.CommandFlagsAnd">
             <summary>
             会话索引参数
             </summary>
@@ -25204,64 +25291,14 @@
             </summary>
             <typeparam name="attributeType"></typeparam>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.verify">
+        <member name="F:AutoCSer.Net.TcpServer.Server`1.onCustomData">
             <summary>
-            同步验证接口
+            自定义数据包处理
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Server`1.getSocketThreadCallType">
             <summary>
             获取客户端请求线程调用类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.CallQueue">
-            <summary>
-            TCP 服务器端同步调用队列
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.commandData">
-            <summary>
-            命令位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.commands">
-            <summary>
-            命令位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.maxCommand">
-            <summary>
-            最大命令
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.ReceiveVerifyCommandTimeout">
-            <summary>
-            验证超时
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.Socket">
-            <summary>
-            TCP 套接字
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.isStart">
-            <summary>
-            是否已启动服务
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.VerifyCommandIdentity">
-            <summary>
-            验证命令序号
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server`1.isListen">
-            <summary>
-            是否处于监听状态
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.Server`1.IsListen">
-            <summary>
-            是否服务处于监听状态
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.Server`1.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType,System.Boolean)">
@@ -25275,28 +25312,6 @@
             <param name="getSocketThreadCallType">同步验证接口</param>
             <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.Dispose">
-            <summary>
-            停止服务
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.StopListen">
-            <summary>
-            停止服务监听
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.start">
-            <summary>
-            启动服务
-            </summary>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.listen">
-            <summary>
-            服务端监听
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:AutoCSer.Net.TcpServer.Server`1.Start">
             <summary>
             启动服务
@@ -25308,59 +25323,21 @@
             获取客户端套接字
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.setCommandData(System.Int32)">
-            <summary>
-            初始化序号识别命令处理委托集合
-            </summary>
-            <param name="count">命令数量</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.setCommand(System.Int32)">
-            <summary>
-            设置命令索引信息
-            </summary>
-            <param name="methodIndex">命令处理索引</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.IsCommand(System.Int32)">
-            <summary>
-            判断命令是否有效
-            </summary>
-            <param name="index"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.setVerifyCommand(System.Int32)">
-            <summary>
-            设置验证命令序号
-            </summary>
-            <param name="methodIndex"></param>
-        </member>
         <member name="M:AutoCSer.Net.TcpServer.Server`1.CustomData(AutoCSer.SubArray{System.Byte}@)">
             <summary>
             自定义数据包处理
             </summary>
             <param name="data"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.PushReceiveVerifyCommandTimeout(AutoCSer.Net.TcpServer.ServerSocket,System.Net.Sockets.Socket)">
-            <summary>
-            添加超时套接字
-            </summary>
-            <param name="serverSocket"></param>
-            <param name="socket"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`1.CancelReceiveVerifyCommandTimeout(AutoCSer.Net.TcpServer.ServerSocket)">
-            <summary>
-            取消超时套接字
-            </summary>
-            <param name="socket"></param>
-        </member>
-        <member name="T:AutoCSer.Net.TcpServer.Server`2">
+        <member name="T:AutoCSer.Net.TcpServer.Server`3">
             <summary>
             TCP 服务基类
             </summary>
             <typeparam name="attributeType"></typeparam>
+            <typeparam name="serverType"></typeparam>
             <typeparam name="serverSocketSenderType"></typeparam>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`2.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType,System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpServer.Server`3.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog,AutoCSer.Threading.Thread.CallType,System.Boolean)">
             <summary>
             TCP 服务客户端
             </summary>
@@ -25371,7 +25348,7 @@
             <param name="getSocketThreadCallType">同步验证接口</param>
             <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`2.DoCommand(System.Int32,`1,AutoCSer.SubArray{System.Byte}@)">
+        <member name="M:AutoCSer.Net.TcpServer.Server`3.DoCommand(System.Int32,`2,AutoCSer.SubArray{System.Byte}@)">
             <summary>
             命令处理
             </summary>
@@ -25379,7 +25356,7 @@
             <param name="sender">TCP 内部服务套接字数据发送</param>
             <param name="data">命令数据</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.Server`2.DoCommand(System.Int32,`1,AutoCSer.SubBuffer.PoolBufferFull@,System.Int32)">
+        <member name="M:AutoCSer.Net.TcpServer.Server`3.DoCommand(System.Int32,`2,AutoCSer.SubBuffer.PoolBufferFull@,System.Int32)">
             <summary>
             命令处理委托
             </summary>
@@ -25427,6 +25404,137 @@
             <summary>
             默认为 false 表示更注重客户端异步吞吐性能，否则更注重客户端 await 吞吐性能
             </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ServerBase`1">
+            <summary>
+            TCP 服务基类
+            </summary>
+            <typeparam name="attributeType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.verify">
+            <summary>
+            同步验证接口
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.CallQueue">
+            <summary>
+            TCP 服务器端同步调用队列
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.commandData">
+            <summary>
+            命令位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.commands">
+            <summary>
+            命令位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.maxCommand">
+            <summary>
+            最大命令
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.ReceiveVerifyCommandTimeout">
+            <summary>
+            验证超时
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.Socket">
+            <summary>
+            TCP 套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.isStart">
+            <summary>
+            是否已启动服务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.VerifyCommandIdentity">
+            <summary>
+            验证命令序号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBase`1.isListen">
+            <summary>
+            是否处于监听状态
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.IsListen">
+            <summary>
+            是否服务处于监听状态
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.#ctor(`0,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.Log.ILog,System.Boolean)">
+            <summary>
+            TCP 服务客户端
+            </summary>
+            <param name="attribute">TCP服务调用配置</param>
+            <param name="verify">获取客户端请求线程调用类型</param>
+            <param name="log">日志接口</param>
+            <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.Dispose">
+            <summary>
+            停止服务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.StopListen">
+            <summary>
+            停止服务监听
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.start">
+            <summary>
+            启动服务
+            </summary>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.listen">
+            <summary>
+            服务端监听
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.setCommandData(System.Int32)">
+            <summary>
+            初始化序号识别命令处理委托集合
+            </summary>
+            <param name="count">命令数量</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.setCommand(System.Int32)">
+            <summary>
+            设置命令索引信息
+            </summary>
+            <param name="methodIndex">命令处理索引</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.IsCommand(System.Int32)">
+            <summary>
+            判断命令是否有效
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.setVerifyCommand(System.Int32)">
+            <summary>
+            设置验证命令序号
+            </summary>
+            <param name="methodIndex"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.PushReceiveVerifyCommandTimeout(AutoCSer.Net.SocketTimeoutLink,System.Net.Sockets.Socket)">
+            <summary>
+            添加超时套接字
+            </summary>
+            <param name="serverSocket"></param>
+            <param name="socket"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.CancelReceiveVerifyCommandTimeout(AutoCSer.Net.SocketTimeoutLink)">
+            <summary>
+            取消超时套接字
+            </summary>
+            <param name="socket"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ServerBaseAttribute">
             <summary>
@@ -25829,7 +25937,7 @@
             输出参数
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.CustomDataOutput.Build(AutoCSer.Net.TcpServer.ServerSocketSender,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.CustomDataOutput.Build(AutoCSer.Net.TcpServer.ServerSocketSenderBase,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
             <summary>
             创建输出信息
             </summary>
@@ -25858,7 +25966,7 @@
             输出参数
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.Output`1.Build(AutoCSer.Net.TcpServer.ServerSocketSender,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.Output`1.Build(AutoCSer.Net.TcpServer.ServerSocketSenderBase,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
             <summary>
             创建输出信息
             </summary>
@@ -25879,19 +25987,44 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.ServerOutput.OutputLink">
+        <member name="T:AutoCSer.Net.TcpServer.ServerOutput.OutputLink`1">
             <summary>
             TCP 服务端套接字输出信息
             </summary>
+            <typeparam name="outputLinkType">TCP 服务端套接字输出信息类型</typeparam>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerOutput.OutputLink.StreamStartIndex">
+        <member name="F:AutoCSer.Net.TcpServer.ServerOutput.OutputLink`1.StreamStartIndex">
             <summary>
             输出流起始位置
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerOutput.OutputLink.setCommandFlags">
+        <member name="F:AutoCSer.Net.TcpServer.ServerOutput.OutputLink`1.setCommandFlags">
             <summary>
             设置保留命令参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.OutputLink`1.Build(AutoCSer.Net.TcpServer.ServerSocketSenderBase,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
+            <summary>
+            创建输出信息
+            </summary>
+            <param name="sender">TCP 服务套接字数据发送</param>
+            <param name="buildInfo">输出创建参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.OutputLink`1.free">
+            <summary>
+            释放 TCP 服务端套接字输出信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.OutputLink`1.CancelLink(`0)">
+            <summary>
+            取消输出
+            </summary>
+            <param name="head"></param>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ServerOutput.OutputLink">
+            <summary>
+            TCP 服务端套接字输出信息
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerOutput.OutputLink.CommandIndex">
@@ -25899,31 +26032,12 @@
             会话标识
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.OutputLink.Build(AutoCSer.Net.TcpServer.ServerSocketSender,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
-            <summary>
-            创建输出信息
-            </summary>
-            <param name="sender">TCP 服务套接字数据发送</param>
-            <param name="buildInfo">输出创建参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.OutputLink.free">
-            <summary>
-            释放 TCP 服务端套接字输出信息
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.OutputLink.CancelLink(AutoCSer.Net.TcpServer.ServerOutput.OutputLink)">
-            <summary>
-            取消输出
-            </summary>
-            <param name="head"></param>
-        </member>
         <member name="T:AutoCSer.Net.TcpServer.ServerOutput.ReturnTypeOutput">
             <summary>
             TCP 服务端套接字输出信息
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.ReturnTypeOutput.Build(AutoCSer.Net.TcpServer.ServerSocketSender,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerOutput.ReturnTypeOutput.Build(AutoCSer.Net.TcpServer.ServerSocketSenderBase,AutoCSer.Net.TcpServer.SenderBuildInfo@)">
             <summary>
             创建输出信息
             </summary>
@@ -26011,11 +26125,6 @@
             当前数据压缩后的字节大小
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocket.customDataSize">
-            <summary>
-            自定义数据字节长度
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerSocket.dataSize">
             <summary>
             当前数据字节大小
@@ -26066,30 +26175,36 @@
             释放数据反序列化
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.ServerSocket`3">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocket.CloseFree">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ServerSocket`4">
             <summary>
             TCP 服务端套接字
             </summary>
             <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+            <typeparam name="serverType">TCP 服务类型</typeparam>
             <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
             <typeparam name="socketSenderType">TCP 服务套接字数据发送</typeparam>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocket`3.TaskTicks">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocket`4.TaskTicks">
             <summary>
             线程切换检测时间
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocket`3.NextTask">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocket`4.NextTask">
             <summary>
             下一个任务
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocket`3.Server">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocket`4.Server">
             <summary>
             TCP 服务
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocket`3.#ctor(AutoCSer.Net.TcpServer.Server{`0,`2})">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocket`4.#ctor(`1)">
             <summary>
             TCP 服务端套接字
             </summary>
@@ -26125,37 +26240,84 @@
             获取临时数据
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.ServerSocketSender`3">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketReceiveType.CompressionData">
+            <summary>
+            获取压缩数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketReceiveType.CompressionBigData">
+            <summary>
+            获取临时压缩数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ServerSocketSender">
+            <summary>
+            TCP 服务套接字数据发送
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.BuildOutputThreadCallType">
+            <summary>
+            创建输出线程调用类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.KeepCallbacks">
+            <summary>
+            TCP 服务器端异步保持调用集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender.Outputs">
+            <summary>
+            TCP 服务端套接字输出信息链表
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.#ctor(AutoCSer.Net.TcpServer.ServerSocket,AutoCSer.Threading.Thread.CallType,System.Boolean,System.Int32)">
+            <summary>
+            TCP 服务套接字数据发送
+            </summary>
+            <param name="socket">TCP 服务套接字</param>
+            <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
+            <param name="isBuildOutputThread">创建输出是否开启线程</param>
+            <param name="outputSleep">等待输出休眠时间</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender.AddKeepCallback(System.UInt32,AutoCSer.Net.TcpServer.IServerKeepCallback)">
+            <summary>
+            添加 TCP 服务器端异步保持调用
+            </summary>
+            <param name="commandIndex"></param>
+            <param name="keepCallback"></param>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ServerSocketSender`4">
             <summary>
             TCP 服务套接字数据发送
             </summary>
             <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+            <typeparam name="serverType">TCP 服务类型</typeparam>
             <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
             <typeparam name="socketSenderType">TCP 服务套接字数据发送类型</typeparam>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender`3.Server">
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender`4.Server">
             <summary>
             TCP 服务
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.#ctor(AutoCSer.Net.TcpServer.ServerSocket{`0,`1,`2},AutoCSer.Threading.Thread.CallType)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.#ctor(AutoCSer.Net.TcpServer.ServerSocket{`0,`1,`2,`3},AutoCSer.Threading.Thread.CallType)">
             <summary>
             TCP 服务套接字数据发送
             </summary>
             <param name="socket">TCP 服务套接字</param>
             <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.freeBuffer">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.freeBuffer">
             <summary>
             释放接收数据缓冲区
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.freeOutput">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.freeOutput">
             <summary>
             释放输出信息
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.setSendData(System.Byte*,System.Int32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.setSendData(System.Byte*,System.Int32)">
             <summary>
             设置发送数据
             </summary>
@@ -26163,26 +26325,26 @@
             <param name="count">输出数量</param>
             <returns>是否改变输出缓冲区</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.AddLog(System.Exception)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.VirtualAddLog(System.Exception)">
             <summary>
             错误日志处理
             </summary>
             <param name="error"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Log(System.Exception)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.AddLog(System.Exception)">
             <summary>
             错误日志处理
             </summary>
             <param name="error"></param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryGetOutput(System.UInt32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.TryGetOutput(System.UInt32)">
             <summary>
             获取输出信息
             </summary>
             <param name="commandIndex">会话索引</param>
             <returns>输出信息</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryPush(System.UInt32,System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.TryPush(System.UInt32,System.Boolean)">
             <summary>
             发送数据
             </summary>
@@ -26190,14 +26352,14 @@
             <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(System.UInt32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push(System.UInt32)">
             <summary>
             发送数据
             </summary>
             <param name="commandIndex">会话索引</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(System.UInt32,System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push(System.UInt32,System.Boolean)">
             <summary>
             发送数据
             </summary>
@@ -26205,45 +26367,36 @@
             <param name="isBuildOutputThread">尝试启动创建输出线程</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(AutoCSer.Net.TcpServer.ReturnType)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push(AutoCSer.Net.TcpServer.ReturnType)">
             <summary>
             发送数据
             </summary>
             <param name="value">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push">
             <summary>
             发送数据
             </summary>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push(System.UInt32,AutoCSer.Net.TcpServer.ReturnValue@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push(System.UInt32,AutoCSer.Net.TcpServer.ReturnType)">
             <summary>
             发送数据
             </summary>
             <param name="commandIndex">会话标识</param>
-            <param name="returnValue">返回值</param>
+            <param name="returnType">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.PushNoThread(System.UInt32,AutoCSer.Net.TcpServer.ReturnValue@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.PushNoThread(System.UInt32,AutoCSer.Net.TcpServer.ReturnType)">
             <summary>
             发送数据
             </summary>
             <param name="commandIndex">会话标识</param>
-            <param name="returnValue">返回值</param>
+            <param name="returnType">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.PushNoThread``1(System.UInt32,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
-            <summary>
-            发送数据，用于代码生成
-            </summary>
-            <typeparam name="outputParameterType">输出数据类型</typeparam>
-            <param name="commandIndex">会话标识</param>
-            <param name="outputParameter">返回值</param>
-            <returns>是否成功加入输出队列</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryGetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.TryGetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
             <summary>
             获取输出信息
             </summary>
@@ -26253,7 +26406,7 @@
             <param name="outputParameter">输出参数</param>
             <returns>输出信息</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.GetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.GetOutput``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,``0@)">
             <summary>
             获取输出信息
             </summary>
@@ -26263,7 +26416,7 @@
             <param name="outputParameter">输出参数</param>
             <returns>输出信息</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryPush``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.TryPush``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
             <summary>
             发送数据
             </summary>
@@ -26273,7 +26426,7 @@
             <param name="outputParameter">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push``1(System.UInt32,AutoCSer.Net.TcpServer.OutputInfo,AutoCSer.Net.TcpServer.ReturnValue{``0}@)">
             <summary>
             发送数据
             </summary>
@@ -26283,7 +26436,7 @@
             <param name="outputParameter">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.Push``1(AutoCSer.Net.TcpServer.OutputInfo,``0@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.Push``1(AutoCSer.Net.TcpServer.OutputInfo,``0@)">
             <summary>
             发送数据
             </summary>
@@ -26292,45 +26445,45 @@
             <param name="outputParameter">返回值</param>
             <returns>是否成功加入输出队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.push(AutoCSer.Net.TcpServer.ServerOutput.OutputLink)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.push(AutoCSer.Net.TcpServer.ServerOutput.OutputLink)">
             <summary>
             添加输出信息
             </summary>
             <param name="output">当前输出信息</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.push(AutoCSer.Net.TcpServer.ServerOutput.OutputLink,System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.push(AutoCSer.Net.TcpServer.ServerOutput.OutputLink,System.Boolean)">
             <summary>
             添加输出信息
             </summary>
             <param name="output">当前输出信息</param>
             <param name="isBuildOutputThread">尝试启动创建输出线程</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryBuildOutput">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.TryBuildOutput">
             <summary>
             尝试启动创建输出线程
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.TryBuildOutput(System.Boolean)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.TryBuildOutput(System.Boolean)">
             <summary>
             尝试启动创建输出线程
             </summary>
             <param name="isBuildOutputThread">尝试启动创建输出线程</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.CustomData(System.Byte[])">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.CustomData(System.Byte[])">
             <summary>
             发送自定义数据
             </summary>
             <param name="data"></param>
             <returns>是否添加到发送队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.CustomData(AutoCSer.SubArray{System.Byte}@)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.CustomData(AutoCSer.SubArray{System.Byte}@)">
             <summary>
             发送自定义数据
             </summary>
             <param name="data"></param>
             <returns>是否添加到发送队列</returns>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`3.CancelKeepCallback(System.Int32)">
+        <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.CancelKeepCallback(System.Int32)">
             <summary>
             删除 TCP 服务器端异步保持调用
             </summary>
@@ -26528,6 +26681,14 @@
             <param name="right"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.TimeVerifyServer.CheckVerifyString(AutoCSer.Net.TcpServer.CommandBase,AutoCSer.Net.TcpServer.ServerBaseAttribute)">
+            <summary>
+            检测默认验证字符串
+            </summary>
+            <param name="server"></param>
+            <param name="attribute"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.TimeVerifyServer`4">
             <summary>
             时间验证服务
@@ -26543,7 +26704,7 @@
             TCP 服务端
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.TcpServer.TimeVerifyServer`4.SetTcpServer(`0)">
+        <member name="M:AutoCSer.Net.TcpServer.TimeVerifyServer`4.SetTcpServer(`1)">
             <summary>
             设置TCP服务端
             </summary>
@@ -26589,14 +26750,29 @@
             TCP 客户端命令
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpServer.UnionType.ClientSocket">
+        <member name="F:AutoCSer.Net.TcpServer.UnionType.ClientCommandBase">
+            <summary>
+            TCP 客户端命令
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.UnionType.ClientSocketBase">
             <summary>
             TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.UnionType.ClientSocketSenderBase">
+            <summary>
+            TCP 客户端套接字数据发送
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.UnionType.ServerCall">
             <summary>
             TCP 服务器端同步调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.UnionType.ServerSocketSenderBase">
+            <summary>
+            TCP 服务套接字数据发送
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.UnionType.TaskConfig">
@@ -26675,7 +26851,7 @@
             <param name="log">日志接口</param>
             <param name="verifyMethod">验证委托</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpStaticServer.Client.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSender)">
+        <member name="M:AutoCSer.Net.TcpStaticServer.Client.SocketVerifyMethod(AutoCSer.Net.TcpServer.ClientSocketSenderBase)">
             <summary>
             套接字验证
             </summary>
@@ -26906,11 +27082,6 @@
             空值相关参数
             </summary>
             <typeparam name="valueType">值类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.NullValue`1.Value">
-            <summary>
-            默认空值
-            </summary>
         </member>
         <member name="F:AutoCSer.NullValue`1.Array">
             <summary>
@@ -28890,6 +29061,11 @@
             </summary>
             <returns>数组</returns>
         </member>
+        <member name="F:AutoCSer.SubArray`1.Null">
+            <summary>
+            公共数组空子串
+            </summary>
+        </member>
         <member name="P:AutoCSer.SubArray`1.BufferArray">
             <summary>
             原数组
@@ -28914,7 +29090,7 @@
             <param name="startIndex"></param>
             <param name="length"></param>
         </member>
-        <member name="M:AutoCSer.SubArray`1.Null">
+        <member name="M:AutoCSer.SubArray`1.SetNull">
             <summary>
             置空并释放数组
             </summary>
@@ -30501,9 +30677,14 @@
             进程文件复制
             </summary>
         </member>
-        <member name="F:AutoCSer.Threading.Thread.CallType.TcpClientSocketCreate">
+        <member name="F:AutoCSer.Threading.Thread.CallType.TcpClientSocketBaseCreate">
             <summary>
             创建 TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.TcpClientSocketSenderVirtualBuildOutput">
+            <summary>
+            TCP 客户端套接字创建数据发送
             </summary>
         </member>
         <member name="F:AutoCSer.Threading.Thread.CallType.TcpInternalClientSocketSenderBuildOutput">
@@ -30537,6 +30718,11 @@
             </summary>
         </member>
         <member name="F:AutoCSer.Threading.Thread.CallType.TcpOpenServerSocketSenderBuildOutput">
+            <summary>
+            TCP 服务套接字创建数据发送
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.TcpServerSocketSenderVirtualBuildOutput">
             <summary>
             TCP 服务套接字创建数据发送
             </summary>

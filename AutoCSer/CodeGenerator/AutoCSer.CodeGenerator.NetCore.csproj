@@ -64,12 +64,16 @@
     <Compile Include="TemplateGenerator\MemberGenerator.cs" />
     <Compile Include="TemplateGenerator\TcpInternalServer.cs" />
     <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpInternalStreamServer.cs" />
     <Compile Include="TemplateGenerator\TcpOpenServer.cs" />
     <Compile Include="TemplateGenerator\TcpOpenSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpOpenStreamServer.cs" />
     <Compile Include="TemplateGenerator\TcpServer.cs" />
     <Compile Include="TemplateGenerator\TcpSimpleServer.cs" />
     <Compile Include="TemplateGenerator\TcpStaticServer.cs" />
     <Compile Include="TemplateGenerator\TcpStaticSimpleServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStaticStreamServer.cs" />
+    <Compile Include="TemplateGenerator\TcpStreamServer.cs" />
     <Compile Include="TemplateGenerator\TypeDefinition.cs" />
     <Compile Include="TemplateGenerator\WebCall.cs" />
     <Compile Include="TemplateGenerator\WebPath.cs" />
@@ -79,10 +83,13 @@
     <Compile Include="Template\Pub.cs" />
     <Compile Include="Template\TcpInternalServer.cs" />
     <Compile Include="Template\TcpInternalSimpleServer.cs" />
+    <Compile Include="Template\TcpInternalStreamServer.cs" />
     <Compile Include="Template\TcpOpenSimpleServer.cs" />
     <Compile Include="Template\TcpOpenServer.cs" />
+    <Compile Include="Template\TcpOpenStreamServer.cs" />
     <Compile Include="Template\TcpStaticSimpleServer.cs" />
     <Compile Include="Template\TcpStaticServer.cs" />
+    <Compile Include="Template\TcpStaticStreamServer.cs" />
     <Compile Include="Template\WebCall.cs" />
     <Compile Include="Template\WebView.cs" />
     <Compile Include="TreeBuilder.cs" />
@@ -99,6 +106,9 @@
 
   <ItemGroup>
     <Content Include="Js\color512_64.bmp" />
+    <Content Include="Template\Ajax.ts.txt" />
+    <Content Include="Template\WebPath.ts.txt" />
+    <Content Include="Template\WebView.ts.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -136,10 +146,12 @@
     <None Include="Js\timerShow.ts" />
     <None Include="Js\touchTop.ts" />
     <None Include="Js\verifyImage.ts" />
+    <None Include="Template\WebPath.js" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.csproj" />
+    <ProjectReference Include="..\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
   </ItemGroup>
 
   <ItemGroup>

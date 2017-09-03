@@ -30,6 +30,14 @@ namespace AutoCSer.TestCase
         /// TCP 静态调用客户端参数
         /// </summary>
         [AutoCSer.Config.Member]
+        public static AutoCSer.TestCase.TcpStaticStreamClient.StreamSessionServer.ClientConfig StreamSessionClientConfig
+        {
+            get { return new TcpStaticStreamClient.StreamSessionServer.ClientConfig { VerifyMethod = TcpStaticStreamServer.Session.Verify }; }
+        }
+        /// <summary>
+        /// TCP 静态调用客户端参数
+        /// </summary>
+        [AutoCSer.Config.Member]
         public static AutoCSer.TestCase.TcpStaticSimpleClient.SimpleSessionServer.ClientConfig SimpleSessionClientConfig
         {
             get { return new TcpStaticSimpleClient.SimpleSessionServer.ClientConfig { VerifyMethod = TcpStaticSimpleServer.Session.Verify }; }

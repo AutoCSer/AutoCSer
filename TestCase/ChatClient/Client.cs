@@ -19,7 +19,7 @@ namespace AutoCSer.TestCase.ChatClient
         /// <summary>
         /// 当前客户端 TCP 套接字
         /// </summary>
-        private AutoCSer.Net.TcpServer.ClientSocket socket;
+        private AutoCSer.Net.TcpServer.ClientSocketBase socket;
         /// <summary>
         /// 获取用户信息 回调保持
         /// </summary>

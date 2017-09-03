@@ -7,14 +7,14 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// <summary>
     /// 时间验证服务
     /// </summary>
-    public abstract unsafe class TimeVerifyServer<serverType, attributeType, serverSocketType>
+    public abstract unsafe class TimeVerifyServer<attributeType, serverType, serverSocketType>
 #if NOJIT
 #else
         : ISetTcpServer<serverType, attributeType>
 #endif
-        where serverType : Server<attributeType>
+        where serverType : Server<attributeType, serverType, serverSocketType>
         where attributeType : ServerAttribute
-        where serverSocketType : ServerSocket<attributeType, serverSocketType>
+        where serverSocketType : ServerSocket<attributeType, serverType, serverSocketType>
     {
         /// <summary>
         /// TCP 服务端
@@ -54,17 +54,9 @@ namespace AutoCSer.Net.TcpSimpleServer
         [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, CommandIdentity = 1)]
         protected virtual bool verify(serverSocketType socket, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
-            string verify = server.Attribute.VerifyString;
-            if (verify == null)
-            {
-                if (AutoCSer.Config.Pub.Default.IsDebug)
-                {
-                    server.Log.add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, "警告：调试模式未启用服务验证 " + server.Attribute.ServerName, (StackFrame)null, true);
-                    return true;
-                }
-                server.Log.add(AutoCSer.Log.LogType.Error, "服务 " + server.Attribute.ServerName + " 验证字符串不能为空", (StackFrame)null, true);
-            }
-            else if (md5Data != null && md5Data.Length == 16)
+            TcpServer.ServerBaseAttribute attribute = server.Attribute;
+            if (AutoCSer.Net.TcpServer.TimeVerifyServer.CheckVerifyString(server, attribute)) return true;
+            if (md5Data != null && md5Data.Length == 16)
             {
                 if (ticks <= lastVerifyTicks && ticks != socket.TimeVerifyTicks)
                 {
@@ -77,7 +69,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                     ticks = socket.TimeVerifyTicks;
                     return false;
                 }
-                if (AutoCSer.Net.TcpServer.TimeVerifyServer.IsMd5(AutoCSer.Net.TcpServer.TimeVerifyServer.Md5(verify, randomPrefix, ticks), md5Data) == 0)
+                if (AutoCSer.Net.TcpServer.TimeVerifyServer.IsMd5(AutoCSer.Net.TcpServer.TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     if (ticks > lastVerifyTicks)
                     {
@@ -85,7 +77,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                         if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
                         lastVerifyTickLock = 0;
                     }
-                    if(server.Attribute.IsMarkData) socket.MarkData = server.Attribute.VerifyHashCode ^ randomPrefix;
+                    if(attribute.IsMarkData) socket.MarkData = attribute.VerifyHashCode ^ randomPrefix;
                     return true;
                 }
             }

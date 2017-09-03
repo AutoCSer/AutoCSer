@@ -1416,7 +1416,7 @@
             成员方法
             </summary>
             <param name="method">成员方法信息</param>
-            <param name="filter">选择类型</param>
+            <param name="awaiterReturnType">await 返回值类型</param>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Metadata.MethodIndex.#ctor(System.Reflection.FieldInfo,System.Boolean)">
             <summary>
@@ -2715,6 +2715,52 @@
             </summary>
             <param name="isOut">是否输出代码</param>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer">
+            <summary>
+            TCP 内部服务代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator">
+            <summary>
+            TCP 内部服务代码生成
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.IsTimeVerify">
+            <summary>
+            是否默认时间验证服务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.IsClientCode">
+            <summary>
+            是否生成客户端代码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.IsServerCode">
+            <summary>
+            是否生成服务器端代码
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.IsSetTcpServer">
+            <summary>
+            是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.onCreated">
+            <summary>
+            安装完成处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.create(System.Boolean)">
+            <summary>
+            生成代码
+            </summary>
+            <param name="isOut">是否输出代码</param>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenServer">
             <summary>
             TCP 服务代码生成
@@ -2837,6 +2883,67 @@
             </summary>
             <param name="isOut">是否输出代码</param>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer">
+            <summary>
+            TCP 服务代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator">
+            <summary>
+            TCP 服务代码生成
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.ServerNameOnly">
+            <summary>
+            服务类名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.ServerName">
+            <summary>
+            服务类名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.ServerRegisterName">
+            <summary>
+            服务注册名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.IsTimeVerify">
+            <summary>
+            是否默认时间验证服务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.IsClientCode">
+            <summary>
+            是否生成客户端代码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.IsServerCode">
+            <summary>
+            是否生成服务器端代码
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.IsSetTcpServer">
+            <summary>
+            是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.onCreated">
+            <summary>
+            安装完成处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpOpenStreamServer.Generator.create(System.Boolean)">
+            <summary>
+            生成代码
+            </summary>
+            <param name="isOut">是否输出代码</param>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer">
             <summary>
             TCP 服务代码生成基类
@@ -2906,6 +3013,11 @@
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.StaticMethodIdentityCommand">
+            <summary>
+            TCP调用命令名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.AsynchronousStaticMethodIdentityCommand">
             <summary>
             TCP调用命令名称
             </summary>
@@ -2993,6 +3105,116 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsMethodServerCall">
             <summary>
             是否定义服务器端调用
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.MethodAsynchronousIdentityCommand">
+            <summary>
+            TCP调用命令名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsOutputParameter">
+            <summary>
+            是否存在输出参数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsClientSynchronous">
+            <summary>
+            客户端调用是否支持同步
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsClientTaskAsync">
+            <summary>
+            客户端是否支持 async Task
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsClientAsynchronous">
+            <summary>
+            客户端调用是否支持异步
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsClientSendOnly">
+            <summary>
+            是否仅发送数据
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsKeepCallback">
+            <summary>
+            是否保持异步回调
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.clientTaskTypeName">
+            <summary>
+            任务类型名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.ClientTask">
+            <summary>
+            客户端任务类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsClientAwaiter">
+            <summary>
+            客户端是否支持 await
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterBoxTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterReferenceTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterBoxReferenceTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.Awaiter">
+            <summary>
+            await 类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterReturnValueTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterReturnValueBoxTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterReturnValueReferenceTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.awaiterReturnValueBoxReferenceTypeName">
+            <summary>
+            await 类型名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.AwaiterReturnValue">
+            <summary>
+            await 返回值包装类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsSynchronousMethodIdentityCommand">
+            <summary>
+            是否生成同步 TCP 调用命令名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsAwaiterMethodIdentityCommand">
+            <summary>
+            是否生成 await TCP 调用命令名称
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.TcpMethod.IsNullMethod">
@@ -3142,121 +3364,6 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.MethodIndexName">
             <summary>
             方法索引名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.MethodAsynchronousIdentityCommand">
-            <summary>
-            TCP调用命令名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.AsynchronousStaticMethodIdentityCommand">
-            <summary>
-            TCP调用命令名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.clientTaskTypeName">
-            <summary>
-            任务类型名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.ClientTask">
-            <summary>
-            客户端任务类型
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsOutputParameter">
-            <summary>
-            是否存在输出参数
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsClientSendOnly">
-            <summary>
-            是否仅发送数据
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsClientAsynchronous">
-            <summary>
-            客户端调用是否支持异步
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsClientSynchronous">
-            <summary>
-            客户端调用是否支持同步
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsClientTaskAsync">
-            <summary>
-            客户端是否支持 async Task
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsClientAwaiter">
-            <summary>
-            客户端是否支持 await
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterBoxTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterReferenceTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterBoxReferenceTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.Awaiter">
-            <summary>
-            await 类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterReturnValueTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterReturnValueBoxTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterReturnValueReferenceTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.awaiterReturnValueBoxReferenceTypeName">
-            <summary>
-            await 类型名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.AwaiterReturnValue">
-            <summary>
-            await 返回值包装类型
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsSynchronousMethodIdentityCommand">
-            <summary>
-            是否生成同步 TCP 调用命令名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsAwaiterMethodIdentityCommand">
-            <summary>
-            是否生成 await TCP 调用命令名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.IsKeepCallback">
-            <summary>
-            是否保持异步回调
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.TcpMethod.keepCallbackType">
@@ -3498,7 +3605,7 @@
             服务器端位置
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticSimpleServer.Generator.SimpleClientPart">
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticSimpleServer.Generator.SimpleClientPart">
             <summary>
             客户端位置
             </summary>
@@ -3630,6 +3737,196 @@
             生成代码
             </summary>
             <param name="isOut">是否输出代码</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer">
+            <summary>
+            TCP 静态服务代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator">
+            <summary>
+            TCP 静态服务代码生成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.serverPart">
+            <summary>
+            服务器端位置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.StreamClientPart">
+            <summary>
+            客户端位置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.StreamParameterPart">
+            <summary>
+            调用参数位置
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.Server">
+            <summary>
+            TCP 静态服务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.Server.Attribute">
+            <summary>
+            TCP调用服务配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.Server.Types">
+            <summary>
+            类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.Server.AttributeType">
+            <summary>
+            配置类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.Server.IsMethod">
+            <summary>
+            是否存在方法
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.Server.IsTimeVerify">
+            <summary>
+            是否默认时间验证服务
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.ServerType">
+            <summary>
+            TCP 静态服务类型信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.ServerType.Type">
+            <summary>
+            TCP调用类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.ServerType.Attribute">
+            <summary>
+            TCP调用配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.ServerType.Methods">
+            <summary>
+            方法集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.IsAllType">
+            <summary>
+            是否所有类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.TcpServerAttributeType">
+            <summary>
+            配置类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.servers">
+            <summary>
+            TCP 静态服务集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.serverTypes">
+            <summary>
+            TCP 静态服务类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.defaultServerName">
+            <summary>
+            服务类名称(临时变量)
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.defaultServer">
+            <summary>
+            TCP调用服务(临时变量)
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.defaultType">
+            <summary>
+            TCP调用类型(临时变量)
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.TimeVerifyMethod">
+            <summary>
+            时间验证函数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.TimeVerifyStreamClientType">
+            <summary>
+            客户端时间验证类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.next(AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator{AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender}.TcpMethod)">
+            <summary>
+            下一个函数处理
+            </summary>
+            <param name="methodIndex"></param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.getRememberIdentityName">
+            <summary>
+            获取命令序号记忆数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.onCreated">
+            <summary>
+            安装完成处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticStreamServer.Generator.create(System.Boolean)">
+            <summary>
+            生成代码
+            </summary>
+            <param name="isOut">是否输出代码</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer">
+            <summary>
+            TCP 服务代码生成基类
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3">
+            <summary>
+            TCP 服务代码生成
+            </summary>
+            <typeparam name="attributeType">TCP 服务配置</typeparam>
+            <typeparam name="methodAttributeType">TCP 调用函数配置</typeparam>
+            <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送</typeparam>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.TcpMethod">
+            <summary>
+            方法索引信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.TcpMethod.IsMethodServerCall">
+            <summary>
+            是否定义服务器端调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.TcpMethod.nullMethod">
+            <summary>
+            空方法索引信息
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.TcpMethod.CheckIdentity(AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator{`0,`1,`2}.TcpMethod[],System.Collections.Generic.Dictionary{AutoCSer.HashString,System.Int32},System.Func{AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator{`0,`1,`2}.TcpMethod,System.String})">
+            <summary>
+            检测方法序号
+            </summary>
+            <param name="methodIndexs">方法集合</param>
+            <param name="rememberIdentityCommand">命令序号记忆数据</param>
+            <param name="getMethodKeyName">获取命令名称的委托</param>
+            <returns>方法集合,失败返回null</returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.MethodIndexs">
+            <summary>
+            方法索引集合
+            </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TypeDefinition">
             <summary>
@@ -4587,6 +4884,15 @@
             <summary>
             CSharp模板公用模糊类型
             </summary>
+            <summary>
+            CSharp模板公用模糊类型
+            </summary>
+            <summary>
+            CSharp模板公用模糊类型
+            </summary>
+            <summary>
+            CSharp模板公用模糊类型
+            </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.WebAjaxMethodType">
             <summary>
@@ -4632,6 +4938,15 @@
             <summary>
             类型全名
             </summary>
+            <summary>
+            类型全名
+            </summary>
+            <summary>
+            类型全名
+            </summary>
+            <summary>
+            类型全名
+            </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.SetTcpServer(AutoCSer.Net.TcpInternalServer.Server)">
             <summary>
@@ -4645,6 +4960,12 @@
             </summary>
             <param name="tcpServer">TCP服务端</param>
         </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.SetTcpServer(AutoCSer.Net.TcpInternalStreamServer.Server)">
+            <summary>
+            设置TCP服务端
+            </summary>
+            <param name="tcpServer">TCP服务端</param>
+        </member>
         <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.SetTcpServer(AutoCSer.Net.TcpOpenSimpleServer.Server)">
             <summary>
             设置TCP服务端
@@ -4652,6 +4973,12 @@
             <param name="tcpServer">TCP服务端</param>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.SetTcpServer(AutoCSer.Net.TcpOpenServer.Server)">
+            <summary>
+            设置TCP服务端
+            </summary>
+            <param name="tcpServer">TCP服务端</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.SetTcpServer(AutoCSer.Net.TcpOpenStreamServer.Server)">
             <summary>
             设置TCP服务端
             </summary>
@@ -4685,6 +5012,23 @@
             </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.TcpStaticServer.StaticMethodIndexName(System.Object[])">
+            <summary>
+            TCP函数调用
+            </summary>
+            <param name="value">调用参数</param>
+            <returns>返回值</returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.FullName.TcpStaticStreamServer">
+            <summary>
+            TCP调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.Pub.FullName.TcpStaticStreamServer.PropertyName">
+            <summary>
+            字段/属性调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.TcpStaticStreamServer.StaticMethodIndexName(System.Object[])">
             <summary>
             TCP函数调用
             </summary>
@@ -4768,6 +5112,9 @@
             <summary>
             默认命名空间
             </summary>
+            <summary>
+            默认命名空间
+            </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.DefaultNamespace.SimpleParameterPart">
             <summary>
@@ -4785,6 +5132,16 @@
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.DefaultNamespace.ClientPart">
+            <summary>
+            客服端代码
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.DefaultNamespace.StreamParameterPart">
+            <summary>
+            调用参数代码
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.DefaultNamespace.StreamClientPart">
             <summary>
             客服端代码
             </summary>
@@ -4815,6 +5172,16 @@
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.Pub.TimeVerifyClientType.verify">
+            <summary>
+            验证委托
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.TimeVerifyStreamClientType">
+            <summary>
+            客户端时间验证类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.Pub.TimeVerifyStreamClientType.verify">
             <summary>
             验证委托
             </summary>
@@ -5031,6 +5398,53 @@
         <member name="P:AutoCSer.CodeGenerator.Template.TcpInternalSimpleServer.TypeNameDefinition.TcpInternalSimpleClient.Item(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
             <param name="@ParameterName">@XmlDocument</param>
         </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.RememberIdentityCommeandName">
+            <summary>
+            命令序号记忆数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamServer">
+            <summary>
+            @ServerRegisterName TCP服务/*NOT:IsServerCode*/参数/*NOT:IsServerCode*/
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamServer.#ctor(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.Log.ILog)">
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamServer.DoCommand(System.Int32,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            命令处理
+            </summary>
+            <param name="index">命令序号</param>
+            <param name="sender">TCP 内部服务套接字数据发送</param>
+            <param name="data">命令数据</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient">
+            <summary>
+            TCP客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.#ctor(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,System.Func{AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient,AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,System.Boolean},AutoCSer.Log.ILog)">
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.MethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.MethodName(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.AwaiterMethodName(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.TaskAsyncMethodName(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.MethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName,System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.CodeGenerator.Template.Pub.FullName}})">
+            <param name="_onReturn_">@Method.ReturnXmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpInternalStreamServer.TypeNameDefinition.TcpInternalStreamClient.Item(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
         <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenSimpleServer.TypeNameDefinition.RememberIdentityCommeandName">
             <summary>
             命令序号记忆数据
@@ -5114,6 +5528,53 @@
             <returns>保持异步回调</returns>
         </member>
         <member name="P:AutoCSer.CodeGenerator.Template.TcpOpenServer.TypeNameDefinition.TcpOpenClient.Item(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.RememberIdentityCommeandName">
+            <summary>
+            命令序号记忆数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamServer">
+            <summary>
+            @ServerRegisterName TCP服务/*NOT:IsServerCode*/参数/*NOT:IsServerCode*/
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamServer.#ctor(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.Log.ILog)">
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamServer.DoCommand(System.Int32,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            命令处理
+            </summary>
+            <param name="index">命令序号</param>
+            <param name="sender">TCP 内部服务套接字数据发送</param>
+            <param name="data">命令数据</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient">
+            <summary>
+            TCP客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.#ctor(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,System.Func{AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient,AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender,System.Boolean},AutoCSer.Log.ILog)">
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.MethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.MethodName(AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.AwaiterMethodName(AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.TaskAsyncMethodName(AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.MethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName,System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.CodeGenerator.Template.Pub.FullName}})">
+            <param name="_onReturn_">@Method.ReturnXmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpOpenStreamServer.TypeNameDefinition.TcpOpenStreamClient.Item(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
             <param name="@ParameterName">@XmlDocument</param>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticSimpleServer.TcpCallSimple">
@@ -5275,6 +5736,90 @@
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticServer.ServerName.TcpClient">
+            <summary>
+            默认客户端TCP调用
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream">
+            <summary>
+            TCP调用客户端
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition">
+            <summary>
+            @Type.XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition.MethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition.MethodName(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition.AwaiterMethodName(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition.TaskAsyncMethodName(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@Method.ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition.MethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName,System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.CodeGenerator.Template.Pub.FullName}})">
+            <param name="_onReturn_">@Method.ReturnXmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.TcpCallStream.NoAccessTypeNameDefinition.PropertyName">
+            <summary>
+            @Method.XmlDocument
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName">
+            <summary>
+            TCP调用服务端
+            </summary>
+            <summary>
+            TCP调用客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.RememberIdentityCommeandName">
+            <summary>
+            命令序号记忆数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.#ctor(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.Log.ILog)">
+            <summary>
+            TCP调用服务端
+            </summary>
+            <param name="attribute">TCP调用服务器端配置信息</param>
+            <param name="verify">TCP验证实例</param>
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.DoCommand(System.Int32,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            命令处理
+            </summary>
+            <param name="index">命令序号</param>
+            <param name="sender">TCP 内部服务套接字数据发送</param>
+            <param name="data">命令数据</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.ClientConfig">
+            <summary>
+            TCP 静态调用客户端参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.ClientConfig.ServerAttribute">
+            <summary>
+            TCP 内部服务配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.ClientConfig.Log">
+            <summary>
+            日志接口
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.ClientConfig.VerifyMethod">
+            <summary>
+            验证委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticStreamServer.ServerName.TcpClient">
             <summary>
             默认客户端TCP调用
             </summary>
@@ -6433,6 +6978,18 @@
             </summary>
         </member>
         <member name="M:AutoCSer.Extension.TcpStaticServerAttribute.CopyFrom(AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute)">
+            <summary>
+            复制 TCP 服务配置
+            </summary>
+            <param name="value">TCP 服务配置</param>
+            <param name="copyValue">TCP 服务配置</param>
+        </member>
+        <member name="F:AutoCSer.Extension.TcpStaticServerAttribute.streamCopyMemberMap">
+            <summary>
+            复制 TCP 服务配置成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.TcpStaticServerAttribute.CopyFrom(AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.ServerAttribute)">
             <summary>
             复制 TCP 服务配置
             </summary>

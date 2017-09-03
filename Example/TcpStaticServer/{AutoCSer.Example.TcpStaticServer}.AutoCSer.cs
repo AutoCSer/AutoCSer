@@ -1084,7 +1084,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1100,7 +1100,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         }
                         catch (Exception error)
                         {
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         return;
                     case 2:
@@ -1118,7 +1118,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1138,7 +1138,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1158,7 +1158,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1177,7 +1177,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1193,7 +1193,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1212,7 +1212,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1228,7 +1228,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1244,7 +1244,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1260,7 +1260,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1279,7 +1279,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1295,7 +1295,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1311,7 +1311,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1330,7 +1330,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1349,7 +1349,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -1376,7 +1376,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1406,7 +1406,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1435,7 +1435,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1470,7 +1470,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1503,7 +1503,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1536,7 +1536,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1569,7 +1569,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1601,7 +1601,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1633,7 +1633,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1663,7 +1663,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1672,7 +1672,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     if (Sender.IsSocket)
                     {
                         get(ref value);
-                        Sender.Push(CommandIndex, ref value);
+                        Sender.Push(CommandIndex, value.Type);
                     }
                     push(this);
                 }
@@ -1695,7 +1695,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1727,7 +1727,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1757,7 +1757,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -1766,7 +1766,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     if (Sender.IsSocket)
                     {
                         get(ref value);
-                        Sender.Push(CommandIndex, ref value);
+                        Sender.Push(CommandIndex, value.Type);
                     }
                     push(this);
                 }
@@ -1790,7 +1790,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -2123,7 +2123,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         catch (Exception error)
                         {
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         sender.Push(returnType);
                         return;
@@ -2139,7 +2139,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                         }
                         catch (Exception error)
                         {
-                            sender.Log(error);
+                            sender.AddLog(error);
                         }
                         return;
                     default: return;
@@ -2165,7 +2165,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()
@@ -2195,7 +2195,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                     catch (Exception error)
                     {
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.Log(error);
+                        Sender.AddLog(error);
                     }
                 }
                 public override void Call()

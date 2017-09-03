@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// <summary>
     /// TCP 内部服务端
     /// </summary>
-    public abstract unsafe partial class Server : TcpSimpleServer.Server<ServerAttribute, ServerSocket>, TcpRegister.IServer
+    public abstract unsafe partial class Server : TcpSimpleServer.Server<ServerAttribute, Server, ServerSocket>, TcpRegister.IServer
     {
         /// <summary>
         /// TCP 内部注册服务客户端
@@ -64,26 +64,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             if (isListen != 0) return true;
             if (IsDisposed == 0 && Interlocked.CompareExchange(ref isStart, 1, 0) == 0)
             {
-                if (Attribute.TcpRegisterName != null)
-                {
-                    tcpRegisterClient = TcpRegister.Client.Get(Attribute.TcpRegisterName, Log);
-                    if (tcpRegisterClient == null)
-                    {
-                        Log.add(AutoCSer.Log.LogType.Error, "TCP 内部注册服务 " + Attribute.TcpRegisterName + " 客户端获取失败");
-                        return false;
-                    }
-                    if (Attribute.RegisterHost == null) Attribute.RegisterHost = Attribute.Host;
-                    if (Attribute.RegisterPort == 0) Attribute.RegisterPort = Attribute.Port;
-                    if (Attribute.RegisterPort == 0)
-                    {
-                        if (tcpRegisterClient.GetPort(Attribute)) Port = Attribute.Port;
-                        else
-                        {
-                            Log.add(AutoCSer.Log.LogType.Error, "TCP 内部服务 " + Attribute.ServerName + " 端口获取失败");
-                            return false;
-                        }
-                    }
-                }
+                if (!GetRegisterClient(Attribute, Attribute.TcpRegisterName, ref tcpRegisterClient)) return false;
                 if (listen())
                 {
                     startGetSocket();
@@ -105,10 +86,10 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         internal override void GetSocket()
         {
-            ReceiveVerifyCommandTimeout = TcpServer.ServerSocket.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
             if (verify == null) getSocket();
             else getSocketVerify();
-            TcpSimpleServer.ServerSocket.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
+            SocketTimeoutLink.TimerLink.Free(ref ReceiveVerifyCommandTimeout);
         }
         /// <summary>
         /// 获取客户端请求

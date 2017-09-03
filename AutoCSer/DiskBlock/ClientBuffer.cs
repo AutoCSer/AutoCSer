@@ -63,7 +63,7 @@ namespace AutoCSer.DiskBlock
             {
                 if (size == 0)
                 {
-                    Buffer.Null();
+                    Buffer.SetNull();
                     State = (MemberState)(byte)*(int*)(read + sizeof(int));
                     deSerializer.Read += sizeof(int) * 2;
                 }

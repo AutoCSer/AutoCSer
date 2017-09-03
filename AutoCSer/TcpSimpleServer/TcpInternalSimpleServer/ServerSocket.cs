@@ -8,7 +8,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// <summary>
     /// TCP 内部服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, ServerSocket>
+    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, Server, ServerSocket>
     {
         /// <summary>
         /// TCP 内部服务端套接字
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         internal void Start()
         {
-            bufferSize = Server.BufferPool.Size;
+            bufferSize = Server.ReceiveBufferPool.Size;
 #if MONO
 #else
             Socket.ReceiveBufferSize = Socket.SendBufferSize = bufferSize;
@@ -83,7 +83,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
 #else
             asyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
-            Server.BufferPool.Get(ref Buffer);
+            Server.ReceiveBufferPool.Get(ref Buffer);
             OutputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
 #if DOTNET2
             asyncCallback = onReceive;
@@ -464,11 +464,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                                         }
                                     }
                                 }
-                                else if (receiveCount == sizeof(int))
-                                {
-                                    SubArray<byte> data = default(SubArray<byte>);
-                                    return Server.DoCommand(commandIndex, this, ref data);
-                                }
+                                else if (receiveCount == sizeof(int)) return Server.DoCommand(commandIndex, this, ref SubArray<byte>.Null);
                             }
                             else if (((commandIndex ^ TcpServer.Server.CheckCommandIndex) | (receiveCount ^ sizeof(int))) == 0) return Send(TcpServer.ReturnType.Success);
                         }
@@ -636,7 +632,8 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 {
                     receiveBigBufferCount += asyncEventArgs.BytesTransferred;
 #endif
-                    if (compressionDataSize == receiveBigBufferCount)
+                    int nextSize = compressionDataSize - receiveBigBufferCount;
+                    if (nextSize == 0)
                     {
                         if (isDoCommandBig()) return;
                     }
@@ -645,14 +642,14 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
 #if DOTNET2
                         if (socket == Socket)
                         {
-                            socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount, SocketFlags.None, out socketError, asyncCallback, socket);
+                            socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize, SocketFlags.None, out socketError, asyncCallback, socket);
                             if (socketError == SocketError.Success) return;
                         }
 #else
                         Socket socket = Socket;
                         if (socket != null)
                         {
-                            asyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount);
+                            asyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize);
                             if (socket.ReceiveAsync(asyncEventArgs)) return;
                             goto CHECK;
                         }

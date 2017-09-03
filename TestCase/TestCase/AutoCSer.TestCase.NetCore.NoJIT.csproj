@@ -51,18 +51,27 @@
     <Compile Include="TcpInternalSimpleServer\Json.cs" />
     <Compile Include="TcpInternalSimpleServer\Member.cs" />
     <Compile Include="TcpInternalSimpleServer\Session.cs" />
+    <Compile Include="TcpInternalStreamServer\Json.cs" />
+    <Compile Include="TcpInternalStreamServer\Member.cs" />
+    <Compile Include="TcpInternalStreamServer\Session.cs" />
     <Compile Include="TcpOpenServer\Json.cs" />
     <Compile Include="TcpOpenServer\Member.cs" />
     <Compile Include="TcpOpenServer\Session.cs" />
     <Compile Include="TcpOpenSimpleServer\Json.cs" />
     <Compile Include="TcpOpenSimpleServer\Member.cs" />
     <Compile Include="TcpOpenSimpleServer\Session.cs" />
+    <Compile Include="TcpOpenStreamServer\Json.cs" />
+    <Compile Include="TcpOpenStreamServer\Member.cs" />
+    <Compile Include="TcpOpenStreamServer\Session.cs" />
     <Compile Include="TcpStaticServer\Json.cs" />
     <Compile Include="TcpStaticServer\Member.cs" />
     <Compile Include="TcpStaticServer\Session.cs" />
     <Compile Include="TcpStaticSimpleServer\Json.cs" />
     <Compile Include="TcpStaticSimpleServer\Member.cs" />
     <Compile Include="TcpStaticSimpleServer\Session.cs" />
+    <Compile Include="TcpStaticStreamServer\Json.cs" />
+    <Compile Include="TcpStaticStreamServer\Member.cs" />
+    <Compile Include="TcpStaticStreamServer\Session.cs" />
     <Compile Include="Xml.cs" />
     <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
   </ItemGroup>
@@ -72,6 +81,7 @@
     <ProjectReference Include="..\..\AutoCSer\FieldEquals\AutoCSer.FieldEquals.NetStandard.JIT.csproj" />
     <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.NetStandard.JIT.csproj" />
     <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.NoJIT.csproj" />
+    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -173,7 +173,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// 成员方法
         /// </summary>
         /// <param name="method">成员方法信息</param>
-        /// <param name="filter">选择类型</param>
+        /// <param name="awaiterReturnType">await 返回值类型</param>
         internal MethodIndex(MethodInfo method, Type awaiterReturnType)
             : this(method, MemberFilters.PublicInstance, 0)
         {
