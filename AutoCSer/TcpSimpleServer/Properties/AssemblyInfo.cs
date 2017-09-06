@@ -5,8 +5,7 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-#if DotNetStandard
-#else
+#if !DotNetStandard
 [assembly: AssemblyTitle("AutoCSer.TcpSimpleServer")]
 [assembly: AssemblyCopyright("Copyright © 肖进 2017")]
 [assembly: AssemblyDescription("AutoCSer.TcpSimpleServer 是一个简单的应答服务框架。")]

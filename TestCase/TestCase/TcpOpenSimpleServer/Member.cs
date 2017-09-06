@@ -17,8 +17,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServer
 #endif
         internal new static bool TestCase()
         {
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
             Member member = new Member();
             using (Member.TcpOpenSimpleServer server = new Member.TcpOpenSimpleServer(null, null, member))
             {

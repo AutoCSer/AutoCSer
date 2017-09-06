@@ -126,8 +126,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
 #endif
         internal static bool TestCase()
         {
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
             using (Json.TcpInternalServer server = new Json.TcpInternalServer())
             {
                 if (server.IsListen)

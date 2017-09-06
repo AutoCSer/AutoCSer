@@ -53,8 +53,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServer
                 this.user = user;
                 this.password = password;
             }
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
             /// <summary>
             /// 客户端验证
             /// </summary>
@@ -76,8 +75,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServer
 #endif
         internal static bool TestCase()
         {
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
             using (Session.TcpInternalStreamServer server = new Session.TcpInternalStreamServer())
             {
                 if (server.IsListen)

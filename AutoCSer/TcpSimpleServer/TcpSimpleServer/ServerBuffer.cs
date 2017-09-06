@@ -95,8 +95,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             while (SocketError == SocketError.Success && (count >= TcpServer.Server.MinSocketSize || (count > 0 && sendSizeLessCount++ == 0)));
             return false;
         }
-#if DOTNET2
-#else
+#if !DOTNET2
         /// <summary>
         /// 设置发送数据缓冲区
         /// </summary>

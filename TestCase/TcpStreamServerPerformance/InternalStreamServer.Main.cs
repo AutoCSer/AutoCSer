@@ -60,8 +60,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                             Console.ReadKey();
                         }
                     }
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

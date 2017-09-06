@@ -90,13 +90,11 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         internal void Start()
         {
             bufferSize = Server.ReceiveBufferPool.Size;
-#if MONO
-#else
+#if !MONO
             Socket.ReceiveBufferSize = Socket.SendBufferSize = bufferSize;
 #endif
             if ((maxInputSize = Server.Attribute.MaxInputSize) <= 0) maxInputSize = int.MaxValue;
-#if DOTNET2
-#else
+#if !DOTNET2
             asyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
             Server.ReceiveBufferPool.Get(ref Buffer);
@@ -141,8 +139,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 }
 #endif
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             ServerSocketTask.Task.Add(this);
 #endif
         }
@@ -272,8 +269,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         }
                         else if (Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
                         {
-#if DOTNET2
-#else
+#if !DOTNET2
                             Socket socket = Socket;
 #endif
                             Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
@@ -281,8 +277,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
                 }
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             else socketError = asyncEventArgs.SocketError;
 #endif
             return false;
@@ -335,9 +330,6 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
                     return true;
                 }
-#endif
-#if DOTNET2
-#else
                 return isVerifyData();
 #endif
             }
@@ -388,8 +380,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
                     return nextSize > 0 && (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0)) && isReceiveVerifyData();
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 socketError = asyncEventArgs.SocketError;
 #endif
             }
@@ -492,8 +483,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
                 }
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             else socketError = asyncEventArgs.SocketError;
 #endif
             return false;
@@ -516,8 +506,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         if (ReceiveBigBuffer.PoolBuffer.Pool == null) ++Server.ReceiveNewBufferCount;
                         receiveBigBufferCount = receiveSize;
                         SocketType = TcpSimpleServer.ServerSocketType.BigData;
-#if DOTNET2
-#else
+#if !DOTNET2
                         BIGRECEIVE:
 #endif
                         Socket socket = Socket;
@@ -537,9 +526,6 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                                 Server.PushReceiveVerifyCommandTimeout(this, Socket);
                                 return true;
                             }
-#endif
-#if DOTNET2
-#else
                             if (asyncEventArgs.SocketError == SocketError.Success)
                             {
                                 if (compressionDataSize == (receiveBigBufferCount += asyncEventArgs.BytesTransferred)) return isDoCommandBig();
@@ -553,8 +539,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     System.Buffer.BlockCopy(Buffer.Buffer, Buffer.StartIndex + receiveIndex, ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, receiveCount -= receiveIndex);
                     Buffer.Free();
                     ReceiveBigBuffer.CopyToClear(ref Buffer);
-#if DOTNET2
-#else
+#if !DOTNET2
                     asyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, bufferSize = Buffer.Length);
 #endif
                     receiveIndex = 0;
@@ -566,8 +551,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         receiveIndex = 0;
                     }
                     SocketType = TcpSimpleServer.ServerSocketType.Data;
-#if DOTNET2
-#else
+#if !DOTNET2
                     RECEIVE:
 #endif
                     Socket socket = Socket;
@@ -652,8 +636,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #endif
                 }
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             else socketError = asyncEventArgs.SocketError;
 #endif
             return false;
@@ -709,8 +692,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #endif
                 }
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             else socketError = asyncEventArgs.SocketError;
 #endif
             return false;
@@ -737,8 +719,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <returns></returns>
         private bool isDoCommandBig()
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             asyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, bufferSize);
 #endif
             SubBuffer.PoolBufferFull receiveBigBuffer = ReceiveBigBuffer;
@@ -1157,8 +1138,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #endif
                     if(OutputBuffer.OnSend(count) == 0)
                     {
-#if DOTNET2
-#else
+#if !DOTNET2
                         asyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, bufferSize);
 #endif
                         sendSizeLessCount = 0;
@@ -1193,8 +1173,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #endif
                     }
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 else socketError = asyncEventArgs.SocketError;
 #endif
             }

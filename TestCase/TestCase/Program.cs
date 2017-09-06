@@ -22,8 +22,7 @@ namespace AutoCSer.TestCase
 ");
 
                     Type errorType = typeof(Program);
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                     FileInfo blockFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, "blockFile" + AutoCSer.DiskBlock.File.ExtensionName));
                     if (blockFile.Exists && blockFile.Length >= 1 << 20) blockFile.Delete();
                     using (AutoCSer.DiskBlock.Server.TcpInternalServer fileBlockServer = AutoCSer.DiskBlock.Server.Create(new AutoCSer.DiskBlock.File(blockFile.FullName, 0)))
@@ -42,14 +41,13 @@ namespace AutoCSer.TestCase
                             && jsonSimpleServer.IsListen && memberSimpleServer.IsListen && sessionSimpleServer.IsListen)
                         {
 #endif
-                            do
-                            {
+                    do
+                    {
                                 if (!Json.TestCase()) { errorType = typeof(Json); break; }
                                 if (!Xml.TestCase()) { errorType = typeof(Xml); break; }
                                 if (!BinarySerialize.TestCase()) { errorType = typeof(BinarySerialize); break; }
                                 if (!SimpleSerialize.TestCase()) { errorType = typeof(SimpleSerialize); break; }
-#if NOJIT
-#else
+#if !NOJIT
                                 if (!TcpInternalServer.Emit.Server.TestCase()) { errorType = typeof(TcpInternalServer.Emit.Server); break; }
                                 if (!TcpOpenServer.Emit.Server.TestCase()) { errorType = typeof(TcpOpenServer.Emit.Server); break; }
                                 if (!TcpInternalStreamServer.Emit.Server.TestCase()) { errorType = typeof(TcpInternalStreamServer.Emit.Server); break; }
@@ -57,8 +55,7 @@ namespace AutoCSer.TestCase
                                 if (!TcpInternalSimpleServer.Emit.Server.TestCase()) { errorType = typeof(TcpInternalSimpleServer.Emit.Server); break; }
                                 if (!TcpOpenSimpleServer.Emit.Server.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Emit.Server); break; }
 #endif
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                                 if (!TcpInternalServer.Session.TestCase()) { errorType = typeof(TcpInternalServer.Session); break; }
                                 if (!TcpInternalServer.Member.TestCase()) { errorType = typeof(TcpInternalServer.Member); break; }
                                 if (!TcpInternalServer.Json.TestCase()) { errorType = typeof(TcpInternalServer.Json); break; }
@@ -95,20 +92,18 @@ namespace AutoCSer.TestCase
                                 if (testCount++ == 1) AutoCSer.Threading.ThreadPool.TinyBackground.Start(check);
                             }
                             while (true);
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                         }
                     }
 #endif
-                    testCount = 0;
+                            testCount = 0;
                     Console.WriteLine(errorType.FullName + " ERROR");
                     Console.ReadKey();
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif
-        }
+                }
         private static int testCount = 1;
         private static void check()
         {

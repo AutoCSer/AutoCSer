@@ -496,10 +496,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
@@ -529,7 +526,6 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-#endif
 #endif
 
 

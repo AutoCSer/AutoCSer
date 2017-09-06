@@ -2,8 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Linq.Expressions;
 using System.Data.SqlClient;
-#if NETSTANDARD2_0
-#else
+#if !NETSTANDARD2_0
 using System.Data.OleDb;
 #endif
 
@@ -40,8 +39,7 @@ namespace AutoCSer.Sql
         /// </summary>
         [FieldOffset(0)]
         public SqlConnection SqlConnection;
-#if NETSTANDARD2_0
-#else
+#if !NETSTANDARD2_0
         /// <summary>
         /// 数据库命令
         /// </summary>

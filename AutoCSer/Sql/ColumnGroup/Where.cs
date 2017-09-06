@@ -1,8 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -81,8 +80,7 @@ namespace AutoCSer.Sql.ColumnGroup
             /// <param name="value">数据列</param>
             /// <param name="converter">SQL常量转换</param>
             /// <param name="columnName">列名前缀</param>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static void Write(CharStream sqlStream, valueType value, ConstantConverter converter, string columnName)

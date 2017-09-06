@@ -22,8 +22,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodStreamServer.html
 ");
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                     using (InternalStreamServer.TcpInternalStreamServer synchronousServer = new InternalStreamServer.TcpInternalStreamServer())
                     using (InternalStreamTcpQueueServer.TcpInternalStreamServer tcpQueueServer = new InternalStreamTcpQueueServer.TcpInternalStreamServer())
                     using (InternalStreamQueueServer.TcpInternalStreamServer queueServer = new InternalStreamQueueServer.TcpInternalStreamServer())
@@ -63,8 +62,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                         }
                     }
 #endif
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

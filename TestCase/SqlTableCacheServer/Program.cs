@@ -18,8 +18,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                 using (processWait)
                 {
 #endif
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                     Console.WriteLine("http://www.AutoCSer.com/OrmCache/Index.html");
                     bool isServer = false;
                     try
@@ -47,8 +46,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                     }
                     Console.ReadKey();
 #endif
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

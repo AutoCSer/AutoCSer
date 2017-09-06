@@ -295,8 +295,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     receiveIndex = 0;
                 }
                 ReceiveType = TcpServer.ClientSocketReceiveType.Data;
-#if DOTNET2
-#else
+#if !DOTNET2
                 RECEIVE:
 #endif
                 Socket socket = this.Socket;
@@ -332,8 +331,7 @@ namespace AutoCSer.Net.TcpStreamServer
                 if (ReceiveBigBuffer.PoolBuffer.Pool == null) ++CommandClient.ReceiveNewBufferCount;
                 receiveBigBufferCount = receiveCount - receiveIndex;
                 ReceiveType = TcpServer.ClientSocketReceiveType.BigData;
-#if DOTNET2
-#else
+#if !DOTNET2
                 RECEIVEBIG:
 #endif
                 Socket socket = this.Socket;
@@ -382,8 +380,7 @@ namespace AutoCSer.Net.TcpStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void onBigDataLoopFixed()
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
 #endif
             Buffer.BlockCopy(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, receiveCount - receiveIndex);
@@ -397,8 +394,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <returns></returns>
         protected bool dataAsync(int count)
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             START:
 #endif
             if (compressionDataSize <= (receiveCount += count) - receiveIndex)
@@ -439,8 +435,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <returns></returns>
         protected bool bigDataAsync(int count)
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             START:
 #endif
             int nextSize = compressionDataSize - (receiveBigBufferCount += count);
@@ -565,8 +560,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     receiveIndex = 0;
                 }
                 ReceiveType = TcpServer.ClientSocketReceiveType.CompressionData;
-#if DOTNET2
-#else
+#if !DOTNET2
                 RECEIVE:
 #endif
                 Socket socket = this.Socket;
@@ -599,8 +593,7 @@ namespace AutoCSer.Net.TcpStreamServer
                 if (ReceiveBigBuffer.PoolBuffer.Pool == null) ++CommandClient.ReceiveNewBufferCount;
                 receiveBigBufferCount = receiveCount - receiveIndex;
                 ReceiveType = TcpServer.ClientSocketReceiveType.CompressionBigData;
-#if DOTNET2
-#else
+#if !DOTNET2
                 RECEIVEBIG:
 #endif
                 Socket socket = this.Socket;
@@ -636,8 +629,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <returns></returns>
         protected bool compressionDataAsync(int count)
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             START:
 #endif
             int nextSize = compressionDataSize - ((receiveCount += count) - receiveIndex);
@@ -671,8 +663,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <returns></returns>
         protected bool compressionBigDataAsync(int count)
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             START:
 #endif
             int nextSize = compressionDataSize - (receiveBigBufferCount += count);
@@ -705,8 +696,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <returns></returns>
         private bool onCompressionBigData()
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
 #endif
             Buffer.BlockCopy(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, receiveCount - receiveIndex);

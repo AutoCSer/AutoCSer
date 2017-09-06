@@ -52,8 +52,7 @@ namespace AutoCSer.TestCase.WebPerformance
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

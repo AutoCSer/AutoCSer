@@ -20,8 +20,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void DisposeSocket()
         {
-#if DotNetStandard
-#else
+#if !DotNetStandard
             Socket.Dispose();
 #endif
             Socket = null;
@@ -33,8 +32,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal SocketLink Cancel()
         {
-#if DotNetStandard
-#else
+#if !DotNetStandard
             if (Socket != null) Socket.Dispose();
 #endif
             return LinkNext;

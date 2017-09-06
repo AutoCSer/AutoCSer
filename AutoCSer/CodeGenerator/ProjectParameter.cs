@@ -192,7 +192,8 @@ namespace AutoCSer.CodeGenerator
                     if (IsAutoCSerCodeGenerator || IsCustomCodeGenerator)
                     {
                         run(new CSharper());
-                        //if (IsAutoCSerCodeGenerator) run(new CombinationTemplate());
+                        //if (IsCombinationTemplate)
+                            //run(new CombinationTemplate());
                     }
                     else
                     {

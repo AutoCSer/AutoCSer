@@ -2,8 +2,7 @@
 using AutoCSer.Metadata;
 using AutoCSer.Extension;
 using System.Reflection;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 

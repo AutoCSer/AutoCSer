@@ -16,8 +16,7 @@ namespace AutoCSer.TestCase
         {
             get { return new Log.Config { Type = AutoCSer.Log.LogType.All }; }
         }
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
         /// <summary>
         /// TCP 静态调用客户端参数
         /// </summary>

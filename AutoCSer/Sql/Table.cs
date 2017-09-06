@@ -264,8 +264,7 @@ namespace AutoCSer.Sql
         {
             Log.add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 不能为null");
         }
-#if NOJIT
-#else
+#if !NOJIT
         /// <summary>
         /// 数据库字符串验证函数
         /// </summary>

@@ -36,8 +36,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
                         else Console.WriteLine("示例服务启动失败");
                         Console.ReadKey();
                     }
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

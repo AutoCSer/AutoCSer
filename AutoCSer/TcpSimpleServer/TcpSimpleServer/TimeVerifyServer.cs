@@ -8,8 +8,7 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// 时间验证服务
     /// </summary>
     public abstract unsafe class TimeVerifyServer<attributeType, serverType, serverSocketType>
-#if NOJIT
-#else
+#if !NOJIT
         : ISetTcpServer<serverType, attributeType>
 #endif
         where serverType : Server<attributeType, serverType, serverSocketType>

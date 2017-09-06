@@ -20,14 +20,10 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-#if DOTNET2
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
 #else
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientTaskAsync = true)]
-#endif
 #endif
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int add(int left, int right)

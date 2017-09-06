@@ -25,20 +25,15 @@ namespace AutoCSer.Example.TcpInternalServer
                     Console.WriteLine(Property.TestCase());
                     Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(ClientAsynchronous.TestCase());
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                     Console.WriteLine(ClientTaskAsync.TestCase());
-#endif
 #endif
                     Console.WriteLine(SendOnly.TestCase());
                     Console.WriteLine(Asynchronous.TestCase());
                     Console.WriteLine(KeepCallback.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

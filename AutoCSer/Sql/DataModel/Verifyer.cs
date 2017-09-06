@@ -3,8 +3,7 @@ using AutoCSer.Metadata;
 using AutoCSer.Extension;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -166,8 +165,7 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="memberMap"></param>
             /// <param name="sqlTool"></param>
             /// <returns></returns>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static bool Verify(valueType value, MemberMap memberMap, Table sqlTool)

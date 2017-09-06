@@ -5,8 +5,7 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-#if DotNetStandard
-#else
+#if !DotNetStandard
 [assembly: AssemblyTitle("AutoCSer")]
 [assembly: AssemblyCopyright("Copyright © 肖进 2017")]
 [assembly: AssemblyDescription("AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP 接口服务框架、TCP 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。")]
@@ -38,17 +37,13 @@ using System.Runtime.InteropServices;
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
 #if AutoCSer
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0000")]
-#endif
-#if AllSerialize
+#elif AllSerialize
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0004")]
-#endif
-#if BinarySerialize
+#elif BinarySerialize
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0005")]
-#endif
-#if Json
+#elif Json
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0006")]
-#endif
-#if Xml
+#elif Xml
 [assembly: Guid("13510310-0414-0c06-0c1f-13530c1e0007")]
 #endif
 
@@ -60,6 +55,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.Sql")]
 [assembly: InternalsVisibleTo("AutoCSer.DiskBlock")]
 [assembly: InternalsVisibleTo("AutoCSer.Deploy")]
+[assembly: InternalsVisibleTo("AutoCSer.ProcessCopy")]
 [assembly: InternalsVisibleTo("AutoCSer.TcpStreamServer")]
 [assembly: InternalsVisibleTo("AutoCSer.TcpSimpleServer")]
 [assembly: InternalsVisibleTo("AutoCSer.Drawing.Gif")]

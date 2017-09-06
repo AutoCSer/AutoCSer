@@ -91,8 +91,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleServer
             return false;
         }
 
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
         /// <summary>
         /// 客户端验证
         /// </summary>

@@ -70,8 +70,7 @@ namespace AutoCSer.TestCase.TcpStaticServer
         {
             return a + b;
         }
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
         /// <summary>
         /// TCP 服务 JSON 序列化测试
         /// </summary>

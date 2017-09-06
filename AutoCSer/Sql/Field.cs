@@ -284,8 +284,7 @@ namespace AutoCSer.Sql
         /// 数据列验证类型集合
         /// </summary>
         private static readonly AutoCSer.Threading.LockDictionary<Type, bool> verifyTypes = new AutoCSer.Threading.LockDictionary<Type, bool>();
-#if NOJIT
-#else
+#if !NOJIT
         /// <summary>
         /// int引用参数类型
         /// </summary>

@@ -140,7 +140,6 @@ namespace AutoCSer.CodeGenerator
                     string notepad = new System.IO.DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.System)).fullName() + "notepad.exe";
                     if (System.IO.File.Exists(notepad)) Process.Start(notepad, fileName);
                     else
-#else
 #endif
                         Process.Start(fileName);
                 }

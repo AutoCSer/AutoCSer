@@ -71,8 +71,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             AutoCSer.Threading.RingPool<ServerCallback<outputParameterType, returnType>>.Default.PushNotNull(this);
             return socket.SendAsync(outputInfo, ref outputParameter);
         }
-#if NOJIT
-#else
+#if !NOJIT
         /// <summary>
         /// 设置返回值委托
         /// </summary>
@@ -123,8 +122,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             if (returnValue.Value) socket.SetVerifyMethod();
             return socket.SendAsync(outputInfo, ref outputParameter);
         }
-#if NOJIT
-#else
+#if !NOJIT
         /// <summary>
         /// 设置返回值委托
         /// </summary>

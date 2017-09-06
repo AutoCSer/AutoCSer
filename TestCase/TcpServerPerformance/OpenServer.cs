@@ -20,14 +20,10 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-#if DOTNET2
-        [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
         [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
 #else
         [AutoCSer.Net.TcpOpenServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, IsClientTaskAsync = true)]
-#endif
 #endif
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int add(int left, int right)
@@ -122,8 +118,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodServer.html
 ");
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                     using (OpenServer.TcpOpenServer server = new OpenServer.TcpOpenServer())
                     {
                         if (server.IsListen)
@@ -161,8 +156,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                         }
                     }
 #endif
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

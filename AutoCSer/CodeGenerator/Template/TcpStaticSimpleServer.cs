@@ -467,8 +467,7 @@ namespace AutoCSer.CodeGenerator.Template
 #endregion NAME Parameter
 #region NOTE
             public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
-#if NOJIT
-#else
+#if !NOJIT
                 <MethodReturnType.FullName>
 #endif
             {

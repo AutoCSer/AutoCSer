@@ -310,8 +310,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                         {
                             Buffer.Free();
                             OutputBuffer.CopyBuffer.CopyToClear(ref Buffer);
-#if DOTNET2
-#else
+#if !DOTNET2
                             asyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, bufferSize = Buffer.Length);
 #endif
                         }

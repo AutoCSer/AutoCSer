@@ -1,8 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -101,8 +100,7 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="sqlStream">SQL表达式流</param>
             /// <param name="value">数据列</param>
             /// <param name="converter">SQL常量转换</param>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static void Write(CharStream sqlStream, valueType value, ConstantConverter converter)

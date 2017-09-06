@@ -215,8 +215,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             bool isVerifyMethod = false;
             try
             {
-#if MONO
-#else
+#if !MONO
                 Socket.ReceiveBufferSize = Socket.SendBufferSize = Buffer.Length;
 #endif
                 Socket.Connect(IpAddress, Port);

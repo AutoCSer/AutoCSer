@@ -53,9 +53,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// Excel
         /// </summary>
-#if XAMARIN
-        [ClientType(IgnoreCase = true)]
-#elif NETSTANDARD2_0
+#if XAMARIN || NETSTANDARD2_0
         [ClientType(IgnoreCase = true)]
 #else
         [ClientType(ClientType = typeof(Excel.Client))]

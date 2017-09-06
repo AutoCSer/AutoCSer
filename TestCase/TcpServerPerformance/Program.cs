@@ -22,8 +22,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodServer.html
 ");
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                     using (InternalServer.TcpInternalServer server = new InternalServer.TcpInternalServer())
                     {
                         if (server.IsListen)
@@ -61,8 +60,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         }
                     }
 #endif
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

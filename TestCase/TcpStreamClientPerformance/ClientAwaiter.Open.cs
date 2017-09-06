@@ -23,26 +23,18 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
         /// <summary>
         /// 
         /// </summary>
-#if DOTNET2
-        internal void Run()
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
         internal void Run()
 #else
         internal async void Run()
 #endif
-#endif
         {
             for (int left = Left, right = Right; right != 0;)
             {
-#if DOTNET2
-                if ((Client.addAwaiter(left, --right)).Wait().Result.Value != left + right) ++TcpInternalStreamClientPerformance.Client.ErrorCount;
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
                 if ((Client.addAwaiter(left, --right)).Wait().Result.Value != left + right) ++TcpInternalStreamClientPerformance.Client.ErrorCount;
 #else
                 if ((await Client.addAwaiter(left, --right)).Value != left + right) ++TcpInternalStreamClientPerformance.Client.ErrorCount;
-#endif
 #endif
             }
             if (Interlocked.Decrement(ref TcpInternalStreamClientPerformance.Client.ThreadCount) == 0)

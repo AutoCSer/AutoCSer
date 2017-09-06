@@ -100,8 +100,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 try
                 {
                     Socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-#if MONO
-#else
+#if !MONO
                     Socket.ReceiveBufferSize = CommandClient.ReceiveBufferPool.Size;
                     Socket.SendBufferSize = CommandClient.SendBufferPool.Size;
 #endif

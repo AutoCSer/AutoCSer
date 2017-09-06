@@ -5389,6 +5389,16 @@
             输出非数字值
             </summary>
         </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
         <member name="M:AutoCSer.CharStream.WriteJsonNull">
             <summary>
             输出 null 值

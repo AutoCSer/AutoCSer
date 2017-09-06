@@ -2,8 +2,7 @@
 using AutoCSer.Metadata;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -124,8 +123,7 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="memberMap">成员位图</param>
             /// <param name="value">数据</param>
             /// <param name="converter">SQL常量转换</param>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static void Insert(CharStream sqlStream, MemberMap memberMap, valueType value, ConstantConverter converter)

@@ -454,10 +454,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                 public async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> AddAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -484,7 +481,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-#endif
 #endif
 
             }

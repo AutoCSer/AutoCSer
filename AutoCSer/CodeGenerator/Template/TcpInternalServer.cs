@@ -11,8 +11,7 @@ namespace AutoCSer.CodeGenerator.Template
         public partial class /*NOTE*/@TypeNameDefinition
         #region IF IsSetTcpServer
         #region IF IsServerCode
-#if NOJIT
-#else
+#if !NOJIT
              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
 #endif
         #endregion IF IsServerCode
@@ -342,8 +341,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion LOOP ParameterTypes
                 #region NOTE
                 public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
-#if NOJIT
-#else
+#if !NOJIT
                     <MethodReturnType.FullName>
 #endif
                 {
@@ -582,10 +580,7 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 #endregion IF IsClientAwaiter
                 #region IF IsClientTaskAsync
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                 #region IF Method.XmlDocument
                 /// <summary>
                 /// @Method.XmlDocument
@@ -671,7 +666,6 @@ namespace AutoCSer.CodeGenerator.Template
                     return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                     #endregion NOT Attribute.IsExpired
                 }
-#endif
 #endif
                 #endregion IF IsClientTaskAsync
                 #region IF IsClientAsynchronous
@@ -929,8 +923,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// 类型全名
         /// </summary>
         public partial class FullName
-#if NOJIT
-#else
+#if !NOJIT
             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
 #endif
         {

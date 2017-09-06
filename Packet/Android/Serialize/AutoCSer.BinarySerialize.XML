@@ -5087,6 +5087,16 @@
             输出非数字值
             </summary>
         </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
         <member name="M:AutoCSer.CharStream.WriteJsonNull">
             <summary>
             输出 null 值
@@ -11804,6 +11814,16 @@
             成员类型
             </summary>
         </member>
+        <member name="P:AutoCSer.Metadata.MemberIndexInfo.AwaiterReturnType">
+            <summary>
+            AutoCSer.Net.TcpServer.Awaiter[,] 返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberIndexInfo.TemplateMemberType">
+            <summary>
+            模板成员类型
+            </summary>
+        </member>
         <member name="P:AutoCSer.Metadata.MemberIndexInfo.MemberIndex">
             <summary>
             成员编号
@@ -12347,11 +12367,6 @@
             空值相关参数
             </summary>
             <typeparam name="valueType">值类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.NullValue`1.Value">
-            <summary>
-            默认空值
-            </summary>
         </member>
         <member name="F:AutoCSer.NullValue`1.Array">
             <summary>
@@ -12971,10 +12986,10 @@
         </member>
         <member name="T:AutoCSer.StateSearcher.AsciiSearcher">
             <summary>
-            ASCII字节搜索器
+            ASCII 字节搜索器
             </summary>
         </member>
-        <member name="F:AutoCSer.StateSearcher.AsciiSearcher.state">
+        <member name="F:AutoCSer.StateSearcher.AsciiSearcher.State">
             <summary>
             状态集合
             </summary>

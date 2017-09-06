@@ -17,8 +17,7 @@ namespace AutoCSer.Deploy
         /// 部署服务客户端
         /// </summary>
         internal readonly Client Client;
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
         /// <summary>
         /// 部署服务客户端
         /// </summary>

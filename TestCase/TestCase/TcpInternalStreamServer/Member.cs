@@ -69,8 +69,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServer
 #endif
         internal static bool TestCase()
         {
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
             Member member = new Member();
             using (Member.TcpInternalStreamServer server = new Member.TcpInternalStreamServer(null, null, member))
             {

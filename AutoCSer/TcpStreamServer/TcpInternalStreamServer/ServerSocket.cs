@@ -75,13 +75,11 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         internal void Start()
         {
             receiveBufferSize = Server.ReceiveBufferPool.Size;
-#if MONO
-#else
+#if !MONO
             Socket.ReceiveBufferSize = receiveBufferSize;
             Socket.SendBufferSize = Server.SendBufferPool.Size;
 #endif
-#if DOTNET2
-#else
+#if !DOTNET2
             receiveAsyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
             Server.ReceiveBufferPool.Get(ref ReceiveBuffer);
@@ -231,8 +229,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                         }
                         if (Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
                         {
-#if DOTNET2
-#else
+#if !DOTNET2
                             Socket socket = Socket;
 #endif
                             Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
@@ -240,8 +237,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     }
                 }
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
 #endif
             return false;
@@ -326,8 +322,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     }
                     return nextSize > 0 && (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0)) && isReceiveVerifyData();
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
@@ -410,8 +405,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     return loop(true);
                 }
             }
-#if DOTNET2
-#else
+#if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
 #endif
             return false;
@@ -541,8 +535,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     receiveIndex = 0;
                 }
                 ReceiveType = TcpServer.ServerSocketReceiveType.Data;
-#if DOTNET2
-#else
+#if !DOTNET2
                 RECEIVE:
 #endif
                 Socket socket = Socket;
@@ -573,8 +566,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 if (ReceiveBigBuffer.PoolBuffer.Pool == null) ++Server.ReceiveNewBufferCount;
                 receiveBigBufferCount = receiveCount - receiveIndex;
                 ReceiveType = TcpServer.ServerSocketReceiveType.BigData;
-#if DOTNET2
-#else
+#if !DOTNET2
                 BIGRECEIVE:
 #endif
                 Socket socket = Socket;
@@ -648,8 +640,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
 #endif
                     }
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 else socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
@@ -702,8 +693,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
 #endif
                     }
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 else socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
@@ -718,8 +708,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// </summary>
         private void doCommandBig()
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
 #endif
             Buffer.BlockCopy(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, receiveCount - receiveIndex);
@@ -773,8 +762,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     receiveIndex = 0;
                 }
                 ReceiveType = TcpServer.ServerSocketReceiveType.CompressionData;
-#if DOTNET2
-#else
+#if !DOTNET2
                 RECEIVE:
 #endif
                 Socket socket = Socket;
@@ -803,8 +791,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 if (ReceiveBigBuffer.PoolBuffer.Pool == null) ++Server.ReceiveNewBufferCount;
                 receiveBigBufferCount = receiveCount - receiveIndex;
                 ReceiveType = TcpServer.ServerSocketReceiveType.CompressionBigData;
-#if DOTNET2
-#else
+#if !DOTNET2
                 BIGRECEIVE:
 #endif
                 Socket socket = Socket;
@@ -872,8 +859,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
 #endif
                     }
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 else socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
@@ -925,8 +911,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
 #endif
                     }
                 }
-#if DOTNET2
-#else
+#if !DOTNET2
                 else socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
@@ -942,8 +927,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <returns></returns>
         private bool doCompressionBigDataCommand()
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
 #endif
             Buffer.BlockCopy(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveIndex, ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex, receiveCount - receiveIndex);

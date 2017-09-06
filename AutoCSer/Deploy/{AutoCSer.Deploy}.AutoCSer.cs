@@ -8,8 +8,7 @@ using AutoCSer;
 namespace AutoCSer.Deploy
 {
         public partial class Server
-#if NOJIT
-#else
+#if !NOJIT
              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
 #endif
         {

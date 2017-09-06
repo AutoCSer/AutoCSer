@@ -3,8 +3,7 @@ using System.Data.Common;
 using AutoCSer.Metadata;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -136,8 +135,7 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="reader">字段读取器物理存储</param>
             /// <param name="value">目标数据</param>
             /// <param name="memberMap">成员位图</param>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static void Set(DbDataReader reader, valueType value, MemberMap memberMap)

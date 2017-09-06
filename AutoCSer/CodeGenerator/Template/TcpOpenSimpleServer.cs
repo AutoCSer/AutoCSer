@@ -12,8 +12,7 @@ namespace AutoCSer.CodeGenerator.Template
         public partial class /*NOTE*/@TypeNameDefinition
         #region IF IsSetTcpServer
         #region IF IsServerCode
-#if NOJIT
-#else
+#if !NOJIT
               : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>
 #endif
         #endregion IF IsServerCode
@@ -323,8 +322,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion LOOP ParameterTypes
                 #region NOTE
                 public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
-#if NOJIT
-#else
+#if !NOJIT
                     <MethodReturnType.FullName>
 #endif
                 {
@@ -573,8 +571,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// 类型全名
         /// </summary>
         public partial class FullName
-#if NOJIT
-#else
+#if !NOJIT
             : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>
 #endif
         {

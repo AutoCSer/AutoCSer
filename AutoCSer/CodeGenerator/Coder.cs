@@ -303,8 +303,7 @@ using AutoCSer;
                     {
                         case (int)CodeLanguage.CSharp:
                             string code = builder.ToString(), AutoCSerFileName = null;
-#if DotNetStandard
-#else
+#if !DotNetStandard
                             bool isAutoCSer = false;
 #endif
                             if (!string.IsNullOrEmpty(code))
@@ -312,16 +311,14 @@ using AutoCSer;
                                 string fileName = parameter.ProjectPath + (AutoCSerFileName = "{" + parameter.DefaultNamespace + "}.AutoCSer.cs");
                                 if (WriteFile(fileName, WarningCode + code + FileEndCode))
                                 {
-#if DotNetStandard
-#else
+#if !DotNetStandard
                                     isAutoCSer = true;
 #endif
                                     Messages.Message(fileName + " 被修改");
                                     //message = fileName + " 被修改";
                                 }
                             }
-#if DotNetStandard
-#else
+#if !DotNetStandard
                             if (parameter.IsProjectFile && isAutoCSer)
                             {
                                 string projectFile = parameter.AssemblyPath + parameter.ProjectName + ".csproj";

@@ -67,8 +67,7 @@ namespace AutoCSer.Example.TcpRegisterServer
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

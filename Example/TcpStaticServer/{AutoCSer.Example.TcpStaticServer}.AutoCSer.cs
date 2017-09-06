@@ -304,10 +304,7 @@ namespace AutoCSer.Example.TcpStaticServer
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                 public static async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> AddAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/.TcpClient.Sender;
@@ -336,7 +333,6 @@ namespace AutoCSer.Example.TcpStaticServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-#endif
 #endif
 
             }

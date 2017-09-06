@@ -17,8 +17,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServer
 #endif
         internal new static bool TestCase()
         {
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
             using (Json.TcpOpenSimpleServer server = new Json.TcpOpenSimpleServer())
             {
                 if (server.IsListen)

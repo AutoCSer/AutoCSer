@@ -82,14 +82,10 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 GC.Collect();
                 sleep();
 
-#if DOTNET2
-                int awaitCount = TcpInternalClientPerformance.Client.Count / 10, threadCount = 100;
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
                 int awaitCount = TcpInternalClientPerformance.Client.Count / 10, threadCount = 100;
 #else
                 int awaitCount = TcpInternalClientPerformance.Client.Count, threadCount = 500;
-#endif
 #endif
                 //并发线程较多的时候测试吞吐性能接近与异步模式
                 TcpInternalClientPerformance.Client.ThreadCount = threadCount;
@@ -99,12 +95,10 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
 
 #if DOTNET2
                     AutoCSer.Threading.ThreadPool.TinyBackground.Start(new ClientAwaiter { Client = client, Left = left, Right = right }.Run);
-#else
-#if DOTNET4
+#elif DOTNET4
                     new System.Threading.Tasks.Task(new ClientAwaiter { Client = client, Left = left, Right = right }.Run).Start();
 #else
                     new ClientAwaiter { Client = client, Left = left, Right = right }.Run();
-#endif
 #endif
                 }
                 Console.WriteLine("await start " + threadCount.toString() + " end " + TcpInternalClientPerformance.Client.Time.ElapsedMilliseconds.toString() + "ms");
@@ -123,10 +117,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 wait();
                 sleep();
 
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                 TcpInternalClientPerformance.Client.ThreadCount = 1;
                 TcpInternalClientPerformance.Client.Start(TcpInternalClientPerformance.TestType.ClientAwaiter, TcpInternalClientPerformance.Client.Count / 100);
                 new ClientAwaiter { Client = client, Left = left, Right = TcpInternalClientPerformance.Client.Count / 100 }.Run();
@@ -163,7 +154,6 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 Console.WriteLine("task 1");
                 wait();
                 sleep();
-#endif
 #endif
                 //该框架是为高吞吐的内部服务设计的，所以性能设计上对于客户端异步模式友好，而不利于客户端同步应答模式。
                 //当然这种设计主要影响的客户端性能，可能需要多个客户端（多台客户机）同时采用多线程并发模式才能测试出服务端的吞吐性能上限。

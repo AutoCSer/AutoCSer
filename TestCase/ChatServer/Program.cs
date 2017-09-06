@@ -22,8 +22,7 @@ namespace AutoCSer.TestCase.ChatServer
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodServer.html
 ");
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
                     using (Server.TcpOpenServer server = new Server.TcpOpenServer())
                     {
                         if (server.IsListen)
@@ -73,8 +72,7 @@ namespace AutoCSer.TestCase.ChatServer
                         }
                     }
 #endif
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

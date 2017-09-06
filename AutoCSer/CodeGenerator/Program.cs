@@ -33,8 +33,7 @@ namespace AutoCSer.CodeGenerator
                         if (exception == null) parameter.Start();
                         else
                         {
-#if DotNetStandard
-#else
+#if !DotNetStandard
                             FileInfo file = new FileInfo(AutoCSer.PubPath.ApplicationPath + "AutoCSer.CodeGenerator." + platform + ".exe");
                             if (file.Exists)
                             {

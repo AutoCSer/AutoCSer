@@ -21,14 +21,10 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-#if DOTNET2
-        [AutoCSer.Net.TcpStreamServer.Method]
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
         [AutoCSer.Net.TcpStreamServer.Method]
 #else
         [AutoCSer.Net.TcpStreamServer.Method(IsClientTaskAsync = true)]
-#endif
 #endif
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected int add(int left, int right)

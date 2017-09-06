@@ -12390,6 +12390,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSortDesc(System.UInt64[])">
@@ -12468,6 +12470,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSort(System.Int64[])">
@@ -12546,6 +12550,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSortDesc(System.Int64[])">
@@ -12624,6 +12630,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSort(System.UInt32[])">
@@ -12702,6 +12710,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSortDesc(System.UInt32[])">
@@ -12780,6 +12790,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSort(System.Int32[])">
@@ -12858,6 +12870,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSortDesc(System.Int32[])">
@@ -12936,6 +12950,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSort(System.DateTime[])">
@@ -13014,6 +13030,8 @@
             数组子串排序
             </summary>
             <param name="array">待排序数组子串</param>
+            <param name="index">起始位置</param>
+            <param name="count">数量</param>
             <returns>排序后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.FixedArraySort.getSortDesc(System.DateTime[])">

@@ -230,8 +230,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private TcpOpenServer.SendState send()
         {
-#if DOTNET2
-#else
+#if !DOTNET2
             START:
 #endif
             if (IsSocket)

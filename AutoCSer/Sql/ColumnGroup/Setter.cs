@@ -2,8 +2,7 @@
 using System.Data.Common;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -15,8 +14,7 @@ namespace AutoCSer.Sql.ColumnGroup
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct Setter
     {
-#if NOJIT
-#else
+#if !NOJIT
         /// <summary>
         /// 动态函数
         /// </summary>
@@ -179,8 +177,7 @@ namespace AutoCSer.Sql.ColumnGroup
             /// <param name="reader">字段读取器物理存储</param>
             /// <param name="value">目标数据</param>
             /// <param name="index">当前读取位置</param>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static void Set(DbDataReader reader, ref valueType value, ref int index)

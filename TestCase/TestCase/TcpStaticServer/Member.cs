@@ -13,8 +13,7 @@ namespace AutoCSer.TestCase.TcpStaticServer
         /// </summary>
         [AutoCSer.Net.TcpStaticServer.Method(IsOnlyGetMember = false)]
         internal static int field;
-#if NoAutoCSer
-#else
+#if !NoAutoCSer
         /// <summary>
         /// TCP 服务字段与属性支持测试
         /// </summary>

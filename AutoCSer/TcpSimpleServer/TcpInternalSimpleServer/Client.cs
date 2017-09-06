@@ -82,8 +82,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 try
                 {
                     socket = new Socket(IpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-#if MONO
-#else
+#if !MONO
                     socket.ReceiveBufferSize = socket.SendBufferSize = Buffer.Length;
 #endif
                     socket.Connect(IpAddress, Port);

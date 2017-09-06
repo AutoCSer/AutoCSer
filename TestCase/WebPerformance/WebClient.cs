@@ -208,8 +208,7 @@ namespace AutoCSer.TestCase.WebPerformance
                 {
                     asyncType = ClientSocketAsyncType.Connect;
                     socket = new Socket(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-#if MONO
-#else
+#if !MONO
                     socket.SendBufferSize = socket.ReceiveBufferSize = bufferSize;
 #endif
                     socket.LingerState = lingerOption;

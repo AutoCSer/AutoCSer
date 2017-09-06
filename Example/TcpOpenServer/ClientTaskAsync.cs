@@ -13,24 +13,17 @@ namespace AutoCSer.Example.TcpOpenServer
         /// </summary>
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
-#if DOTNET2
-        [AutoCSer.Net.TcpOpenServer.Method]
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
         [AutoCSer.Net.TcpOpenServer.Method]
 #else
         [AutoCSer.Net.TcpOpenServer.Method(IsClientTaskAsync = true)]
-#endif
 #endif
         int Add(int left, int right)
         {
             return left + right;
         }
 
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
         /// <summary>
         /// 同步函数客户端 async / await 测试 示例
         /// </summary>
@@ -74,7 +67,6 @@ namespace AutoCSer.Example.TcpOpenServer
             }
             return false;
         }
-#endif
 #endif
     }
 }

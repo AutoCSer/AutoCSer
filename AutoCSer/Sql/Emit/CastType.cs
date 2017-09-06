@@ -58,8 +58,7 @@ namespace AutoCSer.Emit
         internal static MethodInfo GetMethod(Type fromType, Type toType)
         {
             if (fromType == toType) return null;
-#if NOJIT
-#else
+#if !NOJIT
             if (fromType == typeof(int))
             {
                 if (toType == typeof(uint)) return null;
@@ -80,8 +79,7 @@ namespace AutoCSer.Emit
             CastType castType = new CastType { FromType = fromType, ToType = toType };
             MethodInfo method;
             if (methods.TryGetValue(castType, out method)) return method;
-#if NOJIT
-#else
+#if !NOJIT
             if (!toType.IsPrimitive)
 #endif
             {

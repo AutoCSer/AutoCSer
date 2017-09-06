@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using AutoCSer.Extension;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 
@@ -140,8 +139,7 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="values">目标数组</param>
             /// <param name="value">数据列</param>
             /// <param name="index">当前读取位置</param>
-#if NOJIT
-#else
+#if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
             public static void Write(valueType value, object[] values, ref int index)

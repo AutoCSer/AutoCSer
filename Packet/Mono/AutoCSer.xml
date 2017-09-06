@@ -5506,360 +5506,6 @@
             是否有序比较
             </summary>
         </member>
-        <member name="T:AutoCSer.Diagnostics.ConfigLoader">
-            <summary>
-            配置加载
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ConfigLoader.GetUnion(System.Type,System.String)">
-            <summary>
-            获取配置数据
-            </summary>
-            <param name="type">配置类型</param>
-            <param name="name">配置名称</param>
-            <returns></returns>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.ProcessCopyClient">
-            <summary>
-            进程复制重启服务客户端
-            </summary>
-            <summary>
-            进程复制重启服务客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.Guard">
-            <summary>
-            守护进程客户端调用
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.callGuard">
-            <summary>
-            守护进程客户端调用
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.Remove">
-            <summary>
-            守护进程删除客户端调用
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.Copy">
-            <summary>
-            进程复制重启客户端调用
-            </summary>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.GuardAsync">
-            <summary>
-            守护进程客户端调用
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.RemoveAsync">
-            <summary>
-            守护进程删除客户端调用
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.CopyAsync">
-            <summary>
-            进程复制重启客户端调用
-            </summary>
-            <returns>是否成功</returns>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.ProcessCopyConfig">
-            <summary>
-            进程复制配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyConfig.CheckTimeoutSeconds">
-            <summary>
-            文件更新重启检测时间(单位:秒)
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyConfig.CopyTimeoutMinutes">
-            <summary>
-            文件更新重启复制超时时间(单位:分)
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyConfig.WatcherPath">
-            <summary>
-            文件监视路径
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.ProcessCopyer">
-            <summary>
-            进程文件复制
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.ProcessId">
-            <summary>
-            进程标识
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.ProcessName">
-            <summary>
-            进程名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Path">
-            <summary>
-            目标路径
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.CopyPath">
-            <summary>
-            复制文件源路径
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Process">
-            <summary>
-            进程文件名
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Arguments">
-            <summary>
-            进程启动参数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.process">
-            <summary>
-            进程信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.server">
-            <summary>
-            进程复制重启服务
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Diagnostics.ProcessCopyer.log">
-            <summary>
-            日志处理
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.Dispose">
-            <summary>
-            释放资源
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.Guard(AutoCSer.Diagnostics.ProcessCopyServer)">
-            <summary>
-            守护进程
-            </summary>
-            <param name="server"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.guard(System.Object,System.EventArgs)">
-            <summary>
-            进程退出事件
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.start">
-            <summary>
-            启动进程
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.RemoveGuard">
-            <summary>
-            删除进程退出事件
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.CheckName">
-            <summary>
-            验证进程名称
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.copy">
-            <summary>
-            进程文件复制
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.Copy">
-            <summary>
-            开始复制文件
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Config">
-            <summary>
-            进程复制配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.defaultCopyer">
-            <summary>
-            默认文件复制器
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Diagnostics.ProcessCopyer.Default">
-            <summary>
-            默认文件复制器
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.ProcessCopyServer">
-            <summary>
-            进程复制重启服务
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.ServerName">
-            <summary>
-            服务名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.cacheFile">
-            <summary>
-            进程守护缓存文件名
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.guards">
-            <summary>
-            守护进程集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.guardLock">
-            <summary>
-            守护进程集合访问锁
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.SetTcpServer(AutoCSer.Net.TcpInternalServer.Server)">
-            <summary>
-            设置TCP服务端
-            </summary>
-            <param name="tcpServer">TCP服务端</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.saveCache">
-            <summary>
-            保存进程守护信息集合到缓存文件
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.Remove(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            删除守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.guard(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.remove(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            删除守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.copy(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            复制重启进程
-            </summary>
-            <param name="copyer">文件复制器</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.FileWatcherFilter(System.IO.FileSystemEventArgs)">
-            <summary>
-            文件监视器过滤
-            </summary>
-            <param name="e"></param>
-            <returns>是否继续检测</returns>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer._identityCommandNames_">
-            <summary>
-            命令序号记忆数据
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer">
-            <summary>
-            ProcessCopy TCP服务
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.Diagnostics.ProcessCopyServer,System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
-            <summary>
-            ProcessCopy TCP调用服务端
-            </summary>
-            <param name="attribute">TCP 调用服务器端配置信息</param>
-            <param name="verify">套接字验证委托</param>
-            <param name="value">TCP 服务目标对象</param>
-            <param name="log">日志接口</param>
-            <param name="onCustomData">自定义数据包处理</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer.DoCommand(System.Int32,AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
-            <summary>
-            命令处理
-            </summary>
-            <param name="index">命令序号</param>
-            <param name="sender">TCP 内部服务套接字数据发送</param>
-            <param name="data">命令数据</param>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient">
-            <summary>
-            TCP客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient,AutoCSer.Net.TcpInternalServer.ClientSocketSender,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
-            <summary>
-            TCP调用客户端
-            </summary>
-            <param name="attribute">TCP 调用服务器端配置信息</param>
-            <param name="verifyMethod">TCP 验证方法</param>
-            <param name="onCustomData">自定义数据包处理</param>
-            <param name="log">日志接口</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.guard(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.guardAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.remove(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            删除守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.removeAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            删除守护进程
-            </summary>
-            <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copy(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            复制重启进程
-            </summary>
-            <param name="copyer">文件复制器</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copyAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            复制重启进程
-            </summary>
-            <param name="copyer">文件复制器</param>
-        </member>
-        <member name="T:AutoCSer.Diagnostics.UnionType">
-            <summary>
-            类型转换
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.UnionType.Value">
-            <summary>
-            目标对象
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.UnionType.ProcessCopyer">
-            <summary>
-            进程文件复制
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Diagnostics.UnionType.ProcessCopyConfig">
-            <summary>
-            进程复制配置
-            </summary>
-        </member>
         <member name="T:AutoCSer.DomainUnload.State">
             <summary>
             卸载状态
@@ -31844,6 +31490,360 @@
             禁止当前安装
             </summary>
         </member>
+        <member name="T:AutoCSer.Diagnostics.ProcessCopyServer">
+            <summary>
+            进程复制重启服务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer._identityCommandNames_">
+            <summary>
+            命令序号记忆数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer">
+            <summary>
+            ProcessCopy TCP服务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{System.Net.Sockets.Socket,System.Boolean},AutoCSer.Diagnostics.ProcessCopyServer,System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+            <summary>
+            ProcessCopy TCP调用服务端
+            </summary>
+            <param name="attribute">TCP 调用服务器端配置信息</param>
+            <param name="verify">套接字验证委托</param>
+            <param name="value">TCP 服务目标对象</param>
+            <param name="log">日志接口</param>
+            <param name="onCustomData">自定义数据包处理</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer.DoCommand(System.Int32,AutoCSer.Net.TcpInternalServer.ServerSocketSender,AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            命令处理
+            </summary>
+            <param name="index">命令序号</param>
+            <param name="sender">TCP 内部服务套接字数据发送</param>
+            <param name="data">命令数据</param>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient">
+            <summary>
+            TCP客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.#ctor(AutoCSer.Net.TcpInternalServer.ServerAttribute,System.Func{AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient,AutoCSer.Net.TcpInternalServer.ClientSocketSender,System.Boolean},System.Action{AutoCSer.SubArray{System.Byte}},AutoCSer.Log.ILog)">
+            <summary>
+            TCP调用客户端
+            </summary>
+            <param name="attribute">TCP 调用服务器端配置信息</param>
+            <param name="verifyMethod">TCP 验证方法</param>
+            <param name="onCustomData">自定义数据包处理</param>
+            <param name="log">日志接口</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.guard(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.guardAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.remove(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            删除守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.removeAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            删除守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copy(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            复制重启进程
+            </summary>
+            <param name="copyer">文件复制器</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copyAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            复制重启进程
+            </summary>
+            <param name="copyer">文件复制器</param>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.ServerName">
+            <summary>
+            服务名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.cacheFile">
+            <summary>
+            进程守护缓存文件名
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.guards">
+            <summary>
+            守护进程集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyServer.guardLock">
+            <summary>
+            守护进程集合访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.SetTcpServer(AutoCSer.Net.TcpInternalServer.Server)">
+            <summary>
+            设置TCP服务端
+            </summary>
+            <param name="tcpServer">TCP服务端</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.saveCache">
+            <summary>
+            保存进程守护信息集合到缓存文件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.Remove(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            删除守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.guard(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.remove(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            删除守护进程
+            </summary>
+            <param name="copyer">文件信息</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.copy(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            复制重启进程
+            </summary>
+            <param name="copyer">文件复制器</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.FileWatcherFilter(System.IO.FileSystemEventArgs)">
+            <summary>
+            文件监视器过滤
+            </summary>
+            <param name="e"></param>
+            <returns>是否继续检测</returns>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.ConfigLoader">
+            <summary>
+            配置加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ConfigLoader.GetUnion(System.Type,System.String)">
+            <summary>
+            获取配置数据
+            </summary>
+            <param name="type">配置类型</param>
+            <param name="name">配置名称</param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.ProcessCopyClient">
+            <summary>
+            进程复制重启服务客户端
+            </summary>
+            <summary>
+            进程复制重启服务客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.Guard">
+            <summary>
+            守护进程客户端调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.callGuard">
+            <summary>
+            守护进程客户端调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.Remove">
+            <summary>
+            守护进程删除客户端调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.Copy">
+            <summary>
+            进程复制重启客户端调用
+            </summary>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.GuardAsync">
+            <summary>
+            守护进程客户端调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.RemoveAsync">
+            <summary>
+            守护进程删除客户端调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyClient.CopyAsync">
+            <summary>
+            进程复制重启客户端调用
+            </summary>
+            <returns>是否成功</returns>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.ProcessCopyConfig">
+            <summary>
+            进程复制配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyConfig.CheckTimeoutSeconds">
+            <summary>
+            文件更新重启检测时间(单位:秒)
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyConfig.CopyTimeoutMinutes">
+            <summary>
+            文件更新重启复制超时时间(单位:分)
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyConfig.WatcherPath">
+            <summary>
+            文件监视路径
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.ProcessCopyer">
+            <summary>
+            进程文件复制
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.ProcessId">
+            <summary>
+            进程标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.ProcessName">
+            <summary>
+            进程名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Path">
+            <summary>
+            目标路径
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.CopyPath">
+            <summary>
+            复制文件源路径
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Process">
+            <summary>
+            进程文件名
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Arguments">
+            <summary>
+            进程启动参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.process">
+            <summary>
+            进程信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.server">
+            <summary>
+            进程复制重启服务
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Diagnostics.ProcessCopyer.log">
+            <summary>
+            日志处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.Guard(AutoCSer.Diagnostics.ProcessCopyServer)">
+            <summary>
+            守护进程
+            </summary>
+            <param name="server"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.guard(System.Object,System.EventArgs)">
+            <summary>
+            进程退出事件
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.start">
+            <summary>
+            启动进程
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.RemoveGuard">
+            <summary>
+            删除进程退出事件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.CheckName">
+            <summary>
+            验证进程名称
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.copy">
+            <summary>
+            进程文件复制
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyer.Copy">
+            <summary>
+            开始复制文件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.Config">
+            <summary>
+            进程复制配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.ProcessCopyer.defaultCopyer">
+            <summary>
+            默认文件复制器
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Diagnostics.ProcessCopyer.Default">
+            <summary>
+            默认文件复制器
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Diagnostics.UnionType">
+            <summary>
+            类型转换
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.UnionType.Value">
+            <summary>
+            目标对象
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.UnionType.ProcessCopyer">
+            <summary>
+            进程文件复制
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Diagnostics.UnionType.ProcessCopyConfig">
+            <summary>
+            进程复制配置
+            </summary>
+        </member>
         <member name="T:AutoCSer.ArrayHeap`2">
             <summary>
             数组模拟最小堆
@@ -32065,6 +32065,16 @@
         <member name="M:AutoCSer.CharStream.WriteJsonNaN">
             <summary>
             输出非数字值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue">
+            <summary>
+            输出 double 最大值
             </summary>
         </member>
         <member name="M:AutoCSer.CharStream.WriteJsonNull">

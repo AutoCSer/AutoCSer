@@ -3012,6 +3012,16 @@
             成员类型
             </summary>
         </member>
+        <member name="P:AutoCSer.Metadata.MemberIndexInfo.AwaiterReturnType">
+            <summary>
+            AutoCSer.Net.TcpServer.Awaiter[,] 返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberIndexInfo.TemplateMemberType">
+            <summary>
+            模板成员类型
+            </summary>
+        </member>
         <member name="P:AutoCSer.Metadata.MemberIndexInfo.MemberIndex">
             <summary>
             成员编号
@@ -10519,6 +10529,16 @@
             输出非数字值
             </summary>
         </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue">
+            <summary>
+            输出 double 最大值
+            </summary>
+        </member>
         <member name="P:AutoCSer.CharStream.Char">
             <summary>
             数据
@@ -11582,11 +11602,6 @@
             空值相关参数
             </summary>
             <typeparam name="valueType">值类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.NullValue`1.Value">
-            <summary>
-            默认空值
-            </summary>
         </member>
         <member name="F:AutoCSer.NullValue`1.Array">
             <summary>

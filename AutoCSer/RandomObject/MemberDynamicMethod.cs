@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
-#if NOJIT
-#else
+#if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
 

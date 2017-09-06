@@ -5,8 +5,7 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-#if DotNetStandard
-#else
+#if !DotNetStandard
 [assembly: AssemblyTitle("AutoCSer.CodeGenerator")]
 [assembly: AssemblyCopyright("Copyright © 肖进 2017")]
 [assembly: AssemblyDescription("AutoCSer.CodeGenerator 是一个静态代码生成组件，TCP 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架 这些组件都依赖于它。")]

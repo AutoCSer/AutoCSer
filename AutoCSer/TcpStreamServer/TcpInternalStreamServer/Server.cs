@@ -161,8 +161,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                         if (verify(serverSocket.Socket)) ServerSocketTask.Task.Add(serverSocket);
                         else
                         {
-#if DotNetStandard
-#else
+#if !DotNetStandard
                             serverSocket.Socket.Dispose();
 #endif
                             serverSocket.Socket = null;

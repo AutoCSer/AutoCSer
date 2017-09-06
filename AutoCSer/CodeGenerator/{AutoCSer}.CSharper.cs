@@ -5338,8 +5338,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if NOJIT
-#else
+#if !NOJIT
              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
 #endif");
             }
@@ -9273,10 +9272,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if DOTNET2
-#else
-#if DOTNET4
-#else");
+#if !DOTNET2 && !DOTNET4");
             _if_ = false;
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
@@ -10030,7 +10026,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 }
-#endif
 #endif");
             }
             _if_ = false;
@@ -11816,8 +11811,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if NOJIT
-#else
+#if !NOJIT
              : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server, AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>
 #endif");
             }
@@ -15589,8 +15583,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if NOJIT
-#else
+#if !NOJIT
              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalStreamServer.Server, AutoCSer.Net.TcpInternalStreamServer.ServerAttribute>
 #endif");
             }
@@ -19316,10 +19309,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if DOTNET2
-#else
-#if DOTNET4
-#else");
+#if !DOTNET2 && !DOTNET4");
             _if_ = false;
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
@@ -20073,7 +20063,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 }
-#endif
 #endif");
             }
             _if_ = false;
@@ -21738,8 +21727,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if NOJIT
-#else
+#if !NOJIT
               : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpOpenServer.Server, AutoCSer.Net.TcpOpenServer.ServerAttribute>
 #endif");
             }
@@ -25671,10 +25659,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if DOTNET2
-#else
-#if DOTNET4
-#else");
+#if !DOTNET2 && !DOTNET4");
             _if_ = false;
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
@@ -26428,7 +26413,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 }
-#endif
 #endif");
             }
             _if_ = false;
@@ -28214,8 +28198,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if NOJIT
-#else
+#if !NOJIT
               : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>
 #endif");
             }
@@ -31971,8 +31954,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if NOJIT
-#else
+#if !NOJIT
               : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpOpenStreamServer.Server, AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>
 #endif");
             }
@@ -35696,10 +35678,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if DOTNET2
-#else
-#if DOTNET4
-#else");
+#if !DOTNET2 && !DOTNET4");
             _if_ = false;
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
@@ -36453,7 +36432,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 }
-#endif
 #endif");
             }
             _if_ = false;
@@ -40491,10 +40469,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if DOTNET2
-#else
-#if DOTNET4
-#else");
+#if !DOTNET2 && !DOTNET4");
             _if_ = false;
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
@@ -41429,7 +41404,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 }
-#endif
 #endif");
             }
             _if_ = false;
@@ -51021,10 +50995,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-#if DOTNET2
-#else
-#if DOTNET4
-#else");
+#if !DOTNET2 && !DOTNET4");
             _if_ = false;
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
@@ -51959,7 +51930,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 }
-#endif
 #endif");
             }
             _if_ = false;

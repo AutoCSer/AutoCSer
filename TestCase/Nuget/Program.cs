@@ -32,8 +32,7 @@ namespace AutoCSer.TestCase.Nuget
                     }
                     Console.WriteLine("Over");
                     Console.ReadKey();
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

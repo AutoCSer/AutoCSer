@@ -44,8 +44,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                         Console.WriteLine(error.ToString());
                     }
                     Console.ReadKey();
-#if DotNetStandard
-#else
+#if !DotNetStandard
                 }
             }
 #endif

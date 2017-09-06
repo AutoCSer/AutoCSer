@@ -54,14 +54,10 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
                 wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
                 sleep();
 
-#if DOTNET2
-                int awaitCount = TcpInternalStreamClientPerformance.Client.Count / 10, threadCount = 100;
-#else
-#if DOTNET4
+#if DOTNET2 || DOTNET4
                 int awaitCount = TcpInternalStreamClientPerformance.Client.Count / 10, threadCount = 100;
 #else
                 int awaitCount = TcpInternalStreamClientPerformance.Client.Count, threadCount = 500;
-#endif
 #endif
                 //并发线程较多的时候测试吞吐性能接近与异步模式
                 TcpInternalStreamClientPerformance.Client.ThreadCount = threadCount;
@@ -71,12 +67,10 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
 
 #if DOTNET2
                     AutoCSer.Threading.ThreadPool.TinyBackground.Start(new ClientAwaiter { Client = client, Left = left, Right = right }.Run);
-#else
-#if DOTNET4
+#elif DOTNET4
                     new System.Threading.Tasks.Task(new ClientAwaiter { Client = client, Left = left, Right = right }.Run).Start();
 #else
                     new ClientAwaiter { Client = client, Left = left, Right = right }.Run();
-#endif
 #endif
                 }
                 Console.WriteLine("await start " + threadCount.toString() + " end " + TcpInternalStreamClientPerformance.Client.Time.ElapsedMilliseconds.toString() + "ms");
@@ -95,10 +89,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
                 wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
                 sleep();
 
-#if DOTNET2
-#else
-#if DOTNET4
-#else
+#if !DOTNET2 && !DOTNET4
                 TcpInternalStreamClientPerformance.Client.ThreadCount = 1;
                 TcpInternalStreamClientPerformance.Client.Start(TcpInternalStreamClientPerformance.ClientTestType.Awaiter, TcpInternalStreamClientPerformance.Client.Count / 100);
                 new ClientAwaiter { Client = client, Left = left, Right = TcpInternalStreamClientPerformance.Client.Count / 100 }.Run();
@@ -135,7 +126,6 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
                 Console.WriteLine("task 1");
                 wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
                 sleep();
-#endif
 #endif
                 //该框架是为高吞吐的内部服务设计的，所以性能设计上对于客户端异步模式友好，而不利于客户端同步应答模式。
                 //当然这种设计主要影响的客户端性能，可能需要多个客户端（多台客户机）同时采用多线程并发模式才能测试出服务端的吞吐性能上限。
