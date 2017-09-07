@@ -5087,15 +5087,17 @@
             输出非数字值
             </summary>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue">
+        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
+            <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue">
+        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
+            <param name="value"></param>
         </member>
         <member name="M:AutoCSer.CharStream.WriteJsonNull">
             <summary>
