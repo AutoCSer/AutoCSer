@@ -19,19 +19,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous();
                     setCommandData(1);
@@ -156,7 +156,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -259,19 +259,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync();
                     setCommandData(1);
@@ -396,7 +396,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -501,19 +501,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.Field TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.Field Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.Field TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.Field))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.Field", typeof(AutoCSer.Example.TcpInternalStreamServer.Field))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.Field();
                     setCommandData(3);
@@ -736,7 +736,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.Field));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.Field", typeof(AutoCSer.Example.TcpInternalStreamServer.Field));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -836,19 +836,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.NoAttribute TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.NoAttribute Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.NoAttribute TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.NoAttribute))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalStreamServer.NoAttribute))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.NoAttribute();
                     setCommandData(1);
@@ -973,7 +973,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.NoAttribute));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalStreamServer.NoAttribute));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -1052,19 +1052,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.Property TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.Property Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.Property TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.Property))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.Property", typeof(AutoCSer.Example.TcpInternalStreamServer.Property))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.Property();
                     setCommandData(5);
@@ -1400,7 +1400,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.Property));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.Property", typeof(AutoCSer.Example.TcpInternalStreamServer.Property));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -1560,19 +1560,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.RefOut TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.RefOut Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.RefOut TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.RefOut))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.RefOut", typeof(AutoCSer.Example.TcpInternalStreamServer.RefOut))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.RefOut();
                     setCommandData(1);
@@ -1702,7 +1702,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.RefOut));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.RefOut", typeof(AutoCSer.Example.TcpInternalStreamServer.RefOut));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -1762,19 +1762,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.SendOnly TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.SendOnly Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.SendOnly TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.SendOnly))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.SendOnly", typeof(AutoCSer.Example.TcpInternalStreamServer.SendOnly))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.SendOnly();
                     setCommandData(1);
@@ -1859,7 +1859,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.SendOnly));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.SendOnly", typeof(AutoCSer.Example.TcpInternalStreamServer.SendOnly));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
@@ -1896,19 +1896,19 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 return names;
             }
             /// <summary>
-            ///  TCP服务
+            /// AutoCSer.Example.TcpInternalStreamServer.Static TCP服务
             /// </summary>
             public sealed class TcpInternalStreamServer : AutoCSer.Net.TcpInternalStreamServer.Server
             {
                 public readonly AutoCSer.Example.TcpInternalStreamServer.Static Value;
                 /// <summary>
-                ///  TCP调用服务端
+                /// AutoCSer.Example.TcpInternalStreamServer.Static TCP调用服务端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalStreamServer(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.Static))), verify, log)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.Static", typeof(AutoCSer.Example.TcpInternalStreamServer.Static))), verify, log)
                 {
                     Value =new AutoCSer.Example.TcpInternalStreamServer.Static();
                     setCommandData(1);
@@ -2033,7 +2033,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("", typeof(AutoCSer.Example.TcpInternalStreamServer.Static));
+                        attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalStreamServer.Static", typeof(AutoCSer.Example.TcpInternalStreamServer.Static));
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();

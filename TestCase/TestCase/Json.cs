@@ -22,9 +22,17 @@ namespace AutoCSer.TestCase
 #endif
         internal static bool TestCase()
         {
+            Data.Float floatData = new Data.Float();
+            string jsonString = AutoCSer.Json.Serializer.Serialize(floatData);
+            Data.Float newFloatData = AutoCSer.Json.Parser.Parse<Data.Float>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.Float>.Equals(floatData, newFloatData))
+            {
+                return false;
+            }
+
             #region 引用类型字段成员JSON序列化测试
             Data.FieldData filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(randomConfig);
-            string jsonString = AutoCSer.Json.Serializer.Serialize(filedData);
+            jsonString = AutoCSer.Json.Serializer.Serialize(filedData);
             //AutoCSer.Log.Trace.Console(jsonString);
             Data.FieldData newFieldData = AutoCSer.Json.Parser.Parse<Data.FieldData>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.FieldData>.Equals(filedData, newFieldData))

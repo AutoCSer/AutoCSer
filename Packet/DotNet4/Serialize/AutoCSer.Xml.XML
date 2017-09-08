@@ -1390,6 +1390,24 @@
             </summary>
             <returns>是否成功</returns>
         </member>
+        <member name="M:AutoCSer.Xml.Parser.isNaN">
+            <summary>
+            是否非数字 NaN
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.isPositiveInfinity">
+            <summary>
+            是否 Infinity
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.isNegativeInfinity">
+            <summary>
+            是否 -Infinity
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Xml.Parser.getName(System.Int32@)">
             <summary>
             获取节点名称
@@ -8159,9 +8177,31 @@
             <param name="start">字符串起始位置,不能为null</param>
             <param name="count">写入字符数，必须>0</param>
         </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
         <member name="M:AutoCSer.CharStream.WriteJsonNaN">
             <summary>
             输出非数字值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WritePositiveInfinity">
+            <summary>
+            输出正无穷
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteNegativeInfinity">
+            <summary>
+            输出负无穷
             </summary>
         </member>
         <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue(System.Double)">

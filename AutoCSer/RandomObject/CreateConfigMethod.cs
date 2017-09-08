@@ -84,7 +84,7 @@ namespace AutoCSer.RandomObject
         {
             if (config.IsParseFloat)
             {
-                return double.Parse(AutoCSer.Random.Default.NextDouble().ToString());
+                return double.Parse(AutoCSer.Random.Default.NextDouble().ToString(), System.Globalization.CultureInfo.InvariantCulture);
             }
             return AutoCSer.Random.Default.NextDouble();
         }

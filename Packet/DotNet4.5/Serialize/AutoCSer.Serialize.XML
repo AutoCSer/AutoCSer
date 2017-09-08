@@ -5082,9 +5082,31 @@
             <param name="start">字符串起始位置,不能为null</param>
             <param name="count">写入字符数，必须>0</param>
         </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
         <member name="M:AutoCSer.CharStream.WriteJsonNaN">
             <summary>
             输出非数字值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WritePositiveInfinity">
+            <summary>
+            输出正无穷
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteNegativeInfinity">
+            <summary>
+            输出负无穷
             </summary>
         </member>
         <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue(System.Double)">
@@ -7459,6 +7481,16 @@
             非数值
             </summary>
         </member>
+        <member name="F:AutoCSer.Json.NodeType.PositiveInfinity">
+            <summary>
+            正无穷
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NodeType.NegativeInfinity">
+            <summary>
+            负无穷
+            </summary>
+        </member>
         <member name="F:AutoCSer.Json.NodeType.DateTimeTick">
             <summary>
             时间周期值
@@ -7477,6 +7509,46 @@
         <member name="F:AutoCSer.Json.NodeType.Dictionary">
             <summary>
             字典
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Json.NumberType">
+            <summary>
+            数字类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.Number">
+            <summary>
+            数字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.String">
+            <summary>
+            字符串
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.NaN">
+            <summary>
+            NaN
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.PositiveInfinity">
+            <summary>
+            正无穷
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.NegativeInfinity">
+            <summary>
+            负无穷
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.Null">
+            <summary>
+            null 值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.Error">
+            <summary>
+            错误
             </summary>
         </member>
         <member name="T:AutoCSer.Json.ParseAttribute">
@@ -7969,11 +8041,17 @@
             </summary>
             <returns>是否null</returns>
         </member>
-        <member name="M:AutoCSer.Json.Parser.isNaN">
+        <member name="M:AutoCSer.Json.Parser.isNaNPositiveInfinity">
             <summary>
-            是否非数字NaN
+            是否非数字 NaN / Infinity
             </summary>
             <returns>是否非数字NaN</returns>
+        </member>
+        <member name="M:AutoCSer.Json.Parser.isNegativeInfinity">
+            <summary>
+            是否 -Infinity
+            </summary>
+            <returns>是否 -Infinity</returns>
         </member>
         <member name="M:AutoCSer.Json.Parser.parseHex32(System.UInt32@)">
             <summary>
@@ -8013,17 +8091,26 @@
             </summary>
             <returns>字符</returns>
         </member>
-        <member name="M:AutoCSer.Json.Parser.searchNumber">
+        <member name="M:AutoCSer.Json.Parser.searchNumber(System.Char*@)">
             <summary>
             查找数字结束位置
             </summary>
-            <returns>数字结束位置,失败返回null</returns>
+            <param name="numberEnd">数字结束位置</param>
+            <returns>数字类型</returns>
         </member>
-        <member name="M:AutoCSer.Json.Parser.searchNumberNull">
+        <member name="M:AutoCSer.Json.Parser.searchNumberNull(System.Char*@)">
             <summary>
             查找数字结束位置
             </summary>
-            <returns>数字结束位置,失败返回null</returns>
+            <param name="numberEnd">数字结束位置</param>
+            <returns>数字类型</returns>
+        </member>
+        <member name="M:AutoCSer.Json.Parser.getNumberString(System.Char*)">
+            <summary>
+            获取数字字符串
+            </summary>
+            <param name="end"></param>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.Json.Parser.parseTime(System.String,System.DateTime@)">
             <summary>
@@ -15105,6 +15192,24 @@
             忽略数据
             </summary>
             <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.isNaN">
+            <summary>
+            是否非数字 NaN
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.isPositiveInfinity">
+            <summary>
+            是否 Infinity
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.isNegativeInfinity">
+            <summary>
+            是否 -Infinity
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.Xml.Parser.getName(System.Int32@)">
             <summary>

@@ -18,6 +18,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         internal sealed partial class Generator : Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute, AutoCSer.Net.TcpStreamServer.MethodAttribute, AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>
         {
             /// <summary>
+            /// 服务注册名称
+            /// </summary>
+            public override string ServerRegisterName { get { return Attribute.ServerName ?? Type.FullName; } }
+            /// <summary>
             /// 是否默认时间验证服务
             /// </summary>
             public bool IsTimeVerify

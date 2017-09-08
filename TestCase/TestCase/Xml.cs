@@ -22,9 +22,17 @@ namespace AutoCSer.TestCase
 #endif
         internal static bool TestCase()
         {
+            Data.Float floatData = new Data.Float();
+            string xmlString = AutoCSer.Xml.Serializer.Serialize(floatData);
+            Data.Float newFloatData = AutoCSer.Xml.Parser.Parse<Data.Float>(xmlString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.Float>.Equals(floatData, newFloatData))
+            {
+                return false;
+            }
+
             #region 引用类型字段成员XML序列化测试
             Data.FieldData filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(randomConfig);
-            string xmlString = AutoCSer.Xml.Serializer.Serialize(filedData);
+            xmlString = AutoCSer.Xml.Serializer.Serialize(filedData);
             //AutoCSer.Log.Trace.Console(xmlString);
             Data.FieldData newFieldData = AutoCSer.Xml.Parser.Parse<Data.FieldData>(xmlString);
             if (!AutoCSer.FieldEquals.Comparor<Data.FieldData>.Equals(filedData, newFieldData))

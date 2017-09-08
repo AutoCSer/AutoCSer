@@ -50,7 +50,7 @@ namespace AutoCSer.FieldEquals
         private static bool doubleEquals(double left, double right)
         {
             if (double.IsNaN(left)) return double.IsNaN(right);
-            return left == right || (!double.IsNaN(right) && double.Parse(left.ToString()) == right);
+            return left == right || (!double.IsNaN(right) && double.Parse(left.ToString(), System.Globalization.CultureInfo.InvariantCulture) == right);
         }
         /// <summary>
         /// 浮点数比较函数信息

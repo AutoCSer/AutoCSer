@@ -2725,6 +2725,11 @@
             TCP 内部服务代码生成
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.ServerRegisterName">
+            <summary>
+            服务注册名称
+            </summary>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalStreamServer.Generator.IsTimeVerify">
             <summary>
             是否默认时间验证服务
