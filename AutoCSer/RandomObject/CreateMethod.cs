@@ -55,6 +55,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static short CreateShort()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return short.MinValue;
+                case 1: return short.MaxValue;
+            }
             return (short)AutoCSer.Random.Default.NextUShort();
         }
         /// <summary>
@@ -66,6 +71,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static ushort CreateUShort()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return ushort.MinValue;
+                case 1: return ushort.MaxValue;
+            }
             return AutoCSer.Random.Default.NextUShort();
         }
         /// <summary>
@@ -77,6 +87,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static int CreateInt()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return int.MinValue;
+                case 1: return int.MaxValue;
+            }
             return AutoCSer.Random.Default.Next();
         }
         /// <summary>
@@ -88,6 +103,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static uint CreateUInt()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return uint.MinValue;
+                case 1: return uint.MaxValue;
+            }
             return (uint)AutoCSer.Random.Default.Next();
         }
         /// <summary>
@@ -99,6 +119,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static long CreateLong()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return long.MinValue;
+                case 1: return long.MaxValue;
+            }
             return (long)AutoCSer.Random.Default.NextULong();
         }
         /// <summary>
@@ -110,6 +135,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal static ulong CreateULong()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return ulong.MinValue;
+                case 1: return ulong.MaxValue;
+            }
             return AutoCSer.Random.Default.NextULong();
         }
         /// <summary>
@@ -125,6 +155,11 @@ namespace AutoCSer.RandomObject
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private static decimal createDecimal()
         {
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return decimal.MinValue;
+                case 1: return decimal.MaxValue;
+            }
             return (decimal)(long)AutoCSer.Random.Default.NextULong() / decimalDiv;
         }
         /// <summary>

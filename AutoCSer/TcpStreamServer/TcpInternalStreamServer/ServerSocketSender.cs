@@ -173,15 +173,23 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                 buildInfo.IsNewBuffer = 0;
                                 DISPOSE:;
                             }
-                            if (buildInfo.IsNewBuffer == 0 && !buildInfo.IsError && IsSocket)
+                            if (buildInfo.IsNewBuffer == 0)
                             {
-                                //IsOutput = 0;
-                                Interlocked.Exchange(ref IsOutput, 0);
-                                if ((!Outputs.IsEmpty || !IsSocket) && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
+                                if (!buildInfo.IsError)
                                 {
-                                    if (IsSocket) goto STREAM;
-                                    close();
+                                    if (IsSocket)
+                                    {
+                                        //IsOutput = 0;
+                                        Interlocked.Exchange(ref IsOutput, 0);
+                                        if (!Outputs.IsEmpty)
+                                        {
+                                            if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) goto STREAM;
+                                        }
+                                        else if (!IsSocket && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) buildInfo.IsClose = true;
+                                    }
+                                    else buildInfo.IsClose = true;
                                 }
+                                return;
                             }
                         }
                     }
@@ -194,9 +202,10 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 }
                 finally
                 {
-                    if (buildInfo.IsError)
+                    if (buildInfo.IsError | buildInfo.IsClose)
                     {
-                        closeSocket();
+                        if (buildInfo.IsError) closeSocket();
+                        else close();
                         TcpStreamServer.ServerOutput.OutputLink.CancelLink(head);
                     }
                 }

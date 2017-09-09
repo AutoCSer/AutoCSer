@@ -436,6 +436,11 @@
             弹出节点
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpSimpleServer.Client.FreeCheckReset">
+            <summary>
+            弹出节点
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpSimpleServer.Client`1">
             <summary>
             TCP 服务客户端
@@ -695,6 +700,12 @@
         <member name="M:AutoCSer.Net.TcpSimpleServer.ClientCheckTimer.Push(AutoCSer.Net.TcpSimpleServer.Client)">
             <summary>
             添加心跳检测
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpSimpleServer.ClientCheckTimer.Free(AutoCSer.Net.TcpSimpleServer.Client)">
+            <summary>
+            释放心跳检测
             </summary>
             <param name="value"></param>
         </member>

@@ -12,6 +12,7 @@
     <p>
         . 支持成员选择配置，默认选择所有可见的非匿名字段成员。由于 AutoCSer 在整体结构规划中，字段用于描述数据，属性用于描述计算行为，所以在二进制序列化中默认不支持属性。
         <!--Include:Include\GetCode[Example,2,仅选择公共字段成员,BinarySerialize\PublicInstanceField.cs]-->
+        <!--Include:Include\GetCode[Example,b,支持匿名类型序列化,BinarySerialize\AnonymousType.cs]-->
         <!--Include:Include\GetCode[Example,3,匿名字段绑定属性支持,BinarySerialize\Property.cs]-->
         <!--Include:Include\GetCode[Example,4,忽略成员,BinarySerialize\IgnoreMember.cs]-->
     </p>
@@ -33,7 +34,7 @@
     <p>
         . 支持自定义序列化函数，对于引用类型必须是静态函数，对于值类型必须是成员函数，必须同时定义序列化与反序列化两个函数并自行保证序列化数据的可逆性。
         <!--Include:Include\GetCode[Example,a,引用类型,BinarySerialize\CustomClass.cs]-->
-        <!--Include:Include\GetCode[Example,b,值类型,BinarySerialize\CustomStruct.cs]-->
+        <!--Include:Include\GetCode[Example,c,值类型,BinarySerialize\CustomStruct.cs]-->
     </p>
 </body>
 </html>

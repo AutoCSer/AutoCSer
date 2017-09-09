@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutoCSer.Example.Xml
+namespace AutoCSer.Example.BinarySerialize
 {
     /// <summary>
     /// 匿名类型序列化 示例
@@ -14,9 +14,9 @@ namespace AutoCSer.Example.Xml
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            string xml = AutoCSer.Xml.Serializer.Serialize(new { Value = 1 });
+            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(new { Value = 1 });
             var newValue = new { Value = 0 };
-            AutoCSer.Xml.Parser.Parse(xml, ref newValue);
+            AutoCSer.BinarySerialize.DeSerializer.DeSerialize(data, ref newValue);
             return newValue.Value == 1;
         }
     }

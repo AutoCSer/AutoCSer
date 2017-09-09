@@ -20,11 +20,8 @@ namespace AutoCSer.Example.BinarySerialize
         [AutoCSer.Metadata.TestMethod]
         internal static bool TestCase()
         {
-            Property value = new Property { Value = 1 };
-
-            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(value);
+            byte[] data = AutoCSer.BinarySerialize.Serializer.Serialize(new Property { Value = 1 });
             Property newValue = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<Property>(data);
-
             return newValue != null && newValue.Value == 1;
         }
     }

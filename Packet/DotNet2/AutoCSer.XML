@@ -1695,6 +1695,11 @@
             弹出节点
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.FreeCheckReset">
+            <summary>
+            弹出节点
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocketBase.FreeOutputSerializer">
             <summary>
             释放输出数据序列化
@@ -3958,6 +3963,11 @@
             会话索引参数
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.JsonConfig">
+            <summary>
+            JSON 序列化配置
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.Server.GetReturnType(System.UInt32@)">
             <summary>
             获取返回值类型
@@ -5663,11 +5673,6 @@
             自定义构造函数
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.ParseConfig.MemberFilters">
-            <summary>
-            成员选择
-            </summary>
-        </member>
         <member name="F:AutoCSer.Json.ParseConfig.IsEndSpace">
             <summary>
             对象解析结束后是否检测最后的空格符，默认为 true
@@ -6926,6 +6931,16 @@
             类型解析器
             </summary>
         </member>
+        <member name="F:AutoCSer.Json.TypeParser`1.parseMember">
+            <summary>
+            默认名称解析
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.TypeParser`1.parseMemberMap">
+            <summary>
+            默认名称解析
+            </summary>
+        </member>
         <member name="F:AutoCSer.Json.TypeParser`1.attribute">
             <summary>
             JSON 解析类型配置
@@ -7305,18 +7320,6 @@
             成员位图索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.TypeParser`1.TryParseFilter.MemberFilters">
-            <summary>
-            成员选择
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Json.TypeParser`1.TryParseFilter.Call(AutoCSer.Json.Parser,`0@)">
-            <summary>
-            成员解析器
-            </summary>
-            <param name="parser">Json解析器</param>
-            <param name="value">目标数据</param>
-        </member>
         <member name="M:AutoCSer.Json.TypeParser`1.TryParseFilter.Call(AutoCSer.Json.Parser,AutoCSer.Metadata.MemberMap,`0@)">
             <summary>
             成员解析器
@@ -7339,6 +7342,25 @@
             <param name="parser">Json解析器</param>
             <param name="value"></param>
             <param name="name"></param>
+        </member>
+        <member name="T:AutoCSer.Json.TypeParser`1.ParseMember">
+            <summary>
+            默认名称解析
+            </summary>
+            <param name="parser"></param>
+            <param name="value"></param>
+            <param name="names"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Json.TypeParser`1.ParseMemberMap">
+            <summary>
+            默认名称解析
+            </summary>
+            <param name="parser"></param>
+            <param name="value"></param>
+            <param name="names"></param>
+            <param name="memberMap"></param>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Json.ParseMethod">
             <summary>
@@ -7739,6 +7761,11 @@
         <member name="F:AutoCSer.Json.Parser.Quote">
             <summary>
             当前字符串引号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.Parser.ParseState">
+            <summary>
+            解析状态
             </summary>
         </member>
         <member name="F:AutoCSer.Json.Parser.isEndSpace">
@@ -8567,6 +8594,19 @@
         <member name="M:AutoCSer.Extension.EmitGenerator.memberMapIsMember(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)">
             <summary>
             判断成员位图是否匹配成员索引
+            </summary>
+            <param name="generator"></param>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.memberMapSetMemberMethod">
+            <summary>
+            设置成员索引
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator.memberMapSetMember(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)">
+            <summary>
+            设置成员索引
             </summary>
             <param name="generator"></param>
             <param name="target"></param>
@@ -9613,6 +9653,12 @@
             </summary>
             <param name="timeout"></param>
         </member>
+        <member name="M:AutoCSer.Threading.TimerLink`1.FreeNotNull(`0)">
+            <summary>
+            释放套接字超时
+            </summary>
+            <param name="timeout"></param>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientCheckTimer.Head">
             <summary>
             链表首节点
@@ -9637,6 +9683,12 @@
         <member name="M:AutoCSer.Net.TcpServer.ClientCheckTimer.Push(AutoCSer.Net.TcpServer.ClientSocketBase)">
             <summary>
             添加心跳检测
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientCheckTimer.Free(AutoCSer.Net.TcpServer.ClientSocketBase)">
+            <summary>
+            释放心跳检测
             </summary>
             <param name="value"></param>
         </member>
@@ -16476,6 +16528,11 @@
         <member name="F:AutoCSer.BinarySerialize.Serializer.NullValue">
             <summary>
             空对象
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.Serializer.NullableHasValue">
+            <summary>
+            可空类型存在数据
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.RealTypeValue">
@@ -26050,6 +26107,18 @@
             </summary>
             <param name="value"></param>
         </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
         <member name="M:AutoCSer.CharStream.WriteJson(System.Char,System.Char)">
             <summary>
             数字转换成字符串
@@ -26164,13 +26233,13 @@
             <param name="start">字符串起始位置,不能为null</param>
             <param name="count">写入字符数，必须>0</param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+        <member name="M:AutoCSer.CharStream.WriteJsonInfinity(System.Single)">
             <summary>
             输出 double 值
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+        <member name="M:AutoCSer.CharStream.WriteJsonInfinity(System.Double)">
             <summary>
             输出 double 值
             </summary>
@@ -26191,13 +26260,13 @@
             输出负无穷
             </summary>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue(System.Double)">
+        <member name="M:AutoCSer.CharStream.writeDoubleMaxValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue(System.Double)">
+        <member name="M:AutoCSer.CharStream.writeDoubleMinValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
@@ -26440,6 +26509,46 @@
         <member name="F:AutoCSer.Log.Config.Log">
             <summary>
             日志处理接口
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Json.NumberType">
+            <summary>
+            数字类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.Number">
+            <summary>
+            数字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.String">
+            <summary>
+            字符串
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.NaN">
+            <summary>
+            NaN
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.PositiveInfinity">
+            <summary>
+            正无穷
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.NegativeInfinity">
+            <summary>
+            负无穷
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.Null">
+            <summary>
+            null 值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.NumberType.Error">
+            <summary>
+            错误
             </summary>
         </member>
         <member name="T:AutoCSer.Extension.BinarySerialize">
@@ -28549,11 +28658,6 @@
             成员位图索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.TypeParser`1.TryParseFilter.Filter">
-            <summary>
-            成员选择
-            </summary>
-        </member>
         <member name="M:AutoCSer.Xml.TypeParser`1.TryParseFilter.Call(AutoCSer.Xml.Parser,`0@)">
             <summary>
             成员解析器
@@ -29692,6 +29796,11 @@
         <member name="F:AutoCSer.Net.TcpServer.SenderBuildInfo.IsVerifyMethod">
             <summary>
             是否存在验证函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.SenderBuildInfo.IsClose">
+            <summary>
+            是否需要关闭
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.SenderBuildInfo.IsError">
@@ -31112,6 +31221,11 @@
             成员位图类型不匹配时是否使用默认输出，默认为 true
             </summary>
         </member>
+        <member name="F:AutoCSer.Json.SerializeConfig.IsInfinityToNaN">
+            <summary>
+            默认为 true 表示将 Infinity / -Infinity 转换为 NaN 输出
+            </summary>
+        </member>
         <member name="M:AutoCSer.Json.SerializeConfig.SetCustomMemberMap(AutoCSer.Metadata.MemberMap)">
             <summary>
             获取并设置自定义序列化成员位图
@@ -31469,7 +31583,7 @@
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.NotNull">
             <summary>
-            不支持对象null解析检测失败
+            不支持对象 null 解析检测失败
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.MemberIndex">
@@ -32236,6 +32350,16 @@
             <param name="isCustom"></param>
             <returns>成员转换函数信息</returns>
         </member>
+        <member name="F:AutoCSer.Json.ParseMethodCache.ParserIsNameMethod">
+            <summary>
+            是否匹配默认顺序名称 函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.ParseMethodCache.ParseStateField">
+            <summary>
+            解析状态 字段信息
+            </summary>
+        </member>
         <member name="M:AutoCSer.Json.ParseMethodCache.CreateDynamicMethod(System.Type,System.Reflection.FieldInfo)">
             <summary>
             创建解析委托函数
@@ -32894,11 +33018,6 @@
         <member name="F:AutoCSer.Xml.ParseConfig.ItemName">
             <summary>
             集合子节点名称(不能包含非法字符)
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Xml.ParseConfig.MemberFilter">
-            <summary>
-            成员选择
             </summary>
         </member>
         <member name="F:AutoCSer.Xml.ParseConfig.IsAttribute">
@@ -35963,45 +36082,86 @@
             数据数量
             </summary>
         </member>
-        <member name="T:AutoCSer.Json.NumberType">
+        <member name="T:AutoCSer.Json.ParseDynamicMethod">
             <summary>
-            数字类型
+            反序列化动态函数
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.Number">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.dynamicMethod">
             <summary>
-            数字
+            动态函数
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.String">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.generator">
             <summary>
-            字符串
+            
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.NaN">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.indexLocalBuilder">
             <summary>
-            NaN
+            
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.PositiveInfinity">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.returnIndexLabel">
             <summary>
-            正无穷
+            
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.NegativeInfinity">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.returnErrorLabel">
             <summary>
-            负无穷
+            
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.Null">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.index">
             <summary>
-            null 值
+            
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.NumberType.Error">
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.isMemberMap">
             <summary>
-            错误
+            
             </summary>
+        </member>
+        <member name="F:AutoCSer.Json.ParseDynamicMethod.isValueType">
+            <summary>
+            是否值类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.ParseDynamicMethod.#ctor(System.Type,System.Boolean)">
+            <summary>
+            动态函数
+            </summary>
+            <param name="type"></param>
+            <param name="isMemberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Json.ParseDynamicMethod.isName">
+            <summary>
+            是否匹配默认顺序名称
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.ParseDynamicMethod.nextIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.ParseDynamicMethod.Push(AutoCSer.Metadata.FieldIndex)">
+            <summary>
+            添加字段
+            </summary>
+            <param name="field">字段信息</param>
+        </member>
+        <member name="M:AutoCSer.Json.ParseDynamicMethod.Push(AutoCSer.Metadata.PropertyIndex,System.Reflection.MethodInfo)">
+            <summary>
+            添加属性
+            </summary>
+            <param name="property">属性信息</param>
+            <param name="propertyMethod">函数信息</param>
+        </member>
+        <member name="M:AutoCSer.Json.ParseDynamicMethod.Create``1">
+            <summary>
+            创建成员转换委托
+            </summary>
+            <returns>成员转换委托</returns>
         </member>
     </members>
 </doc>

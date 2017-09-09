@@ -126,6 +126,15 @@ namespace AutoCSer.Net.TcpSimpleServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void FreeCheck()
         {
+            FreeCheckReset();
+            CheckPrevious = null;
+        }
+        /// <summary>
+        /// 弹出节点
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void FreeCheckReset()
+        {
             CheckPrevious.CheckNext = CheckNext;
             CheckNext.CheckPrevious = CheckPrevious;
             CheckNext = null;
@@ -175,7 +184,11 @@ namespace AutoCSer.Net.TcpSimpleServer
                         IsDisposed = 1;
                         closeSocket();
 
-                        ClientCheckTimer.Free(ref CheckTimer);
+                        if (CheckTimer != null)
+                        {
+                            CheckTimer.Free(this);
+                            ClientCheckTimer.FreeNotNull(CheckTimer);
+                        }
                         outputSerializer.Free();
                         if (outputJsonSerializer != null) outputJsonSerializer.Free();
                         Buffer.Free();

@@ -139,13 +139,13 @@
             <param name="start">字符串起始位置,不能为null</param>
             <param name="count">写入字符数，必须>0</param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+        <member name="M:AutoCSer.CharStream.WriteJsonInfinity(System.Single)">
             <summary>
             输出 double 值
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+        <member name="M:AutoCSer.CharStream.WriteJsonInfinity(System.Double)">
             <summary>
             输出 double 值
             </summary>
@@ -166,13 +166,13 @@
             输出负无穷
             </summary>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue(System.Double)">
+        <member name="M:AutoCSer.CharStream.writeDoubleMaxValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue(System.Double)">
+        <member name="M:AutoCSer.CharStream.writeDoubleMinValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
@@ -6606,11 +6606,6 @@
             成员位图索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.TypeParser`1.TryParseFilter.Filter">
-            <summary>
-            成员选择
-            </summary>
-        </member>
         <member name="M:AutoCSer.Xml.TypeParser`1.TryParseFilter.Call(AutoCSer.Xml.Parser,`0@)">
             <summary>
             成员解析器
@@ -7214,11 +7209,6 @@
         <member name="F:AutoCSer.Xml.ParseConfig.ItemName">
             <summary>
             集合子节点名称(不能包含非法字符)
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Xml.ParseConfig.MemberFilter">
-            <summary>
-            成员选择
             </summary>
         </member>
         <member name="F:AutoCSer.Xml.ParseConfig.IsAttribute">

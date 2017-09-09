@@ -8,11 +8,6 @@ namespace AutoCSer.Example.Json
     class AnonymousType
     {
         /// <summary>
-        /// 字段成员
-        /// </summary>
-        public int Value;
-
-        /// <summary>
         /// 匿名类型序列化 测试
         /// </summary>
         /// <returns></returns>
@@ -20,9 +15,9 @@ namespace AutoCSer.Example.Json
         internal static bool TestCase()
         {
             string json = AutoCSer.Json.Serializer.Serialize(new { Value = 1 });
-            AnonymousType newValue = AutoCSer.Json.Parser.Parse<AnonymousType>(json);
-
-            return newValue != null && newValue.Value == 1;
+            var newValue = new { Value = 0 };
+            AutoCSer.Json.Parser.Parse(json, ref newValue);
+            return newValue.Value == 1;
         }
     }
 }

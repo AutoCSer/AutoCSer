@@ -54,6 +54,40 @@ namespace AutoCSer.Net.TcpSimpleServer
             }
         }
         /// <summary>
+        /// 释放心跳检测
+        /// </summary>
+        /// <param name="value"></param>
+        internal void Free(Client value)
+        {
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
+            if (value == Head)
+            {
+                if ((Head = value.CheckNext) == null)
+                {
+                    End = null;
+                    queueLock = 0;
+                }
+                else
+                {
+                    value.CheckNext = null;
+                    Head.CheckPrevious = null;
+                    queueLock = 0;
+                }
+            }
+            else if (value == End)
+            {
+                End = value.CheckPrevious;
+                value.CheckPrevious = null;
+                End.CheckNext = null;
+                queueLock = 0;
+            }
+            else
+            {
+                if (value.CheckNext != null) value.FreeCheck();
+                queueLock = 0;
+            }
+        }
+        /// <summary>
         /// 弹出节点
         /// </summary>
         /// <param name="currentSecond"></param>
@@ -102,7 +136,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                             (Head = value.CheckNext).CheckPrevious = null;
                             value.CheckNext = null;
                         }
-                        else value.FreeCheck();
+                        else value.FreeCheckReset();
                         End.CheckNext = value;
                         value.CheckPrevious = End;
                     }

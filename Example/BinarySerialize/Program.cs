@@ -11,6 +11,7 @@ namespace AutoCSer.Example.BinarySerialize
             Console.WriteLine(Reference.TestCase());
             Console.WriteLine(DisabledReference.TestCase());
             Console.WriteLine(PublicInstanceField.TestCase());
+            Console.WriteLine(AnonymousType.TestCase());
             Console.WriteLine(MemberMap.TestCase());
             Console.WriteLine(DisabledMemberMap.TestCase());
             Console.WriteLine(MemberMapValue.TestCase());

@@ -22,17 +22,9 @@ namespace AutoCSer.TestCase
 #endif
         internal static bool TestCase()
         {
-            Data.Float floatData = new Data.Float();
-            string jsonString = AutoCSer.Json.Serializer.Serialize(floatData);
-            Data.Float newFloatData = AutoCSer.Json.Parser.Parse<Data.Float>(jsonString);
-            if (!AutoCSer.FieldEquals.Comparor<Data.Float>.Equals(floatData, newFloatData))
-            {
-                return false;
-            }
-
             #region 引用类型字段成员JSON序列化测试
             Data.FieldData filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(randomConfig);
-            jsonString = AutoCSer.Json.Serializer.Serialize(filedData);
+            string jsonString = AutoCSer.Json.Serializer.Serialize(filedData);
             //AutoCSer.Log.Trace.Console(jsonString);
             Data.FieldData newFieldData = AutoCSer.Json.Parser.Parse<Data.FieldData>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.FieldData>.Equals(filedData, newFieldData))
@@ -101,6 +93,27 @@ namespace AutoCSer.TestCase
                 return false;
             }
 
+            Data.Float floatData = AutoCSer.Json.Parser.Parse<Data.Float>(@"{Double4:-4.0,Double2:2.0,Double6:-6.0,Double5:5.0,Double3:-3.0}");
+            if (floatData.Double2 != 2 || floatData.Double3 != -3 || floatData.Double4 != -4 || floatData.Double5 != 5 || floatData.Double6 != -6)
+            {
+                return false;
+            }
+
+            floatData = new Data.Float { FloatPositiveInfinity = float.NaN, FloatNegativeInfinity = float.NaN, DoublePositiveInfinity = double.NaN, DoubleNegativeInfinity = double.NaN };
+            jsonString = AutoCSer.Json.Serializer.Serialize(floatData);
+            Data.Float newFloatData = AutoCSer.Json.Parser.Parse<Data.Float>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.Float>.Equals(floatData, newFloatData))
+            {
+                return false;
+            }
+
+            floatData = new Data.Float();
+            jsonString = AutoCSer.Json.Serializer.Serialize(floatData, new AutoCSer.Json.SerializeConfig { IsInfinityToNaN = false });
+            newFloatData = AutoCSer.Json.Parser.Parse<Data.Float>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.Float>.Equals(floatData, newFloatData))
+            {
+                return false;
+            }
             return true;
         }
     }

@@ -191,17 +191,21 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                             }
                             END:
                             //IsOutput = 0;
-                            Interlocked.Exchange(ref IsOutput, 0);
-                            if (!Outputs.IsEmpty)
+                            if (IsSocket)
                             {
-                                if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
+                                Interlocked.Exchange(ref IsOutput, 0);
+                                if (!Outputs.IsEmpty)
                                 {
-                                    if (buildInfo.IsNewBuffer == 0) goto STREAM;
-                                    goto FIXEDEND;
+                                    if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0)
+                                    {
+                                        if (buildInfo.IsNewBuffer == 0) goto STREAM;
+                                        goto FIXEDEND;
+                                    }
                                 }
+                                else if (!IsSocket && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) buildInfo.IsClose = true;
                             }
-                            else if (!IsSocket && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) close();
-                            buildInfo.IsNewBuffer = 0;
+                            else buildInfo.IsClose = true;
+                            return;
                             FIXEDEND:;
                         }
                     }
@@ -214,9 +218,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 }
                 finally
                 {
-                    if (buildInfo.IsError)
+                    if (buildInfo.IsError | buildInfo.IsClose)
                     {
-                        closeSocket();
+                        if (buildInfo.IsError) closeSocket();
+                        else close();
                         TcpStreamServer.ServerOutput.OutputLink.CancelLink(head);
                     }
                 }
@@ -312,24 +317,28 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             {
                 Server.Log.add(AutoCSer.Log.LogType.Debug, error);
             }
-            if (isOutput)
+            if (IsSocket)
             {
-                if (Outputs.IsEmpty)
+                if (isOutput)
                 {
-                    Interlocked.Exchange(ref IsOutput, 0);
-                    //IsOutput = 0;
-                    if (!Outputs.IsEmpty)
+                    if (Outputs.IsEmpty)
                     {
-                        if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) BuildOutput();
+                        Interlocked.Exchange(ref IsOutput, 0);
+                        //IsOutput = 0;
+                        if (!Outputs.IsEmpty)
+                        {
+                            if (Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) BuildOutput();
+                        }
+                        else
+                        {
+                            if (!IsSocket && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) close();
+                        }
                     }
-                    else
-                    {
-                        if (!IsSocket && Interlocked.CompareExchange(ref IsOutput, 1, 0) == 0) close();
-                    }
+                    else BuildOutput();
                 }
-                else BuildOutput();
+                else closeSocket();
             }
-            else closeSocket();
+            else close();
         }
     }
 }

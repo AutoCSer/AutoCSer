@@ -14,7 +14,8 @@ namespace AutoCSer.TestCase
         [AutoCSer.Config.Member]
         public static AutoCSer.Log.Config LogConfig
         {
-            get { return new Log.Config { Type = AutoCSer.Log.LogType.All }; }
+            //get { return new Log.Config { Type = AutoCSer.Log.LogType.All }; }
+            get { return new Log.Config { Type = 0 }; }
         }
 #if !NoAutoCSer
         /// <summary>

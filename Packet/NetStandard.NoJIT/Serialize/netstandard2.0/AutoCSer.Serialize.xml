@@ -2699,7 +2699,7 @@
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.NotNull">
             <summary>
-            不支持对象null解析检测失败
+            不支持对象 null 解析检测失败
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.MemberIndex">
@@ -3833,6 +3833,11 @@
         <member name="F:AutoCSer.BinarySerialize.Serializer.NullValue">
             <summary>
             空对象
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.Serializer.NullableHasValue">
+            <summary>
+            可空类型存在数据
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.RealTypeValue">
@@ -5140,13 +5145,13 @@
             <param name="start">字符串起始位置,不能为null</param>
             <param name="count">写入字符数，必须>0</param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+        <member name="M:AutoCSer.CharStream.WriteJsonInfinity(System.Single)">
             <summary>
             输出 double 值
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+        <member name="M:AutoCSer.CharStream.WriteJsonInfinity(System.Double)">
             <summary>
             输出 double 值
             </summary>
@@ -5167,13 +5172,13 @@
             输出负无穷
             </summary>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMaxValue(System.Double)">
+        <member name="M:AutoCSer.CharStream.writeDoubleMaxValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.CharStream.WriteDoubleMinValue(System.Double)">
+        <member name="M:AutoCSer.CharStream.writeDoubleMinValue(System.Double)">
             <summary>
             输出 double 最大值
             </summary>
@@ -5264,6 +5269,18 @@
         <member name="M:AutoCSer.CharStream.writeJson(System.UInt64)">
             <summary>
             数字转换成字符串
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Single)">
+            <summary>
+            输出 double 值
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.CharStream.WriteJson(System.Double)">
+            <summary>
+            输出 double 值
             </summary>
             <param name="value"></param>
         </member>
@@ -7655,18 +7672,6 @@
             成员位图索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.TypeParser`1.TryParseFilter.MemberFilters">
-            <summary>
-            成员选择
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Json.TypeParser`1.TryParseFilter.Call(AutoCSer.Json.Parser,`0@)">
-            <summary>
-            成员解析器
-            </summary>
-            <param name="parser">Json解析器</param>
-            <param name="value">目标数据</param>
-        </member>
         <member name="M:AutoCSer.Json.TypeParser`1.TryParseFilter.Call(AutoCSer.Json.Parser,AutoCSer.Metadata.MemberMap,`0@)">
             <summary>
             成员解析器
@@ -8451,11 +8456,6 @@
             自定义构造函数
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.ParseConfig.MemberFilters">
-            <summary>
-            成员选择
-            </summary>
-        </member>
         <member name="F:AutoCSer.Json.ParseConfig.IsEndSpace">
             <summary>
             对象解析结束后是否检测最后的空格符，默认为 true
@@ -8806,6 +8806,11 @@
         <member name="F:AutoCSer.Json.Parser.Quote">
             <summary>
             当前字符串引号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.Parser.ParseState">
+            <summary>
+            解析状态
             </summary>
         </member>
         <member name="P:AutoCSer.Json.Parser.State">
@@ -10123,6 +10128,11 @@
         <member name="F:AutoCSer.Json.SerializeConfig.IsMemberMapErrorToDefault">
             <summary>
             成员位图类型不匹配时是否使用默认输出，默认为 true
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Json.SerializeConfig.IsInfinityToNaN">
+            <summary>
+            默认为 true 表示将 Infinity / -Infinity 转换为 NaN 输出
             </summary>
         </member>
         <member name="M:AutoCSer.Json.SerializeConfig.SetCustomMemberMap(AutoCSer.Metadata.MemberMap)">
@@ -15729,11 +15739,6 @@
             成员位图索引
             </summary>
         </member>
-        <member name="F:AutoCSer.Xml.TypeParser`1.TryParseFilter.Filter">
-            <summary>
-            成员选择
-            </summary>
-        </member>
         <member name="M:AutoCSer.Xml.TypeParser`1.TryParseFilter.Call(AutoCSer.Xml.Parser,`0@)">
             <summary>
             成员解析器
@@ -16337,11 +16342,6 @@
         <member name="F:AutoCSer.Xml.ParseConfig.ItemName">
             <summary>
             集合子节点名称(不能包含非法字符)
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Xml.ParseConfig.MemberFilter">
-            <summary>
-            成员选择
             </summary>
         </member>
         <member name="F:AutoCSer.Xml.ParseConfig.IsAttribute">

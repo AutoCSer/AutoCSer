@@ -67,7 +67,23 @@ namespace AutoCSer.RandomObject
         {
             if (config.IsParseFloat)
             {
+                switch (AutoCSer.Random.Default.NextByte())
+                {
+                    case 0: return float.MinValue;
+                    case 1: return float.MaxValue;
+                    case 2: return float.Epsilon;
+                    case 3: return float.NaN;
+                }
                 return float.Parse(AutoCSer.Random.Default.NextFloat().ToString());
+            }
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return float.MinValue;
+                case 1: return float.MaxValue;
+                case 2: return float.Epsilon;
+                case 3: return float.NaN;
+                case 4: return float.PositiveInfinity;
+                case 5: return float.NegativeInfinity;
             }
             return AutoCSer.Random.Default.NextFloat();
         }
@@ -84,7 +100,57 @@ namespace AutoCSer.RandomObject
         {
             if (config.IsParseFloat)
             {
+                switch (AutoCSer.Random.Default.NextByte())
+                {
+                    case 0: return double.MinValue;
+                    case 1: return double.MaxValue;
+                    case 2: return double.Epsilon;
+                    case 3: return double.Epsilon;
+                    case 4: return double.NaN;
+                    case 10: return 1.7976931348623157E+308;
+                    case 11: return 1.7976931348623156E+308;
+                    case 12: return 1.7976931348623155E+308;
+                    case 13: return 1.7976931348623154E+308;
+                    case 14: return 1.7976931348623153E+308;
+                    case 15: return 1.7976931348623152E+308;
+                    case 16: return 1.7976931348623151E+308;
+                    case 17: return 1.7976931348623150E+308;
+                    case 20: return -1.7976931348623157E+308;
+                    case 21: return -1.7976931348623156E+308;
+                    case 22: return -1.7976931348623155E+308;
+                    case 23: return -1.7976931348623154E+308;
+                    case 24: return -1.7976931348623153E+308;
+                    case 25: return -1.7976931348623152E+308;
+                    case 26: return -1.7976931348623151E+308;
+                    case 27: return -1.7976931348623150E+308;
+                }
                 return double.Parse(AutoCSer.Random.Default.NextDouble().ToString(), System.Globalization.CultureInfo.InvariantCulture);
+            }
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return double.MinValue;
+                case 1: return double.MaxValue;
+                case 2: return double.Epsilon;
+                case 3: return double.Epsilon;
+                case 4: return double.NaN;
+                case 5: return double.PositiveInfinity;
+                case 6: return double.NegativeInfinity;
+                case 10: return 1.7976931348623157E+308;
+                case 11: return 1.7976931348623156E+308;
+                case 12: return 1.7976931348623155E+308;
+                case 13: return 1.7976931348623154E+308;
+                case 14: return 1.7976931348623153E+308;
+                case 15: return 1.7976931348623152E+308;
+                case 16: return 1.7976931348623151E+308;
+                case 17: return 1.7976931348623150E+308;
+                case 20: return -1.7976931348623157E+308;
+                case 21: return -1.7976931348623156E+308;
+                case 22: return -1.7976931348623155E+308;
+                case 23: return -1.7976931348623154E+308;
+                case 24: return -1.7976931348623153E+308;
+                case 25: return -1.7976931348623152E+308;
+                case 26: return -1.7976931348623151E+308;
+                case 27: return -1.7976931348623150E+308;
             }
             return AutoCSer.Random.Default.NextDouble();
         }
@@ -102,6 +168,11 @@ namespace AutoCSer.RandomObject
             if (config.IsSecondDateTime)
             {
                 return new DateTime((long)(AutoCSer.Random.Default.NextULong() % (ulong)DateTime.MaxValue.Ticks) / Date.SecondTicks * Date.SecondTicks);
+            }
+            switch (AutoCSer.Random.Default.NextByte())
+            {
+                case 0: return DateTime.MinValue;
+                case 1: return DateTime.MaxValue;
             }
             return new DateTime((long)(AutoCSer.Random.Default.NextULong() % (ulong)DateTime.MaxValue.Ticks));
         }
