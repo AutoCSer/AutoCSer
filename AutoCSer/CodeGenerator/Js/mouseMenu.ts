@@ -102,8 +102,8 @@ module AutoCSer {
             this.Value = Value;
             this.Show = Show || Value;
         }
-        ToJson(IsIgnore: boolean, IsNameQuery: boolean, Parents: any[]) {
-            return AutoCSer.Pub.ToJson(this.Value, IsIgnore, IsNameQuery, Parents);
+        ToJson(IsIgnore: boolean, IsNameQuery: boolean, IsSortName : boolean, Parents: any[]) {
+            return AutoCSer.Pub.ToJson(this.Value, IsIgnore, IsNameQuery, IsSortName, Parents);
         }
         toString() {
             return this.Value;

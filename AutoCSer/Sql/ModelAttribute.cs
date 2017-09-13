@@ -16,7 +16,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 成员选择类型
         /// </summary>
-        public MemberFilters MemberFilters = MemberFilters.PublicInstanceField;
+        public MemberFilters MemberFilters = MemberFilters.InstanceField;
         /// <summary>
         /// 日志队列 TCP 调用名称
         /// </summary>
@@ -33,6 +33,10 @@ namespace AutoCSer.Sql
         /// 默认计数缓存类型
         /// </summary>
         public Cache.Counter.Type CounterCacheType;
+        /// <summary>
+        /// 日志流是否客户端队列模式
+        /// </summary>
+        public bool IsLogClientQueue;
         /// <summary>
         /// 默认为 true 表示生成加载缓存事件代码
         /// </summary>
@@ -65,5 +69,13 @@ namespace AutoCSer.Sql
         /// 默认二进制序列化是否序列化成员位图
         /// </summary>
         public bool IsDefaultSerializeIsMemberMap;
+        /// <summary>
+        /// 默认为 false 表示不生成数据更新成员位图
+        /// </summary>
+        public bool IsUpdateMemberMap;
+        /// <summary>
+        /// 默认为 false 生成数据更新成员位图类型使用 struct 定义，否则采用 class
+        /// </summary>
+        public bool IsUpdateMemberMapClassType;
     }
 }

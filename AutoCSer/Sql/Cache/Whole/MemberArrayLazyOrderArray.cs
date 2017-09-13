@@ -14,12 +14,20 @@ namespace AutoCSer.Sql.Cache.Whole
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="keyType">分组字典关键字类型</typeparam>
     /// <typeparam name="targetType">目标数据类型</typeparam>
-    public class MemberLadyOrderArray<valueType, modelType, keyType, targetType> : Member<valueType, modelType, keyType, targetType, LadyOrderArray<valueType>>
+    public class MemberArrayLazyOrderArray<valueType, modelType, keyType, targetType> : Member<valueType, modelType, keyType, targetType, LazyOrderArray<valueType>[]>
         where valueType : class, modelType
         where modelType : class
         where keyType : IEquatable<keyType>
         where targetType : class
     {
+        /// <summary>
+        /// 数组索引获取器
+        /// </summary>
+        protected readonly Func<valueType, int> getIndex;
+        /// <summary>
+        /// 数组容器大小
+        /// </summary>
+        protected readonly int arraySize;
         /// <summary>
         /// 排序器
         /// </summary>
@@ -30,16 +38,22 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <param name="cache">整表缓存</param>
         /// <param name="getKey">分组字典关键字获取器</param>
         /// <param name="getValue">获取目标对象委托</param>
+        /// <param name="getIndex">获取数组索引</param>
+        /// <param name="arraySize">数组容器大小</param>
         /// <param name="member">缓存字段表达式</param>
         /// <param name="getTargets"></param>
         /// <param name="sorter">排序器</param>
         /// <param name="isReset">是否初始化</param>
-        public MemberLadyOrderArray(Event.Cache<valueType, modelType> cache, Func<modelType, keyType> getKey
-            , Func<keyType, targetType> getValue, Expression<Func<targetType, LadyOrderArray<valueType>>> member
+        public MemberArrayLazyOrderArray(Event.Cache<valueType, modelType> cache, Func<modelType, keyType> getKey
+            , Func<keyType, targetType> getValue, Func<valueType, int> getIndex, int arraySize, Expression<Func<targetType, LazyOrderArray<valueType>[]>> member
             , Func<IEnumerable<targetType>> getTargets, Func<LeftArray<valueType>, LeftArray<valueType>> sorter, bool isReset)
             : base(cache, getKey, getValue, member, getTargets)
         {
-            if (sorter == null) throw new ArgumentNullException();
+            if (getIndex == null) throw new ArgumentNullException("getIndex is null");
+            if (sorter == null) throw new ArgumentNullException("sorter is null");
+            if (arraySize <= 0) throw new IndexOutOfRangeException("arraySize[" + arraySize.toString() + "] <= 0");
+            this.getIndex = getIndex;
+            this.arraySize = arraySize;
             this.sorter = sorter;
 
             if (isReset)
@@ -57,21 +71,29 @@ namespace AutoCSer.Sql.Cache.Whole
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void onInserted(valueType value)
         {
-            onInserted(value, getKey(value));
+            onInserted(value, getKey(value), getIndex(value));
         }
         /// <summary>
         /// 添加数据
         /// </summary>
         /// <param name="value">数据对象</param>
         /// <param name="key"></param>
-        protected void onInserted(valueType value, keyType key)
+        /// <param name="index"></param>
+        protected void onInserted(valueType value, keyType key, int index)
         {
             targetType target = getValue(key);
             if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
-                LadyOrderArray<valueType> array = getMember(target);
-                if (array == null) setMember(target, array = new LadyOrderArray<valueType>());
+                LazyOrderArray<valueType>[] arrays = getMember(target);
+                LazyOrderArray<valueType> array;
+                if (arrays == null)
+                {
+                    setMember(target, arrays = new LazyOrderArray<valueType>[arraySize]);
+                    array = null;
+                }
+                else array = arrays[index];
+                if (array == null) arrays[index] = array = new LazyOrderArray<valueType>();
                 array.Insert(value);
             }
         }
@@ -85,21 +107,35 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onUpdated(valueType cacheValue, valueType value, valueType oldValue, MemberMap<modelType> memberMap)
         {
             keyType key = getKey(value), oldKey = getKey(oldValue);
+            int index = getIndex(value), oldIndex = getIndex(oldValue);
             if (key.Equals(oldKey))
             {
-                targetType target = getValue(key);
-                if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
-                else
+                if (index != oldIndex)
                 {
-                    LadyOrderArray<valueType> array = getMember(target);
-                    if (array == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
-                    else array.Update(cacheValue);
+                    targetType target = getValue(key);
+                    if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                    else
+                    {
+                        LazyOrderArray<valueType>[] arrays = getMember(target);
+                        if (arrays != null)
+                        {
+                            LazyOrderArray<valueType> array = arrays[index];
+                            if (array == null) arrays[index] = array = new LazyOrderArray<valueType>();
+                            array.Insert(cacheValue);
+                            if ((array = arrays[oldIndex]) != null)
+                            {
+                                array.Delete(cacheValue);
+                                return;
+                            }
+                        }
+                        cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                    }
                 }
             }
             else
             {
-                onInserted(cacheValue, key);
-                onDeleted(cacheValue, oldKey);
+                onInserted(cacheValue, key, index);
+                onDeleted(cacheValue, oldKey, getIndex(oldValue));
             }
         }
         /// <summary>
@@ -107,15 +143,24 @@ namespace AutoCSer.Sql.Cache.Whole
         /// </summary>
         /// <param name="value">被删除的数据</param>
         /// <param name="key">被删除数据的关键字</param>
-        protected void onDeleted(valueType value, keyType key)
+        /// <param name="index"></param>
+        protected void onDeleted(valueType value, keyType key, int index)
         {
             targetType target = getValue(key);
             if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
-                LadyOrderArray<valueType> array = getMember(target);
-                if (array == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
-                else array.Delete(value);
+                LazyOrderArray<valueType>[] arrays = getMember(target);
+                if (arrays != null)
+                {
+                    LazyOrderArray<valueType> array = arrays[index];
+                    if (array != null)
+                    {
+                        array.Delete(value);
+                        return;
+                    }
+                }
+                cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
         }
         /// <summary>
@@ -125,7 +170,7 @@ namespace AutoCSer.Sql.Cache.Whole
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void onDeleted(valueType value)
         {
-            onDeleted(value, getKey(value));
+            onDeleted(value, getKey(value), getIndex(value));
         }
     }
 }

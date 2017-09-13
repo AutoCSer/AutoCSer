@@ -112,10 +112,10 @@ module AutoCSer {
         Focus() {
             (frames[this.IframeId] as Window).document.getElementById(this.InputId0).focus();
         }
-        static Defalut: OverIframe;
-        static CreateDefalut() {
-            OverIframe.Defalut = new OverIframe();
+        static Default: OverIframe;
+        static CreateDefault() {
+            OverIframe.Default = new OverIframe();
         }
     }
-    Pub.OnLoad(OverIframe.CreateDefalut, OverIframe, true);
+    Pub.OnLoad(OverIframe.CreateDefault, OverIframe, true);
 }

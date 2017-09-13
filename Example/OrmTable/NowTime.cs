@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Example.OrmTable
 {
@@ -14,8 +15,22 @@ namespace AutoCSer.Example.OrmTable
         /// <param name="value"></param>
         internal static void Append(NowTime value)
         {
-            value.AppendTime = NowTimes.AppendTime.Next;
+            //value.AppendTime = NowTimes.AppendTime.Next;
             sqlTable.Insert(value);
+        }
+
+
+        /// <summary>
+        /// 当前时间精度测试
+        /// </summary>
+        internal static void Test()
+        {
+            Append(new NowTime());
+            foreach (NowTime value in sqlTable.Select())
+            {
+                Console.WriteLine(value.toJson());
+                sqlTable.Delete(value.Id);
+            }
         }
     }
 }

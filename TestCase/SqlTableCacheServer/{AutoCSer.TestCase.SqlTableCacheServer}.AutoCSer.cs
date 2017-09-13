@@ -9,6 +9,55 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
 {
         public partial class Class
         {
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            public partial struct RemoteExtension
+            {
+                /// <summary>
+                /// 班级表格定义
+                /// </summary>
+                internal AutoCSer.TestCase.SqlTableCacheServer.Class Value;
+                /// <summary>
+                /// 当前学生数量
+                /// </summary>
+                public int StudentCount
+                {
+                    get
+                    {
+                        if (Value._IsSqlLogProxyLoaded_) return Value.SqlLogProxyMember/**/.StudentCount;
+                        return TcpCall.Class.GetStudentCount(Value.Id);
+                    }
+                }
+            }
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            [AutoCSer.BinarySerialize.IgnoreMember]
+            [AutoCSer.Json.IgnoreMember]
+            public RemoteExtension Remote
+            {
+                get { return new RemoteExtension { Value = this }; }
+            }
+            /// <summary>
+            /// 获取数据
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <returns></returns>
+            [AutoCSer.Sql.RemoteMember(MemberName = @"StudentCount")]
+            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            internal static int GetStudentCount(int Id)
+            {
+                AutoCSer.TestCase.SqlTableCacheServer.Class value = sqlCache[Id];
+                if (!value._IsSqlLogProxyLoaded_) sqlStream.WaitMember(5);
+                return value.SqlLogProxyMember/**/.StudentCount;
+
+            }
+        }
+}namespace AutoCSer.TestCase.SqlTableCacheServer
+{
+        public partial class Class
+        {
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -31,6 +80,13 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
 
                     
                     return AutoCSer.TestCase.SqlTableCacheServer.Class.GetStudentIds(id);
+                }
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public static int _M4(int Id)
+                {
+
+                    
+                    return AutoCSer.TestCase.SqlTableCacheServer.Class.GetStudentCount(Id);
                 }
             }
         }
@@ -218,6 +274,66 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                     return _awaiter_;
                 }
 
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="Id">班级标识（默认自增）</param>
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> GetStudentCount(int Id)
+                {
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5>.Pop();
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataReader/**/.TcpClient.Sender;
+                        if (_socket_ != null)
+                        {
+                            
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4
+                            {
+                                
+                                p0 = Id,
+                            };
+                            
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5
+                            {
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5>(_c4, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                    }
+                    finally
+                    {
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5>.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="Id">班级标识（默认自增）</param>
+                public static AutoCSer.Net.TcpServer.AwaiterBox<int> GetStudentCountAwaiter(int Id)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataReader/**/.TcpClient.Sender;
+                    if (_socket_ != null)
+                    {
+                        
+                        AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4
+                        {
+                            
+                            p0 = Id,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>>(_a4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
+
             }
         }
 }namespace AutoCSer.TestCase.SqlTableCacheServer
@@ -227,7 +343,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static bool _M4(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                public static bool _M5(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
 
                     
@@ -247,18 +363,18 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// </summary>
             public partial class DataReaderTcpVerify
             {
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 4, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5>.Pop();
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7>.Pop();
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
                         if (_socket_ != null)
                         {
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6
                             {
                                 
                                 p2 = randomPrefix,
@@ -268,12 +384,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                                 p1 = ticks,
                             };
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7
                             {
                                 
                                 p0 = ticks,
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5>(_c4, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7>(_c5, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             
                             ticks = _outputParameter_.p0;
                             return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnType_, Value = _outputParameter_.Return };
@@ -281,7 +397,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                     }
                     finally
                     {
-                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5>.PushNotNull(_wait_);
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -295,7 +411,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static AutoCSer.TestCase.SqlTableCacheServer.Student _M5(int id)
+                public static AutoCSer.TestCase.SqlTableCacheServer.Student _M6(int id)
                 {
 
                     
@@ -315,8 +431,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// </summary>
             public partial class Student
             {
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
 
                 /// <summary>
                 /// 获取学生信息
@@ -325,7 +441,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                 /// <returns>学生</returns>
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> Get(int id)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6>.Pop();
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8>.Pop();
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataReader/**/.TcpClient.Sender;
@@ -338,16 +454,16 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                                 p0 = id,
                             };
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8
                             {
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p1, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6>(_c5, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p1, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8>(_c6, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
                     {
-                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6>.PushNotNull(_wait_);
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -370,7 +486,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<AutoCSer.TestCase.SqlTableCacheServer.Student> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<AutoCSer.TestCase.SqlTableCacheServer.Student>);
-                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<AutoCSer.TestCase.SqlTableCacheServer.Student>>(_a5, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBoxReference<AutoCSer.TestCase.SqlTableCacheServer.Student>>(_a6, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -398,12 +514,13 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             public DataReader(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataReader", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify), true)), verify, onCustomData, log, false)
             {
-                setCommandData(5);
+                setCommandData(6);
                 setCommand(0);
                 setCommand(1);
                 setCommand(2);
-                setVerifyCommand(3);
-                setCommand(4);
+                setCommand(3);
+                setVerifyCommand(4);
+                setCommand(5);
                 if (attribute.IsAutoServer) Start();
             }
             /// <summary>
@@ -476,18 +593,9 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         try
                         {
                             _p4 inputParameter = new _p4();
-                            if (sender.DeSerialize(ref data, ref inputParameter))
+                            if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
-                                _p5 _outputParameter_ = new _p5();
-                                
-                                bool Return;
-                                
-                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify/**/.TcpStaticServer._M4(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
-                                if (Return) sender.SetVerifyMethod();
-                                
-                                _outputParameter_.p0 = inputParameter.p1;
-                                _outputParameter_.Return = Return;
-                                sender.Push(_c4, ref _outputParameter_);
+                                (_s3/**/.Pop() ?? new _s3()).Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -503,10 +611,38 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                         try
                         {
+                            _p6 inputParameter = new _p6();
+                            if (sender.DeSerialize(ref data, ref inputParameter))
+                            {
+                                _p7 _outputParameter_ = new _p7();
+                                
+                                bool Return;
+                                
+                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify/**/.TcpStaticServer._M5(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                if (Return) sender.SetVerifyMethod();
+                                
+                                _outputParameter_.p0 = inputParameter.p1;
+                                _outputParameter_.Return = Return;
+                                sender.Push(_c5, ref _outputParameter_);
+                                return;
+                            }
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                        }
+                        catch (Exception error)
+                        {
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            sender.AddLog(error);
+                        }
+                        sender.Push(returnType);
+                        return;
+                    case 5:
+                        returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                        try
+                        {
                             _p1 inputParameter = new _p1();
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
-                                (_s4/**/.Pop() ?? new _s4()).Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                (_s5/**/.Pop() ?? new _s5()).Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -620,18 +756,17 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                 }
             }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 3, IsBuildOutputThread = true };
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
-            sealed class _s4 : AutoCSer.Net.TcpStaticServer.ServerCall<_s4, _p1>
+            sealed class _s3 : AutoCSer.Net.TcpStaticServer.ServerCall<_s3, _p4>
             {
-                private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p6> value)
+                private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p5> value)
                 {
                     try
                     {
                         
-                        AutoCSer.TestCase.SqlTableCacheServer.Student Return;
+                        int Return;
 
                         
-                        Return = AutoCSer.TestCase.SqlTableCacheServer.Student/**/.TcpStaticServer._M5(inputParameter.p0);
+                        Return = AutoCSer.TestCase.SqlTableCacheServer.Class/**/.TcpStaticServer._M4(inputParameter.p0);
 
                         value.Value.Return = Return;
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -644,16 +779,50 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                 }
                 public override void Call()
                 {
-                    AutoCSer.Net.TcpServer.ReturnValue<_p6> value = new AutoCSer.Net.TcpServer.ReturnValue<_p6>();
+                    AutoCSer.Net.TcpServer.ReturnValue<_p5> value = new AutoCSer.Net.TcpServer.ReturnValue<_p5>();
                     if (Sender.IsSocket)
                     {
                         get(ref value);
-                        Sender.Push(CommandIndex, _c5, ref value);
+                        Sender.Push(CommandIndex, _c4, ref value);
                     }
                     push(this);
                 }
             }
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+            sealed class _s5 : AutoCSer.Net.TcpStaticServer.ServerCall<_s5, _p1>
+            {
+                private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p8> value)
+                {
+                    try
+                    {
+                        
+                        AutoCSer.TestCase.SqlTableCacheServer.Student Return;
+
+                        
+                        Return = AutoCSer.TestCase.SqlTableCacheServer.Student/**/.TcpStaticServer._M6(inputParameter.p0);
+
+                        value.Value.Return = Return;
+                        value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                    }
+                    catch (Exception error)
+                    {
+                        value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                        Sender.AddLog(error);
+                    }
+                }
+                public override void Call()
+                {
+                    AutoCSer.Net.TcpServer.ReturnValue<_p8> value = new AutoCSer.Net.TcpServer.ReturnValue<_p8>();
+                    if (Sender.IsSocket)
+                    {
+                        get(ref value);
+                        Sender.Push(CommandIndex, _c6, ref value);
+                    }
+                    push(this);
+                }
+            }
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 8, IsBuildOutputThread = true };
 
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
@@ -719,6 +888,39 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p4
             {
+                public int p0;
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [AutoCSer.Metadata.BoxSerialize]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p5
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<int>
+#endif
+            {
+                [AutoCSer.Json.IgnoreMember]
+                public int Ret;
+                [AutoCSer.IOS.Preserve(Conditional = true)]
+                public int Return
+                {
+                    get { return Ret; }
+                    set { Ret = value; }
+                }
+#if NOJIT
+                [AutoCSer.Metadata.Ignore]
+                public object ReturnObject
+                {
+                    get { return Ret; }
+                    set { Ret = (int)value; }
+                }
+#endif
+            }
+            [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct _p6
+            {
                 public byte[] p0;
                 public long p1;
                 public ulong p2;
@@ -726,7 +928,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p5
+            internal struct _p7
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -754,7 +956,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p6
+            internal struct _p8
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -836,12 +1038,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M6(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data>, bool> _onReturn_)
+                public static void _M7(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data>, bool> _onReturn_)
                 {
                     AutoCSer.TestCase.SqlTableCacheServer.Class.onSqlLog(_onReturn_);
                 }
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static AutoCSer.TestCase.SqlTableCacheServer.Class _M7(int Id)
+                public static AutoCSer.TestCase.SqlTableCacheServer.Class _M8(int Id)
                 {
 
                     
@@ -862,58 +1064,58 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             public partial class Class
             {
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1 };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1 };
                 /// <returns>保持异步回调</returns>
                 public static AutoCSer.Net.TcpServer.KeepCallback onSqlLog(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data>> _onReturn_)
                 {
-                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p7>> _onOutput_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.GetCallback<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p7>(_onReturn_);
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9>> _onOutput_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.GetCallback<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9>(_onReturn_);
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.Sender;
                         if (_socket_ != null)
                         {
-                            return _socket_.GetKeep<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p7>(_ac6, ref _onOutput_);
+                            return _socket_.GetKeep<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9>(_ac7, ref _onOutput_);
                         }
                     }
                     finally
                     {
                         if (_onOutput_ != null)
                         {
-                            AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p7> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p7> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                     return null;
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Class> getSqlCache(int Id)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9>.Pop();
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11>.Pop();
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.Sender;
                         if (_socket_ != null)
                         {
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10
                             {
                                 
                                 p0 = Id,
                             };
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11
                             {
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9>(_c7, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11>(_c8, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Class> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
                     {
-                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p9>.PushNotNull(_wait_);
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Class> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -924,14 +1126,14 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     if (_socket_ != null)
                     {
                         
-                        AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8
+                        AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10
                         {
                             
                             p0 = Id,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Class> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Class>);
-                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Class>>(_a7, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Class>>(_a8, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -947,7 +1149,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static bool _M8(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                public static bool _M9(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
 
                     
@@ -967,18 +1169,18 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             /// </summary>
             public partial class DataLogTcpVerify
             {
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 12, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11>.Pop();
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13>.Pop();
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
                         if (_socket_ != null)
                         {
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12
                             {
                                 
                                 p2 = randomPrefix,
@@ -988,12 +1190,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                                 p1 = ticks,
                             };
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13
                             {
                                 
                                 p0 = ticks,
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11>(_c8, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13>(_c9, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             
                             ticks = _outputParameter_.p0;
                             return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = _returnType_, Value = _outputParameter_.Return };
@@ -1001,7 +1203,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     }
                     finally
                     {
-                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p11>.PushNotNull(_wait_);
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -1015,12 +1217,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M9(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data>, bool> _onReturn_)
+                public static void _M10(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data>, bool> _onReturn_)
                 {
                     AutoCSer.TestCase.SqlTableCacheServer.Student.onSqlLog(_onReturn_);
                 }
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static AutoCSer.TestCase.SqlTableCacheServer.Student _M10(int Id)
+                public static AutoCSer.TestCase.SqlTableCacheServer.Student _M11(int Id)
                 {
 
                     
@@ -1041,58 +1243,58 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             public partial class Student
             {
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1 };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1 };
                 /// <returns>保持异步回调</returns>
                 public static AutoCSer.Net.TcpServer.KeepCallback onSqlLog(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data>> _onReturn_)
                 {
-                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12>> _onOutput_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.GetCallback<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12>(_onReturn_);
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p14>> _onOutput_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.GetCallback<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p14>(_onReturn_);
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.Sender;
                         if (_socket_ != null)
                         {
-                            return _socket_.GetKeep<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12>(_ac9, ref _onOutput_);
+                            return _socket_.GetKeep<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p14>(_ac10, ref _onOutput_);
                         }
                     }
                     finally
                     {
                         if (_onOutput_ != null)
                         {
-                            AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p12> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p14> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p14> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
                     return null;
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
 
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> getSqlCache(int Id)
                 {
-                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13>.Pop();
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15>.Pop();
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient/**/.DataLog/**/.TcpClient.Sender;
                         if (_socket_ != null)
                         {
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10
                             {
                                 
                                 p0 = Id,
                             };
                             
-                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13
+                            AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15 _outputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15
                             {
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13>(_c10, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10, AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15>(_c11, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
                     {
-                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13>.PushNotNull(_wait_);
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15>.PushNotNull(_wait_);
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
@@ -1103,14 +1305,14 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     if (_socket_ != null)
                     {
                         
-                        AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8
+                        AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10
                         {
                             
                             p0 = Id,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Student> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Student>);
-                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p8, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Student>>(_a10, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p10, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.TestCase.SqlTableCacheServer.Student>>(_a11, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -1162,8 +1364,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         try
                         {
                             {
-                                _p7 outputParameter = new _p7();
-                                AutoCSer.TestCase.SqlTableCacheServer.Class/**/.TcpStaticServer._M6(sender.GetCallback<_p7, AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data>(_c6, ref outputParameter));
+                                _p9 outputParameter = new _p9();
+                                AutoCSer.TestCase.SqlTableCacheServer.Class/**/.TcpStaticServer._M7(sender.GetCallback<_p9, AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data>(_c7, ref outputParameter));
                                 return;
                             }
                         }
@@ -1178,16 +1380,16 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                         try
                         {
-                            _p8 inputParameter = new _p8();
+                            _p10 inputParameter = new _p10();
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
-                                _p9 _outputParameter_ = new _p9();
+                                _p11 _outputParameter_ = new _p11();
                                 
                                 AutoCSer.TestCase.SqlTableCacheServer.Class Return;
                                 
-                                Return =  AutoCSer.TestCase.SqlTableCacheServer.Class/**/.TcpStaticServer._M7(inputParameter.p0);
+                                Return =  AutoCSer.TestCase.SqlTableCacheServer.Class/**/.TcpStaticServer._M8(inputParameter.p0);
                                 _outputParameter_.Return = Return;
-                                sender.Push(_c7, ref _outputParameter_);
+                                sender.Push(_c8, ref _outputParameter_);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1203,19 +1405,19 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                         try
                         {
-                            _p10 inputParameter = new _p10();
+                            _p12 inputParameter = new _p12();
                             if (sender.DeSerialize(ref data, ref inputParameter))
                             {
-                                _p11 _outputParameter_ = new _p11();
+                                _p13 _outputParameter_ = new _p13();
                                 
                                 bool Return;
                                 
-                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify/**/.TcpStaticServer._M8(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify/**/.TcpStaticServer._M9(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
                                 if (Return) sender.SetVerifyMethod();
                                 
                                 _outputParameter_.p0 = inputParameter.p1;
                                 _outputParameter_.Return = Return;
-                                sender.Push(_c8, ref _outputParameter_);
+                                sender.Push(_c9, ref _outputParameter_);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1232,8 +1434,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         try
                         {
                             {
-                                _p12 outputParameter = new _p12();
-                                AutoCSer.TestCase.SqlTableCacheServer.Student/**/.TcpStaticServer._M9(sender.GetCallback<_p12, AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data>(_c9, ref outputParameter));
+                                _p14 outputParameter = new _p14();
+                                AutoCSer.TestCase.SqlTableCacheServer.Student/**/.TcpStaticServer._M10(sender.GetCallback<_p14, AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data>(_c10, ref outputParameter));
                                 return;
                             }
                         }
@@ -1248,16 +1450,16 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                         try
                         {
-                            _p8 inputParameter = new _p8();
+                            _p10 inputParameter = new _p10();
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
-                                _p13 _outputParameter_ = new _p13();
+                                _p15 _outputParameter_ = new _p15();
                                 
                                 AutoCSer.TestCase.SqlTableCacheServer.Student Return;
                                 
-                                Return =  AutoCSer.TestCase.SqlTableCacheServer.Student/**/.TcpStaticServer._M10(inputParameter.p0);
+                                Return =  AutoCSer.TestCase.SqlTableCacheServer.Student/**/.TcpStaticServer._M11(inputParameter.p0);
                                 _outputParameter_.Return = Return;
-                                sender.Push(_c10, ref _outputParameter_);
+                                sender.Push(_c11, ref _outputParameter_);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1272,16 +1474,16 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                     default: return;
                 }
             }
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsKeepCallback = 1, IsBuildOutputThread = true };
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 11, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 12, IsKeepCallback = 1, IsBuildOutputThread = true };
-            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 13, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsKeepCallback = 1, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 11, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 13, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 14, IsKeepCallback = 1, IsBuildOutputThread = true };
+            private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 15, IsBuildOutputThread = true };
 
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p7
+            internal struct _p9
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -1307,14 +1509,14 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p8
+            internal struct _p10
             {
                 public int p0;
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p9
+            internal struct _p11
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -1340,7 +1542,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p10
+            internal struct _p12
             {
                 public byte[] p0;
                 public long p1;
@@ -1349,7 +1551,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p11
+            internal struct _p13
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -1377,7 +1579,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p12
+            internal struct _p14
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -1404,7 +1606,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            internal struct _p13
+            internal struct _p15
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else

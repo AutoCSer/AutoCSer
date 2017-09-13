@@ -2,6 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
+using AutoCSer.Extension;
 
 namespace AutoCSer.TestCase.SqlTableWeb
 {
@@ -19,31 +20,46 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 using (processWait)
                 {
 #endif
-                    Console.WriteLine("http://www.AutoCSer.com/WebView/Index.html");
-                    try
-                    {
-                        Process.Start(new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.SqlTableCacheServer.exe")).FullName);
-                        WebConfig webConfig = new WebConfig();
-                        using (AutoCSer.Net.HttpRegister.Server server = AutoCSer.Net.HttpRegister.Server.Create<WebServer>(webConfig.MainHostPort))
-                        {
-                            if (server == null) Console.WriteLine("HTTP服务启动失败");
-                            else
-                            {
-                                Console.WriteLine("HTTP服务启动成功");
-                                Thread.Sleep(1000);
-                                Process.Start("http://" + webConfig.MainDomain + "/");
+            Console.WriteLine("http://www.AutoCSer.com/WebView/Index.html");
+            try
+            {
+#if DotNetStandard
+#if DEBUG
+                FileInfo dataServerFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\SqlTableCacheServer\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.SqlTableCacheServer.dll".pathSeparator()));
+#else
+                FileInfo dataServerFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\SqlTableCacheServer\bin\Release\netcoreapp2.0\AutoCSer.TestCase.SqlTableCacheServer.dll".pathSeparator()));
+#endif
+                ProcessStartInfo process = new ProcessStartInfo("dotnet", dataServerFile.FullName);
+                process.UseShellExecute = true;
+                Process.Start(process);
+#else
+                Process.Start(new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.SqlTableCacheServer.exe")).FullName);
+#endif
 
-                                Console.WriteLine("Press quit to exit.");
-                                while (Console.ReadLine() != "quit") ;
-                                return;
-                            }
-                        }
-                    }
-                    catch (Exception error)
+                WebConfig webConfig = new WebConfig();
+                using (AutoCSer.Net.HttpRegister.Server server = AutoCSer.Net.HttpRegister.Server.Create<WebServer>(webConfig.MainHostPort))
+                {
+                    if (server == null) Console.WriteLine("HTTP服务启动失败");
+                    else
                     {
-                        Console.WriteLine(error.ToString());
+                        Console.WriteLine("HTTP服务启动成功");
+                        Thread.Sleep(1000);
+#if DotNetStandard
+                        Console.WriteLine("http://" + webConfig.MainDomain + "/");
+#else
+                                Process.Start("http://" + webConfig.MainDomain + "/");
+#endif
+                        Console.WriteLine("Press quit to exit.");
+                        while (Console.ReadLine() != "quit") ;
+                        return;
                     }
-                    Console.ReadKey();
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.ToString());
+            }
+            Console.ReadKey();
 #if !DotNetStandard
                 }
             }

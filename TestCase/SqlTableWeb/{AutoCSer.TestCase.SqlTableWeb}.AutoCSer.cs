@@ -62,7 +62,12 @@ namespace AutoCSer.TestCase.SqlTableWeb
                     _html_.WriteNotNull(htmls[10]);
                         _html_.Write(_value1_.Discipline.ToString());
                     _html_.WriteNotNull(htmls[11]);
-                        _html_.Write(_value1_.StudentCount);
+                {
+                    AutoCSer.TestCase.SqlTableCacheServer.Class.RemoteExtension _value2_ = _value1_.Remote;
+                    {
+                        _html_.Write(_value2_.StudentCount);
+                    }
+                }
                     _html_.WriteNotNull(htmls[12]);
                     _html_.WriteNotNull(htmls[13]);
                 {
@@ -160,7 +165,12 @@ namespace AutoCSer.TestCase.SqlTableWeb
                     _js_.WriteNotNull(@",Remote:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Class.RemoteExtension _value2_ = _value1_.Remote;
-                            _js_.WriteNotNull(@"{Students:");
+                            _js_.WriteNotNull(@"{StudentCount:");
+                    {
+                        int _value3_ = _value2_.StudentCount;
+                                    _js_.WriteJson((int)_value3_);
+                    }
+                    _js_.WriteNotNull(@",Students:");
                     {
                         AutoCSer.TestCase.SqlTableCacheServer.Student[] _value3_ = _value2_.Students;
                         if (_value3_ == null) _js_.WriteJsonNull();
@@ -235,11 +245,6 @@ namespace AutoCSer.TestCase.SqlTableWeb
                         }
                     }
                     _js_.WriteNotNull(@"}");
-                    }
-                    _js_.WriteNotNull(@",StudentCount:");
-                    {
-                        int _value2_ = _value1_.StudentCount;
-                                    _js_.WriteJson((int)_value2_);
                     }
                     _js_.WriteNotNull(@"})");
                         }
@@ -340,7 +345,12 @@ namespace AutoCSer.TestCase.SqlTableWeb
                     _html_.WriteNotNull(htmls[10]);
                         _html_.Write(_value2_.Discipline.ToString());
                     _html_.WriteNotNull(htmls[11]);
-                        _html_.Write(_value2_.StudentCount);
+                {
+                    AutoCSer.TestCase.SqlTableCacheServer.Class.RemoteExtension _value3_ = _value2_.Remote;
+                    {
+                        _html_.Write(_value3_.StudentCount);
+                    }
+                }
                     _html_.WriteNotNull(htmls[12]);
                     _html_.WriteNotNull(htmls[13]);
                 {
@@ -404,7 +414,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                             if (_loopIndex_ == 0)
                             {
                                 _js_.Write('"');
-                                _js_.WriteNotNull("@.Demo.Class,,DateRange[Start[DateTime,Value]]Discipline,Id,Name,Remote[Students[[@.Demo.Student,,Id,Name]]]StudentCount");
+                                _js_.WriteNotNull("@.Demo.Class,,DateRange[Start[DateTime,Value]]Discipline,Id,Name,Remote[StudentCount,Students[[@.Demo.Student,,Id,Name]]]");
                                 _js_.Write('"');
                             }
                             _js_.Write(',');
@@ -455,6 +465,11 @@ namespace AutoCSer.TestCase.SqlTableWeb
                         AutoCSer.TestCase.SqlTableCacheServer.Class.RemoteExtension _value3_ = _value2_.Remote;
                                     _js_.WriteNotNull(@"[");
                     {
+                        int _value4_ = _value3_.StudentCount;
+                                    _js_.WriteJson((int)_value4_);
+                    }
+                    _js_.WriteNotNull(@",");
+                    {
                         AutoCSer.TestCase.SqlTableCacheServer.Student[] _value4_ = _value3_.Students;
                                 if (_value4_ == null) _js_.WriteJsonNull();
                                 else
@@ -494,11 +509,6 @@ namespace AutoCSer.TestCase.SqlTableWeb
                                 }
                     }
                     _js_.WriteNotNull(@"]");
-                    }
-                    _js_.WriteNotNull(@",");
-                    {
-                        int _value3_ = _value2_.StudentCount;
-                                    _js_.WriteJson((int)_value3_);
                     }
                     _js_.WriteNotNull(@"]");
                             }

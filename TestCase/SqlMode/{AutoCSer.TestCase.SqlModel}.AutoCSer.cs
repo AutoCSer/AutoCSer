@@ -13,6 +13,11 @@ namespace AutoCSer.TestCase.SqlModel
         public partial class Class
         {
             /// <summary>
+            /// 日志字段代理是否加载完毕
+            /// </summary>
+            [AutoCSer.Sql.Member(IsIgnoreCurrent = true)]
+            protected bool _IsSqlLogProxyLoaded_;
+            /// <summary>
             /// 数据库表格模型
             /// </summary>
             /// <typeparam name="tableType">表格映射类型</typeparam>
@@ -88,7 +93,7 @@ namespace AutoCSer.TestCase.SqlModel
 
                 [AutoCSer.Metadata.Ignore]
                 tableType AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>.MemberMapValueLink { get; set; }
-                private readonly static AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class> sqlStream = sqlTable == null ? null : new AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>(sqlTable, 4);
+                protected readonly static AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class> sqlStream = sqlTable == null ? null : new AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>(sqlTable, 5);
                 /// <summary>
                 /// 日志处理
                 /// </summary>
@@ -119,7 +124,7 @@ namespace AutoCSer.TestCase.SqlModel
                     /// 数据对象
                     /// </summary>
                     internal SqlModel<tableType, memberCacheType> _value_;
-                    private static readonly AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class> _m4 = sqlStream/**/.CreateMemberMap(value => value.StudentCount);
+                    private static readonly AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class> _m5 = sqlStream/**/.CreateMemberMap(value => value.StudentCount);
                     /// <summary>
                     /// 当前学生数量 (更新日志流)
                     /// </summary>
@@ -139,7 +144,7 @@ namespace AutoCSer.TestCase.SqlModel
                     [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                     public void StudentCount()
                     {
-                        sqlStream/**/.Update((tableType)_value_, _m4);
+                        sqlStream/**/.Update((tableType)_value_, _m5);
                     }
                     /// <summary>
                     /// 根据日志流计数完成类型初始化完毕
@@ -147,7 +152,7 @@ namespace AutoCSer.TestCase.SqlModel
                     /// <param name="type"></param>
                     internal static void _LoadCount_(AutoCSer.Sql.LogStream.LoadedType type)
                     {
-                        if (type.Equals(typeof(AutoCSer.TestCase.SqlModel.Student), 0)) sqlStream/**/.LoadMember(4);
+                        if (type.Equals(typeof(AutoCSer.TestCase.SqlModel.Student), 0)) sqlStream/**/.LoadMember(5);
                     }
                 }
                 /// <summary>
@@ -157,6 +162,32 @@ namespace AutoCSer.TestCase.SqlModel
                 public SqlLogMembers SqlLogMember
                 {
                     get { return new SqlLogMembers { _value_ = this }; }
+                }
+                /// <summary>
+                /// 计算字段访问代理
+                /// </summary>
+                public struct SqlLogProxyMembers
+                {
+                    /// <summary>
+                    /// 数据对象
+                    /// </summary>
+                    internal SqlModel<tableType, memberCacheType> _value_;
+                    /// <summary>
+                    /// 当前学生数量
+                    /// </summary>
+                    public int StudentCount
+                    {
+                        get { return _value_.StudentCount; }
+                        set { _value_.StudentCount = value; }
+                    }
+                }
+                /// <summary>
+                /// 计算字段日志流
+                /// </summary>
+                [AutoCSer.Metadata.Ignore]
+                public SqlLogProxyMembers SqlLogProxyMember
+                {
+                    get { return new SqlLogProxyMembers { _value_ = this }; }
                 }
                 /// <summary>
                 /// 班级 URL
@@ -242,7 +273,7 @@ namespace AutoCSer.TestCase.SqlModel
                 }
                 [AutoCSer.Metadata.Ignore]
                 tableType AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>.MemberMapValueLink { get; set; }
-                private readonly static AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student> sqlStream = sqlTable == null ? null : new AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student>(sqlTable);
+                protected readonly static AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student> sqlStream = sqlTable == null ? null : new AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student>(sqlTable);
                 /// <summary>
                 /// 日志处理
                 /// </summary>

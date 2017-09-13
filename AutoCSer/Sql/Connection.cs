@@ -19,17 +19,17 @@ namespace AutoCSer.Sql
         /// <summary>
         /// SQL 客户端类型默认配置信息
         /// </summary>
-        public ClientTypeAttribute Attribute;
+        public ClientKindAttribute Attribute;
         /// <summary>
         /// SQL 客户端类型默认配置信息
         /// </summary>
-        internal ClientTypeAttribute ClientAttribute
+        internal ClientKindAttribute ClientAttribute
         {
             get
             {
                 if (Attribute == null)
                 {
-                    if (Type != ClientType.ThirdParty) Attribute = EnumAttribute<ClientType, ClientTypeAttribute>.Array((byte)Type) ?? EnumAttribute<ClientType, ClientTypeAttribute>.Array((byte)ClientType.Sql2000);
+                    if (Type != ClientKind.ThirdParty) Attribute = EnumAttribute<ClientKind, ClientKindAttribute>.Array((byte)Type) ?? EnumAttribute<ClientKind, ClientKindAttribute>.Array((byte)ClientKind.Sql2000);
                 }
                 return Attribute;
             }
@@ -59,7 +59,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// SQL 客户端类型
         /// </summary>
-        public ClientType Type;
+        public ClientKind Type;
 
         /// <summary>
         /// 连接集合

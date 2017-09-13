@@ -61,6 +61,10 @@ namespace AutoCSer.Sql
         /// </summary>
         internal bool IsUnknownJson;
         /// <summary>
+        /// 是否当前时间
+        /// </summary>
+        internal bool IsNowTime;
+        /// <summary>
         /// 是否需要验证
         /// </summary>
         internal bool IsVerify
@@ -122,6 +126,7 @@ namespace AutoCSer.Sql
                 ToModelCastMethod = AutoCSer.Emit.CastType.GetMethod(DataType, FieldInfo.FieldType);
             }
             SqlFieldName = keywordSearcher.SearchLower(FieldInfo.Name) < 0 ? FieldInfo.Name : toSqlName(FieldInfo.Name);
+            if (attribute != null && attribute.IsNowTime && FieldInfo.FieldType == typeof(DateTime)) IsNowTime = true;
             ToSqlMethod = ConstantConverter.GetMethod(DataType);
         }
         /// <summary>
@@ -343,7 +348,11 @@ namespace AutoCSer.Sql
                     if (attribute == null || attribute.IsSetup)
                     {
                         LogAttribute logAttribute = isColumn ? null : field.GetAttribute<LogAttribute>(false);
-                        if (logAttribute == null || logAttribute.IsMember) values.Add(new Field(field, attribute));
+                        if (logAttribute == null || logAttribute.IsMember)
+                        {
+                            if (attribute != null && attribute.IsNowTime && type != typeof(DateTime)) attribute.IsNowTime = false;
+                            values.Add(new Field(field, attribute));
+                        }
                     }
                 }
             }

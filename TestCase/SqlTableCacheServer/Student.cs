@@ -79,7 +79,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         private static void onInserted(Student value)
         {
             Class Class = Class.Loader.Cache[value.ClassId];
-            if (Class != null) Class.SqlLogMember.StudentCount(Class.StudentCount + 1);
+            if (Class != null) Class.SqlLogMember.StudentCount(Class.SqlLogProxyMember.StudentCount + 1);
         }
         /// <summary>
         /// 修改学生处理
@@ -93,7 +93,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             if (MemberIndexs.Classes.IsMember(memberMap))
             {
                 Class Class = Class.Loader.Cache[oldValue.ClassId];
-                if (Class != null) Class.SqlLogMember.StudentCount(Class.StudentCount - 1);
+                if (Class != null) Class.SqlLogMember.StudentCount(Class.SqlLogProxyMember.StudentCount - 1);
 
                 onInserted(cacheValue);
             }
@@ -137,7 +137,11 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                     }
                     else
                     {
-                        foreach (Student value in sqlCache.Values) ++Class.Loader.Cache[value.ClassId].StudentCount;
+                        foreach (Student value in sqlCache.Values)
+                        {
+                            Class.SqlLogProxyMembers classProxy = Class.Loader.Cache[value.ClassId].SqlLogProxyMember;
+                            ++classProxy.StudentCount;
+                        }
 
                         sqlLoaded(onInserted, onUpdated);
                     }

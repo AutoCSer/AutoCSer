@@ -7,7 +7,7 @@ namespace AutoCSer.Sql.Cache
     /// 延时排序缓存数组
     /// </summary>
     /// <typeparam name="valueType"></typeparam>
-    public sealed class LadyOrderArray<valueType>
+    public sealed class LazyOrderArray<valueType>
         where valueType : class
     {
         /// <summary>

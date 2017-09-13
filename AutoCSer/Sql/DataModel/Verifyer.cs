@@ -151,7 +151,7 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据模型
     /// </summary>
-    internal abstract partial class Model<valueType>
+    internal abstract partial class Model<modelType>
     {
         /// <summary>
         /// 数据列验证
@@ -168,7 +168,7 @@ namespace AutoCSer.Sql.DataModel
 #if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
-            public static bool Verify(valueType value, MemberMap memberMap, Table sqlTool)
+            public static bool Verify(modelType value, MemberMap memberMap, Table sqlTool)
             {
 #if NOJIT
                 if (fields != null)
@@ -234,7 +234,7 @@ namespace AutoCSer.Sql.DataModel
             /// <summary>
             /// 数据验证
             /// </summary>
-            private static readonly Func<valueType, MemberMap, Table, bool> verifyer;
+            private static readonly Func<modelType, MemberMap, Table, bool> verifyer;
 #endif
 
             static Verifyer()
@@ -249,9 +249,9 @@ namespace AutoCSer.Sql.DataModel
                         int index = 0;
                         foreach (Field member in verifyFields) fields[index++].Set(member);
 #else
-                        DataModel.Verifyer dynamicMethod = new DataModel.Verifyer(typeof(valueType), attribute);
+                        DataModel.Verifyer dynamicMethod = new DataModel.Verifyer(typeof(modelType), attribute);
                         foreach (Field member in verifyFields) dynamicMethod.Push(member);
-                        verifyer = (Func<valueType, MemberMap, Table, bool>)dynamicMethod.Create<Func<valueType, MemberMap, Table, bool>>();
+                        verifyer = (Func<modelType, MemberMap, Table, bool>)dynamicMethod.Create<Func<modelType, MemberMap, Table, bool>>();
 #endif
                     }
                 }

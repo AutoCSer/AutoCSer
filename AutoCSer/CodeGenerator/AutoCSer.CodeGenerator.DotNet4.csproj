@@ -142,6 +142,7 @@
     <Compile Include="TemplateGenerator\JavaScriptTypeDefinition.cs" />
     <Compile Include="TemplateGenerator\MemberGenerator.cs" />
     <Compile Include="TemplateGenerator\SqlModel.cs" />
+    <Compile Include="TemplateGenerator\SqlTable.cs" />
     <Compile Include="TemplateGenerator\TcpInternalServer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -169,6 +170,7 @@
     <Compile Include="Template\SqlModel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Template\SqlTable.cs" />
     <Compile Include="Template\TcpInternalServer.cs">
       <SubType>Code</SubType>
     </Compile>

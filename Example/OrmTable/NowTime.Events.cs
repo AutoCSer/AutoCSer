@@ -42,7 +42,7 @@ namespace AutoCSer.Example.OrmTable
             if (!cancel.IsCancel)
             {
                 //取消删除数据操作
-                cancel.Cancel();
+                //cancel.Cancel();
             }
         }
 

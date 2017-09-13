@@ -83,6 +83,11 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\LazyOrderArray.cs" />
+    <Compile Include="Cache\Whole\MemberArrayLazyOrderArray.cs" />
+    <Compile Include="Cache\Whole\MemberLazyOrderArray.cs" />
+    <Compile Include="Cache\Whole\MemberLazyOrderArrayWhere.cs" />
+    <Compile Include="ClientKind.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
     <Compile Include="Excel\Client.cs" />
@@ -116,7 +121,6 @@
     <Compile Include="Cache\Counter\Type.cs" />
     <Compile Include="Cache\DictionaryArray.cs" />
     <Compile Include="Cache\IdentityArray.cs" />
-    <Compile Include="Cache\LadyOrderArray.cs" />
     <Compile Include="Cache\Table.cs" />
     <Compile Include="Cache\Whole\ArrayList.cs" />
     <Compile Include="Cache\Whole\ArraySearchTreeDictionary.cs" />
@@ -140,22 +144,18 @@
     <Compile Include="Cache\Whole\Event\PrimaryKey.cs" />
     <Compile Include="Cache\Whole\Event\Type.cs" />
     <Compile Include="Cache\Whole\Member.cs" />
-    <Compile Include="Cache\Whole\MemberArrayLadyOrderArray.cs" />
     <Compile Include="Cache\Whole\MemberArrayList.cs" />
     <Compile Include="Cache\Whole\MemberCache.cs" />
     <Compile Include="Cache\Whole\MemberCacheCounter.cs" />
     <Compile Include="Cache\Whole\MemberDictionary.cs" />
     <Compile Include="Cache\Whole\MemberDictionaryList.cs" />
     <Compile Include="Cache\Whole\MemberDictionaryListWhere.cs" />
-    <Compile Include="Cache\Whole\MemberLadyOrderArray.cs" />
-    <Compile Include="Cache\Whole\MemberLadyOrderArrayWhere.cs" />
     <Compile Include="Cache\Whole\MemberList.cs" />
     <Compile Include="Cache\Whole\MemberListWhere.cs" />
     <Compile Include="Cache\Whole\MemberOrderList.cs" />
     <Compile Include="Cache\Whole\SearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\SearchTreeDictionaryWhere.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="ClientType.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="ColumnBuilder.cs" />
@@ -215,11 +215,13 @@
     <Compile Include="MsSql\Sql2005.cs" />
     <Compile Include="NowTime.cs" />
     <Compile Include="OnTime.cs" />
+    <Compile Include="RemoteMemberAttribute.cs" />
     <Compile Include="SelectQuery.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableAttribute.cs" />
     <Compile Include="TableColumnCollection.cs" />
     <Compile Include="UnionType.cs" />
+    <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />
   </ItemGroup>
   <ItemGroup />

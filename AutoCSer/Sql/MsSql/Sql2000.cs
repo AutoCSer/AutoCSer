@@ -734,7 +734,7 @@ if @@ROWCOUNT<>0 begin
  update[");
                     sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                     sqlStream.SimpleWriteNotNull("]set ");
-                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, ConstantConverter.Default);
+                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
                     sqlStream.SimpleWriteNotNull(" from[");
                     sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("]with(nolock)where ");
@@ -763,7 +763,7 @@ if @@ROWCOUNT<>0 begin
  update[");
                     sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                     sqlStream.SimpleWriteNotNull("]set ");
-                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, ConstantConverter.Default);
+                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
                     sqlStream.SimpleWriteNotNull(" from[");
                     sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("]with(nolock)where ");
@@ -856,7 +856,7 @@ end");
                     sqlStream.SimpleWriteNotNull("](");
                     DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap);
                     sqlStream.SimpleWriteNotNull(")values(");
-                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default);
+                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
                     sqlStream.WriteNotNull(@")
 if @@ROWCOUNT<>0 begin
  select top 1 ");
@@ -877,7 +877,7 @@ end");
                     sqlStream.SimpleWriteNotNull("](");
                     DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap);
                     sqlStream.SimpleWriteNotNull(")values(");
-                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default);
+                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
                     if (DataModel.Model<modelType>.PrimaryKeys.Length != 0)
                     {
                         sqlStream.WriteNotNull(@")

@@ -54,7 +54,7 @@ namespace AutoCSer.Sql.Excel
                     connectionStream.WriteNotNull(IsTitleColumn ? ";HDR=YES;IMEX=" : ";HDR=NO;IMEX=");
                     AutoCSer.Extension.Number.ToString((byte)Intermixed, connectionStream);
                     connectionStream.Write('\'');
-                    return new Sql.Connection { Type = ClientType.Excel, ConnectionString = connectionStream.ToString() };
+                    return new Sql.Connection { Type = ClientKind.Excel, ConnectionString = connectionStream.ToString() };
                 }
             }
             finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }

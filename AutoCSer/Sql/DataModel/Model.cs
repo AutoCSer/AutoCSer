@@ -11,13 +11,13 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据库表格模型
     /// </summary>
-    /// <typeparam name="valueType">数据类型</typeparam>
-    internal abstract partial class Model<valueType> : AutoCSer.Data.Model<valueType>
+    /// <typeparam name="modelType">数据类型</typeparam>
+    internal abstract partial class Model<modelType> : AutoCSer.Data.Model<modelType>
     {
         /// <summary>
         /// 数据库表格模型配置
         /// </summary>
-        private static readonly ModelAttribute attribute;
+        protected static readonly ModelAttribute attribute;
         /// <summary>
         /// 字段集合
         /// </summary>
@@ -37,30 +37,30 @@ namespace AutoCSer.Sql.DataModel
         /// <summary>
         /// SQL数据成员
         /// </summary>
-        internal static readonly MemberMap<valueType> MemberMap;
+        internal static readonly MemberMap<modelType> MemberMap;
         /// <summary>
         /// SQL数据成员
         /// </summary>
-        internal static MemberMap<valueType> CopyMemberMap
+        internal static MemberMap<modelType> CopyMemberMap
         {
             get { return MemberMap.Copy(); }
         }
         /// <summary>
         /// 自增标识获取器
         /// </summary>
-        internal static readonly Func<valueType, long> GetIdentity;
+        internal static readonly Func<modelType, long> GetIdentity;
         /// <summary>
         /// 自增标识获取器
         /// </summary>
-        internal static readonly Func<valueType, int> GetIdentity32;
+        internal static readonly Func<modelType, int> GetIdentity32;
         /// <summary>
         /// 设置自增标识
         /// </summary>
-        internal static readonly Action<valueType, long> SetIdentity;
+        internal static readonly Action<modelType, long> SetIdentity;
         /// <summary>
         /// 分组数据成员位图
         /// </summary>
-        private static KeyValue<MemberMap<valueType>, int>[] groupMemberMaps;
+        private static KeyValue<MemberMap<modelType>, int>[] groupMemberMaps;
         /// <summary>
         /// 分组数据成员位图访问锁
         /// </summary>
@@ -70,12 +70,12 @@ namespace AutoCSer.Sql.DataModel
         /// </summary>
         /// <param name="group">分组</param>
         /// <returns>分组数据成员位图</returns>
-        private static MemberMap<valueType> getGroupMemberMap(int group)
+        private static MemberMap<modelType> getGroupMemberMap(int group)
         {
             if (groupMemberMaps == null)
             {
-                LeftArray<KeyValue<MemberMap<valueType>, int>> memberMaps = new LeftArray<KeyValue<MemberMap<valueType>, int>>();
-                memberMaps.Add(new KeyValue<MemberMap<valueType>, int>(MemberMap, 0));
+                LeftArray<KeyValue<MemberMap<modelType>, int>> memberMaps = new LeftArray<KeyValue<MemberMap<modelType>, int>>();
+                memberMaps.Add(new KeyValue<MemberMap<modelType>, int>(MemberMap, 0));
                 Monitor.Enter(groupMemberMapLock);
                 if (groupMemberMaps == null)
                 {
@@ -86,14 +86,14 @@ namespace AutoCSer.Sql.DataModel
                             if (field.DataMember.Group != 0)
                             {
                                 int index = memberMaps.Length;
-                                foreach (KeyValue<MemberMap<valueType>, int> memberMap in memberMaps.Array)
+                                foreach (KeyValue<MemberMap<modelType>, int> memberMap in memberMaps.Array)
                                 {
                                     if (memberMap.Value == field.DataMember.Group || --index == 0) break;
                                 }
                                 if (index == 0)
                                 {
-                                    MemberMap<valueType> memberMap = new MemberMap<valueType>();
-                                    memberMaps.Add(new KeyValue<MemberMap<valueType>, int>(memberMap, field.DataMember.Group));
+                                    MemberMap<modelType> memberMap = new MemberMap<modelType>();
+                                    memberMaps.Add(new KeyValue<MemberMap<modelType>, int>(memberMap, field.DataMember.Group));
                                     memberMap.SetMember(field.MemberMapIndex);
                                 }
                                 else memberMaps.Array[memberMaps.Length - index].Key.SetMember(field.MemberMapIndex);
@@ -101,7 +101,7 @@ namespace AutoCSer.Sql.DataModel
                         }
                         if (memberMaps.Length != 1)
                         {
-                            MemberMap<valueType> memberMap = memberMaps.Array[0].Key = new MemberMap<valueType>();
+                            MemberMap<modelType> memberMap = memberMaps.Array[0].Key = new MemberMap<modelType>();
                             foreach (Field field in Fields)
                             {
                                 if (field.DataMember.Group == 0) memberMap.SetMember(field.MemberMapIndex);
@@ -113,11 +113,11 @@ namespace AutoCSer.Sql.DataModel
                 }
                 else Monitor.Exit(groupMemberMapLock);
             }
-            foreach (KeyValue<MemberMap<valueType>, int> memberMap in groupMemberMaps)
+            foreach (KeyValue<MemberMap<modelType>, int> memberMap in groupMemberMaps)
             {
                 if (memberMap.Value == group) return memberMap.Key;
             }
-            AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, typeof(valueType).fullName() + " 缺少缓存分组 " + group.toString());
+            AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, typeof(modelType).fullName() + " 缺少缓存分组 " + group.toString());
             return null;
         }
         /// <summary>
@@ -125,9 +125,9 @@ namespace AutoCSer.Sql.DataModel
         /// </summary>
         /// <param name="group">分组</param>
         /// <returns>分组数据成员位图</returns>
-        internal static MemberMap<valueType> GetCacheMemberMap(int group)
+        internal static MemberMap<modelType> GetCacheMemberMap(int group)
         {
-            MemberMap<valueType> memberMap = getGroupMemberMap(group);
+            MemberMap<modelType> memberMap = getGroupMemberMap(group);
             if (memberMap != null)
             {
                 SetIdentityOrPrimaryKeyMemberMap(memberMap = memberMap.Copy());
@@ -139,9 +139,9 @@ namespace AutoCSer.Sql.DataModel
         /// 自增标识/关键字成员位图
         /// </summary>
         /// <returns></returns>
-        internal static MemberMap<valueType> GetIdentityOrPrimaryKeyMemberMap()
+        internal static MemberMap<modelType> GetIdentityOrPrimaryKeyMemberMap()
         {
-            MemberMap<valueType> memberMap = MemberMap<valueType>.NewEmpty();
+            MemberMap<modelType> memberMap = MemberMap<modelType>.NewEmpty();
             SetIdentityOrPrimaryKeyMemberMap(memberMap);
             return memberMap;
         }
@@ -149,7 +149,7 @@ namespace AutoCSer.Sql.DataModel
         /// 自增标识/关键字成员位图
         /// </summary>
         /// <param name="memberMap"></param>
-        internal static void SetIdentityOrPrimaryKeyMemberMap(MemberMap<valueType> memberMap)
+        internal static void SetIdentityOrPrimaryKeyMemberMap(MemberMap<modelType> memberMap)
         {
             if (Identity != null) memberMap.SetMember(Identity.MemberMapIndex);
             else if (PrimaryKeys.Length != 0)
@@ -162,13 +162,13 @@ namespace AutoCSer.Sql.DataModel
         /// </summary>
         /// <param name="baseIdentity"></param>
         /// <returns></returns>
-        internal static Func<valueType, int> IdentityGetter(int baseIdentity)
+        internal static Func<modelType, int> IdentityGetter(int baseIdentity)
         {
             if (baseIdentity == 0) return GetIdentity32;
 #if NOJIT
             return new baseIdentity32(Identity.Field, baseIdentity).Get();
 #else
-            DynamicMethod dynamicMethod = new DynamicMethod("GetIdentity32_" + baseIdentity.toString(), typeof(int), new Type[] { typeof(valueType) }, typeof(valueType), true);
+            DynamicMethod dynamicMethod = new DynamicMethod("GetIdentity32_" + baseIdentity.toString(), typeof(int), new Type[] { typeof(modelType) }, typeof(modelType), true);
             ILGenerator generator = dynamicMethod.GetILGenerator();
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldfld, Identity.FieldInfo);
@@ -176,7 +176,7 @@ namespace AutoCSer.Sql.DataModel
             generator.int32(baseIdentity);
             generator.Emit(OpCodes.Sub);
             generator.Emit(OpCodes.Ret);
-            return (Func<valueType, int>)dynamicMethod.CreateDelegate(typeof(Func<valueType, int>));
+            return (Func<modelType, int>)dynamicMethod.CreateDelegate(typeof(Func<modelType, int>));
 #endif
         }
         /// <summary>
@@ -184,7 +184,7 @@ namespace AutoCSer.Sql.DataModel
         /// </summary>
         /// <param name="sqlStream"></param>
         /// <param name="memberMap"></param>
-        internal static void GetNames(CharStream sqlStream, MemberMap<valueType> memberMap)
+        internal static void GetNames(CharStream sqlStream, MemberMap<modelType> memberMap)
         {
             int isNext = 0;
             foreach (Field field in Fields)
@@ -230,12 +230,12 @@ namespace AutoCSer.Sql.DataModel
 
         static Model()
         {
-            Type type = typeof(valueType);
+            Type type = typeof(modelType);
             attribute = TypeAttribute.GetAttribute<ModelAttribute>(type, true) ?? ModelAttribute.Default;
-            Fields = Field.Get(MemberIndexGroup<valueType>.GetFields(attribute.MemberFilters), false).ToArray();
+            Fields = Field.Get(MemberIndexGroup<modelType>.GetFields(attribute.MemberFilters), false).ToArray();
             Identity = Field.GetIdentity(Fields);
             PrimaryKeys = Field.GetPrimaryKeys(Fields).ToArray();
-            MemberMap = new MemberMap<valueType>();
+            MemberMap = new MemberMap<modelType>();
             foreach (Field field in Fields) MemberMap.SetMember(field.MemberMapIndex);
             if (Identity != null)
             {
@@ -251,7 +251,7 @@ namespace AutoCSer.Sql.DataModel
                 generator.Emit(OpCodes.Ldfld, Identity.FieldInfo);
                 if (Identity.FieldInfo.FieldType != typeof(long) && Identity.FieldInfo.FieldType != typeof(ulong)) generator.Emit(OpCodes.Conv_I8);
                 generator.Emit(OpCodes.Ret);
-                GetIdentity = (Func<valueType, long>)dynamicMethod.CreateDelegate(typeof(Func<valueType, long>));
+                GetIdentity = (Func<modelType, long>)dynamicMethod.CreateDelegate(typeof(Func<modelType, long>));
 
                 dynamicMethod = new DynamicMethod("SetSqlIdentity", null, new Type[] { type, typeof(long) }, type, true);
                 generator = dynamicMethod.GetILGenerator();
@@ -260,7 +260,7 @@ namespace AutoCSer.Sql.DataModel
                 if (Identity.FieldInfo.FieldType != typeof(long) && Identity.FieldInfo.FieldType != typeof(ulong)) generator.Emit(OpCodes.Conv_I4);
                 generator.Emit(OpCodes.Stfld, Identity.FieldInfo);
                 generator.Emit(OpCodes.Ret);
-                SetIdentity = (Action<valueType, long>)dynamicMethod.CreateDelegate(typeof(Action<valueType, long>));
+                SetIdentity = (Action<modelType, long>)dynamicMethod.CreateDelegate(typeof(Action<modelType, long>));
 
                 GetIdentity32 = getIdentityGetter32("GetSqlIdentity32", Identity.FieldInfo);
 #endif

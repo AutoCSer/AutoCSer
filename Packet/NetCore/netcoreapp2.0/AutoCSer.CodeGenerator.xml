@@ -1229,6 +1229,11 @@
             成员名称
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.Metadata.MemberIndex.NextMemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.Metadata.MemberIndex.xmlDocument">
             <summary>
             XML文档注释
@@ -2593,6 +2598,595 @@
             安装完成处理
             </summary>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel">
+            <summary>
+            数据模型 代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator">
+            <summary>
+            数据模型 代码生成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.DefaultLogProxyMemberName">
+            <summary>
+            SQL表格计算列日志字段代理名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.SqlCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.PrimaryKeyTypeName">
+            <summary>
+            关键字类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.dataPrimaryKey">
+            <summary>
+            数据关键字 代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember">
+            <summary>
+            日志同步成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.Member">
+            <summary>
+            成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.Attribute">
+            <summary>
+            日志同步成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.MemberAttribute">
+            <summary>
+            数据库成员信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.MemberMapName">
+            <summary>
+            成员位图名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.MemberLoadedMethodName">
+            <summary>
+            成员加载函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.GetMemberName">
+            <summary>
+            获取数据函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.IsSqlStreamCount">
+            <summary>
+            是否生成日志流计数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.SqlStreamCountType">
+            <summary>
+            日志流计数完成类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.CountTypeNumber">
+            <summary>
+            日志流计数完成类型表格编号
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMember.IsProxy">
+            <summary>
+            是否需要生成日志字段代理属性
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CountMember">
+            <summary>
+            计数成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CountMember.Member">
+            <summary>
+            成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CountMember.Attribute">
+            <summary>
+            计数成员信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CountMember.TotalMemberName">
+            <summary>
+            计数总计 TCP 调用属性名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CountMember.GetMethodName">
+            <summary>
+            计数 TCP 调用函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CountMember.IncMethodName">
+            <summary>
+            增加计数 TCP 调用函数名称
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPathType">
+            <summary>
+            WEB Path 类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPathType.MemberType">
+            <summary>
+            WEB Path 类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPathType.Attribute">
+            <summary>
+            WEB Path 配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPathType.Members">
+            <summary>
+            WEB Path 关联成员集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPathType.PathMemberName">
+            <summary>
+            服务端生成属性名称
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPathType.CheckMembers(AutoCSer.LeftArray{AutoCSer.CodeGenerator.Metadata.MemberIndex}@)">
+            <summary>
+            
+            </summary>
+            <param name="members"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogCountType">
+            <summary>
+            日志流计数完成类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogCountType.SqlStreamCountType">
+            <summary>
+            数据模型类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogCountType.CountTypeNumber">
+            <summary>
+            表格编号，主要使用枚举识别同一数据模型下的不同表格
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMemberName">
+            <summary>
+            SQL表格计算列日志 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogProxyMemberName">
+            <summary>
+            SQL表格计算列日志字段代理名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsSqlLogProxyLoadedName">
+            <summary>
+            计算列加载完成字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.SqlStreamCountTypes">
+            <summary>
+            日志流计数完成类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.LogMembers">
+            <summary>
+            日志同步字段集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsLogProxyMember">
+            <summary>
+            是否需要生成日志字段代理属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CounterMembers">
+            <summary>
+            计数字段集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.UpdateMembers">
+            <summary>
+            更新字段集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.PrimaryKeys">
+            <summary>
+            关键字成员集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.PrimaryKeyType">
+            <summary>
+            关键字类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.Identity">
+            <summary>
+            自增成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsIdentity64">
+            <summary>
+            是否 64b 自增标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.WebPaths">
+            <summary>
+            WEB Path 类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.webPathTypes">
+            <summary>
+            WEB Path 类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.SqlStreamTypeCount">
+            <summary>
+            日志流计数完成类型数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsSqlLoaded">
+            <summary>
+            是否生成数据加载完成代码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IndexMembers">
+            <summary>
+            索引成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMembers">
+            <summary>
+            当前时间生成成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeArraySize">
+            <summary>
+            当前时间生成成员数组大小
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsDefaultSerializeIsMemberMap">
+            <summary>
+            默认二进制序列化是否序列化成员位图
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CacheType">
+            <summary>
+            默认缓存类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsEventCacheLoaded">
+            <summary>
+            是否等待数据事件缓存数据初始化完成
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsCreateEventCache">
+            <summary>
+            是否等待创建数据事件缓存数据初始化完成
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsSqlCacheLoaded">
+            <summary>
+            是否生成数据加载完成代码
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsLoadNowTimeCache">
+            <summary>
+            是否自动初始化当前时间
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IdentityArrayCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IdentityTreeCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.PrimaryKeyCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.PrimaryKeyArrayCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityArrayCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityArrayMemberCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityTreeCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityTreeMemberCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyMemberCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyArrayCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyArrayMemberCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateMemberKeyCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateMemberKeyMemberCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CounterCacheType">
+            <summary>
+            计数缓存类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IsMemberCache">
+            <summary>
+            是否绑定成员缓存类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.MemberCacheBaseType">
+            <summary>
+            成员绑定类型约束基类
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IdentityCounterCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.IdentityCounter32CacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.PrimaryKeyCounterCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounterMemberQueueCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounterQueueCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounter32QueueCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounterQueueListCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounter32QueueListCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyCounterQueueCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyCounterQueueListCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyCounterQueueDictionaryCacheName">
+            <summary>
+            SQL表格默认计数缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounterQueueMethodName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityCounterQueueListMethodName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.UpdateValueClass">
+            <summary>
+            数据更新成员类型类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.onCreated">
+            <summary>
+            安装完成处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.create(System.Boolean)">
+            <summary>
+            生成代码
+            </summary>
+            <param name="isOut">是否输出代码</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable">
+            <summary>
+            数据表格 代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator">
+            <summary>
+            数据表格 代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.Type">
+            <summary>
+            当前类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.ProjectParameter">
+            <summary>
+            项目安装参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.Member">
+            <summary>
+            远程成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.Method">
+            <summary>
+            获取函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.Attribute">
+            <summary>
+            远程成员配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.IsLogProxyMember">
+            <summary>
+            是否日志字段代理
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.MethodReturnType">
+            <summary>
+            函数返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.AttributeMemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.Identity">
+            <summary>
+            自增成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.PrimaryKeys">
+            <summary>
+            关键字成员集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.PrimaryKeyType">
+            <summary>
+            关键字类型名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.PrimaryKey0">
+            <summary>
+            第一个关键字成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.NextPrimaryKeys">
+            <summary>
+            后续关键字成员集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.IsSinglePrimaryKey">
+            <summary>
+            是否单关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.LogMembers">
+            <summary>
+            日志同步字段集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.LogProxyMemberName">
+            <summary>
+            SQL表格计算列日志字段代理名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.IsSqlLogProxyLoadedName">
+            <summary>
+            计算列加载完成字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.IdentityArrayCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.PrimaryKeyCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMembers">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.onCreated">
+            <summary>
+            安装完成处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.create(System.Boolean)">
+            <summary>
+            生成代码
+            </summary>
+            <param name="isOut">是否输出代码</param>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpInternalServer">
             <summary>
             TCP 内部服务代码生成
@@ -3566,6 +4160,14 @@
             <summary>
             客户端时间验证类型
             </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.GetTcpCallTypeName(AutoCSer.CodeGenerator.ProjectParameter,AutoCSer.CodeGenerator.Metadata.ExtensionType)">
+            <summary>
+            获取 TcpCall 调用类型名称
+            </summary>
+            <param name="namespaceString"></param>
+            <param name="type"></param>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.nextCreate">
             <summary>
@@ -4898,6 +5500,12 @@
             <summary>
             CSharp模板公用模糊类型
             </summary>
+            <summary>
+            CSharp模板公用模糊类型
+            </summary>
+            <summary>
+            CSharp模板公用模糊类型
+            </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.WebAjaxMethodType">
             <summary>
@@ -4951,6 +5559,19 @@
             </summary>
             <summary>
             类型全名
+            </summary>
+            <summary>
+            类型全名
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.Pub.FullName.IsSqlLogProxyLoadedName">
+            <summary>
+            日志字段代理是否加载完毕
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.Pub.FullName.LogProxyMemberName">
+            <summary>
+            日志字段代理成员名称
             </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.Pub.FullName.SetTcpServer(AutoCSer.Net.TcpInternalServer.Server)">
@@ -5104,6 +5725,43 @@
             </summary>
             <param name="value">参数</param>
             <returns>返回值</returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType">
+            <summary>
+            关键字类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType.Equals(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType)">
+            <summary>
+            关键字比较
+            </summary>
+            <param name="other">关键字</param>
+            <returns>是否相等</returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.SqlStreamCountType">
+            <summary>
+            日志流计数完成类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.MemberCacheCounterType">
+            <summary>
+            成员计数缓存类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.TcpCall">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.TcpCall.TypeName">
+            <summary>
+            当前类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.Pub.NextMemberName">
+            <summary>
+            成员名称
+            </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.KeepCallbackType">
             <summary>
@@ -5316,6 +5974,565 @@
             关键字比较
             </summary>
             <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.IsSqlLogProxyLoadedName">
+            <summary>
+            日志字段代理是否加载完毕
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2">
+            <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.sqlTable">
+            <summary>
+            SQL表格操作工具
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.WaitSqlLoaded">
+            <summary>
+            等待数据初始化完成
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.WaitEventCacheLoaded">
+            <summary>
+            等待数据事件缓存数据初始化完成
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.sqlLoaded(System.Action{`0},System.Action{`0,`0,`0,AutoCSer.Metadata.MemberMap{AutoCSer.CodeGenerator.Template.Pub.FullName}},System.Action{`0},System.Boolean)">
+            <param name="isMemberMap">是否支持成员位图</param>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.IdentityArrayCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.IdentityTreeCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.PrimaryKeyCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.PrimaryKeyArrayCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityArrayMemberCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <typeparam name="memberCacheType"></typeparam>
+            <param name="memberCache">成员缓存</param>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="isReset">是否初始化事件与数据</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityArrayCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="baseIdentity">基础ID</param>
+            <param name="group">数据分组</param>
+            <param name="isReset">是否初始化事件与数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Func{`0,System.Boolean},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="memberCache">成员缓存</param>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="isReset">是否初始化事件与数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Func{`0,System.Boolean},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="memberCache">成员缓存</param>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="isReset">是否初始化事件与数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityTreeMemberCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="memberCache">成员缓存</param>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityTreeCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyMemberCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <typeparam name="memberCacheType"></typeparam>
+            <param name="memberCache">成员缓存</param>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyArrayMemberCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``1(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <typeparam name="memberCacheType"></typeparam>
+            <param name="memberCache">成员缓存</param>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyArrayCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``1(System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateMemberKeyMemberCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``5(AutoCSer.Sql.Cache.Whole.Event.Key{``0,``1,``2,``3},System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``4},System.Linq.Expressions.Expression{System.Func{``2,System.Collections.Generic.Dictionary{AutoCSer.RandomKey{``4},`0}}},System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <typeparam name="targetType"></typeparam>
+            <typeparam name="targetModelType"></typeparam>
+            <typeparam name="targetMemberCacheType"></typeparam>
+            <typeparam name="keyType"></typeparam>
+            <typeparam name="memberKeyType"></typeparam>
+            <param name="targetCache">目标缓存</param>
+            <param name="memberCache">成员缓存</param>
+            <param name="getKey">键值获取器</param>
+            <param name="getMemberKey">成员缓存键值获取器</param>
+            <param name="member">缓存成员</param>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateMemberKeyCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``5(AutoCSer.Sql.Cache.Whole.Event.Key{``0,``1,``2,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``4},System.Linq.Expressions.Expression{System.Func{``2,System.Collections.Generic.Dictionary{AutoCSer.RandomKey{``4},`0}}},System.Int32)">
+            <summary>
+            创建SQL默认缓存
+            </summary>
+            <typeparam name="targetType"></typeparam>
+            <typeparam name="targetModelType"></typeparam>
+            <typeparam name="targetMemberCacheType"></typeparam>
+            <typeparam name="keyType"></typeparam>
+            <typeparam name="memberKeyType"></typeparam>
+            <param name="targetCache">目标缓存</param>
+            <param name="memberCache">成员缓存</param>
+            <param name="getKey">键值获取器</param>
+            <param name="getMemberKey">成员缓存键值获取器</param>
+            <param name="member">缓存成员</param>
+            <param name="group">数据分组</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.IdentityCounterCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.PrimaryKeyCounterCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityCounterMemberQueueCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCounterMemberQueue(AutoCSer.Sql.Cache.Whole.Event.IdentityMemberMap{`0,AutoCSer.CodeGenerator.Template.Pub.FullName,`1},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="cache">自增ID整表缓存</param>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityCounterQueueCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createIdentityCounterQueue(System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityCounterQueueMethodName(System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityCounterQueueListCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createIdentityCounterQueueList``1(System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``0}},System.Func{``0,System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}}},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityCounterQueueListMethodName``1(System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``0}},System.Func{``0,System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}}},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyCounterQueueCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createPrimaryKeyCounterQueue(System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyCounterQueueListCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createPrimaryKeyCounterQueueList``1(System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``0}},System.Func{``0,System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}}},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="getKey">缓存关键字获取器</param>
+            <param name="getWhere">条件表达式获取器</param>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyCounterQueueDictionaryCacheName">
+            <summary>
+            SQL默认计数缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createPrimaryKeyCounterQueueDictionary``2(System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``0}},System.Func{``0,System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}}},System.Func{`0,``1},System.Int32,System.Int32)">
+            <summary>
+            创建SQL默认先进先出优先队列缓存
+            </summary>
+            <param name="getKey">缓存关键字获取器</param>
+            <param name="getWhere">条件表达式获取器</param>
+            <param name="getDictionaryKey">缓存字典关键字获取器</param>
+            <param name="group">数据分组</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+            <returns>数据分组</returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.MemberIndexs">
+            <summary>
+            成员索引定义
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.MemberIndexs.MemberName">
+            <summary>
+            @XmlDocument (成员索引)
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap">
+            <summary>
+            数据更新成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap.#ctor(`0,AutoCSer.Metadata.MemberMap{AutoCSer.CodeGenerator.Template.Pub.FullName})">
+            <summary>
+            数据更新成员位图
+            </summary>
+            <param name="value">数据对象</param>
+            <param name="memberMap">成员位图</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap.#ctor(System.Int32,AutoCSer.Metadata.MemberMap{AutoCSer.CodeGenerator.Template.Pub.FullName})">
+            <param name="memberMap">成员位图</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap.#ctor(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType,AutoCSer.Metadata.MemberMap{AutoCSer.CodeGenerator.Template.Pub.FullName})">
+            <summary>
+            数据更新成员位图
+            </summary>
+            <param name="key">关键字</param>
+            <param name="memberMap">成员位图</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap.MemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap.Update(System.Boolean)">
+            <summary>
+            更新数据
+            </summary>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+            <returns>更新是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlUpdateMemberMap.Update(System.Action{`0},System.Boolean)">
+            <summary>
+            更新数据
+            </summary>
+            <param name="onUpdated">更新数据回调</param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.onSqlLogQueue(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,AutoCSer.CodeGenerator.Template.Pub.FullName}.Data},System.Boolean})">
+            <summary>
+            日志处理
+            </summary>
+            <param name="onLog"></param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.onSqlLog(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,AutoCSer.CodeGenerator.Template.Pub.FullName}.Data},System.Boolean})">
+            <summary>
+            日志处理
+            </summary>
+            <param name="onLog"></param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.getSqlCache(System.Int32)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="@MemberName">@XmlDocument</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.getSqlCache(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="key">关键字</param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogMembers">
+            <summary>
+            计算字段日志流
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogMembers._value_">
+            <summary>
+            数据对象
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogMembers.MemberName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <summary>
+            @XmlDocument (更新日志流)
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogMembers.MemberName">
+            <summary>
+            @XmlDocument (更新日志流)
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogMembers.MemberLoadedMethodName">
+            <summary>
+            @XmlDocument 计算初始化完毕
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogMembers._LoadCount_(AutoCSer.Sql.LogStream.LoadedType)">
+            <summary>
+            根据日志流计数完成类型初始化完毕
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.LogMemberName">
+            <summary>
+            计算字段日志流
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogProxyMembers">
+            <summary>
+            计算字段访问代理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogProxyMembers._value_">
+            <summary>
+            数据对象
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlLogProxyMembers.MemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.LogProxyMemberName">
+            <summary>
+            计算字段日志流
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.NowTimes">
+            <summary>
+            当前时间定义
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.NowTimes.MemberName">
+            <summary>
+            @XmlDocument 当前时间
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.NowTimes.Load(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            初始化当前时间
+            </summary>
+            <param name="values">缓存数据</param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlCounter">
+            <summary>
+            计数成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.SqlCounter.MemberName">
+            <summary>
+            @XmlDocument 当前时间
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.GetMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.TotalMemberName">
+            <summary>
+            @XmlDocument 总计数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.IncMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <param name="@MemberName">@XmlDocument</param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCounter(AutoCSer.Sql.Cache.Whole.Event.IdentityCache{`0,AutoCSer.CodeGenerator.Template.Pub.FullName,`1})">
+            <summary>
+            初始化计数成员
+            </summary>
+            <param name="cache"></param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.PathMemberName">
+            <summary>
+            @MemberType.XmlDocument
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.RemoteExtension">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.RemoteExtension.Value">
+            <summary>
+            @Type.XmlDocument
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.RemoteExtension.MemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.Remote">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.GetMemberName(System.Int32)">
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.GetMemberName(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="key">关键字</param>
             <returns></returns>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalServer.TypeNameDefinition.RememberIdentityCommeandName">

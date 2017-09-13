@@ -34,7 +34,7 @@ namespace AutoCSer.Sql.DataModel
         public Updater(Type type, ModelAttribute attribute)
         {
             this.attribute = attribute;
-            dynamicMethod = new DynamicMethod("SqlModelUpdater", null, new Type[] { typeof(CharStream), typeof(MemberMap), type, typeof(ConstantConverter) }, type, true);
+            dynamicMethod = new DynamicMethod("SqlModelUpdater", null, new Type[] { typeof(CharStream), typeof(MemberMap), type, typeof(ConstantConverter), typeof(Table) }, type, true);
             generator = dynamicMethod.GetILGenerator();
             generator.DeclareLocal(typeof(int));
             generator.Emit(OpCodes.Ldc_I4_0);
@@ -71,8 +71,14 @@ namespace AutoCSer.Sql.DataModel
                 generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_0, AutoCSer.Emit.Pub.GetNameAssignmentPool(field.SqlFieldName), field.SqlFieldName.Length + 1);
                 generator.Emit(OpCodes.Ldarg_3);
                 generator.Emit(OpCodes.Ldarg_0);
+                if (field.IsNowTime) generator.Emit(OpCodes.Ldarg_S, 4);
                 generator.Emit(OpCodes.Ldarg_2);
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
+                if (field.IsNowTime)
+                {
+                    generator.int32(field.MemberMapIndex);
+                    generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);
+                }
                 if (field.ToSqlCastMethod != null) generator.Emit(OpCodes.Call, field.ToSqlCastMethod);
                 if (attribute.IsNullStringEmpty && field.DataType == typeof(string)) generator.nullStringEmpty();
                 generator.Emit(OpCodes.Callvirt, field.ToSqlMethod);
@@ -92,7 +98,7 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据模型
     /// </summary>
-    internal abstract partial class Model<valueType>
+    internal abstract partial class Model<modelType>
     {
         /// <summary>
         /// 数据列更新SQL流
@@ -106,10 +112,11 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="memberMap">更新成员位图</param>
             /// <param name="value">数据</param>
             /// <param name="converter">SQL常量转换</param>
+            /// <param name="table">数据表格</param>
 #if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
-            public static void Update(CharStream sqlStream, MemberMap memberMap, valueType value, ConstantConverter converter)
+            public static void Update(CharStream sqlStream, MemberMap memberMap, modelType value, ConstantConverter converter, Table table)
             {
 #if NOJIT
                 if (fields != null)
@@ -122,12 +129,13 @@ namespace AutoCSer.Sql.DataModel
                         {
                             if (isNext == 0) isNext = 1;
                             else sqlStream.Write(',');
+                //if (field.NowTimeField == null)
                             field.Set(sqlStream, value, converter, ref sqlColumnParameters, ref castParameters, ref parameters);
                         }
                     }
                 }
 #else
-                if (updater != null) updater(sqlStream, memberMap, value, converter);
+                if (updater != null) updater(sqlStream, memberMap, value, converter, table);
 #endif
             }
 #if NOJIT
@@ -139,7 +147,7 @@ namespace AutoCSer.Sql.DataModel
             /// <summary>
             /// 获取更新数据SQL表达式
             /// </summary>
-            private static readonly Action<CharStream, MemberMap, valueType, ConstantConverter> updater;
+            private static readonly Action<CharStream, MemberMap, modelType, ConstantConverter, Table> updater;
 #endif
 
             static Updater()
@@ -151,9 +159,9 @@ namespace AutoCSer.Sql.DataModel
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.Updater dynamicMethod = new DataModel.Updater(typeof(valueType), attribute);
+                    DataModel.Updater dynamicMethod = new DataModel.Updater(typeof(modelType), attribute);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
-                    updater = (Action<CharStream, MemberMap, valueType, ConstantConverter>)dynamicMethod.Create<Action<CharStream, MemberMap, valueType, ConstantConverter>>();
+                    updater = (Action<CharStream, MemberMap, modelType, ConstantConverter, Table>)dynamicMethod.Create<Action<CharStream, MemberMap, modelType, ConstantConverter, Table>>();
 #endif
                 }
             }

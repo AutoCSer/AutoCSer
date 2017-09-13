@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Example.OrmModel</AssemblyName>
+    <RootNamespace>AutoCSer.Example.OrmModel</RootNamespace>
+    <Description>AutoCSer.Example.OrmModel 是一个 ORM 模型数据定义示例项目。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.Example.OrmModel.NetStandard</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/OrmCache/Index.html</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="AsciiMember.cs" />
+    <Compile Include="CastMember.cs" />
+    <Compile Include="CombinationMember.cs" />
+    <Compile Include="ComparablePrimaryKey.cs" />
+    <Compile Include="EnumMember.cs" />
+    <Compile Include="IdentityMember.cs" />
+    <Compile Include="IgnoreMember.cs" />
+    <Compile Include="InstanceField.cs" />
+    <Compile Include="JsonMember.cs" />
+    <Compile Include="ManyPrimaryKey.cs" />
+    <Compile Include="MemberCache.cs" />
+    <Compile Include="MemberIndex.cs" />
+    <Compile Include="Member\Ipv4.cs" />
+    <Compile Include="Member\Range.cs" />
+    <Compile Include="NowTime.cs" />
+    <Compile Include="NullMember.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="{AutoCSer.Example.OrmModel}.AutoCSer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\Sql\AutoCSer.Sql.NetStandard.csproj" />
+    <ProjectReference Include="..\OrmConfig\AutoCSer.Example.OrmConfig.NetStandard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.Sort">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

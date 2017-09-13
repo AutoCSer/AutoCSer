@@ -59,5 +59,9 @@ namespace AutoCSer.Extension
             generator.Emit(OpCodes.Ldsfld, emptyStringField);
             generator.MarkLabel(notNullLabel);
         }
+        /// <summary>
+        /// 获取当前时间函数信息
+        /// </summary>
+        public static readonly System.Reflection.MethodInfo TableGetNowTimeMethod = typeof(AutoCSer.Sql.Table).GetMethod("GetNowTime", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 }

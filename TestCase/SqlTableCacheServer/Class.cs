@@ -13,12 +13,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 远程对象扩展
         /// </summary>
-        public struct RemoteExtension
+        public partial struct RemoteExtension
         {
-            /// <summary>
-            /// 班级信息
-            /// </summary>
-            internal Class Value;
             /// <summary>
             /// 学生集合
             /// </summary>
@@ -33,13 +29,6 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
 #endif
                 }
             }
-        }
-        /// <summary>
-        /// 远程对象扩展
-        /// </summary>
-        public RemoteExtension Remote
-        {
-            get { return new RemoteExtension { Value = this }; }
         }
         /// <summary>
         /// 扩展缓存数据

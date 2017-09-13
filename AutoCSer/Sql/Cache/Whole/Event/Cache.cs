@@ -4,7 +4,11 @@ using AutoCSer.Metadata;
 using System.Linq.Expressions;
 using AutoCSer.Extension;
 using System.Data.Common;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+#if !NOJIT
+using/**/System.Reflection.Emit;
+#endif
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {
@@ -86,6 +90,25 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 if (exception != null) throw exception;
             }
         }
+#if NOJIT
+        /// <summary>
+        /// 计算列加载完成字段信息
+        /// </summary>
+        private readonly FieldInfo logProxyLoadedField;
+        /// <summary>
+        /// 计算列加载完成
+        /// </summary>
+        private object isLogProxyLoaded;
+#else
+        /// <summary>
+        /// 设置计算列加载完成
+        /// </summary>
+        private readonly Action<valueType> setIsLogProxyLoaded;
+        /// <summary>
+        /// 计算列加载完成
+        /// </summary>
+        private bool isLogProxyLoaded;
+#endif
         /// <summary>
         /// 数据集合
         /// </summary>
@@ -99,7 +122,29 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// </summary>
         /// <param name="table">SQL操作工具</param>
         /// <param name="group">数据分组</param>
-        protected Cache(Sql.Table<valueType, modelType> table, int group) : base(table, group) { }
+        protected Cache(Sql.Table<valueType, modelType> table, int group) : base(table, group)
+        {
+            if (group == 0)
+            {
+#if NOJIT
+                logProxyLoadedField = typeof(modelType).GetField(LogStream.Log.IsSqlLogProxyLoadedName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                if (logProxyLoadedField != null) table.OnLogMemberLoaded += onLogMemberLoaded;
+#else
+                FieldInfo logProxyLoadedField = typeof(modelType).GetField(LogStream.Log.IsSqlLogProxyLoadedName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                if (logProxyLoadedField != null)
+                {
+                    DynamicMethod dynamicMethod = new DynamicMethod("setIsLogProxyLoaded", null, new System.Type[] { typeof(modelType) }, typeof(modelType), true);
+                    ILGenerator generator = dynamicMethod.GetILGenerator();
+                    generator.Emit(OpCodes.Ldarg_0);
+                    generator.int32(1);
+                    generator.Emit(OpCodes.Stfld, logProxyLoadedField);
+                    generator.Emit(OpCodes.Ret);
+                    setIsLogProxyLoaded = (Action<modelType>)dynamicMethod.CreateDelegate(typeof(Action<modelType>));
+                    table.OnLogMemberLoaded += onLogMemberLoaded;
+                }
+#endif
+            }
+        }
         /// <summary>
         /// 重置缓存
         /// </summary>
@@ -117,6 +162,28 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="connection"></param>
         /// <param name="query">查询信息</param>
         internal abstract void Reset(ref DbConnection connection, ref SelectQuery<modelType> query);
+        /// <summary>
+        /// 计算列加载完成事件
+        /// </summary>
+        private void onLogMemberLoaded()
+        {
+            isLogProxyLoaded = true;
+            foreach (valueType value in Values) callSetIsLogProxyLoaded(value);
+        }
+        /// <summary>
+        /// 设置计算列加载完成
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected void callSetIsLogProxyLoaded(valueType value)
+        {
+            
+#if NOJIT
+            if (isLogProxyLoaded != null) logProxyLoadedField.SetValue(value, true);
+#else
+            if (isLogProxyLoaded) setIsLogProxyLoaded(value);
+#endif
+        }
         /// <summary>
         /// 添加记录事件
         /// </summary>
@@ -171,8 +238,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             if (onInserted != null) OnInserted += onInserted;
             if (onUpdated != null) OnUpdated += onUpdated;
             if (onDeleted != null) OnDeleted += onDeleted;
-            SqlTable.CacheLoadWait.Set();
-            if (isSqlStreamTypeCount) LogStream.LoadedType.Add(typeof(modelType), SqlTable.Attribute.TableNumber);
+            SqlTable.CacheLoaded(isSqlStreamTypeCount);
         }
         /// <summary>
         /// 成员绑定缓存集合
@@ -261,16 +327,16 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="sorter">数据排序</param>
         /// <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
         /// <returns></returns>
-        public MemberLadyOrderArray<valueType, modelType, keyType, targetMemberCacheType> CreateMemberLadyOrderArray<keyType, targetType, targetModelType, targetMemberCacheType>
+        public MemberLazyOrderArray<valueType, modelType, keyType, targetMemberCacheType> CreateMemberLazyOrderArray<keyType, targetType, targetModelType, targetMemberCacheType>
             (Key<targetType, targetModelType, targetMemberCacheType, keyType> targetCache, Func<modelType, keyType> getKey
-            , Expression<Func<targetMemberCacheType, LadyOrderArray<valueType>>> member, Func<LeftArray<valueType>, LeftArray<valueType>> sorter
+            , Expression<Func<targetMemberCacheType, LazyOrderArray<valueType>>> member, Func<LeftArray<valueType>, LeftArray<valueType>> sorter
             , bool isSave = false)
             where keyType : IEquatable<keyType>
             where targetType : class, targetModelType
             where targetModelType : class
             where targetMemberCacheType : class
         {
-            MemberLadyOrderArray<valueType, modelType, keyType, targetMemberCacheType> cache = new MemberLadyOrderArray<valueType, modelType, keyType, targetMemberCacheType>(this, getKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, sorter, true);
+            MemberLazyOrderArray<valueType, modelType, keyType, targetMemberCacheType> cache = new MemberLazyOrderArray<valueType, modelType, keyType, targetMemberCacheType>(this, getKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, sorter, true);
             if (isSave) memberCaches.Add(cache);
             return cache;
         }
@@ -288,16 +354,16 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="isValue">数据匹配器</param>
         /// <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
         /// <returns></returns>
-        public MemberLadyOrderArrayWhere<valueType, modelType, keyType, targetMemberCacheType> CreateMemberLadyOrderArrayWhere<keyType, targetType, targetModelType, targetMemberCacheType>
+        public MemberLazyOrderArrayWhere<valueType, modelType, keyType, targetMemberCacheType> CreateMemberLazyOrderArrayWhere<keyType, targetType, targetModelType, targetMemberCacheType>
             (Key<targetType, targetModelType, targetMemberCacheType, keyType> targetCache, Func<modelType, keyType> getKey
-            , Expression<Func<targetMemberCacheType, LadyOrderArray<valueType>>> member, Func<LeftArray<valueType>, LeftArray<valueType>> sorter, Func<valueType, bool> isValue
+            , Expression<Func<targetMemberCacheType, LazyOrderArray<valueType>>> member, Func<LeftArray<valueType>, LeftArray<valueType>> sorter, Func<valueType, bool> isValue
             , bool isSave = false)
             where keyType : IEquatable<keyType>
             where targetType : class, targetModelType
             where targetModelType : class
             where targetMemberCacheType : class
         {
-            MemberLadyOrderArrayWhere<valueType, modelType, keyType, targetMemberCacheType> cache = new MemberLadyOrderArrayWhere<valueType, modelType, keyType, targetMemberCacheType>(this, getKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, sorter, isValue);
+            MemberLazyOrderArrayWhere<valueType, modelType, keyType, targetMemberCacheType> cache = new MemberLazyOrderArrayWhere<valueType, modelType, keyType, targetMemberCacheType>(this, getKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, sorter, isValue);
             if (isSave) memberCaches.Add(cache);
             return cache;
         }
@@ -401,16 +467,16 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="isReset">是否初始化</param>
         /// <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
         /// <returns></returns>
-        public MemberArrayLadyOrderArray<valueType, modelType, keyType, targetMemberCacheType> CreateMemberArrayLadyOrderArray<keyType, targetType, targetModelType, targetMemberCacheType>
+        public MemberArrayLazyOrderArray<valueType, modelType, keyType, targetMemberCacheType> CreateMemberArrayLazyOrderArray<keyType, targetType, targetModelType, targetMemberCacheType>
             (Key<targetType, targetModelType, targetMemberCacheType, keyType> targetCache, Func<modelType, keyType> getKey
-            , Func<valueType, int> getIndex, int arraySize, Expression<Func<targetMemberCacheType, LadyOrderArray<valueType>[]>> member
+            , Func<valueType, int> getIndex, int arraySize, Expression<Func<targetMemberCacheType, LazyOrderArray<valueType>[]>> member
             , Func<LeftArray<valueType>, LeftArray<valueType>> sorter, bool isReset = true, bool isSave = false)
             where keyType : IEquatable<keyType>
             where targetType : class, targetModelType
             where targetModelType : class
             where targetMemberCacheType : class
         {
-            MemberArrayLadyOrderArray<valueType, modelType, keyType, targetMemberCacheType> cache = new MemberArrayLadyOrderArray<valueType, modelType, keyType, targetMemberCacheType>(this, getKey, targetCache.GetMemberCacheByKey, getIndex, arraySize, member, targetCache.GetAllMemberCache, sorter, isReset);
+            MemberArrayLazyOrderArray<valueType, modelType, keyType, targetMemberCacheType> cache = new MemberArrayLazyOrderArray<valueType, modelType, keyType, targetMemberCacheType>(this, getKey, targetCache.GetMemberCacheByKey, getIndex, arraySize, member, targetCache.GetAllMemberCache, sorter, isReset);
             if (isSave) memberCaches.Add(cache);
             return cache;
         }
@@ -669,6 +735,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                     setMemberCacheValue(memberCache, value);
                 }
             }
+            callSetIsLogProxyLoaded(value);
         }
         /// <summary>
         /// 所有成员缓存

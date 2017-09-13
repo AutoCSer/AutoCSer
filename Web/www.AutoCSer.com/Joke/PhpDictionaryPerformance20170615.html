@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0B9E75C"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0BF437C"></script>
     <title>PHP 字典性能对比 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -143,7 +143,7 @@
             Console.ReadKey();</pre>
         </div>
         <br /><img @src="//f.autocser.com/Joke/PhpDictionaryPerformance20170615_t5.png" alt="C# 字典性能测试 5" />
-        <br />这里我们把 <b>DateTime.Now.Ticks</b> 换成了 <b><a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>.Date.Now.Ticks</b>，运行时间降到 0.1s 以下。
+        <br />这里我们把 <b>DateTime.Now.Ticks</b> 换成了 <b><a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>.Date.Now.Ticks</b>，运行时间降到 0.1s 以下。
     </p>
     <p>
         其实对于有性能洁癖的人可能会看到测试代码中还有一个 <b>/</b> 没有被干掉，我就不再继续往下测试了。
@@ -157,13 +157,13 @@
     <p>
         没有什么语言自带类库能保证提供性能最好的 API，.NET 自带类库与框架某些时候可能存在一些性能问题，但不代表 C# 存在这些性能问题。
         <br />最后悄悄告诉你，除了临时性的需求，我从来不用 .NET 自带的 int.ToString()，基本不用 .NET 的字符串拼接，基本不用 DateTime.Now
-        <br />我在评论中提到的 31 种常用数据类型组合的随机对象单线程序列化操作 200W+/s，RPC 应答吞吐 200W+/s 的测试用例你可以在 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a> 下载。
+        <br />我在评论中提到的 31 种常用数据类型组合的随机对象单线程序列化操作 200W+/s，RPC 应答吞吐 200W+/s 的测试用例你可以在 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a> 下载。
         <br />不知道纯粹的 PHP 代码做出来的通用框架是否能做到 1/10 的性能？
-        <br />另外 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a> 里面也包含一个可嵌入的 <a href="/WebView/HttpServer.html?v=B9E75C">HTTP 服务器</a>与一个 <a href="/WebView/Index.html?v=B9E75C">WEB 框架</a>，你可以拿你的 Apache + PHP 比比看。
+        <br />另外 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a> 里面也包含一个可嵌入的 <a href="/WebView/HttpServer.html?v=BF437C">HTTP 服务器</a>与一个 <a href="/WebView/Index.html?v=BF437C">WEB 框架</a>，你可以拿你的 Apache + PHP 比比看。
     </p>
     <p>
         你摆出一个 C 写的 HTTP 服务器 Swoole 想证明 PHP 比 C# 性能更好吗？我想 PHP 不过就是作为胶水语言做个调用而已吧。
-        <br />我这里用 C# 写的 <a href="/WebView/HttpServer.html?v=B9E75C">HTTP 服务器</a>，同样 200 并发长连接 20W 次请求，在 windows 2012 虚拟机中的测试结果，物理机 CPU 还是 i5 6400
+        <br />我这里用 C# 写的 <a href="/WebView/HttpServer.html?v=BF437C">HTTP 服务器</a>，同样 200 并发长连接 20W 次请求，在 windows 2012 虚拟机中的测试结果，物理机 CPU 还是 i5 6400
         <br /><img @src="//f.autocser.com/Joke/PhpDictionaryPerformance20170615_http.png" alt="HTTP 长连接性能测试" />
         <br />很庆幸没有低于 11W/s 的测试结果，而且所有的请求都是动态带参数的，是一个通用的 WEB 框架，其中还包含一些简单攻击防御策略，不是专门定制的应用服务器。
         <br />压力山大啊，本来在讨论 PHP 与 C# 的性能问题，结果变成和 C 比性能，当然我并不会说 C# 的性能比 C 好，因为我知道那是找死。
@@ -173,15 +173,15 @@
         <br /><img @src="//f.autocser.com/Joke/PhpDictionaryPerformance20170615_ab.png" alt="HTTP 长连接性能测试" />
         <br />单纯从测试结果看，貌似比自己写的测试客户端要好，原因有两方面：
         <br />1. 自己写的客户端请求地址不是固定的，需要随机构造，带有两个随机参数。
-        <br />2. 自己写的客户端会使用 <a href="/Serialize/Json.html?v=B9E75C">JSON 反序列化</a>验证计算结果。
+        <br />2. 自己写的客户端会使用 <a href="/Serialize/Json.html?v=BF437C">JSON 反序列化</a>验证计算结果。
     </p>
     <p>
-        说实在的 <a href="https://wiki.swoole.com/wiki/page/508.html" target="_blank">Swoole 这个测试结果</a>看起来确实不错，但是要说 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a> 的 <a href="/WebView/HttpServer.html?v=B9E75C">HTTP 服务器</a>和它差距明显的说法实在太草率了，真要为了这种没有实际意义的跑分做类似的定制还指不定谁的跑分高。
+        说实在的 <a href="https://wiki.swoole.com/wiki/page/508.html" target="_blank">Swoole 这个测试结果</a>看起来确实不错，但是要说 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a> 的 <a href="/WebView/HttpServer.html?v=BF437C">HTTP 服务器</a>和它差距明显的说法实在太草率了，真要为了这种没有实际意义的跑分做类似的定制还指不定谁的跑分高。
         <br />1. 17.5W 是 200*1000 测试结果，你怎么能拿来和 100*10000 对比？我刚才跑了一下 100*10000 大概是 22.2W 的样子。
         <br /><img @src="//f.autocser.com/Joke/PhpDictionaryPerformance20170615_ab100.png" alt="HTTP 长连接性能测试" />
         <br />2. 我测试的 CPU 主频是 2.71G，而你给的 CPU 主频是 3.3G，两者相差 18%
         <br />3. 我用的是虚拟机测试（暂时没有物理机环境，以后有了再做测试），虚拟 CPU 占用只能到 95%-96% 之间，还不包括虚拟损耗。
-        <br />4. 我测试的是一个 <a href="/WebView/Index.html?v=B9E75C">WEB 框架</a> 的性能，请求还带参数的自动解析功能。
+        <br />4. 我测试的是一个 <a href="/WebView/Index.html?v=BF437C">WEB 框架</a> 的性能，请求还带参数的自动解析功能。
         <br />你看看那个 SWOOLE_BASE 测试是干什么的，基本就是一个披着 HTTP 皮的 Socket，连路由都没有，输出操作完全手动，我不知道这样的东西除了做跑分测试还能用来做什么？
         <br />为了跑分做这种定制并不难，但是我真的看不出有什么实际意义，敢问你写 PHP 用的就是这个 SWOOLE_BASE 吗？
     </p>

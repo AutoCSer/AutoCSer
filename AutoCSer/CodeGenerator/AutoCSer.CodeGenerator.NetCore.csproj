@@ -17,14 +17,14 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;CodeGenerator;MONO;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <DefineConstants>TRACE;CodeGenerator;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.xml</DocumentationFile>
     <OutputPath>..\..\Packet\NetCore\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;CodeGenerator;MONO;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CodeGenerator;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -62,6 +62,8 @@
     <Compile Include="TemplateGenerator\Generator.cs" />
     <Compile Include="TemplateGenerator\JavaScriptTypeDefinition.cs" />
     <Compile Include="TemplateGenerator\MemberGenerator.cs" />
+    <Compile Include="TemplateGenerator\SqlModel.cs" />
+    <Compile Include="TemplateGenerator\SqlTable.cs" />
     <Compile Include="TemplateGenerator\TcpInternalServer.cs" />
     <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
     <Compile Include="TemplateGenerator\TcpInternalStreamServer.cs" />
@@ -81,6 +83,8 @@
     <Compile Include="Template\Ajax.cs" />
     <Compile Include="Template\DataPrimaryKey.cs" />
     <Compile Include="Template\Pub.cs" />
+    <Compile Include="Template\SqlModel.cs" />
+    <Compile Include="Template\SqlTable.cs" />
     <Compile Include="Template\TcpInternalServer.cs" />
     <Compile Include="Template\TcpInternalSimpleServer.cs" />
     <Compile Include="Template\TcpInternalStreamServer.cs" />
@@ -150,6 +154,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sql\AutoCSer.Sql.NetStandard.csproj" />
     <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.csproj" />
     <ProjectReference Include="..\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
   </ItemGroup>

@@ -46,13 +46,13 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             {
                 return new AutoCSer.Sql.Connection
                 {
-                    Type = Sql.ClientType.Sql2008,
-                    ConnectionString = "server=127.0.0.1;database=AutoCSerDemo;uid=demo;pwd=demo"
+                    Type = Sql.ClientKind.Sql2008,
+                    ConnectionString = "server=127.0.0.1;database=AutoCSerExample;uid=Example;pwd=Example"
                 };
                 //return new AutoCSer.Sql.Connection
                 //{
                 //    Attribute = new AutoCSer.Sql.ClientTypeAttribute { ClientType = typeof(AutoCSer.Sql.MySql.Client) },
-                //    ConnectionString = "Host=127.0.0.1;DataBase=AutoCSerDemo;User id=demo;Password=demo"
+                //    ConnectionString = "Host=127.0.0.1;DataBase=AutoCSerExample;User id=Example;Password=Example"
                 //};
             }
         }

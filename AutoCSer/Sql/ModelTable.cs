@@ -15,13 +15,13 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        private ModelTable(TableAttribute attribute, bool isCreateCacheWait) : base(attribute, isCreateCacheWait) { }
+        private ModelTable(TableAttribute attribute, bool isCreateCacheWait) : base(attribute, null, isCreateCacheWait) { }
         /// <summary>
         /// 获取数据库表格操作工具
         /// </summary>
         /// <returns>数据库表格操作工具</returns>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        public new static ModelTable<modelType> Get(bool isCreateCacheWait = false)
+        public static ModelTable<modelType> Get(bool isCreateCacheWait = false)
         {
             Type type = typeof(modelType);
             TableAttribute attribute = TypeAttribute.GetAttribute<TableAttribute>(type, false);
@@ -47,13 +47,13 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        private ModelTable(TableAttribute attribute, bool isCreateCacheWait) : base(attribute, isCreateCacheWait){ }
+        private ModelTable(TableAttribute attribute, bool isCreateCacheWait) : base(attribute, null, isCreateCacheWait){ }
         /// <summary>
         /// 获取数据库表格操作工具
         /// </summary>
         /// <returns>数据库表格操作工具</returns>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        public new static ModelTable<modelType, keyType> Get(bool isCreateCacheWait = false)
+        public static ModelTable<modelType, keyType> Get(bool isCreateCacheWait = false)
         {
             Type type = typeof(modelType);
             TableAttribute attribute = TypeAttribute.GetAttribute<TableAttribute>(type, false);

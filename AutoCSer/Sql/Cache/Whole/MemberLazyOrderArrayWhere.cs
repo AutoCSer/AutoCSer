@@ -13,8 +13,8 @@ namespace AutoCSer.Sql.Cache.Whole
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="keyType">分组字典关键字类型</typeparam>
     /// <typeparam name="targetType">目标数据类型</typeparam>
-    public class MemberLadyOrderArrayWhere<valueType, modelType, keyType, targetType>
-        : MemberLadyOrderArray<valueType, modelType, keyType, targetType>
+    public class MemberLazyOrderArrayWhere<valueType, modelType, keyType, targetType>
+        : MemberLazyOrderArray<valueType, modelType, keyType, targetType>
         where valueType : class, modelType
         where modelType : class
         where keyType : IEquatable<keyType>
@@ -34,8 +34,8 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <param name="getTargets"></param>
         /// <param name="sorter">排序器</param>
         /// <param name="isValue">缓存值判定</param>
-        public MemberLadyOrderArrayWhere(Event.Cache<valueType, modelType> cache, Func<modelType, keyType> getKey
-            , Func<keyType, targetType> getValue, Expression<Func<targetType, LadyOrderArray<valueType>>> member
+        public MemberLazyOrderArrayWhere(Event.Cache<valueType, modelType> cache, Func<modelType, keyType> getKey
+            , Func<keyType, targetType> getValue, Expression<Func<targetType, LazyOrderArray<valueType>>> member
             , Func<IEnumerable<targetType>> getTargets, Func<LeftArray<valueType>, LeftArray<valueType>> sorter, Func<valueType, bool> isValue)
             : base(cache, getKey, getValue, member, getTargets, sorter, false)
         {

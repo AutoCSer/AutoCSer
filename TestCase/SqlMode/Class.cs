@@ -33,7 +33,7 @@ namespace AutoCSer.TestCase.SqlModel
         /// 当前学生数量
         /// </summary>
         [AutoCSer.Sql.Log(CountType = typeof(Student))]
-        public int StudentCount;
+        internal int StudentCount;
         #endregion
     }
 }

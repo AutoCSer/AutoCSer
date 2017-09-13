@@ -69,6 +69,10 @@ namespace AutoCSer.Sql
             get { return Client.NowTimeMilliseconds; }
         }
         /// <summary>
+        /// 当前时间数组
+        /// </summary>
+        private NowTime[] nowTimes;
+        /// <summary>
         /// 操作队列
         /// </summary>
         private readonly LinkQueueTask queue;
@@ -80,6 +84,10 @@ namespace AutoCSer.Sql
         /// 缓存加载完毕事件
         /// </summary>
         public event Action OnCacheLoaded;
+        /// <summary>
+        /// 计算列加载完成事件
+        /// </summary>
+        internal event Action OnLogMemberLoaded;
         /// <summary>
         /// 创建缓存等待
         /// </summary>
@@ -113,8 +121,9 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
         /// <param name="tableName">表格名称</param>
+        /// <param name="nowTimes">当前时间数组</param>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        protected Table(TableAttribute attribute, string tableName, bool isCreateCacheWait)
+        protected Table(TableAttribute attribute, string tableName, NowTime[] nowTimes, bool isCreateCacheWait)
         {
             Connection connection = Connection.GetConnection(attribute.ConnectionType);
             this.Attribute = attribute;
@@ -123,6 +132,7 @@ namespace AutoCSer.Sql
             this.Log = connection.Log ?? AutoCSer.Log.Pub.Log;
             ignoreCase = connection.ClientAttribute.IgnoreCase;
             TableName = tableName;
+            this.nowTimes = nowTimes;
             queue = new LinkQueueTask(Client, AutoCSer.Threading.ThreadPool.Tiny);
             CacheLoadWait.Set(0);
             if (isCreateCacheWait) createCacheWait.Set(0);
@@ -206,6 +216,26 @@ namespace AutoCSer.Sql
         protected void callOnCacheLoaded()
         {
             if (OnCacheLoaded != null) OnCacheLoaded();
+        }
+        /// <summary>
+        /// 计算列加载完成事件
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void CallOnLogMemberLoaded()
+        {
+            if (OnLogMemberLoaded != null) OnLogMemberLoaded();
+        }
+        /// <summary>
+        /// 获取当前时间
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="memberIndex"></param>
+        /// <returns></returns>
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        internal DateTime GetNowTime(DateTime time, int memberIndex)
+        {
+            NowTime nowTime = nowTimes[memberIndex];
+            return nowTime == null ? time : nowTime.Next;
         }
 
         /// <summary>
@@ -291,8 +321,9 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
         /// <param name="tableName">表格名称</param>
+        /// <param name="nowTimes">当前时间数组</param>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        protected Table(TableAttribute attribute, string tableName, bool isCreateCacheWait) : base(attribute, tableName, isCreateCacheWait) { }
+        protected Table(TableAttribute attribute, string tableName, NowTime[] nowTimes, bool isCreateCacheWait) : base(attribute, tableName, nowTimes, isCreateCacheWait) { }
         /// <summary>
         /// 数据完成类型注册
         /// </summary>
@@ -350,8 +381,9 @@ namespace AutoCSer.Sql
         /// 数据表格
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
+        /// <param name="nowTimes">当前时间数组</param>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        protected Table(TableAttribute attribute, bool isCreateCacheWait) : base(attribute, attribute.GetTableName(typeof(tableType)), isCreateCacheWait)
+        protected Table(TableAttribute attribute, NowTime[] nowTimes, bool isCreateCacheWait) : base(attribute, attribute.GetTableName(typeof(tableType)), nowTimes, isCreateCacheWait)
         {
             DbConnection connection = Client.GetConnection();
             if (connection == null)
@@ -438,13 +470,14 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <returns>数据库表格操作工具</returns>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        public static Table<tableType, modelType> Get(bool isCreateCacheWait)
+        /// <param name="nowTimes">当前时间数组</param>
+        public static Table<tableType, modelType> Get(bool isCreateCacheWait, NowTime[] nowTimes = null)
         {
             Type type = typeof(tableType);
             TableAttribute attribute = TypeAttribute.GetAttribute<TableAttribute>(type, false);
             if (attribute != null && Array.IndexOf(ConfigLoader.Config.CheckConnectionNames, attribute.ConnectionType) != -1)
             {
-                Table<tableType, modelType> table = new Table<tableType, modelType>(attribute, isCreateCacheWait);
+                Table<tableType, modelType> table = new Table<tableType, modelType>(attribute, nowTimes, isCreateCacheWait);
                 if (!table.IsError) return table;
             }
             return null;
@@ -581,10 +614,19 @@ namespace AutoCSer.Sql
                 if (onInserted != null) OnInserted += onInserted;
                 if (onUpdated != null) OnUpdated += onUpdated;
                 if (onDeleted != null) OnDeleted += onDeleted;
-                CacheLoadWait.Set();
-                callOnCacheLoaded();
-                if (isSqlStreamTypeCount) LogStream.LoadedType.Add(typeof(modelType), Attribute.TableNumber);
+                CacheLoaded();
             }
+        }
+        /// <summary>
+        /// 缓存数据加载完成
+        /// </summary>
+        /// <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void CacheLoaded(bool isSqlStreamTypeCount)
+        {
+            CacheLoadWait.Set();
+            callOnCacheLoaded();
+            if (isSqlStreamTypeCount) LogStream.LoadedType.Add(typeof(modelType), Attribute.TableNumber);
         }
         /// <summary>
         /// 获取查询信息
@@ -685,7 +727,7 @@ namespace AutoCSer.Sql
             try
             {
                 CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-                Client.GetSelectQuery(selecter.Table = this, memberMap ?? SelectMemberMap, ref createQuery, ref selecter.Query);
+                Client.GetSelectQuery(selecter.Table = this, memberMap, ref createQuery, ref selecter.Query);
                 AddQueue(selecter);
                 return selecter.Wait();
             }
@@ -1524,34 +1566,36 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 设置关键字
         /// </summary>
-        private Action<modelType, keyType> setPrimaryKey;
+        public readonly Action<modelType, keyType> SetPrimaryKey;
         /// <summary>
         /// 获取关键字
         /// </summary>
-        internal Func<modelType, keyType> GetPrimaryKey;
+        internal readonly Func<modelType, keyType> GetPrimaryKey;
         /// <summary>
         /// 数据表格
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
+        /// <param name="nowTimes">当前时间数组</param>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        protected Table(TableAttribute attribute, bool isCreateCacheWait) : base(attribute, isCreateCacheWait)
+        protected Table(TableAttribute attribute, NowTime[] nowTimes, bool isCreateCacheWait) : base(attribute, nowTimes, isCreateCacheWait)
         {
             FieldInfo[] primaryKeys = DataModel.Model<modelType>.PrimaryKeys.getArray(value => value.FieldInfo);
             GetPrimaryKey = AutoCSer.Data.Model<modelType>.GetPrimaryKeyGetter<keyType>("GetSqlPrimaryKey", primaryKeys);
-            setPrimaryKey = AutoCSer.Data.Model<modelType>.GetPrimaryKeySetter<keyType>("SetSqlPrimaryKey", primaryKeys);
+            SetPrimaryKey = AutoCSer.Data.Model<modelType>.GetPrimaryKeySetter<keyType>("SetSqlPrimaryKey", primaryKeys);
         }
         /// <summary>
         /// 获取数据库表格操作工具
         /// </summary>
         /// <returns>数据库表格操作工具</returns>
         /// <param name="isCreateCacheWait">是否等待创建缓存</param>
-        public new static Table<tableType, modelType, keyType> Get(bool isCreateCacheWait)
+        /// <param name="nowTimes">当前时间数组</param>
+        public new static Table<tableType, modelType, keyType> Get(bool isCreateCacheWait, NowTime[] nowTimes = null)
         {
             Type type = typeof(tableType);
             TableAttribute attribute = TypeAttribute.GetAttribute<TableAttribute>(type, false);
             if (attribute != null && Array.IndexOf(ConfigLoader.Config.CheckConnectionNames, attribute.ConnectionType) != -1)
             {
-                Table<tableType, modelType, keyType> table = new Table<tableType, modelType, keyType>(attribute, isCreateCacheWait);
+                Table<tableType, modelType, keyType> table = new Table<tableType, modelType, keyType>(attribute, nowTimes, isCreateCacheWait);
                 if (!table.IsError) return table;
             }
             return null;
@@ -1566,7 +1610,7 @@ namespace AutoCSer.Sql
         public tableType GetByPrimaryKey(keyType key, MemberMap<modelType> memberMap = null)
         {
             tableType value = AutoCSer.Emit.Constructor<tableType>.New();
-            setPrimaryKey(value, key);
+            SetPrimaryKey(value, key);
             Getter getter = (Getter.YieldPool.Default.Pop() as Getter) ?? new Getter();
             try
             {

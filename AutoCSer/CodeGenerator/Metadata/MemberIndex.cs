@@ -21,6 +21,10 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         public string MemberName { get; protected set; }
         /// <summary>
+        /// 成员名称
+        /// </summary>
+        public string NextMemberName { get { return MemberName; } }
+        /// <summary>
         /// XML文档注释
         /// </summary>
         protected string xmlDocument;

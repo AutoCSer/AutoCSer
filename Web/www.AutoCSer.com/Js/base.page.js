@@ -412,9 +412,10 @@ var AutoCSer;
             else
                 AutoCSer.Loader.AppendJavaScript(Src, Charset);
         };
-        Pub.ToJson = function (Value, IsIgnore, IsNameQuery, Parents) {
+        Pub.ToJson = function (Value, IsIgnore, IsNameQuery, IsSortName, Parents) {
             if (IsIgnore === void 0) { IsIgnore = false; }
             if (IsNameQuery === void 0) { IsNameQuery = true; }
+            if (IsSortName === void 0) { IsSortName = true; }
             if (Parents === void 0) { Parents = null; }
             if (Value != null) {
                 var Type = typeof (Value);
@@ -432,12 +433,12 @@ var AutoCSer;
                         if (Parents[Index] == Value)
                             return 'null';
                     if (typeof (Value.ToJson) == 'function')
-                        return Value.ToJson(IsIgnore, IsNameQuery, Parents);
+                        return Value.ToJson(IsIgnore, IsNameQuery, IsSortName, Parents);
                     Parents.push(Value);
                     var Values = [];
                     if (Type == '[object Array]') {
                         for (var Index = 0; Index - Value.length; ++Index)
-                            Values.push(this.ToJson(Value[Index], IsIgnore, IsNameQuery, Parents));
+                            Values.push(this.ToJson(Value[Index], IsIgnore, IsNameQuery, IsSortName, Parents));
                         Parents.pop();
                         return '[' + Values.join(',') + ']';
                     }
@@ -446,9 +447,16 @@ var AutoCSer;
                             var NextValue = Value[Name];
                             if (NextValue !== undefined) {
                                 if ((!IsIgnore || NextValue) && typeof (NextValue) != 'function') {
-                                    Values.push((IsNameQuery ? this.ToJson(Name.toString()) : Name.toString()) + ':' + this.ToJson(NextValue, IsIgnore, IsNameQuery, Parents));
+                                    Values.push(IsSortName ? Name : ((IsNameQuery ? this.ToJson(Name.toString()) : Name.toString()) + ':' + this.ToJson(NextValue, IsIgnore, IsNameQuery, false, Parents)));
                                 }
                             }
+                        }
+                    }
+                    if (IsSortName && Values.length) {
+                        Values.sort();
+                        for (var Index = Values.length; Index;) {
+                            var Name = Values[--Index];
+                            Values[Index] = (IsNameQuery ? this.ToJson(Name.toString()) : Name.toString()) + ':' + this.ToJson(Value[Name], IsIgnore, IsNameQuery, true, Parents);
                         }
                     }
                     Parents.pop();

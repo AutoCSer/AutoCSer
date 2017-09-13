@@ -64,7 +64,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// <summary>
         /// TCP调用客户端
         /// </summary>
-        public static partial class TcpCall
+        public static/*NOTE*/ new/*NOTE*/ partial class TcpCall
         {
             #region IF Type.XmlDocument
             /// <summary>

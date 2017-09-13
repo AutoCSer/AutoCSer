@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoCSer.NetStandard.AOT" Version="1.1.16" />
+    <PackageReference Include="AutoCSer.NetStandard.AOT" Version="1.1.17" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

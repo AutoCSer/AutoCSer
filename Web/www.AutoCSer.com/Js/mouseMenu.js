@@ -105,8 +105,8 @@ var AutoCSer;
             this.Value = Value;
             this.Show = Show || Value;
         }
-        MouseMenuEnum.prototype.ToJson = function (IsIgnore, IsNameQuery, Parents) {
-            return AutoCSer.Pub.ToJson(this.Value, IsIgnore, IsNameQuery, Parents);
+        MouseMenuEnum.prototype.ToJson = function (IsIgnore, IsNameQuery, IsSortName, Parents) {
+            return AutoCSer.Pub.ToJson(this.Value, IsIgnore, IsNameQuery, IsSortName, Parents);
         };
         MouseMenuEnum.prototype.toString = function () {
             return this.Value;

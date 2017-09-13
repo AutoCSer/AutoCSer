@@ -18,6 +18,18 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         internal partial class Generator : Generator<AutoCSer.Sql.ModelAttribute>
         {
             /// <summary>
+            /// SQL表格计算列日志字段代理名称
+            /// </summary>
+            public const string DefaultLogProxyMemberName = "SqlLogProxyMember";
+            /// <summary>
+            /// SQL表格默认缓存 字段名称
+            /// </summary>
+            public const string SqlCacheName = "sqlCache";
+            /// <summary>
+            /// 关键字类型名称
+            /// </summary>
+            public const string PrimaryKeyTypeName = "DataPrimaryKey";
+            /// <summary>
             /// 数据关键字 代码生成
             /// </summary>
             private static readonly DataPrimaryKey.Generator dataPrimaryKey = new DataPrimaryKey.Generator();
@@ -54,6 +66,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get { return Member.MemberName + "Loaded"; }
                 }
                 /// <summary>
+                /// 获取数据函数名称
+                /// </summary>
+                public string GetMemberName
+                {
+                    get { return "Get" + Member.MemberName; }
+                }
+                /// <summary>
                 /// 是否生成日志流计数
                 /// </summary>
                 public bool IsSqlStreamCount
@@ -73,6 +92,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 public int CountTypeNumber
                 {
                     get { return Attribute.CountTypeNumber; }
+                }
+                /// <summary>
+                /// 是否需要生成日志字段代理属性
+                /// </summary>
+                public bool IsProxy
+                {
+                    get { return (Member.MemberFilters & AutoCSer.Metadata.MemberFilters.PublicInstanceField) != AutoCSer.Metadata.MemberFilters.PublicInstanceField; }
                 }
             }
             /// <summary>
@@ -196,6 +222,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get { return "SqlLogMember"; }
             }
             /// <summary>
+            /// SQL表格计算列日志字段代理名称
+            /// </summary>
+            public string LogProxyMemberName
+            {
+                get { return DefaultLogProxyMemberName; }
+            }
+            /// <summary>
+            /// 计算列加载完成字段名称
+            /// </summary>
+            public string IsSqlLogProxyLoadedName
+            {
+                get { return AutoCSer.Sql.LogStream.Log.IsSqlLogProxyLoadedName; }
+            }
+            /// <summary>
             /// 日志流计数完成类型集合
             /// </summary>
             internal LogCountType[] SqlStreamCountTypes
@@ -219,9 +259,17 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             internal LogMember[] LogMembers;
             /// <summary>
+            /// 是否需要生成日志字段代理属性
+            /// </summary>
+            internal bool IsLogProxyMember;
+            /// <summary>
             /// 计数字段集合
             /// </summary>
             internal CountMember[] CounterMembers;
+            /// <summary>
+            /// 更新字段集合
+            /// </summary>
+            internal MemberIndex[] UpdateMembers;
             /// <summary>
             /// 关键字成员集合
             /// </summary>
@@ -231,7 +279,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public string PrimaryKeyType
             {
-                get { return PrimaryKeys.Length > 1 ? "DataPrimaryKey" : PrimaryKeys[0].MemberSystemType.FullName; }
+                get { return PrimaryKeys.Length > 1 ? PrimaryKeyTypeName : PrimaryKeys[0].MemberSystemType.FullName; }
             }
             /// <summary>
             /// 自增成员
@@ -278,6 +326,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 当前时间生成成员
             /// </summary>
             internal MemberIndex[] NowTimeMembers;
+            /// <summary>
+            /// 当前时间生成成员数组大小
+            /// </summary>
+            public int NowTimeArraySize;
             /// <summary>
             /// 默认二进制序列化是否序列化成员位图
             /// </summary>
@@ -401,7 +453,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public string IdentityArrayCacheName
             {
-                get { return "sqlCache"; }
+                get { return SqlCacheName; }
             }
             /// <summary>
             /// SQL表格默认缓存 字段名称
@@ -639,17 +691,25 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get { return "createIdentityCounterQueueList"; }
             }
             /// <summary>
+            /// 数据更新成员类型类型
+            /// </summary>
+            public string UpdateValueClass
+            {
+                get { return Attribute.IsUpdateMemberMapClassType ? " sealed class" : " struct"; }
+            }
+            /// <summary>
             /// 安装下一个类型
             /// </summary>
             protected override void nextCreate()
             {
                 MemberIndex identity = Identity = null;
-                int isIdentityCase = SqlStreamTypeCount = 0;
+                int isIdentityCase = SqlStreamTypeCount = NowTimeArraySize = 0;
                 LeftArray<MemberIndex> members = default(LeftArray<MemberIndex>), primaryKeys = default(LeftArray<MemberIndex>), indexMembers = default(LeftArray<MemberIndex>);
                 LeftArray<CountMember> counterMembers = default(LeftArray<CountMember>);
                 LeftArray<MemberIndex> nowTimeMembers = default(LeftArray<MemberIndex>);
                 LeftArray<LogMember> logMembers = new LeftArray<LogMember>();
                 LeftArray<string> strings = default(LeftArray<string>);
+                IsLogProxyMember = false;
                 foreach (MemberIndex member in MemberIndex.GetMembers(Type, Attribute.MemberFilters))
                 {
                     if (!member.IsIgnore)
@@ -661,7 +721,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             AutoCSer.Sql.LogAttribute logAttribute = member.GetAttribute<AutoCSer.Sql.LogAttribute>(false);
                             if (logAttribute != null)
                             {
-                                logMembers.Add(new LogMember { Member = member, Attribute = logAttribute, MemberAttribute = attribute });
+                                LogMember logMember = new LogMember { Member = member, Attribute = logAttribute, MemberAttribute = attribute };
+                                logMembers.Add(logMember);
+                                if (logMember.IsProxy) IsLogProxyMember = true;
                                 if (!logAttribute.IsMember) isMember = false;
                             }
                         }
@@ -671,7 +733,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             if (attribute != null)
                             {
                                 if (attribute.IsMemberIndex) indexMembers.Add(member);
-                                if (attribute.IsNowTime && (member.MemberSystemType == typeof(DateTime) || member.MemberSystemType == typeof(DateTime?))) nowTimeMembers.Add(member);
+                                if (attribute.IsNowTime && member.MemberSystemType == typeof(DateTime))
+                                {
+                                    nowTimeMembers.Add(member);
+                                    if (member.MemberIndex >= NowTimeArraySize) NowTimeArraySize = member.MemberIndex + 1;
+                                }
                                 if (attribute.PrimaryKeyIndex != 0) primaryKeys.Add(member);
                                 if (attribute.IsIdentity) Identity = member;
                             }
@@ -706,7 +772,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 CounterMembers = counterMembers.ToArray();
-                IndexMembers = indexMembers.ToArray();
                 NowTimeMembers = nowTimeMembers.ToArray();
                 if (strings.Length != 0) Messages.Message(Type.FullName + " 字符串字段缺少最大长度限制 " + string.Join(",", strings.ToArray()));
                 WebPaths.Length = 0;
@@ -738,6 +803,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 dataPrimaryKey.Run(Type, PrimaryKeys = primaryKeys.ToArray());
+                if (Attribute.IsUpdateMemberMap)
+                {
+                    if (Identity == null) UpdateMembers = members.GetFindArray(value => Array.IndexOf(PrimaryKeys, value) < 0);
+                    else UpdateMembers = members.GetFindArray(value => value != Identity);
+                    if (indexMembers.Length != 0) indexMembers.Remove(value => Array.IndexOf(UpdateMembers, value) >= 0);
+                    if (indexMembers.Length == 0) indexMembers.Set(UpdateMembers);
+                    else indexMembers.Add(UpdateMembers);
+                }
+                else UpdateMembers = NullValue<MemberIndex>.Array;
+                IndexMembers = indexMembers.ToArray();
                 create(true);
             }
             /// <summary>

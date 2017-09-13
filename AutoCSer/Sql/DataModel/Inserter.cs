@@ -29,12 +29,12 @@ namespace AutoCSer.Sql.DataModel
         /// <summary>
         /// 动态函数
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="modelType"></param>
         /// <param name="attribute"></param>
-        public Inserter(Type type, ModelAttribute attribute)
+        public Inserter(Type modelType, ModelAttribute attribute)
         {
             this.attribute = attribute;
-            dynamicMethod = new DynamicMethod("SqlModelInserter", null, new Type[] { typeof(CharStream), typeof(MemberMap), type, typeof(ConstantConverter) }, type, true);
+            dynamicMethod = new DynamicMethod("SqlModelInserter", null, new Type[] { typeof(CharStream), typeof(MemberMap), modelType, typeof(ConstantConverter), typeof(Table) }, modelType, true);
             generator = dynamicMethod.GetILGenerator();
             generator.DeclareLocal(typeof(int));
             generator.Emit(OpCodes.Ldc_I4_0);
@@ -69,8 +69,14 @@ namespace AutoCSer.Sql.DataModel
             {
                 generator.Emit(OpCodes.Ldarg_3);
                 generator.Emit(OpCodes.Ldarg_0);
+                if (field.IsNowTime) generator.Emit(OpCodes.Ldarg_S, 4);
                 generator.Emit(OpCodes.Ldarg_2);
                 generator.Emit(OpCodes.Ldfld, field.FieldInfo);
+                if (field.IsNowTime)
+                {
+                    generator.int32(field.MemberMapIndex);
+                    generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);
+                }
                 if (field.ToSqlCastMethod != null) generator.Emit(OpCodes.Call, field.ToSqlCastMethod);
                 if (attribute.IsNullStringEmpty && field.DataType == typeof(string)) generator.nullStringEmpty();
                 generator.Emit(OpCodes.Callvirt, field.ToSqlMethod);
@@ -90,7 +96,7 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据模型
     /// </summary>
-    internal abstract partial class Model<valueType>
+    internal abstract partial class Model<modelType>
     {
         /// <summary>
         /// 添加数据
@@ -123,32 +129,33 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="memberMap">成员位图</param>
             /// <param name="value">数据</param>
             /// <param name="converter">SQL常量转换</param>
+            /// <param name="table">数据表格</param>
 #if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
-            public static void Insert(CharStream sqlStream, MemberMap memberMap, valueType value, ConstantConverter converter)
+            public static void Insert(CharStream sqlStream, MemberMap memberMap, modelType value, ConstantConverter converter, Table table)
             {
 #if NOJIT
                 if (fields != null)
                 {
                     object[] sqlColumnParameters = null, castParameters = null, parameters = null;
                     byte isNext = 0;
-                    foreach (sqlModel.insertField field in fields)
+                    foreach (InsertField field in fields)
                     {
                         if (memberMap.IsMember(field.Field.MemberMapIndex))
                         {
                             if (isNext == 0) isNext = 1;
                             else sqlStream.Write(',');
-                            AutoCSer.code.cSharp.sqlModel.fieldInfo fieldInfo = field.Field;
+                            Field fieldInfo = field.Field;
                             if (fieldInfo.IsSqlColumn)
                             {
                                 if (sqlColumnParameters == null) sqlColumnParameters = new object[] { sqlStream, null, converter };
-                                sqlColumnParameters[1] = fieldInfo.Field.GetValue(value);
+                                sqlColumnParameters[1] = fieldInfo.FieldInfo.GetValue(value);
                                 field.SqlColumnMethod.Invoke(null, sqlColumnParameters);
                             }
-                            else
+                            else if (fieldInfo.NowTimeField == null)
                             {
-                                object memberValue = fieldInfo.Field.GetValue(value);
+                                object memberValue = fieldInfo.FieldInfo.GetValue(value);
                                 if (fieldInfo.ToSqlCastMethod != null)
                                 {
                                     if (castParameters == null) castParameters = new object[1];
@@ -159,23 +166,29 @@ namespace AutoCSer.Sql.DataModel
                                 parameters[1] = memberValue;
                                 fieldInfo.ToSqlMethod.Invoke(converter, parameters);
                             }
+                            else
+                            {
+                                if (parameters == null) parameters = new object[] { sqlStream, null };
+                                parameters[1] = fieldInfo.NowTimeField.GetValue(null);
+                                fieldInfo.ToSqlMethod.Invoke(converter, parameters);
+                            }
                         }
                     }
                 }
 #else
-                if (inserter != null) inserter(sqlStream, memberMap, value, converter);
+                if (inserter != null) inserter(sqlStream, memberMap, value, converter, table);
 #endif
             }
 #if NOJIT
             /// <summary>
             /// 字段集合
             /// </summary>
-            private static readonly sqlModel.insertField[] fields;
+            private static readonly InsertField[] fields;
 #else
             /// <summary>
             /// 获取插入数据SQL表达式
             /// </summary>
-            private static readonly Action<CharStream, MemberMap, valueType, ConstantConverter> inserter;
+            private static readonly Action<CharStream, MemberMap, modelType, ConstantConverter, Table> inserter;
 #endif
             static Inserter()
             {
@@ -186,9 +199,9 @@ namespace AutoCSer.Sql.DataModel
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.Inserter dynamicMethod = new DataModel.Inserter(typeof(valueType), attribute);
+                    DataModel.Inserter dynamicMethod = new DataModel.Inserter(typeof(modelType), attribute);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
-                    inserter = (Action<CharStream, MemberMap, valueType, ConstantConverter>)dynamicMethod.Create<Action<CharStream, MemberMap, valueType, ConstantConverter>>();
+                    inserter = (Action<CharStream, MemberMap, modelType, ConstantConverter, Table>)dynamicMethod.Create<Action<CharStream, MemberMap, modelType, ConstantConverter, Table>>();
 #endif
                 }
             }

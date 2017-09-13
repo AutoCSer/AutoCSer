@@ -122,8 +122,18 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 get
                 {
-                    return AutoParameter.DefaultNamespace + ".TcpCall." + Type.TypeName;
+                    return GetTcpCallTypeName(AutoParameter, Type);
                 }
+            }
+            /// <summary>
+            /// 获取 TcpCall 调用类型名称
+            /// </summary>
+            /// <param name="namespaceString"></param>
+            /// <param name="type"></param>
+            /// <returns></returns>
+            public static string GetTcpCallTypeName(ProjectParameter parameter, ExtensionType type)
+            {
+                return parameter.DefaultNamespace + ".TcpCall." + type.TypeName;
             }
             /// <summary>
             /// 安装下一个类型

@@ -1229,6 +1229,11 @@
             成员名称
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.Metadata.MemberIndex.NextMemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.Metadata.MemberIndex.xmlDocument">
             <summary>
             XML文档注释
@@ -3571,6 +3576,14 @@
             <summary>
             客户端时间验证类型
             </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.GetTcpCallTypeName(AutoCSer.CodeGenerator.ProjectParameter,AutoCSer.CodeGenerator.Metadata.ExtensionType)">
+            <summary>
+            获取 TcpCall 调用类型名称
+            </summary>
+            <param name="namespaceString"></param>
+            <param name="type"></param>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.nextCreate">
             <summary>

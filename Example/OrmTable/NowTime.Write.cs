@@ -15,7 +15,7 @@ namespace AutoCSer.Example.OrmTable
         /// <returns>添加是否成功</returns>
         internal static bool Insert(NowTime value)
         {
-            value.AppendTime = NowTimes.AppendTime.Next;
+            //value.AppendTime = NowTimes.AppendTime.Next;
             return sqlTable.Insert(value);
         }
         /// <summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Example.OrmTable
         /// <param name="onInserted">添加数据回调</param>
         internal static void Insert(NowTime value, Action<NowTime> onInserted)
         {
-            value.AppendTime = NowTimes.AppendTime.Next;
+            //value.AppendTime = NowTimes.AppendTime.Next;
             sqlTable.Insert(value, onInserted);
         }
 
@@ -40,7 +40,8 @@ namespace AutoCSer.Example.OrmTable
         /// <returns>更新是否成功</returns>
         internal static bool UpdateAppendTime(int id)
         {
-            return sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap);
+            //return sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap);
+            return sqlTable.Update(new NowTime { Id = id }, updateAppendTimeMemberMap);
         }
         /// <summary>
         /// 异步更新数据
@@ -49,7 +50,8 @@ namespace AutoCSer.Example.OrmTable
         /// <param name="onUpdated">更新数据回调</param>
         internal static void UpdateAppendTime(int id, Action<NowTime> onUpdated)
         {
-            sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap, onUpdated);
+            sqlTable.Update(new NowTime { Id = id }, updateAppendTimeMemberMap, onUpdated);
+            //sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap, onUpdated);
         }
 
         /// <summary>

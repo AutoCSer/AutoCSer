@@ -7,7 +7,7 @@
     <!--include:Include\HeaderMenu[FalseFlag]-->
     <!--Value:ClassInfo-->
     <div>
-        <div>班级名称：=@@Name 专业：=@Discipline 学生数量：=@StudentCount 年份：=@DateRange.Start.DateTime#DateRange.Start.DateTime.getFullYear</div>
+        <div>班级名称：=@@Name 专业：=@Discipline 学生数量：=@Remote.StudentCount 年份：=@DateRange.Start.DateTime#DateRange.Start.DateTime.getFullYear</div>
         <!--Loop:Remote.Students-->
         <div><a href="=@@Path.Index">=@@Name</a> 邮箱：=@@Email 性别：=@@Gender 出生日期：=@Birthday.DateTime#Birthday.DateTime.ToDateString</div>
         <!--Loop:Remote.Students-->

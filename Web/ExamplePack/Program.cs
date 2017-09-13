@@ -27,10 +27,15 @@ namespace AutoCSer.Tool.OpenPack
             if (!githubDirectory.Exists) githubDirectory.Create();
             //if (File.Exists(zipPath + zipFileName)) File.Delete(zipPath + zipFileName);
             foreach (FileInfo file in new DirectoryInfo(@"..\..\..\..\ThirdParty\").GetFiles()) thirdPartyFileNames.Add(file.Name.ToLower());
-            using (MemoryStream stream = new MemoryStream())
+            //using (MemoryStream stream = new MemoryStream())
+            //{
+            //    using (zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true)) boot(new DirectoryInfo(@"..\..\..\..\"), githubDirectory.FullName);
+            //    using (FileStream packFile = new FileStream(zipPath + zipFileName, FileMode.Create)) packFile.Write(stream.GetBuffer(), 0, (int)stream.Position);
+            //}
+            using (FileStream stream = new FileStream(zipPath + zipFileName, FileMode.Create))
+            using (zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true)) 
             {
-                using (zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true)) boot(new DirectoryInfo(@"..\..\..\..\"), githubDirectory.FullName);
-                using (FileStream packFile = new FileStream(zipPath + zipFileName, FileMode.Create)) packFile.Write(stream.GetBuffer(), 0, (int)stream.Position);
+                boot(new DirectoryInfo(@"..\..\..\..\"), githubDirectory.FullName);
             }
             Console.WriteLine(zipPath + zipFileName);
             Console.ReadKey();

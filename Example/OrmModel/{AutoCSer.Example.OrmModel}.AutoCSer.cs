@@ -611,10 +611,11 @@ namespace AutoCSer.Example.OrmModel
             public abstract class SqlModel<tableType> : AutoCSer.Example.OrmModel.NowTime
                 where tableType : SqlModel<tableType>
             {
+                private static readonly AutoCSer.Sql.NowTime[] nowTimeArray = new AutoCSer.Sql.NowTime[1];
                 /// <summary>
                 /// SQL表格操作工具
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.NowTime> sqlTable = AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.NowTime>.Get(false);
+                protected static readonly AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.NowTime> sqlTable = AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.NowTime>.Get(false, nowTimeArray);
                 private static bool isSqlLoaded;
                 /// <summary>
                 /// 等待数据初始化完成
@@ -634,6 +635,7 @@ namespace AutoCSer.Example.OrmModel
                 /// <summary>
                 /// 当前时间定义
                 /// </summary>
+                [AutoCSer.IOS.Preserve(AllMembers = true)]
                 protected static class NowTimes
                 {
                     /// <summary>
@@ -652,6 +654,10 @@ namespace AutoCSer.Example.OrmModel
                         }
                         AppendTime/**/.SetMaxTime();
                     }
+                }
+                static SqlModel()
+                {
+                    nowTimeArray[0] = NowTimes.AppendTime;
                 }
             }
         }

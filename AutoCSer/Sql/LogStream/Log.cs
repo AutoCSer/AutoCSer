@@ -14,9 +14,17 @@ namespace AutoCSer.Sql.LogStream
     public abstract class Log : LinkQueueTaskNode
     {
         /// <summary>
+        /// 计算列加载完成字段名称
+        /// </summary>
+        public const string IsSqlLogProxyLoadedName = "_IsSqlLogProxyLoaded_";
+        /// <summary>
         /// 数据表格
         /// </summary>
         protected readonly Table table;
+        /// <summary>
+        /// 等待事件
+        /// </summary>
+        private AutoCSer.Threading.WaitHandle wait;
         /// <summary>
         /// 等待加载成员位图
         /// </summary>
@@ -56,6 +64,7 @@ namespace AutoCSer.Sql.LogStream
         /// <param name="memberIndexs"></param>
         protected Log(Table table, int[] memberIndexs)
         {
+            wait.Set(0);
             if ((waitCount = memberIndexs.Length) > 0)
             {
                 int maxIndex = memberIndexs.max(0);
@@ -89,12 +98,22 @@ namespace AutoCSer.Sql.LogStream
                     if (--waitCount == 0)
                     {
                         waitMapLock = 0;
-                        table.AddQueue(this);
+                        loaded();
                         waitMap = null;
                     }
                     else waitMapLock = 0;
                 }
             }
+        }
+        /// <summary>
+        /// 判断成员是否已经加载
+        /// </summary>
+        /// <param name="memberIndex"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void WaitMember(int memberIndex)
+        {
+            byte[] waitMap = this.waitMap;
+            if (waitMap != null && (waitMap[memberIndex >> 3] & (1 << (int)(memberIndex & 7))) != 0) wait.Wait();
         }
         /// <summary>
         /// 加载完成检测
@@ -105,7 +124,7 @@ namespace AutoCSer.Sql.LogStream
             if (--waitCount == 0)
             {
                 waitMapLock = 0;
-                table.AddQueue(this);
+                loaded();
             }
             else waitMapLock = 0;
         }
@@ -116,6 +135,15 @@ namespace AutoCSer.Sql.LogStream
         public void Start()
         {
             if (Interlocked.CompareExchange(ref isStart, 1, 0) == 0) loadCount();
+        }
+        /// <summary>
+        /// 加载完成
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private void loaded()
+        {
+            wait.Set();
+            table.AddQueue(this);
         }
         /// <summary>
         /// 执行任务
@@ -170,12 +198,16 @@ namespace AutoCSer.Sql.LogStream
             /// </summary>
             internal Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> OnLog;
             /// <summary>
+            /// 是否仅队列处理
+            /// </summary>
+            internal bool IsQueue;
+            /// <summary>
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
             internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                Log.add(OnLog);
+                Log.add(OnLog, IsQueue);
                 return LinkNext;
             }
         }
@@ -284,6 +316,7 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         protected override void onLoaded()
         {
+            table.CallOnLogMemberLoaded();
             for (int writeIndex = 0; writeIndex != onLogIndex; )
             {
                 if (start(onLogs[writeIndex])) ++writeIndex;
@@ -336,10 +369,20 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="onLog"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void add(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog)
+        public void AddQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog)
+        {
+            if (onLog != null) table.AddQueue(new AddOnLogTask { Log = this, OnLog = onLog, IsQueue = true });
+        }
+        /// <summary>
+        /// 添加日志处理委托
+        /// </summary>
+        /// <param name="onLog"></param>
+        /// <param name="isQueue"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private void add(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog, bool isQueue)
         {
             if (onLogIndex == onLogs.Length) onLog(new Data { Type = LogType.CountError });
-            else if (isLoaded || start(onLog)) onLogs[onLogIndex++] = onLog;
+            else if (isLoaded || isQueue || start(onLog)) onLogs[onLogIndex++] = onLog;
         }
         /// <summary>
         /// 添加数据

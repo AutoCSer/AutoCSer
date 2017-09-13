@@ -735,6 +735,11 @@
             SQL操作客户端
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.Table.nowTimes">
+            <summary>
+            当前时间数组
+            </summary>
+        </member>
         <member name="F:AutoCSer.Sql.Table.queue">
             <summary>
             操作队列
@@ -780,12 +785,13 @@
             待创建一级索引的成员名称集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Table.#ctor(AutoCSer.Sql.TableAttribute,System.String,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table.#ctor(AutoCSer.Sql.TableAttribute,System.String,AutoCSer.Sql.NowTime[],System.Boolean)">
             <summary>
             数据库表格操作工具
             </summary>
             <param name="attribute">数据库表格配置</param>
             <param name="tableName">表格名称</param>
+            <param name="nowTimes">当前时间数组</param>
             <param name="isCreateCacheWait">是否等待创建缓存</param>
         </member>
         <member name="M:AutoCSer.Sql.Table.Dispose">
@@ -826,6 +832,19 @@
             <summary>
             缓存加载完毕事件
             </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Table.CallOnLogMemberLoaded">
+            <summary>
+            计算列加载完成事件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Table.GetNowTime(System.DateTime,System.Int32)">
+            <summary>
+            获取当前时间
+            </summary>
+            <param name="time"></param>
+            <param name="memberIndex"></param>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.Sql.Table.StringVerify(System.String,System.String,System.Int32,System.Boolean,System.Boolean)">
             <summary>
@@ -874,17 +893,23 @@
             缓存加载完毕事件
             </summary>
         </member>
+        <member name="E:AutoCSer.Sql.Table.OnLogMemberLoaded">
+            <summary>
+            计算列加载完成事件
+            </summary>
+        </member>
         <member name="F:AutoCSer.Sql.Table`1.SelectMemberMap">
             <summary>
             更新查询SQL数据成员
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Table`1.#ctor(AutoCSer.Sql.TableAttribute,System.String,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`1.#ctor(AutoCSer.Sql.TableAttribute,System.String,AutoCSer.Sql.NowTime[],System.Boolean)">
             <summary>
             数据表格
             </summary>
             <param name="attribute">数据库表格配置</param>
             <param name="tableName">表格名称</param>
+            <param name="nowTimes">当前时间数组</param>
             <param name="isCreateCacheWait">是否等待创建缓存</param>
         </member>
         <member name="M:AutoCSer.Sql.Table`1.AddLogStreamLoadedType(System.Action{AutoCSer.Sql.LogStream.LoadedType},AutoCSer.Sql.LogStream.LoadedType[])">
@@ -912,19 +937,21 @@
             释放资源
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Table`2.#ctor(AutoCSer.Sql.TableAttribute,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`2.#ctor(AutoCSer.Sql.TableAttribute,AutoCSer.Sql.NowTime[],System.Boolean)">
             <summary>
             数据表格
             </summary>
             <param name="attribute">数据库表格配置</param>
+            <param name="nowTimes">当前时间数组</param>
             <param name="isCreateCacheWait">是否等待创建缓存</param>
         </member>
-        <member name="M:AutoCSer.Sql.Table`2.Get(System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`2.Get(System.Boolean,AutoCSer.Sql.NowTime[])">
             <summary>
             获取数据库表格操作工具
             </summary>
             <returns>数据库表格操作工具</returns>
             <param name="isCreateCacheWait">是否等待创建缓存</param>
+            <param name="nowTimes">当前时间数组</param>
         </member>
         <member name="M:AutoCSer.Sql.Table`2.CallOnInsert(`0)">
             <summary>
@@ -972,6 +999,12 @@
             <param name="onInserted">添加记录事件</param>
             <param name="onUpdated">更新记录事件</param>
             <param name="onDeleted">删除记录事件</param>
+            <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Boolean)">
+            <summary>
+            缓存数据加载完成
+            </summary>
             <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
         </member>
         <member name="M:AutoCSer.Sql.Table`2.GetSelectQuery(AutoCSer.Metadata.MemberMap{`1},AutoCSer.Sql.CreateSelectQuery{`1}@,AutoCSer.Sql.SelectQuery{`1}@)">
@@ -1663,7 +1696,7 @@
             <typeparam name="modelType">模型类型</typeparam>
             <typeparam name="keyType">关键字类型</typeparam>
         </member>
-        <member name="F:AutoCSer.Sql.Table`3.setPrimaryKey">
+        <member name="F:AutoCSer.Sql.Table`3.SetPrimaryKey">
             <summary>
             设置关键字
             </summary>
@@ -1673,19 +1706,21 @@
             获取关键字
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Table`3.#ctor(AutoCSer.Sql.TableAttribute,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`3.#ctor(AutoCSer.Sql.TableAttribute,AutoCSer.Sql.NowTime[],System.Boolean)">
             <summary>
             数据表格
             </summary>
             <param name="attribute">数据库表格配置</param>
+            <param name="nowTimes">当前时间数组</param>
             <param name="isCreateCacheWait">是否等待创建缓存</param>
         </member>
-        <member name="M:AutoCSer.Sql.Table`3.Get(System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`3.Get(System.Boolean,AutoCSer.Sql.NowTime[])">
             <summary>
             获取数据库表格操作工具
             </summary>
             <returns>数据库表格操作工具</returns>
             <param name="isCreateCacheWait">是否等待创建缓存</param>
+            <param name="nowTimes">当前时间数组</param>
         </member>
         <member name="M:AutoCSer.Sql.Table`3.GetByPrimaryKey(`2,AutoCSer.Metadata.MemberMap{`1})">
             <summary>
@@ -1929,6 +1964,16 @@
             <param name="oldValue">更新前的数据</param>
             <param name="updateMemberMap">更新成员位图</param>
         </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.setIsLogProxyLoaded">
+            <summary>
+            设置计算列加载完成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.isLogProxyLoaded">
+            <summary>
+            计算列加载完成
+            </summary>
+        </member>
         <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Int32)">
             <summary>
             SQL操作缓存
@@ -1948,6 +1993,17 @@
             </summary>
             <param name="connection"></param>
             <param name="query">查询信息</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.onLogMemberLoaded">
+            <summary>
+            计算列加载完成事件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.callSetIsLogProxyLoaded(`0)">
+            <summary>
+            设置计算列加载完成
+            </summary>
+            <param name="value"></param>
         </member>
         <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.callOnInserted(`0)">
             <summary>
@@ -2027,7 +2083,7 @@
             <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateMemberLadyOrderArray``4(AutoCSer.Sql.Cache.Whole.Event.Key{``1,``2,``3,``0},System.Func{`1,``0},System.Linq.Expressions.Expression{System.Func{``3,AutoCSer.Sql.Cache.LadyOrderArray{`0}}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean)">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateMemberLazyOrderArray``4(AutoCSer.Sql.Cache.Whole.Event.Key{``1,``2,``3,``0},System.Func{`1,``0},System.Linq.Expressions.Expression{System.Func{``3,AutoCSer.Sql.Cache.LazyOrderArray{`0}}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean)">
             <summary>
             分组列表 延时排序缓存
             </summary>
@@ -2042,7 +2098,7 @@
             <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateMemberLadyOrderArrayWhere``4(AutoCSer.Sql.Cache.Whole.Event.Key{``1,``2,``3,``0},System.Func{`1,``0},System.Linq.Expressions.Expression{System.Func{``3,AutoCSer.Sql.Cache.LadyOrderArray{`0}}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Func{`0,System.Boolean},System.Boolean)">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateMemberLazyOrderArrayWhere``4(AutoCSer.Sql.Cache.Whole.Event.Key{``1,``2,``3,``0},System.Func{`1,``0},System.Linq.Expressions.Expression{System.Func{``3,AutoCSer.Sql.Cache.LazyOrderArray{`0}}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Func{`0,System.Boolean},System.Boolean)">
             <summary>
             分组列表 延时排序缓存
             </summary>
@@ -2109,7 +2165,7 @@
             <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateMemberArrayLadyOrderArray``4(AutoCSer.Sql.Cache.Whole.Event.Key{``1,``2,``3,``0},System.Func{`1,``0},System.Func{`0,System.Int32},System.Int32,System.Linq.Expressions.Expression{System.Func{``3,AutoCSer.Sql.Cache.LadyOrderArray{`0}[]}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateMemberArrayLazyOrderArray``4(AutoCSer.Sql.Cache.Whole.Event.Key{``1,``2,``3,``0},System.Func{`1,``0},System.Func{`0,System.Int32},System.Int32,System.Linq.Expressions.Expression{System.Func{``3,AutoCSer.Sql.Cache.LazyOrderArray{`0}[]}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean,System.Boolean)">
             <summary>
             创建分组列表 延时排序缓存
             </summary>
@@ -2873,6 +2929,16 @@
             删除数据
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="T:AutoCSer.Sql.RemoteMemberAttribute">
+            <summary>
+            远程成员配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.MemberName">
+            <summary>
+            成员名称
+            </summary>
         </member>
         <member name="T:AutoCSer.Sql.MemberAttribute">
             <summary>
@@ -4570,6 +4636,11 @@
             是否默认JSON
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.Field.IsNowTime">
+            <summary>
+            是否当前时间
+            </summary>
+        </member>
         <member name="M:AutoCSer.Sql.Field.#ctor(AutoCSer.Metadata.FieldIndex,AutoCSer.Sql.MemberAttribute)">
             <summary>
             字段信息
@@ -4988,6 +5059,11 @@
             默认计数缓存类型
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.ModelAttribute.IsLogClientQueue">
+            <summary>
+            日志流是否客户端队列模式
+            </summary>
+        </member>
         <member name="F:AutoCSer.Sql.ModelAttribute.IsLoadedCache">
             <summary>
             默认为 true 表示生成加载缓存事件代码
@@ -5026,6 +5102,16 @@
         <member name="F:AutoCSer.Sql.ModelAttribute.IsDefaultSerializeIsMemberMap">
             <summary>
             默认二进制序列化是否序列化成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ModelAttribute.IsUpdateMemberMap">
+            <summary>
+            默认为 false 表示不生成数据更新成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ModelAttribute.IsUpdateMemberMapClassType">
+            <summary>
+            默认为 false 生成数据更新成员位图类型使用 struct 定义，否则采用 class
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.ColumnCollectionType">
@@ -5172,114 +5258,6 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
-        <member name="T:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArrayWhere`4">
-            <summary>
-            分组列表 延时排序缓存
-            </summary>
-            <typeparam name="valueType">表格绑定类型</typeparam>
-            <typeparam name="modelType">表格模型类型</typeparam>
-            <typeparam name="keyType">分组字典关键字类型</typeparam>
-            <typeparam name="targetType">目标数据类型</typeparam>
-        </member>
-        <member name="T:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4">
-            <summary>
-            分组列表 延时排序缓存
-            </summary>
-            <typeparam name="valueType">表格绑定类型</typeparam>
-            <typeparam name="modelType">表格模型类型</typeparam>
-            <typeparam name="keyType">分组字典关键字类型</typeparam>
-            <typeparam name="targetType">目标数据类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.sorter">
-            <summary>
-            排序器
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`1,`2},System.Func{`2,`3},System.Linq.Expressions.Expression{System.Func{`3,AutoCSer.Sql.Cache.LadyOrderArray{`0}}},System.Func{System.Collections.Generic.IEnumerable{`3}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean)">
-            <summary>
-            分组列表 延时排序缓存
-            </summary>
-            <param name="cache">整表缓存</param>
-            <param name="getKey">分组字典关键字获取器</param>
-            <param name="getValue">获取目标对象委托</param>
-            <param name="member">缓存字段表达式</param>
-            <param name="getTargets"></param>
-            <param name="sorter">排序器</param>
-            <param name="isReset">是否初始化</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.onInserted(`0)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value">数据对象</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.onInserted(`0,`2)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value">数据对象</param>
-            <param name="key"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            更新数据
-            </summary>
-            <param name="cacheValue"></param>
-            <param name="value">更新后的数据</param>
-            <param name="oldValue">更新前的数据</param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.onDeleted(`0,`2)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value">被删除的数据</param>
-            <param name="key">被删除数据的关键字</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArray`4.onDeleted(`0)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value">被删除的数据</param>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArrayWhere`4.isValue">
-            <summary>
-            缓存值判定
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArrayWhere`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`1,`2},System.Func{`2,`3},System.Linq.Expressions.Expression{System.Func{`3,AutoCSer.Sql.Cache.LadyOrderArray{`0}}},System.Func{System.Collections.Generic.IEnumerable{`3}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Func{`0,System.Boolean})">
-            <summary>
-            分组列表 延时排序缓存
-            </summary>
-            <param name="cache">整表缓存</param>
-            <param name="getKey">分组字典关键字获取器</param>
-            <param name="getValue">获取目标对象委托</param>
-            <param name="member">缓存字段表达式</param>
-            <param name="getTargets"></param>
-            <param name="sorter">排序器</param>
-            <param name="isValue">缓存值判定</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArrayWhere`4.onInserted(`0)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value">数据对象</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArrayWhere`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            更新数据
-            </summary>
-            <param name="cacheValue"></param>
-            <param name="value">更新后的数据</param>
-            <param name="oldValue">更新前的数据</param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLadyOrderArrayWhere`4.onDeleted(`0)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value">被删除的数据</param>
-        </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.MemberDictionaryList`5">
             <summary>
             分组列表缓存
@@ -5387,6 +5365,21 @@
             </summary>
             <param name="value"></param>
             <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Member.IntDate.Year">
+            <summary>
+            年份
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.Member.IntDate.Month">
+            <summary>
+            月份
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.Member.IntDate.Day">
+            <summary>
+            日期天数
+            </summary>
         </member>
         <member name="P:AutoCSer.Sql.Member.IntDate.DateTime">
             <summary>
@@ -6472,9 +6465,19 @@
             日志
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.IsSqlLogProxyLoadedName">
+            <summary>
+            计算列加载完成字段名称
+            </summary>
+        </member>
         <member name="F:AutoCSer.Sql.LogStream.Log.table">
             <summary>
             数据表格
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log.wait">
+            <summary>
+            等待事件
             </summary>
         </member>
         <member name="F:AutoCSer.Sql.LogStream.Log.waitMap">
@@ -6535,6 +6538,12 @@
             </summary>
             <param name="memberIndex"></param>
         </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.WaitMember(System.Int32)">
+            <summary>
+            判断成员是否已经加载
+            </summary>
+            <param name="memberIndex"></param>
+        </member>
         <member name="M:AutoCSer.Sql.LogStream.Log.loadCount">
             <summary>
             加载完成检测
@@ -6543,6 +6552,11 @@
         <member name="M:AutoCSer.Sql.LogStream.Log.Start">
             <summary>
             开始处理日志
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log.loaded">
+            <summary>
+            加载完成
             </summary>
         </member>
         <member name="M:AutoCSer.Sql.LogStream.Log.RunLinkQueueTask(System.Data.Common.DbConnection@)">
@@ -6633,11 +6647,18 @@
             </summary>
             <param name="onLog"></param>
         </member>
-        <member name="M:AutoCSer.Sql.LogStream.Log`2.add(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.AddQueue(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean})">
             <summary>
             添加日志处理委托
             </summary>
             <param name="onLog"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Log`2.add(System.Func{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Sql.LogStream.Log{`0,`1}.Data},System.Boolean},System.Boolean)">
+            <summary>
+            添加日志处理委托
+            </summary>
+            <param name="onLog"></param>
+            <param name="isQueue"></param>
         </member>
         <member name="M:AutoCSer.Sql.LogStream.Log`2.onInserted(`0)">
             <summary>
@@ -6708,6 +6729,11 @@
         <member name="F:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.OnLog">
             <summary>
             日志处理委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.IsQueue">
+            <summary>
+            是否仅队列处理
             </summary>
         </member>
         <member name="M:AutoCSer.Sql.LogStream.Log`2.AddOnLogTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
@@ -6811,7 +6837,7 @@
             <summary>
             数据库表格模型
             </summary>
-            <typeparam name="valueType">数据类型</typeparam>
+            <typeparam name="modelType">数据类型</typeparam>
             <summary>
             数据模型
             </summary>
@@ -6929,7 +6955,7 @@
             数据列更新SQL流
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.DataModel.Model`1.Updater.Update(AutoCSer.CharStream,AutoCSer.Metadata.MemberMap,`0,AutoCSer.Sql.ConstantConverter)">
+        <member name="M:AutoCSer.Sql.DataModel.Model`1.Updater.Update(AutoCSer.CharStream,AutoCSer.Metadata.MemberMap,`0,AutoCSer.Sql.ConstantConverter,AutoCSer.Sql.Table)">
             <summary>
             获取更新数据SQL表达式
             </summary>
@@ -6937,6 +6963,7 @@
             <param name="memberMap">更新成员位图</param>
             <param name="value">数据</param>
             <param name="converter">SQL常量转换</param>
+            <param name="table">数据表格</param>
         </member>
         <member name="F:AutoCSer.Sql.DataModel.Model`1.Updater.updater">
             <summary>
@@ -6953,13 +6980,14 @@
             导入数据列集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.DataModel.Model`1.ToArray.Write(`0,System.Object[],System.Int32@)">
+        <member name="M:AutoCSer.Sql.DataModel.Model`1.ToArray.Write(`0,System.Object[],System.Int32@,AutoCSer.Sql.Table)">
             <summary>
             数据列转换数组
             </summary>
             <param name="values">目标数组</param>
             <param name="value">数据列</param>
             <param name="index">当前读取位置</param>
+            <param name="table">数据表格</param>
         </member>
         <member name="F:AutoCSer.Sql.DataModel.Model`1.ToArray.defaultWriter">
             <summary>
@@ -6978,6 +7006,7 @@
             <param name="values">目标数组</param>
             <param name="value">数据列</param>
             <param name="index">当前读取位置</param>
+            <param name="table">数据表格</param>
         </member>
         <member name="T:AutoCSer.Sql.DataModel.Model`1.PrimaryKeyWhere">
             <summary>
@@ -7046,7 +7075,7 @@
             <param name="sqlStream"></param>
             <param name="memberMap"></param>
         </member>
-        <member name="M:AutoCSer.Sql.DataModel.Model`1.Inserter.Insert(AutoCSer.CharStream,AutoCSer.Metadata.MemberMap,`0,AutoCSer.Sql.ConstantConverter)">
+        <member name="M:AutoCSer.Sql.DataModel.Model`1.Inserter.Insert(AutoCSer.CharStream,AutoCSer.Metadata.MemberMap,`0,AutoCSer.Sql.ConstantConverter,AutoCSer.Sql.Table)">
             <summary>
             获取插入数据SQL表达式
             </summary>
@@ -7054,6 +7083,7 @@
             <param name="memberMap">成员位图</param>
             <param name="value">数据</param>
             <param name="converter">SQL常量转换</param>
+            <param name="table">数据表格</param>
         </member>
         <member name="F:AutoCSer.Sql.DataModel.Model`1.Inserter.inserter">
             <summary>
@@ -7157,61 +7187,6 @@
         <member name="P:AutoCSer.Sql.CreateSelectQuery`1.IsOrder">
             <summary>
              是否需要排序
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.ClientTypeAttribute">
-            <summary>
-            SQL 客户端类型默认配置信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientTypeAttribute.ClientType">
-            <summary>
-            SQL 客户端处理类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientTypeAttribute.ConverterType">
-            <summary>
-            SQL 常量转换处理类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientTypeAttribute.IgnoreCase">
-            <summary>
-            名称是否忽略大小写
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.ClientType">
-            <summary>
-            SQL 客户端类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientType.ThirdParty">
-            <summary>
-            第三方
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientType.Sql2000">
-            <summary>
-            SQL Server2000
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientType.Sql2005">
-            <summary>
-            SQL Server2005
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientType.Sql2008">
-            <summary>
-            SQL Server2008
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientType.Sql2012">
-            <summary>
-            SQL Server2012
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.ClientType.Excel">
-            <summary>
-            Excel
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.DictionaryWhere`3">
@@ -7326,45 +7301,6 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
-        <member name="T:AutoCSer.Sql.Cache.LadyOrderArray`1">
-            <summary>
-            延时排序缓存数组
-            </summary>
-            <typeparam name="valueType"></typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.LadyOrderArray`1.array">
-            <summary>
-            数据数组
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.LadyOrderArray`1.isDelete">
-            <summary>
-            是否存在被删除数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.LadyOrderArray`1.isSorted">
-            <summary>
-            数据是否已经排序
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.LadyOrderArray`1.Insert(`0)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.LadyOrderArray`1.Update(`0)">
-            <summary>
-            更新数据
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.LadyOrderArray`1.Delete(`0)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value"></param>
-        </member>
         <member name="T:AutoCSer.Sql.AnyCancel">
             <summary>
             取消操作数据
@@ -7424,6 +7360,11 @@
             字符串 null 转 string.Empty
             </summary>
             <param name="generator"></param>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod">
+            <summary>
+            获取当前时间函数信息
+            </summary>
         </member>
         <member name="T:AutoCSer.Sql.LogStream.LogType">
             <summary>
@@ -9142,81 +9083,6 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
-        <member name="T:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4">
-            <summary>
-            分组列表 延时排序缓存
-            </summary>
-            <typeparam name="valueType">表格绑定类型</typeparam>
-            <typeparam name="modelType">表格模型类型</typeparam>
-            <typeparam name="keyType">分组字典关键字类型</typeparam>
-            <typeparam name="targetType">目标数据类型</typeparam>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.getIndex">
-            <summary>
-            数组索引获取器
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.arraySize">
-            <summary>
-            数组容器大小
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.sorter">
-            <summary>
-            排序器
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`1,`2},System.Func{`2,`3},System.Func{`0,System.Int32},System.Int32,System.Linq.Expressions.Expression{System.Func{`3,AutoCSer.Sql.Cache.LadyOrderArray{`0}[]}},System.Func{System.Collections.Generic.IEnumerable{`3}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean)">
-            <summary>
-            分组列表 延时排序缓存
-            </summary>
-            <param name="cache">整表缓存</param>
-            <param name="getKey">分组字典关键字获取器</param>
-            <param name="getValue">获取目标对象委托</param>
-            <param name="getIndex">获取数组索引</param>
-            <param name="arraySize">数组容器大小</param>
-            <param name="member">缓存字段表达式</param>
-            <param name="getTargets"></param>
-            <param name="sorter">排序器</param>
-            <param name="isReset">是否初始化</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.onInserted(`0)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value">数据对象</param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.onInserted(`0,`2,System.Int32)">
-            <summary>
-            添加数据
-            </summary>
-            <param name="value">数据对象</param>
-            <param name="key"></param>
-            <param name="index"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
-            <summary>
-            更新数据
-            </summary>
-            <param name="cacheValue"></param>
-            <param name="value">更新后的数据</param>
-            <param name="oldValue">更新前的数据</param>
-            <param name="memberMap"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.onDeleted(`0,`2,System.Int32)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value">被删除的数据</param>
-            <param name="key">被删除数据的关键字</param>
-            <param name="index"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLadyOrderArray`4.onDeleted(`0)">
-            <summary>
-            删除数据
-            </summary>
-            <param name="value">被删除的数据</param>
-        </member>
         <member name="T:AutoCSer.Sql.LogStream.MemberMapValue`2">
             <summary>
             反序列化池对象
@@ -9800,7 +9666,7 @@
             <summary>
             动态函数
             </summary>
-            <param name="type"></param>
+            <param name="modelType"></param>
             <param name="attribute"></param>
         </member>
         <member name="M:AutoCSer.Sql.DataModel.Inserter.Push(AutoCSer.Sql.Field)">
@@ -10447,6 +10313,329 @@
             反序列化
             </summary>
             <param name="deSerializer"></param>
+        </member>
+        <member name="T:AutoCSer.Sql.ClientKindAttribute">
+            <summary>
+            SQL 客户端类型默认配置信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKindAttribute.ClientType">
+            <summary>
+            SQL 客户端处理类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKindAttribute.ConverterType">
+            <summary>
+            SQL 常量转换处理类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKindAttribute.IgnoreCase">
+            <summary>
+            名称是否忽略大小写
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.ClientKind">
+            <summary>
+            SQL 客户端类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKind.ThirdParty">
+            <summary>
+            第三方
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKind.Sql2000">
+            <summary>
+            SQL Server2000
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKind.Sql2005">
+            <summary>
+            SQL Server2005
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKind.Sql2008">
+            <summary>
+            SQL Server2008
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKind.Sql2012">
+            <summary>
+            SQL Server2012
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.ClientKind.Excel">
+            <summary>
+            Excel
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.UpdateMemberMap`2">
+            <summary>
+            数据更新成员位图
+            </summary>
+            <typeparam name="tableType">表格类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.UpdateMemberMap`2.value">
+            <summary>
+            更新数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.UpdateMemberMap`2.memberMap">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.UpdateMemberMap`2.#ctor(`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            数据更新成员位图
+            </summary>
+            <param name="value">更新数据</param>
+            <param name="memberMap">成员位图</param>
+        </member>
+        <member name="M:AutoCSer.Sql.UpdateMemberMap`2.setMember(AutoCSer.Metadata.MemberMap{`1}.MemberIndex)">
+            <summary>
+            设置成员索引
+            </summary>
+            <param name="memberIndex">成员索引</param>
+        </member>
+        <member name="M:AutoCSer.Sql.UpdateMemberMap`2.update(AutoCSer.Sql.Table{`0,`1},System.Boolean)">
+            <summary>
+            更新数据
+            </summary>
+            <param name="table">数据表格</param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+            <returns>更新是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.UpdateMemberMap`2.update(AutoCSer.Sql.Table{`0,`1},System.Action{`0},System.Boolean)">
+            <summary>
+            更新数据
+            </summary>
+            <param name="table">数据表格</param>
+            <param name="onUpdated">更新数据回调</param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.LazyOrderArray`1">
+            <summary>
+            延时排序缓存数组
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.array">
+            <summary>
+            数据数组
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.isDelete">
+            <summary>
+            是否存在被删除数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.isSorted">
+            <summary>
+            数据是否已经排序
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.LazyOrderArray`1.Insert(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.LazyOrderArray`1.Update(`0)">
+            <summary>
+            更新数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.LazyOrderArray`1.Delete(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4">
+            <summary>
+            分组列表 延时排序缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">分组字典关键字类型</typeparam>
+            <typeparam name="targetType">目标数据类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.getIndex">
+            <summary>
+            数组索引获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.arraySize">
+            <summary>
+            数组容器大小
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.sorter">
+            <summary>
+            排序器
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`1,`2},System.Func{`2,`3},System.Func{`0,System.Int32},System.Int32,System.Linq.Expressions.Expression{System.Func{`3,AutoCSer.Sql.Cache.LazyOrderArray{`0}[]}},System.Func{System.Collections.Generic.IEnumerable{`3}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean)">
+            <summary>
+            分组列表 延时排序缓存
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getKey">分组字典关键字获取器</param>
+            <param name="getValue">获取目标对象委托</param>
+            <param name="getIndex">获取数组索引</param>
+            <param name="arraySize">数组容器大小</param>
+            <param name="member">缓存字段表达式</param>
+            <param name="getTargets"></param>
+            <param name="sorter">排序器</param>
+            <param name="isReset">是否初始化</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.onInserted(`0,`2,System.Int32)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+            <param name="key"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.onDeleted(`0,`2,System.Int32)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+            <param name="key">被删除数据的关键字</param>
+            <param name="index"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArrayWhere`4">
+            <summary>
+            分组列表 延时排序缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">分组字典关键字类型</typeparam>
+            <typeparam name="targetType">目标数据类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4">
+            <summary>
+            分组列表 延时排序缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">分组字典关键字类型</typeparam>
+            <typeparam name="targetType">目标数据类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.sorter">
+            <summary>
+            排序器
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`1,`2},System.Func{`2,`3},System.Linq.Expressions.Expression{System.Func{`3,AutoCSer.Sql.Cache.LazyOrderArray{`0}}},System.Func{System.Collections.Generic.IEnumerable{`3}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Boolean)">
+            <summary>
+            分组列表 延时排序缓存
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getKey">分组字典关键字获取器</param>
+            <param name="getValue">获取目标对象委托</param>
+            <param name="member">缓存字段表达式</param>
+            <param name="getTargets"></param>
+            <param name="sorter">排序器</param>
+            <param name="isReset">是否初始化</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.onInserted(`0,`2)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.onDeleted(`0,`2)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+            <param name="key">被删除数据的关键字</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArrayWhere`4.isValue">
+            <summary>
+            缓存值判定
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArrayWhere`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`1,`2},System.Func{`2,`3},System.Linq.Expressions.Expression{System.Func{`3,AutoCSer.Sql.Cache.LazyOrderArray{`0}}},System.Func{System.Collections.Generic.IEnumerable{`3}},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Func{`0,System.Boolean})">
+            <summary>
+            分组列表 延时排序缓存
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getKey">分组字典关键字获取器</param>
+            <param name="getValue">获取目标对象委托</param>
+            <param name="member">缓存字段表达式</param>
+            <param name="getTargets"></param>
+            <param name="sorter">排序器</param>
+            <param name="isValue">缓存值判定</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArrayWhere`4.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArrayWhere`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArrayWhere`4.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
         </member>
     </members>
 </doc>

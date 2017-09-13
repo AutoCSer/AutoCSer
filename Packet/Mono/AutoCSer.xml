@@ -5501,7 +5501,7 @@
             数据关键字 代码生成配置
             </summary>
         </member>
-        <member name="F:AutoCSer.Data.PrimaryKeyAttribute.Defalut">
+        <member name="F:AutoCSer.Data.PrimaryKeyAttribute.Default">
             <summary>
             默认代码生成配置
             </summary>
@@ -33458,6 +33458,14 @@
             <param name="key">键值</param>
             <returns>数据对象</returns>
         </member>
+        <member name="M:AutoCSer.FifoPriorityQueue`2.TryGetOnly(`0,`1@)">
+            <summary>
+            获取数据(不调整位置)
+            </summary>
+            <param name="key">键值</param>
+            <param name="value"></param>
+            <returns>数据对象</returns>
+        </member>
         <member name="M:AutoCSer.FifoPriorityQueue`2.Set(`0@,`1)">
             <summary>
             设置数据
@@ -33465,6 +33473,13 @@
             <param name="key">键值</param>
             <param name="value">数据对象</param>
             <returns>被替换的数据对象,没有返回default(valueType)</returns>
+        </member>
+        <member name="M:AutoCSer.FifoPriorityQueue`2.SetOnly(`0,`1)">
+            <summary>
+            设置数据(不调整位置)
+            </summary>
+            <param name="key">键值</param>
+            <param name="value">数据对象</param>
         </member>
         <member name="M:AutoCSer.FifoPriorityQueue`2.UnsafeAdd(`0@,`1)">
             <summary>

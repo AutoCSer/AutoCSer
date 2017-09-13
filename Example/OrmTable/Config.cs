@@ -33,7 +33,7 @@ namespace AutoCSer.Example.OrmTable
             {
                 return new AutoCSer.Sql.Connection
                 {
-                    Type = Sql.ClientType.Sql2008,
+                    Type = Sql.ClientKind.Sql2008,
                     ConnectionString = "server=127.0.0.1;database=AutoCSerExample;uid=Example;pwd=Example"
                 };
                 //return new AutoCSer.Sql.Connection

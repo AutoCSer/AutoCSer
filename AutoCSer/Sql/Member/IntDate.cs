@@ -19,6 +19,33 @@ namespace AutoCSer.Sql.Member
         [AutoCSer.WebView.OutputAjax]
         public int Value;
         /// <summary>
+        /// 年份
+        /// </summary>
+        [AutoCSer.Json.IgnoreMember]
+        [AutoCSer.BinarySerialize.IgnoreMember]
+        public int Year
+        {
+            get { return Value >> 9; }
+        }
+        /// <summary>
+        /// 月份
+        /// </summary>
+        [AutoCSer.Json.IgnoreMember]
+        [AutoCSer.BinarySerialize.IgnoreMember]
+        public int Month
+        {
+            get { return (Value >> 5) & 15; }
+        }
+        /// <summary>
+        /// 日期天数
+        /// </summary>
+        [AutoCSer.Json.IgnoreMember]
+        [AutoCSer.BinarySerialize.IgnoreMember]
+        public int Day
+        {
+            get { return Value & 31; }
+        }
+        /// <summary>
         /// 整形日期
         /// </summary>
         /// <param name="year">年份</param>

@@ -122,7 +122,7 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据模型
     /// </summary>
-    internal abstract partial class Model<valueType>
+    internal abstract partial class Model<modelType>
     {
         /// <summary>
         /// 数据库模型设置
@@ -138,7 +138,7 @@ namespace AutoCSer.Sql.DataModel
 #if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
-            public static void Set(DbDataReader reader, valueType value, MemberMap memberMap)
+            public static void Set(DbDataReader reader, modelType value, MemberMap memberMap)
             {
 #if NOJIT
                 if (fields != null)
@@ -205,7 +205,7 @@ namespace AutoCSer.Sql.DataModel
             /// <summary>
             /// 默认数据列设置
             /// </summary>
-            private static readonly Action<DbDataReader, valueType, MemberMap> setter;
+            private static readonly Action<DbDataReader, modelType, MemberMap> setter;
 #endif
 
             static Setter()
@@ -217,9 +217,9 @@ namespace AutoCSer.Sql.DataModel
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.Setter dynamicMethod = new DataModel.Setter(typeof(valueType));
+                    DataModel.Setter dynamicMethod = new DataModel.Setter(typeof(modelType));
                     foreach (Field member in Fields) dynamicMethod.Push(member);
-                    setter = (Action<DbDataReader, valueType, MemberMap>)dynamicMethod.Create<Action<DbDataReader, valueType, MemberMap>>();
+                    setter = (Action<DbDataReader, modelType, MemberMap>)dynamicMethod.Create<Action<DbDataReader, modelType, MemberMap>>();
 #endif
                 }
             }

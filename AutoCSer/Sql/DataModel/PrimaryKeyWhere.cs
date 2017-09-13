@@ -87,7 +87,7 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据模型
     /// </summary>
-    internal abstract partial class Model<valueType>
+    internal abstract partial class Model<modelType>
     {
         /// <summary>
         /// 关键字条件
@@ -103,7 +103,7 @@ namespace AutoCSer.Sql.DataModel
 #if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
-            public static void Write(CharStream sqlStream, valueType value, ConstantConverter converter)
+            public static void Write(CharStream sqlStream, modelType value, ConstantConverter converter)
             {
 #if NOJIT
                 if (fields != null)
@@ -130,7 +130,7 @@ namespace AutoCSer.Sql.DataModel
             /// <summary>
             /// 关键字条件SQL流
             /// </summary>
-            private static readonly Action<CharStream, valueType, ConstantConverter> writer;
+            private static readonly Action<CharStream, modelType, ConstantConverter> writer;
 #endif
 
             static unsafe PrimaryKeyWhere()
@@ -142,9 +142,9 @@ namespace AutoCSer.Sql.DataModel
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in PrimaryKeys) fields[index++].Set(member);
 #else
-                    DataModel.PrimaryKeyWhere dynamicMethod = new DataModel.PrimaryKeyWhere(typeof(valueType), attribute);
+                    DataModel.PrimaryKeyWhere dynamicMethod = new DataModel.PrimaryKeyWhere(typeof(modelType), attribute);
                     foreach (Field member in PrimaryKeys) dynamicMethod.Push(member);
-                    writer = (Action<CharStream, valueType, ConstantConverter>)dynamicMethod.Create<Action<CharStream, valueType, ConstantConverter>>();
+                    writer = (Action<CharStream, modelType, ConstantConverter>)dynamicMethod.Create<Action<CharStream, modelType, ConstantConverter>>();
 #endif
                 }
             }

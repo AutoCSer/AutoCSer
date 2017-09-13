@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0B9E75C"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0BF437C"></script>
     <title>静态代码生成 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -23,7 +23,7 @@
             <div>
                 <pre>"<b>PATH</b>\Packet\<b>FRAMEWORK</b>\AutoCSer.CodeGenerator.exe" "$(ProjectName) " "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</pre>
             </div>
-            <b>PATH</b> 请修改为 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a> 解压的真实路径，<b>FRAMEWORK</b> 请修改为目标项目匹配的框架路径。
+            <b>PATH</b> 请修改为 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a> 解压的真实路径，<b>FRAMEWORK</b> 请修改为目标项目匹配的框架路径。
             <br /><img @src="//f.autocser.com/CodeGenerator.png" alt="静态代码生成 后期生成事件命令行" />
             <br /><b>.NET Core 2.0</b> 的项目需要由 <b>dotnet</b> 命令引导 <b>AutoCSer.CodeGenerator.dll</b>（注意这里不是 <b>.exe</b>），比如
             <div>
@@ -46,9 +46,9 @@
     <div><h1>自定义代码生成模板</h1></div>
     <div>
         <p>
-            <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a> 的静态代码生成是基于 .NET 元数据的，模板规则是基于 C# 语法扩展的类 DSL。
+            <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a> 的静态代码生成是基于 .NET 元数据的，模板规则是基于 C# 语法扩展的类 DSL。
             <br />. 可以制作<b>可编译</b>的 C# 源代码模板，对于确定性逻辑代码拥有普通 C# 源代码一样的特性，编写与维护都可以得到 VS 或者其它 IDE 的全面支持，可以很方便的重构模板代码以及感应依赖模块代码的修改，个人认为这是将代码生成应用于大规模的复杂需求基础。当然对于某些特殊需求要让模板满足 C# 语法需求，可能需要一些特殊的技巧与经验。
-            <br />. 代码生成模板引擎与 <a href="/WebView/View.html?v=B9E75C">WEB 视图页面</a>的模板引擎实际上是同一个基础模板引擎下的两个特例实现，所以 C# 代码生成也是“前后端分离”模式，一个代码生成实例分为模板与数据两个部分。
+            <br />. 代码生成模板引擎与 <a href="/WebView/View.html?v=BF437C">WEB 视图页面</a>的模板引擎实际上是同一个基础模板引擎下的两个特例实现，所以 C# 代码生成也是“前后端分离”模式，一个代码生成实例分为模板与数据两个部分。
         </p>
     </div>
     <div>
@@ -58,33 +58,33 @@
         </p>
         <p>
             2. 新建一个名称为 <b>Template</b> 的目录用于存放模板代码，并根据需求添加继承自 <b>AutoCSer.CodeGenerator.Template.Pub</b>（里面有一些方便模板编写的预定义扩展）的模板代码文件，并使用 <b>#region PART CLASS</b> 定义默认生成代码段。
-            <div> 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CustomCodeGenerator\Template\ClearFields.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CustomCodeGenerator\Template\ClearFields.cs</a></div>
         </p>
         <p>
             3. 根据需求添加继承自 <b>AutoCSer.CodeGenerator.TemplateGenerator.Generator</b> 与 <b>AutoCSer.CodeGenerator.IGenerator</b> 的模板数据类型，并添加默认执行代码生成申明配置 <b>[AutoCSer.CodeGenerator.Generator(IsAuto = true)]</b> 。
-            <div> 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CustomCodeGenerator\ClearFields.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CustomCodeGenerator\ClearFields.cs</a></div>
             <br />一般可能需要配合 Attribute 用于申明需要代码生成处理的目标类型，正常情况下该 Attribute 应该定义在其它项目中使目标项目在运行时不依赖于代码生成项目，因为这里仅仅是示例所以就不另建项目了。
-            <div>辅助自定义配置 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">CustomCodeGenerator\Attribute\ClearFieldsAttribute.cs</a></div>
+            <div>辅助自定义配置 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">CustomCodeGenerator\Attribute\ClearFieldsAttribute.cs</a></div>
         </p>
         <p>
             4. 给该工程项目配置静态代码生成并编译项目，然后将生成的模板代理层代码源文件 <b>{AutoCSer}.CSharper.cs</b> 添加到项目中，然后重新编译该项目。
-            <div> 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">CustomCodeGenerator\{AutoCSer}.CSharper.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">CustomCodeGenerator\{AutoCSer}.CSharper.cs</a></div>
         </p>
         <p>
-            5. 可以添加一个映射到 <b>AutoCSer.CodeGenerator.CustomConfig</b> 的自定义配置文件 <b>AutoCSer.CodeGenerator.CustomConfig.json</b> 用于屏蔽 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a> 默认的代码生成处理。
+            5. 可以添加一个映射到 <b>AutoCSer.CodeGenerator.CustomConfig</b> 的自定义配置文件 <b>AutoCSer.CodeGenerator.CustomConfig.json</b> 用于屏蔽 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a> 默认的代码生成处理。
             <br />因为这是示例 <b>bin\Release\</b> 目录会被过滤掉，所以直接放在了项目目录下面，正常情况下应该放在 <b>AutoCSer.CodeGenerator.Custom.dll</b> 一起。
-            <div> 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">CustomCodeGenerator\AutoCSer.CodeGenerator.CustomConfig.json</a></div>
+            <div> 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">CustomCodeGenerator\AutoCSer.CodeGenerator.CustomConfig.json</a></div>
         </p>
     </div>
     <div>
         <p><b>使用自定义模板</b></p>
         <p>
             1. 在目标项目中为需要生成代码的类型添加 Attribute 申明，这个示例中需要对目标类型使用 <b>partial</b> 修饰符，因为需要和生成的目标代码共用同一个类型。
-            <div> 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">CustomCodeGeneratorApply\Data.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">CustomCodeGeneratorApply\Data.cs</a></div>
         </p>
         <p>
             2. 给该工程项目配置静态代码生成并编译项目，然后将生成的代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
-            <div> 参考示例 <a href="/Index.html?v=B9E75C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">CustomCodeGeneratorApply\{AutoCSer.CodeGenerator.CustomApply}.AutoCSer.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=BF437C" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">CustomCodeGeneratorApply\{AutoCSer.CodeGenerator.CustomApply}.AutoCSer.cs</a></div>
         </p>
     </div>
 </body>

@@ -33,7 +33,7 @@ namespace AutoCSer.Sql.DataModel
         public ToArray(Type type, ModelAttribute attribute)
         {
             this.attribute = attribute;
-            dynamicMethod = new DynamicMethod("SqlModelToArray", null, new Type[] { type, typeof(object[]), Field.RefIntType }, type, true);
+            dynamicMethod = new DynamicMethod("SqlModelToArray", null, new Type[] { type, typeof(object[]), Field.RefIntType, typeof(Table) }, type, true);
             generator = dynamicMethod.GetILGenerator();
         }
         /// <summary>
@@ -57,8 +57,14 @@ namespace AutoCSer.Sql.DataModel
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
+                    if (field.IsNowTime) generator.Emit(OpCodes.Ldarg_3);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldfld, field.FieldInfo);
+                    if (field.IsNowTime)
+                    {
+                        generator.int32(field.MemberMapIndex);
+                        generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);
+                    }
                     if (field.ToSqlCastMethod != null) generator.Emit(OpCodes.Call, field.ToSqlCastMethod);
                     if (!field.IsUnknownJson && field.DataType.IsValueType) generator.Emit(OpCodes.Box, field.DataType);
                     else if (attribute.IsNullStringEmpty && field.DataType == typeof(string)) generator.nullStringEmpty();
@@ -102,7 +108,7 @@ namespace AutoCSer.Sql.DataModel
     /// <summary>
     /// 数据模型
     /// </summary>
-    internal abstract partial class Model<valueType>
+    internal abstract partial class Model<modelType>
     {
         /// <summary>
         /// 数据列转换数组
@@ -139,10 +145,11 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="values">目标数组</param>
             /// <param name="value">数据列</param>
             /// <param name="index">当前读取位置</param>
+            /// <param name="table">数据表格</param>
 #if !NOJIT
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
 #endif
-            public static void Write(valueType value, object[] values, ref int index)
+            public static void Write(modelType value, object[] values, ref int index, Table table)
             {
 #if NOJIT
                 if (fields != null)
@@ -161,6 +168,7 @@ namespace AutoCSer.Sql.DataModel
                         }
                         else
                         {
+                //if (field.NowTimeField == null)
                             object memberValue = fieldInfo.Field.GetValue(value);
                             if (field.NullableHasValueMethod == null)
                             {
@@ -180,7 +188,7 @@ namespace AutoCSer.Sql.DataModel
                     }
                 }
 #else
-                if (defaultWriter != null) defaultWriter(value, values, ref index);
+                if (defaultWriter != null) defaultWriter(value, values, ref index, table);
 #endif
             }
 #if NOJIT
@@ -195,7 +203,8 @@ namespace AutoCSer.Sql.DataModel
             /// <param name="values">目标数组</param>
             /// <param name="value">数据列</param>
             /// <param name="index">当前读取位置</param>
-            private delegate void Writer(valueType value, object[] values, ref int index);
+            /// <param name="table">数据表格</param>
+            private delegate void Writer(modelType value, object[] values, ref int index, Table table);
             /// <summary>
             /// 数据列转换数组
             /// </summary>
@@ -211,7 +220,7 @@ namespace AutoCSer.Sql.DataModel
                     int index = 0;
                     foreach (AutoCSer.code.cSharp.sqlModel.fieldInfo member in Fields) fields[index++].Set(member);
 #else
-                    DataModel.ToArray dynamicMethod = new DataModel.ToArray(typeof(valueType), attribute);
+                    DataModel.ToArray dynamicMethod = new DataModel.ToArray(typeof(modelType), attribute);
                     foreach (Field member in Fields) dynamicMethod.Push(member);
                     defaultWriter = (Writer)dynamicMethod.Create<Writer>();
 #endif

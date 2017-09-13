@@ -29,12 +29,12 @@ namespace AutoCSer.Example.OrmTable
                 sqlTable.Insert(new OrmOnly { Value = 1 });
                 foreach (OrmOnly value in sqlTable.Select())
                 {
-                    Console.WriteLine(value.Value.ToString());
+                    Console.WriteLine(value.toJson());
                     sqlTable.Update(new OrmOnly { Id = value.Id, Value = value.Value + 1 }, updateMemberMap);
                 }
                 foreach (OrmOnly value in sqlTable.Select())
                 {
-                    Console.WriteLine(value.Value.ToString());
+                    Console.WriteLine(value.toJson());
                     sqlTable.Delete(value.Id);
                 }
             }

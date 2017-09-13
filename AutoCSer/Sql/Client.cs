@@ -309,7 +309,8 @@ namespace AutoCSer.Sql
             where valueType : class, modelType
             where modelType : class
         {
-            (query.MemberMap = DataModel.Model<modelType>.CopyMemberMap).And(memberMap);
+            query.MemberMap = DataModel.Model<modelType>.CopyMemberMap;
+            if (memberMap != null && !memberMap.IsDefault) query.MemberMap.And(memberMap);
             GetSelectQuery(sqlTool, ref createQuery, ref query);
         }
         /// <summary>

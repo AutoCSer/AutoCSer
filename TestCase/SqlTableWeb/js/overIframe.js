@@ -106,12 +106,12 @@ var AutoCSer;
         OverIframe.prototype.Focus = function () {
             frames[this.IframeId].document.getElementById(this.InputId0).focus();
         };
-        OverIframe.CreateDefalut = function () {
-            OverIframe.Defalut = new OverIframe();
+        OverIframe.CreateDefault = function () {
+            OverIframe.Default = new OverIframe();
         };
         OverIframe.DefaultParameter = { WaitingImage: '//__STATICDOMAIN__/upFile/waiting.gif', IframePath: null, IframeCode: null, Width: null, Height: null };
         return OverIframe;
     }());
     AutoCSer.OverIframe = OverIframe;
-    AutoCSer.Pub.OnLoad(OverIframe.CreateDefalut, OverIframe, true);
+    AutoCSer.Pub.OnLoad(OverIframe.CreateDefault, OverIframe, true);
 })(AutoCSer || (AutoCSer = {}));

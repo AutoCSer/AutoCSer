@@ -58,7 +58,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (primaryKeys.Length > 1 && !Coder.CheckCodeType(typeof(Generator), type))
                 {
                     Type = type;
-                    Attribute = type.customAttribute<AutoCSer.Data.PrimaryKeyAttribute>() ?? AutoCSer.Data.PrimaryKeyAttribute.Defalut;
+                    Attribute = type.customAttribute<AutoCSer.Data.PrimaryKeyAttribute>() ?? AutoCSer.Data.PrimaryKeyAttribute.Default;
                     PrimaryKeys = primaryKeys;
                     nextCreate();
                 }
