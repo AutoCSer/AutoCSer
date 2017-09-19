@@ -68,7 +68,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 获取数据函数名称
                 /// </summary>
-                public string GetMemberName
+                public string GetMethodName
                 {
                     get { return "Get" + Member.MemberName; }
                 }

@@ -31,7 +31,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -67,7 +67,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -103,7 +103,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -199,7 +199,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -235,7 +235,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -271,7 +271,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -307,7 +307,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -343,7 +343,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -379,7 +379,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -461,7 +461,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -483,6 +483,7 @@ namespace AutoCSer.Example.OrmModel
             /// </summary>
             /// <typeparam name="tableType">表格映射类型</typeparam>
             /// <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
+            [AutoCSer.Sql.MemberCache]
             public abstract class SqlModel<tableType, memberCacheType> : AutoCSer.Example.OrmModel.MemberCache
                 where tableType : SqlModel<tableType, memberCacheType>
                 where memberCacheType : class
@@ -499,7 +500,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -511,7 +512,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        sqlTable/**/.WaitCreateCache();
+                        sqlTable.WaitCreateCache();
                         isEventCacheLoaded = true;
                     }
                 }
@@ -523,7 +524,9 @@ namespace AutoCSer.Example.OrmModel
                 /// <param name="onDeleted">删除记录事件</param>
                 protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.Example.OrmModel.MemberCache>> onUpdated = null, Action<tableType> onDeleted = null)
                 {
-                    sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted);
+                    sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false);
+                    sqlTable.LoadMemberCache(typeof(memberCacheType));
+                    sqlTable.WaitMemberCache();
                 }
 
                 /// <summary>
@@ -543,7 +546,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (sqlTable == null) return null;
                     sqlCache = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.Example.OrmModel.MemberCache, memberCacheType>(sqlTable, memberCache, group, baseIdentity, isReset);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     return sqlCache;
                 }
 
@@ -577,7 +580,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -624,7 +627,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -687,7 +690,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }

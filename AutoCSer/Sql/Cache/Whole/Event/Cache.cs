@@ -232,13 +232,14 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="onInserted">添加记录事件</param>
         /// <param name="onUpdated">更新记录事件</param>
         /// <param name="onDeleted">删除记录事件</param>
+        /// <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
         /// <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
-        public void Loaded(Action<valueType> onInserted = null, Action<valueType, valueType, valueType, MemberMap<modelType>> onUpdated = null, Action<valueType> onDeleted = null, bool isSqlStreamTypeCount = true)
+        public void Loaded(Action<valueType> onInserted = null, Action<valueType, valueType, valueType, MemberMap<modelType>> onUpdated = null, Action<valueType> onDeleted = null, bool isLoadMemberCache = true, bool isSqlStreamTypeCount = true)
         {
             if (onInserted != null) OnInserted += onInserted;
             if (onUpdated != null) OnUpdated += onUpdated;
             if (onDeleted != null) OnDeleted += onDeleted;
-            SqlTable.CacheLoaded(isSqlStreamTypeCount);
+            SqlTable.CacheLoaded(isLoadMemberCache, isSqlStreamTypeCount);
         }
         /// <summary>
         /// 成员绑定缓存集合

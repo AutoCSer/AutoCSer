@@ -100,41 +100,31 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             sender.Push(returnType);
                             return;
                         case 2:
-                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p3 inputParameter = new _p3();
-                                if (sender.DeSerialize(ref data, ref inputParameter, true))
+                                _p5 inputParameter = new _p5();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p4 _outputParameter_ = new _p4();
                                     
-                                    AutoCSer.TestCase.TcpServerPerformance.Add Return;
-                                    
-                                    Return = Value.addSynchronous(inputParameter.p0, inputParameter.p1);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c2, ref _outputParameter_);
+                                    Value.addCustomSerialize(inputParameter.p0);
                                     return;
                                 }
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                                 sender.AddLog(error);
                             }
-                            sender.Push(returnType);
                             return;
                         case 3:
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p3 inputParameter = new _p3();
-                                if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
+                                    _p6 outputParameter = new _p6();
+                                    
+                                    Value.addCustomSerialize(sender.GetCallback<_p6, AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>(_c3, ref outputParameter));
                                     return;
                                 }
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
@@ -144,23 +134,18 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             sender.Push(returnType);
                             return;
                         case 4:
-                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p3 inputParameter = new _p3();
-                                if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s4/**/.Pop() ?? new _s4()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpTask, ref inputParameter);
+                                    
+                                    Value.addCustomSerializeFinally();
                                     return;
                                 }
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                                 sender.AddLog(error);
                             }
-                            sender.Push(returnType);
                             return;
                         case 5:
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
@@ -169,7 +154,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -185,13 +170,12 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p3 inputParameter = new _p3();
-                                if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s6/**/.Pop() ?? new _s6()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
+                                    _p4 outputParameter = new _p4();
+                                    
+                                    Value.addRegister(sender.GetCallback<_p4, AutoCSer.TestCase.TcpServerPerformance.Add>(_c6, ref outputParameter));
                                     return;
                                 }
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
@@ -201,24 +185,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             sender.Push(returnType);
                             return;
                         case 7:
-                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
-                            try
-                            {
-                                {
-                                    _p4 outputParameter = new _p4();
-                                    
-                                    Value.addRegister(sender.GetCallback<_p4, AutoCSer.TestCase.TcpServerPerformance.Add>(_c7, ref outputParameter));
-                                    return;
-                                }
-                            }
-                            catch (Exception error)
-                            {
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                                sender.AddLog(error);
-                            }
-                            sender.Push(returnType);
-                            return;
-                        case 8:
                             try
                             {
                                 _p3 inputParameter = new _p3();
@@ -234,16 +200,42 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 sender.AddLog(error);
                             }
                             return;
+                        case 8:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p3 inputParameter = new _p3();
+                                if (sender.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    _p4 _outputParameter_ = new _p4();
+                                    
+                                    AutoCSer.TestCase.TcpServerPerformance.Add Return;
+                                    
+                                    Return = Value.addSynchronous(inputParameter.p0, inputParameter.p1);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c8, ref _outputParameter_);
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
                         case 9:
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
+                                _p3 inputParameter = new _p3();
+                                if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _p5 outputParameter = new _p5();
-                                    
-                                    Value.addCustomSerialize(sender.GetCallback<_p5, AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>(_c9, ref outputParameter));
+                                    (_s9/**/.Pop() ?? new _s9()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpTask, ref inputParameter);
                                     return;
                                 }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
@@ -253,42 +245,52 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             sender.Push(returnType);
                             return;
                         case 10:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p6 inputParameter = new _p6();
-                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                _p3 inputParameter = new _p3();
+                                if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    
-                                    Value.addCustomSerialize(inputParameter.p0);
+                                    (_s10/**/.Pop() ?? new _s10()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
                                     return;
                                 }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                                 sender.AddLog(error);
                             }
+                            sender.Push(returnType);
                             return;
                         case 11:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
+                                _p3 inputParameter = new _p3();
+                                if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    
-                                    Value.addCustomSerializeFinally();
+                                    (_s11/**/.Pop() ?? new _s11()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                                 sender.AddLog(error);
                             }
+                            sender.Push(returnType);
                             return;
                         default: return;
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                sealed class _s3 : AutoCSer.Net.TcpInternalServer.ServerCall<_s3, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                sealed class _s5 : AutoCSer.Net.TcpInternalServer.ServerCall<_s5, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
                     {
@@ -315,13 +317,16 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, _c3, ref value);
+                            Sender.Push(CommandIndex, _c5, ref value);
                         }
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                sealed class _s4 : AutoCSer.Net.TcpInternalServer.ServerCall<_s4, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                sealed class _s9 : AutoCSer.Net.TcpInternalServer.ServerCall<_s9, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
                     {
@@ -348,46 +353,13 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, _c4, ref value);
+                            Sender.Push(CommandIndex, _c9, ref value);
                         }
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                sealed class _s5 : AutoCSer.Net.TcpInternalServer.ServerCall<_s5, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
-                    {
-                        try
-                        {
-                            
-                            AutoCSer.TestCase.TcpServerPerformance.Add Return;
-
-                            
-                            Return = serverValue.addTimeoutTask(inputParameter.p0, inputParameter.p1);
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
-                        if (Sender.IsSocket)
-                        {
-                            get(ref value);
-                            Sender.Push(CommandIndex, _c5, ref value);
-                        }
-                        push(this);
-                    }
-                }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                sealed class _s6 : AutoCSer.Net.TcpInternalServer.ServerCall<_s6, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                sealed class _s10 : AutoCSer.Net.TcpInternalServer.ServerCall<_s10, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
                     {
@@ -414,17 +386,45 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, _c6, ref value);
+                            Sender.Push(CommandIndex, _c10, ref value);
                         }
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsKeepCallback = 1, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
+                sealed class _s11 : AutoCSer.Net.TcpInternalServer.ServerCall<_s11, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer, _p3>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
+                    {
+                        try
+                        {
+                            
+                            AutoCSer.TestCase.TcpServerPerformance.Add Return;
+
+                            
+                            Return = serverValue.addTimeoutTask(inputParameter.p0, inputParameter.p1);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void Call()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c11, ref value);
+                        }
+                        push(this);
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
@@ -495,9 +495,15 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
-                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p5
+                {
+                    public AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize p0;
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p6
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -520,12 +526,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         set { Ret = (AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize)value; }
                     }
 #endif
-                }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
-                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-                internal struct _p6
-                {
-                    public AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize p0;
                 }
             }
             /// <summary>
@@ -672,111 +672,67 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     }
                 }
 
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
                 /// <summary>
-                /// 简单计算测试
+                /// 计算回调测试
                 /// </summary>
-                public void addSynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public void addCustomSerialize(AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize value)
                 {
-                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
-                    try
+                    TcpInternalServer._p5 _inputParameter_ = new TcpInternalServer._p5
                     {
-                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                        if (_socket_ != null)
-                        {
-                            TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
-                            {
-                                
-                                p0 = left,
-                                
-                                p1 = right,
-                            };
-                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac2, ref _onOutput_, ref _inputParameter_);
-                        }
-                    }
-                    finally
-                    {
-                        if (_onOutput_ != null)
-                        {
-                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                            _onOutput_.Call(ref _outputParameter_);
-                        }
-                    }
+                        
+                        p0 = value,
+                    };
+                    _TcpClient_.Sender.CallOnly(_c2, ref _inputParameter_);
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsKeepCallback = 1 };
                 /// <summary>
-                /// 计算队列测试
+                /// 计算回调测试
                 /// </summary>
-                public void addQueue(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                /// <returns>保持异步回调</returns>
+                public AutoCSer.Net.TcpServer.KeepCallback addCustomSerialize(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>> _onReturn_)
                 {
-                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p6>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize, TcpInternalServer._p6>(_onReturn_);
                     try
                     {
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                         if (_socket_ != null)
                         {
-                            TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
-                            {
-                                
-                                p0 = left,
-                                
-                                p1 = right,
-                            };
-                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac3, ref _onOutput_, ref _inputParameter_);
+                            return _socket_.GetKeep<TcpInternalServer._p6>(_ac3, ref _onOutput_);
                         }
                     }
                     finally
                     {
                         if (_onOutput_ != null)
                         {
-                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p6> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p6> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
+                    return null;
                 }
 
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 0, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
                 /// <summary>
-                /// 计算任务测试
+                /// 计算测试结束
                 /// </summary>
-                public void addTcpTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public void addCustomSerializeFinally()
                 {
-                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
-                    try
-                    {
-                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                        if (_socket_ != null)
-                        {
-                            TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
-                            {
-                                
-                                p0 = left,
-                                
-                                p1 = right,
-                            };
-                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac4, ref _onOutput_, ref _inputParameter_);
-                        }
-                    }
-                    finally
-                    {
-                        if (_onOutput_ != null)
-                        {
-                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                            _onOutput_.Call(ref _outputParameter_);
-                        }
-                    }
+                    _TcpClient_.Sender.CallOnly(_c4);
                 }
 
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
                 /// <summary>
-                /// 计算任务测试
+                /// 计算队列测试
                 /// </summary>
-                public void addTimeoutTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public void addQueue(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -805,7 +761,119 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsKeepCallback = 1 };
+                /// <summary>
+                /// 计算回调测试
+                /// </summary>
+                /// <returns>保持异步回调</returns>
+                public AutoCSer.Net.TcpServer.KeepCallback addRegister(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            return _socket_.GetKeep<TcpInternalServer._p4>(_ac6, ref _onOutput_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                    return null;
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 3, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+
+                /// <summary>
+                /// 计算回调测试
+                /// </summary>
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                public void addRegister(int left, int right)
+                {
+                    TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
+                    {
+                        
+                        p0 = left,
+                        
+                        p1 = right,
+                    };
+                    _TcpClient_.Sender.CallOnly(_c7, ref _inputParameter_);
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                /// <summary>
+                /// 简单计算测试
+                /// </summary>
+                public void addSynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
+                            {
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac8, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                /// <summary>
+                /// 计算任务测试
+                /// </summary>
+                public void addTcpTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
+                            {
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac9, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
@@ -824,7 +892,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                                 
                                 p1 = right,
                             };
-                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac6, ref _onOutput_, ref _inputParameter_);
+                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac10, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -838,12 +906,11 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsKeepCallback = 1 };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
                 /// <summary>
-                /// 计算回调测试
+                /// 计算任务测试
                 /// </summary>
-                /// <returns>保持异步回调</returns>
-                public AutoCSer.Net.TcpServer.KeepCallback addRegister(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public void addTimeoutTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -851,7 +918,14 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                         if (_socket_ != null)
                         {
-                            return _socket_.GetKeep<TcpInternalServer._p4>(_ac7, ref _onOutput_);
+                            TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
+                            {
+                                
+                                p0 = left,
+                                
+                                p1 = right,
+                            };
+                            _socket_.Get<TcpInternalServer._p3, TcpInternalServer._p4>(_ac11, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -862,80 +936,6 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
-                    return null;
-                }
-
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 3, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-
-                /// <summary>
-                /// 计算回调测试
-                /// </summary>
-                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addRegister(int left, int right)
-                {
-                    TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
-                    {
-                        
-                        p0 = left,
-                        
-                        p1 = right,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c8, ref _inputParameter_);
-                }
-
-
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsKeepCallback = 1 };
-                /// <summary>
-                /// 计算回调测试
-                /// </summary>
-                /// <returns>保持异步回调</returns>
-                public AutoCSer.Net.TcpServer.KeepCallback addCustomSerialize(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>> _onReturn_)
-                {
-                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p5>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize, TcpInternalServer._p5>(_onReturn_);
-                    try
-                    {
-                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                        if (_socket_ != null)
-                        {
-                            return _socket_.GetKeep<TcpInternalServer._p5>(_ac9, ref _onOutput_);
-                        }
-                    }
-                    finally
-                    {
-                        if (_onOutput_ != null)
-                        {
-                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p5> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p5> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                            _onOutput_.Call(ref _outputParameter_);
-                        }
-                    }
-                    return null;
-                }
-
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 6, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-
-                /// <summary>
-                /// 计算回调测试
-                /// </summary>
-                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addCustomSerialize(AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize value)
-                {
-                    TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
-                    {
-                        
-                        p0 = value,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c10, ref _inputParameter_);
-                }
-
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 0, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-
-                /// <summary>
-                /// 计算测试结束
-                /// </summary>
-                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addCustomSerializeFinally()
-                {
-                    _TcpClient_.Sender.CallOnly(_c11);
                 }
 
             }

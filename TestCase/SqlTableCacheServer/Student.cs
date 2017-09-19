@@ -102,7 +102,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 缓存加载
         /// </summary>
-        internal static class Loader
+        internal sealed class Loader
         {
             /// <summary>
             /// 学生数量
@@ -112,22 +112,14 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                 get { return sqlCache.Count; }
             }
             /// <summary>
-            /// 获取学生标识集合
-            /// </summary>
-            /// <param name="classId">班级标识</param>
-            /// <returns>学生标识集合</returns>
-            internal static int[] GetStudentIds(int classId)
-            {
-                return Class.Loader.Cache[classId].Extension.Students.toLeftArray().GetArray(value => value.Id);
-            }
-            /// <summary>
             /// 数据缓存初始化
             /// </summary>
             static Loader()
             {
                 if (sqlTable != null)
                 {
-                    sqlCache.CreateMemberList(Class.Loader.Cache, value => value.ClassId, value => value.Students, true);
+                    var classCache = Class.WaitCache.Wait();
+                    sqlCache.CreateMemberList(classCache, value => value.ClassId, value => value.Students, true);
 
                     if (sqlCache.Count == 0)
                     {
@@ -139,7 +131,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                     {
                         foreach (Student value in sqlCache.Values)
                         {
-                            Class.SqlLogProxyMembers classProxy = Class.Loader.Cache[value.ClassId].SqlLogProxyMember;
+                            Class.SqlLogProxyMembers classProxy = classCache[value.ClassId].SqlLogProxyMember;
                             ++classProxy.StudentCount;
                         }
 

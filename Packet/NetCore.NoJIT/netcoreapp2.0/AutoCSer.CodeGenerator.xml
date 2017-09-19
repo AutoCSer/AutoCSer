@@ -1442,6 +1442,27 @@
             类型成员方法缓存
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.Metadata.MethodIndex.methodCompare">
+            <summary>
+            字符串比较大小
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Metadata.MethodIndex.compare(System.Reflection.MethodInfo,System.Reflection.MethodInfo)">
+            <summary>
+            字符串比较大小
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Metadata.MethodIndex.compare(System.Reflection.ParameterInfo,System.Reflection.ParameterInfo)">
+            <summary>
+            字符串比较大小
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.CodeGenerator.Metadata.MethodIndex.getMethods(System.Type)">
             <summary>
             获取类型的成员方法集合

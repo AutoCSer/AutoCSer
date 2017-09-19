@@ -6524,6 +6524,18 @@
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
         </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copy(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            复制重启进程
+            </summary>
+            <param name="copyer">文件复制器</param>
+        </member>
+        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copyAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
+            <summary>
+            复制重启进程
+            </summary>
+            <param name="copyer">文件复制器</param>
+        </member>
         <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.guard(AutoCSer.Diagnostics.ProcessCopyer)">
             <summary>
             守护进程
@@ -6547,18 +6559,6 @@
             删除守护进程
             </summary>
             <param name="copyer">文件信息</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copy(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            复制重启进程
-            </summary>
-            <param name="copyer">文件复制器</param>
-        </member>
-        <member name="M:AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalClient.copyAwaiter(AutoCSer.Diagnostics.ProcessCopyer)">
-            <summary>
-            复制重启进程
-            </summary>
-            <param name="copyer">文件复制器</param>
         </member>
         <member name="T:AutoCSer.Diagnostics.UnionType">
             <summary>
@@ -16411,6 +16411,32 @@
             所有成员数量
             </summary>
         </member>
+        <member name="F:AutoCSer.Metadata.MemberIndexGroup.fieldCompare">
+            <summary>
+            字符串比较大小
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberIndexGroup.Compare(System.Reflection.FieldInfo,System.Reflection.FieldInfo)">
+            <summary>
+            字符串比较大小
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberIndexGroup.propertyCompare">
+            <summary>
+            字符串比较大小
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberIndexGroup.compare(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo)">
+            <summary>
+            字符串比较大小
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Metadata.MemberIndexGroup.#ctor(System.Type,System.Boolean)">
             <summary>
             成员索引分组
@@ -20971,18 +20997,18 @@
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
         </member>
-        <member name="M:AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalClient.register">
-            <summary>
-            TCP 服务端注册
-            </summary>
-            <returns>TCP 服务端标识</returns>
-        </member>
         <member name="M:AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalClient.getLog(AutoCSer.Net.TcpRegister.ClientId,System.Action{AutoCSer.Net.TcpServer.ReturnValue{AutoCSer.Net.TcpRegister.Log}})">
             <summary>
             TCP 服务端轮询
             </summary>
             <param name="clientId">TCP 服务端标识</param>
             <returns>保持异步回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalClient.register">
+            <summary>
+            TCP 服务端注册
+            </summary>
+            <returns>TCP 服务端标识</returns>
         </member>
         <member name="T:AutoCSer.Net.TcpRegister.RegisterState">
             <summary>
@@ -21225,6 +21251,22 @@
             <param name="onCustomData">自定义数据包处理</param>
             <param name="log">日志接口</param>
         </member>
+        <member name="M:AutoCSer.Net.TcpRegister.Server.TcpInternalClient.checkRegister(System.Int64,AutoCSer.Net.TcpRegister.ServerInfo)">
+            <summary>
+            失败重连检测 TCP 服务信息
+            </summary>
+            <param name="ticks">全局注册标识</param>
+            <param name="server">TCP 服务信息</param>
+            <returns>注册状态</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpRegister.Server.TcpInternalClient.checkRegisterAwaiter(System.Int64,AutoCSer.Net.TcpRegister.ServerInfo)">
+            <summary>
+            失败重连检测 TCP 服务信息
+            </summary>
+            <param name="ticks">全局注册标识</param>
+            <param name="server">TCP 服务信息</param>
+            <returns>注册状态</returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpRegister.Server.TcpInternalClient.getPort(AutoCSer.Net.TcpRegister.ClientId,System.String)">
             <summary>
             分配服务端口号
@@ -21246,22 +21288,6 @@
         <member name="M:AutoCSer.Net.TcpRegister.Server.TcpInternalClient.registerAwaiter(System.Int64,AutoCSer.Net.TcpRegister.ServerInfo)">
             <summary>
             注册 TCP 服务信息
-            </summary>
-            <param name="ticks">全局注册标识</param>
-            <param name="server">TCP 服务信息</param>
-            <returns>注册状态</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpRegister.Server.TcpInternalClient.checkRegister(System.Int64,AutoCSer.Net.TcpRegister.ServerInfo)">
-            <summary>
-            失败重连检测 TCP 服务信息
-            </summary>
-            <param name="ticks">全局注册标识</param>
-            <param name="server">TCP 服务信息</param>
-            <returns>注册状态</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpRegister.Server.TcpInternalClient.checkRegisterAwaiter(System.Int64,AutoCSer.Net.TcpRegister.ServerInfo)">
-            <summary>
-            失败重连检测 TCP 服务信息
             </summary>
             <param name="ticks">全局注册标识</param>
             <param name="server">TCP 服务信息</param>

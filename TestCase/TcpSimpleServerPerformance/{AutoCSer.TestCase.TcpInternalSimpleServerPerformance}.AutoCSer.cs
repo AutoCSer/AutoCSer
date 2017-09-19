@@ -74,13 +74,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                                 _p1 inputParameter = new _p1();
                                 if (socket.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    _p2 _outputParameter_ = new _p2();
-                                    
-                                    int Return;
-                                    
-                                    Return = Value.addSynchronous(inputParameter.p0, inputParameter.p1);
-                                    _outputParameter_.Return = Return;
-                                    return socket.Send(_c1, ref _outputParameter_);
+                                    (_s1/**/.Pop() ?? new _s1()).Set(socket, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
+                                    return true;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
@@ -97,8 +92,13 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                                 _p1 inputParameter = new _p1();
                                 if (socket.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s2/**/.Pop() ?? new _s2()).Set(socket, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
-                                    return true;
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.addSynchronous(inputParameter.p0, inputParameter.p1);
+                                    _outputParameter_.Return = Return;
+                                    return socket.Send(_c2, ref _outputParameter_);
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
@@ -133,7 +133,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                                 _p1 inputParameter = new _p1();
                                 if (socket.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s4/**/.Pop() ?? new _s4()).Set(socket, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    (_s4/**/.Pop() ?? new _s4()).Set(socket, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
                                     return true;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -151,7 +151,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                                 _p1 inputParameter = new _p1();
                                 if (socket.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s5/**/.Pop() ?? new _s5()).Set(socket, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
+                                    (_s5/**/.Pop() ?? new _s5()).Set(socket, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return true;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -166,8 +166,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
-                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
-                sealed class _s2 : AutoCSer.Net.TcpInternalSimpleServer.ServerCall<_s2, AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer, _p1>
+                sealed class _s1 : AutoCSer.Net.TcpInternalSimpleServer.ServerCall<_s1, AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer, _p1>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
                     {
@@ -194,9 +193,10 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         get(ref value);
                         push(this);
-                        socket.SendAsync(_c2, ref value);
+                        socket.SendAsync(_c1, ref value);
                     }
                 }
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
                 sealed class _s3 : AutoCSer.Net.TcpInternalSimpleServer.ServerCall<_s3, AutoCSer.TestCase.TcpInternalSimpleServerPerformance.InternalSimpleServer, _p1>
                 {
@@ -239,7 +239,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                             int Return;
 
                             
-                            Return = serverValue.addTimeoutTask(inputParameter.p0, inputParameter.p1);
+                            Return = serverValue.addThreadPool(inputParameter.p0, inputParameter.p1);
 
                             value.Value.Return = Return;
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -270,7 +270,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                             int Return;
 
                             
-                            Return = serverValue.addThreadPool(inputParameter.p0, inputParameter.p1);
+                            Return = serverValue.addTimeoutTask(inputParameter.p0, inputParameter.p1);
 
                             value.Value.Return = Return;
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -375,9 +375,9 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c1 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 1 + 128, InputParameterIndex = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
-                /// 简单计算测试
+                /// 计算队列测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addSynchronous(int left, int right)
+                public AutoCSer.Net.TcpServer.ReturnValue<int> addQueue(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -400,9 +400,9 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
-                /// 计算队列测试
+                /// 简单计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addQueue(int left, int right)
+                public AutoCSer.Net.TcpServer.ReturnValue<int> addSynchronous(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -452,7 +452,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addTimeoutTask(int left, int right)
+                public AutoCSer.Net.TcpServer.ReturnValue<int> addThreadPool(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -477,7 +477,7 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addThreadPool(int left, int right)
+                public AutoCSer.Net.TcpServer.ReturnValue<int> addTimeoutTask(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {

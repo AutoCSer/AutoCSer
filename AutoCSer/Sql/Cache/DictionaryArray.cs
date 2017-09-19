@@ -9,6 +9,7 @@ namespace AutoCSer.Sql.Cache
     /// </summary>
     /// <typeparam name="keyType"></typeparam>
     /// <typeparam name="valueType"></typeparam>
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     internal struct DictionaryArray<keyType, valueType>
         where keyType : IEquatable<keyType>
         where valueType : class

@@ -17,11 +17,11 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                 KeyValue<string, int>[] names = new KeyValue<string, int>[7];
                 names[0].Set(@"(int,int)add", 0);
                 names[1].Set(@"(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>,bool>)addAsynchronous", 1);
-                names[2].Set(@"(int,int)addSynchronous", 2);
-                names[3].Set(@"(int,int)addQueue", 3);
+                names[2].Set(@"(int,int)addQueue", 2);
+                names[3].Set(@"(int,int)addSynchronous", 3);
                 names[4].Set(@"(int,int)addTcpTask", 4);
-                names[5].Set(@"(int,int)addTimeoutTask", 5);
-                names[6].Set(@"(int,int)addThreadPool", 6);
+                names[5].Set(@"(int,int)addThreadPool", 5);
+                names[6].Set(@"(int,int)addTimeoutTask", 6);
                 return names;
             }
             /// <summary>
@@ -115,13 +115,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p4 _outputParameter_ = new _p4();
-                                    
-                                    AutoCSer.TestCase.TcpServerPerformance.Add Return;
-                                    
-                                    Return = Value.addSynchronous(inputParameter.left, inputParameter.right);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c2, ref _outputParameter_);
+                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -140,7 +134,13 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
+                                    _p4 _outputParameter_ = new _p4();
+                                    
+                                    AutoCSer.TestCase.TcpServerPerformance.Add Return;
+                                    
+                                    Return = Value.addSynchronous(inputParameter.left, inputParameter.right);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c3, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -178,7 +178,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -197,7 +197,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s6/**/.Pop() ?? new _s6()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ref inputParameter);
+                                    (_s6/**/.Pop() ?? new _s6()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -214,8 +214,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
-                sealed class _s3 : AutoCSer.Net.TcpOpenServer.ServerCall<_s3, AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer, _p3>
+                sealed class _s2 : AutoCSer.Net.TcpOpenServer.ServerCall<_s2, AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer, _p3>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
                     {
@@ -242,11 +241,12 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, _c3, ref value);
+                            Sender.Push(CommandIndex, _c2, ref value);
                         }
                         push(this);
                     }
                 }
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
                 sealed class _s4 : AutoCSer.Net.TcpOpenServer.ServerCall<_s4, AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer, _p3>
                 {
@@ -291,7 +291,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             AutoCSer.TestCase.TcpServerPerformance.Add Return;
 
                             
-                            Return = serverValue.addTimeoutTask(inputParameter.left, inputParameter.right);
+                            Return = serverValue.addThreadPool(inputParameter.left, inputParameter.right);
 
                             value.Value.Return = Return;
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -313,7 +313,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
                 sealed class _s6 : AutoCSer.Net.TcpOpenServer.ServerCall<_s6, AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer, _p3>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
@@ -324,7 +324,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             AutoCSer.TestCase.TcpServerPerformance.Add Return;
 
                             
-                            Return = serverValue.addThreadPool(inputParameter.left, inputParameter.right);
+                            Return = serverValue.addTimeoutTask(inputParameter.left, inputParameter.right);
 
                             value.Value.Return = Return;
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -346,7 +346,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
@@ -564,9 +564,9 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
                 /// <summary>
-                /// 简单计算测试
+                /// 计算队列测试
                 /// </summary>
-                public void addSynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public void addQueue(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpOpenServer._p4>(_onReturn_);
                     try
@@ -597,9 +597,9 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
                 /// <summary>
-                /// 计算队列测试
+                /// 简单计算测试
                 /// </summary>
-                public void addQueue(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public void addSynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpOpenServer._p4>(_onReturn_);
                     try
@@ -665,7 +665,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public void addTimeoutTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public void addThreadPool(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpOpenServer._p4>(_onReturn_);
                     try
@@ -698,7 +698,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public void addThreadPool(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public void addTimeoutTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpOpenServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpOpenServer._p4>(_onReturn_);
                     try

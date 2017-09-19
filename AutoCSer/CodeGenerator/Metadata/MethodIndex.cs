@@ -233,6 +233,55 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         private static readonly Dictionary<Type, MethodIndex[]> methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
         /// <summary>
+        /// 字符串比较大小
+        /// </summary>
+        private static readonly Func<MethodInfo, MethodInfo, int> methodCompare = compare;
+        /// <summary>
+        /// 字符串比较大小
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        private static int compare(MethodInfo left, MethodInfo right)
+        {
+            int value = string.CompareOrdinal(left.Name, right.Name);
+            if (value == 0)
+            {
+                if (left.IsGenericMethod)
+                {
+                    if (!right.IsGenericMethod) return 1;
+                }
+                else if (right.IsGenericMethod) return -1;
+                ParameterInfo[] leftParameters = left.GetParameters(), rightParameters = right.GetParameters();
+                value = leftParameters.Length - rightParameters.Length;
+                if (value == 0)
+                {
+                    for (int index = 0; index != leftParameters.Length; ++index)
+                    {
+                        value = compare(leftParameters[index], rightParameters[index]);
+                        if (value != 0) return value;
+                    }
+                }
+            }
+            return value;
+        }
+        /// <summary>
+        /// 字符串比较大小
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        private static int compare(ParameterInfo left, ParameterInfo right)
+        {
+            Type leftType = left.ParameterType, rightType = right.ParameterType;
+            if (leftType != rightType)
+            {
+                int value = string.CompareOrdinal(leftType.FullName, rightType.FullName);
+                return value == 0 ? string.CompareOrdinal(left.Name, right.Name) : value;
+            }
+            return 0;
+        }
+        /// <summary>
         /// 获取类型的成员方法集合
         /// </summary>
         /// <param name="type">类型</param>
@@ -244,10 +293,10 @@ namespace AutoCSer.CodeGenerator.Metadata
             {
                 int index = 0;
                 methodCache[type] = methods = AutoCSer.Extension.ArrayExtension.concat(
-                    type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).getArray(value => new MethodIndex(value, MemberFilters.PublicStatic, index++)),
-                    type.GetMethods(BindingFlags.Public | BindingFlags.Instance).getArray(value => new MethodIndex(value, MemberFilters.PublicInstance, index++)),
-                    type.GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy).getArray(value => new MethodIndex(value, MemberFilters.NonPublicStatic, index++)),
-                    type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).getArray(value => new MethodIndex(value, MemberFilters.NonPublicInstance, index++)));
+                    type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.PublicStatic, index++)),
+                    type.GetMethods(BindingFlags.Public | BindingFlags.Instance).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.PublicInstance, index++)),
+                    type.GetMethods(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.NonPublicStatic, index++)),
+                    type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).sort(methodCompare).getArray(value => new MethodIndex(value, MemberFilters.NonPublicInstance, index++)));
             }
             return methods;
         }

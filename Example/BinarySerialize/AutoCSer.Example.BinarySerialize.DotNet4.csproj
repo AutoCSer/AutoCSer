@@ -104,6 +104,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnonymousType.cs" />
     <Compile Include="BaseType.cs" />
     <Compile Include="CustomClass.cs" />
     <Compile Include="CustomStruct.cs" />

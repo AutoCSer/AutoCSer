@@ -18,9 +18,9 @@ namespace AutoCSer.DiskBlock
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[3];
-                names[0].Set(@"(AutoCSer.DiskBlock.ClientBuffer,ulong,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer>,bool>)read", 0);
+                names[0].Set(@"(AutoCSer.DiskBlock.AppendBuffer,System.Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>,bool>)append", 0);
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,ulong,byte[],ref long)verify", 1);
-                names[2].Set(@"(AutoCSer.DiskBlock.AppendBuffer,System.Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>,bool>)append", 2);
+                names[2].Set(@"(AutoCSer.DiskBlock.ClientBuffer,ulong,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer>,bool>)read", 2);
                 return names;
             }
             /// <summary>
@@ -68,7 +68,7 @@ namespace AutoCSer.DiskBlock
                                 {
                                     _p2 outputParameter = new _p2();
                                     
-                                    Value.read(inputParameter.p0, inputParameter.p1, sender.GetCallback<_p2, AutoCSer.DiskBlock.ClientBuffer>(_c0, ref outputParameter));
+                                    Value.append(inputParameter.p0, sender.GetCallback<_p2, ulong>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -117,7 +117,7 @@ namespace AutoCSer.DiskBlock
                                 {
                                     _p6 outputParameter = new _p6();
                                     
-                                    Value.append(inputParameter.p0, sender.GetCallback<_p6, ulong>(_c2, ref outputParameter));
+                                    Value.read(inputParameter.p0, inputParameter.p1, sender.GetCallback<_p6, AutoCSer.DiskBlock.ClientBuffer>(_c2, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -132,16 +132,15 @@ namespace AutoCSer.DiskBlock
                         default: return;
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
                 {
-                    public AutoCSer.DiskBlock.ClientBuffer p0;
-                    public ulong p1;
+                    public AutoCSer.DiskBlock.AppendBuffer p0;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -150,13 +149,13 @@ namespace AutoCSer.DiskBlock
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.DiskBlock.ClientBuffer>
+                     : AutoCSer.Net.IReturnParameter<ulong>
 #endif
                 {
                     [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.DiskBlock.ClientBuffer Ret;
+                    public ulong Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.DiskBlock.ClientBuffer Return
+                    public ulong Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -166,7 +165,7 @@ namespace AutoCSer.DiskBlock
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (AutoCSer.DiskBlock.ClientBuffer)value; }
+                        set { Ret = (ulong)value; }
                     }
 #endif
                 }
@@ -210,7 +209,8 @@ namespace AutoCSer.DiskBlock
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p5
                 {
-                    public AutoCSer.DiskBlock.AppendBuffer p0;
+                    public AutoCSer.DiskBlock.ClientBuffer p0;
+                    public ulong p1;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -219,13 +219,13 @@ namespace AutoCSer.DiskBlock
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<ulong>
+                     : AutoCSer.Net.IReturnParameter<AutoCSer.DiskBlock.ClientBuffer>
 #endif
                 {
                     [AutoCSer.Json.IgnoreMember]
-                    public ulong Ret;
+                    public AutoCSer.DiskBlock.ClientBuffer Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public ulong Return
+                    public AutoCSer.DiskBlock.ClientBuffer Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -235,7 +235,7 @@ namespace AutoCSer.DiskBlock
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (ulong)value; }
+                        set { Ret = (AutoCSer.DiskBlock.ClientBuffer)value; }
                     }
 #endif
                 }
@@ -266,15 +266,14 @@ namespace AutoCSer.DiskBlock
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
-                /// 获取数据
+                /// 添加数据
                 /// </summary>
-                /// <param name="buffer">缓冲区，Start 指定字节数量</param>
-                /// <param name="index">索引位置</param>
-                public AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> read(AutoCSer.DiskBlock.ClientBuffer buffer, ulong index)
+                /// <param name="buffer">数据</param>
+                public AutoCSer.Net.TcpServer.ReturnValue<ulong> append(AutoCSer.DiskBlock.AppendBuffer buffer)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
                     try
@@ -286,31 +285,27 @@ namespace AutoCSer.DiskBlock
                             {
                                 
                                 p0 = buffer,
-                                
-                                p1 = index,
                             };
                             TcpInternalServer._p2 _outputParameter_ = new TcpInternalServer._p2
                             {
-                                Ret = buffer
                             };
                             AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p1, TcpInternalServer._p2>(_c0, ref _wait_, ref _inputParameter_, ref _outputParameter_);
-                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> { Type = _returnType_, Value = _outputParameter_.Return };
+                            return new AutoCSer.Net.TcpServer.ReturnValue<ulong> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<ulong> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
                 /// <summary>
-                /// 获取数据
+                /// 添加数据
                 /// </summary>
-                /// <param name="buffer">缓冲区，Start 指定字节数量</param>
-                /// <param name="index">索引位置</param>
-                public AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer> readAwaiter(AutoCSer.DiskBlock.ClientBuffer buffer, ulong index)
+                /// <param name="buffer">数据</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<ulong> appendAwaiter(AutoCSer.DiskBlock.AppendBuffer buffer)
                 {
-                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer>();
+                    AutoCSer.Net.TcpServer.AwaiterBox<ulong> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<ulong>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     if (_socket_ != null)
                     {
@@ -318,12 +313,10 @@ namespace AutoCSer.DiskBlock
                         {
                             
                             p0 = buffer,
-                            
-                            p1 = index,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer>>(_a0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p1, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong>>(_a0, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
@@ -367,14 +360,15 @@ namespace AutoCSer.DiskBlock
                     return new AutoCSer.Net.TcpServer.ReturnValue<bool> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 5, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
-                /// 添加数据
+                /// 获取数据
                 /// </summary>
-                /// <param name="buffer">数据</param>
-                public AutoCSer.Net.TcpServer.ReturnValue<ulong> append(AutoCSer.DiskBlock.AppendBuffer buffer)
+                /// <param name="buffer">缓冲区，Start 指定字节数量</param>
+                /// <param name="index">索引位置</param>
+                public AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> read(AutoCSer.DiskBlock.ClientBuffer buffer, ulong index)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p6> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p6>.Pop();
                     try
@@ -386,27 +380,31 @@ namespace AutoCSer.DiskBlock
                             {
                                 
                                 p0 = buffer,
+                                
+                                p1 = index,
                             };
                             TcpInternalServer._p6 _outputParameter_ = new TcpInternalServer._p6
                             {
+                                Ret = buffer
                             };
                             AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p5, TcpInternalServer._p6>(_c2, ref _wait_, ref _inputParameter_, ref _outputParameter_);
-                            return new AutoCSer.Net.TcpServer.ReturnValue<ulong> { Type = _returnType_, Value = _outputParameter_.Return };
+                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
                     {
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p6>.PushNotNull(_wait_);
                     }
-                    return new AutoCSer.Net.TcpServer.ReturnValue<ulong> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
                 /// <summary>
-                /// 添加数据
+                /// 获取数据
                 /// </summary>
-                /// <param name="buffer">数据</param>
-                public AutoCSer.Net.TcpServer.AwaiterBox<ulong> appendAwaiter(AutoCSer.DiskBlock.AppendBuffer buffer)
+                /// <param name="buffer">缓冲区，Start 指定字节数量</param>
+                /// <param name="index">索引位置</param>
+                public AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer> readAwaiter(AutoCSer.DiskBlock.ClientBuffer buffer, ulong index)
                 {
-                    AutoCSer.Net.TcpServer.AwaiterBox<ulong> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<ulong>();
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.DiskBlock.ClientBuffer>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     if (_socket_ != null)
                     {
@@ -414,10 +412,12 @@ namespace AutoCSer.DiskBlock
                         {
                             
                             p0 = buffer,
+                            
+                            p1 = index,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p5, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<ulong>>(_a2, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p5, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.DiskBlock.ClientBuffer>>(_a2, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);

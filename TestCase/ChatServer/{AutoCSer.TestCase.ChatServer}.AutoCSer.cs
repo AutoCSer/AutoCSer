@@ -15,11 +15,11 @@ namespace AutoCSer.TestCase.ChatServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[5];
-                names[0].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,string)login", 0);
-                names[1].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender)logout", 1);
-                names[2].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,string)send", 2);
-                names[3].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>,bool>)getUser", 3);
-                names[4].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>,bool>)getMessage", 4);
+                names[0].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>,bool>)getMessage", 0);
+                names[1].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>,bool>)getUser", 1);
+                names[2].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,string)login", 2);
+                names[3].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender)logout", 3);
+                names[4].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,string)send", 4);
                 return names;
             }
             /// <summary>
@@ -40,9 +40,9 @@ namespace AutoCSer.TestCase.ChatServer
                 {
                     Value = value ?? new AutoCSer.TestCase.ChatServer.Server();
                     setCommandData(5);
-                    setVerifyCommand(0);
+                    setCommand(0);
                     setCommand(1);
-                    setCommand(2);
+                    setVerifyCommand(2);
                     setCommand(3);
                     setCommand(4);
                     if (attribute.IsAutoServer) Start();
@@ -62,20 +62,12 @@ namespace AutoCSer.TestCase.ChatServer
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p1 inputParameter = new _p1();
-                                if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p2 _outputParameter_ = new _p2();
+                                    _p1 outputParameter = new _p1();
                                     
-                                    bool Return;
-                                    
-                                    Return = Value.login(sender, inputParameter.userName);
-                                    if (Return) sender.SetVerifyMethod();
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c0, ref _outputParameter_);
+                                    Value.getMessage(sender,  sender.GetCallback<_p1, AutoCSer.TestCase.ChatData.Message>(_c0, ref outputParameter));
                                     return;
                                 }
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
@@ -89,7 +81,9 @@ namespace AutoCSer.TestCase.ChatServer
                             try
                             {
                                 {
-                                    (_s1/**/.Pop() ?? new _s1()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue);
+                                    _p2 outputParameter = new _p2();
+                                    
+                                    Value.getUser(sender,  sender.GetCallback<_p2, AutoCSer.TestCase.ChatData.UserLogin>(_c1, ref outputParameter));
                                     return;
                                 }
                             }
@@ -107,7 +101,14 @@ namespace AutoCSer.TestCase.ChatServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
+                                    _p4 _outputParameter_ = new _p4();
+                                    
+                                    bool Return;
+                                    
+                                    Return = Value.login(sender, inputParameter.userName);
+                                    if (Return) sender.SetVerifyMethod();
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c2, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -124,9 +125,7 @@ namespace AutoCSer.TestCase.ChatServer
                             try
                             {
                                 {
-                                    _p4 outputParameter = new _p4();
-                                    
-                                    Value.getUser(sender,  sender.GetCallback<_p4, AutoCSer.TestCase.ChatData.UserLogin>(_c3, ref outputParameter));
+                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue);
                                     return;
                                 }
                             }
@@ -141,12 +140,13 @@ namespace AutoCSer.TestCase.ChatServer
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
+                                _p5 inputParameter = new _p5();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p5 outputParameter = new _p5();
-                                    
-                                    Value.getMessage(sender,  sender.GetCallback<_p5, AutoCSer.TestCase.ChatData.Message>(_c4, ref outputParameter));
+                                    (_s4/**/.Pop() ?? new _s4()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
                                     return;
                                 }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
@@ -158,8 +158,10 @@ namespace AutoCSer.TestCase.ChatServer
                         default: return;
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
-                sealed class _s1 : AutoCSer.Net.TcpOpenServer.ServerCall<_s1, AutoCSer.TestCase.ChatServer.Server>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                sealed class _s3 : AutoCSer.Net.TcpOpenServer.ServerCall<_s3, AutoCSer.TestCase.ChatServer.Server>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
                     {
@@ -188,8 +190,8 @@ namespace AutoCSer.TestCase.ChatServer
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
-                sealed class _s2 : AutoCSer.Net.TcpOpenServer.ServerCall<_s2, AutoCSer.TestCase.ChatServer.Server, _p3>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
+                sealed class _s4 : AutoCSer.Net.TcpOpenServer.ServerCall<_s4, AutoCSer.TestCase.ChatServer.Server, _p5>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
                     {
@@ -218,20 +220,72 @@ namespace AutoCSer.TestCase.ChatServer
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<AutoCSer.TestCase.ChatData.Message>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public AutoCSer.TestCase.ChatData.Message Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public AutoCSer.TestCase.ChatData.Message Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (AutoCSer.TestCase.ChatData.Message)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p2
+#if NOJIT
+                     : AutoCSer.Net.IReturnParameter
+#else
+                     : AutoCSer.Net.IReturnParameter<AutoCSer.TestCase.ChatData.UserLogin>
+#endif
+                {
+                    [AutoCSer.Json.IgnoreMember]
+                    public AutoCSer.TestCase.ChatData.UserLogin Ret;
+                    [AutoCSer.IOS.Preserve(Conditional = true)]
+                    public AutoCSer.TestCase.ChatData.UserLogin Return
+                    {
+                        get { return Ret; }
+                        set { Ret = value; }
+                    }
+#if NOJIT
+                    [AutoCSer.Metadata.Ignore]
+                    public object ReturnObject
+                    {
+                        get { return Ret; }
+                        set { Ret = (AutoCSer.TestCase.ChatData.UserLogin)value; }
+                    }
+#endif
+                }
+                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+                internal struct _p3
                 {
                     public string userName;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-                internal struct _p2
+                internal struct _p4
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
@@ -257,63 +311,9 @@ namespace AutoCSer.TestCase.ChatServer
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-                internal struct _p3
+                internal struct _p5
                 {
                     public string content;
-                }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
-                [AutoCSer.Metadata.BoxSerialize]
-                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-                internal struct _p4
-#if NOJIT
-                     : AutoCSer.Net.IReturnParameter
-#else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.TestCase.ChatData.UserLogin>
-#endif
-                {
-                    [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.TestCase.ChatData.UserLogin Ret;
-                    [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.TestCase.ChatData.UserLogin Return
-                    {
-                        get { return Ret; }
-                        set { Ret = value; }
-                    }
-#if NOJIT
-                    [AutoCSer.Metadata.Ignore]
-                    public object ReturnObject
-                    {
-                        get { return Ret; }
-                        set { Ret = (AutoCSer.TestCase.ChatData.UserLogin)value; }
-                    }
-#endif
-                }
-                [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
-                [AutoCSer.Metadata.BoxSerialize]
-                [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-                internal struct _p5
-#if NOJIT
-                     : AutoCSer.Net.IReturnParameter
-#else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.TestCase.ChatData.Message>
-#endif
-                {
-                    [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.TestCase.ChatData.Message Ret;
-                    [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.TestCase.ChatData.Message Return
-                    {
-                        get { return Ret; }
-                        set { Ret = value; }
-                    }
-#if NOJIT
-                    [AutoCSer.Metadata.Ignore]
-                    public object ReturnObject
-                    {
-                        get { return Ret; }
-                        set { Ret = (AutoCSer.TestCase.ChatData.Message)value; }
-                    }
-#endif
                 }
             }
         }

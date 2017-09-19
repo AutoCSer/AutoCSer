@@ -22,6 +22,7 @@ namespace AutoCSer.TestCase.SqlModel
             /// </summary>
             /// <typeparam name="tableType">表格映射类型</typeparam>
             /// <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
+            [AutoCSer.Sql.MemberCache]
             public abstract class SqlModel<tableType, memberCacheType> : AutoCSer.TestCase.SqlModel.Class, AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>
                 where tableType : SqlModel<tableType, memberCacheType>
                 where memberCacheType : class
@@ -38,7 +39,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -50,7 +51,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        sqlTable/**/.WaitCreateCache();
+                        sqlTable.WaitCreateCache();
                         isEventCacheLoaded = true;
                     }
                 }
@@ -64,8 +65,10 @@ namespace AutoCSer.TestCase.SqlModel
                 protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class>> onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
                 {
                     sqlStream/**/.Set(sqlCache, isMemberMap);
-                    sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false);
-                    sqlTable/**/.AddLogStreamLoadedType(SqlLogMembers._LoadCount_, new AutoCSer.Sql.LogStream.LoadedType(typeof(AutoCSer.TestCase.SqlModel.Student), 0));
+                    sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false, false);
+                    sqlTable.LoadMemberCache(typeof(memberCacheType));
+                    sqlTable.AddLogStreamLoadedType(SqlLogMembers._LoadCount_, new AutoCSer.Sql.LogStream.LoadedType(typeof(AutoCSer.TestCase.SqlModel.Student), 0));
+                    sqlTable.WaitMemberCache();
                 }
 
                 /// <summary>
@@ -85,7 +88,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (sqlTable == null) return null;
                     sqlCache = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Class, memberCacheType>(sqlTable, memberCache, group, baseIdentity, isReset);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     return sqlCache;
                 }
 
@@ -93,7 +96,7 @@ namespace AutoCSer.TestCase.SqlModel
 
                 [AutoCSer.Metadata.Ignore]
                 tableType AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>.MemberMapValueLink { get; set; }
-                protected readonly static AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class> sqlStream = sqlTable == null ? null : new AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>(sqlTable, 5);
+                protected readonly static AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class> sqlStream = sqlTable == null ? null : new AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>(sqlTable, 4);
                 /// <summary>
                 /// 日志处理
                 /// </summary>
@@ -124,7 +127,7 @@ namespace AutoCSer.TestCase.SqlModel
                     /// 数据对象
                     /// </summary>
                     internal SqlModel<tableType, memberCacheType> _value_;
-                    private static readonly AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class> _m5 = sqlStream/**/.CreateMemberMap(value => value.StudentCount);
+                    private static readonly AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class> _m4 = sqlStream/**/.CreateMemberMap(value => value.StudentCount);
                     /// <summary>
                     /// 当前学生数量 (更新日志流)
                     /// </summary>
@@ -144,7 +147,7 @@ namespace AutoCSer.TestCase.SqlModel
                     [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                     public void StudentCount()
                     {
-                        sqlStream/**/.Update((tableType)_value_, _m5);
+                        sqlStream/**/.Update((tableType)_value_, _m4);
                     }
                     /// <summary>
                     /// 根据日志流计数完成类型初始化完毕
@@ -152,7 +155,7 @@ namespace AutoCSer.TestCase.SqlModel
                     /// <param name="type"></param>
                     internal static void _LoadCount_(AutoCSer.Sql.LogStream.LoadedType type)
                     {
-                        if (type.Equals(typeof(AutoCSer.TestCase.SqlModel.Student), 0)) sqlStream/**/.LoadMember(5);
+                        if (type.Equals(typeof(AutoCSer.TestCase.SqlModel.Student), 0)) sqlStream/**/.LoadMember(4);
                     }
                 }
                 /// <summary>
@@ -225,7 +228,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -251,7 +254,8 @@ namespace AutoCSer.TestCase.SqlModel
                 protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Student>> onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
                 {
                     sqlStream/**/.Set(sqlCache, isMemberMap);
-                    sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted);
+                    sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false);
+                    sqlTable.LoadMemberCache();
                 }
                 /// <summary>
                 /// SQL默认缓存

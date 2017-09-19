@@ -1104,13 +1104,14 @@
             </summary>
             <param name="value">被删除的对象</param>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.Loaded(System.Action{`0},System.Action{`0,`0,`0,AutoCSer.Metadata.MemberMap{`1}},System.Action{`0},System.Boolean)">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.Loaded(System.Action{`0},System.Action{`0,`0,`0,AutoCSer.Metadata.MemberMap{`1}},System.Action{`0},System.Boolean,System.Boolean)">
             <summary>
             缓存数据加载完成
             </summary>
             <param name="onInserted">添加记录事件</param>
             <param name="onUpdated">更新记录事件</param>
             <param name="onDeleted">删除记录事件</param>
+            <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
             <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
         </member>
         <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.memberCaches">
@@ -4678,6 +4679,153 @@
             <param name="key"></param>
             <param name="value"></param>
             <returns>null 表示已经同步获取数据</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.MemberCacheAttribute">
+            <summary>
+            成员扩展缓存初始化依赖类型声明配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheAttribute.CacheType">
+            <summary>
+            初始化依赖类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.MemberCacheWait">
+            <summary>
+            成员扩展缓存初始化依赖类型加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.wait">
+            <summary>
+            成员扩展缓存初始化依赖类型加载等待事件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.cacheTypes">
+            <summary>
+            成员扩展缓存初始化依赖类型集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.MemberCacheWait.isCacheLoaded">
+            <summary>
+            当前表格缓存是否加载完毕
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.waits">
+            <summary>
+            依赖当前缓存初始化的类型集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.#ctor(AutoCSer.Sql.MemberCacheWait)">
+            <summary>
+            成员扩展缓存初始化依赖类型加载
+            </summary>
+            <param name="wait">依赖当前缓存初始化的类型</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.#ctor(System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            成员扩展缓存初始化依赖类型加载
+            </summary>
+            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.set(System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            设置成员扩展缓存初始化依赖类型集合
+            </summary>
+            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.set(System.Type,System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            当前表格缓存加载完毕
+            </summary>
+            <param name="tableType">当前表格类型</param>
+            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.removeCacheType(System.Type)">
+            <summary>
+            移除成员扩展缓存初始化依赖类型
+            </summary>
+            <param name="cacheType"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.Wait">
+            <summary>
+            等待成员扩展缓存初始化依赖加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.loadTypes">
+            <summary>
+            数据完成类型加载集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.loadedLock">
+            <summary>
+            数据完成类型加载集合访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.emptyCacheTypes">
+            <summary>
+            成员扩展缓存初始化依赖类型空集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheWait.removeCacheTypes">
+            <summary>
+            待删除成员扩展缓存初始化依赖类型集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.Load(System.Type,System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            加载成员扩展缓存初始化依赖类型
+            </summary>
+            <param name="tableType">表格类型</param>
+            <param name="cacheTypes">表格成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheWait.Wait(System.Type)">
+            <summary>
+            等待成员扩展缓存初始化
+            </summary>
+            <param name="tableType">等待成员扩展缓存初始化的类型</param>
+        </member>
+        <member name="T:AutoCSer.Sql.RemoteMemberAttribute">
+            <summary>
+            远程成员配置
+            </summary>
+            <summary>
+            远程成员配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsAwait">
+            <summary>
+            是否
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.RemoteMemberAttribute.Type">
+            <summary>
+            名称类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.Concat">
+            <summary>
+            直接连接
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.Join">
+            <summary>
+            下划线连接
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.OnlyName">
+            <summary>
+            仅名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.MemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.NameType">
+            <summary>
+            名称类型（用于成员缓存调用链）
+            </summary>
         </member>
         <member name="T:AutoCSer.Sql.AnyCancel">
             <summary>
@@ -8745,14 +8893,14 @@
             </summary>
             <param name="flag"></param>
         </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberAttribute">
+        <member name="T:AutoCSer.Sql.RemoteMemberCacheAttribute">
             <summary>
-            远程成员配置
+            远程成员缓存配置
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.MemberName">
+        <member name="F:AutoCSer.Sql.RemoteMemberCacheAttribute.IsNull">
             <summary>
-            成员名称
+            是否需要可空检查
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.SelectQuery`1">
@@ -9152,20 +9300,33 @@
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Action{`0},System.Action{`0,`0,AutoCSer.Metadata.MemberMap{`1}},System.Action{`0},System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Action{`0},System.Action{`0,`0,AutoCSer.Metadata.MemberMap{`1}},System.Action{`0},System.Boolean,System.Boolean)">
             <summary>
             缓存数据加载完成
             </summary>
             <param name="onInserted">添加记录事件</param>
             <param name="onUpdated">更新记录事件</param>
             <param name="onDeleted">删除记录事件</param>
+            <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
             <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
         </member>
-        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Boolean,System.Boolean)">
             <summary>
             缓存数据加载完成
             </summary>
+            <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
             <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Table`2.LoadMemberCache(System.Type)">
+            <summary>
+            加载成员缓存初始化依赖类型
+            </summary>
+            <param name="memberCacheType">成员缓存绑定类型</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Table`2.WaitMemberCache">
+            <summary>
+            等待成员扩展缓存初始化
+            </summary>
         </member>
         <member name="M:AutoCSer.Sql.Table`2.GetSelectQuery(AutoCSer.Metadata.MemberMap{`1},AutoCSer.Sql.CreateSelectQuery{`1}@,AutoCSer.Sql.SelectQuery{`1}@)">
             <summary>
@@ -10028,6 +10189,40 @@
             <summary>
             释放成员位图
             </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.WaitSetValue`1">
+            <summary>
+            等待设置数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.WaitSetValue`1.wait">
+            <summary>
+            同步等待锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.WaitSetValue`1.value">
+            <summary>
+            等待设置的数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.WaitSetValue`1.#ctor(`0)">
+            <summary>
+            等待设置数据
+            </summary>
+            <param name="value">设置的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.WaitSetValue`1.Set(`0)">
+            <summary>
+            设置数据
+            </summary>
+            <param name="value">设置的数据</param>
+            <returns>设置的数据</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.WaitSetValue`1.Wait">
+            <summary>
+            等待设置数据
+            </summary>
+            <returns>设置的数据</returns>
         </member>
         <member name="T:AutoCSer.Emit.CastType">
             <summary>

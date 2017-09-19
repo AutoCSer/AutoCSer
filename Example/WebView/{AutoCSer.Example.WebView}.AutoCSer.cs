@@ -937,8 +937,8 @@ namespace AutoCSer.Example.WebView
                     names[5] = "/CallNameAdd";
                     names[6] = "/File/Download";
                     names[7] = "/";
-                    names[8] = "/Location/Index";
-                    names[9] = "/Location/Add";
+                    names[8] = "/Location/Add";
+                    names[9] = "/Location/Index";
                     names[10] = "/Upload/File";
                     return names;
                 }
@@ -1045,15 +1045,6 @@ namespace AutoCSer.Example.WebView
                         }
                     case 8:
                         {
-                                    {
-                                        AutoCSer.Example.WebView.Location value = (AutoCSer.Example.WebView.Location)call;
-                                        value.Index();
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                    case 9:
-                        {
                             _p1 parameter = new _p1();
                                     if (call.ParseParameter(ref parameter))
                                     {
@@ -1064,6 +1055,15 @@ namespace AutoCSer.Example.WebView
                                     }
                         }
                         return false;
+                    case 9:
+                        {
+                                    {
+                                        AutoCSer.Example.WebView.Location value = (AutoCSer.Example.WebView.Location)call;
+                                        value.Index();
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
                     case 10:
                         {
                                     {

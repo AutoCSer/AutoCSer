@@ -5714,18 +5714,6 @@
             <param name="isShareAssembly">是否共享程序集</param>
             <returns>域名服务启动状态</returns>
         </member>
-        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stop(AutoCSer.Net.HttpRegister.Domain[])">
-            <summary>
-            停止域名服务
-            </summary>
-            <param name="domains">域名信息集合</param>
-        </member>
-        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopAwaiter(AutoCSer.Net.HttpRegister.Domain[])">
-            <summary>
-            停止域名服务
-            </summary>
-            <param name="domains">域名信息集合</param>
-        </member>
         <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stop(AutoCSer.Net.HttpRegister.Domain)">
             <summary>
             停止域名服务
@@ -5737,6 +5725,18 @@
             停止域名服务
             </summary>
             <param name="domain">域名信息</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stop(AutoCSer.Net.HttpRegister.Domain[])">
+            <summary>
+            停止域名服务
+            </summary>
+            <param name="domains">域名信息集合</param>
+        </member>
+        <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopAwaiter(AutoCSer.Net.HttpRegister.Domain[])">
+            <summary>
+            停止域名服务
+            </summary>
+            <param name="domains">域名信息集合</param>
         </member>
         <member name="M:AutoCSer.Net.HttpRegister.Server.TcpInternalClient.stopListen(System.Boolean)">
             <summary>

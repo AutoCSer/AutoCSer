@@ -61,6 +61,8 @@
     <Compile Include="LogStream\NET4.5\IdentityClient.cs" />
     <Compile Include="LogStream\NET4.5\QueueClient.cs" />
     <Compile Include="LogStream\QueueClient.cs" />
+    <Compile Include="MemberCacheAttribute.cs" />
+    <Compile Include="MemberCacheWait.cs" />
     <Compile Include="Metadata\MemberMapValue.cs" />
     <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
     <Compile Include="NET4.5\RemoteMemberAttribute.cs" />
@@ -183,6 +185,7 @@
     <Compile Include="NowTime.cs" />
     <Compile Include="OnTime.cs" />
     <Compile Include="RemoteMemberAttribute.cs" />
+    <Compile Include="RemoteMemberCacheAttribute.cs" />
     <Compile Include="SelectQuery.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableAttribute.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="UnionType.cs" />
     <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />
+    <Compile Include="WaitSetValue.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

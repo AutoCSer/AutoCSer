@@ -6,6 +6,7 @@ namespace AutoCSer.Sql
     /// <summary>
     /// 取消操作数据
     /// </summary>
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
     public struct AnyCancel
     {
         /// <summary>

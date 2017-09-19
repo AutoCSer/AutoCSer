@@ -16,18 +16,61 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         public partial struct RemoteExtension
         {
             /// <summary>
-            /// 学生集合
+            /// 学生集合（远程实例成员调用）
             /// </summary>
             public Student[] Students
             {
                 get
                 {
-#if NoAutoCSer
-                    throw new InvalidCastException();
-#else
-                    return ClientCache.Student.Get(TcpCall.Class.GetStudentIds(Value.Id));
-#endif
+                    return ClientCache.Student.Get(StudentIds);
                 }
+            }
+            /// <summary>
+            /// 学生集合（远程静态成员调用）
+            /// </summary>
+            public Student[] StaticStudents
+            {
+                get
+                {
+                    return ClientCache.Student.Get(GetStaticStudentIds);
+                }
+            }
+            /// <summary>
+            /// 学生集合（远程缓存成员调用）
+            /// </summary>
+            public Student[] ExtensionStudents
+            {
+                get
+                {
+                    return ClientCache.Student.Get(ExtensionStudentIds);
+                }
+            }
+            /// <summary>
+            /// 根据学生索引获取学生（远程实例成员调用）
+            /// </summary>
+            /// <param name="index">学生索引</param>
+            /// <returns>学生</returns>
+            public Student GetStudent(int index)
+            {
+                return ClientCache.Student[GetStudentId(index)];
+            }
+            /// <summary>
+            /// 根据学生索引获取学生（远程静态成员调用）
+            /// </summary>
+            /// <param name="index">学生索引</param>
+            /// <returns>学生</returns>
+            public Student GetStaticStudent(int index)
+            {
+                return ClientCache.Student[GetStaticStudentId(index)];
+            }
+            /// <summary>
+            /// 根据学生索引获取学生（远程缓存成员调用）
+            /// </summary>
+            /// <param name="index">学生索引</param>
+            /// <returns>学生</returns>
+            public Student GetExtensionStudent(int index)
+            {
+                return ClientCache.Student[ExtensionGetStudentId(index)];
             }
         }
         /// <summary>
@@ -38,12 +81,82 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// <summary>
             /// 学生列表
             /// </summary>
+            [AutoCSer.Sql.MemberCache(CacheType = typeof(Student))]
             internal ListArray<Student> Students;
+            /// <summary>
+            /// 获取学生标识集合（远程缓存成员）
+            /// </summary>
+            [AutoCSer.Sql.RemoteMember]
+            internal int[] StudentIds
+            {
+                get
+                {
+                    return Students.toLeftArray().GetArray(value => value.Id);
+                }
+            }
+            /// <summary>
+            /// 获取学生标识（远程缓存成员）
+            /// </summary>
+            /// <param name="index">学生索引</param>
+            /// <returns>学生标识集合</returns>
+            [AutoCSer.Sql.RemoteMember]
+            internal int GetStudentId(int index)
+            {
+                return Students[index].Id;
+            }
         }
         /// <summary>
         /// 扩展缓存数据
         /// </summary>
+        [AutoCSer.Sql.RemoteMemberCache(IsNull = false)]
         internal MemberCache Extension;
+
+        /// <summary>
+        /// 获取学生标识集合（远程实例成员，推荐模式）
+        /// </summary>
+        [AutoCSer.Sql.RemoteMember]
+        internal int[] StudentIds
+        {
+            get
+            {
+                return Loader.Cache[Id].Extension.Students.toLeftArray().GetArray(value => value.Id);
+            }
+        }
+        /// <summary>
+        /// 获取学生标识集合（远程静态成员示例，需要自行保证第一个参数的正确性）
+        /// </summary>
+        /// <param name="id">班级标识</param>
+        /// <returns>学生标识集合</returns>
+        [AutoCSer.Sql.RemoteMember]
+        [AutoCSer.Net.TcpStaticServer.Method(ClientTask = Net.TcpServer.ClientTaskType.Timeout)]
+        internal static int[] GetStaticStudentIds(int id)
+        {
+            return Loader.Cache[id].Extension.Students.toLeftArray().GetArray(value => value.Id);
+        }
+
+        /// <summary>
+        /// 获取学生标识（远程实例成员，推荐模式）
+        /// </summary>
+        /// <param name="index">学生索引</param>
+        /// <returns>学生标识集合</returns>
+        [AutoCSer.Sql.RemoteMember]
+        internal int GetStudentId(int index)
+        {
+            return Loader.Cache[Id].Extension.Students[index].Id;
+        }
+        /// <summary>
+        /// 获取学生标识集合（远程静态成员示例，需要自行保证第一个参数的正确性）
+        /// </summary>
+        /// <param name="id">班级标识</param>
+        /// <param name="index">学生索引</param>
+        /// <returns>学生标识集合</returns>
+        [AutoCSer.Sql.RemoteMember]
+        [AutoCSer.Net.TcpStaticServer.Method(ClientTask = Net.TcpServer.ClientTaskType.Timeout)]
+        internal static int GetStaticStudentId(int id, int index)
+        {
+            return Loader.Cache[id].Extension.Students[index].Id;
+        }
+
 
         /// <summary>
         /// 获取班级信息
@@ -64,26 +177,20 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         {
             return Loader.Cache.Values.getLeftArray(value => value.Id, Loader.Cache.Count).ToArray();
         }
-        /// <summary>
-        /// 获取学生标识集合
-        /// </summary>
-        /// <param name="id">班级标识</param>
-        /// <returns>学生标识集合</returns>
-        [AutoCSer.Net.TcpStaticServer.Method(ClientTask = Net.TcpServer.ClientTaskType.Timeout)]
-        internal static int[] GetStudentIds(int id)
-        {
-            return Student.Loader.GetStudentIds(id);
-        }
 
+        /// <summary>
+        /// 等待设置的缓存，用于其它缓存初始化访问
+        /// </summary>
+        internal static AutoCSer.Sql.WaitSetValue<AutoCSer.Sql.Cache.Whole.Event.IdentityArray<Class, SqlModel.Class, MemberCache>> WaitCache = new AutoCSer.Sql.WaitSetValue<AutoCSer.Sql.Cache.Whole.Event.IdentityArray<Class, TestCase.SqlModel.Class, MemberCache>>(null);
         /// <summary>
         /// 缓存加载
         /// </summary>
-        internal static class Loader
+        internal sealed class Loader
         {
             /// <summary>
             /// 数据缓存
             /// </summary>
-            internal static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<Class, SqlModel.Class, MemberCache> Cache = createCache(value => value.Extension);
+            internal static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<Class, SqlModel.Class, MemberCache> Cache = WaitCache.Set(createCache(value => value.Extension));
             /// <summary>
             /// 数据缓存初始化
             /// </summary>

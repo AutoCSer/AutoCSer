@@ -32,6 +32,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <typeparam name="tableType">表格映射类型</typeparam>
             #region IF IsMemberCache
             /// <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
+            [AutoCSer.Sql.MemberCache]
             #endregion IF IsMemberCache
             public abstract class SqlModel<tableType/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> : @Type.FullName/*IF:Attribute.LogServerName*/, AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>/*IF:Attribute.LogServerName*/
                 where tableType : SqlModel<tableType/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>
@@ -54,7 +55,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (!isSqlLoaded)
                     {
-                        sqlTable/**/.WaitLoad();
+                        sqlTable.WaitLoad();
                         isSqlLoaded = true;
                     }
                 }
@@ -68,7 +69,7 @@ namespace AutoCSer.CodeGenerator.Template
                     if (!isEventCacheLoaded)
                     {
                         #region IF IsCreateEventCache
-                        sqlTable/**/.WaitCreateCache();
+                        sqlTable.WaitCreateCache();
                         #endregion IF IsCreateEventCache
                         #region NOT IsCreateEventCache
                         if (@IdentityArrayCacheName == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".@IdentityArrayCacheName is null");
@@ -96,15 +97,19 @@ namespace AutoCSer.CodeGenerator.Template
                     sqlStream/**/.Set(@IdentityArrayCacheName, isMemberMap);
                     #endregion IF Attribute.LogServerName
                     #region IF Attribute.IsLoadedCache
-                    @IdentityArrayCacheName/**/.Loaded(onInserted, onUpdated, onDeleted/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
+                    @IdentityArrayCacheName/**/.Loaded(onInserted, onUpdated, onDeleted, false/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
                     #endregion IF Attribute.IsLoadedCache
                     #region NOT Attribute.IsLoadedCache
-                    sqlTable/**/.CacheLoaded(onInserted, /*NOTE*/(Action<tableType, tableType, AutoCSer.Metadata.MemberMap<@Type.FullName>>)(object)/*NOTE*/onUpdated, onDeleted/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
+                    sqlTable.CacheLoaded(onInserted, /*NOTE*/(Action<tableType, tableType, AutoCSer.Metadata.MemberMap<@Type.FullName>>)(object)/*NOTE*/onUpdated, onDeleted, false/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
                     #endregion NOT Attribute.IsLoadedCache
                     #endregion IF IsSqlCacheLoaded
+                    sqlTable.LoadMemberCache(/*IF:IsMemberCache*/typeof(memberCacheType)/*IF:IsMemberCache*/);
                     #region IF SqlStreamTypeCount
-                    sqlTable/**/.AddLogStreamLoadedType(SqlLogMembers._LoadCount_/*LOOP:SqlStreamCountTypes*/, new AutoCSer.Sql.LogStream.LoadedType(typeof(@SqlStreamCountType.FullName), @CountTypeNumber)/*LOOP:SqlStreamCountTypes*/);
+                    sqlTable.AddLogStreamLoadedType(SqlLogMembers._LoadCount_/*LOOP:SqlStreamCountTypes*/, new AutoCSer.Sql.LogStream.LoadedType(typeof(@SqlStreamCountType.FullName), @CountTypeNumber)/*LOOP:SqlStreamCountTypes*/);
                     #endregion IF SqlStreamTypeCount
+                    #region IF IsMemberCache
+                    sqlTable.WaitMemberCache();
+                    #endregion IF IsMemberCache
                 }
                 #endregion IF IsSqlLoaded
                 #region IF CacheType=IdentityArray
@@ -151,7 +156,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreateIdentityArrayMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, memberCacheType>(sqlTable, memberCache, group, baseIdentity, isReset);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreateIdentityArrayMemberCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -177,7 +182,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreateIdentityArrayCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, tableType>(sqlTable, null, group, baseIdentity, isReset);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreateIdentityArrayCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -264,7 +269,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreateIdentityTreeMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, memberCacheType>(sqlTable, memberCache, group, baseIdentity);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreateIdentityTreeMemberCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -289,7 +294,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreateIdentityTreeCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, tableType>(sqlTable, null, group, baseIdentity);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreateIdentityTreeCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -314,7 +319,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreatePrimaryKeyMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType>(sqlTable, memberCache, group);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreatePrimaryKeyMemberCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -335,7 +340,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreatePrimaryKeyCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, tableType, @PrimaryKeyType>(sqlTable, null, group);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreatePrimaryKeyCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -360,7 +365,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreatePrimaryKeyArrayMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType>(sqlTable, memberCache, group);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreatePrimaryKeyArrayMemberCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -381,7 +386,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     if (sqlTable == null) return null;
                     @CreatePrimaryKeyArrayCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, tableType, @PrimaryKeyType>(sqlTable, null, group);
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreatePrimaryKeyArrayCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
@@ -420,7 +425,7 @@ namespace AutoCSer.CodeGenerator.Template
                     if (sqlTable == null) return null;
                     AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, memberCacheType, keyType, memberKeyType, targetMemberCacheType> cache = new AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, memberCacheType, keyType, memberKeyType, targetMemberCacheType>(sqlTable, memberCache, getKey, getMemberKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, group);
                     @CreateMemberKeyMemberCacheName = cache;
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(cache.Values);
                     #endregion IF NowTimeMembers.Length
@@ -457,7 +462,7 @@ namespace AutoCSer.CodeGenerator.Template
                     if (sqlTable == null) return null;
                     AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, tableType, keyType, memberKeyType, targetMemberCacheType> cache = new AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, tableType, keyType, memberKeyType, targetMemberCacheType>(sqlTable, null, getKey, getMemberKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, group);
                     @CreateMemberKeyCacheName = cache;
-                    sqlTable/**/.CacheCreated();
+                    sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(cache.Values);
                     #endregion IF NowTimeMembers.Length
@@ -516,7 +521,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <returns>数据分组</returns>
                 protected static AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, long> createIdentityCounterQueue(int group = 1, int maxCount = 0)
                 {
-                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, long>(@CreateIdentityCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity64<tableType, @Type.FullName>(sqlTable, group), sqlTable/**/.Get, maxCount);
+                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, long>(@CreateIdentityCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity64<tableType, @Type.FullName>(sqlTable, group), sqlTable.Get, maxCount);
                 }
                 #endregion IF IsIdentity64
                 #region NOT IsIdentity64
@@ -529,7 +534,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <returns>数据分组</returns>
                 protected static AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, int> @CreateIdentityCounterQueueMethodName(int group = 1, int maxCount = 0)
                 {
-                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, int>(@CreateIdentityCounter32QueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity<tableType, @Type.FullName>(sqlTable, group), sqlTable/**/.Get, maxCount);
+                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, int>(@CreateIdentityCounter32QueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity<tableType, @Type.FullName>(sqlTable, group), sqlTable.Get, maxCount);
                 }
                 #endregion NOT IsIdentity64
                 #endregion IF CounterCacheType=CreateIdentityCounterQueue
@@ -579,7 +584,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <returns>数据分组</returns>
                 protected static AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, @PrimaryKeyType> createPrimaryKeyCounterQueue(int group = 1, int maxCount = 0)
                 {
-                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, @PrimaryKeyType>(@CreatePrimaryKeyCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.PrimaryKey<tableType, @Type.FullName, @PrimaryKeyType>(sqlTable, group), sqlTable/**/.GetByPrimaryKey, maxCount);
+                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, @PrimaryKeyType>(@CreatePrimaryKeyCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.PrimaryKey<tableType, @Type.FullName, @PrimaryKeyType>(sqlTable, group), sqlTable.GetByPrimaryKey, maxCount);
                 }
                 #endregion IF CounterCacheType=CreatePrimaryKeyCounterQueue
                 #region IF CounterCacheType=CreatePrimaryKeyCounterQueueList

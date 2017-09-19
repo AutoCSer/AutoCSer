@@ -394,7 +394,7 @@ namespace AutoCSer.Sql
                 .Sort((left, right) =>
                 {
                     int value = left.DataMember.PrimaryKeyIndex - right.DataMember.PrimaryKeyIndex;
-                    return value == 0 ? left.FieldInfo.Name.CompareTo(right.FieldInfo.Name) : value;
+                    return value == 0 ? AutoCSer.Metadata.MemberIndexGroup.Compare(left.FieldInfo, right.FieldInfo) : value;
                 });
         }
         /// <summary>

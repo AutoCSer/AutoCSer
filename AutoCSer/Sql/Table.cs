@@ -606,27 +606,77 @@ namespace AutoCSer.Sql
         /// <param name="onInserted">添加记录事件</param>
         /// <param name="onUpdated">更新记录事件</param>
         /// <param name="onDeleted">删除记录事件</param>
+        /// <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
         /// <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
-        public void CacheLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, MemberMap<modelType>> onUpdated = null, Action<tableType> onDeleted = null, bool isSqlStreamTypeCount = true)
+        public void CacheLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, MemberMap<modelType>> onUpdated = null, Action<tableType> onDeleted = null, bool isLoadMemberCache = true, bool isSqlStreamTypeCount = true)
         {
             if (Interlocked.CompareExchange(ref isLoadCache, 1, 0) == 0)
             {
                 if (onInserted != null) OnInserted += onInserted;
                 if (onUpdated != null) OnUpdated += onUpdated;
                 if (onDeleted != null) OnDeleted += onDeleted;
-                CacheLoaded();
+                CacheLoaded(isLoadMemberCache, isSqlStreamTypeCount);
             }
         }
         /// <summary>
         /// 缓存数据加载完成
         /// </summary>
+        /// <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
         /// <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void CacheLoaded(bool isSqlStreamTypeCount)
+        internal void CacheLoaded(bool isLoadMemberCache, bool isSqlStreamTypeCount)
         {
             CacheLoadWait.Set();
             callOnCacheLoaded();
+
+            Type memberCacheType = null;
+            if (isLoadMemberCache)
+            {
+                for (Type type = typeof(tableType); type != typeof(modelType); type = type.BaseType)
+                {
+                    if (type.IsGenericType && TypeAttribute.GetAttribute<MemberCacheAttribute>(type, false) != null)
+                    {
+                        Type[] types = type.GetGenericArguments();
+                        if (types.Length == 2) memberCacheType = types[1];
+                        break;
+                    }
+                }
+            }
+            LoadMemberCache(memberCacheType);
             if (isSqlStreamTypeCount) LogStream.LoadedType.Add(typeof(modelType), Attribute.TableNumber);
+            if (memberCacheType != null) WaitMemberCache();
+        }
+        /// <summary>
+        /// 加载成员缓存初始化依赖类型
+        /// </summary>
+        /// <param name="memberCacheType">成员缓存绑定类型</param>
+        public void LoadMemberCache(Type memberCacheType = null)
+        {
+            HashSet<Type> cacheTypes = AutoCSer.HashSetCreator.CreateOnly<Type>();
+            if (memberCacheType != null)
+            {
+                foreach (FieldInfo field in memberCacheType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                {
+                    foreach (object attribute in field.GetCustomAttributes(false))
+                    {
+                        MemberCacheAttribute memberCacheAttribute = attribute as MemberCacheAttribute;
+                        if (memberCacheAttribute != null && memberCacheAttribute.CacheType != null)
+                        {
+                            cacheTypes.Add(memberCacheAttribute.CacheType);
+                            break;
+                        }
+                    }
+                }
+            }
+            MemberCacheWait.Load(typeof(tableType), cacheTypes);
+        }
+        /// <summary>
+        /// 等待成员扩展缓存初始化
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void WaitMemberCache()
+        {
+            MemberCacheWait.Wait(typeof(tableType));
         }
         /// <summary>
         /// 获取查询信息
