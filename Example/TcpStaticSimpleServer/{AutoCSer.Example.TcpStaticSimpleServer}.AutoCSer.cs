@@ -197,6 +197,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleServer
             private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 4 };
 
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p1
             {
@@ -231,6 +232,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleServer
 #endif
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p3
             {
@@ -979,12 +981,14 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleServer
 #endif
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p6
             {
                 public int p0;
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p7
             {
@@ -992,6 +996,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleServer
                 public int p1;
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p8
             {

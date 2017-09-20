@@ -1614,6 +1614,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c14 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true };
 
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p1
             {
@@ -1648,6 +1649,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
 #endif
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p3
             {
@@ -1681,6 +1683,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
 #endif
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p5
             {
@@ -2012,6 +2015,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c16 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1 };
 
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p7
             {
@@ -2049,6 +2053,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
 #endif
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+            [AutoCSer.Metadata.BoxSerialize]
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p9
             {

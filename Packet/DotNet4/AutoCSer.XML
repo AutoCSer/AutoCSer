@@ -8974,7 +8974,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodBaseAttribute.ParameterFlags">
             <summary>
-            参数设置
+            参数设置默认为 InputSerializeReferenceMember | ParameterFlags.OutputSerializeReferenceMember | InputSerializeBox | OutputSerializeBox
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodBaseAttribute.IsOnlyGetMember">
@@ -9015,6 +9015,11 @@
         <member name="P:AutoCSer.Net.TcpServer.MethodBaseAttribute.GetIsKeepCallback">
             <summary>
             保持异步回调
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.MethodBaseAttribute.GetParameterFlags">
+            <summary>
+            参数设置
             </summary>
         </member>
         <member name="P:AutoCSer.Net.TcpServer.MethodBaseAttribute.IsInputSerializeReferenceMember">
@@ -15688,6 +15693,11 @@
         <member name="T:AutoCSer.Net.TcpInternalServer.Server">
             <summary>
             TCP 内部服务端
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpInternalServer.Server.TcpRegisterReaderServerNameSuffix">
+            <summary>
+            读取服务名称后缀
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.Server.tcpRegisterClient">
@@ -26394,6 +26404,16 @@
         <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox">
             <summary>
             输出参数是否添加包装处理申明 AutoCSer.emit.boxSerialize，用于只有一个输出参数的类型忽略外壳类型的处理以减少序列化开销。
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox">
+            <summary>
+            InputSerializeBox | OutputSerializeBox
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.Default">
+            <summary>
+            InputSerializeReferenceMember | OutputSerializeReferenceMember | SerializeBox
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput">

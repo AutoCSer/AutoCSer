@@ -22,7 +22,7 @@ namespace AutoCSer.TestCase.TcpServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <param name="onAdd"></param>
-        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
+        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
         void AddAsynchronous(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<Add>, bool> onAdd);
     }
 }

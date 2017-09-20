@@ -14845,6 +14845,11 @@
             TCP 内部服务端
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpInternalServer.Server.TcpRegisterReaderServerNameSuffix">
+            <summary>
+            读取服务名称后缀
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.Server.tcpRegisterClient">
             <summary>
             TCP 内部注册服务客户端
@@ -19695,6 +19700,16 @@
             输出参数是否添加包装处理申明 AutoCSer.emit.boxSerialize，用于只有一个输出参数的类型忽略外壳类型的处理以减少序列化开销。
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox">
+            <summary>
+            InputSerializeBox | OutputSerializeBox
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.Default">
+            <summary>
+            InputSerializeReferenceMember | OutputSerializeReferenceMember | SerializeBox
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput">
             <summary>
             客户端异步回调的返回值是否和第一个相同类型的输入参数公用同一个对象，类似于 ref 的作用。
@@ -23561,6 +23576,11 @@
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodBaseAttribute.ParameterFlags">
+            <summary>
+            参数设置默认为 InputSerializeReferenceMember | ParameterFlags.OutputSerializeReferenceMember | InputSerializeBox | OutputSerializeBox
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.MethodBaseAttribute.GetParameterFlags">
             <summary>
             参数设置
             </summary>

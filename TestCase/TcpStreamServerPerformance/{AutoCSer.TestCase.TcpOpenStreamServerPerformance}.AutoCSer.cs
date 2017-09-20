@@ -164,6 +164,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1 };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
                 {
@@ -198,6 +199,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p3
                 {
@@ -480,6 +482,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1 };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
                 {
@@ -514,6 +517,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p3
                 {
@@ -840,6 +844,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1 };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
                 {
@@ -874,6 +879,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p3
                 {

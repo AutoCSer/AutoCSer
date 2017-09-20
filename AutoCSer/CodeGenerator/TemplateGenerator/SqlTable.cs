@@ -20,12 +20,33 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 远程成员
             /// </summary>
-            internal sealed class RemoteMember
+            internal abstract class RemoteMemberBase
             {
+                /// <summary>
+                /// 远程成员配置
+                /// </summary>
+                public AutoCSer.Sql.RemoteMemberAttribute Attribute;
+                /// <summary>
+                /// 是否生成函数
+                /// </summary>
+                public bool AttributeIsMethod
+                {
+                    get { return Attribute.IsMethod; }
+                }
                 /// <summary>
                 /// 远程成员信息
                 /// </summary>
                 public MemberIndex Member;
+                /// <summary>
+                /// 获取函数信息
+                /// </summary>
+                public MethodIndex Method;
+            }
+            /// <summary>
+            /// 远程成员
+            /// </summary>
+            internal sealed class RemoteMember : RemoteMemberBase
+            {
                 /// <summary>
                 /// 获取数据函数名称
                 /// </summary>
@@ -33,10 +54,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get { return "get" + Member.MemberName; }
                 }
-                /// <summary>
-                /// 获取函数信息
-                /// </summary>
-                public MethodIndex Method;
                 /// <summary>
                 /// 远程函数名称
                 /// </summary>
@@ -62,7 +79,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 远程成员
             /// </summary>
-            internal sealed class RemoteMethod
+            internal sealed class RemoteMethod : RemoteMemberBase
             {
                 /// <summary>
                 /// 当前类型
@@ -72,14 +89,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// 项目安装参数
                 /// </summary>
                 public ProjectParameter ProjectParameter;
-                /// <summary>
-                /// 远程成员信息
-                /// </summary>
-                public MemberIndex Member;
-                /// <summary>
-                /// 获取函数信息
-                /// </summary>
-                public MethodIndex Method;
                 /// <summary>
                 /// 函数是否存在返回值
                 /// </summary>
@@ -96,7 +105,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public bool IsMethod
                 {
-                    get { return MethodParameters.Length > 1 || Method.ReturnType.Type == typeof(void); }
+                    get
+                    {
+                        return Attribute.IsMethod || MethodParameters.Length > 1 || Method.ReturnType.Type == typeof(void);
+                    }
                 }
                 /// <summary>
                 /// 函数参数信息
@@ -105,10 +117,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get { return new SubArray<MethodParameter>(MethodParameters, 1, MethodParameters.Length - 1); }
                 }
-                /// <summary>
-                /// 远程成员配置
-                /// </summary>
-                public AutoCSer.Sql.RemoteMemberAttribute Attribute;
                 /// <summary>
                 /// 是否日志字段代理
                 /// </summary>
@@ -142,7 +150,21 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public string AttributeMethodName
                 {
-                    get { return AttributeMemberName; }
+                    get
+                    {
+                        if (Attribute.IsAwait) return AttributeMemberName + "Awaiter";
+                        return AttributeMemberName;
+                    }
+                }
+                /// <summary>
+                /// Awaiter
+                /// </summary>
+                public string Awaiter
+                {
+                    get
+                    {
+                        return Member == null && Attribute.IsAwait ? "Awaiter" : null;
+                    }
                 }
             }
             /// <summary>
@@ -195,12 +217,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 远程缓存成员
             /// </summary>
-            internal sealed class RemoteCache
+            internal sealed class RemoteCache : RemoteMemberBase
             {
-                /// <summary>
-                /// 远程成员配置
-                /// </summary>
-                public AutoCSer.Sql.RemoteMemberAttribute Attribute;
                 /// <summary>
                 /// 前缀成员
                 /// </summary>
@@ -213,9 +231,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get { return "value" + (Members.Length - 1).toString(); }
                 }
                 /// <summary>
-                /// 远程成员信息
+                /// 属性参数集合
                 /// </summary>
-                public MemberIndex Member;
+                public MethodParameter[] PropertyParameters;
                 /// <summary>
                 /// 获取远程成员名称
                 /// </summary>
@@ -223,13 +241,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return "get" + Members.joinString('_', value => value.Member.MemberName) + "_" + (Attribute.MemberName ?? Member.MemberName);
+                        return "get_" + Members.joinString('_', value => value.Member.MemberName) + "_" + (Attribute.MemberName ?? Member.MemberName);
                     }
                 }
-                /// <summary>
-                /// 获取函数信息
-                /// </summary>
-                public MethodIndex Method;
                 /// <summary>
                 /// 获取远程函数名称
                 /// </summary>
@@ -304,10 +318,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         RemoteCacheMember[] memberArray = members.ToArray();
                         foreach (RemoteCache nextMember in cache.Members)
                         {
-                            Caches.Add(new RemoteCache { Members = memberArray, Method = nextMember.Method, Member = nextMember.Member, Attribute = nextMember.Attribute });
+                            Caches.Add(new RemoteCache { Members = memberArray, Method = nextMember.Method, Member = nextMember.Member, PropertyParameters = nextMember.PropertyParameters, Attribute = nextMember.Attribute });
                         }
                     }
-                    foreach (MemberIndex nextMember in cache.Caches) Push(nextMember);
+                    foreach (MemberIndex nextMember in cache.Caches)
+                    {
+                        bool isMember = true;
+                        foreach (RemoteCacheMember cacheMember in members)
+                        {
+                            if (cacheMember.Member.MemberSystemType == nextMember.MemberSystemType)
+                            {
+                                Messages.Message("远程缓存调用链类型循环引用 " + members.JoinString(" . ", value => value.Member.MemberType.FullName + " " + value.Member.MemberName) + " . " + nextMember.MemberType.FullName + " " + nextMember.MemberName);
+                                isMember = false;
+                                break;
+                            }
+                        }
+                        if (isMember) Push(nextMember);
+                    }
                     --members.Length;
                 }
 
@@ -346,13 +373,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             if (member.CanGet)
                             {
                                 AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
-                                if (remoteAttribute != null) remoteMembers.Add(new RemoteCache { Member = member, Attribute = remoteAttribute });
+                                if (remoteAttribute != null)
+                                {
+                                    remoteMembers.Add(new RemoteCache { Member = member, PropertyParameters = member.IsField ? NullValue<MethodParameter>.Array : MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array), Attribute = remoteAttribute });
+                                }
                             }
                         }
                         foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Sql.RemoteMemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, false, true, false))
                         {
-                            AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
-                            if (remoteAttribute != null) remoteMembers.Add(new RemoteCache { Method = member, Attribute = remoteAttribute });
+                            if (!member.Method.IsGenericMethodDefinition)
+                            {
+                                AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
+                                if (remoteAttribute != null) remoteMembers.Add(new RemoteCache { Method = member, Attribute = remoteAttribute });
+                            }
                         }
                         memberCache.Add(type, members = new cache { Members = remoteMembers.ToArray(), Caches = MemberIndex.GetMembers<AutoCSer.Sql.RemoteMemberCacheAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false) });
                     }
@@ -458,11 +491,14 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     LeftArray<RemoteMethod> remoteMethods = new LeftArray<RemoteMethod>();
                     foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, AutoCSer.Metadata.MemberFilters.Static, false, true, false))
                     {
-                        AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = method.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
-                        if (remoteAttribute != null)
+                        if (!method.Method.IsGenericMethodDefinition)
                         {
-                            MethodParameter[] parameters = method.Parameters;
-                            if(parameters.Length >= 1) remoteMethods.Add(new RemoteMethod { Type = Type, ProjectParameter = AutoParameter, Method = method, MethodParameters = parameters, Attribute = remoteAttribute });
+                            AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = method.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
+                            if (remoteAttribute != null)
+                            {
+                                MethodParameter[] parameters = method.Parameters;
+                                if (parameters.Length >= 1) remoteMethods.Add(new RemoteMethod { Type = Type, ProjectParameter = AutoParameter, Method = method, MethodParameters = parameters, Attribute = remoteAttribute });
+                            }
                         }
                     }
                     RemoteMethods = remoteMethods.ToArray();
@@ -557,18 +593,27 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             if (member.CanGet)
                             {
                                 AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
-                                if (remoteAttribute != null) remoteMembers.Add(new RemoteMember { Member = member });
+                                if (remoteAttribute != null)
+                                {
+                                    if (member.IsField || ((PropertyInfo)member.Member).GetIndexParameters().Length == 0) remoteMembers.Add(new RemoteMember { Member = member, Attribute = remoteAttribute });
+                                }
                             }
                         }
                         foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Sql.RemoteMemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstance, false, true, false))
                         {
-                            AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
-                            if (remoteAttribute != null) remoteMembers.Add(new RemoteMember { Method = member });
+                            if (!member.Method.IsGenericMethodDefinition)
+                            {
+                                AutoCSer.Sql.RemoteMemberAttribute remoteAttribute = member.GetSetupAttribute<AutoCSer.Sql.RemoteMemberAttribute>(false);
+                                if (remoteAttribute != null) remoteMembers.Add(new RemoteMember { Method = member, Attribute = remoteAttribute });
+                            }
                         }
                         RemoteMembers = remoteMembers.ToArray();
 
                         RemoteCacheBuilder cacheBuilder = new RemoteCacheBuilder();
-                        foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Sql.RemoteMemberCacheAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstance, true, false)) cacheBuilder.Push(member);
+                        foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Sql.RemoteMemberCacheAttribute>(Type, AutoCSer.Metadata.MemberFilters.NonPublicInstance, true, false))
+                        {
+                            cacheBuilder.Push(member);
+                        }
                         RemoteCaches = cacheBuilder.Caches.ToArray();
                     }
                     else

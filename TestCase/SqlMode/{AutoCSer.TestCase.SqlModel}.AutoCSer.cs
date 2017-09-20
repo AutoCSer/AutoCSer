@@ -101,7 +101,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// 日志处理
                 /// </summary>
                 /// <param name="onLog"></param>
-                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerName = "DataLog")]
+                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerName = "DataLog")]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>.Data>, bool> onLog)
                 {
@@ -112,7 +112,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// </summary>
                 /// <param name="Id">班级标识（默认自增）</param>
                 /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
                 protected static tableType getSqlCache(int Id)
                 {
                     return sqlCache[Id];
@@ -282,7 +282,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// 日志处理
                 /// </summary>
                 /// <param name="onLog"></param>
-                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerName = "DataLog")]
+                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerName = "DataLog")]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student>.Data>, bool> onLog)
                 {
@@ -293,7 +293,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// </summary>
                 /// <param name="Id">学生标识（默认自增）</param>
                 /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
                 protected static tableType getSqlCache(int Id)
                 {
                     return sqlCache[Id];

@@ -46,7 +46,7 @@ namespace AutoCSer.DiskBlock
         /// <param name="buffer">缓冲区，Start 指定字节数量</param>
         /// <param name="index">索引位置</param>
         /// <param name="onRead">获取数据回调委托</param>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox | AutoCSer.Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox | AutoCSer.Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void read(ClientBuffer buffer, ulong index, Func<AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer>, bool> onRead)
         {
@@ -58,7 +58,7 @@ namespace AutoCSer.DiskBlock
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <param name="onWrite">添加数据回调委托</param>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void append(AppendBuffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>, bool> onWrite)
         {

@@ -50,6 +50,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.DynamicAssembly")]
 [assembly: InternalsVisibleTo("AutoCSer.TcpServer.Emit")]
 [assembly: InternalsVisibleTo("AutoCSer.CodeGenerator")]
+[assembly: InternalsVisibleTo("AutoCSer.TcpRegister")]
 [assembly: InternalsVisibleTo("AutoCSer.Sort")]
 [assembly: InternalsVisibleTo("AutoCSer.WebView")]
 [assembly: InternalsVisibleTo("AutoCSer.Sql")]

@@ -3087,24 +3087,39 @@
             数据表格 代码生成
             </summary>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.Attribute">
+            <summary>
+            远程成员配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.AttributeIsMethod">
+            <summary>
+            是否生成函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.Member">
+            <summary>
+            远程成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.Method">
+            <summary>
+            获取函数信息
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember">
             <summary>
             远程成员
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.Member">
-            <summary>
-            远程成员信息
-            </summary>
-        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.GetMemberName">
             <summary>
             获取数据函数名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.Method">
-            <summary>
-            获取函数信息
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.RemoteMethodName">
@@ -3137,16 +3152,6 @@
             项目安装参数
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.Member">
-            <summary>
-            远程成员信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.Method">
-            <summary>
-            获取函数信息
-            </summary>
-        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.IsMethodReturn">
             <summary>
             函数是否存在返回值
@@ -3167,11 +3172,6 @@
             函数参数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.Attribute">
-            <summary>
-            远程成员配置
-            </summary>
-        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.IsLogProxyMember">
             <summary>
             是否日志字段代理
@@ -3190,6 +3190,11 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.AttributeMethodName">
             <summary>
             成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.Awaiter">
+            <summary>
+            Awaiter
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember">
@@ -3232,11 +3237,6 @@
             远程缓存成员
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.Attribute">
-            <summary>
-            远程成员配置
-            </summary>
-        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.Members">
             <summary>
             前缀成员
@@ -3247,19 +3247,14 @@
             局部变量名称
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.Member">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.PropertyParameters">
             <summary>
-            远程成员信息
+            属性参数集合
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.GetCacheMemberName">
             <summary>
             获取远程成员名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.Method">
-            <summary>
-            获取函数信息
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.RemoteCacheMethodName">
@@ -6794,10 +6789,10 @@
         <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.RemoteMethodName(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
             <returns>@ReturnXmlDocument</returns>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.GetCacheMemberName(System.Int32)">
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.GetCacheMemberName(System.Int32,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
             <returns>@XmlDocument</returns>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.GetCacheMemberName(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType)">
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.GetCacheMemberName(AutoCSer.CodeGenerator.Template.Pub.PrimaryKeyType,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
             <returns>@XmlDocument</returns>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.RemoteCacheMethodName(System.Int32,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">

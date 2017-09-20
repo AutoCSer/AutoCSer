@@ -50,6 +50,16 @@
             <param name="onUpdated">更新数据回调</param>
             <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         </member>
+        <member name="T:AutoCSer.Sql.TcpMethodAttribute">
+            <summary>
+            TCP 调用函数配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.TcpMethodAttribute.GetParameterFlags">
+            <summary>
+            参数设置
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.MsSql.Sql2005">
             <summary>
             SQL Server 2005 客户端
@@ -3063,9 +3073,19 @@
             名称类型（用于成员缓存调用链）
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsCancel">
+            <summary>
+            是否取消生成
+            </summary>
+        </member>
         <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsAwait">
             <summary>
-            是否
+            无意义，用于兼容 .NET 4.5 及以上版本
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.RemoteMemberAttribute.IsMethod">
+            <summary>
+            是否生成函数
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.RemoteMemberAttribute.Type">
@@ -4653,6 +4673,39 @@
             先进先出优先队列缓存，AutoCSer.Sql.Cache.Counter.QueueDictionary&lt;valueType, modelType, primaryKey, keyType, dictionaryKeyType&gt;
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.LogAttribute">
+            <summary>
+            日志同步成员信息
+            </summary>
+            <summary>
+            日志同步成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.IsAwait">
+            <summary>
+            无意义，用于兼容 .NET 4.5 及以上版本
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.CountType">
+            <summary>
+            计数完成类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.CountTypeNumber">
+            <summary>
+            计数完成类型表格编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.IsMember">
+            <summary>
+            SQL 数据库成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.IsRemoteMethod">
+            <summary>
+            默认为 false 表示存在返回值并不带参数的时候生成远程属性
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.UpdateQuery`1">
             <summary>
             更新记录查询信息
@@ -5973,6 +6026,16 @@
             <param name="fieldName">索引列名称</param>
             <param name="fieldSqlName">索引列 Sql 名称</param>
         </member>
+        <member name="T:AutoCSer.Sql.RemoteMethodAttribute">
+            <summary>
+            远程函数配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.RemoteMethodAttribute.IsMethod">
+            <summary>
+            是否生成函数
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.LogStream.PrimaryKeyClient`3">
             <summary>
             自增标识客户端
@@ -6080,26 +6143,6 @@
             日志流数据处理
             </summary>
             <param name="data"></param>
-        </member>
-        <member name="T:AutoCSer.Sql.LogAttribute">
-            <summary>
-            日志同步成员信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogAttribute.CountType">
-            <summary>
-            计数完成类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogAttribute.CountTypeNumber">
-            <summary>
-            计数完成类型表格编号
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogAttribute.IsMember">
-            <summary>
-            SQL 数据库成员
-            </summary>
         </member>
         <member name="T:AutoCSer.Sql.Connection">
             <summary>

@@ -277,6 +277,7 @@ namespace AutoCSer.TestCase.ChatServer
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p3
                 {
@@ -310,6 +311,7 @@ namespace AutoCSer.TestCase.ChatServer
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p5
                 {

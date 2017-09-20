@@ -21,6 +21,7 @@ namespace AutoCSer.Sql
         /// 触发定时任务
         /// </summary>
         /// <param name="flag"></param>
+        [AutoCSer.IOS.Preserve(Conditional = true)]
         private static void onTime(Date.NowTime.OnTimeFlag flag)
         {
             if ((flag & Date.NowTime.OnTimeFlag.SqlCountMember) != 0)
@@ -29,6 +30,7 @@ namespace AutoCSer.Sql
             }
         }
 
+        [AutoCSer.IOS.Preserve(Conditional = true)]
         static OnTime()
         {
             Date.NowTime.SqlOnTime = onTime;

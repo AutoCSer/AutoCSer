@@ -107,6 +107,7 @@ namespace AutoCSer.TestCase.Nuget
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p1
                 {

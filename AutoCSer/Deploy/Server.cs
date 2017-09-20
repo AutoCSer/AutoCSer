@@ -36,7 +36,7 @@ namespace AutoCSer.Deploy
         /// 注册客户端
         /// </summary>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, IsClientAwaiter = false)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
         private IndexIdentity register()
         {
             int index, identity;
@@ -66,7 +66,7 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="clientId">服务端标识</param>
         /// <param name="onLog">部署任务状态更新回调</param>
-        [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private void getLog(IndexIdentity clientId, Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog)
         {
             object arrayLock = clientPool.ArrayLock;
@@ -116,7 +116,7 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="clientId">部署服务端标识</param>
         /// <returns>部署信息索引标识</returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private IndexIdentity create(IndexIdentity clientId)
         {
             int index, identity;
@@ -134,7 +134,7 @@ namespace AutoCSer.Deploy
         /// 清除部署信息
         /// </summary>
         /// <param name="identity">部署信息索引标识</param>       
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void clear(IndexIdentity identity)
         {
@@ -164,7 +164,7 @@ namespace AutoCSer.Deploy
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="time">启动时间</param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private bool start(IndexIdentity identity, DateTime time)
         {
             if ((uint)identity.Index < (uint)deployPool.PoolIndex)
@@ -185,7 +185,7 @@ namespace AutoCSer.Deploy
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="files">文件数据源</param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private bool setFileSource(IndexIdentity identity, byte[][] files)
         {
             if ((uint)identity.Index < (uint)deployPool.PoolIndex)
@@ -207,7 +207,7 @@ namespace AutoCSer.Deploy
         /// <param name="directory">目录信息</param>
         /// <param name="serverPath">服务器端路径</param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private Directory getFileDifferent(Directory directory, string serverPath)
         {
             directory.Different(new DirectoryInfo(serverPath));
@@ -221,7 +221,7 @@ namespace AutoCSer.Deploy
         /// <param name="serverPath">服务器端路径</param>
         /// <param name="taskType">任务类型</param>
         /// <returns>任务索引编号,-1表示失败</returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private int addFiles(IndexIdentity identity, Directory directory, string serverPath, TaskType taskType)
         {
             //System.IO.FileInfo file = new System.IO.FileInfo(@"ServerDeSerializeError" + AutoCSer.Date.NowTime.Set().Ticks.ToString());
@@ -246,7 +246,7 @@ namespace AutoCSer.Deploy
         /// <param name="files">文件集合</param>
         /// <param name="serverPath">服务器端路径</param>
         /// <returns>任务索引编号,-1表示失败</returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private int addAssemblyFiles(IndexIdentity identity, KeyValue<string, int>[] files, string serverPath)
         {
             if ((uint)identity.Index < (uint)deployPool.PoolIndex)
@@ -269,7 +269,7 @@ namespace AutoCSer.Deploy
         /// <param name="serverPath">服务器端路径</param>
         /// <param name="runSleep">运行前休眠</param>
         /// <returns>任务索引编号,-1表示失败</returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private int addRun(IndexIdentity identity, KeyValue<string, int>[] files, string serverPath, int runSleep)
         {
             if ((uint)identity.Index < (uint)deployPool.PoolIndex)
@@ -290,7 +290,7 @@ namespace AutoCSer.Deploy
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="taskIndex">任务索引位置</param>
         /// <returns>任务索引编号,-1表示失败</returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private int addWaitRunSwitch(IndexIdentity identity, int taskIndex)
         {
             if ((uint)identity.Index < (uint)deployPool.PoolIndex)

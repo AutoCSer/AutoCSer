@@ -37,5 +37,15 @@ namespace AutoCSer.Sql.LogStream
             }
             return values;
         }
+        /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        /// <param name="identitysAwaiter"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public async Task<valueType[]> GetAsync(AutoCSer.Net.TcpServer.AwaiterBox<int[]> identitysAwaiter)
+        {
+            return await GetAsync(await identitysAwaiter);
+        }
     }
 }

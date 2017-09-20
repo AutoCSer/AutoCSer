@@ -5,11 +5,11 @@ namespace AutoCSer.Sql
     /// <summary>
     /// 远程成员配置
     /// </summary>
-    public sealed partial class RemoteMemberAttribute
+    public partial class RemoteMemberAttribute
     {
         /// <summary>
-        /// 是否
+        /// 无意义，用于兼容 .NET 4.5 及以上版本
         /// </summary>
-        internal bool IsAwait;
+        public bool IsAwait = true;
     }
 }

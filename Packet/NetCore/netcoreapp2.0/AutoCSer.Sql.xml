@@ -3768,6 +3768,13 @@
             <param name="identitys"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Sql.LogStream.IdentityClient`2.GetAsync(AutoCSer.Net.TcpServer.AwaiterBox{System.Int32[]})">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="identitysAwaiter"></param>
+            <returns></returns>
+        </member>
         <member name="F:AutoCSer.Sql.LogStream.IdentityClient`2.Null">
             <summary>
             虚拟空日志流客户端
@@ -4784,6 +4791,39 @@
             </summary>
             <param name="tableType">等待成员扩展缓存初始化的类型</param>
         </member>
+        <member name="T:AutoCSer.Sql.LogAttribute">
+            <summary>
+            日志同步成员信息
+            </summary>
+            <summary>
+            日志同步成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.IsAwait">
+            <summary>
+            默认为 false 表示不生成 await 客户端函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.CountType">
+            <summary>
+            计数完成类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.CountTypeNumber">
+            <summary>
+            计数完成类型表格编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.IsMember">
+            <summary>
+            SQL 数据库成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogAttribute.IsRemoteMethod">
+            <summary>
+            默认为 false 表示存在返回值并不带参数的时候生成远程属性
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.RemoteMemberAttribute">
             <summary>
             远程成员配置
@@ -4794,7 +4834,7 @@
         </member>
         <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsAwait">
             <summary>
-            是否
+            默认为 true 表示生成 await 客户端函数
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.RemoteMemberAttribute.Type">
@@ -4825,6 +4865,16 @@
         <member name="F:AutoCSer.Sql.RemoteMemberAttribute.NameType">
             <summary>
             名称类型（用于成员缓存调用链）
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsCancel">
+            <summary>
+            是否取消生成
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.RemoteMemberAttribute.IsMethod">
+            <summary>
+            是否生成函数
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.AnyCancel">
@@ -8053,26 +8103,6 @@
             </summary>
             <param name="count">保留缓存数据数量</param>
         </member>
-        <member name="T:AutoCSer.Sql.LogAttribute">
-            <summary>
-            日志同步成员信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogAttribute.CountType">
-            <summary>
-            计数完成类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogAttribute.CountTypeNumber">
-            <summary>
-            计数完成类型表格编号
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LogAttribute.IsMember">
-            <summary>
-            SQL 数据库成员
-            </summary>
-        </member>
         <member name="T:AutoCSer.Sql.MemberAttribute">
             <summary>
             数据列配置
@@ -8901,6 +8931,16 @@
         <member name="F:AutoCSer.Sql.RemoteMemberCacheAttribute.IsNull">
             <summary>
             是否需要可空检查
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.RemoteMethodAttribute">
+            <summary>
+            远程函数配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.RemoteMethodAttribute.IsMethod">
+            <summary>
+            是否生成函数
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.SelectQuery`1">
@@ -10046,6 +10086,16 @@
         <member name="F:AutoCSer.Sql.TableColumnCollection.Indexs">
             <summary>
             索引集合
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.TcpMethodAttribute">
+            <summary>
+            TCP 调用函数配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.TcpMethodAttribute.GetParameterFlags">
+            <summary>
+            参数设置
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.UnionType">

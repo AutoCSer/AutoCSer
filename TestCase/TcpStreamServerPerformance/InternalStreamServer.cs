@@ -38,7 +38,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpStreamServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
+        [AutoCSer.Net.TcpStreamServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected Add addAsynchronous(int left, int right)
         {

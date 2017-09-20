@@ -773,7 +773,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// 日志处理
                 /// </summary>
                 /// <param name="onLog"></param>
-                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
+                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
                 protected static void onSqlLogQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, @Type.FullName>.Data>, bool> onLog)
                 {
                     sqlStream/**/.AddQueue(onLog);
@@ -784,7 +784,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// 日志处理
                 /// </summary>
                 /// <param name="onLog"></param>
-                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
+                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, @Type.FullName>.Data>, bool> onLog)
                 {
@@ -799,7 +799,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// </summary>
                 /// <param name="@MemberName">@XmlDocument</param>
                 /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
+                [AutoCSer.Net.TcpStaticServer.Method(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
                 protected static tableType getSqlCache(int @MemberName)
                 {
                     return @IdentityArrayCacheName[@MemberName];
@@ -813,7 +813,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// </summary>
                 /// <param name="key">关键字</param>
                 /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
+                [AutoCSer.Net.TcpStaticServer.Method(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
                 protected static tableType getSqlCache(@PrimaryKeyType key)
                 {
                     return @PrimaryKeyCacheName[key];
@@ -1002,7 +1002,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="@MemberName">@XmlDocument</param>
                 #endregion PUSH Identity
                 /// <returns>@XmlDocument</returns>
-                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.ReadServerName")]
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.ReadServerName")]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static int @GetMethodName(/*PUSH:Identity*/@MemberType.FullName @MemberName/*PUSH:Identity*/)
                 {
@@ -1013,7 +1013,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// @XmlDocument 总计数
                 /// </summary>
                 #endregion IF XmlDocument
-                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.ReadServerName")]
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.ReadServerName")]
                 protected static long @TotalMemberName
                 {
                     get { return SqlCounter.@MemberName/**/.TotalCount; }
@@ -1026,7 +1026,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region PUSH Identity
                 /// <param name="@MemberName">@XmlDocument</param>
                 #endregion PUSH Identity
-                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, ServerName = "@Attribute.WriteServerName")]
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, ServerName = "@Attribute.WriteServerName")]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void @IncMethodName(/*PUSH:Identity*/@MemberType.FullName @MemberName/*PUSH:Identity*/)
                 {

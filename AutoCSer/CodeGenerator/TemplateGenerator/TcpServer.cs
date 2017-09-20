@@ -184,7 +184,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        if ((attribute.ParameterFlags & Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput) != 0 && returnInputParameter == null)
+                        if ((attribute.GetParameterFlags & Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput) != 0 && returnInputParameter == null)
                         {
                             foreach (MethodParameterPair inputParameter in InputParameters)
                             {

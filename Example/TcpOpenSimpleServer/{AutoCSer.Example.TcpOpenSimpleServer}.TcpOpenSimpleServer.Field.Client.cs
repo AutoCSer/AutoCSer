@@ -43,6 +43,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
 #endif
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
+                [AutoCSer.Metadata.BoxSerialize]
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
                 internal struct _p2
                 {

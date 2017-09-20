@@ -5,7 +5,7 @@ namespace AutoCSer.Sql
     /// <summary>
     /// 远程成员配置
     /// </summary>
-    public sealed partial class RemoteMemberAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
+    public partial class RemoteMemberAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
     {
         /// <summary>
         /// 名称类型
@@ -33,5 +33,16 @@ namespace AutoCSer.Sql
         /// 名称类型（用于成员缓存调用链）
         /// </summary>
         public Type NameType;
+        /// <summary>
+        /// 是否取消生成
+        /// </summary>
+        public bool IsCancel;
+        /// <summary>
+        /// 是否生成函数
+        /// </summary>
+        internal virtual bool IsMethod
+        {
+            get { return false; }
+        }
     }
 }

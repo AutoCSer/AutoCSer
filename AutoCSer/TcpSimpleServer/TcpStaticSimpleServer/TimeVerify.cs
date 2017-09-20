@@ -27,7 +27,7 @@ namespace AutoCSer.Net.TcpStaticSimpleServer
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        [Method(IsVerifyMethod = true, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox)]
+        [Method(IsVerifyMethod = true, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         protected static bool verify(TcpInternalSimpleServer.ServerSocket socket, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             TcpServer.ServerBase<TcpInternalSimpleServer.ServerAttribute> server = socket.Server;

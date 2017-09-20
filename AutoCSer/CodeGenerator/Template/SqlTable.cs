@@ -25,7 +25,6 @@ namespace AutoCSer.CodeGenerator.Template
                 /// </summary>
                 internal @Type.FullName Value;
                 #region LOOP RemoteMethods
-                #region IF Member
                 #region PUSH Member
                 /// <summary>
                 /// @XmlDocument
@@ -40,7 +39,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #region NAME GETMEMEBER
                         #region IF Identity
                         /*IF:IsMethodReturn*/
-                        return /*IF:IsMethodReturn*//*NOTE*/(MemberType.FullName)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value./*PUSH:Identity*/@MemberName/*PUSH:Identity*//*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                        return /*IF:IsMethodReturn*//*NOTE*/(MemberType.FullName)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*//*AT:Awaiter*/(Value./*PUSH:Identity*/@MemberName/*PUSH:Identity*//*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
                         #endregion IF Identity
                         #region NOT Identity
                         #region IF IsSinglePrimaryKey
@@ -56,7 +55,6 @@ namespace AutoCSer.CodeGenerator.Template
                     }
                 }
                 #endregion PUSH Member
-                #endregion IF Member
                 #region NOT Member
                 #region PUSH Method
                 #region IF IsMethod
@@ -68,7 +66,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="@ParameterName">@XmlDocument</param>
                 #endregion IF XmlDocument
                 #endregion LOOP NextParameters
-                public @MethodReturnType.FullName @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
+                public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
                 {
                     #region FROMNAME GETMEMEBER
                     #endregion FROMNAME GETMEMEBER
@@ -81,7 +79,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <summary>
                 /// @XmlDocument
                 /// </summary>
-                public @MethodReturnType.FullName @AttributeMemberName
+                public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMemberName
                 {
                     get
                     {
@@ -118,8 +116,13 @@ namespace AutoCSer.CodeGenerator.Template
             /// <param name="@MemberName">@XmlDocument</param>
             #endregion PUSH Identity
             /// <returns></returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region IF Attribute.IsRemoteMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF Attribute.IsRemoteMethod
+            #region NOT Attribute.IsRemoteMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsRemoteMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
             internal static @MemberType.FullName @GetMethodName(int /*PUSH:Identity*/@MemberName/*PUSH:Identity*/)
             {
                 @Type.FullName value = @IdentityArrayCacheName[/*PUSH:Identity*/@MemberName/*PUSH:Identity*/];
@@ -134,8 +137,13 @@ namespace AutoCSer.CodeGenerator.Template
             /// </summary>
             /// <param name="key">关键字</param>
             /// <returns></returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region IF Attribute.IsRemoteMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF Attribute.IsRemoteMethod
+            #region NOT Attribute.IsRemoteMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsRemoteMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
             internal static @MemberType.FullName @GetMethodName(@PrimaryKeyType key)
             {
                 @Type.FullName value = @PrimaryKeyCacheName[key];
@@ -156,8 +164,15 @@ namespace AutoCSer.CodeGenerator.Template
             /// <param name="@MemberName">@XmlDocument</param>
             #endregion PUSH Identity
             /// <returns>@XmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
             private static @MemberType.FullName @GetMemberName(int /*PUSH:Identity*/@MemberName/*PUSH:Identity*/)
             {
                 return /*NOTE*/(@MemberType.FullName)/*NOTE*/@IdentityArrayCacheName[/*PUSH:Identity*/@MemberName/*PUSH:Identity*/].@MemberName;
@@ -176,8 +191,15 @@ namespace AutoCSer.CodeGenerator.Template
             /// <param name="key">关键字</param>
             #endregion NOT IsSinglePrimaryKey
             /// <returns>@XmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
             private static @MemberType.FullName @GetMemberName(@PrimaryKeyType @PrimaryKeyName)
             {
                 return /*NOTE*/(@MemberType.FullName)/*NOTE*/@PrimaryKeyCacheName[@PrimaryKeyName].@MemberName;
@@ -198,8 +220,15 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion IF XmlDocument
             #endregion LOOP Parameters
             /// <returns>@ReturnXmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
             private static @MethodReturnType.FullName @RemoteMethodName(int /*PUSH:Identity*/@MemberName/*PUSH:Identity*//*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
                 /*IF:IsMethodReturn*/
@@ -224,8 +253,15 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion IF XmlDocument
             #endregion LOOP Parameters
             /// <returns>@ReturnXmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
             private static @MethodReturnType.FullName @RemoteMethodName(@PrimaryKeyType @PrimaryKeyName/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
                 /*IF:IsMethodReturn*/
@@ -244,10 +280,22 @@ namespace AutoCSer.CodeGenerator.Template
             #region PUSH Identity
             /// <param name="@MemberName">@XmlDocument</param>
             #endregion PUSH Identity
+            #region LOOP PropertyParameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP PropertyParameters
             /// <returns>@XmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
-            private static @MemberType.FullName @GetCacheMemberName(int /*PUSH:Identity*/@MemberName/*PUSH:Identity*/)
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MemberType.FullName @GetCacheMemberName(int /*PUSH:Identity*/@MemberName/*PUSH:Identity*//*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
             {
                 @Type.FullName value = @IdentityArrayCacheName[/*PUSH:Identity*/@MemberName/*PUSH:Identity*/];
                 #region NAME CACHEMEMBER
@@ -260,7 +308,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     #endregion IF IsNull
                     #endregion LOOP Members
-                    return /*NOTE*/(@MemberType.FullName)/*NOTE*/@IndexName/**/.@MemberName;
+                    return /*NOTE*/(@MemberType.FullName)/*NOTE*/@IndexName/*NOT:PropertyParameters.Length*/.@MemberName/*NOT:PropertyParameters.Length*//*IF:PropertyParameters.Length*/[/*LOOP:PropertyParameters*/@ParameterJoinName/*LOOP:PropertyParameters*/]/*IF:PropertyParameters.Length*/;
                     #region LOOP Members
                     #region IF IsNull
                 }
@@ -284,10 +332,22 @@ namespace AutoCSer.CodeGenerator.Template
             #region NOT IsSinglePrimaryKey
             /// <param name="key">关键字</param>
             #endregion NOT IsSinglePrimaryKey
+            #region LOOP PropertyParameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP PropertyParameters
             /// <returns>@XmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
-            private static @MemberType.FullName @GetCacheMemberName(@PrimaryKeyType @PrimaryKeyName)
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MemberType.FullName @GetCacheMemberName(@PrimaryKeyType @PrimaryKeyName/*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
             {
                 @Type.FullName value = @PrimaryKeyCacheName[@PrimaryKeyName];
                 #region FROMNAME CACHEMEMBER
@@ -312,8 +372,15 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion IF XmlDocument
             #endregion LOOP Parameters
             /// <returns>@ReturnXmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
             private static @MethodReturnType.FullName @RemoteCacheMethodName(int /*PUSH:Identity*/@MemberName/*PUSH:Identity*//*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
                 @Type.FullName value = @IdentityArrayCacheName[/*PUSH:Identity*/@MemberName/*PUSH:Identity*/];
@@ -365,8 +432,15 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion IF XmlDocument
             #endregion LOOP Parameters
             /// <returns>@ReturnXmlDocument</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName")]
-            [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.OutputSerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Sql.RemoteMethod(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Sql.RemoteMember(MemberName = @"@CacheMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Sql.TcpMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
             private static @MethodReturnType.FullName @RemoteCacheMethodName(@PrimaryKeyType @PrimaryKeyName/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
                 @Type.FullName value = @PrimaryKeyCacheName[@PrimaryKeyName];
