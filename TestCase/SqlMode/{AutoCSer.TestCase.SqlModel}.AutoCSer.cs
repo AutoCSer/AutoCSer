@@ -64,7 +64,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <param name="isMemberMap">是否支持成员位图</param>
                 protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class>> onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
                 {
-                    sqlStream/**/.Set(sqlCache, isMemberMap);
+                    sqlStream.Set(sqlCache, isMemberMap);
                     sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false, false);
                     sqlTable.LoadMemberCache(typeof(memberCacheType));
                     sqlTable.AddLogStreamLoadedType(SqlLogMembers._LoadCount_, new AutoCSer.Sql.LogStream.LoadedType(typeof(AutoCSer.TestCase.SqlModel.Student), 0));
@@ -105,7 +105,7 @@ namespace AutoCSer.TestCase.SqlModel
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>.Data>, bool> onLog)
                 {
-                    sqlStream/**/.Add(onLog);
+                    sqlStream.Add(onLog);
                 }
                 /// <summary>
                 /// 获取数据
@@ -127,7 +127,7 @@ namespace AutoCSer.TestCase.SqlModel
                     /// 数据对象
                     /// </summary>
                     internal SqlModel<tableType, memberCacheType> _value_;
-                    private static readonly AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class> _m4 = sqlStream/**/.CreateMemberMap(value => value.StudentCount);
+                    private static readonly AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class> _m4 = sqlStream.CreateMemberMap(value => value.StudentCount);
                     /// <summary>
                     /// 当前学生数量 (更新日志流)
                     /// </summary>
@@ -147,7 +147,7 @@ namespace AutoCSer.TestCase.SqlModel
                     [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                     public void StudentCount()
                     {
-                        sqlStream/**/.Update((tableType)_value_, _m4);
+                        sqlStream.Update((tableType)_value_, _m4);
                     }
                     /// <summary>
                     /// 根据日志流计数完成类型初始化完毕
@@ -155,7 +155,7 @@ namespace AutoCSer.TestCase.SqlModel
                     /// <param name="type"></param>
                     internal static void _LoadCount_(AutoCSer.Sql.LogStream.LoadedType type)
                     {
-                        if (type.Equals(typeof(AutoCSer.TestCase.SqlModel.Student), 0)) sqlStream/**/.LoadMember(4);
+                        if (type.Equals(typeof(AutoCSer.TestCase.SqlModel.Student), 0)) sqlStream.LoadMember(4);
                     }
                 }
                 /// <summary>
@@ -253,7 +253,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <param name="isMemberMap">是否支持成员位图</param>
                 protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Student>> onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
                 {
-                    sqlStream/**/.Set(sqlCache, isMemberMap);
+                    sqlStream.Set(sqlCache, isMemberMap);
                     sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false);
                     sqlTable.LoadMemberCache();
                 }
@@ -286,7 +286,7 @@ namespace AutoCSer.TestCase.SqlModel
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student>.Data>, bool> onLog)
                 {
-                    sqlStream/**/.Add(onLog);
+                    sqlStream.Add(onLog);
                 }
                 /// <summary>
                 /// 获取数据

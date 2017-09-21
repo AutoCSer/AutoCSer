@@ -55,5 +55,9 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// 成员绑定缓存， AutoCSer.Sql.Cache.Whole.Event.MemberKey&lt;valueType, modelType, memberCacheType, keyType, memberKeyType, targetType&gt;
         /// </summary>
         CreateMemberKey,
+        /// <summary>
+        /// 自定义缓存，用于生成基于缓存的远程调用链与日志流处理，需要继承自 AutoCSer.Sql.Cache.Whole.Event.Cache&lt;valueType, modelType&gt;
+        /// </summary>
+        Custom
     }
 }

@@ -94,7 +94,7 @@ namespace AutoCSer.CodeGenerator.Template
                 {
                     #region IF IsSqlCacheLoaded
                     #region IF Attribute.LogServerName
-                    sqlStream/**/.Set(@IdentityArrayCacheName, isMemberMap);
+                    sqlStream.Set(@IdentityArrayCacheName, isMemberMap);
                     #endregion IF Attribute.LogServerName
                     #region IF Attribute.IsLoadedCache
                     @IdentityArrayCacheName/**/.Loaded(onInserted, onUpdated, onDeleted, false/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
@@ -470,6 +470,12 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreateMemberKey
+                #region IF CacheType=Custom
+                /// <summary>
+                /// SQL默认缓存
+                /// </summary>
+                protected static AutoCSer.Sql.Cache.Whole.Event.Cache<tableType, @Type.FullName> @CustomCacheName;
+                #endregion IF CacheType=Custom
 
                 #region IF CounterCacheType=IdentityCounter
                 /// <summary>
@@ -776,7 +782,7 @@ namespace AutoCSer.CodeGenerator.Template
                 [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
                 protected static void onSqlLogQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, @Type.FullName>.Data>, bool> onLog)
                 {
-                    sqlStream/**/.AddQueue(onLog);
+                    sqlStream.AddQueue(onLog);
                 }
                 #endregion IF Attribute.IsLogClientQueue
                 #region NOT Attribute.IsLogClientQueue
@@ -788,7 +794,7 @@ namespace AutoCSer.CodeGenerator.Template
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, @Type.FullName>.Data>, bool> onLog)
                 {
-                    sqlStream/**/.Add(onLog);
+                    sqlStream.Add(onLog);
                 }
                 #endregion NOT Attribute.IsLogClientQueue
                 #region IF Attribute.IsLogClientGetCache
@@ -834,7 +840,7 @@ namespace AutoCSer.CodeGenerator.Template
                     internal SqlModel<tableType/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> _value_;
                     #region LOOP LogMembers
                     #region PUSH Member
-                    private static readonly AutoCSer.Metadata.MemberMap<@Type.FullName> @MemberMapName = sqlStream/**/.CreateMemberMap(value => value.@MemberName);
+                    private static readonly AutoCSer.Metadata.MemberMap<@Type.FullName> @MemberMapName = sqlStream.CreateMemberMap(value => value.@MemberName);
                     #region IF XmlDocument
                     /// <summary>
                     /// @XmlDocument (更新日志流)
@@ -860,14 +866,14 @@ namespace AutoCSer.CodeGenerator.Template
                     [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                     public void @MemberName()
                     {
-                        sqlStream/**/.Update((tableType)_value_, @MemberMapName);
+                        sqlStream.Update((tableType)_value_, @MemberMapName);
                     }
                     #region IF IsSqlStreamCount
                     #region NOT SqlStreamCountType
                     /// <summary>
                     /// @XmlDocument 计算初始化完毕
                     /// </summary>
-                    public static void @MemberLoadedMethodName() { sqlStream/**/.LoadMember(@MemberIndex); }
+                    public static void @MemberLoadedMethodName() { sqlStream.LoadMember(@MemberIndex); }
                     #endregion NOT SqlStreamCountType
                     #endregion IF IsSqlStreamCount
                     #endregion PUSH Member
@@ -882,7 +888,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #region LOOP LogMembers
                         #region PUSH Member
                         #region IF SqlStreamCountType
-                        if (type.Equals(typeof(@SqlStreamCountType.FullName), @CountTypeNumber)) sqlStream/**/.LoadMember(@MemberIndex);
+                        if (type.Equals(typeof(@SqlStreamCountType.FullName), @CountTypeNumber)) sqlStream.LoadMember(@MemberIndex);
                         #endregion IF SqlStreamCountType
                         #endregion PUSH Member
                         #endregion LOOP LogMembers

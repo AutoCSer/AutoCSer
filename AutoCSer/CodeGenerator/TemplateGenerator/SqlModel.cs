@@ -364,6 +364,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             if (PrimaryKeys.Length != 0) return Attribute.CacheType;
                             break;
                         case AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey:
+                        case AutoCSer.Sql.Cache.Whole.Event.Type.Custom:
                             if (Identity != null || PrimaryKeys.Length != 0) return Attribute.CacheType;
                             break;
                     }
@@ -425,6 +426,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
                         case AutoCSer.Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
                         case AutoCSer.Sql.Cache.Whole.Event.Type.CreateMemberKey:
+                        case AutoCSer.Sql.Cache.Whole.Event.Type.Custom:
                             return true;
                     }
                     return false;
@@ -543,6 +545,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// SQL表格默认缓存 字段名称
             /// </summary>
             public string CreateMemberKeyMemberCacheName
+            {
+                get { return IdentityArrayCacheName; }
+            }
+            /// <summary>
+            /// SQL表格默认缓存 字段名称
+            /// </summary>
+            public string CustomCacheName
             {
                 get { return IdentityArrayCacheName; }
             }

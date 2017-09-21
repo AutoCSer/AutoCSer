@@ -3798,6 +3798,11 @@
             成员绑定缓存， AutoCSer.Sql.Cache.Whole.Event.MemberKey&lt;valueType, modelType, memberCacheType, keyType, memberKeyType, targetType&gt;
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Type.Custom">
+            <summary>
+            自定义缓存，用于生成基于缓存的远程调用链与日志流处理，需要继承自 AutoCSer.Sql.Cache.Whole.Event.Cache&lt;valueType, modelType&gt;
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.DictionaryArray`3">
             <summary>
             字典缓存
@@ -9925,6 +9930,11 @@
         <member name="P:AutoCSer.Sql.TableAttribute.ConnectionType">
             <summary>
             数据库连接配置名称
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.RemotePrimaryKeyAttribute">
+            <summary>
+            关键字远程成员映射配置
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.LogStream.LoadedType">

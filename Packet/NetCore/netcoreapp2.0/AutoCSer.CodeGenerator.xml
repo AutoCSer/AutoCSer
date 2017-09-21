@@ -2976,6 +2976,11 @@
             SQL表格默认缓存 字段名称
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CustomCacheName">
+            <summary>
+            SQL表格默认缓存 字段名称
+            </summary>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CounterCacheType">
             <summary>
             计数缓存类型
@@ -3077,258 +3082,310 @@
             </summary>
             <param name="isOut">是否输出代码</param>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlRemotePrimaryKey">
+            <summary>
+            关键字远程成员映射 代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlRemotePrimaryKey.Generator">
+            <summary>
+            关键字远程成员映射 代码生成
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlRemotePrimaryKey.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlRemotePrimaryKey.Generator.create(System.Boolean)">
+            <summary>
+            生成代码
+            </summary>
+            <param name="isOut">是否输出代码</param>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable">
             <summary>
             数据表格 代码生成
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1">
+            <summary>
+            数据表格 代码生成
+            </summary>
+            <typeparam name="attributeType"></typeparam>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMemberBase">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMemberBase.Attribute">
+            <summary>
+            远程成员配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMemberBase.AttributeIsMethod">
+            <summary>
+            是否生成函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMemberBase.Member">
+            <summary>
+            远程成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMemberBase.Method">
+            <summary>
+            获取函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMember">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMember.GetMemberName">
+            <summary>
+            获取数据函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMember.RemoteMethodName">
+            <summary>
+            远程函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMember.IsMethodReturn">
+            <summary>
+            函数是否存在返回值
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMember.MethodReturnType">
+            <summary>
+            返回值类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.Type">
+            <summary>
+            当前类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.ProjectParameter">
+            <summary>
+            项目安装参数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.IsMethodReturn">
+            <summary>
+            函数是否存在返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.MethodParameters">
+            <summary>
+            函数参数信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.IsMethod">
+            <summary>
+            是生成函数还是属性
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.NextParameters">
+            <summary>
+            函数参数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.IsLogProxyMember">
+            <summary>
+            是否日志字段代理
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.MethodReturnType">
+            <summary>
+            函数返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.AttributeMemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.AttributeMethodName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethod.Awaiter">
+            <summary>
+            Awaiter
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember">
+            <summary>
+            远程缓存成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember.Attribute">
+            <summary>
+            远程成员缓存配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember.Member">
+            <summary>
+            远程成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember.Index">
+            <summary>
+            层级索引
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember.IndexName">
+            <summary>
+            局部变量名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember.ParentIndexName">
+            <summary>
+            局部变量名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheMember.IsNull">
+            <summary>
+            是否需要可空检查
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache">
+            <summary>
+            远程缓存成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.Members">
+            <summary>
+            前缀成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.IndexName">
+            <summary>
+            局部变量名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.PropertyParameters">
+            <summary>
+            属性参数集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.GetCacheMemberName">
+            <summary>
+            获取远程成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.RemoteCacheMethodName">
+            <summary>
+            获取远程函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.IsMethodReturn">
+            <summary>
+            函数是否存在返回值
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.MethodReturnType">
+            <summary>
+            返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.CacheMemberName">
+            <summary>
+            远程成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCache.IsAnyNull">
+            <summary>
+            是否需要可空检查
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder">
+            <summary>
+            远程缓存成员创建
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.Caches">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.members">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.Push(AutoCSer.CodeGenerator.Metadata.MemberIndex)">
+            <summary>
+            添加远程缓存成员
+            </summary>
+            <param name="member"></param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.cache">
+            <summary>
+            成员集合缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.cache.Members">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.cache.Caches">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.memberCache">
+            <summary>
+            成员集合缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCacheBuilder.getCache(System.Type)">
+            <summary>
+            获取成员集合
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMethods">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteMembers">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.RemoteCaches">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.setRemoteMemberCache">
+            <summary>
+            设置远程缓存成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator`1.onCreated">
+            <summary>
+            安装完成处理
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator">
             <summary>
             数据表格 代码生成
             </summary>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase">
-            <summary>
-            远程成员
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.Attribute">
-            <summary>
-            远程成员配置
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.AttributeIsMethod">
-            <summary>
-            是否生成函数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.Member">
-            <summary>
-            远程成员信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMemberBase.Method">
-            <summary>
-            获取函数信息
-            </summary>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember">
-            <summary>
-            远程成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.GetMemberName">
-            <summary>
-            获取数据函数名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.RemoteMethodName">
-            <summary>
-            远程函数名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.IsMethodReturn">
-            <summary>
-            函数是否存在返回值
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMember.MethodReturnType">
-            <summary>
-            返回值类型
-            </summary>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod">
-            <summary>
-            远程成员
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.Type">
-            <summary>
-            当前类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.ProjectParameter">
-            <summary>
-            项目安装参数
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.IsMethodReturn">
-            <summary>
-            函数是否存在返回值
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.MethodParameters">
-            <summary>
-            函数参数信息
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.IsMethod">
-            <summary>
-            是生成函数还是属性
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.NextParameters">
-            <summary>
-            函数参数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.IsLogProxyMember">
-            <summary>
-            是否日志字段代理
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.MethodReturnType">
-            <summary>
-            函数返回值类型
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.AttributeMemberName">
-            <summary>
-            成员名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.AttributeMethodName">
-            <summary>
-            成员名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethod.Awaiter">
-            <summary>
-            Awaiter
-            </summary>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember">
-            <summary>
-            远程缓存成员
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember.Attribute">
-            <summary>
-            远程成员缓存配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember.Member">
-            <summary>
-            远程成员信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember.Index">
-            <summary>
-            层级索引
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember.IndexName">
-            <summary>
-            局部变量名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember.ParentIndexName">
-            <summary>
-            局部变量名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheMember.IsNull">
-            <summary>
-            是否需要可空检查
-            </summary>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache">
-            <summary>
-            远程缓存成员
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.Members">
-            <summary>
-            前缀成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.IndexName">
-            <summary>
-            局部变量名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.PropertyParameters">
-            <summary>
-            属性参数集合
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.GetCacheMemberName">
-            <summary>
-            获取远程成员名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.RemoteCacheMethodName">
-            <summary>
-            获取远程函数名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.IsMethodReturn">
-            <summary>
-            函数是否存在返回值
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.MethodReturnType">
-            <summary>
-            返回值类型
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.CacheMemberName">
-            <summary>
-            远程成员名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCache.IsAnyNull">
-            <summary>
-            是否需要可空检查
-            </summary>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder">
-            <summary>
-            远程缓存成员创建
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.Caches">
-            <summary>
-            远程缓存成员集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.members">
-            <summary>
-            远程缓存成员集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.Push(AutoCSer.CodeGenerator.Metadata.MemberIndex)">
-            <summary>
-            添加远程缓存成员
-            </summary>
-            <param name="member"></param>
-        </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.cache">
-            <summary>
-            成员集合缓存
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.cache.Members">
-            <summary>
-            远程成员集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.cache.Caches">
-            <summary>
-            远程缓存成员集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.memberCache">
-            <summary>
-            成员集合缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCacheBuilder.getCache(System.Type)">
-            <summary>
-            获取成员集合
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.Identity">
             <summary>
@@ -3390,29 +3447,9 @@
             SQL表格默认缓存 字段名称
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMethods">
-            <summary>
-            远程成员集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteMembers">
-            <summary>
-            远程成员集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.RemoteCaches">
-            <summary>
-            远程缓存成员集合
-            </summary>
-        </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.nextCreate">
             <summary>
             安装下一个类型
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.onCreated">
-            <summary>
-            安装完成处理
             </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.SqlTable.Generator.create(System.Boolean)">
@@ -6447,6 +6484,11 @@
             <param name="group">数据分组</param>
             <returns></returns>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CustomCacheName">
+            <summary>
+            SQL默认缓存
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.IdentityCounterCacheName">
             <summary>
             SQL默认计数缓存
@@ -6738,6 +6780,45 @@
             <summary>
             @MemberType.XmlDocument
             </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.RemoteExtension">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.RemoteExtension.Value">
+            <summary>
+            @Type.XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.RemoteExtension.AttributeMethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.RemoteExtension.AttributeMemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.Remote">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.GetMemberName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <summary>
+            @XmlDocument
+            </summary>
+            <param name="value">@Type.XmlDocument</param>
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.RemoteMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.GetCacheMemberName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlRemotePrimaryKey.TypeNameDefinition.RemoteCacheMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@ReturnXmlDocument</returns>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.SqlTable.TypeNameDefinition.RemoteExtension">
             <summary>
