@@ -431,6 +431,15 @@ namespace AutoCSer.Deploy
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 14, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c12 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 14, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                static TcpInternalServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { typeof(_p2), typeof(_p4), typeof(_p14), null }
+                        , new System.Type[] { typeof(_p1), typeof(_p3), typeof(_p5), typeof(_p6), typeof(_p7), typeof(_p8), typeof(_p10), typeof(_p13), typeof(_p15), null }
+                        , new System.Type[] { typeof(_p9), typeof(_p11), typeof(_p12), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -672,6 +681,7 @@ namespace AutoCSer.Deploy
                     public AutoCSer.Net.IndexIdentity p0;
                     public System.DateTime p1;
                 }
+
             }
             /// <summary>
             /// TCP客户端
@@ -1427,6 +1437,15 @@ namespace AutoCSer.Deploy
                     return _awaiter_;
                 }
 
+                static TcpInternalClient()
+                {
+                    _compileSerialize_(new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpInternalServer._p2), typeof(TcpInternalServer._p4), typeof(TcpInternalServer._p14), null }
+                        , new System.Type[] { typeof(TcpInternalServer._p1), typeof(TcpInternalServer._p3), typeof(TcpInternalServer._p5), typeof(TcpInternalServer._p6), typeof(TcpInternalServer._p7), typeof(TcpInternalServer._p8), typeof(TcpInternalServer._p10), typeof(TcpInternalServer._p13), typeof(TcpInternalServer._p15), null }
+                        , new System.Type[] { typeof(TcpInternalServer._p9), typeof(TcpInternalServer._p11), typeof(TcpInternalServer._p12), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }

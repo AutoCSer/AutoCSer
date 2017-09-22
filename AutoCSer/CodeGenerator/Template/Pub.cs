@@ -39,9 +39,13 @@ namespace AutoCSer.CodeGenerator.Template
         /// </summary>
         public class MethodReturnType : Pub { }
         /// <summary>
-        /// 带引用修饰的参数名称
+        /// 带引用修饰的参数类型名称
         /// </summary>
         public class ParameterTypeRefName : Pub { }
+        /// <summary>
+        /// 参数类型名称
+        /// </summary>
+        public class ParameterTypeName : Pub { }
         /// <summary>
         /// 成员索引
         /// </summary>

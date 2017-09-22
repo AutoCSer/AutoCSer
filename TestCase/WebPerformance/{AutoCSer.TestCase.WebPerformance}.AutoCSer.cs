@@ -7,6 +7,87 @@ using AutoCSer;
 #pragma warning disable
 namespace AutoCSer.TestCase.WebPerformance
 {
+
+        /// <summary>
+        /// WEB服务器
+        /// </summary>
+        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
+        {
+            protected override string[] calls
+            {
+                get
+                {
+                    string[] names = new string[3];
+                    names[0] = "/Ajax";
+                    names[1] = "/WebCall/Add";
+                    names[2] = "/WebCallAsynchronous/Xor";
+                    return names;
+                }
+            }
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
+            {
+                switch (callIndex)
+                {
+                    case 0:
+                        AutoCSer.TestCase.WebPerformance.AjaxLoader loader = AutoCSer.TestCase.WebPerformance.AjaxLoader/**/.Pop() ?? new AutoCSer.TestCase.WebPerformance.AjaxLoader();
+                        ajaxLoader(loader, socket);
+                        loader.Load();
+                        return;
+                    case 1:
+                        load(socket, AutoCSer.TestCase.WebPerformance.WebCall/**/.Pop() ?? new AutoCSer.TestCase.WebPerformance.WebCall(), _i1);
+                        return;
+                    case 2:
+                        loadAsynchronous(socket, AutoCSer.TestCase.WebPerformance.WebCallAsynchronous/**/.Pop() ?? new AutoCSer.TestCase.WebPerformance.WebCallAsynchronous(), _i2);
+                        return;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    case 1:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        AutoCSer.TestCase.WebPerformance.WebCall value = (AutoCSer.TestCase.WebPerformance.WebCall)call;
+                                        value.Add(parameter.left, parameter.right);
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    default: return false;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    case 2:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        ((AutoCSer.TestCase.WebPerformance.WebCallAsynchronous)call).Xor(parameter.left, parameter.right);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    default: return false;
+                }
+            }
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            struct _p1
+            {
+                public int left;
+                public int right;
+            }
+        }
+}namespace AutoCSer.TestCase.WebPerformance
+{
         internal partial class WebView
         {
             protected override bool page(ref AutoCSer.WebView.Response _html_)
@@ -35,7 +116,7 @@ namespace AutoCSer.TestCase.WebPerformance
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 public int left;
@@ -94,7 +175,7 @@ namespace AutoCSer.TestCase.WebPerformance
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 public int left;
@@ -191,6 +272,10 @@ namespace AutoCSer.TestCase.WebPerformance
             /// </summary>
             /// <returns>网站生成配置</returns>
             protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            static WebServer()
+            {
+                CompileQueryParse(new System.Type[] { typeof(AutoCSer.TestCase.WebPerformance.WebView/**/.WebViewQuery), typeof(AutoCSer.TestCase.WebPerformance.WebViewAsynchronous/**/.WebViewQuery), null }, new System.Type[] { typeof(_p1), null });
+            }
         }
 }namespace AutoCSer.TestCase.WebPerformance
 {
@@ -308,87 +393,7 @@ namespace AutoCSer.TestCase.WebPerformance
                 names[5 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[5 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 5 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
-            }
-        }
-}namespace AutoCSer.TestCase.WebPerformance
-{
-
-        /// <summary>
-        /// WEB服务器
-        /// </summary>
-        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
-        {
-            protected override string[] calls
-            {
-                get
-                {
-                    string[] names = new string[3];
-                    names[0] = "/Ajax";
-                    names[1] = "/WebCall/Add";
-                    names[2] = "/WebCallAsynchronous/Xor";
-                    return names;
-                }
-            }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
-            {
-                switch (callIndex)
-                {
-                    case 0:
-                        AutoCSer.TestCase.WebPerformance.AjaxLoader loader = AutoCSer.TestCase.WebPerformance.AjaxLoader/**/.Pop() ?? new AutoCSer.TestCase.WebPerformance.AjaxLoader();
-                        ajaxLoader(loader, socket);
-                        loader.Load();
-                        return;
-                    case 1:
-                        load(socket, AutoCSer.TestCase.WebPerformance.WebCall/**/.Pop() ?? new AutoCSer.TestCase.WebPerformance.WebCall(), _i1);
-                        return;
-                    case 2:
-                        loadAsynchronous(socket, AutoCSer.TestCase.WebPerformance.WebCallAsynchronous/**/.Pop() ?? new AutoCSer.TestCase.WebPerformance.WebCallAsynchronous(), _i2);
-                        return;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    case 1:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        AutoCSer.TestCase.WebPerformance.WebCall value = (AutoCSer.TestCase.WebPerformance.WebCall)call;
-                                        value.Add(parameter.left, parameter.right);
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    default: return false;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    case 2:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        ((AutoCSer.TestCase.WebPerformance.WebCallAsynchronous)call).Xor(parameter.left, parameter.right);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    default: return false;
-                }
-            }
-            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            struct _p1
-            {
-                public int left;
-                public int right;
+                CompileJsonSerialize(new System.Type[] { typeof(_p1), null }, new System.Type[] { typeof(_p2), null });
             }
         }
 }

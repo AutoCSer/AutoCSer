@@ -292,6 +292,17 @@ namespace AutoCSer.CodeGenerator.Template
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsClientSendOnly*/, IsClientSendOnly = 1/*IF:IsClientSendOnly*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*//*IF:IsServerBuildOutputThread*/, IsBuildOutputThread = true/*IF:IsServerBuildOutputThread*/ };
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region IF Attribute.IsCompileSerialize
+                static TcpOpenServer()
+                {
+                    CompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                }
+                #endregion IF Attribute.IsCompileSerialize
                 #endregion IF IsServerCode
 
                 #region LOOP ParameterTypes
@@ -903,6 +914,17 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF MemberIndex
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region IF Attribute.IsCompileSerialize
+                static TcpOpenClient()
+                {
+                    _compileSerialize_(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(TcpOpenServer.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(TcpOpenServer.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SerializeMethods*/typeof(TcpOpenServer.@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(TcpOpenServer.@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(TcpOpenServer.@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(TcpOpenServer.@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                }
+                #endregion IF Attribute.IsCompileSerialize
             }
             #endregion IF IsClientCode
         }

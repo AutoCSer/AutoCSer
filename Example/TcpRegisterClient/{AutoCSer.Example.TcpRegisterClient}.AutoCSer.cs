@@ -103,6 +103,15 @@ namespace AutoCSer.Example.TcpRegisterClient
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                static TcpInternalServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -131,6 +140,7 @@ namespace AutoCSer.Example.TcpRegisterClient
                     }
 #endif
                 }
+
             }
             /// <summary>
             /// TCP客户端
@@ -192,6 +202,15 @@ namespace AutoCSer.Example.TcpRegisterClient
                     return _awaiter_;
                 }
 
+                static TcpInternalClient()
+                {
+                    _compileSerialize_(new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpInternalServer._p1), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }

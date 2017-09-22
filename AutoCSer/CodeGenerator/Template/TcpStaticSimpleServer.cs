@@ -439,8 +439,8 @@ namespace AutoCSer.CodeGenerator.Template
             {
                 #region LOOP Parameters
                 public @ParameterType.FullName @ParameterName;
-#endregion LOOP Parameters
-#region IF MethodReturnType.Type
+                #endregion LOOP Parameters
+                #region IF MethodReturnType.Type
                 [AutoCSer.Json.IgnoreMember]
                 public @MethodReturnType.FullName Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
@@ -457,15 +457,15 @@ namespace AutoCSer.CodeGenerator.Template
                     set { Ret = (@MethodReturnType.FullName)value; }
                 }
 #endif
-#endregion IF MethodReturnType.Type
-#region NOTE
+                #endregion IF MethodReturnType.Type
+                #region NOTE
                 public object ParameterJoinName;
                 public object ParameterRealName;
-#endregion NOTE
+                #endregion NOTE
             }
-#endregion LOOP ParameterTypes
-#endregion NAME Parameter
-#region NOTE
+            #endregion LOOP ParameterTypes
+            #endregion NAME Parameter
+            #region NOTE
             public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
 #if !NOJIT
                 <MethodReturnType.FullName>
@@ -481,23 +481,34 @@ namespace AutoCSer.CodeGenerator.Template
             {
                 public FullName ParameterName;
             }
-#endregion NOTE
+            #endregion NOTE
+            #region IF Attribute.IsCompileSerialize
+            static /*NOTE*/void /*NOTE*/@StaticServerName()
+            {
+                CompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+            }
+            #endregion IF Attribute.IsCompileSerialize
         }
-#endregion PART SERVER
-#region PART CLIENT
+        #endregion PART SERVER
+        #region PART CLIENT
         /// <summary>
         /// TCP调用客户端
         /// </summary>
         public/*NOTE*/ partial/*NOTE*/ class @ServerName
         {
-#region IF ServiceAttribute.IsSegmentation
-#region LOOP MethodIndexs
-#region NOT IsNullMethod
-#region FROMNAME Parameter
-#endregion FROMNAME Parameter
-#endregion NOT IsNullMethod
-#endregion LOOP MethodIndexs
-#endregion IF ServiceAttribute.IsSegmentation
+            #region IF ServiceAttribute.IsSegmentation
+            #region LOOP MethodIndexs
+            #region NOT IsNullMethod
+            #region FROMNAME Parameter
+            #endregion FROMNAME Parameter
+            #endregion NOT IsNullMethod
+            #endregion LOOP MethodIndexs
+            #endregion IF ServiceAttribute.IsSegmentation
             /// <summary>
             /// TCP 静态调用客户端参数
             /// </summary>
@@ -542,13 +553,21 @@ namespace AutoCSer.CodeGenerator.Template
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 @ServerName 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 #endregion NOT ServiceAttribute.IsSegmentation
                 TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                #region IF Attribute.IsCompileSerialize
+                TcpClient.ClientCompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@SimpleParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                #endregion IF Attribute.IsCompileSerialize
             }
         }
-#endregion PART CLIENT
-#endregion IF IsAllType
-#endregion PART CLASS
+        #endregion PART CLIENT
+        #endregion IF IsAllType
+        #endregion PART CLASS
     }
-#region NOTE
+    #region NOTE
     /// <summary>
     /// CSharp模板公用模糊类型
     /// </summary>
@@ -604,5 +623,5 @@ namespace AutoCSer.CodeGenerator.Template
             public static AutoCSer.Net.TcpInternalSimpleServer.TimeVerifyClient.Verifier verify = null;
         }
     }
-#endregion NOTE
+    #endregion NOTE
 }

@@ -1149,6 +1149,47 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                 setMethods(names, infos);
+                CompileJsonSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.AjaxMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.AjaxMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }, new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.AjaxMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.AjaxMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
             }
         }");
                 if (_isOut_) outEnd();
@@ -13599,6 +13640,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpInternalServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpInternalServer()
+                {
+                    CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             }
             _code_.Add(@"
 ");
@@ -13760,6 +13945,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
+
             }");
             _if_ = false;
                     if (IsClientCode)
@@ -17946,6 +18132,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpInternalServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpInternalClient()
+                {
+                    _compileSerialize_(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             _code_.Add(@"
             }");
             }
@@ -19988,6 +20318,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpInternalSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             }
             _code_.Add(@"
 ");
@@ -21718,6 +22192,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpInternalSimpleClient()
+                {
+                    _compileSerialize_(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalSimpleServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalSimpleServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalSimpleServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalSimpleServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalSimpleServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalSimpleServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             _code_.Add(@"
             }");
             }
@@ -23637,6 +24255,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpInternalStreamServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpInternalStreamServer()
+                {
+                    CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             }
             _code_.Add(@"
 ");
@@ -27862,6 +28624,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpInternalStreamServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpInternalStreamClient()
+                {
+                    _compileSerialize_(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalStreamServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalStreamServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalStreamServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalStreamServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalStreamServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpInternalStreamServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             _code_.Add(@"
             }");
             }
@@ -29972,6 +30878,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpOpenServer()
+                {
+                    CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             }
             _code_.Add(@"
 ");
@@ -34333,6 +35383,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpOpenClient()
+                {
+                    _compileSerialize_(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             _code_.Add(@"
             }");
             }
@@ -36359,6 +37553,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             }
             _code_.Add(@"
 ");
@@ -38089,6 +39427,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpOpenSimpleClient()
+                {
+                    _compileSerialize_(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenSimpleServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenSimpleServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenSimpleServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenSimpleServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenSimpleServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenSimpleServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             _code_.Add(@"
             }");
             }
@@ -39992,6 +41474,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenStreamServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpOpenStreamServer()
+                {
+                    CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             }
             _code_.Add(@"
 ");
@@ -44231,6 +45857,150 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenStreamServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                static TcpOpenStreamClient()
+                {
+                    _compileSerialize_(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenStreamServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenStreamServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenStreamServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenStreamServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenStreamServer.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                        , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(TcpOpenStreamServer.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+                }");
+            }
             _code_.Add(@"
             }");
             }
@@ -50890,6 +52660,152 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+            static ");
+            _code_.Add(StaticServerName);
+            _code_.Add(@"()
+            {
+                CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+            }");
+            }
             _code_.Add(@"
         }");
             _partCodes_["SERVER"] = _code_.ToString();
@@ -51249,7 +53165,257 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@" 服务器端是否本地调用"", AutoCSer.Log.CacheType.None);");
             }
             _code_.Add(@"
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);");
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                TcpClient.ClientCompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });");
+            }
+            _code_.Add(@"
             }
         }");
             _partCodes_["CLIENT"] = _code_.ToString();
@@ -54549,6 +56715,152 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+            static ");
+            _code_.Add(StaticServerName);
+            _code_.Add(@"()
+            {
+                CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+            }");
+            }
             _code_.Add(@"
         }");
             _partCodes_["SERVER"] = _code_.ToString();
@@ -54904,7 +57216,257 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@" 服务器端是否本地调用"", AutoCSer.Log.CacheType.None);");
             }
             _code_.Add(@"
-                TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);");
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                TcpClient.ClientCompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(SimpleParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(SimpleParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(SimpleParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(SimpleParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(SimpleParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(SimpleParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });");
+            }
+            _code_.Add(@"
             }
         }");
             _partCodes_["CLIENT"] = _code_.ToString();
@@ -61074,6 +63636,152 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount1_;
                     }
                 }
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+            static ");
+            _code_.Add(StaticServerName);
+            _code_.Add(@"()
+            {
+                CompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+            }");
+            }
             _code_.Add(@"
         }");
             _partCodes_["SERVER"] = _code_.ToString();
@@ -61429,7 +64137,257 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@" 服务器端是否本地调用"", AutoCSer.Log.CacheType.None);");
             }
             _code_.Add(@"
-                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);");
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = Attribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.IsCompileSerialize)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                TcpClient.ClientCompileSerialize(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(StreamParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SimpleDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(StreamParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = SerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(StreamParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = DeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(StreamParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(StreamParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.InputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }
+                    , new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
+                    _value1_ = JsonDeSerializeMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value3_ = AutoParameter;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(StreamParameterPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });");
+            }
+            _code_.Add(@"
             }
         }");
             _partCodes_["CLIENT"] = _code_.ToString();
@@ -62696,7 +65654,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {");
             _if_ = false;
                 {
@@ -63510,6 +66468,78 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             /// <returns>网站生成配置</returns>
             protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            static WebServer()
+            {
+                CompileQueryParse(new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType[] _value1_;
+                    _value1_ = Views;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType _value2_ in _value1_)
+                        {
+            _if_ = false;
+                    if (_value2_.LoadMethod != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                {
+                    AutoCSer.WebView.ViewAttribute _value3_ = _value2_.Attribute;
+                    if (_value3_ != null)
+                    {
+                    if (_value3_.IsCompileJsonParser)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"typeof(");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.WebViewQuery), ");
+            }
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null }, new System.Type[] { ");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator.CallMethod[] _value1_;
+                    _value1_ = CallMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator.CallMethod _value2_ in _value1_)
+                        {
+            _code_.Add(@"typeof(");
+            _code_.Add(_value2_.ParameterTypeName);
+            _code_.Add(@"), ");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"null });
+            }
         }");
             }
                 if (_isOut_) outEnd();

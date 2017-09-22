@@ -5,7 +5,64 @@ using AutoCSer;
 #if NoAutoCSer
 #else
 #pragma warning disable
-namespace AutoCSer.Web.WebView
+namespace AutoCSer.Web
+{
+
+        /// <summary>
+        /// WEB服务器
+        /// </summary>
+        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
+        {
+            protected override string[] calls
+            {
+                get
+                {
+                    string[] names = new string[2];
+                    names[0] = "/Ajax";
+                    names[1] = "/";
+                    return names;
+                }
+            }
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
+            {
+                switch (callIndex)
+                {
+                    case 0:
+                        AutoCSer.Web.AjaxLoader loader = AutoCSer.Web.AjaxLoader/**/.Pop() ?? new AutoCSer.Web.AjaxLoader();
+                        ajaxLoader(loader, socket);
+                        loader.Load();
+                        return;
+                    case 1:
+                        load(socket, AutoCSer.Web.LocationIndex/**/.Pop() ?? new AutoCSer.Web.LocationIndex(), _i1);
+                        return;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    case 1:
+                        {
+                                    {
+                                        AutoCSer.Web.LocationIndex value = (AutoCSer.Web.LocationIndex)call;
+                                        value.Load();
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                    default: return false;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    default: return false;
+                }
+            }
+        }
+}namespace AutoCSer.Web.WebView
 {
         internal partial class Template
         {
@@ -105,6 +162,10 @@ namespace AutoCSer.Web
             /// </summary>
             /// <returns>网站生成配置</returns>
             protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            static WebServer()
+            {
+                CompileQueryParse(new System.Type[] { null }, new System.Type[] { null });
+            }
         }
 }namespace AutoCSer.Web
 {
@@ -206,63 +267,7 @@ namespace AutoCSer.Web
                 names[4 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[4 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
-            }
-        }
-}namespace AutoCSer.Web
-{
-
-        /// <summary>
-        /// WEB服务器
-        /// </summary>
-        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
-        {
-            protected override string[] calls
-            {
-                get
-                {
-                    string[] names = new string[2];
-                    names[0] = "/Ajax";
-                    names[1] = "/";
-                    return names;
-                }
-            }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
-            {
-                switch (callIndex)
-                {
-                    case 0:
-                        AutoCSer.Web.AjaxLoader loader = AutoCSer.Web.AjaxLoader/**/.Pop() ?? new AutoCSer.Web.AjaxLoader();
-                        ajaxLoader(loader, socket);
-                        loader.Load();
-                        return;
-                    case 1:
-                        load(socket, AutoCSer.Web.LocationIndex/**/.Pop() ?? new AutoCSer.Web.LocationIndex(), _i1);
-                        return;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    case 1:
-                        {
-                                    {
-                                        AutoCSer.Web.LocationIndex value = (AutoCSer.Web.LocationIndex)call;
-                                        value.Load();
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                    default: return false;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    default: return false;
-                }
+                CompileJsonSerialize(new System.Type[] { typeof(_p1), null }, new System.Type[] { typeof(_p2), null });
             }
         }
 }

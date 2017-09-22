@@ -73,6 +73,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { typeof(_p2), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -222,6 +231,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c1 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { typeof(_p1), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -330,6 +348,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { typeof(_p2), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -526,6 +553,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c2 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c3 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 1 };
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c4 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 0 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p2), typeof(_p3), typeof(_p4), null }
+                        , new System.Type[] { typeof(_p1), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -651,6 +687,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { typeof(_p2), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -763,6 +808,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { typeof(_p2), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]

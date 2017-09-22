@@ -304,6 +304,15 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c5 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                static TcpOpenSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { typeof(_p2), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -511,6 +520,15 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
+                static TcpOpenSimpleClient()
+                {
+                    _compileSerialize_(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpOpenSimpleServer._p1), null }
+                        , new System.Type[] { typeof(TcpOpenSimpleServer._p2), null });
+                }
             }
         }
 }

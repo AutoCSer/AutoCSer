@@ -272,6 +272,17 @@ namespace AutoCSer.CodeGenerator.Template
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo @MethodIdentityCommand = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsJsonSerialize*/, IsKeepCallback = 1/*IF:IsJsonSerialize*//*IF:IsClientSendOnly*/, IsClientSendOnly = 1/*IF:IsClientSendOnly*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region IF Attribute.IsCompileSerialize
+                static TcpOpenStreamServer()
+                {
+                    CompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                }
+                #endregion IF Attribute.IsCompileSerialize
                 #endregion IF IsServerCode
 
                 #region LOOP ParameterTypes
@@ -861,6 +872,17 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF MemberIndex
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region IF Attribute.IsCompileSerialize
+                static TcpOpenStreamClient()
+                {
+                    _compileSerialize_(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(TcpOpenStreamServer.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(TcpOpenStreamServer.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SerializeMethods*/typeof(TcpOpenStreamServer.@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(TcpOpenStreamServer.@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(TcpOpenStreamServer.@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(TcpOpenStreamServer.@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                }
+                #endregion IF Attribute.IsCompileSerialize
             }
             #endregion IF IsClientCode
         }

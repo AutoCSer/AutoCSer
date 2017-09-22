@@ -79,7 +79,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
                 {
                     if (attribute == null)
                     {
-                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>("AutoCSer.Example.TcpOpenSimpleServer.Property") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>(@"{""CheckSeconds"":59,""ClientSegmentationCopyPath"":null,""ClientSendBufferMaxSize"":0x100000,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":false,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsJsonSerialize"":true,""IsMarkData"":false,""IsSegmentation"":true,""IsSimpleSerialize"":true,""MaxInputSize"":0x3FF4,""MaxVerifyDataSize"":1024,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":0x33F7,""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte8"",""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}");
+                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>("AutoCSer.Example.TcpOpenSimpleServer.Property") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>(@"{""CheckSeconds"":59,""ClientSegmentationCopyPath"":null,""ClientSendBufferMaxSize"":0x100000,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":false,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsCompileSerialize"":true,""IsJsonSerialize"":true,""IsMarkData"":false,""IsSegmentation"":true,""IsSimpleSerialize"":true,""MaxInputSize"":0x3FF4,""MaxVerifyDataSize"":1024,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":0x33F7,""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte8"",""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}");
                         if (attribute.Name == null) attribute.Name = "AutoCSer.Example.TcpOpenSimpleServer.Property";
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpOpenSimpleServer.Client<TcpOpenSimpleClient>(this, attribute, log);
@@ -177,6 +177,15 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
                 private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 4 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
 
+                static TcpOpenSimpleClient()
+                {
+                    _compileSerialize_(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpOpenSimpleServer._p2), typeof(TcpOpenSimpleServer._p3), typeof(TcpOpenSimpleServer._p4), null }
+                        , new System.Type[] { typeof(TcpOpenSimpleServer._p1), null });
+                }
             }
         }
 }

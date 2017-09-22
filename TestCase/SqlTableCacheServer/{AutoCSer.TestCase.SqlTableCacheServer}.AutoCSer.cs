@@ -1940,6 +1940,15 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                 }
 #endif
             }
+            static DataReader()
+            {
+                CompileSerialize(new System.Type[] { typeof(_p1), typeof(_p3), typeof(_p5), null }
+                    , new System.Type[] { typeof(_p4), typeof(_p9), null }
+                    , new System.Type[] { typeof(_p8), typeof(_p10), null }
+                    , new System.Type[] { typeof(_p2), typeof(_p6), typeof(_p7), typeof(_p11), typeof(_p12), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
+            }
         }
 }
 namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
@@ -1989,6 +1998,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 DataReader 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p1), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p3), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5), null }
+                    , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p9), null }
+                    , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p10), null }
+                    , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p2), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p6), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p7), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p11), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p12), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
             }
         }
 }namespace AutoCSer.TestCase.SqlTableCacheServer
@@ -2592,6 +2607,15 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                 }
 #endif
             }
+            static DataLog()
+            {
+                CompileSerialize(new System.Type[] { typeof(_p13), null }
+                    , new System.Type[] { typeof(_p17), null }
+                    , new System.Type[] { typeof(_p16), null }
+                    , new System.Type[] { typeof(_p14), typeof(_p15), typeof(_p18), typeof(_p19), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
+            }
         }
 }
 namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
@@ -2641,6 +2665,12 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 DataLog 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13), null }
+                    , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p17), null }
+                    , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p16), null }
+                    , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p14), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p15), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p18), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p19), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
             }
         }
 }

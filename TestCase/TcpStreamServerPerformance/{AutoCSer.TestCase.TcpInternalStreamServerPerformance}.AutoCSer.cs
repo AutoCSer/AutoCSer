@@ -153,6 +153,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
+                static TcpInternalStreamServer()
+                {
+                    CompileSerialize(new System.Type[] { typeof(_p1), typeof(_p3), null }
+                        , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p4), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -368,6 +377,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                 }
 
+                static TcpInternalStreamClient()
+                {
+                    _compileSerialize_(new System.Type[] { typeof(TcpInternalStreamServer._p1), typeof(TcpInternalStreamServer._p3), null }
+                        , new System.Type[] { typeof(TcpInternalStreamServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpInternalStreamServer._p4), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
@@ -462,6 +480,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
+                static TcpInternalStreamServer()
+                {
+                    CompileSerialize(new System.Type[] { typeof(_p1), typeof(_p3), null }
+                        , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p4), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -665,6 +692,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                 }
 
+                static TcpInternalStreamClient()
+                {
+                    _compileSerialize_(new System.Type[] { typeof(TcpInternalStreamServer._p1), typeof(TcpInternalStreamServer._p3), null }
+                        , new System.Type[] { typeof(TcpInternalStreamServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpInternalStreamServer._p4), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
@@ -815,6 +851,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4 };
+                static TcpInternalStreamServer()
+                {
+                    CompileSerialize(new System.Type[] { typeof(_p1), typeof(_p3), null }
+                        , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p4), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -1018,6 +1063,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                 }
 
+                static TcpInternalStreamClient()
+                {
+                    _compileSerialize_(new System.Type[] { typeof(TcpInternalStreamServer._p1), typeof(TcpInternalStreamServer._p3), null }
+                        , new System.Type[] { typeof(TcpInternalStreamServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpInternalStreamServer._p4), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }

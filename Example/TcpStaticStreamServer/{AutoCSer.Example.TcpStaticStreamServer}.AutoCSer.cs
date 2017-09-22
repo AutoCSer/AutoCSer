@@ -1720,6 +1720,15 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
                 }
 #endif
             }
+            static StreamExample1()
+            {
+                CompileSerialize(new System.Type[] { typeof(_p1), typeof(_p3), typeof(_p5), null }
+                    , new System.Type[] { typeof(_p2), typeof(_p4), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { typeof(_p6), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
+            }
         }
 }
 namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient
@@ -1761,6 +1770,12 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 StreamExample1 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample1/**/._p1), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample1/**/._p3), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample1/**/._p5), null }
+                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample1/**/._p2), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample1/**/._p4), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample1/**/._p6), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
             }
         }
 }namespace AutoCSer.Example.TcpStaticStreamServer
@@ -2060,6 +2075,15 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer
                 public int p0;
                 public int p1;
             }
+            static StreamExample2()
+            {
+                CompileSerialize(new System.Type[] { typeof(_p7), typeof(_p9), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { typeof(_p8), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
+            }
         }
 }
 namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient
@@ -2101,6 +2125,12 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 StreamExample2 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample2/**/._p7), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample2/**/._p9), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamServer/**/.StreamExample2/**/._p8), null }
+                    , new System.Type[] { null }
+                    , new System.Type[] { null });
             }
         }
 }

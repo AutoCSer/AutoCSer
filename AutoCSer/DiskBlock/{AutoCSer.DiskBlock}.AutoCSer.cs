@@ -135,6 +135,15 @@ namespace AutoCSer.DiskBlock
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
+                static TcpInternalServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { typeof(_p2), typeof(_p4), null }
+                        , new System.Type[] { typeof(_p1), typeof(_p3), typeof(_p5), null }
+                        , new System.Type[] { typeof(_p6), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -242,6 +251,7 @@ namespace AutoCSer.DiskBlock
                     }
 #endif
                 }
+
             }
             /// <summary>
             /// TCP客户端
@@ -427,6 +437,15 @@ namespace AutoCSer.DiskBlock
                     return _awaiter_;
                 }
 
+                static TcpInternalClient()
+                {
+                    _compileSerialize_(new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpInternalServer._p2), typeof(TcpInternalServer._p4), null }
+                        , new System.Type[] { typeof(TcpInternalServer._p1), typeof(TcpInternalServer._p3), typeof(TcpInternalServer._p5), null }
+                        , new System.Type[] { typeof(TcpInternalServer._p6), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }

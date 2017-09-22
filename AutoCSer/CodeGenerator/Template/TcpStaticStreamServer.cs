@@ -804,10 +804,21 @@ namespace AutoCSer.CodeGenerator.Template
             {
                 public FullName ParameterName;
             }
-#endregion NOTE
+            #endregion NOTE
+            #region IF Attribute.IsCompileSerialize
+            static /*NOTE*/void /*NOTE*/@StaticServerName()
+            {
+                CompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+            }
+            #endregion IF Attribute.IsCompileSerialize
         }
-#endregion PART SERVER
-#region PART CLIENT
+        #endregion PART SERVER
+        #region PART CLIENT
         /// <summary>
         /// TCP调用客户端
         /// </summary>
@@ -865,6 +876,14 @@ namespace AutoCSer.CodeGenerator.Template
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 @ServerName 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 #endregion NOT ServiceAttribute.IsSegmentation
                 TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                #region IF Attribute.IsCompileSerialize
+                TcpClient.ClientCompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@StreamParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@StreamParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:SerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@StreamParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@StreamParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@StreamParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                    , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@StreamParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                #endregion IF Attribute.IsCompileSerialize
             }
         }
 #endregion PART CLIENT

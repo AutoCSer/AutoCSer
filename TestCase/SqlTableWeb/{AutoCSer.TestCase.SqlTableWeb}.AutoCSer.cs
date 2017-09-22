@@ -7,6 +7,63 @@ using AutoCSer;
 #pragma warning disable
 namespace AutoCSer.TestCase.SqlTableWeb
 {
+
+        /// <summary>
+        /// WEB服务器
+        /// </summary>
+        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
+        {
+            protected override string[] calls
+            {
+                get
+                {
+                    string[] names = new string[2];
+                    names[0] = "/Ajax";
+                    names[1] = "/";
+                    return names;
+                }
+            }
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
+            {
+                switch (callIndex)
+                {
+                    case 0:
+                        AutoCSer.TestCase.SqlTableWeb.AjaxLoader loader = AutoCSer.TestCase.SqlTableWeb.AjaxLoader/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.AjaxLoader();
+                        ajaxLoader(loader, socket);
+                        loader.Load();
+                        return;
+                    case 1:
+                        load(socket, AutoCSer.TestCase.SqlTableWeb.Index/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Index(), _i1);
+                        return;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    case 1:
+                        {
+                                    {
+                                        AutoCSer.TestCase.SqlTableWeb.Index value = (AutoCSer.TestCase.SqlTableWeb.Index)call;
+                                        value.Load();
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                    default: return false;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    default: return false;
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.SqlTableWeb
+{
         internal partial class Class
         {
             protected override bool page(ref AutoCSer.WebView.Response _html_)
@@ -258,7 +315,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 /// <summary>
@@ -794,7 +851,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 /// <summary>
@@ -898,6 +955,10 @@ namespace AutoCSer.TestCase.SqlTableWeb
             /// </summary>
             /// <returns>网站生成配置</returns>
             protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            static WebServer()
+            {
+                CompileQueryParse(new System.Type[] { typeof(AutoCSer.TestCase.SqlTableWeb.Class/**/.WebViewQuery), typeof(AutoCSer.TestCase.SqlTableWeb.Student/**/.WebViewQuery), null }, new System.Type[] { null });
+            }
         }
 }namespace AutoCSer.TestCase.SqlTableWeb
 {
@@ -959,63 +1020,7 @@ namespace AutoCSer.TestCase.SqlTableWeb
                 names[4 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[4 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 4 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
-            }
-        }
-}namespace AutoCSer.TestCase.SqlTableWeb
-{
-
-        /// <summary>
-        /// WEB服务器
-        /// </summary>
-        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
-        {
-            protected override string[] calls
-            {
-                get
-                {
-                    string[] names = new string[2];
-                    names[0] = "/Ajax";
-                    names[1] = "/";
-                    return names;
-                }
-            }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
-            {
-                switch (callIndex)
-                {
-                    case 0:
-                        AutoCSer.TestCase.SqlTableWeb.AjaxLoader loader = AutoCSer.TestCase.SqlTableWeb.AjaxLoader/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.AjaxLoader();
-                        ajaxLoader(loader, socket);
-                        loader.Load();
-                        return;
-                    case 1:
-                        load(socket, AutoCSer.TestCase.SqlTableWeb.Index/**/.Pop() ?? new AutoCSer.TestCase.SqlTableWeb.Index(), _i1);
-                        return;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    case 1:
-                        {
-                                    {
-                                        AutoCSer.TestCase.SqlTableWeb.Index value = (AutoCSer.TestCase.SqlTableWeb.Index)call;
-                                        value.Load();
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                    default: return false;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    default: return false;
-                }
+                CompileJsonSerialize(new System.Type[] { null }, new System.Type[] { null });
             }
         }
 }

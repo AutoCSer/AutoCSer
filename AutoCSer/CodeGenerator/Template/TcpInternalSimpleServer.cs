@@ -278,6 +278,17 @@ namespace AutoCSer.CodeGenerator.Template
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo @MethodIdentityCommand = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region IF Attribute.IsCompileSerialize
+                static TcpInternalSimpleServer()
+                {
+                    CompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                }
+                #endregion IF Attribute.IsCompileSerialize
                 #endregion IF IsServerCode
 
                 #region LOOP ParameterTypes
@@ -558,6 +569,17 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF MemberIndex
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region IF Attribute.IsCompileSerialize
+                static TcpInternalSimpleClient()
+                {
+                    _compileSerialize_(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(TcpInternalSimpleServer.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(TcpInternalSimpleServer.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:SerializeMethods*/typeof(TcpInternalSimpleServer.@InputParameterTypeName), /*LOOP:SerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(TcpInternalSimpleServer.@OutputParameterTypeName), /*LOOP:DeSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonSerializeMethods*/typeof(TcpInternalSimpleServer.@InputParameterTypeName), /*LOOP:JsonSerializeMethods*/null }
+                        , new System.Type[] { /*LOOP:JsonDeSerializeMethods*/typeof(TcpInternalSimpleServer.@OutputParameterTypeName), /*LOOP:JsonDeSerializeMethods*/null });
+                }
+                #endregion IF Attribute.IsCompileSerialize
             }
             #endregion IF IsClientCode
         }

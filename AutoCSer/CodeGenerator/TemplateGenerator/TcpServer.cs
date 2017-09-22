@@ -692,6 +692,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public virtual string ServerName { get { return Attribute.ServerName; } }
             /// <summary>
+            /// 服务类名称
+            /// </summary>
+            public string StaticServerName { get { return ServerName; } }
+            /// <summary>
             /// 服务注册名称
             /// </summary>
             public virtual string ServerRegisterName { get { return Attribute.ServerName; } }
@@ -771,6 +775,105 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 return nullRememberIdentityName;
+            }
+            /// <summary>
+            /// 获取简单序列化方法集合
+            /// </summary>
+            /// <typeparam name="tcpMethodType"></typeparam>
+            /// <param name="methods"></param>
+            /// <returns></returns>
+            protected static tcpMethodType[] getSimpleSerializeMethods<tcpMethodType>(tcpMethodType[] methods)
+                where tcpMethodType : TcpMethod
+            {
+                Dictionary<int, tcpMethodType> typeIndexs = DictionaryCreator.CreateInt<tcpMethodType>();
+                foreach (tcpMethodType method in methods)
+                {
+                    if (method.InputParameterIndex != 0 && method.IsSimpleSerializeInputParamter && !typeIndexs.ContainsKey(method.InputParameterIndex))
+                    {
+                        typeIndexs.Add(method.InputParameterIndex, method);
+                    }
+                }
+                return typeIndexs.getArray(value => value.Value);
+            }
+            /// <summary>
+            /// 简单反序列化方法集合
+            /// </summary>
+            protected static tcpMethodType[] getSimpleDeSerializeMethods<tcpMethodType>(tcpMethodType[] methods)
+                where tcpMethodType : TcpMethod
+            {
+                Dictionary<int, tcpMethodType> typeIndexs = DictionaryCreator.CreateInt<tcpMethodType>();
+                foreach (tcpMethodType method in methods)
+                {
+                    if (method.OutputParameterIndex != 0 && method.IsSimpleSerializeOutputParamter && !typeIndexs.ContainsKey(method.OutputParameterIndex))
+                    {
+                        typeIndexs.Add(method.OutputParameterIndex, method);
+                    }
+                }
+                return typeIndexs.getArray(value => value.Value);
+            }
+            /// <summary>
+            /// 二进制序列化方法集合
+            /// </summary>
+            protected static tcpMethodType[] getSerializeMethods<tcpMethodType>(tcpMethodType[] methods)
+                where tcpMethodType : TcpMethod
+            {
+                Dictionary<int, tcpMethodType> typeIndexs = DictionaryCreator.CreateInt<tcpMethodType>();
+                foreach (tcpMethodType method in methods)
+                {
+                    if (method.InputParameterIndex != 0 && !method.IsSimpleSerializeInputParamter && !method.IsJsonSerialize && !typeIndexs.ContainsKey(method.InputParameterIndex))
+                    {
+                        typeIndexs.Add(method.InputParameterIndex, method);
+                    }
+                }
+                return typeIndexs.getArray(value => value.Value);
+            }
+            /// <summary>
+            /// 二进制反序列化方法集合
+            /// </summary>
+            protected static tcpMethodType[] getDeSerializeMethods<tcpMethodType>(tcpMethodType[] methods)
+                where tcpMethodType : TcpMethod
+            {
+                Dictionary<int, tcpMethodType> typeIndexs = DictionaryCreator.CreateInt<tcpMethodType>();
+                foreach (tcpMethodType method in methods)
+                {
+                    if (method.OutputParameterIndex != 0 && !method.IsSimpleSerializeOutputParamter && !method.IsJsonSerialize && !typeIndexs.ContainsKey(method.OutputParameterIndex))
+                    {
+                        typeIndexs.Add(method.OutputParameterIndex, method);
+                    }
+                }
+                return typeIndexs.getArray(value => value.Value);
+            }
+            /// <summary>
+            /// JSON 序列化方法集合
+            /// </summary>
+            protected static tcpMethodType[] getJsonSerializeMethods<tcpMethodType>(tcpMethodType[] methods)
+                where tcpMethodType : TcpMethod
+            {
+                Dictionary<int, tcpMethodType> typeIndexs = DictionaryCreator.CreateInt<tcpMethodType>();
+                foreach (tcpMethodType method in methods)
+                {
+                    if (method.InputParameterIndex != 0 && method.IsJsonSerialize && !typeIndexs.ContainsKey(method.InputParameterIndex))
+                    {
+                        typeIndexs.Add(method.InputParameterIndex, method);
+                    }
+                }
+                return typeIndexs.getArray(value => value.Value);
+            }
+            /// <summary>
+            /// JSON 序列化方法集合
+            /// </summary>
+            protected static tcpMethodType[] getJsonDeSerializeMethods<tcpMethodType>(tcpMethodType[] methods)
+                where tcpMethodType : TcpMethod
+            {
+                Dictionary<int, tcpMethodType> typeIndexs = DictionaryCreator.CreateInt<tcpMethodType>();
+                foreach (tcpMethodType method in methods)
+                {
+                    if (method.OutputParameterIndex != 0 && method.IsJsonSerialize && !typeIndexs.ContainsKey(method.OutputParameterIndex))
+                    {
+                        typeIndexs.Add(method.OutputParameterIndex, method);
+                    }
+                }
+                return typeIndexs.getArray(value => value.Value);
             }
         }
         /// <summary>
@@ -891,6 +994,66 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 方法索引集合
             /// </summary>
             public TcpMethod[] MethodIndexs;
+            /// <summary>
+            /// 简单序列化方法集合
+            /// </summary>
+            public TcpMethod[] SimpleSerializeMethods
+            {
+                get
+                {
+                    return getSimpleSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// 简单反序列化方法集合
+            /// </summary>
+            public TcpMethod[] SimpleDeSerializeMethods
+            {
+                get
+                {
+                    return getSimpleDeSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// 二进制序列化方法集合
+            /// </summary>
+            public TcpMethod[] SerializeMethods
+            {
+                get
+                {
+                    return getSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// 二进制反序列化方法集合
+            /// </summary>
+            public TcpMethod[] DeSerializeMethods
+            {
+                get
+                {
+                    return getDeSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// JSON 序列化方法集合
+            /// </summary>
+            public TcpMethod[] JsonSerializeMethods
+            {
+                get
+                {
+                    return getJsonSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// JSON 序列化方法集合
+            /// </summary>
+            public TcpMethod[] JsonDeSerializeMethods
+            {
+                get
+                {
+                    return getJsonDeSerializeMethods(MethodIndexs);
+                }
+            }
         }
     }
 }

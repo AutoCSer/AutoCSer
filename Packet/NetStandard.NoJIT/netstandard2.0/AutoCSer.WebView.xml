@@ -806,6 +806,11 @@
             输出参数是否添加包装处理申明 AutoCSer.Emit.BoxSerialize，用于只有一个输出参数的类型忽略外壳类型的处理以减少序列化开销，默认为 false。
             </summary>
         </member>
+        <member name="F:AutoCSer.WebView.AjaxMethodAttribute.IsCompileJsonSerialize">
+            <summary>
+            默认为 true 表示在初始化的时候启动 JSON 序列化预编译任务
+            </summary>
+        </member>
         <member name="T:AutoCSer.WebView.AjaxMethodInfo">
             <summary>
             AJAX 调用信息
@@ -1491,6 +1496,11 @@
         <member name="F:AutoCSer.WebView.CallMethodAttribute.IsFirstParameter">
             <summary>
             是否仅仅序列化第一个参数，设置为 true 表示忽略生成的包装 struct
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.CallMethodAttribute.IsCompileQueryParser">
+            <summary>
+            默认为 true 表示在初始化的时候启动 Query 反序列化预编译任务
             </summary>
         </member>
         <member name="T:AutoCSer.WebView.CallMethodInfo">
@@ -2341,6 +2351,13 @@
             <param name="parameter">web调用参数</param>
             <returns>是否成功</returns>
         </member>
+        <member name="M:AutoCSer.WebView.Request.CompileJsonSerialize(System.Type[],System.Type[])">
+            <summary>
+            JSON 序列化预编译
+            </summary>
+            <param name="deSerializeTypes"></param>
+            <param name="serializeTypes"></param>
+        </member>
         <member name="M:AutoCSer.WebView.Request.clearCache(System.Int32)">
             <summary>
             清除缓存数据
@@ -2858,6 +2875,11 @@
         <member name="F:AutoCSer.WebView.ViewAttribute.IsAsynchronous">
             <summary>
             是否异步请求
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.ViewAttribute.IsCompileJsonParser">
+            <summary>
+            默认为 true 表示在初始化的时候启动 JSON 反序列化预编译任务
             </summary>
         </member>
         <member name="T:AutoCSer.WebView.ViewLocationPath">
@@ -3786,6 +3808,13 @@
             <param name="state">错误状态</param>
             <param name="gzipFlag">是否支持 GZip 压缩</param>
             <returns>错误数据</returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.Server.CompileQueryParse(System.Type[],System.Type[])">
+            <summary>
+            查询参数反序列化预编译
+            </summary>
+            <param name="jsonTypes"></param>
+            <param name="queryTypes"></param>
         </member>
         <member name="T:AutoCSer.Net.HttpDomainServer.ISession">
             <summary>
@@ -7821,6 +7850,12 @@
             </summary>
             <param name="type">基本类型</param>
             <returns>解析函数</returns>
+        </member>
+        <member name="M:AutoCSer.Net.Http.HeaderQueryParser.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
         </member>
         <member name="M:AutoCSer.Net.Http.HeaderQueryParser.clearCache(System.Int32)">
             <summary>

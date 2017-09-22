@@ -1113,6 +1113,12 @@
             <param name="read"></param>
             <param name="size"></param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializer.Config">
             <summary>
             反序列化配置参数
@@ -3596,6 +3602,12 @@
             </summary>
             <typeparam name="valueType">目标数据类型</typeparam>
             <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.Serializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
         </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.NullValue">
             <summary>
@@ -11015,6 +11027,12 @@
             <param name="config">配置参数</param>
             <returns>是否解析成功</returns>
         </member>
+        <member name="M:AutoCSer.Json.Parser.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
+        </member>
         <member name="F:AutoCSer.Json.Parser.JavascriptLocalMinTime">
             <summary>
             JSON 转换时间差
@@ -12850,6 +12868,12 @@
             <typeparam name="valueType"></typeparam>
             <param name="stream"></param>
             <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
         </member>
         <member name="F:AutoCSer.Json.Serializer.MaxInt">
             <summary>
@@ -17664,6 +17688,12 @@
             <param name="end"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
+        </member>
         <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerializeMethods">
             <summary>
             基本类型转换函数
@@ -17982,6 +18012,12 @@
             </summary>
             <param name="stream"></param>
             <param name="value">字符串</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
         </member>
         <member name="F:AutoCSer.Net.SimpleSerialize.Serializer.serializeMethods">
             <summary>
@@ -24348,6 +24384,28 @@
             <param name="markData"></param>
             <param name="dataLength"></param>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.CommandBase.CompileSerialize(System.Type[],System.Type[],System.Type[],System.Type[],System.Type[],System.Type[])">
+            <summary>
+            序列化预编译
+            </summary>
+            <param name="simpleDeSerializeTypes"></param>
+            <param name="simpleSerializeTypes"></param>
+            <param name="deSerializeTypes"></param>
+            <param name="serializeTypes"></param>
+            <param name="jsonDeSerializeTypes"></param>
+            <param name="jsonSerializeTypes"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.CommandBase.ClientCompileSerialize(System.Type[],System.Type[],System.Type[],System.Type[],System.Type[],System.Type[])">
+            <summary>
+            序列化预编译
+            </summary>
+            <param name="simpleSerializeTypes"></param>
+            <param name="simpleDeSerializeTypes"></param>
+            <param name="serializeTypes"></param>
+            <param name="deSerializeTypes"></param>
+            <param name="jsonSerializeTypes"></param>
+            <param name="jsonDeSerializeTypes"></param>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.CommandBase.GetRegisterClient``1(``0,System.String,AutoCSer.Net.TcpRegister.Client@)">
             <summary>
             获取 TCP 内部注册服务客户端
@@ -26132,6 +26190,22 @@
             默认为 false 表示可能不会对输入输出参数进行初始化操作从而导致错误时出现随机数据，仅 Emit 模式有效
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.TcpServer.MethodClient">
+            <summary>
+            TCP 客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.MethodClient._compileSerialize_(System.Type[],System.Type[],System.Type[],System.Type[],System.Type[],System.Type[])">
+            <summary>
+            序列化预编译
+            </summary>
+            <param name="simpleSerializeTypes"></param>
+            <param name="simpleDeSerializeTypes"></param>
+            <param name="serializeTypes"></param>
+            <param name="deSerializeTypes"></param>
+            <param name="jsonSerializeTypes"></param>
+            <param name="jsonDeSerializeTypes"></param>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.ServerSocketSenderBase">
             <summary>
             TCP 服务套接字数据发送
@@ -27123,6 +27197,11 @@
         <member name="F:AutoCSer.Net.TcpServer.ServerBaseAttribute.IsSimpleSerialize">
             <summary>
             默认为 true 表示支持简单序列化操作
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBaseAttribute.IsCompileSerialize">
+            <summary>
+            默认为 true 表示在初始化的时候启动序列化预编译任务
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerBaseAttribute.GetConfig``1(System.String,System.Type,``0)">
@@ -31580,6 +31659,36 @@
             委托
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.CompileBinarySerialize">
+            <summary>
+            二进制序列化预编译
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.CompileBinaryDeSerialize">
+            <summary>
+            二进制反序列化预编译
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.CompileJsonSerialize">
+            <summary>
+            JSON 序列化预编译
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.CompileJsonDeSerialize">
+            <summary>
+            JSON 反序列化预编译
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.CompileSimpleSerialize">
+            <summary>
+            简单序列化预编译
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.Thread.CallType.CompileSimpleDeSerialize">
+            <summary>
+            简单反序列化预编译
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.Thread.CallType.DomainUnloadRemoveLast">
             <summary>
             删除应用程序卸载处理
@@ -32421,6 +32530,11 @@
         <member name="F:AutoCSer.Threading.UnionType.ThreadPool">
             <summary>
             线程池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Threading.UnionType.TypeArray">
+            <summary>
+            类型数组
             </summary>
         </member>
         <member name="T:AutoCSer.Threading.WaitHandle">

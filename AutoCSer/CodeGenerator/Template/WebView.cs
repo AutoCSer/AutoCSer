@@ -88,7 +88,7 @@ namespace AutoCSer.CodeGenerator.Template
 
             #region IF LoadMethod
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 #region IF LoadMethod.Parameters.Length
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
@@ -261,6 +261,13 @@ namespace AutoCSer.CodeGenerator.Template
             /// </summary>
             /// <returns>网站生成配置</returns>
             protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            static WebServer()
+            {
+                CompileQueryParse(new System.Type[] { /*LOOP:Views*//*IF:LoadMethod*//*IF:Attribute.IsCompileJsonParser*/typeof(@Type.FullName/**/.WebViewQuery), /*IF:Attribute.IsCompileJsonParser*//*IF:LoadMethod*//*LOOP:Views*/null }, new System.Type[] { /*LOOP:CallMethods*/typeof(@ParameterTypeName), /*LOOP:CallMethods*/null });
+            }
+            #region NOTE
+            class ParameterTypeName { }
+            #endregion NOTE
         }
         #endregion IF IsServer
         #endregion PART CLASS
@@ -304,6 +311,16 @@ namespace AutoCSer.CodeGenerator.Template
             public partial class FullName : AutoCSer.WebView.Config
             {
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public partial class FullName
+        {
+            /// <summary>
+            /// 查询参数类型
+            /// </summary>
+            public class WebViewQuery { }
         }
     }
     #endregion NOTE

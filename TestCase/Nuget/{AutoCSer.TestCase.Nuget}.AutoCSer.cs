@@ -105,6 +105,15 @@ namespace AutoCSer.TestCase.Nuget
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                static TcpInternalServer()
+                {
+                    CompileSerialize(new System.Type[] { typeof(_p1), null }
+                        , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -141,6 +150,7 @@ namespace AutoCSer.TestCase.Nuget
                     }
 #endif
                 }
+
             }
             /// <summary>
             /// TCP客户端
@@ -216,6 +226,15 @@ namespace AutoCSer.TestCase.Nuget
                     return _awaiter_;
                 }
 
+                static TcpInternalClient()
+                {
+                    _compileSerialize_(new System.Type[] { typeof(TcpInternalServer._p1), null }
+                        , new System.Type[] { typeof(TcpInternalServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null });
+                }
             }
         }
 }

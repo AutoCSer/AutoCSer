@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0C92BCF"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0CABF9E"></script>
     <title>前后端一体 WEB 视图框架 脚本库 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -11,21 +11,21 @@
 </head>
 <body>
     <p>
-        <a href="/WebView/View.html?v=C92BCF">WEB 视图页面</a>的自动渲染需要客户端脚本的支持，所以需要在<b>页面模板</b>中引用引导脚本。
-        <div> 参考示例 <a href="/Index.html?v=C92BCF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\Include\Header.html</a></div>
-        <br /><b>/Js/loadPage.js</b> 或者 <b>/Js/load.js</b> 仅用于引导加载基础核心类库 <b>/Js/base.js</b>，<b>/Js/base.js</b> 主要是为了配套 <a href="/WebView/View.html?v=C92BCF">WEB 视图页面</a>数据 API 的自动绑定与浏览器端 MV 的实现。
-        <br /><b>/Js/base.js</b> 不仅包括由 <a href="/Index.html?v=C92BCF" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts 生成的代码，还会将网站项目目录 <b>ViewJs</b> 中的 js 文件打包到文件尾部，所以 <b>ViewJs</b> 中的 js 不应该也不需要被其它 js <b>Include</b> 引用。 
+        <a href="/WebView/View.html?v=CABF9E">WEB 视图页面</a>的自动渲染需要客户端脚本的支持，所以需要在<b>页面模板</b>中引用引导脚本。
+        <div> 参考示例 <a href="/Index.html?v=CABF9E" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\Include\Header.html</a></div>
+        <br /><b>/Js/loadPage.js</b> 或者 <b>/Js/load.js</b> 仅用于引导加载基础核心类库 <b>/Js/base.js</b>，<b>/Js/base.js</b> 主要是为了配套 <a href="/WebView/View.html?v=CABF9E">WEB 视图页面</a>数据 API 的自动绑定与浏览器端 MV 的实现。
+        <br /><b>/Js/base.js</b> 不仅包括由 <a href="/Index.html?v=CABF9E" title="Go to the home page to download">AutoCSer</a>\AutoCSer\Js\base.page.ts 生成的代码，还会将网站项目目录 <b>ViewJs</b> 中的 js 文件打包到文件尾部，所以 <b>ViewJs</b> 中的 js 不应该也不需要被其它 js <b>Include</b> 引用。 
         <br />对于存在前端脚本交互开发需求的开发者需要了解框架中 MV 的实现方案与相关 API 的使用。
     </p>
     <p>
-        . <b>页面模板</b>就是 <a href="/WebView/View.html?v=C92BCF">WEB 视图页面</a>的 <b>body</b>，对应的脚本对象为 <b>AutoCSer.Skin</b> 类型的 <b>AutoCSer.Skin.Body</b>，是页面的主模板，这个模板会在页面初始化的时候自动匹配服务端数据 API 并渲染页面。
+        . <b>页面模板</b>就是 <a href="/WebView/View.html?v=CABF9E">WEB 视图页面</a>的 <b>body</b>，对应的脚本对象为 <b>AutoCSer.Skin</b> 类型的 <b>AutoCSer.Skin.Body</b>，是页面的主模板，这个模板会在页面初始化的时候自动匹配服务端数据 API 并渲染页面。
     </p>
     <p>
         . <b>命名模板</b>用于临时性脚本交互产生的 HTML 渲染需求（比如弹出层），需要开发者在需求逻辑中构造数据对象与初始化操作。
         <br />一般情况下，必须使用 <b>skin=""</b> 申明为<b>命名模板</b>，必须指定 id 用于标识模板名称，对应的脚本对象为 <b>AutoCSer.Skin</b> 类型的 <b>AutoCSer.Skin.Skins["模板名称"]</b>。
         <br />示例中的 <b>body=""</b> 用于在<b>页面模板</b>初始化之前临时性的删除 DOM 节点避免被<b>页面模板</b>渲染，在<b>页面模板</b>初始化之后会将这些 DOM 节点追加到 <b>body</b> 节点的最后。
-        <div> 参考示例 <a href="/Index.html?v=C92BCF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\Script\Skins.page.html</a></div>
-        <div> 参考示例 <a href="/Index.html?v=C92BCF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">WebView\Script\Skins.page.ts</a></div>
+        <div> 参考示例 <a href="/Index.html?v=CABF9E" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\Script\Skins.page.html</a></div>
+        <div> 参考示例 <a href="/Index.html?v=CABF9E" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">WebView\Script\Skins.page.ts</a></div>
     </p>
     <p>
         . <b>模板数据节点</b>是由原始视图数据绑定到<b>页面模板</b>或者<b>命名模板</b>以后在渲染过程中产生的与原始视图数据定义组织结构匹配的 <b>AutoCSer.SkinData</b> 类型的数据节点，该节点用于修改原始视图数据并控制 UI 渲染。

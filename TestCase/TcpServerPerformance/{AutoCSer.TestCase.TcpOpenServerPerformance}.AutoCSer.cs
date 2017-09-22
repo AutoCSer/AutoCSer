@@ -347,6 +347,15 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                static TcpOpenServer()
+                {
+                    CompileSerialize(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(_p1), typeof(_p3), null }
+                        , new System.Type[] { typeof(_p2), typeof(_p4), null });
+                }
 
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -728,6 +737,15 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     }
                 }
 
+                static TcpOpenClient()
+                {
+                    _compileSerialize_(new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { typeof(TcpOpenServer._p1), typeof(TcpOpenServer._p3), null }
+                        , new System.Type[] { typeof(TcpOpenServer._p2), typeof(TcpOpenServer._p4), null });
+                }
             }
         }
 }

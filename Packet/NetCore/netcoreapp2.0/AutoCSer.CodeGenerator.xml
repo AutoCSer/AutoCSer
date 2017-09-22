@@ -2303,12 +2303,22 @@
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.Methods">
             <summary>
-            AJAX函数
+            AJAX 函数
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ViewMethods">
             <summary>
             web视图AJAX调用
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.SerializeMethods">
+            <summary>
+            序列化返回值 AJAX 函数
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.DeSerializeMethods">
+            <summary>
+            反序列化参数 AJAX 函数
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.Ajax.Generator.ParameterTypes">
@@ -4171,6 +4181,11 @@
             服务类名称
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.StaticServerName">
+            <summary>
+            服务类名称
+            </summary>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.ServerRegisterName">
             <summary>
             服务注册名称
@@ -4217,6 +4232,39 @@
             </summary>
             <param name="type"></param>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.getSimpleSerializeMethods``1(``0[])">
+            <summary>
+            获取简单序列化方法集合
+            </summary>
+            <typeparam name="tcpMethodType"></typeparam>
+            <param name="methods"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.getSimpleDeSerializeMethods``1(``0[])">
+            <summary>
+            简单反序列化方法集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.getSerializeMethods``1(``0[])">
+            <summary>
+            二进制序列化方法集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.getDeSerializeMethods``1(``0[])">
+            <summary>
+            二进制反序列化方法集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.getJsonSerializeMethods``1(``0[])">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.getJsonDeSerializeMethods``1(``0[])">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3">
             <summary>
@@ -4270,6 +4318,36 @@
             方法索引集合
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.SimpleSerializeMethods">
+            <summary>
+            简单序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.SimpleDeSerializeMethods">
+            <summary>
+            简单反序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.SerializeMethods">
+            <summary>
+            二进制序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.DeSerializeMethods">
+            <summary>
+            二进制反序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.JsonSerializeMethods">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator`3.JsonDeSerializeMethods">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer">
             <summary>
             TCP 服务代码生成基类
@@ -4310,6 +4388,36 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.MethodIndexs">
             <summary>
             方法索引集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.SimpleSerializeMethods">
+            <summary>
+            简单序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.SimpleDeSerializeMethods">
+            <summary>
+            简单反序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.SerializeMethods">
+            <summary>
+            二进制序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.DeSerializeMethods">
+            <summary>
+            二进制反序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.JsonSerializeMethods">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator`3.JsonDeSerializeMethods">
+            <summary>
+            JSON 序列化方法集合
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer">
@@ -4806,6 +4914,36 @@
             方法索引集合
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.SimpleSerializeMethods">
+            <summary>
+            简单序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.SimpleDeSerializeMethods">
+            <summary>
+            简单反序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.SerializeMethods">
+            <summary>
+            二进制序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.DeSerializeMethods">
+            <summary>
+            二进制反序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.JsonSerializeMethods">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator`3.JsonDeSerializeMethods">
+            <summary>
+            JSON 序列化方法集合
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TypeDefinition">
             <summary>
             类定义生成
@@ -4844,6 +4982,11 @@
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator">
             <summary>
             web调用代码生成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator.CallMethods">
+            <summary>
+            WEB 调用函数集合
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator.CallMethod">
@@ -4975,7 +5118,7 @@
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator.Methods">
             <summary>
-            AJAX函数
+            WEB 调用函数集合
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebCall.Generator.ParameterTypes">
@@ -5483,6 +5626,11 @@
             WEB视图配置
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.LoadMethod">
+            <summary>
+            视图加载函数
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewType.DefaultNamespace">
             <summary>
             默认程序集名称
@@ -5556,6 +5704,11 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.Views">
             <summary>
             WEB视图类型集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.CallMethods">
+            <summary>
+            WEB 调用函数查询参数名称集合
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.ViewPageCount">
@@ -5834,6 +5987,9 @@
             <summary>
             类型全名
             </summary>
+            <summary>
+            
+            </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.Pub.FullName.IsSqlLogProxyLoadedName">
             <summary>
@@ -5932,6 +6088,11 @@
             <param name="value">调用参数</param>
             <returns>返回值</returns>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.FullName.WebViewQuery">
+            <summary>
+            查询参数类型
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.MemberType">
             <summary>
             成员类型
@@ -5949,7 +6110,12 @@
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName">
             <summary>
-            带引用修饰的参数名称
+            带引用修饰的参数类型名称
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.Pub.ParameterTypeName">
+            <summary>
+            参数类型名称
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.Pub.MemberIndex">

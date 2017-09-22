@@ -283,13 +283,49 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             private LeftArray<AjaxMethod> methods;
             /// <summary>
-            /// AJAX函数
+            /// AJAX 函数
             /// </summary>
             public AjaxMethod[] Methods;
             /// <summary>
             /// web视图AJAX调用
             /// </summary>
             public ViewMethod[] ViewMethods;
+            /// <summary>
+            /// 序列化返回值 AJAX 函数
+            /// </summary>
+            public AjaxMethod[] SerializeMethods
+            {
+                get
+                {
+                    Dictionary<int, AjaxMethod> typeIndexs = DictionaryCreator.CreateInt<AjaxMethod>();
+                    foreach (AjaxMethod method in Methods)
+                    {
+                        if (method.OutputParameterIndex != 0 && method.Attribute.IsCompileJsonSerialize && !typeIndexs.ContainsKey(method.OutputParameterIndex))
+                        {
+                            typeIndexs.Add(method.OutputParameterIndex, method);
+                        }
+                    }
+                    return typeIndexs.getArray(value => value.Value);
+                }
+            }
+            /// <summary>
+            /// 反序列化参数 AJAX 函数
+            /// </summary>
+            public AjaxMethod[] DeSerializeMethods
+            {
+                get
+                {
+                    Dictionary<int, AjaxMethod> typeIndexs = DictionaryCreator.CreateInt<AjaxMethod>();
+                    foreach (AjaxMethod method in Methods)
+                    {
+                        if (method.InputParameterIndex != 0 && method.Attribute.IsCompileJsonSerialize && !typeIndexs.ContainsKey(method.InputParameterIndex))
+                        {
+                            typeIndexs.Add(method.InputParameterIndex, method);
+                        }
+                    }
+                    return typeIndexs.getArray(value => value.Value);
+                }
+            }
             /// <summary>
             /// 函数参数类型集合关键字
             /// </summary>

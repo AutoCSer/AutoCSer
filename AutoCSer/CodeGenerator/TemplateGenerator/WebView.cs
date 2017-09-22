@@ -898,7 +898,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// <summary>
         /// WEB视图代码生成
         /// </summary>
-        [Generator(Name = "WEB 视图", DependType = typeof(Html), IsAuto = true)]
+        [Generator(Name = "WEB 视图", DependType = typeof(WebCall.Generator), IsAuto = true)]
         internal partial class Generator : Generator<AutoCSer.WebView.ViewAttribute>
         {
             /// <summary>
@@ -929,6 +929,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// WEB视图配置
                 /// </summary>
                 public AutoCSer.WebView.ViewAttribute Attribute;
+                /// <summary>
+                /// 视图加载函数
+                /// </summary>
+                public MethodIndex LoadMethod;
                 /// <summary>
                 /// 默认程序集名称
                 /// </summary>
@@ -1035,6 +1039,24 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// WEB视图类型集合
             /// </summary>
             public ViewType[] Views;
+            /// <summary>
+            /// WEB 调用函数查询参数名称集合
+            /// </summary>
+            public WebCall.Generator.CallMethod[] CallMethods
+            {
+                get
+                {
+                    Dictionary<int, WebCall.Generator.CallMethod> typeIndexs = DictionaryCreator.CreateInt<WebCall.Generator.CallMethod>();
+                    foreach (WebCall.Generator.CallMethod method in WebCall.Generator.CallMethods)
+                    {
+                        if (method.MethodParameters.Length != 0 && method.Attribute.IsCompileQueryParser && !typeIndexs.ContainsKey(method.ParameterIndex))
+                        {
+                            typeIndexs.Add(method.ParameterIndex, method);
+                        }
+                    }
+                    return typeIndexs.getArray(value => value.Value);
+                }
+            }
             /// <summary>
             /// WEB视图页面数量
             /// </summary>
@@ -1155,7 +1177,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                         HtmlCount = template.HtmlCount;
                         int index = views.Length;
-                        ViewType view = new ViewType { Type = Type, Attribute = Attribute, DefaultNamespace = AutoParameter.DefaultNamespace + ".", Index = index, IgnoreCase = AutoParameter.WebConfig.IgnoreCase, IsAwaitMethod = IsAwaitMethod, IsPoolType = IsPoolType };
+                        ViewType view = new ViewType { Type = Type, Attribute = Attribute, LoadMethod = LoadMethod, DefaultNamespace = AutoParameter.DefaultNamespace + ".", Index = index, IgnoreCase = AutoParameter.WebConfig.IgnoreCase, IsAwaitMethod = IsAwaitMethod, IsPoolType = IsPoolType };
                         views.Add(view);
                         Htmls = "_h" + index.toString();
                         HtmlLock = "_l" + index.toString();

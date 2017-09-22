@@ -56,6 +56,66 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 方法索引集合
             /// </summary>
             public TcpMethod[] MethodIndexs;
+            /// <summary>
+            /// 简单序列化方法集合
+            /// </summary>
+            public TcpMethod[] SimpleSerializeMethods
+            {
+                get
+                {
+                    return getSimpleSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// 简单反序列化方法集合
+            /// </summary>
+            public TcpMethod[] SimpleDeSerializeMethods
+            {
+                get
+                {
+                    return getSimpleDeSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// 二进制序列化方法集合
+            /// </summary>
+            public TcpMethod[] SerializeMethods
+            {
+                get
+                {
+                    return getSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// 二进制反序列化方法集合
+            /// </summary>
+            public TcpMethod[] DeSerializeMethods
+            {
+                get
+                {
+                    return getDeSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// JSON 序列化方法集合
+            /// </summary>
+            public TcpMethod[] JsonSerializeMethods
+            {
+                get
+                {
+                    return getJsonSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// JSON 序列化方法集合
+            /// </summary>
+            public TcpMethod[] JsonDeSerializeMethods
+            {
+                get
+                {
+                    return getJsonDeSerializeMethods(MethodIndexs);
+                }
+            }
         }
     }
 }

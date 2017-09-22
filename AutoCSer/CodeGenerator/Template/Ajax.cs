@@ -191,6 +191,7 @@ namespace AutoCSer.CodeGenerator.Template
                 infos[@MethodCount - 1/*NOTE*/+ 1/*NOTE*/] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = @MethodCount - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 #endregion NOT IsPubError
                 setMethods(names, infos);
+                CompileJsonSerialize(new System.Type[] { /*LOOP:DeSerializeMethods*/typeof(@InputParameterTypeName), /*LOOP:DeSerializeMethods*/null }, new System.Type[] { /*LOOP:SerializeMethods*/typeof(@OutputParameterTypeName), /*LOOP:SerializeMethods*/null });
             }
         }
         #endregion PART CLASS

@@ -7,6 +7,212 @@ using AutoCSer;
 #pragma warning disable
 namespace AutoCSer.Example.WebView
 {
+
+        /// <summary>
+        /// WEB服务器
+        /// </summary>
+        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
+        {
+            protected override string[] calls
+            {
+                get
+                {
+                    string[] names = new string[11];
+                    names[0] = "/Ajax";
+                    names[1] = "/Call/Add";
+                    names[2] = "/CallAsynchronous/Add";
+                    names[3] = "/CallAsynchronous/AddBuffer";
+                    names[4] = "/CallBoxSerialize/Inc";
+                    names[5] = "/CallNameAdd";
+                    names[6] = "/File/Download";
+                    names[7] = "/";
+                    names[8] = "/Location/Add";
+                    names[9] = "/Location/Index";
+                    names[10] = "/Upload/File";
+                    return names;
+                }
+            }
+            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i3 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i4 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i5 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i6 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i7 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i8 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i9 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i10 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
+            {
+                switch (callIndex)
+                {
+                    case 0:
+                        AutoCSer.Example.WebView.AjaxLoader loader = AutoCSer.Example.WebView.AjaxLoader/**/.Pop() ?? new AutoCSer.Example.WebView.AjaxLoader();
+                        ajaxLoader(loader, socket);
+                        loader.Load();
+                        return;
+                    case 1:
+                        load(socket, AutoCSer.Example.WebView.Call/**/.Pop() ?? new AutoCSer.Example.WebView.Call(), _i1);
+                        return;
+                    case 2:
+                        loadAsynchronous(socket, AutoCSer.Example.WebView.CallAsynchronous/**/.Pop() ?? new AutoCSer.Example.WebView.CallAsynchronous(), _i2);
+                        return;
+                    case 3:
+                        loadAsynchronous(socket, AutoCSer.Example.WebView.CallAsynchronous/**/.Pop() ?? new AutoCSer.Example.WebView.CallAsynchronous(), _i3);
+                        return;
+                    case 4:
+                        load(socket, AutoCSer.Example.WebView.CallBoxSerialize/**/.Pop() ?? new AutoCSer.Example.WebView.CallBoxSerialize(), _i4);
+                        return;
+                    case 5:
+                        load(socket, AutoCSer.Example.WebView.CallName/**/.Pop() ?? new AutoCSer.Example.WebView.CallName(), _i5);
+                        return;
+                    case 6:
+                        loadAsynchronous(socket, AutoCSer.Example.WebView.File/**/.Pop() ?? new AutoCSer.Example.WebView.File(), _i6);
+                        return;
+                    case 7:
+                        load(socket, AutoCSer.Example.WebView.Index/**/.Pop() ?? new AutoCSer.Example.WebView.Index(), _i7);
+                        return;
+                    case 8:
+                        load(socket, AutoCSer.Example.WebView.Location/**/.Pop() ?? new AutoCSer.Example.WebView.Location(), _i8);
+                        return;
+                    case 9:
+                        load(socket, AutoCSer.Example.WebView.Location/**/.Pop() ?? new AutoCSer.Example.WebView.Location(), _i9);
+                        return;
+                    case 10:
+                        load(socket, AutoCSer.Example.WebView.Upload/**/.Pop() ?? new AutoCSer.Example.WebView.Upload(), _i10);
+                        return;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    case 1:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        AutoCSer.Example.WebView.Call value = (AutoCSer.Example.WebView.Call)call;
+                                        value.Add(parameter.left, parameter.right);
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    case 4:
+                        {
+                            _p2 parameter = new _p2();
+                            if (call.ParseParameter(ref parameter.value))
+                                    {
+                                        AutoCSer.Example.WebView.CallBoxSerialize value = (AutoCSer.Example.WebView.CallBoxSerialize)call;
+                                        value.Inc(parameter.value);
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    case 5:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        AutoCSer.Example.WebView.CallName value = (AutoCSer.Example.WebView.CallName)call;
+                                        value.Add(parameter.left, parameter.right);
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    case 7:
+                        {
+                                    {
+                                        AutoCSer.Example.WebView.Index value = (AutoCSer.Example.WebView.Index)call;
+                                        value.Home();
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                    case 8:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        AutoCSer.Example.WebView.Location value = (AutoCSer.Example.WebView.Location)call;
+                                        value.Add(parameter.left, parameter.right);
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    case 9:
+                        {
+                                    {
+                                        AutoCSer.Example.WebView.Location value = (AutoCSer.Example.WebView.Location)call;
+                                        value.Index();
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                    case 10:
+                        {
+                                    {
+                                        AutoCSer.Example.WebView.Upload value = (AutoCSer.Example.WebView.Upload)call;
+                                        value.File();
+                                        repsonseCall(value, ref responseStream);
+                                        return true;
+                                    }
+                        }
+                    default: return false;
+                }
+            }
+            protected override bool call(AutoCSer.WebView.CallBase call)
+            {
+                switch (call.CallMethodIndex)
+                {
+                    case 2:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        ((AutoCSer.Example.WebView.CallAsynchronous)call).Add(parameter.left, parameter.right);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    case 3:
+                        {
+                            _p1 parameter = new _p1();
+                                    if (call.ParseParameter(ref parameter))
+                                    {
+                                        ((AutoCSer.Example.WebView.CallAsynchronous)call).AddBuffer(parameter.left, parameter.right);
+                                        return true;
+                                    }
+                        }
+                        return false;
+                    case 6:
+                        {
+                                    {
+                                        ((AutoCSer.Example.WebView.File)call).Download();
+                                        return true;
+                                    }
+                        }
+                    default: return false;
+                }
+            }
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            struct _p1
+            {
+                public int left;
+                public int right;
+            }
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            struct _p2
+            {
+                public int value;
+            }
+        }
+}namespace AutoCSer.Example.WebView
+{
         internal partial class LoadView
         {
 
@@ -53,7 +259,7 @@ namespace AutoCSer.Example.WebView
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 public int left;
@@ -113,7 +319,7 @@ namespace AutoCSer.Example.WebView
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 public int left;
@@ -491,7 +697,7 @@ namespace AutoCSer.Example.WebView
             }
 
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            private struct WebViewQuery
+            internal struct WebViewQuery
             {
                 [AutoCSer.Json.ParseMember(IsDefault = true)]
                 public int left;
@@ -604,6 +810,10 @@ namespace AutoCSer.Example.WebView
             /// </summary>
             /// <returns>网站生成配置</returns>
             protected override AutoCSer.WebView.Config getWebConfig() { return WebConfig; }
+            static WebServer()
+            {
+                CompileQueryParse(new System.Type[] { typeof(AutoCSer.Example.WebView.LoadViewQuery/**/.WebViewQuery), typeof(AutoCSer.Example.WebView.LoadViewQueryName/**/.WebViewQuery), typeof(AutoCSer.Example.WebView.ViewAsynchronous/**/.WebViewQuery), null }, new System.Type[] { typeof(_p1), typeof(_p2), null });
+            }
         }
 }namespace AutoCSer.Example.WebView
 {
@@ -914,212 +1124,7 @@ namespace AutoCSer.Example.WebView
                 names[20 - 1] = AutoCSer.WebView.AjaxBase.PubErrorCallName;
                 infos[20 - 1] = new AutoCSer.WebView.AjaxMethodInfo { MethodIndex = 20 - 1, MaxPostDataSize = 2048, MaxMemoryStreamSize = AutoCSer.SubBuffer.Size.Kilobyte2, IsReferer = true, IsAsynchronous = true, IsPost = true };
                 setMethods(names, infos);
-            }
-        }
-}namespace AutoCSer.Example.WebView
-{
-
-        /// <summary>
-        /// WEB服务器
-        /// </summary>
-        public partial class WebServer : AutoCSer.Net.HttpDomainServer.ViewServer<int>
-        {
-            protected override string[] calls
-            {
-                get
-                {
-                    string[] names = new string[11];
-                    names[0] = "/Ajax";
-                    names[1] = "/Call/Add";
-                    names[2] = "/CallAsynchronous/Add";
-                    names[3] = "/CallAsynchronous/AddBuffer";
-                    names[4] = "/CallBoxSerialize/Inc";
-                    names[5] = "/CallNameAdd";
-                    names[6] = "/File/Download";
-                    names[7] = "/";
-                    names[8] = "/Location/Add";
-                    names[9] = "/Location/Index";
-                    names[10] = "/Upload/File";
-                    return names;
-                }
-            }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i1 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 1, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i2 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 2, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i3 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 3, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i4 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 4, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i5 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 5, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i6 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 6, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i7 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 7, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i8 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 8, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i9 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 9, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            private static readonly AutoCSer.WebView.CallMethodInfo _i10 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 10, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
-            protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
-            {
-                switch (callIndex)
-                {
-                    case 0:
-                        AutoCSer.Example.WebView.AjaxLoader loader = AutoCSer.Example.WebView.AjaxLoader/**/.Pop() ?? new AutoCSer.Example.WebView.AjaxLoader();
-                        ajaxLoader(loader, socket);
-                        loader.Load();
-                        return;
-                    case 1:
-                        load(socket, AutoCSer.Example.WebView.Call/**/.Pop() ?? new AutoCSer.Example.WebView.Call(), _i1);
-                        return;
-                    case 2:
-                        loadAsynchronous(socket, AutoCSer.Example.WebView.CallAsynchronous/**/.Pop() ?? new AutoCSer.Example.WebView.CallAsynchronous(), _i2);
-                        return;
-                    case 3:
-                        loadAsynchronous(socket, AutoCSer.Example.WebView.CallAsynchronous/**/.Pop() ?? new AutoCSer.Example.WebView.CallAsynchronous(), _i3);
-                        return;
-                    case 4:
-                        load(socket, AutoCSer.Example.WebView.CallBoxSerialize/**/.Pop() ?? new AutoCSer.Example.WebView.CallBoxSerialize(), _i4);
-                        return;
-                    case 5:
-                        load(socket, AutoCSer.Example.WebView.CallName/**/.Pop() ?? new AutoCSer.Example.WebView.CallName(), _i5);
-                        return;
-                    case 6:
-                        loadAsynchronous(socket, AutoCSer.Example.WebView.File/**/.Pop() ?? new AutoCSer.Example.WebView.File(), _i6);
-                        return;
-                    case 7:
-                        load(socket, AutoCSer.Example.WebView.Index/**/.Pop() ?? new AutoCSer.Example.WebView.Index(), _i7);
-                        return;
-                    case 8:
-                        load(socket, AutoCSer.Example.WebView.Location/**/.Pop() ?? new AutoCSer.Example.WebView.Location(), _i8);
-                        return;
-                    case 9:
-                        load(socket, AutoCSer.Example.WebView.Location/**/.Pop() ?? new AutoCSer.Example.WebView.Location(), _i9);
-                        return;
-                    case 10:
-                        load(socket, AutoCSer.Example.WebView.Upload/**/.Pop() ?? new AutoCSer.Example.WebView.Upload(), _i10);
-                        return;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call, ref AutoCSer.UnmanagedStream responseStream)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    case 1:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        AutoCSer.Example.WebView.Call value = (AutoCSer.Example.WebView.Call)call;
-                                        value.Add(parameter.left, parameter.right);
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    case 4:
-                        {
-                            _p2 parameter = new _p2();
-                            if (call.ParseParameter(ref parameter.value))
-                                    {
-                                        AutoCSer.Example.WebView.CallBoxSerialize value = (AutoCSer.Example.WebView.CallBoxSerialize)call;
-                                        value.Inc(parameter.value);
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    case 5:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        AutoCSer.Example.WebView.CallName value = (AutoCSer.Example.WebView.CallName)call;
-                                        value.Add(parameter.left, parameter.right);
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    case 7:
-                        {
-                                    {
-                                        AutoCSer.Example.WebView.Index value = (AutoCSer.Example.WebView.Index)call;
-                                        value.Home();
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                    case 8:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        AutoCSer.Example.WebView.Location value = (AutoCSer.Example.WebView.Location)call;
-                                        value.Add(parameter.left, parameter.right);
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    case 9:
-                        {
-                                    {
-                                        AutoCSer.Example.WebView.Location value = (AutoCSer.Example.WebView.Location)call;
-                                        value.Index();
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                    case 10:
-                        {
-                                    {
-                                        AutoCSer.Example.WebView.Upload value = (AutoCSer.Example.WebView.Upload)call;
-                                        value.File();
-                                        repsonseCall(value, ref responseStream);
-                                        return true;
-                                    }
-                        }
-                    default: return false;
-                }
-            }
-            protected override bool call(AutoCSer.WebView.CallBase call)
-            {
-                switch (call.CallMethodIndex)
-                {
-                    case 2:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        ((AutoCSer.Example.WebView.CallAsynchronous)call).Add(parameter.left, parameter.right);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    case 3:
-                        {
-                            _p1 parameter = new _p1();
-                                    if (call.ParseParameter(ref parameter))
-                                    {
-                                        ((AutoCSer.Example.WebView.CallAsynchronous)call).AddBuffer(parameter.left, parameter.right);
-                                        return true;
-                                    }
-                        }
-                        return false;
-                    case 6:
-                        {
-                                    {
-                                        ((AutoCSer.Example.WebView.File)call).Download();
-                                        return true;
-                                    }
-                        }
-                    default: return false;
-                }
-            }
-            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            struct _p1
-            {
-                public int left;
-                public int right;
-            }
-            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-            struct _p2
-            {
-                public int value;
+                CompileJsonSerialize(new System.Type[] { typeof(_p1), typeof(_p3), typeof(_p5), null }, new System.Type[] { typeof(_p2), typeof(_p4), typeof(_p6), null });
             }
         }
 }

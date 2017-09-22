@@ -17,9 +17,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         /// <summary>
         /// web调用代码生成
         /// </summary>
-        [Generator(Name = "WEB 调用", DependType = typeof(CSharper), IsAuto = true)]
+        [Generator(Name = "WEB 调用", DependType = typeof(Html), IsAuto = true)]
         internal sealed partial class Generator : WebView.Generator<AutoCSer.WebView.CallAttribute>
         {
+            /// <summary>
+            /// WEB 调用函数集合
+            /// </summary>
+            public static CallMethod[] CallMethods = NullValue<CallMethod>.Array;
             /// <summary>
             /// 方法索引信息
             /// </summary>
@@ -212,7 +216,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             private LeftArray<CallMethod> methods;
             /// <summary>
-            /// AJAX函数
+            /// WEB 调用函数集合
             /// </summary>
             public CallMethod[] Methods;
             /// <summary>
@@ -277,7 +281,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 if (methods.Length != 0)
                 {
-                    Methods = methods.ToArray();
+                    CallMethods = Methods = methods.ToArray();
                     int methodIndex = 0;
                     ParameterBuilder parameterBuilder = new ParameterBuilder();
                     foreach (CallMethod method in Methods)
