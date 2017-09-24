@@ -51,7 +51,7 @@ namespace AutoCSer.Example.WebView
                 #endregion
 
                 #region POST + JSON 支持
-                webClient.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
                 json = webClient.UploadString(url, "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 3, right = 5 }));
                 if (AutoCSer.Json.Parser.Parse<int>(json) != 3 + 5)
                 {
@@ -60,7 +60,7 @@ namespace AutoCSer.Example.WebView
                 #endregion
 
                 #region POST + XML 支持
-                webClient.Headers.Add("Content-Type", "application/xml; charset=utf-8");
+                webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/xml; charset=utf-8");
                 json = webClient.UploadString(url, "POST", AutoCSer.Xml.Serializer.Serialize(new AddParameter { left = 5, right = 8 }));
                 if (AutoCSer.Json.Parser.Parse<int>(json) != 5 + 8)
                 {

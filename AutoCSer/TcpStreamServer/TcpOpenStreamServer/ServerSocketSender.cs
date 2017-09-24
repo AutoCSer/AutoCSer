@@ -290,27 +290,33 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
                 if (socket == Socket)
                 {
-                    int count = socket.EndSend(async);
+                    SocketError socketError;
+                    int count = socket.EndSend(async, out socketError);
+                    if (socketError == SocketError.Success)
+                    {
 #else
                 if (sendAsyncEventArgs.SocketError == SocketError.Success)
                 {
                     int count = sendAsyncEventArgs.BytesTransferred;
 #endif
-                    sendData.MoveStart(count);
-                    if (sendData.Length == 0)
-                    {
-                        sendSizeLessCount = 0;
-                        freeCopyBuffer();
-                        isOutput = true;
-                    }
-                    else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && sendSizeLessCount++ == 0))
-                    {
-                        switch (send())
+                        sendData.MoveStart(count);
+                        if (sendData.Length == 0)
                         {
-                            case TcpOpenServer.SendState.Asynchronous: return;
-                            case TcpOpenServer.SendState.Synchronize: isOutput = true; break;
+                            sendSizeLessCount = 0;
+                            freeCopyBuffer();
+                            isOutput = true;
                         }
+                        else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && sendSizeLessCount++ == 0))
+                        {
+                            switch (send())
+                            {
+                                case TcpOpenServer.SendState.Asynchronous: return;
+                                case TcpOpenServer.SendState.Synchronize: isOutput = true; break;
+                            }
+                        }
+#if DOTNET2
                     }
+#endif
                 }
             }
             catch (Exception error)

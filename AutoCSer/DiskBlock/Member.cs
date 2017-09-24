@@ -55,7 +55,7 @@ namespace AutoCSer.DiskBlock
                         SubBuffer.Pool.GetBuffer(ref buffer, Size);
                         try
                         {
-                            AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer> clientBuffer = client.read(new ClientBuffer { Buffer = new SubArray<byte>(buffer.Buffer, buffer.StartIndex, Size), IsClient = true }, Index);
+                            AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer> clientBuffer = client.read(new ClientBuffer { Buffer = new SubArray<byte>(buffer.StartIndex, Size, buffer.Buffer), IsClient = true }, Index);
                             onRead(ref clientBuffer);
                         }
                         finally { buffer.Free(); }

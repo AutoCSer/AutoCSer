@@ -430,7 +430,7 @@ Connection: Keep-Alive
         /// <summary>
         /// AutoCSer爬虫标识
         /// </summary>
-        private static readonly byte[] AutoCSerSpiderUserAgent = ("User-Agent: " + AutoCSer.Net.Http.Header.AutoCSerSpiderUserAgent + @"
+        private static readonly byte[] AutoCSerSpiderUserAgent = ("User-Agent: " + AutoCSer.Pub.HttpSpiderUserAgent + @"
 ").getBytes();
         /// <summary>
         /// 测试类型

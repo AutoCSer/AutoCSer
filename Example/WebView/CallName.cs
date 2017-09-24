@@ -28,7 +28,7 @@ namespace AutoCSer.Example.WebView
         {
             using (WebClient webClient = new WebClient())
             {
-                webClient.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                webClient.Headers.Add(AutoCSer.Net.Http.HeaderName.ContentType, "application/json; charset=utf-8");
                 string json = webClient.UploadString(WebConfig.HttpDomain + @"CallNameAdd", "POST", AutoCSer.Json.Serializer.Serialize(new AddParameter { left = 5, right = 8 }));
                 if (AutoCSer.Json.Parser.Parse<int>(json) != 5 + 8)
                 {

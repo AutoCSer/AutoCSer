@@ -1077,6 +1077,12 @@
             节点队列尾部
             </summary>
         </member>
+        <member name="M:AutoCSer.Threading.Link`1.Queue.GetClear">
+            <summary>
+            获取链表头部并清除数据
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Threading.Link`1.Queue.SetHeaderNextNull">
             <summary>
             头节点 next 设置为 null
@@ -3542,6 +3548,14 @@
             <param name="startIndex"></param>
             <param name="length"></param>
         </member>
+        <member name="M:AutoCSer.SubArray`1.#ctor(System.Int32,System.Int32,`0[])">
+            <summary>
+            数组子串
+            </summary>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+            <param name="array"></param>
+        </member>
         <member name="M:AutoCSer.SubArray`1.SetNull">
             <summary>
             置空并释放数组
@@ -3618,6 +3632,11 @@
             </summary>
             <summary>
             常用公共定义
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Pub.HttpSpiderUserAgent">
+            <summary>
+            AutoCSer 爬虫标识
             </summary>
         </member>
         <member name="F:AutoCSer.Pub.PuzzleValue">
@@ -4990,6 +5009,50 @@
             <param name="type"></param>
             <returns></returns>
         </member>
+        <member name="T:AutoCSer.Net.BufferIndex">
+            <summary>
+            索引位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.BufferIndex.Value">
+            <summary>
+            索引位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.BufferIndex.StartIndex">
+            <summary>
+            起始位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.BufferIndex.Length">
+            <summary>
+            长度
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.BufferIndex.Set(System.Int16,System.Int16)">
+            <summary>
+            设置索引位置
+            </summary>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+        </member>
+        <member name="M:AutoCSer.Net.BufferIndex.Set(System.Int64,System.Int64)">
+            <summary>
+            设置索引位置
+            </summary>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+        </member>
+        <member name="M:AutoCSer.Net.BufferIndex.Next">
+            <summary>
+            移动到下一个位置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.BufferIndex.EndIndex">
+            <summary>
+            结束位置
+            </summary>
+        </member>
         <member name="T:AutoCSer.Metadata.TypeAttribute">
             <summary>
             类型自定义属性信息
@@ -5840,6 +5903,13 @@
             申请字符串空间
             </summary>
         </member>
+        <member name="M:AutoCSer.Extension.StringExtension.length(System.String)">
+            <summary>
+            获取字符串长度
+            </summary>
+            <param name="value">字符串</param>
+            <returns>null为0</returns>
+        </member>
         <member name="M:AutoCSer.Extension.StringExtension.getBytes(System.String)">
             <summary>
             获取Ascii字符串原始字节流
@@ -6436,6 +6506,11 @@
             客户端强制终止 TCP 服务端保持回调
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient">
+            <summary>
+            HTML 标题获取客户端操作
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -6601,6 +6676,22 @@
             <param name="start">匹配起始位置</param>
             <param name="length">匹配长度</param>
             <returns>状态索引,失败返回-1</returns>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.MethodClient">
+            <summary>
+            TCP 客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.MethodClient._compileSerialize_(System.Type[],System.Type[],System.Type[],System.Type[],System.Type[],System.Type[])">
+            <summary>
+            序列化预编译
+            </summary>
+            <param name="simpleSerializeTypes"></param>
+            <param name="simpleDeSerializeTypes"></param>
+            <param name="serializeTypes"></param>
+            <param name="deSerializeTypes"></param>
+            <param name="jsonSerializeTypes"></param>
+            <param name="jsonDeSerializeTypes"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.IServerKeepCallback">
             <summary>
@@ -10051,22 +10142,6 @@
             TCP 客户端
             </summary>
             <typeparam name="clientType">客户端类型</typeparam>
-        </member>
-        <member name="T:AutoCSer.Net.TcpServer.MethodClient">
-            <summary>
-            TCP 客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.MethodClient._compileSerialize_(System.Type[],System.Type[],System.Type[],System.Type[],System.Type[],System.Type[])">
-            <summary>
-            序列化预编译
-            </summary>
-            <param name="simpleSerializeTypes"></param>
-            <param name="simpleDeSerializeTypes"></param>
-            <param name="serializeTypes"></param>
-            <param name="deSerializeTypes"></param>
-            <param name="jsonSerializeTypes"></param>
-            <param name="jsonDeSerializeTypes"></param>
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.MethodClient`1._isDisposed_">
             <summary>
@@ -29905,6 +29980,13 @@
             <param name="encoding">文件编码</param>
             <param name="bom">文件编码 BOM</param>
         </member>
+        <member name="M:AutoCSer.IO.FileBom.Get(System.Text.Encoding)">
+            <summary>
+            根据文件编码获取BOM
+            </summary>
+            <param name="encoding">文件编码</param>
+            <returns>文件编码 BOM</returns>
+        </member>
         <member name="T:AutoCSer.IO.FileBom.EncodingBom">
             <summary>
             文件编码BOM唯一哈希
@@ -34930,7 +35012,7 @@
             big5 编码
             </summary>
         </member>
-        <member name="M:AutoCSer.EncodingCacheOther.getEncoding(System.String)">
+        <member name="M:AutoCSer.EncodingCacheOther.GetEncoding(System.String)">
             <summary>
             获取字符编码
             </summary>
@@ -35888,6 +35970,21 @@
             <param name="md5Data">MD5 数据</param>
             <param name="ticks">验证时钟周期</param>
             <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.Http.HeaderName">
+            <summary>
+            HTTP 头部名称数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.Http.HeaderName.ContentEncoding">
+            <summary>
+            压缩编码名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.Http.HeaderName.ContentType">
+            <summary>
+            内容类型名称
+            </summary>
         </member>
         <member name="T:AutoCSer.Extension.StopwatchExtension">
             <summary>

@@ -157,7 +157,10 @@ namespace AutoCSer.Tool.OpenPack
                     case 5: isDircectory = string.Compare(nextDircectory.Name, "MySql", true); break;
                     case 6: isDircectory = string.Compare(nextDircectory.Name, "Deploy", true); break;
                     case 7: isDircectory = string.Compare(nextDircectory.Name, "Drawing", true); break;
-                    case 9: isDircectory = string.Compare(nextDircectory.Name, "DiskBlock", true); break;
+                    case 9:
+                        isDircectory = string.Compare(nextDircectory.Name, "DiskBlock", true);
+                        if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "HtmlTitle", true);
+                        break;
                     case 10: isDircectory = string.Compare(nextDircectory.Name, "Properties", true); break;
                     case 11: isDircectory = string.Compare(nextDircectory.Name, "FieldEquals", true); break;
                     case 12: isDircectory = string.Compare(nextDircectory.Name, "RandomObject", true); break;

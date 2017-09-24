@@ -868,7 +868,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #if DOTNET2
             if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
             Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
-            return socket == Socket && socket.EndSend(asyncEventArgs) == sizeof(int) && isReceiveCommand();
+            return socket == Socket && socket.EndSend(asyncEventArgs, out socketError) == sizeof(int) && socketError == SocketError.Success && isReceiveCommand();
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
             if (asyncEventArgs.SocketError == SocketError.Success)
@@ -913,7 +913,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #if DOTNET2
             if (!asyncEventArgs.CompletedSynchronously) Server.CancelReceiveVerifyCommandTimeout(this);
             Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
-            return socket == Socket && socket.EndSend(asyncEventArgs) == sizeof(int) * 2 && (IsVerifyMethod ? isReceiveCommand() : (--verifyMethodCount != 0 && isReceiveVerifyCommand()));
+            return socket == Socket && socket.EndSend(asyncEventArgs, out socketError) == sizeof(int) * 2 && socketError == SocketError.Success && (IsVerifyMethod ? isReceiveCommand() : (--verifyMethodCount != 0 && isReceiveVerifyCommand()));
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
             if (asyncEventArgs.SocketError == SocketError.Success)
@@ -1098,7 +1098,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             {
 #if DOTNET2
                 Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
-                return socket == Socket && socket.EndSend(asyncEventArgs) == OutputBuffer.Data.Length && (IsVerifyMethod ? isReceiveCommand() : (--verifyMethodCount != 0 && isReceiveVerifyCommand()));
+                return socket == Socket && socket.EndSend(asyncEventArgs, out socketError) == OutputBuffer.Data.Length && socketError == SocketError.Success && (IsVerifyMethod ? isReceiveCommand() : (--verifyMethodCount != 0 && isReceiveVerifyCommand()));
 #else
                 if (asyncEventArgs.SocketError == SocketError.Success)
                 {
@@ -1128,7 +1128,9 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
                 if (socket == Socket)
                 {
-                    int count = socket.EndSend(asyncEventArgs);
+                    int count = socket.EndSend(asyncEventArgs, out socketError);
+                    if (socketError == SocketError.Success)
+                    {
 #else
                 Server.CancelReceiveVerifyCommandTimeout(this);
                 CHECK:
@@ -1136,27 +1138,27 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 {
                     int count = asyncEventArgs.BytesTransferred;
 #endif
-                    if(OutputBuffer.OnSend(count) == 0)
-                    {
+                        if (OutputBuffer.OnSend(count) == 0)
+                        {
 #if !DOTNET2
                         asyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, bufferSize);
 #endif
-                        sendSizeLessCount = 0;
-                        isSended = true;
-                    }
-                    else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && sendSizeLessCount++ == 0))
-                    {
-#if DOTNET2
-                        if (socket == Socket)
-                        {
-                            IAsyncResult async = socket.BeginReceive(OutputBuffer.Data.Array, OutputBuffer.Data.Start, OutputBuffer.Data.Length, SocketFlags.None, out socketError, asyncCallback, socket);
-                            if (socketError == SocketError.Success)
-                            {
-                                if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
-                                isFree = false;
-                                return true;
-                            }
+                            sendSizeLessCount = 0;
+                            isSended = true;
                         }
+                        else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && sendSizeLessCount++ == 0))
+                        {
+#if DOTNET2
+                            if (socket == Socket)
+                            {
+                                IAsyncResult async = socket.BeginReceive(OutputBuffer.Data.Array, OutputBuffer.Data.Start, OutputBuffer.Data.Length, SocketFlags.None, out socketError, asyncCallback, socket);
+                                if (socketError == SocketError.Success)
+                                {
+                                    if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
+                                    isFree = false;
+                                    return true;
+                                }
+                            }
 #else
                         Socket socket = Socket;
                         if (socket != null)
@@ -1171,9 +1173,11 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                             goto CHECK;
                         }
 #endif
+                        }
                     }
+#if DOTNET2
                 }
-#if !DOTNET2
+#else
                 else socketError = asyncEventArgs.SocketError;
 #endif
             }

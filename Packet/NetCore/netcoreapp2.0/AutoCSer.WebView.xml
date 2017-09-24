@@ -6011,50 +6011,6 @@
             接收表单值
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.Http.BufferIndex">
-            <summary>
-            索引位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.Http.BufferIndex.Value">
-            <summary>
-            索引位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.Http.BufferIndex.StartIndex">
-            <summary>
-            起始位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.Http.BufferIndex.Length">
-            <summary>
-            长度
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Net.Http.BufferIndex.EndIndex">
-            <summary>
-            结束位置
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.Http.BufferIndex.Set(System.Int16,System.Int16)">
-            <summary>
-            设置索引位置
-            </summary>
-            <param name="startIndex"></param>
-            <param name="length"></param>
-        </member>
-        <member name="M:AutoCSer.Net.Http.BufferIndex.Set(System.Int64,System.Int64)">
-            <summary>
-            设置索引位置
-            </summary>
-            <param name="startIndex"></param>
-            <param name="length"></param>
-        </member>
-        <member name="M:AutoCSer.Net.Http.BufferIndex.Next">
-            <summary>
-            移动到下一个位置
-            </summary>
-        </member>
         <member name="T:AutoCSer.Net.Http.Config">
             <summary>
             HTTP 配置
@@ -7268,11 +7224,6 @@
             最大数据分隔符长度
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.Http.Header.AutoCSerSpiderUserAgent">
-            <summary>
-            AutoCSer爬虫标识
-            </summary>
-        </member>
         <member name="F:AutoCSer.Net.Http.Header.AjaxCallName">
             <summary>
             AJAX调用名称
@@ -7588,16 +7539,6 @@
         <member name="F:AutoCSer.Net.Http.HeaderFlag.All">
             <summary>
             所有标志位
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.Http.HeaderName">
-            <summary>
-            HTTP 头部名称数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.Http.HeaderName.ContentEncoding">
-            <summary>
-            压缩编码名称
             </summary>
         </member>
         <member name="T:AutoCSer.Net.Http.HeaderQueryParseMethodAttribute">
@@ -8293,7 +8234,7 @@
             跨域访问权限
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.Http.Response.SetAccessControlAllowOrigin(AutoCSer.Net.Http.BufferIndex)">
+        <member name="M:AutoCSer.Net.Http.Response.SetAccessControlAllowOrigin(AutoCSer.Net.BufferIndex)">
             <summary>
             设置跨域访问权限
             </summary>

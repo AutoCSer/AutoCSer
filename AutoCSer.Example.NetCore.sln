@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{7E123828-E966-48BA-B898-331F74E4650C}"
 EndProject
@@ -180,6 +180,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Example.OrmModel.NetStandard", "Example\OrmModel\AutoCSer.Example.OrmModel.NetStandard.csproj", "{4D6A7FF1-24B8-42B7-99BC-85FBF4084D4A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Example.OrmTable.NetCore", "Example\OrmTable\AutoCSer.Example.OrmTable.NetCore.csproj", "{0B28157D-87EB-4EF8-8E18-980E90F05BB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.HtmlTitle.NetStandard", "AutoCSer\HtmlTitle\AutoCSer.HtmlTitle.NetStandard.csproj", "{2C4279BD-E6C6-40C4-A511-B3CA8EA56570}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.TestCase.HtmlTitle.NetCore", "TestCase\HtmlTitle\AutoCSer.TestCase.HtmlTitle.NetCore.csproj", "{7D2D6595-2A64-49AF-B13D-B16C78BCAA95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -479,6 +483,14 @@ Global
 		{0B28157D-87EB-4EF8-8E18-980E90F05BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B28157D-87EB-4EF8-8E18-980E90F05BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B28157D-87EB-4EF8-8E18-980E90F05BB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C4279BD-E6C6-40C4-A511-B3CA8EA56570}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C4279BD-E6C6-40C4-A511-B3CA8EA56570}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C4279BD-E6C6-40C4-A511-B3CA8EA56570}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C4279BD-E6C6-40C4-A511-B3CA8EA56570}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D2D6595-2A64-49AF-B13D-B16C78BCAA95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D2D6595-2A64-49AF-B13D-B16C78BCAA95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D2D6595-2A64-49AF-B13D-B16C78BCAA95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D2D6595-2A64-49AF-B13D-B16C78BCAA95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -566,6 +578,8 @@ Global
 		{288EAC4A-FB7F-44D1-BDB4-22A15647732A} = {BB980730-81EF-4E1B-8B0D-56A8F3284A2E}
 		{4D6A7FF1-24B8-42B7-99BC-85FBF4084D4A} = {BB980730-81EF-4E1B-8B0D-56A8F3284A2E}
 		{0B28157D-87EB-4EF8-8E18-980E90F05BB1} = {BB980730-81EF-4E1B-8B0D-56A8F3284A2E}
+		{2C4279BD-E6C6-40C4-A511-B3CA8EA56570} = {7F00A04D-FB56-4E23-9761-75E9AECE1CA6}
+		{7D2D6595-2A64-49AF-B13D-B16C78BCAA95} = {900E0D6B-3A4A-437F-9327-BE4FC03FC5A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63559F49-B0D6-4D4D-A689-C10163549A56}
