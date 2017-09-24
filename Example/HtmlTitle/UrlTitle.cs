@@ -2,7 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 
-namespace AutoCSer.TestCase.HtmlTitle
+namespace AutoCSer.Example.HtmlTitle
 {
     /// <summary>
     /// URL 抓取标题回调

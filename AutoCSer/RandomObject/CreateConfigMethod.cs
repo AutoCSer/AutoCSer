@@ -74,7 +74,9 @@ namespace AutoCSer.RandomObject
                     case 2: return float.Epsilon;
                     case 3: return float.NaN;
                 }
-                return float.Parse(AutoCSer.Random.Default.NextFloat().ToString());
+                float value = AutoCSer.Random.Default.NextFloat();
+                if (float.IsNaN(value) || float.IsInfinity(value)) return float.NaN;
+                return float.Parse(value.ToString());
             }
             switch (AutoCSer.Random.Default.NextByte())
             {
@@ -124,7 +126,9 @@ namespace AutoCSer.RandomObject
                     case 26: return -1.7976931348623151E+308;
                     case 27: return -1.7976931348623150E+308;
                 }
-                return double.Parse(AutoCSer.Random.Default.NextDouble().ToString(), System.Globalization.CultureInfo.InvariantCulture);
+                double value = AutoCSer.Random.Default.NextDouble();
+                if (double.IsNaN(value) || double.IsInfinity(value)) return double.NaN;
+                return double.Parse(value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
             }
             switch (AutoCSer.Random.Default.NextByte())
             {

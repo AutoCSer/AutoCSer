@@ -186,24 +186,29 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 Socket socket = new Net.UnionType { Value = async.AsyncState }.Socket;
                 if (socket == Socket)
                 {
-                    int count = socket.EndReceive(async);
+                    int count = socket.EndReceive(async, out socketError);
+                    if (socketError == SocketError.Success)
+                    {
 #else
                 if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                 {
                     int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                    if (count > 0)
-                    {
-                        ++ReceiveCount;
-                        switch (ReceiveType)
+                        if (count > 0)
                         {
-                            case TcpServer.ClientSocketReceiveType.CommandIdentity: if (dataSizeAsync(count)) return; break;
-                            case TcpServer.ClientSocketReceiveType.Data: if (dataAsync(count)) return; break;
-                            case TcpServer.ClientSocketReceiveType.BigData: if (bigDataAsync(count)) return; break;
-                            case TcpServer.ClientSocketReceiveType.CompressionData: if (compressionDataAsync(count)) return; break;
-                            case TcpServer.ClientSocketReceiveType.CompressionBigData: if (compressionBigDataAsync(count)) return; break;
+                            ++ReceiveCount;
+                            switch (ReceiveType)
+                            {
+                                case TcpServer.ClientSocketReceiveType.CommandIdentity: if (dataSizeAsync(count)) return; break;
+                                case TcpServer.ClientSocketReceiveType.Data: if (dataAsync(count)) return; break;
+                                case TcpServer.ClientSocketReceiveType.BigData: if (bigDataAsync(count)) return; break;
+                                case TcpServer.ClientSocketReceiveType.CompressionData: if (compressionDataAsync(count)) return; break;
+                                case TcpServer.ClientSocketReceiveType.CompressionBigData: if (compressionBigDataAsync(count)) return; break;
+                            }
                         }
+#if DOTNET2
                     }
+#endif
                 }
             }
             catch (Exception error)

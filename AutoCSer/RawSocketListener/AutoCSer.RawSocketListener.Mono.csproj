@@ -3,31 +3,35 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3AC33CD2-81E1-41FE-9140-2BEC11DC2B05}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>AutoCSer.TestCase.HtmlTitle.Mono</RootNamespace>
-    <AssemblyName>AutoCSer.TestCase.HtmlTitle</AssemblyName>
+    <ProjectGuid>{8F2C11BC-5FF4-4696-A3CB-F00A1B0B1839}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.RawSocketListener</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <CodePage>65001</CodePage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>RawSocketListener;MONO;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DefineConstants>MONO</DefineConstants>
+    <DefineConstants>RawSocketListener;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
+    <DocumentationFile></DocumentationFile>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -36,15 +40,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Buffer.cs" />
+    <Compile Include="BufferCount.cs" />
+    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Listener.cs" />
+    <Compile Include="Packet\Arp.cs" />
+    <Compile Include="Packet\Ethernet.cs" />
+    <Compile Include="Packet\EthernetSessionP2P.cs" />
+    <Compile Include="Packet\Frame.cs" />
+    <Compile Include="Packet\Icmp.cs" />
+    <Compile Include="Packet\Icmp6.cs" />
+    <Compile Include="Packet\Igmp.cs" />
+    <Compile Include="Packet\Ip.cs" />
+    <Compile Include="Packet\Ip6.cs" />
+    <Compile Include="Packet\LinuxSLL.cs" />
+    <Compile Include="Packet\Tcp.cs" />
+    <Compile Include="Packet\Udp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UrlTitle.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\HtmlTitle\AutoCSer.HtmlTitle.Mono.csproj">
-      <Project>{8F2C11B3-5FF4-4696-A3CB-F00A1B0B1839}</Project>
-      <Name>AutoCSer.HtmlTitle.Mono</Name>
-    </ProjectReference>
+    <Compile Include="QueueTask.cs" />
+    <Compile Include="Extension\Number.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

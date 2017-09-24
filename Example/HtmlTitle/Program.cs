@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace AutoCSer.TestCase.HtmlTitle
+namespace AutoCSer.Example.HtmlTitle
 {
     class Program
     {
@@ -17,6 +17,7 @@ namespace AutoCSer.TestCase.HtmlTitle
                 UrlTitle.Crawl(task, "http://www.AutoCSer.com/");
 
                 UrlTitle.Crawl(task, "http://www.51nod.com/");
+                UrlTitle.Crawl(task, "http://www.cnblogs.com/asxinyu/");
                 UrlTitle.Crawl(task, "http://www.baidu.com/");
                 UrlTitle.Crawl(task, "http://www.163.com/");
                 UrlTitle.Crawl(task, "http://mail.163.com/");

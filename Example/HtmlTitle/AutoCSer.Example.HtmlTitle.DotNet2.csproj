@@ -8,8 +8,8 @@
     <ProjectGuid>{A94BFBB5-969C-4705-9569-ECD8F7CD0891}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoCSer.TestCase.HtmlTitle</RootNamespace>
-    <AssemblyName>AutoCSer.TestCase.HtmlTitle</AssemblyName>
+    <RootNamespace>AutoCSer.Example.HtmlTitle</RootNamespace>
+    <AssemblyName>AutoCSer.Example.HtmlTitle</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

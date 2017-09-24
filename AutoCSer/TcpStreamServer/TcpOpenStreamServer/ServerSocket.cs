@@ -237,49 +237,54 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)
             {
-                receiveCount = socket.EndReceive(receiveAsyncEventArgs);
+                receiveCount = socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                if (socketError == SocketError.Success)
+                {
 #else
             if (receiveAsyncEventArgs.SocketError == SocketError.Success)
             {
                 receiveCount = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                if (receiveCount >= sizeof(int) * 2)
-                {
-                    fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                    if (receiveCount >= sizeof(int) * 2)
                     {
-                        CommandIndex = (uint)(command = *(int*)(receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex)) & TcpServer.Server.CommandFlagsAnd;
-                        if ((command &= (int)TcpServer.Server.CommandIndexAnd) == Server.VerifyCommandIdentity)
+                        fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
                         {
-                            if ((compressionDataSize = *(int*)(receiveDataStart + sizeof(uint))) > 0)
+                            CommandIndex = (uint)(command = *(int*)(receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex)) & TcpServer.Server.CommandFlagsAnd;
+                            if ((command &= (int)TcpServer.Server.CommandIndexAnd) == Server.VerifyCommandIdentity)
                             {
-                                int maxVerifyDataSize = Math.Min(Server.Attribute.MaxVerifyDataSize, receiveBufferSize - sizeof(int) * 2);
-                                if (compressionDataSize <= maxVerifyDataSize)
+                                if ((compressionDataSize = *(int*)(receiveDataStart + sizeof(uint))) > 0)
                                 {
-                                    int nextSize = compressionDataSize - (receiveCount - sizeof(int) * 2);
-                                    if (nextSize == 0)
+                                    int maxVerifyDataSize = Math.Min(Server.Attribute.MaxVerifyDataSize, receiveBufferSize - sizeof(int) * 2);
+                                    if (compressionDataSize <= maxVerifyDataSize)
                                     {
-                                        if (doVerifyCommand()) return true;
+                                        int nextSize = compressionDataSize - (receiveCount - sizeof(int) * 2);
+                                        if (nextSize == 0)
+                                        {
+                                            if (doVerifyCommand()) return true;
+                                        }
+                                        else if (nextSize > 0 && isReceiveVerifyData()) return true;
+                                        if (IsVerifyMethod) return false;
                                     }
-                                    else if (nextSize > 0 && isReceiveVerifyData()) return true;
-                                    if (IsVerifyMethod) return false;
+                                    else
+                                    {
+                                        if (Server.Log.isAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + compressionDataSize.toString() + " > " + maxVerifyDataSize.toString());
+                                        return false;
+                                    }
                                 }
-                                else
-                                {
-                                    if (Server.Log.isAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + compressionDataSize.toString() + " > " + maxVerifyDataSize.toString());
-                                    return false;
-                                }
+                                else return false;
                             }
-                            else return false;
-                        }
-                        if (Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
-                        {
+                            if (Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
+                            {
 #if !DOTNET2
                             Socket socket = Socket;
 #endif
-                            Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
+                                Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
+                            }
                         }
                     }
+#if DOTNET2
                 }
+#endif
             }
 #if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
@@ -346,19 +351,24 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
                 if (socket == Socket)
                 {
-                    int count = socket.EndReceive(receiveAsyncEventArgs);
+                    int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                    if (socketError == SocketError.Success)
+                    {
 #else
                 if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                 {
                     int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                    int nextSize = compressionDataSize - ((receiveCount += count) - sizeof(int) * 2);
-                    if (nextSize == 0)
-                    {
-                        ReceiveSizeLessCount = 0;
-                        return doVerifyCommand();
+                        int nextSize = compressionDataSize - ((receiveCount += count) - sizeof(int) * 2);
+                        if (nextSize == 0)
+                        {
+                            ReceiveSizeLessCount = 0;
+                            return doVerifyCommand();
+                        }
+                        return nextSize > 0 && (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0)) && isReceiveVerifyData();
+#if DOTNET2
                     }
-                    return nextSize > 0 && (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0)) && isReceiveVerifyData();
+#endif
                 }
 #if !DOTNET2
                 socketError = receiveAsyncEventArgs.SocketError;
@@ -415,17 +425,22 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)
             {
-                receiveCount += socket.EndReceive(receiveAsyncEventArgs);
+                receiveCount += socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                if (socketError == SocketError.Success)
+                {
 #else
             if (receiveAsyncEventArgs.SocketError == SocketError.Success)
             {
                 receiveCount += receiveAsyncEventArgs.BytesTransferred;
 #endif
-                fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
-                {
-                    receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
-                    return loop(true);
+                    fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                    {
+                        receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
+                        return loop(true);
+                    }
+#if DOTNET2
                 }
+#endif
             }
 #if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
@@ -642,7 +657,9 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)
             {
-                int count = socket.EndReceive(receiveAsyncEventArgs);
+                int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                if (socketError == SocketError.Success)
+                {
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
             CHECK:
@@ -650,28 +667,28 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             {
                 int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                if (compressionDataSize <= (receiveCount += count) - receiveIndex)
-                {
-                    ReceiveSizeLessCount = 0;
-                    fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
+                    if (compressionDataSize <= (receiveCount += count) - receiveIndex)
                     {
-                        receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
-                        doCommandLoop();
-                        if (loop(false)) return true;
-                    }
-                }
-                else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
-                {
-#if DOTNET2
-                    if (socket == Socket)
-                    {
-                        IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
-                        if (socketError == SocketError.Success)
+                        ReceiveSizeLessCount = 0;
+                        fixed (byte* receiveDataFixed = ReceiveBuffer.Buffer)
                         {
-                            if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
-                            return true;
+                            receiveDataStart = receiveDataFixed + ReceiveBuffer.StartIndex;
+                            doCommandLoop();
+                            if (loop(false)) return true;
                         }
                     }
+                    else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
+                    {
+#if DOTNET2
+                        if (socket == Socket)
+                        {
+                            IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, receiveBufferSize - receiveCount, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
+                            if (socketError == SocketError.Success)
+                            {
+                                if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
+                                return true;
+                            }
+                        }
 #else
                     Socket socket = Socket;
                     if (socket != null)
@@ -685,7 +702,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         goto CHECK;
                     }
 #endif
+                    }
+#if DOTNET2
                 }
+#endif
             }
 #if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
@@ -703,7 +723,9 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)
             {
-                int count = socket.EndReceive(receiveAsyncEventArgs);
+                int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                if (socketError == SocketError.Success)
+                {
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
             CHECK:
@@ -711,25 +733,25 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             {
                 int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                int nextSize = compressionDataSize - (receiveBigBufferCount += count);
-                if (nextSize == 0)
-                {
-                    ReceiveSizeLessCount = 0;
-                    doCommandBig();
-                    if (isReceiveCommand()) return true;
-                }
-                else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
-                {
-#if DOTNET2
-                    if (socket == Socket)
+                    int nextSize = compressionDataSize - (receiveBigBufferCount += count);
+                    if (nextSize == 0)
                     {
-                        IAsyncResult async = socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
-                        if (socketError == SocketError.Success)
-                        {
-                            if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
-                            return true;
-                        }
+                        ReceiveSizeLessCount = 0;
+                        doCommandBig();
+                        if (isReceiveCommand()) return true;
                     }
+                    else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
+                    {
+#if DOTNET2
+                        if (socket == Socket)
+                        {
+                            IAsyncResult async = socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
+                            if (socketError == SocketError.Success)
+                            {
+                                if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
+                                return true;
+                            }
+                        }
 #else
                     Socket socket = Socket;
                     if (socket != null)
@@ -743,7 +765,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         goto CHECK;
                     }
 #endif
+                    }
+#if DOTNET2
                 }
+#endif
             }
 #if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
@@ -890,7 +915,9 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)
             {
-                int count = socket.EndReceive(receiveAsyncEventArgs);
+                int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                if (socketError == SocketError.Success)
+                {
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
             CHECK:
@@ -898,24 +925,24 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             {
                 int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                int nextSize = compressionDataSize - ((receiveCount += count) - receiveIndex);
-                if (nextSize == 0)
-                {
-                    ReceiveSizeLessCount = 0;
-                    if (doCompressionCommand() && isReceiveCommand()) return true;
-                }
-                else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
-                {
-#if DOTNET2
-                    if (socket == Socket)
+                    int nextSize = compressionDataSize - ((receiveCount += count) - receiveIndex);
+                    if (nextSize == 0)
                     {
-                        IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, nextSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
-                        if (socketError == SocketError.Success)
-                        {
-                            if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
-                            return true;
-                        }
+                        ReceiveSizeLessCount = 0;
+                        if (doCompressionCommand() && isReceiveCommand()) return true;
                     }
+                    else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
+                    {
+#if DOTNET2
+                        if (socket == Socket)
+                        {
+                            IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex + receiveCount, nextSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
+                            if (socketError == SocketError.Success)
+                            {
+                                if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
+                                return true;
+                            }
+                        }
 #else
                     Socket socket = Socket;
                     if (socket != null)
@@ -929,7 +956,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         goto CHECK;
                     }
 #endif
+                    }
+#if DOTNET2
                 }
+#endif
             }
 #if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;
@@ -947,7 +977,9 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)
             {
-                int count = socket.EndReceive(receiveAsyncEventArgs);
+                int count = socket.EndReceive(receiveAsyncEventArgs, out socketError);
+                if (socketError == SocketError.Success)
+                {
 #else
             Server.CancelReceiveVerifyCommandTimeout(this);
             CHECK:
@@ -955,24 +987,24 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             {
                 int count = receiveAsyncEventArgs.BytesTransferred;
 #endif
-                int nextSize = compressionDataSize - (receiveBigBufferCount += count);
-                if (nextSize == 0)
-                {
-                    ReceiveSizeLessCount = 0;
-                    if (doCompressionBigDataCommand() && isReceiveCommand()) return true;
-                }
-                else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
-                {
-#if DOTNET2
-                    if (socket == Socket)
+                    int nextSize = compressionDataSize - (receiveBigBufferCount += count);
+                    if (nextSize == 0)
                     {
-                        IAsyncResult async = socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
-                        if (socketError == SocketError.Success)
-                        {
-                            if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
-                            return true;
-                        }
+                        ReceiveSizeLessCount = 0;
+                        if (doCompressionBigDataCommand() && isReceiveCommand()) return true;
                     }
+                    else if (count >= TcpServer.Server.MinSocketSize || (count > 0 && ReceiveSizeLessCount++ == 0))
+                    {
+#if DOTNET2
+                        if (socket == Socket)
+                        {
+                            IAsyncResult async = socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
+                            if (socketError == SocketError.Success)
+                            {
+                                if (!async.CompletedSynchronously) Server.PushReceiveVerifyCommandTimeout(this, Socket);
+                                return true;
+                            }
+                        }
 #else
                     Socket socket = Socket;
                     if (socket != null)
@@ -986,7 +1018,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         goto CHECK;
                     }
 #endif
+                    }
+#if DOTNET2
                 }
+#endif
             }
 #if !DOTNET2
             else socketError = receiveAsyncEventArgs.SocketError;

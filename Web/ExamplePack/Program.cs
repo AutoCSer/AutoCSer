@@ -169,6 +169,7 @@ namespace AutoCSer.Tool.OpenPack
                         isDircectory = string.Compare(nextDircectory.Name, "TcpStreamServer", true);
                         if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "TcpSimpleServer", true);
                         break;
+                    case 17: isDircectory = string.Compare(nextDircectory.Name, "RawSocketListener", true); break;
                     default: isDircectory = 1; break;
                 }
                 if (isDircectory == 0) copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath);

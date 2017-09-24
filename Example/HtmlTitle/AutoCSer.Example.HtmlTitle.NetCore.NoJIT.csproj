@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyName>AutoCSer.TestCase.HtmlTitle</AssemblyName>
-    <RootNamespace>AutoCSer.TestCase.HtmlTitle</RootNamespace>
-    <Description>AutoCSer.TestCase.HtmlTitle 是一个简单的 HTML 标题获取客户端测试项目。</Description>
+    <AssemblyName>AutoCSer.Example.HtmlTitle</AssemblyName>
+    <RootNamespace>AutoCSer.Example.HtmlTitle</RootNamespace>
+    <Description>AutoCSer.Example.HtmlTitle 是一个简单的 HTML 标题获取客户端测试项目。</Description>
     <Copyright>Copyright © 肖进 2017</Copyright>
-    <PackageId>AutoCSer.TestCase.HtmlTitle.NetCore.NoJIT</PackageId>
+    <PackageId>AutoCSer.Example.HtmlTitle.NetCore.NoJIT</PackageId>
     <Company />
     <Authors>肖进</Authors>
     <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
