@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F7C11B3-5FF4-4696-A3CB-F00A1B0B1839}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.HtmlNode</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>HtmlNode;MONO;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>HtmlNode;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile></DocumentationFile>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\Mono\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CanNonRoundTagName.cs" />
+    <Compile Include="Extension\String.cs" />
+    <Compile Include="Filter.cs" />
+    <Compile Include="FilterType.cs" />
+    <Compile Include="FormatString.cs" />
+    <Compile Include="MustRoundTagName.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="NodeIndex.cs" />
+    <Compile Include="NoLowerAttributeName.cs" />
+    <Compile Include="NonanalyticTagName.cs" />
+    <Compile Include="NoTextTagName.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SafeAttributeName.cs" />
+    <Compile Include="SafeFormat.cs" />
+    <Compile Include="SafeStyleAttributeName.cs" />
+    <Compile Include="UriAttributeName.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -42,7 +42,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 忽略文件名称集合
         /// </summary>
-        internal HashSet<HashString> IgnoreFileNames;
+        internal HashSet<string> IgnoreFileNames;
         /// <summary>
         /// 部署服务客户端就绪
         /// </summary>
@@ -61,7 +61,7 @@ namespace AutoCSer.Deploy
             this.Config = config ?? ConfigLoader.GetUnion(typeof(ClientConfig)).ClientConfig;
             this.onClientReady = onClientReady;
             if ((deploys = config.Deploys).Length == 0) throw new ArgumentNullException();
-            IgnoreFileNames = config.IgnoreFileNames.getHash(value => (HashString)value) ?? HashSetCreator.CreateHashString();
+            IgnoreFileNames = config.IgnoreFileNames.getHash(value => value) ?? HashSetCreator.CreateOnly<string>();
 
             Dictionary<HashString, AutoCSer.Net.TcpInternalServer.ServerAttribute> attributes;
             if (config.ServerAttributes.length() == 0) attributes = null;

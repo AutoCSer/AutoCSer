@@ -114,14 +114,14 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 else
                                 {
                                     callName = "/" + name;
-                                    if (IgnoreCase) callName = callName.toLower();
+                                    if (IgnoreCase) callName = callName.toLowerNotEmpty();
                                 }
                             }
                             else
                             {
                                 string name = attribute.MethodName ?? (MemberIndex == null ? Method.MethodName : MemberIndex.Member.Name);
                                 callName = "/" + (name.Length != 0 ? TypeCallName.replaceNotNull('.', '/') + "/" + name : TypeCallName.replaceNotNull('.', '/'));
-                                if (IgnoreCase) callName = callName.toLower();
+                                if (IgnoreCase) callName = callName.toLowerNotEmpty();
                             }
                         }
                         return callName;

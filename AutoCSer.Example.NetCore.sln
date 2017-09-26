@@ -189,6 +189,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.RawSocketListener.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Example.RawSocketListener.NetCore", "Example\RawSocketListener\AutoCSer.Example.RawSocketListener.NetCore.csproj", "{666E31D3-7A65-4853-915E-3E5FD950FB8D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.HtmlNode.NetStandard", "AutoCSer\HtmlNode\AutoCSer.HtmlNode.NetStandard.csproj", "{479D0549-3914-4531-A6DE-C3041CC448CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Example.HtmlNode.NetCore", "Example\HtmlNode\AutoCSer.Example.HtmlNode.NetCore.csproj", "{38C36678-D77F-49DF-8888-8D0A2B5F2DF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -503,6 +507,14 @@ Global
 		{666E31D3-7A65-4853-915E-3E5FD950FB8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{666E31D3-7A65-4853-915E-3E5FD950FB8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{666E31D3-7A65-4853-915E-3E5FD950FB8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479D0549-3914-4531-A6DE-C3041CC448CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479D0549-3914-4531-A6DE-C3041CC448CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479D0549-3914-4531-A6DE-C3041CC448CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479D0549-3914-4531-A6DE-C3041CC448CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38C36678-D77F-49DF-8888-8D0A2B5F2DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38C36678-D77F-49DF-8888-8D0A2B5F2DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38C36678-D77F-49DF-8888-8D0A2B5F2DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38C36678-D77F-49DF-8888-8D0A2B5F2DF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -594,6 +606,8 @@ Global
 		{7D2D6595-2A64-49AF-B13D-B16C78BCAA95} = {9CA9DCBA-34C3-468C-A51D-21974F54149D}
 		{E9AA41AD-F0B8-4368-A471-8A3B70228A58} = {7F00A04D-FB56-4E23-9761-75E9AECE1CA6}
 		{666E31D3-7A65-4853-915E-3E5FD950FB8D} = {9CA9DCBA-34C3-468C-A51D-21974F54149D}
+		{479D0549-3914-4531-A6DE-C3041CC448CD} = {7F00A04D-FB56-4E23-9761-75E9AECE1CA6}
+		{38C36678-D77F-49DF-8888-8D0A2B5F2DF8} = {9CA9DCBA-34C3-468C-A51D-21974F54149D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63559F49-B0D6-4D4D-A689-C10163549A56}

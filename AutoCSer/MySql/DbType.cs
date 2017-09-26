@@ -50,6 +50,7 @@ namespace AutoCSer.Sql.MySql
         /// <returns>数据类型</returns>
         internal unsafe static SqlDbType FormatDbType(string typeString, out int size)
         {
+            if (string.IsNullOrEmpty(typeString)) throw new ArgumentNullException();
             fixed (char* typeFixed = typeString)
             {
                 char* end = typeFixed + typeString.Length, typeEnd = *(end - 1) == ')' ? AutoCSer.Extension.StringExtension.FindNotNull(typeFixed, end, '(') : end;

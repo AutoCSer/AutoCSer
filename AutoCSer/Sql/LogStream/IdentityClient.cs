@@ -61,7 +61,7 @@ namespace AutoCSer.Sql.LogStream
                 {
                     client.isLoaded = false;
                     AutoCSer.Threading.ThreadPool.TinyBackground.Start(client.onError);
-                    array.Null();
+                    array.SetNull();
                     if (keepCallback != null) keepCallback.Dispose();
                 }
             }

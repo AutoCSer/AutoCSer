@@ -750,7 +750,7 @@ namespace AutoCSer.Sql
             internal void Push()
             {
                 Table = null;
-                Value.Null();
+                Value.SetNull();
                 Query.Free();
                 YieldPool.Default.PushNotNull(this);
             }

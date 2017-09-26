@@ -9209,6 +9209,13 @@
             <param name="value">大写字符串</param>
             <returns>小写字符串(原引用)</returns>
         </member>
+        <member name="M:AutoCSer.Extension.StringExtension.toLowerNotEmpty(System.String)">
+            <summary>
+            大写转小写
+            </summary>
+            <param name="value">大写字符串</param>
+            <returns>小写字符串(原引用)</returns>
+        </member>
         <member name="M:AutoCSer.Extension.StringExtension.FindNotNull(System.Char*,System.Char*,System.Char)">
             <summary>
             字符查找
@@ -9736,7 +9743,13 @@
             <typeparam name="valueType">数据类型</typeparam>
             <returns>HASH表</returns>
         </member>
-        <member name="M:AutoCSer.HashSetCreator.CreateHashString">
+        <member name="M:AutoCSer.HashSetCreator.CreateInt">
+            <summary>
+            创建HASH表
+            </summary>
+            <returns>HASH表</returns>
+        </member>
+        <member name="M:AutoCSer.HashSetCreator.CreateSubString">
             <summary>
             创建HASH表
             </summary>
@@ -14235,7 +14248,7 @@
             </summary>
             <returns>枚举器</returns>
         </member>
-        <member name="M:AutoCSer.LeftArray`1.Null">
+        <member name="M:AutoCSer.LeftArray`1.SetNull">
             <summary>
             置空并释放数组
             </summary>
@@ -14438,6 +14451,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.LeftArray`1.UnsafePopOnly">
+            <summary>
+            弹出最后一个数据
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.LeftArray`1.Reverse">
             <summary>
             逆转列表
@@ -14538,6 +14557,13 @@
             </summary>
             <param name="value">数据</param>
             <returns>是否存在移除数据</returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.RemoveRangeOnly(System.Int32,System.Int32)">
+            <summary>
+            移除数据范围
+            </summary>
+            <param name="index">起始位置</param>
+            <param name="count">移除数量</param>
         </member>
         <member name="T:AutoCSer.ListArray`1">
             <summary>
@@ -29457,6 +29483,13 @@
             <param name="value">匹配状态</param>
             <returns>状态索引,失败返回-1</returns>
         </member>
+        <member name="M:AutoCSer.StateSearcher.AsciiSearcher.SearchLower(AutoCSer.SubString@)">
+            <summary>
+            获取状态索引
+            </summary>
+            <param name="value">匹配状态</param>
+            <returns>状态索引,失败返回-1</returns>
+        </member>
         <member name="M:AutoCSer.StateSearcher.AsciiSearcher.SearchLower(System.Char*,System.Char*)">
             <summary>
             获取状态索引
@@ -29842,6 +29875,24 @@
             <summary>
             字符搜索器
             </summary>
+            <summary>
+            字符搜索器
+            </summary>
+        </member>
+        <member name="M:AutoCSer.StateSearcher.CharSearcher.SearchLower(System.String)">
+            <summary>
+            获取状态索引
+            </summary>
+            <param name="value"></param>
+            <returns>状态索引,失败返回-1</returns>
+        </member>
+        <member name="M:AutoCSer.StateSearcher.CharSearcher.SearchLower(System.Char*,System.Char*)">
+            <summary>
+            获取状态索引
+            </summary>
+            <param name="start">匹配起始位置</param>
+            <param name="end">匹配结束位置</param>
+            <returns>状态索引,失败返回-1</returns>
         </member>
         <member name="F:AutoCSer.StateSearcher.CharSearcher.state">
             <summary>
@@ -30567,7 +30618,7 @@
             <param name="index">字符位置</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.SubString.Null">
+        <member name="M:AutoCSer.SubString.SetNull">
             <summary>
             清空数据
             </summary>
@@ -33340,6 +33391,12 @@
             <param name="count">写入字符数</param>
         </member>
         <member name="M:AutoCSer.UnmanagedStreamBase.Write(AutoCSer.SubString@)">
+            <summary>
+            写字符串
+            </summary>
+            <param name="value">字符串</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStreamBase.WriteNotEmpty(AutoCSer.SubString@)">
             <summary>
             写字符串
             </summary>

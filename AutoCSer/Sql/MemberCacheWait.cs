@@ -86,7 +86,7 @@ namespace AutoCSer.Sql
             if (this.cacheTypes == null)
             {
                 foreach (MemberCacheWait wait in waits) wait.removeCacheType(tableType);
-                waits.Null();
+                waits.SetNull();
                 set(cacheTypes);
             }
         }

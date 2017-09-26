@@ -51,7 +51,7 @@ namespace AutoCSer.CodeGenerator
         internal static void Clear()
         {
             errors.Clear();
-            exceptions.Null();
+            exceptions.SetNull();
             messages.Clear();
             isError = isMessage = false;
         }

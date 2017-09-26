@@ -118,7 +118,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 else
                                 {
                                     callName = TypeCallName + "." + name;
-                                    if (IgnoreCase) callName = callName.toLower();
+                                    if (IgnoreCase) callName = callName.toLowerNotEmpty();
                                 }
                             }
                         }

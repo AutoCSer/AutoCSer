@@ -127,7 +127,7 @@ namespace AutoCSer.CodeGenerator
         public ProjectParameter(string projectName, string projectPath, string assemblyPath, string defaultNamespace, bool isProjectFile)
         {
             ProjectName = projectName;
-            ProjectPath = new System.IO.DirectoryInfo(projectPath).fullName().toLower();
+            ProjectPath = new System.IO.DirectoryInfo(projectPath).fullName().toLowerNotEmpty();
             AssemblyPath = assemblyPath;
             DefaultNamespace = defaultNamespace;
             IsProjectFile = isProjectFile;

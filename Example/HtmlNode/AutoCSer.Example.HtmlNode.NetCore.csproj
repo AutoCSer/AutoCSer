@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Example.HtmlNode</AssemblyName>
+    <RootNamespace>AutoCSer.Example.HtmlNode</RootNamespace>
+    <Description>AutoCSer.Example.HtmlNode 是一个 HTML 解析测试项目。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageId>AutoCSer.Example.HtmlNode.NetCore</PackageId>
+    <Company />
+    <Authors>肖进</Authors>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;MONO;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;MONO;DotNetStandard;NETCOREAPP2_0;NETCOREAPP2_0</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\HtmlNode\AutoCSer.HtmlNode.NetStandard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -151,7 +151,7 @@ namespace AutoCSer.CodeGenerator
                             int splitIndex = splitCode.IndexOf("*/", StringComparison.Ordinal);
                             if (splitIndex == -1) AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, "非法标签:" + jsInclude[0] + splitCode);
                             HtmlJs file;
-                            if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + splitCode.Substring(0, splitIndex)).FullName.toLower(), out file))
+                            if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + splitCode.Substring(0, splitIndex)).FullName.toLowerNotEmpty(), out file))
                             {
                                 file.create(ref history, false);
                                 foreach (HtmlJs value in file.jsFiles)
@@ -215,7 +215,7 @@ in " + this.fileName + @"
                                 }
                             }
                             HtmlJs file;
-                            if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + name).FullName.toLower(), out file))
+                            if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + name).FullName.toLowerNotEmpty(), out file))
                             {
                                 file.create(ref history, true);
                                 foreach (HtmlJs value in file.jsFiles)

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 肖进 2017")]
 [assembly: AssemblyDescription("AutoCSer.HtmlTitle 是一个简单的 HTML 标题获取客户端组件。")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("AutoCSer.HtmlTitleClient")]
+[assembly: AssemblyProduct("AutoCSer.HtmlTitle")]
 [assembly: AssemblyCompany("")]
 
 // 程序集的版本信息由下面四个值组成:

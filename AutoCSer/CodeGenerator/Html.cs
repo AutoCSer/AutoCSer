@@ -195,7 +195,7 @@ namespace AutoCSer.CodeGenerator
         private string getIncludeCss(string fileName)
         {
             string content;
-            HashString fileKey = fileName.toLower();
+            HashString fileKey = fileName.toLowerNotEmpty();
             if (!includeCss.TryGetValue(fileKey, out content))
             {
                 content = File.ReadAllText(fileName, WebConfig.Encoding);

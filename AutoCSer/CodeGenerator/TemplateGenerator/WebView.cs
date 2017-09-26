@@ -986,7 +986,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else if (callName.Length == 0 || callName[0] != '/') callName = "/" + callName;
                             if (Attribute.MethodName != null) callName += "/" + Attribute.MethodName.replaceNotNull('.', '/');
                             callName += ".html";
-                            if (IgnoreCase) callName = callName.toLower();
+                            if (IgnoreCase) callName = callName.toLowerNotEmpty();
                         }
                         return callName;
                     }
