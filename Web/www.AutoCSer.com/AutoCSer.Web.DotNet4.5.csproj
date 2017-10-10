@@ -57,6 +57,7 @@
     <Compile Include="LocationServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search.cs" />
     <Compile Include="WebConfig.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="WebView\Template.cs" />
@@ -65,6 +66,7 @@
   <ItemGroup>
     <Content Include="Android\Index.page.html" />
     <Content Include="Android\Index.page.js" />
+    <Content Include="Search.page.html" />
     <Content Include="CodeGenerator.page.html" />
     <Content Include="CodeGenerator.png" />
     <Content Include="Config\Index.page.html" />
@@ -162,9 +164,14 @@
       <Project>{c9cb96f4-a9f3-4af0-af17-e1fa7a8abbbb}</Project>
       <Name>AutoCSer.Web.Config.DotNet4.5</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SearchServer\AutoCSer.Web.SearchServer.DotNet4.5.csproj">
+      <Project>{77e798b9-ad20-4df9-a2df-4ea200116a92}</Project>
+      <Name>AutoCSer.Web.SearchServer.DotNet4.5</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Include\GetCode.ts" />
+    <TypeScriptCompile Include="ViewJs\SearchItem.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

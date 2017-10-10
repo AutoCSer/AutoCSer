@@ -163,6 +163,8 @@ namespace AutoCSer.Net.RawSocketListener
                     socket.Blocking = false;
                     socket.Bind(ipEndPoint);
                     socket.SetSocketOption(ipAddress.AddressFamily == AddressFamily.InterNetworkV6 ? SocketOptionLevel.IPv6 : SocketOptionLevel.IP, SocketOptionName.HeaderIncluded, true);
+                    //byte[] optionIn = new byte[] { 1, 0, 0, 0 }, optionOut = new byte[4];
+                    //socket.IOControl(IOControlCode.ReceiveAll, optionIn, optionOut);
                     byte[] optionIn = new byte[] { 1, 0, 0, 0 };
                     socket.IOControl(IOControlCode.ReceiveAll, optionIn, null);
                     if (receive())

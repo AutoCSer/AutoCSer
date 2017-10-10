@@ -33,6 +33,7 @@ namespace AutoCSer.Example.RawSocketListener
                         if (socket.IsError) Console.WriteLine("套接字监听失败，可能需要管理员权限。");
                         else
                         {
+                            Console.WriteLine(@"如果只能监听到本地发出的 TCP 数据包，而不是监听到本地接收的 TCP 数据包，可能需要配置防火墙策略或者彻底关闭防火墙。");
                             Console.WriteLine("Press quit to exit.");
                             while (Console.ReadLine() != "quit") ;
                             return;
@@ -81,6 +82,16 @@ namespace AutoCSer.Example.RawSocketListener
                             if (tcp.IsPacket)
                             {
                                 Console.WriteLine(ip4.Source.toHex() + ":" + ((ushort)tcp.SourcePort).toHex() + " -> " + ip4.Destination.toHex() + ":" + ((ushort)tcp.DestinationPort).toHex() + " " + ip4.Protocol.ToString());
+                                //if (ip4.Destination == 0xb962c48b)
+                                //{
+                                //    SubArray<byte> data = tcp.Packet;
+                                //    Console.WriteLine("+" + System.Text.Encoding.ASCII.GetString(data.BufferArray, data.StartIndex, data.Count) + "+");
+                                //}
+                                //if (ip4.Source == 0xb962c48b)
+                                //{
+                                //    SubArray<byte> data = tcp.Packet;
+                                //    Console.WriteLine("-" + System.Text.Encoding.ASCII.GetString(data.BufferArray, data.StartIndex, data.Count) + "-");
+                                //}
                             }
                             else Console.WriteLine("Unknown");
                             break;

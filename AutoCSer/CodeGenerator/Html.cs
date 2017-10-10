@@ -206,7 +206,7 @@ namespace AutoCSer.CodeGenerator
                     if (index != -1)
                     {
                         content = System.String.Join(@"
-", new SubString { String = content, StartIndex = includeStart.Length, Length = index - includeStart.Length }.Split(',')
+", new SubString { String = content, Start = includeStart.Length, Length = index - includeStart.Length }.Split(',')
                             .getArray(value => getIncludeCss(Parameter.ProjectPath + value.ToString() + ".css"))
                             .getAdd(content.Substring(index + 2)));
                     }

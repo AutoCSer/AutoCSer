@@ -77,5 +77,9 @@ namespace AutoCSer.Sql
         /// 默认为 false 生成数据更新成员位图类型使用 struct 定义，否则采用 class
         /// </summary>
         public bool IsUpdateMemberMapClassType;
+        /// <summary>
+        /// 默认为 true 表示为 getSqlCache 函数生成 [AutoCSer.Net.TcpStaticServer.RemoteKey] 
+        /// </summary>
+        public bool IsRemoteKey = true;
     }
 }

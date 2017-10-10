@@ -1086,6 +1086,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public AutoCSer.CodeGenerator.Metadata.MemberIndex[] QueryMembers;
             /// <summary>
+            /// 是否存在查询参数
+            /// </summary>
+            public bool IsQuery
+            {
+                get
+                {
+                    return QueryMembers.Length != 0 || LoadMethod != null;
+                }
+            }
+            /// <summary>
             /// HTML片段数量
             /// </summary>
             public int HtmlCount;
@@ -1154,6 +1164,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     LoadMethod = getLoadMethod(Type, out LoadAttribute);
                     if (LoadAttribute == AutoCSer.WebView.View.DefaultAttribute) LoadAttribute = Attribute;
                      QueryMembers = MemberIndex.GetMembers<AutoCSer.WebView.ViewQueryAttribute>(Type, AutoCSer.Metadata.MemberFilters.Instance, true, true);
+                    if (QueryMembers.Length != 0 && LoadAttribute == null) LoadAttribute = AutoCSer.WebView.View.DefaultAttribute;
                     if (QueryMembers.Length != 0 && LoadMethod != null)
                     {
                         foreach (MethodParameter parameter in LoadMethod.Parameters)

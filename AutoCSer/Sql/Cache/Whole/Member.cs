@@ -60,7 +60,6 @@ namespace AutoCSer.Sql.Cache.Whole
             this.cache = cache;
             this.getKey = getKey;
             this.getValue = getValue;
-            //XXX
             //this.getTargets = getTargets;
             getMember = expression.GetMember;
             setMember = expression.SetMember;

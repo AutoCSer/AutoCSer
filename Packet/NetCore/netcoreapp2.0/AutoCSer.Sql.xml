@@ -4829,59 +4829,6 @@
             默认为 false 表示存在返回值并不带参数的时候生成远程属性
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberAttribute">
-            <summary>
-            远程成员配置
-            </summary>
-            <summary>
-            远程成员配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsAwait">
-            <summary>
-            默认为 true 表示生成 await 客户端函数
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberAttribute.Type">
-            <summary>
-            名称类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.Concat">
-            <summary>
-            直接连接
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.Join">
-            <summary>
-            下划线连接
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.OnlyName">
-            <summary>
-            仅名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.MemberName">
-            <summary>
-            成员名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.NameType">
-            <summary>
-            名称类型（用于成员缓存调用链）
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsCancel">
-            <summary>
-            是否取消生成
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.RemoteMemberAttribute.IsMethod">
-            <summary>
-            是否生成函数
-            </summary>
-        </member>
         <member name="T:AutoCSer.Sql.AnyCancel">
             <summary>
             取消操作数据
@@ -8347,6 +8294,11 @@
             默认为 false 生成数据更新成员位图类型使用 struct 定义，否则采用 class
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.ModelAttribute.IsRemoteKey">
+            <summary>
+            默认为 true 表示为 getSqlCache 函数生成 [AutoCSer.Net.TcpStaticServer.RemoteKey] 
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.ModelTable`1">
             <summary>
             数据表格
@@ -8927,31 +8879,6 @@
             触发定时任务
             </summary>
             <param name="flag"></param>
-        </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberCacheAttribute">
-            <summary>
-            远程成员缓存配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberCacheAttribute.IsNull">
-            <summary>
-            是否需要可空检查
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.RemoteMethodAttribute">
-            <summary>
-            远程函数配置
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.RemoteMethodAttribute.IsMethod">
-            <summary>
-            是否生成函数
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.RemotePrimaryKeyAttribute">
-            <summary>
-            关键字远程成员映射配置
-            </summary>
         </member>
         <member name="T:AutoCSer.Sql.SelectQuery`1">
             <summary>
@@ -10096,16 +10023,6 @@
         <member name="F:AutoCSer.Sql.TableColumnCollection.Indexs">
             <summary>
             索引集合
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.TcpMethodAttribute">
-            <summary>
-            TCP 调用函数配置
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.TcpMethodAttribute.GetParameterFlags">
-            <summary>
-            参数设置
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.UnionType">

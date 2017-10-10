@@ -31,15 +31,7 @@ namespace AutoCSer.Web.HttpServer
                                 catch { }
                             }
                         };
-                        serverValue.OnStopListen += () =>
-                        {
-                            AutoCSer.Diagnostics.ProcessCopyClient.Remove();
-                            AutoCSer.Threading.ThreadPool.TinyBackground.Start(() =>
-                            {
-                                Thread.Sleep(1000);
-                                Environment.Exit(-1);
-                            });
-                        };
+                        serverValue.OnStopListen += AutoCSer.Web.Config.Pub.Exit;
                         using (AutoCSer.Net.HttpRegister.Server.TcpInternalServer server = new AutoCSer.Net.HttpRegister.Server.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute), null, serverValue))
                         {
                             if (server.IsListen)

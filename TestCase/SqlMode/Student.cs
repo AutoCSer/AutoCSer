@@ -13,6 +13,7 @@ namespace AutoCSer.TestCase.SqlModel
         /// 学生标识（默认自增）
         /// </summary>
         [AutoCSer.WebView.OutputAjax]
+        [AutoCSer.Net.TcpStaticServer.RemoteKey]
         public int Id;
         /// <summary>
         /// 电子邮箱（关键字）

@@ -9,7 +9,7 @@ namespace AutoCSer.Example.HtmlTitle
         {
             Console.WriteLine(@"http://www.AutoCSer.com/Index.html
 ");
-            using (AutoCSer.Net.HtmlTitle.HttpTask task = new AutoCSer.Net.HtmlTitle.HttpTask(4))
+            using (AutoCSer.Net.HtmlTitle.HttpTask task = new AutoCSer.Net.HtmlTitle.HttpTask(4, 15, SubBuffer.Size.Kilobyte16))
             {
 #if DotNetStandard
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);

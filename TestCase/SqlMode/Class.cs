@@ -13,6 +13,7 @@ namespace AutoCSer.TestCase.SqlModel
         /// 班级标识（默认自增）
         /// </summary>
         [AutoCSer.WebView.OutputAjax]
+        [AutoCSer.Net.TcpStaticServer.RemoteKey]
         public int Id;
         /// <summary>
         /// 班级名称

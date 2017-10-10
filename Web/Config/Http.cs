@@ -10,6 +10,6 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 缓存文件目录
         /// </summary>
-        public static readonly string CachePath = (Pub.IsLocal ? @"C:\AutoCSer\Web\HttpServer\bin\Release\" : @"C:\AutoCSer\HttpServer\bin\Release\").ToLower();
+        public static readonly string CachePath = Pub.AutoCSerPath + @"HttpServer\bin\Release\";
     }
 }

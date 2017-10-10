@@ -62,6 +62,10 @@
       <Project>{F8ED4A63-5C04-4EBE-8840-B14E1C82BFA9}</Project>
       <Name>AutoCSer.Web.Config.DotNet2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SearchServer\AutoCSer.Web.SearchServer.DotNet2.csproj">
+      <Project>{CDFC6DEB-8253-4CA2-8728-0FD5CBED1D54}</Project>
+      <Name>AutoCSer.Web.SearchServer.DotNet2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

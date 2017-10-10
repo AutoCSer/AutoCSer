@@ -36,6 +36,14 @@ namespace AutoCSer.Web.TcpRegister
                                     Process.Start(start);
                                 }
 
+                                FileInfo searchServer = new FileInfo(@"..\..\..\SearchServer\bin\Release\AutoCSer.Web.SearchServer.exe");
+                                if (searchServer.Exists)
+                                {
+                                    ProcessStartInfo start = new ProcessStartInfo(searchServer.FullName);
+                                    start.WorkingDirectory = searchServer.Directory.FullName;
+                                    Process.Start(start);
+                                }
+
                                 FileInfo deployServer = new FileInfo(@"..\..\..\DeployServer\bin\Release\AutoCSer.Web.DeployServer.exe");
                                 if (deployServer.Exists)
                                 {

@@ -67,6 +67,16 @@ namespace AutoCSer.Web.DeployClient
                             RunFileName = "AutoCSer.Web.HttpServer.exe",
                         }
                     };
+                    AutoCSer.Deploy.ClientTask[] searchTasks = new AutoCSer.Deploy.ClientTask[]
+                    {
+                        new AutoCSer.Deploy.ClientTask
+                        {
+                            Type = AutoCSer.Deploy.TaskType.Run,
+                            ClientPath = new DirectoryInfo(@"..\..\..\SearchServer\bin\Release\").FullName,
+                            ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"SearchServer\bin\Release\",
+                            RunFileName = "AutoCSer.Web.SearchServer.exe",
+                        }
+                    };
                     AutoCSer.Deploy.ClientTask[] exampleTasks = new AutoCSer.Deploy.ClientTask[]
                     {
                         new AutoCSer.Deploy.ClientTask
@@ -109,6 +119,12 @@ namespace AutoCSer.Web.DeployClient
                             Name = "Web/Http",
                             ServerName = AutoCSer.Deploy.Server.ServerName,
                             Tasks = httpTasks
+                        },
+                        new AutoCSer.Deploy.ClientDeploy
+                        {
+                            Name = "Search",
+                            ServerName = AutoCSer.Deploy.Server.ServerName,
+                            Tasks = searchTasks
                         },
                         new AutoCSer.Deploy.ClientDeploy
                         {

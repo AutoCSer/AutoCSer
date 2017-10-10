@@ -83,7 +83,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 counts = newCounts;
                 size = length;
                 Count = array.Length;
-                newCounts.Null();
+                newCounts.SetNull();
             }
             catch (Exception error)
             {
@@ -114,7 +114,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                     Unmanaged.Free(ref counts);
                     counts = newCounts;
                     size = newLength;
-                    newCounts.Null();
+                    newCounts.SetNull();
 
                     int index = oldLength, count = (intCounts = counts.Int)[--index];
                     for (int step = 1; (index -= step) != 0; step <<= 1) count += intCounts[index];

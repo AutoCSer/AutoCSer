@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script language="javascript" type="text/javascript" src="/Js/loadPage.js?vv=E2D92A"></script>
+    <title>搜索 =@Key - C# 高性能自动化服务端框架 - 凹凸架构</title>
+        <style type="text/css">
+        a{text-decoration: none;}
+        a:hover{text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <!--Loop:Items-->
+    <p>
+        <!--If:DataKey.Type=HtmlTitle-->
+        <a href="=@@Html.Url" target="_blank">=@Text#FormatHtml</a>
+        <!--If:DataKey.Type=HtmlTitle-->
+        <!--If:DataKey.Type=HtmlBodyText-->
+        <a href="=@@Html.Url" target="_blank">=@@Html.Title</a>
+        <br />=@Text#FormatHtml
+        <!--If:DataKey.Type=HtmlBodyText-->
+        <!--If:DataKey.Type=HtmlImage-->
+        <a href="=@@Html.Url" target="_blank">=@@Html.Title</a>
+        <br />=@Text#FormatHtml
+        <br /><img @src="=@@Remote.ImageUrl" />
+        <!--If:DataKey.Type=HtmlImage-->
+
+        <!--Loop:Indexs-->
+        <!--Value:Key--><!--Value:Key-->
+        <!--Value:Value--><!--Value:Value-->
+        <!--Loop:Indexs-->
+    </p>
+    <!--Loop:Items-->
+    <!--If:!Items.length-->
+    <p>
+        对不起，没找到您想要的东西，要不要到 <a href="/Index.html?v=E2D92A" title="Go to the home page to download">AutoCSer 首页</a> 去逛逛？
+    </p>
+    <!--If:!Items.length-->
+</body>
+</html>

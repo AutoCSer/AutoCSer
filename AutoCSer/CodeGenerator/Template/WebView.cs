@@ -86,7 +86,7 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion NOT IsAwaitMethod
             #endregion IF Attribute.IsAjax
 
-            #region IF LoadMethod
+            #region IF IsQuery
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
@@ -138,7 +138,12 @@ namespace AutoCSer.CodeGenerator.Template
                         #region LOOP QueryMembers
                         @MemberName = /*PUSH:LoadAttribute*/@QueryName/*PUSH:LoadAttribute*/.@MemberName;
                         #endregion LOOP QueryMembers
+                        #region IF LoadMethod
                         return loadView(/*LOOP:LoadMethod.Parameters*//*PUSH:LoadAttribute*/@QueryName/*PUSH:LoadAttribute*/.@ParameterJoinName/*LOOP:LoadMethod.Parameters*/);
+                        #endregion IF LoadMethod
+                        #region NOT LoadMethod
+                        return true;
+                        #endregion NOT LoadMethod
                     }
                     #endregion IF LoadAttribute.QueryName
                     #region NOT LoadAttribute.QueryName
@@ -148,7 +153,12 @@ namespace AutoCSer.CodeGenerator.Template
                         #region LOOP QueryMembers
                         @MemberName = query.@MemberName;
                         #endregion LOOP QueryMembers
+                        #region IF LoadMethod
                         return loadView(/*LOOP:LoadMethod.Parameters*/query.@ParameterJoinName/*LOOP:LoadMethod.Parameters*/);
+                        #endregion IF LoadMethod
+                        #region NOT LoadMethod
+                        return true;
+                        #endregion NOT LoadMethod
                     }
                     #endregion NOT LoadAttribute.QueryName
                 }
@@ -157,7 +167,7 @@ namespace AutoCSer.CodeGenerator.Template
             #region NOTE
             bool loadView(object _) { return false; }
             #endregion NOTE
-            #endregion IF LoadMethod
+            #endregion IF IsQuery
         }
         #endregion NOT IsServer
 

@@ -797,36 +797,6 @@ namespace AutoCSer.CodeGenerator.Template
                     sqlStream.Add(onLog);
                 }
                 #endregion NOT Attribute.IsLogClientQueue
-                #region IF Attribute.IsLogClientGetCache
-                #region IF Identity
-                #region PUSH Identity
-                /// <summary>
-                /// 获取数据
-                /// </summary>
-                /// <param name="@MemberName">@XmlDocument</param>
-                /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
-                protected static tableType getSqlCache(int @MemberName)
-                {
-                    return @IdentityArrayCacheName[@MemberName];
-                }
-                #endregion PUSH Identity
-                #endregion IF Identity
-                #region NOT Identity
-                #region NOT CacheType=CreateMemberKey
-                /// <summary>
-                /// 获取数据
-                /// </summary>
-                /// <param name="key">关键字</param>
-                /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
-                protected static tableType getSqlCache(@PrimaryKeyType key)
-                {
-                    return @PrimaryKeyCacheName[key];
-                }
-                #endregion NOT CacheType=CreateMemberKey
-                #endregion NOT Identity
-                #endregion IF Attribute.IsLogClientGetCache
                 #region IF LogMembers.Length
                 /// <summary>
                 /// 计算字段日志流
@@ -939,6 +909,62 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF IsLogProxyMember
                 #endregion IF LogMembers.Length
                 #endregion IF Attribute.LogServerName
+                #region IF IsGetSqlCache
+                #region IF Identity
+                #region PUSH Identity
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="@MemberName">@XmlDocument</param>
+                /// <returns></returns>
+                #region IF Attribute.IsRemoteKey
+                [AutoCSer.Net.TcpStaticServer.RemoteKey]
+                #endregion IF Attribute.IsRemoteKey
+                #region IF Attribute.LogServerName
+                #region IF Attribute.IsLogClientGetCache
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
+                #endregion IF Attribute.IsLogClientGetCache
+                #endregion IF Attribute.LogServerName
+                protected static tableType getSqlCache(int @MemberName)
+                {
+                    return @IdentityArrayCacheName[@MemberName];
+                }
+                #endregion PUSH Identity
+                #endregion IF Identity
+                #region NOT Identity
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="key">关键字</param>
+                /// <returns></returns>
+                #region IF Attribute.IsRemoteKey
+                [AutoCSer.Net.TcpStaticServer.RemoteKey]
+                #endregion IF Attribute.IsRemoteKey
+                #region IF Attribute.LogServerName
+                #region IF Attribute.IsLogClientGetCache
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "@Attribute.LogServerName")]
+                #endregion IF Attribute.IsLogClientGetCache
+                #endregion IF Attribute.LogServerName
+                protected static tableType getSqlCache(@PrimaryKeyType key)
+                {
+                    return @PrimaryKeyCacheName[key];
+                }
+                #region IF Attribute.IsRemoteKey
+                #region IF IsManyPrimaryKey
+                /// <summary>
+                /// 关键字
+                /// </summary>
+                [AutoCSer.BinarySerialize.IgnoreMember]
+                [AutoCSer.Json.IgnoreMember]
+                [AutoCSer.Net.TcpStaticServer.RemoteKey]
+                public @PrimaryKeyType PrimaryKey
+                {
+                    get { return new @PrimaryKeyType { /*PUSH:PrimaryKey0*/@MemberName = @MemberName/*PUSH:PrimaryKey0*//*LOOP:NextPrimaryKeys*/, @NextMemberName = @MemberName/*LOOP:NextPrimaryKeys*/ }; }
+                }
+                #endregion IF IsManyPrimaryKey
+                #endregion IF Attribute.IsRemoteKey
+                #endregion NOT Identity
+                #endregion IF IsGetSqlCache
                 #region IF NowTimeMembers.Length
                 /// <summary>
                 /// 当前时间定义
@@ -1081,6 +1107,14 @@ namespace AutoCSer.CodeGenerator.Template
         /// </summary>
         public struct PrimaryKeyType : IEquatable<PrimaryKeyType>
         {
+            /// <summary>
+            /// 成员名称
+            /// </summary>
+            public Pub MemberName;
+            /// <summary>
+            /// 成员名称
+            /// </summary>
+            public Pub NextMemberName;
             /// <summary>
             /// 关键字比较
             /// </summary>

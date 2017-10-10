@@ -295,7 +295,7 @@ namespace AutoCSer.CodeGenerator
             foreach (Match match in atTag.Matches(code))
             {
                 int length = match.Index - index;
-                if (length != 0) this.code(new SubString { String = code, StartIndex = index, Length = length });
+                if (length != 0) this.code(new SubString { String = code, Start = index, Length = length });
                 tree.Append(new Node
                 {
                     Tag = new Tag
@@ -307,7 +307,7 @@ namespace AutoCSer.CodeGenerator
                 }, false);
                 index = match.Index + match.Length;
             }
-            this.code(new SubString { String = code, StartIndex = index, Length = code.Length - index });
+            this.code(new SubString { String = code, Start = index, Length = code.Length - index });
         }
         /// <summary>
         /// 普通代码段

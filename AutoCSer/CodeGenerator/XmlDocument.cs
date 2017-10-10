@@ -51,7 +51,7 @@ namespace AutoCSer.CodeGenerator
                                         {
                                             if (node.Value.GetAttribute(nameFixed, 4, ref attribute) && attribute.Length > 2)
                                             {
-                                                value.LoadMember(new SubString { String = node.Key.String, StartIndex = attribute.StartIndex, Length = attribute.Length }, node.Value);
+                                                value.LoadMember(new SubString { String = node.Key.String, Start = attribute.StartIndex, Length = attribute.Length }, node.Value);
                                             }
                                         }
                                     }

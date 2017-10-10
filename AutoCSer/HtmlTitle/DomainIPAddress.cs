@@ -101,7 +101,7 @@ namespace AutoCSer.Net.HtmlTitle
             try
             {
                 domainIps.Set(ref key, ipAddress);
-                if (domainIps.Count == DomainIPAddressConfig.Default.CacheCount) domainIps.UnsafePopValue();
+                if (domainIps.Count == DomainIPAddressConfig.Default.CacheCount) domainIps.UnsafePopNode();
             }
             finally { Monitor.Exit(domainIpLock); }
         }

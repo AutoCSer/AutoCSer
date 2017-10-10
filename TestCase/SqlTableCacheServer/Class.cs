@@ -95,7 +95,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// <summary>
             /// 获取学生标识集合（远程缓存成员）
             /// </summary>
-            [AutoCSer.Sql.RemoteMember(IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(IsAwait = false)]
             internal int[] StudentIds
             {
                 get
@@ -108,7 +108,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// </summary>
             /// <param name="index">学生索引</param>
             /// <returns>学生标识</returns>
-            [AutoCSer.Sql.RemoteMethod(IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(IsAwait = false)]
             internal int GetStudentId(int index)
             {
                 return Students[index].Id;
@@ -118,7 +118,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// </summary>
             /// <param name="index">学生索引</param>
             /// <returns>学生标识</returns>
-            [AutoCSer.Sql.RemoteMethod(IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(IsAwait = false)]
             internal int this[int index]
             {
                 get { return Students[index].Id; }
@@ -131,7 +131,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 扩展缓存数据
         /// </summary>
-        [AutoCSer.Sql.RemoteMemberCache(IsNull = false)]
+        [AutoCSer.Net.TcpStaticServer.RemoteLink(IsNull = false)]
         internal MemberCache Extension
         {
             get
@@ -143,7 +143,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 获取学生标识集合（远程实例成员，推荐模式）
         /// </summary>
-        [AutoCSer.Sql.RemoteMember(IsAwait = false)]
+        [AutoCSer.Net.TcpStaticServer.RemoteMember(IsAwait = false)]
         internal int[] StudentIds
         {
             get
@@ -156,8 +156,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// </summary>
         /// <param name="id">班级标识</param>
         /// <returns>学生标识集合</returns>
-        [AutoCSer.Sql.RemoteMethod(IsAwait = false)]
-        [AutoCSer.Sql.TcpMethod]
+        [AutoCSer.Net.TcpStaticServer.RemoteMethod(IsAwait = false)]
+        [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod]
         internal static int[] GetStaticStudentIds(int id)
         {
             return Loader.Cache[id].extension.Students.toLeftArray().GetArray(value => value.Id);
@@ -168,7 +168,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// </summary>
         /// <param name="index">学生索引</param>
         /// <returns>学生标识集合</returns>
-        [AutoCSer.Sql.RemoteMethod(IsAwait = false)]
+        [AutoCSer.Net.TcpStaticServer.RemoteMethod(IsAwait = false)]
         internal int GetStudentId(int index)
         {
             return Extension.Students[index].Id;
@@ -179,8 +179,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <param name="id">班级标识</param>
         /// <param name="index">学生索引</param>
         /// <returns>学生标识集合</returns>
-        [AutoCSer.Sql.RemoteMethod(IsAwait = false)]
-        [AutoCSer.Sql.TcpMethod]
+        [AutoCSer.Net.TcpStaticServer.RemoteMethod(IsAwait = false)]
+        [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod]
         internal static int GetStaticStudentId(int id, int index)
         {
             return Loader.Cache[id].extension.Students[index].Id;

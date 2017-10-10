@@ -142,7 +142,6 @@
     <Compile Include="TemplateGenerator\JavaScriptTypeDefinition.cs" />
     <Compile Include="TemplateGenerator\MemberGenerator.cs" />
     <Compile Include="TemplateGenerator\SqlModel.cs" />
-    <Compile Include="TemplateGenerator\SqlRemotePrimaryKey.cs" />
     <Compile Include="TemplateGenerator\SqlTable.cs" />
     <Compile Include="TemplateGenerator\TcpInternalServer.cs">
       <SubType>Code</SubType>
@@ -171,7 +170,6 @@
     <Compile Include="Template\SqlModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Template\SqlRemotePrimaryKey.cs" />
     <Compile Include="Template\SqlTable.cs" />
     <Compile Include="Template\TcpInternalServer.cs">
       <SubType>Code</SubType>

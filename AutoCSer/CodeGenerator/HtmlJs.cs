@@ -189,7 +189,7 @@ in " + this.fileName + @"
                         {
                             int splitIndex = splitCode.IndexOf("-->", StringComparison.Ordinal);
                             if (splitIndex == -1) AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, "非法标签:" + htmlInclude[0] + splitCode);
-                            SubString name = new SubString { String = code, StartIndex = startIndex + htmlIncludeLength, Length = splitIndex }, memberName = default(SubString);
+                            SubString name = new SubString { String = code, Start = startIndex + htmlIncludeLength, Length = splitIndex }, memberName = default(SubString);
                             LeftArray<SubString> array = default(LeftArray<SubString>);
                             bool isHash = false;
                             if (name.Length != 0 && name[0] == '#')
@@ -202,7 +202,7 @@ in " + this.fileName + @"
                                 if (name[name.Length - 1] == ']')
                                 {
                                     int arrayIndex = name.IndexOf('[');
-                                    array = new SubString { String = code, StartIndex = name.StartIndex + arrayIndex + 1, Length = name.Length - arrayIndex - 2 }.Split(',');
+                                    array = new SubString { String = code, Start = name.Start + arrayIndex + 1, Length = name.Length - arrayIndex - 2 }.Split(',');
                                     name = name.GetSub(0, arrayIndex);
                                 }
                                 int memberIndex = name.IndexOf('=');

@@ -10,7 +10,9 @@ namespace AutoCSer.CodeGenerator.Template
         private static FullName[] MethodIndexs = null;
         private static FullName ParameterName = null;
         private static FullName ParameterJoinRefName = null;
+        private static FullName ParameterJoinName = null;
         private static ParameterTypeRefName ParameterRefName = null;
+        private static FullName ParentIndexName = null;
         private const int MethodIndex = 0;
         private const int CommandStartIndex = 0;
         private const int InputParameterIndex = 0;
@@ -18,10 +20,11 @@ namespace AutoCSer.CodeGenerator.Template
         private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
         private const AutoCSer.Net.TcpServer.ClientTaskType ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Timeout;
         private const bool IsCallQueue = false;
+        private static Type.FullName GetRemoteMethodName(MemberType.FullName MemberName) { return null; }
         #endregion NOTE
 
         #region PART CLASS
-        #region NOT IsAllType
+        #region IF Part=CallType
         #region PART SERVERCALL
         /*NOTE*/
         public partial class /*NOTE*/@TypeNameDefinition
@@ -64,7 +67,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// <summary>
         /// TCP调用客户端
         /// </summary>
-        public static/*NOTE*/ new/*NOTE*/ partial class TcpCall
+        public static partial class TcpCall
         {
             #region IF Type.XmlDocument
             /// <summary>
@@ -107,7 +110,8 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
                     #region IF InputParameterIndex
-                    /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
+                    /*PUSH:AutoParameter*/
+                    @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
                     {
                         #region LOOP InputParameters
                         /*PUSH:Parameter*/
@@ -115,7 +119,8 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion LOOP InputParameters
                     };
                     #endregion IF InputParameterIndex
-                    /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                    /*PUSH:AutoParameter*/
+                    @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
                     #endregion NOT Attribute.IsExpired
                 }
                 #endregion IF IsClientSendOnly
@@ -282,75 +287,75 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF Method.ReturnXmlDocument
                 public static async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/> /*PUSH:Method*/@TaskAsyncMethodName/*PUSH:Method*/(/*IF:IsVerifyMethod*/AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, /*IF:IsVerifyMethod*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
                 {
-                #region IF Attribute.IsExpired
-                #region LOOP InputParameters
-                #region PUSH MethodParameter
-                #region IF IsOut
+                    #region IF Attribute.IsExpired
+                    #region LOOP InputParameters
+                    #region PUSH MethodParameter
+                    #region IF IsOut
                     @ParameterName = default(@ParameterType.FullName);
-                #endregion IF IsOut
-                #endregion PUSH MethodParameter
-                #endregion LOOP InputParameters
+                    #endregion IF IsOut
+                    #endregion PUSH MethodParameter
+                    #endregion LOOP InputParameters
                     return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired };
-                #endregion IF Attribute.IsExpired
-                #region NOT Attribute.IsExpired
+                    #endregion IF Attribute.IsExpired
+                    #region NOT Attribute.IsExpired
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*NOT:IsVerifyMethod*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender/*NOT:IsVerifyMethod*//*NOTE*/ ?? /*NOTE*//*IF:IsVerifyMethod*/_sender_/*IF:IsVerifyMethod*/;
                     if (_socket_ != null)
                     {
                         AutoCSer.Net.TcpServer.TaskAsyncReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _wait_ = new AutoCSer.Net.TcpServer.TaskAsyncReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/();
-                #region IF InputParameterIndex
+                        #region IF InputParameterIndex
                         /*PUSH:AutoParameter*/
                         @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
                         {
-                #region LOOP InputParameters
-                #region NOT MethodParameter.IsOut
+                            #region LOOP InputParameters
+                            #region NOT MethodParameter.IsOut
                             /*PUSH:Parameter*/
                             @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
-                #endregion NOT MethodParameter.IsOut
-                #endregion LOOP InputParameters
+                            #endregion NOT MethodParameter.IsOut
+                            #endregion LOOP InputParameters
                         };
-                #endregion IF InputParameterIndex
+                        #endregion IF InputParameterIndex
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                #region IF OutputParameterIndex
+                        #region IF OutputParameterIndex
                         /*PUSH:AutoParameter*/
                         @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName _outputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName
                         {
-                #region LOOP OutputParameters
-                #region IF MethodParameter.IsRef
+                            #region LOOP OutputParameters
+                            #region IF MethodParameter.IsRef
                             /*PUSH:Parameter*/
                             @ParameterName/*PUSH:Parameter*/ = /*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
-                #endregion IF MethodParameter.IsRef
-                #endregion LOOP OutputParameters
-                #region PUSH ReturnInputParameter
+                            #endregion IF MethodParameter.IsRef
+                            #endregion LOOP OutputParameters
+                            #region PUSH ReturnInputParameter
                             Ret = @ParameterName
-                #endregion PUSH ReturnInputParameter
+                            #endregion PUSH ReturnInputParameter
                         };
                         if ((_returnType_ = _socket_.GetAsync</*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName, /*IF:InputParameterIndex*//*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>(@StaticAwaiterMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/, ref _outputParameter_)) == Net.TcpServer.ReturnType.Success)
                         {
                             AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/</*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _returnOutputParameter_ = await _wait_;
-                #region LOOP OutputParameters
-                #region IF InputMethodParameter.IsRefOrOut
+                            #region LOOP OutputParameters
+                            #region IF InputMethodParameter.IsRefOrOut
                             /*PUSH:MethodParameter*/
                             @ParameterName/*PUSH:MethodParameter*/ = _returnOutputParameter_.Value./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*/;
-                #endregion IF InputMethodParameter.IsRefOrOut
-                #endregion LOOP OutputParameters
+                            #endregion IF InputMethodParameter.IsRefOrOut
+                            #endregion LOOP OutputParameters
                             return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnOutputParameter_.Type/*IF:MethodIsReturn*/, Value = _returnOutputParameter_.Value.Return/*IF:MethodIsReturn*/ };
                         }
                         return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_ };
-                #endregion IF OutputParameterIndex
-                #region NOT OutputParameterIndex
+                        #endregion IF OutputParameterIndex
+                        #region NOT OutputParameterIndex
                         _returnType_ = _socket_.CallAsync(@StaticAwaiterMethodIdentityCommand, _wait_/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
                         return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = _returnType_ == AutoCSer.Net.TcpServer.ReturnType.Success ? /*NOTE*/(AutoCSer.Net.TcpServer.ReturnType)(object)/*NOTE*/await _wait_ : _returnType_ };
-                #endregion NOT OutputParameterIndex
+                        #endregion NOT OutputParameterIndex
                     }
-                #region LOOP InputParameters
-                #region PUSH MethodParameter
-                #region IF IsOut
+                    #region LOOP InputParameters
+                    #region PUSH MethodParameter
+                    #region IF IsOut
                     @ParameterName = default(@ParameterType.FullName);
-                #endregion IF IsOut
-                #endregion PUSH MethodParameter
-                #endregion LOOP InputParameters
+                    #endregion IF IsOut
+                    #endregion PUSH MethodParameter
+                    #endregion LOOP InputParameters
                     return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
-                #endregion NOT Attribute.IsExpired
+                    #endregion NOT Attribute.IsExpired
                 }
 #endif
                 #endregion IF IsClientTaskAsync
@@ -434,7 +439,8 @@ namespace AutoCSer.CodeGenerator.Template
                         if (_socket_ != null)
                         {
                             #region IF InputParameterIndex
-                            /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
+                            /*PUSH:AutoParameter*/
+                            @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
                             {
                                 #region LOOP InputParameters
                                 /*PUSH:Parameter*/
@@ -507,14 +513,16 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
                         #region IF IsClientSendOnly
-                        /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _sendOnlyInputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
+                        /*PUSH:AutoParameter*/
+                        @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _sendOnlyInputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
                         {
                             #region LOOP InputParameters
                             /*PUSH:Parameter*/
                             @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
                             #endregion LOOP InputParameters
                         };
-                        /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand, ref _sendOnlyInputParameter_);
+                        /*PUSH:AutoParameter*/
+                        @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand, ref _sendOnlyInputParameter_);
                         #endregion IF IsClientSendOnly
                         #region NOT IsClientSendOnly
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
@@ -551,11 +559,14 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
             }
+            #region NOTE
+            public class TypeName : Pub { }
+            #endregion NOTE
         }
         #endregion PART CLIENTCALL
-        #endregion NOT IsAllType
+        #endregion IF Part=CallType
 
-        #region IF IsAllType
+        #region IF Part=ServerType
         #region PART SERVER
         /// <summary>
         /// TCP调用服务端
@@ -808,8 +819,8 @@ namespace AutoCSer.CodeGenerator.Template
             {
                 #region LOOP Parameters
                 public @ParameterType.FullName @ParameterName;
-#endregion LOOP Parameters
-#region IF MethodReturnType.Type
+                #endregion LOOP Parameters
+                #region IF MethodReturnType.Type
                 [AutoCSer.Json.IgnoreMember]
                 public @MethodReturnType.FullName Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
@@ -826,15 +837,15 @@ namespace AutoCSer.CodeGenerator.Template
                     set { Ret = (@MethodReturnType.FullName)value; }
                 }
 #endif
-#endregion IF MethodReturnType.Type
-#region NOTE
+                #endregion IF MethodReturnType.Type
+                #region NOTE
                 public object ParameterJoinName;
                 public object ParameterRealName;
-#endregion NOTE
+                #endregion NOTE
             }
-#endregion LOOP ParameterTypes
-#endregion NAME Parameter
-#region NOTE
+            #endregion LOOP ParameterTypes
+            #endregion NAME Parameter
+            #region NOTE
             public struct OutputParameterTypeName : AutoCSer.Net.IReturnParameter
 #if !NOJIT
                 <MethodReturnType.FullName>
@@ -870,14 +881,14 @@ namespace AutoCSer.CodeGenerator.Template
         /// </summary>
         public/*NOTE*/ partial/*NOTE*/ class @ServerName
         {
-#region IF ServiceAttribute.IsSegmentation
-#region LOOP MethodIndexs
-#region NOT IsNullMethod
-#region FROMNAME Parameter
-#endregion FROMNAME Parameter
-#endregion NOT IsNullMethod
-#endregion LOOP MethodIndexs
-#endregion IF ServiceAttribute.IsSegmentation
+            #region IF ServiceAttribute.IsSegmentation
+            #region LOOP MethodIndexs
+            #region NOT IsNullMethod
+            #region FROMNAME Parameter
+            #endregion FROMNAME Parameter
+            #endregion NOT IsNullMethod
+            #endregion LOOP MethodIndexs
+            #endregion IF ServiceAttribute.IsSegmentation
             /// <summary>
             /// TCP 静态调用客户端参数
             /// </summary>
@@ -936,15 +947,565 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF Attribute.IsCompileSerialize
             }
         }
-            #endregion PART CLIENT
-            #endregion IF IsAllType
-            #endregion PART CLASS
+        #endregion PART CLIENT
+        #endregion IF Part=ServerType
+
+        #region IF Part=RemoteLink
+        #region PUSH CurrentRemoteLinkType
+        #region PART SERVERREMOTE
+        /*NOTE*/
+        public partial class /*NOTE*/@TypeNameDefinition
+        {
+            #region IF RemoteKeyMember
+            #region LOOP RemoteMembers
+            #region PUSH Member
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            #region PUSH RemoteKeyMember
+            #region IF XmlDocument
+            /// <param name="@MemberName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion PUSH RemoteKeyMember
+            /// <returns>@XmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MemberType.FullName @GetMemberName(/*PUSH:RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteKeyMember*/)
+            {
+                return /*NOTE*/(@MemberType.FullName)/*NOTE*/@GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/).@MemberName;
+            }
+            #endregion PUSH Member
+            #region PUSH Method
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            #region PUSH RemoteKeyMember
+            #region IF XmlDocument
+            /// <param name="@MemberName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion PUSH RemoteKeyMember
+            #region LOOP Parameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP Parameters
+            /// <returns>@ReturnXmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MethodReturnType.FullName @RemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteKeyMember*//*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
+            {
+                /*IF:IsMethodReturn*/
+                return /*IF:IsMethodReturn*//*NOTE*/(@MethodReturnType.FullName)/*NOTE*/@GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/).@MethodName(/*LOOP:Parameters*/@ParameterJoinName/*LOOP:Parameters*/);
+            }
+            #endregion PUSH Method
+            #endregion LOOP RemoteMembers
+
+            #region LOOP RemoteLinks
+            #region PUSH Member
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            #region PUSH RemoteKeyMember
+            #region IF XmlDocument
+            /// <param name="@MemberName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion PUSH RemoteKeyMember
+            #region LOOP PropertyParameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP PropertyParameters
+            /// <returns>@XmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MemberType.FullName @GetLinkMemberName(/*PUSH:RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteKeyMember*//*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
+            {
+                @Type.FullName value = @GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
+                #region LOOP Members
+                #region PUSH Member
+                @MemberType.FullName @IndexName = /*NOTE*/(@MemberType.FullName)/*NOTE*/@ParentIndexName/**/.@MemberName;
+                #endregion PUSH Member
+                #region IF IsNull
+                if (@IndexName != null)
+                {
+                    #endregion IF IsNull
+                    #endregion LOOP Members
+                    return /*NOTE*/(@MemberType.FullName)/*NOTE*/@IndexName/*NOT:PropertyParameters.Length*/.@MemberName/*NOT:PropertyParameters.Length*//*IF:PropertyParameters.Length*/[/*LOOP:PropertyParameters*/@ParameterJoinName/*LOOP:PropertyParameters*/]/*IF:PropertyParameters.Length*/;
+                    #region LOOP Members
+                    #region IF IsNull
+                }
+                #endregion IF IsNull
+                #endregion LOOP Members
+                #region IF IsAnyNull
+                return default(@MemberType.FullName);
+                #endregion IF IsAnyNull
+            }
+            #endregion PUSH Member
+            #region PUSH Method
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            #region PUSH RemoteKeyMember
+            #region IF XmlDocument
+            /// <param name="@MemberName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion PUSH RemoteKeyMember
+            #region LOOP Parameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP Parameters
+            /// <returns>@ReturnXmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MethodReturnType.FullName @RemoteLinkMethodName(/*PUSH:RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteKeyMember*//*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
+            {
+                @Type.FullName value = @GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
+                #region LOOP Members
+                #region PUSH Member
+                @MemberType.FullName @IndexName = /*NOTE*/(@MemberType.FullName)/*NOTE*/@ParentIndexName/**/.@MemberName;
+                #endregion PUSH Member
+                #region IF IsNull
+                if (@IndexName != null)
+                {
+                    #endregion IF IsNull
+                    #endregion LOOP Members
+                    /*IF:IsMethodReturn*/
+                    return /*IF:IsMethodReturn*//*NOTE*/(@MethodReturnType.FullName)/*NOTE*/@IndexName/**/.@MethodName(/*LOOP:Parameters*/@ParameterJoinName/*LOOP:Parameters*/);
+                    #region LOOP Members
+                    #region IF IsNull
+                }
+                #endregion IF IsNull
+                #endregion LOOP Members
+                #region IF IsAnyNull
+                #region LOOP Parameters
+                #region IF IsOut
+                @ParameterName = /*NOTE*/(ParameterTypeRefName)(object)/*NOTE*/default(@ParameterType.FullName);
+                #endregion IF IsOut
+                #endregion LOOP Parameters
+                #region IF IsMethodReturn
+                return default(@MemberType.FullName);
+                #endregion IF IsMethodReturn
+                #endregion IF IsAnyNull
+            }
+            #endregion PUSH Method
+            #endregion LOOP RemoteLinks
+            #endregion IF RemoteKeyMember
+            #region NOT RemoteKeyMember
+            #region LOOP RemoteMembers
+            #region PUSH Member
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            /// <param name="value">@Type.XmlDocument</param>
+            /// <returns>@XmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MemberType.FullName @GetTypeMemberName(@Type.FullName value)
+            {
+                return /*NOTE*/(@MemberType.FullName)/*NOTE*/value.@MemberName;
+            }
+            #endregion PUSH Member
+            #region PUSH Method
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            /// <param name="value">@Type.XmlDocument</param>
+            #region LOOP Parameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP Parameters
+            /// <returns>@ReturnXmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@MemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MethodReturnType.FullName @RemoteTypeMethodName(@Type.FullName value/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
+            {
+                /*IF:IsMethodReturn*/
+                return /*IF:IsMethodReturn*//*NOTE*/(@MethodReturnType.FullName)/*NOTE*/value.@MethodName(/*LOOP:Parameters*/@ParameterJoinName/*LOOP:Parameters*/);
+            }
+            #endregion PUSH Method
+            #endregion LOOP RemoteMembers
+
+            #region LOOP RemoteLinks
+            #region PUSH Member
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            /// <param name="value">@Type.XmlDocument</param>
+            #region LOOP PropertyParameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP PropertyParameters
+            /// <returns>@XmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MemberType.FullName @GetLinkTypeMemberName(@Type.FullName value/*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
+            {
+                #region LOOP Members
+                #region PUSH Member
+                @MemberType.FullName @IndexName = /*NOTE*/(@MemberType.FullName)/*NOTE*/@ParentIndexName/**/.@MemberName;
+                #endregion PUSH Member
+                #region IF IsNull
+                if (@IndexName != null)
+                {
+                    #endregion IF IsNull
+                    #endregion LOOP Members
+                    return /*NOTE*/(@MemberType.FullName)/*NOTE*/@IndexName/*NOT:PropertyParameters.Length*/.@MemberName/*NOT:PropertyParameters.Length*//*IF:PropertyParameters.Length*/[/*LOOP:PropertyParameters*/@ParameterJoinName/*LOOP:PropertyParameters*/]/*IF:PropertyParameters.Length*/;
+                    #region LOOP Members
+                    #region IF IsNull
+                }
+                #endregion IF IsNull
+                #endregion LOOP Members
+                #region IF IsAnyNull
+                return default(@MemberType.FullName);
+                #endregion IF IsAnyNull
+            }
+            #endregion PUSH Member
+            #region PUSH Method
+            /// <summary>
+            /// @XmlDocument
+            /// </summary>
+            /// <param name="value">@Type.XmlDocument</param>
+            #region LOOP Parameters
+            #region IF XmlDocument
+            /// <param name="@ParameterName">@XmlDocument</param>
+            #endregion IF XmlDocument
+            #endregion LOOP Parameters
+            /// <returns>@ReturnXmlDocument</returns>
+            #region NOT Attribute.IsCancel
+            #region IF AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion IF AttributeIsMethod
+            #region NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"@LinkMemberName"/*NOT:Attribute.IsAwait*/, IsAwait = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT AttributeIsMethod
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
+            #endregion NOT Attribute.IsCancel
+            private static @MethodReturnType.FullName @RemoteLinkTypeMethodName(@Type.FullName value/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
+            {
+                #region LOOP Members
+                #region PUSH Member
+                @MemberType.FullName @IndexName = /*NOTE*/(@MemberType.FullName)/*NOTE*/@ParentIndexName/**/.@MemberName;
+                #endregion PUSH Member
+                #region IF IsNull
+                if (@IndexName != null)
+                {
+                    #endregion IF IsNull
+                    #endregion LOOP Members
+                    /*IF:IsMethodReturn*/
+                    return /*IF:IsMethodReturn*//*NOTE*/(@MethodReturnType.FullName)/*NOTE*/@IndexName/**/.@MethodName(/*LOOP:Parameters*/@ParameterJoinName/*LOOP:Parameters*/);
+                    #region LOOP Members
+                    #region IF IsNull
+                }
+                #endregion IF IsNull
+                #endregion LOOP Members
+                #region IF IsAnyNull
+                #region LOOP Parameters
+                #region IF IsOut
+                @ParameterName = /*NOTE*/(ParameterTypeRefName)(object)/*NOTE*/default(@ParameterType.FullName);
+                #endregion IF IsOut
+                #endregion LOOP Parameters
+                #region IF IsMethodReturn
+                return default(@MemberType.FullName);
+                #endregion IF IsMethodReturn
+                #endregion IF IsAnyNull
+            }
+            #endregion PUSH Method
+            #endregion LOOP RemoteLinks
+            #endregion NOT RemoteKeyMember
         }
-        #region NOTE
+        #endregion PART SERVERREMOTE
+        #region PART CLIENTREMOTE
+        #region IF RemoteMethods.Length
+        #region IF ServiceAttribute.IsSegmentation
         /// <summary>
-        /// CSharp模板公用模糊类型
+        /// TCP调用客户端
         /// </summary>
-        internal partial class Pub
+        public static partial class TcpCall
+        {
+            #region IF Type.XmlDocument
+            /// <summary>
+            /// @Type.XmlDocument
+            /// </summary>
+            #endregion IF Type.XmlDocument
+            public /*NOTE*/partial class /*NOTE*/@NoAccessTypeNameDefinition
+            {
+                /// <summary>
+                /// 远程对象扩展
+                /// </summary>
+                public partial struct RemoteExtension
+                {
+                    #region IF IsRemoteMember
+                    #region PUSH RemoteKeyMember
+                    #region IF XmlDocument
+                    /// <summary>
+                    /// @XmlDocument
+                    /// </summary>
+                    #endregion IF XmlDocument
+                    public @MemberType.FullName @MemberName;
+                    #endregion PUSH RemoteKeyMember
+                    #endregion IF IsRemoteMember
+                    #region IF RemoteKeyMember
+                    #region LOOP RemoteMethods
+                    #region PUSH Method
+                    #region IF IsMethod
+                    /// <summary>
+                    /// @XmlDocument
+                    /// </summary>
+                    #region LOOP NextParameters
+                    #region IF XmlDocument
+                    /// <param name="@ParameterName">@XmlDocument</param>
+                    #endregion IF XmlDocument
+                    #endregion LOOP NextParameters
+                    public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
+                    {
+                        /*IF:IsMethodReturn*/
+                        return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName/*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                    }
+                    #endregion IF IsMethod
+                    #region NOT IsMethod
+                    /// <summary>
+                    /// @XmlDocument
+                    /// </summary>
+                    public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMemberName
+                    {
+                        get
+                        {
+                            return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName);
+                        }
+                    }
+                    #endregion NOT IsMethod
+                    #endregion PUSH Method
+                    #endregion LOOP RemoteMethods
+                    #endregion IF RemoteKeyMember
+                    #region NOT RemoteKeyMember
+                    #region IF IsRemoteMember
+                    /// <summary>
+                    /// @Type.XmlDocument
+                    /// </summary>
+                    public @Type.FullName Value;
+                    #endregion IF IsRemoteMember
+                    #region LOOP RemoteMethods
+                    #region PUSH Method
+                    #region IF IsMethod
+                    /// <summary>
+                    /// @XmlDocument
+                    /// </summary>
+                    #region LOOP NextParameters
+                    #region IF XmlDocument
+                    /// <param name="@ParameterName">@XmlDocument</param>
+                    #endregion IF XmlDocument
+                    #endregion LOOP NextParameters
+                    public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeTypeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
+                    {
+                        /*IF:IsMethodReturn*/
+                        return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value/*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                    }
+                    #endregion IF IsMethod
+                    #region NOT IsMethod
+                    /// <summary>
+                    /// @XmlDocument
+                    /// </summary>
+                    public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeTypeMemberName
+                    {
+                        get
+                        {
+                            return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value);
+                        }
+                    }
+                    #endregion NOT IsMethod
+                    #endregion PUSH Method
+                    #endregion LOOP RemoteMethods
+                    #endregion NOT RemoteKeyMember
+                }
+                #region IF IsRemoteMember
+                #region PUSH RemoteKeyMember
+                /// <summary>
+                /// 远程对象扩展
+                /// </summary>
+                #region IF XmlDocument
+                /// <param name="@MemberName">@XmlDocument</param>
+                #endregion IF XmlDocument
+                /// <returns>远程对象扩展</returns>
+                public static RemoteExtension Remote(@MemberType.FullName @MemberName)
+                {
+                    return new RemoteExtension { @MemberName = @MemberName };
+                }
+                #endregion PUSH RemoteKeyMember
+                #region NOT RemoteKeyMember
+                /// <summary>
+                /// 远程对象扩展
+                /// </summary>
+                #region IF Type.XmlDocument
+                /// <param name="value">@Type.XmlDocument</param>
+                #endregion IF Type.XmlDocument
+                /// <returns>远程对象扩展</returns>
+                public static RemoteExtension RemoteType(@Type.FullName value)
+                {
+                    return new RemoteExtension { Value = value };
+                }
+                #endregion NOT RemoteKeyMember
+                #endregion IF IsRemoteMember
+            }
+        }
+        #endregion IF ServiceAttribute.IsSegmentation
+        #region NOT ServiceAttribute.IsSegmentation
+        /*NOTE*/
+        public partial class /*NOTE*/@TypeNameDefinition
+        {
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            public partial struct RemoteExtension
+            {
+                #region IF IsRemoteMember
+                /// <summary>
+                /// @Type.XmlDocument
+                /// </summary>
+                internal @Type.FullName Value;
+                #endregion IF IsRemoteMember
+                #region IF RemoteKeyMember
+                #region LOOP RemoteMethods
+                #region PUSH Method
+                #region IF IsMethod
+                /// <summary>
+                /// @XmlDocument
+                /// </summary>
+                #region LOOP NextParameters
+                #region IF XmlDocument
+                /// <param name="@ParameterName">@XmlDocument</param>
+                #endregion IF XmlDocument
+                #endregion LOOP NextParameters
+                public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
+                {
+                    /*IF:IsMethodReturn*/
+                    return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value/*PUSH:RemoteKeyMember*/.@MemberName/*PUSH:RemoteKeyMember*//*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                }
+                #endregion IF IsMethod
+                #region NOT IsMethod
+                /// <summary>
+                /// @XmlDocument
+                /// </summary>
+                public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMemberName
+                {
+                    get
+                    {
+                        return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value/*PUSH:RemoteKeyMember*/.@MemberName/*PUSH:RemoteKeyMember*/);
+                    }
+                }
+                #endregion NOT IsMethod
+                #endregion PUSH Method
+                #endregion LOOP RemoteMethods
+                #endregion IF RemoteKeyMember
+                #region NOT RemoteKeyMember
+                #region LOOP RemoteMethods
+                #region PUSH Method
+                #region IF IsMethod
+                /// <summary>
+                /// @XmlDocument
+                /// </summary>
+                #region LOOP NextParameters
+                #region IF XmlDocument
+                /// <param name="@ParameterName">@XmlDocument</param>
+                #endregion IF XmlDocument
+                #endregion LOOP NextParameters
+                public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeTypeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
+                {
+                    /*IF:IsMethodReturn*/
+                    return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value/*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                }
+                #endregion IF IsMethod
+                #region NOT IsMethod
+                /// <summary>
+                /// @XmlDocument
+                /// </summary>
+                public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeTypeMemberName
+                {
+                    get
+                    {
+                        return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(Value);
+                    }
+                }
+                #endregion NOT IsMethod
+                #endregion PUSH Method
+                #endregion LOOP RemoteMethods
+                #endregion NOT RemoteKeyMember
+            }
+            #region IF IsRemoteMember
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            [AutoCSer.BinarySerialize.IgnoreMember]
+            [AutoCSer.Json.IgnoreMember]
+            public RemoteExtension Remote
+            {
+                get { return new RemoteExtension { Value = /*NOTE*/(Type.FullName)(object)/*NOTE*/this }; }
+            }
+            #endregion IF IsRemoteMember
+        }
+        #endregion NOT ServiceAttribute.IsSegmentation
+        #endregion IF RemoteMethods.Length
+        #endregion PART CLIENTREMOTE
+        #endregion PUSH CurrentRemoteLinkType
+        #endregion IF Part=RemoteLink
+        #endregion PART CLASS
+    }
+    #region NOTE
+    /// <summary>
+    /// CSharp模板公用模糊类型
+    /// </summary>
+    internal partial class Pub
     {
         /// <summary>
         /// 默认命名空间
@@ -1004,5 +1565,5 @@ namespace AutoCSer.CodeGenerator.Template
             public static AutoCSer.Net.TcpInternalServer.TimeVerifyClient.Verifier verify = null;
         }
     }
-#endregion NOTE
+    #endregion NOTE
 }

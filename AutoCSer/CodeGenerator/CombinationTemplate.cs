@@ -86,9 +86,9 @@ namespace AutoCSer.CodeGenerator
                     if ((index = keyValue.IndexOf(':')) != -1 && keyValue.EndsWith(@"*/
 ", StringComparison.Ordinal))
                     {
-                        keys[new SubString { String = keyValue, StartIndex = 0, Length = index }] = replace = new Replace
+                        keys[new SubString { String = keyValue, Start = 0, Length = index }] = replace = new Replace
                         {
-                            values = new SubString { String = keyValue, StartIndex = ++index, Length = keyValue.Length - index - 4 }.Split(';').GetArray(value => value.Split(','))
+                            values = new SubString { String = keyValue, Start = ++index, Length = keyValue.Length - index - 4 }.Split(';').GetArray(value => value.Split(','))
                         };
                         replace.indexs = new LeftArray<int>[replace.values[0].Length];
                     }

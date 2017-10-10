@@ -282,6 +282,27 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get { return PrimaryKeys.Length > 1 ? PrimaryKeyTypeName : PrimaryKeys[0].MemberSystemType.FullName; }
             }
             /// <summary>
+            /// 是否多关键字
+            /// </summary>
+            public bool IsManyPrimaryKey
+            {
+                get { return PrimaryKeys.Length > 1; }
+            }
+            /// <summary>
+            /// 第一个关键字成员
+            /// </summary>
+            internal MemberIndex PrimaryKey0
+            {
+                get { return PrimaryKeys[0]; }
+            }
+            /// <summary>
+            /// 后续关键字成员集合
+            /// </summary>
+            internal MemberIndex[] NextPrimaryKeys
+            {
+                get { return PrimaryKeys.getSub(1, PrimaryKeys.Length - 1); }
+            }
+            /// <summary>
             /// 自增成员
             /// </summary>
             internal MemberIndex Identity;
@@ -705,6 +726,22 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             public string UpdateValueClass
             {
                 get { return Attribute.IsUpdateMemberMapClassType ? " sealed class" : " struct"; }
+            }
+            /// <summary>
+            /// 是否生成默认的获取缓存的函数
+            /// </summary>
+            public bool IsGetSqlCache
+            {
+                get
+                {
+                    if (Attribute.LogServerName != null && Attribute.IsLogClientGetCache) return true;
+                    if (Attribute.IsRemoteKey)
+                    {
+                        AutoCSer.Sql.Cache.Whole.Event.Type cacheType = CacheType;
+                        return cacheType != Sql.Cache.Whole.Event.Type.Unknown && cacheType != Sql.Cache.Whole.Event.Type.CreateMemberKey;
+                    }
+                    return false;
+                }
             }
             /// <summary>
             /// 安装下一个类型

@@ -6612,6 +6612,13 @@
             <typeparam name="valueType">数据类型</typeparam>
             <returns>字典</returns>
         </member>
+        <member name="M:AutoCSer.DictionaryCreator.CreateChar``1">
+            <summary>
+            创建字典
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <returns>字典</returns>
+        </member>
         <member name="M:AutoCSer.DictionaryCreator.CreateHashString``1(System.Int32)">
             <summary>
             创建字典
@@ -7717,6 +7724,15 @@
             <param name="array">待复制数组</param>
             <returns>复制后的新数组</returns>
         </member>
+        <member name="M:AutoCSer.Extension.ArrayExtension.copyNew``1(``0[],System.Int32)">
+            <summary>
+            复制数组
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <param name="array">待复制数组</param>
+            <param name="newLength">新数组长度</param>
+            <returns>复制后的新数组</returns>
+        </member>
         <member name="M:AutoCSer.Extension.ArrayExtension.getArray``2(``0[],System.Func{``0,``1})">
             <summary>
             数据转换
@@ -7786,6 +7802,16 @@
             <param name="array">字符串集合</param>
             <param name="join">字符连接</param>
             <returns>连接后的字符串</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.ArrayExtension.copyNew``1(``0[],System.Int32,System.Int32)">
+            <summary>
+            复制数组
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <param name="array">待复制数组</param>
+            <param name="newLength">新数组长度</param>
+            <param name="copySize">复制数据数量</param>
+            <returns>复制后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.ArrayExtension.firstOrDefault``1(``0[],System.Func{``0,System.Boolean})">
             <summary>
@@ -8977,6 +9003,20 @@
             <param name="value">数据</param>
             <returns>有效位长度</returns>
         </member>
+        <member name="M:AutoCSer.Extension.Number.FullBit(System.UInt32)">
+            <summary>
+            填充第一个有效二进制位后面的空位
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.Number.UpToPower2(System.UInt32)">
+            <summary>
+            向上去 2 的幂次方
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Extension.Number.DeBruijnLog2(System.UInt32)">
             <summary>
             求 2 的 x 次方
@@ -9601,6 +9641,17 @@
             <param name="key"></param>
             <param name="value"></param>
         </member>
+        <member name="M:AutoCSer.FifoPriorityQueue`2.UnsafePopNode">
+            <summary>
+            弹出一个节点
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.FifoPriorityQueue`2.Pop">
+            <summary>
+            弹出一个值
+            </summary>
+        </member>
         <member name="M:AutoCSer.FifoPriorityQueue`2.UnsafePopValue">
             <summary>
             弹出一个值
@@ -9755,6 +9806,12 @@
             </summary>
             <returns>HASH表</returns>
         </member>
+        <member name="M:AutoCSer.HashSetCreator.CreateHashString">
+            <summary>
+            创建HASH表
+            </summary>
+            <returns>HASH表</returns>
+        </member>
         <member name="T:AutoCSer.HashSetCreator`1">
             <summary>
             创建 HashSet
@@ -9876,6 +9933,13 @@
             <returns></returns>
         </member>
         <member name="M:AutoCSer.HashString.op_Implicit(AutoCSer.HashString)~System.String">
+            <summary>
+            隐式转换
+            </summary>
+            <param name="value">字符串</param>
+            <returns>字符串</returns>
+        </member>
+        <member name="M:AutoCSer.HashString.op_Implicit(AutoCSer.HashString)~AutoCSer.SubString">
             <summary>
             隐式转换
             </summary>
@@ -14410,6 +14474,13 @@
             </summary>
             <param name="array"></param>
         </member>
+        <member name="M:AutoCSer.LeftArray`1.#ctor(System.Int32,`0[])">
+            <summary>
+            数组子串
+            </summary>
+            <param name="length">长度</param>
+            <param name="value">数组</param>
+        </member>
         <member name="P:AutoCSer.LeftArray`1.UnsafeLast">
             <summary>
             获取最后一个值
@@ -14444,6 +14515,14 @@
             添加数据集合
             </summary>
             <param name="values">数据集合</param>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.Add``1(System.Collections.Generic.ICollection{``0},System.Func{``0,`0})">
+            <summary>
+            添加数据集合
+            </summary>
+            <typeparam name="collectionValueType">集合数据类型</typeparam>
+            <param name="values">数据集合</param>
+            <param name="getValue">获取数据委托</param>
         </member>
         <member name="M:AutoCSer.LeftArray`1.UnsafePop">
             <summary>
@@ -14612,12 +14691,6 @@
             枚举器
             </summary>
             <returns>枚举器</returns>
-        </member>
-        <member name="M:AutoCSer.ListArray`1.setLength(System.Int32)">
-            <summary>
-            设置数据容器长度
-            </summary>
-            <param name="count">数据长度</param>
         </member>
         <member name="M:AutoCSer.ListArray`1.addToLength(System.Int32)">
             <summary>
@@ -15963,6 +16036,13 @@
             设置占位
             </summary>
             <param name="bit">位值</param>
+        </member>
+        <member name="M:AutoCSer.MemoryMap.Set(System.UInt64*,System.Int32)">
+            <summary>
+            指针位图
+            </summary>
+            <param name="map">位图指针,不能为null</param>
+            <param name="count">整数数量,大于0</param>
         </member>
         <member name="M:AutoCSer.MemoryMap.SetWhenNullUnsafe(System.Int32)">
             <summary>
@@ -28403,44 +28483,72 @@
             </summary>
             <param name="outputParameter">输出参数</param>
         </member>
-        <member name="T:AutoCSer.Net.ServerPort">
+        <member name="T:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute">
             <summary>
-            TCP 服务默认端口号
+            远程调用链目标成员配置
+            </summary>
+            <summary>
+            远程调用链目标成员配置
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.DiskBlock">
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.IsAwait">
             <summary>
-            磁盘块服务 8993
+            默认为 true 表示生成 await 客户端函数
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.Deploy">
+        <member name="T:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.Type">
             <summary>
-            部署服务 8994
+            名称类型
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.ProcessCopy">
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.Type.Concat">
             <summary>
-            进程复制重启服务 8995
+            直接连接
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.HttpSession">
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.Type.Join">
             <summary>
-            HTTP 会话标识服务 8996
+            下划线连接
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.HttpServerRegister">
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.Type.OnlyName">
             <summary>
-            HTTP 注册管理服务 8997
+            仅名称
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.TcpRegister">
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.MemberName">
             <summary>
-            TCP 内部注册写服务 8998
+            成员名称
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.ServerPort.TcpRegisterReader">
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.NameType">
             <summary>
-            TCP 内部注册读取服务 8999
+            名称类型（用于成员缓存调用链）
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.IsCancel">
+            <summary>
+            是否取消生成
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.IsClientRemoteMember">
+            <summary>
+            默认为 true 表示生成客户端远程成员，false 主要用于缓存推送的自定义处理
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpStaticServer.RemoteMemberAttribute.IsMethod">
+            <summary>
+            是否生成函数
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpStaticServer.RemoteLinkAttribute">
+            <summary>
+            远程调用链中间节点配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpStaticServer.RemoteLinkAttribute.IsNull">
+            <summary>
+            是否需要可空检查
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpStaticServer.Client">
@@ -28519,6 +28627,31 @@
             服务名称
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.TcpStaticServer.RemoteKeyAttribute">
+            <summary>
+            远程调用链根对象关键字配置
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpStaticServer.RemoteMethodAttribute">
+            <summary>
+            远程调用链目标函数配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpStaticServer.RemoteMethodAttribute.IsMethod">
+            <summary>
+            是否生成函数
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpStaticServer.SerializeBoxMethodAttribute">
+            <summary>
+            TCP 调用函数配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpStaticServer.SerializeBoxMethodAttribute.GetParameterFlags">
+            <summary>
+            参数设置
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpStaticServer.ServerAttribute">
             <summary>
             TCP 静态服务配置
@@ -28541,7 +28674,17 @@
         </member>
         <member name="F:AutoCSer.Net.TcpStaticServer.ServerAttribute.IsAbstract">
             <summary>
-            是否支持抽象类
+            默认为 false 表示不支持抽象类
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpStaticServer.ServerAttribute.IsRemoteLink">
+            <summary>
+            默认为 true 表示检测并生成基于的 [AutoCSer.Net.TcpStaticServer.RemoteKey] 调用链代码，只有在 IsRemoteLinkType = false 时才有效
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpStaticServer.ServerAttribute.IsRemoteLinkType">
+            <summary>
+            默认为 false 表示当前类型不是远程调用链类型
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig(System.String,System.Type)">
@@ -28652,6 +28795,51 @@
             <param name="md5Data">MD5 数据</param>
             <param name="ticks">验证时钟周期</param>
             <returns>是否验证成功</returns>
+        </member>
+        <member name="T:AutoCSer.Net.ServerPort">
+            <summary>
+            TCP 服务默认端口号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.Search">
+            <summary>
+            搜索服务 8992
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.DiskBlock">
+            <summary>
+            磁盘块服务 8993
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.Deploy">
+            <summary>
+            部署服务 8994
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.ProcessCopy">
+            <summary>
+            进程复制重启服务 8995
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.HttpSession">
+            <summary>
+            HTTP 会话标识服务 8996
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.HttpServerRegister">
+            <summary>
+            HTTP 注册管理服务 8997
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.TcpRegister">
+            <summary>
+            TCP 内部注册写服务 8998
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.TcpRegisterReader">
+            <summary>
+            TCP 内部注册读取服务 8999
+            </summary>
         </member>
         <member name="T:AutoCSer.Net.UnionType">
             <summary>
@@ -28790,7 +28978,7 @@
             整形指针
             </summary>
         </member>
-        <member name="M:AutoCSer.Pointer.Size.Null">
+        <member name="M:AutoCSer.Pointer.Size.SetNull">
             <summary>
             清空数据
             </summary>
@@ -29993,7 +30181,6 @@
             添加字符串
             </summary>
             <param name="value">字符串</param>
-            <returns>当前字符串连接</returns>
         </member>
         <member name="M:AutoCSer.StringArray.Add(AutoCSer.StringArray)">
             <summary>
@@ -30006,7 +30193,12 @@
             添加字符串
             </summary>
             <param name="values">字符串集合</param>
-            <returns>当前字符串连接</returns>
+        </member>
+        <member name="M:AutoCSer.StringArray.Append(AutoCSer.LeftArray{System.String}@)">
+            <summary>
+            添加字符串
+            </summary>
+            <param name="values">字符串集合</param>
         </member>
         <member name="M:AutoCSer.StringArray.Reverse">
             <summary>
@@ -30605,7 +30797,7 @@
             原字符串
             </summary>
         </member>
-        <member name="F:AutoCSer.SubString.StartIndex">
+        <member name="F:AutoCSer.SubString.Start">
             <summary>
             原字符串中的起始位置
             </summary>
@@ -30697,6 +30889,21 @@
             <param name="length">长度</param>
             <returns>子串</returns>
         </member>
+        <member name="P:AutoCSer.SubString.StartIndex">
+            <summary>
+            原字符串中的起始位置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.SubString.Count">
+            <summary>
+            字符子串长度
+            </summary>
+        </member>
+        <member name="P:AutoCSer.SubString.EndIndex">
+            <summary>
+            原字符串中的结束位置
+            </summary>
+        </member>
         <member name="M:AutoCSer.SubString.#ctor(System.String)">
             <summary>
             字符子串
@@ -30709,6 +30916,14 @@
             </summary>
             <param name="value">字符串</param>
             <param name="startIndex">起始位置</param>
+            <param name="length">长度</param>
+        </member>
+        <member name="M:AutoCSer.SubString.#ctor(System.Int32,System.Int32,System.String)">
+            <summary>
+            字符子串
+            </summary>
+            <param name="startIndex">起始位置</param>
+            <param name="value">字符串</param>
             <param name="length">长度</param>
         </member>
         <member name="M:AutoCSer.SubString.MoveStart(System.Int32)">
@@ -30774,6 +30989,11 @@
         <member name="M:AutoCSer.Threading.AutoWaitHandle.Set">
             <summary>
             结束等待
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Threading.AutoWaitHandle.TryWait">
+            <summary>
+            如果初始化则等待结束
             </summary>
         </member>
         <member name="T:AutoCSer.Threading.ConfigLoader">
@@ -33529,7 +33749,12 @@
         </member>
         <member name="F:AutoCSer.WebView.OutputAjaxAttribute.IsIgnoreNull">
             <summary>
-            是否忽略null值输出
+            默认为 false 表示不忽略 null 值输出
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.OutputAjaxAttribute.IsAllMember">
+            <summary>
+            默认为 false 表示仅输出当前成员，否则输出所有子级成员
             </summary>
         </member>
         <member name="T:AutoCSer.WebView.PathAttribute">

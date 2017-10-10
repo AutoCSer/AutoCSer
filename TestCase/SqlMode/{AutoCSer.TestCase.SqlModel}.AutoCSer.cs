@@ -108,16 +108,6 @@ namespace AutoCSer.TestCase.SqlModel
                     sqlStream.Add(onLog);
                 }
                 /// <summary>
-                /// 获取数据
-                /// </summary>
-                /// <param name="Id">班级标识（默认自增）</param>
-                /// <returns></returns>
-                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
-                protected static tableType getSqlCache(int Id)
-                {
-                    return sqlCache[Id];
-                }
-                /// <summary>
                 /// 计算字段日志流
                 /// </summary>
                 [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
@@ -191,6 +181,17 @@ namespace AutoCSer.TestCase.SqlModel
                 public SqlLogProxyMembers SqlLogProxyMember
                 {
                     get { return new SqlLogProxyMembers { _value_ = this }; }
+                }
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="Id">班级标识（默认自增）</param>
+                /// <returns></returns>
+                [AutoCSer.Net.TcpStaticServer.RemoteKey]
+                [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
+                protected static tableType getSqlCache(int Id)
+                {
+                    return sqlCache[Id];
                 }
                 /// <summary>
                 /// 班级 URL
@@ -293,6 +294,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// </summary>
                 /// <param name="Id">学生标识（默认自增）</param>
                 /// <returns></returns>
+                [AutoCSer.Net.TcpStaticServer.RemoteKey]
                 [AutoCSer.Net.TcpStaticServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ServerName = "DataLog")]
                 protected static tableType getSqlCache(int Id)
                 {

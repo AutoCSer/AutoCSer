@@ -18,7 +18,7 @@ namespace AutoCSer.HtmlNode
             if (!string.IsNullOrEmpty(html))
             {
                 Node document = new Node(html);
-                document.Remove(isTagNameHandle);
+                document.Remove(removeTagNameHandle);
                 foreach (Node node in document.Nodes)
                 {
                     if (node.AttributeArray.Length != 0)
@@ -129,9 +129,9 @@ namespace AutoCSer.HtmlNode
                         foreach (KeyValue<SubString, SubString> value in values)
                         {
                             if (write != newStyleFixed) *write++ = ';';
-                            for (char* start = styleFixed + value.Key.StartIndex, end = start + value.Key.Length; start != end; *write++ = *start++) ;
+                            for (char* start = styleFixed + value.Key.Start, end = start + value.Key.Length; start != end; *write++ = *start++) ;
                             *write++ = ':';
-                            for (char* start = styleFixed + value.Value.StartIndex, end = start + value.Value.Length; start != end; ++start)
+                            for (char* start = styleFixed + value.Value.Start, end = start + value.Value.Length; start != end; ++start)
                             {
                                 *write++ = ((bits[*(byte*)start] & Node.CssFilterBit) | *(((byte*)start) + 1)) == 0 ? ' ' : *start;
                             }
@@ -153,7 +153,7 @@ namespace AutoCSer.HtmlNode
             {
                 fixed (char* urlFixed = url.String)
                 {
-                    char* start = urlFixed + url.StartIndex;
+                    char* start = urlFixed + url.Start;
                     if ((*(int*)start | 0x200020) == 'h' + ('t' << 16) && (*(int*)(start + 2) | 0x200020) == 't' + ('p' << 16))
                     {
                         if (*(int*)(start + 4) == ':' + ('/' << 16)) return true;
@@ -182,18 +182,18 @@ namespace AutoCSer.HtmlNode
         /// </summary>
         private static readonly AutoCSer.StateSearcher.AsciiSearcher tagNames = new AutoCSer.StateSearcher.AsciiSearcher(AutoCSer.StateSearcher.AsciiBuilder.Create(new string[] { "a", "b", "big", "blockquote", "br", "center", "code", "dd", "del", "div", "dl", "dt", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "ins", "li", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "th", "thead", "title", "tr", "u", "ul" }, true).Pointer);
         /// <summary>
-        /// 允许标签名称过滤
+        /// 删除标签名称过滤
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private static bool isTagName(Node node)
+        private static bool removeTagName(Node node)
         {
-            return tagNames.SearchLower(ref node.Tag) >= 0;
+            return node.Tag.Length != 0 && tagNames.SearchLower(ref node.Tag) < 0;
         }
         /// <summary>
         /// 允许标签名称过滤委托
         /// </summary>
-        private static readonly Func<Node, bool> isTagNameHandle = isTagName;
+        private static readonly Func<Node, bool> removeTagNameHandle = removeTagName;
 
         static unsafe SafeFormat()
         {

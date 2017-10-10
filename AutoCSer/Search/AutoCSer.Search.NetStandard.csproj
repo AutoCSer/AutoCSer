@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Search</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.Search.NetStandard</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.Search 是一个模糊匹配搜索组件。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;Search;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;Search;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.Search.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="ArrayPool.cs" />
+    <Compile Include="IWeight.cs" />
+    <Compile Include="Result.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultIndexArray.cs" />
+    <Compile Include="ResultIndexLeftArray.cs" />
+    <Compile Include="SearchFlags.cs" />
+    <Compile Include="StaticSearchQuery.cs" />
+    <Compile Include="StaticSearchQueryResult.cs" />
+    <Compile Include="StaticSearchWordSegmenter.cs" />
+    <Compile Include="StaticSearchInitializeAdder.cs" />
+    <Compile Include="StaticSearchData.cs" />
+    <Compile Include="StaticSearchQueue.cs" />
+    <Compile Include="WordCounter.cs" />
+    <Compile Include="StaticSearcher.cs" />
+    <Compile Include="Simplified.cs" />
+    <Compile Include="StaticStringTrieGraph.cs" />
+    <Compile Include="StaticTrieGraph.cs" />
+    <Compile Include="StaticTrieGraphBuilder.cs" />
+    <Compile Include="StaticTrieGraphNode.cs" />
+    <Compile Include="StringTrieGraph.cs" />
+    <Compile Include="StringTrieGraphTreeBuilder.cs" />
+    <Compile Include="Threading\AutoWaitCount.cs" />
+    <Compile Include="TrieGraph.cs" />
+    <Compile Include="TrieGraphBuilder.cs" />
+    <Compile Include="TrieGraphNode.cs" />
+    <Compile Include="TrieGraphThreadBuilder.cs" />
+    <Compile Include="WordCounterIndex.cs" />
+    <Compile Include="WordType.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.Sort">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

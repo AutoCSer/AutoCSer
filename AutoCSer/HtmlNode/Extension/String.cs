@@ -42,15 +42,15 @@ namespace AutoCSer.Extension
                 {
                     if (object.ReferenceEquals(left.String, right.String))
                     {
-                        if (left.StartIndex == right.StartIndex) return true;
+                        if (left.Start == right.Start) return true;
                         fixed (char* leftFixed = left.String)
                         {
-                            return AutoCSer.Extension.StringExtension.equalCaseNotNull(leftFixed + left.StartIndex, leftFixed + right.StartIndex, left.Length);
+                            return AutoCSer.Extension.StringExtension.equalCaseNotNull(leftFixed + left.Start, leftFixed + right.Start, left.Length);
                         }
                     }
                     fixed (char* leftFixed = left.String, rightFixed = right.String)
                     {
-                        return AutoCSer.Extension.StringExtension.equalCaseNotNull(leftFixed + left.StartIndex, rightFixed + right.StartIndex, left.Length);
+                        return AutoCSer.Extension.StringExtension.equalCaseNotNull(leftFixed + left.Start, rightFixed + right.Start, left.Length);
                     }
                 }
                 return right.String == null ? left.String == null : left.String != null;
@@ -73,7 +73,7 @@ namespace AutoCSer.Extension
                     if (object.ReferenceEquals(left.String, right)) return true;
                     fixed (char* leftFixed = left.String, rightFixed = right)
                     {
-                        return AutoCSer.Extension.StringExtension.equalCaseNotNull(leftFixed + left.StartIndex, rightFixed, left.Length);
+                        return AutoCSer.Extension.StringExtension.equalCaseNotNull(leftFixed + left.Start, rightFixed, left.Length);
                     }
                 }
                 return left.String != null;

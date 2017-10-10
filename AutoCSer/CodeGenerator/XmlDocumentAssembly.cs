@@ -221,7 +221,7 @@ namespace AutoCSer.CodeGenerator
                             if (name[0] == '.')
                             {
                                 methodNameStream.Write('#');
-                                methodNameStream.Write(new SubString { String = name, StartIndex = 1, Length = name.Length - 1 });
+                                methodNameStream.Write(new SubString { String = name, Start = 1, Length = name.Length - 1 });
                             }
                             else methodNameStream.SimpleWriteNotNull(name);
                             ParameterInfo[] parameters = method.GetParameters();

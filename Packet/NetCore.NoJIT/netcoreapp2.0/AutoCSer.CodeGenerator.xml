@@ -3611,6 +3611,26 @@
             调用参数位置
             </summary>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.PartType">
+            <summary>
+            生成部分
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.PartType.ServerType">
+            <summary>
+            服务端 / 客户端
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.PartType.CallType">
+            <summary>
+            服务代理 / 客户端代理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.PartType.RemoteLink">
+            <summary>
+            远程调用链
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.Server">
             <summary>
             TCP 静态服务
@@ -3624,6 +3644,16 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.Server.Types">
             <summary>
             类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.Server.RemoteLinkTypes">
+            <summary>
+            远程调用链类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.Server.ClientCodes">
+            <summary>
+            其它组件添加客户端代码
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.Server.AttributeType">
@@ -3661,9 +3691,327 @@
             方法集合
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.IsAllType">
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType">
             <summary>
-            是否所有类型
+            远程调用链类型信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.Type">
+            <summary>
+            TCP调用类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.ParameterType">
+            <summary>
+            第一个参数类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.RemoteKeyMember">
+            <summary>
+            远程调用链根对象关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.RemoteKeyMethod">
+            <summary>
+            获取远程调用链根对象的函数信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.GetRemoteMethodName">
+            <summary>
+            获取远程调用链根对象的函数名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.RemoteMethods">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.RemoteMembers">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.RemoteLinks">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.IsRemoteLink">
+            <summary>
+            是否需要生成远程调用链
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkType.IsRemoteMember">
+            <summary>
+            是否生成远程成员
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMemberBase">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMemberBase.Attribute">
+            <summary>
+            远程成员配置
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMemberBase.AttributeIsMethod">
+            <summary>
+            是否生成函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMemberBase.Member">
+            <summary>
+            远程成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMemberBase.Method">
+            <summary>
+            获取函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember.GetMemberName">
+            <summary>
+            获取数据函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember.GetTypeMemberName">
+            <summary>
+            获取数据函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember.RemoteMethodName">
+            <summary>
+            远程函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember.RemoteTypeMethodName">
+            <summary>
+            远程函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember.IsMethodReturn">
+            <summary>
+            函数是否存在返回值
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMember.MethodReturnType">
+            <summary>
+            返回值类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod">
+            <summary>
+            远程成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.Type">
+            <summary>
+            当前类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.IsMethodReturn">
+            <summary>
+            函数是否存在返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.MethodParameters">
+            <summary>
+            函数参数信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.IsMethod">
+            <summary>
+            是生成函数还是属性
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.NextParameters">
+            <summary>
+            函数参数信息
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.MethodReturnType">
+            <summary>
+            函数返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.AttributeMemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.AttributeTypeMemberName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.AttributeMethodName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.AttributeTypeMethodName">
+            <summary>
+            成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMethod.Awaiter">
+            <summary>
+            Awaiter
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember">
+            <summary>
+            远程缓存成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember.Attribute">
+            <summary>
+            远程成员缓存配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember.Member">
+            <summary>
+            远程成员信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember.Index">
+            <summary>
+            层级索引
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember.IndexName">
+            <summary>
+            局部变量名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember.ParentIndexName">
+            <summary>
+            局部变量名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkMember.IsNull">
+            <summary>
+            是否需要可空检查
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink">
+            <summary>
+            远程调用链成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.Members">
+            <summary>
+            前缀成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.IndexName">
+            <summary>
+            局部变量名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.PropertyParameters">
+            <summary>
+            属性参数集合
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.GetLinkMemberName">
+            <summary>
+            获取远程成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.GetLinkTypeMemberName">
+            <summary>
+            获取远程成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.RemoteLinkMethodName">
+            <summary>
+            获取远程函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.RemoteLinkTypeMethodName">
+            <summary>
+            获取远程函数名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.IsMethodReturn">
+            <summary>
+            函数是否存在返回值
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.MethodReturnType">
+            <summary>
+            返回值类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.LinkMemberName">
+            <summary>
+            远程成员名称
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLink.IsAnyNull">
+            <summary>
+            是否需要可空检查
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder">
+            <summary>
+            远程调用链成员创建
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.Caches">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.members">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.Push(AutoCSer.CodeGenerator.Metadata.MemberIndex)">
+            <summary>
+            添加远程缓存成员
+            </summary>
+            <param name="member"></param>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.cache">
+            <summary>
+            成员集合缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.cache.Members">
+            <summary>
+            远程成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.cache.Caches">
+            <summary>
+            远程缓存成员集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.memberCache">
+            <summary>
+            成员集合缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteLinkBuilder.getCache(System.Type)">
+            <summary>
+            获取成员集合
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.Part">
+            <summary>
+            生成部分
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.TcpServerAttributeType">
@@ -3701,6 +4049,11 @@
             时间验证函数
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.CurrentRemoteLinkType">
+            <summary>
+            当前远程调用链类型信息
+            </summary>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.TimeVerifyClientType">
             <summary>
             客户端时间验证类型
@@ -3711,6 +4064,13 @@
             获取 TcpCall 调用类型名称
             </summary>
             <param name="namespaceString"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.GetRemoteLinkType(System.Type)">
+            <summary>
+            获取远程调用链类型信息
+            </summary>
             <param name="type"></param>
             <returns></returns>
         </member>
@@ -3734,6 +4094,47 @@
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.onCreated">
             <summary>
             安装完成处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.clientCodes">
+            <summary>
+            其它组件产生的客户端代码
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.ClientCode">
+            <summary>
+            其它组件产生的客户端代码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.ClientCode.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.ClientCode.Attribute">
+            <summary>
+            TCP 静态服务配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.ClientCode.Code">
+            <summary>
+            客户端代码
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.ClientCode.SegmentationCode">
+            <summary>
+            客户端代码
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.AddClientCode(AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.ClientCode)">
+            <summary>
+            其它组件添加客户端代码
+            </summary>
+            <param name="code"></param>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.RemoteMemberTypes">
+            <summary>
+            生成远程成员的类型集合
             </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.TcpStaticServer.Generator.create(System.Boolean)">
@@ -4897,6 +5298,11 @@
             查询成员信息集合
             </summary>
         </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.IsQuery">
+            <summary>
+            是否存在查询参数
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.WebView.Generator.HtmlCount">
             <summary>
             HTML片段数量
@@ -5860,12 +6266,77 @@
             默认客户端TCP调用
             </summary>
         </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.GetMemberName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.GetLinkMemberName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteLinkMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.GetTypeMemberName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <summary>
+            @XmlDocument
+            </summary>
+            <param name="value">@Type.XmlDocument</param>
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteTypeMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@ReturnXmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.GetLinkTypeMemberName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@XmlDocument</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteLinkTypeMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName,AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <returns>@ReturnXmlDocument</returns>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteExtension">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteExtension.Value">
+            <summary>
+            @Type.XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteExtension.AttributeMethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteExtension.AttributeMemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteExtension.AttributeTypeMethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.RemoteExtension.AttributeTypeMemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpStaticServer.TypeNameDefinition.Remote">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
         <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall">
+            <summary>
+            TCP调用客户端
+            </summary>
             <summary>
             TCP调用客户端
             </summary>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition">
+            <summary>
+            @Type.XmlDocument
+            </summary>
             <summary>
             @Type.XmlDocument
             </summary>
@@ -5889,6 +6360,43 @@
             <summary>
             @Method.XmlDocument
             </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension">
+            <summary>
+            远程对象扩展
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension.MemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension.AttributeMethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension.AttributeMemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension.Value">
+            <summary>
+            @Type.XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension.AttributeTypeMethodName(AutoCSer.CodeGenerator.Template.Pub.ParameterTypeRefName)">
+            <param name="@ParameterName">@XmlDocument</param>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteExtension.AttributeTypeMemberName">
+            <summary>
+            @XmlDocument
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.Remote(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>远程对象扩展</returns>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.TcpStaticServer.TcpCall.NoAccessTypeNameDefinition.RemoteType(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>远程对象扩展</returns>
         </member>
         <member name="T:AutoCSer.CodeGenerator.Template.TcpStaticServer.ServerName">
             <summary>

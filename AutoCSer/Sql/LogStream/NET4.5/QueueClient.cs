@@ -31,7 +31,7 @@ namespace AutoCSer.Sql.LogStream
                 {
                     value.Value = new EventWaitHandle(false, EventResetMode.ManualReset);
                     queue.Set(ref randomKey, value);
-                    if (queue.Count > maxCount) queue.UnsafePopValue();
+                    if (queue.Count > maxCount) queue.UnsafePopNode();
                 }
                 finally { Monitor.Exit(logLock); }
                 try

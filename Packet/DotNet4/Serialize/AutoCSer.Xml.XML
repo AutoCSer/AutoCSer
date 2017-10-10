@@ -109,6 +109,12 @@
             </summary>
             <param name="value">字符串</param>
         </member>
+        <member name="M:AutoCSer.UnmanagedStreamBase.WriteNotEmpty(AutoCSer.SubString@)">
+            <summary>
+            写字符串
+            </summary>
+            <param name="value">字符串</param>
+        </member>
         <member name="M:AutoCSer.UnmanagedStreamBase.Reset(System.Byte*,System.Int32)">
             <summary>
             重置数据
@@ -3751,7 +3757,7 @@
             原字符串
             </summary>
         </member>
-        <member name="F:AutoCSer.SubString.StartIndex">
+        <member name="F:AutoCSer.SubString.Start">
             <summary>
             原字符串中的起始位置
             </summary>
@@ -3761,7 +3767,7 @@
             字符子串长度
             </summary>
         </member>
-        <member name="M:AutoCSer.SubString.Null">
+        <member name="M:AutoCSer.SubString.SetNull">
             <summary>
             清空数据
             </summary>
@@ -4128,7 +4134,7 @@
             字节长度
             </summary>
         </member>
-        <member name="M:AutoCSer.Pointer.Size.Null">
+        <member name="M:AutoCSer.Pointer.Size.SetNull">
             <summary>
             清空数据
             </summary>
@@ -4214,6 +4220,32 @@
             <summary>
             所有成员数量
             </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberIndexGroup.fieldCompare">
+            <summary>
+            字符串比较大小
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberIndexGroup.Compare(System.Reflection.FieldInfo,System.Reflection.FieldInfo)">
+            <summary>
+            字符串比较大小
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberIndexGroup.propertyCompare">
+            <summary>
+            字符串比较大小
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberIndexGroup.compare(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo)">
+            <summary>
+            字符串比较大小
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.Metadata.MemberIndexGroup.#ctor(System.Type,System.Boolean)">
             <summary>
@@ -4692,6 +4724,11 @@
             客户端强制终止 TCP 服务端保持回调
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.HtmlTitleHttpClient">
+            <summary>
+            HTML 标题获取客户端操作
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -4833,7 +4870,7 @@
             </summary>
             <returns>枚举器</returns>
         </member>
-        <member name="M:AutoCSer.LeftArray`1.Null">
+        <member name="M:AutoCSer.LeftArray`1.SetNull">
             <summary>
             置空并释放数组
             </summary>
@@ -5303,6 +5340,20 @@
             </summary>
             <param name="value">数据</param>
             <returns>有效位长度</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.Number.FullBit(System.UInt32)">
+            <summary>
+            填充第一个有效二进制位后面的空位
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.Number.UpToPower2(System.UInt32)">
+            <summary>
+            向上去 2 的幂次方
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
         </member>
         <member name="M:AutoCSer.Extension.Number.DeBruijnLog2(System.UInt32)">
             <summary>
@@ -7244,6 +7295,15 @@
             </summary>
             <typeparam name="valueType">数据类型</typeparam>
             <param name="array">待复制数组</param>
+            <returns>复制后的新数组</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.ArrayExtension.copyNew``1(``0[],System.Int32)">
+            <summary>
+            复制数组
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <param name="array">待复制数组</param>
+            <param name="newLength">新数组长度</param>
             <returns>复制后的新数组</returns>
         </member>
         <member name="M:AutoCSer.Extension.ArrayExtension.getArray``2(``0[],System.Func{``0,``1})">

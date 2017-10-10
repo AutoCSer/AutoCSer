@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
+namespace AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType
 {
     /// <summary>
     /// 关键字远程成员映射测试
     /// </summary>
-    [AutoCSer.Sql.RemotePrimaryKey]
-    [AutoCSer.Net.TcpStaticServer.Server(Name = Config.DataReaderServer)]
+    [AutoCSer.Net.TcpStaticServer.Server(Name = Config.DataReaderServer, IsRemoteLinkType = true)]
     public partial struct ClassStudent
     {
         /// <summary>
@@ -21,7 +20,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
         /// <summary>
         /// 获取学生信息
         /// </summary>
-        [AutoCSer.Sql.RemoteMember(IsAwait = false)]
+        [AutoCSer.Net.TcpStaticServer.RemoteMember(IsAwait = false)]
         internal Student Student
         {
             get

@@ -111,7 +111,7 @@ namespace AutoCSer.CodeGenerator
                         {
                             memberCache[type] = values = MemberIndexGroup.Get(Type).Find(Path == "this" ? MemberFilters.Instance : MemberFilters.PublicInstance)
                                 .getDictionary(value => new HashString(value.Member.Name));
-                            foreach (MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+                            foreach (MethodInfo method in type.GetMethods(Path == "this" ? BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic : (BindingFlags.Instance | BindingFlags.Public)))
                             {
                                 Type returnType = method.ReturnType;
                                 if (returnType.IsGenericType && !method.IsGenericMethod && (returnType = returnType.BaseType) != null
@@ -151,13 +151,27 @@ namespace AutoCSer.CodeGenerator
                 template.IsAwaitMethod |= (this.IsAwaitMethod = isAwaitMethod);
                 Path = path;
                 OutputAjax = outputAjax ?? AutoCSer.WebView.OutputAjaxAttribute.Null;
-                foreach (MemberIndexInfo member in Members.Values)
+                if (OutputAjax.IsAllMember)
                 {
-                    //if (member.Member.customAttribute<AutoCSer.code.ignore>(true) == null)
-                    if (!member.IsIgnore && (outputAjax = member.GetAttribute<AutoCSer.WebView.OutputAjaxAttribute>(true)) != null && outputAjax.IsSetup && outputAjax.BindingName == null)
+                    foreach (MemberIndexInfo member in Members.Values)
                     {
-                        SubString memberName = member.Member.Name;
-                        Get(ref memberName, false);
+                        if (!member.IsIgnore && ((outputAjax = member.GetAttribute<AutoCSer.WebView.OutputAjaxAttribute>(true)) == null || (outputAjax.IsSetup && outputAjax.BindingName == null)))
+                        {
+                            SubString memberName = member.Member.Name;
+                            Get(ref memberName, false);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (MemberIndexInfo member in Members.Values)
+                    {
+                        //if (member.Member.customAttribute<AutoCSer.code.ignore>(true) == null)
+                        if (!member.IsIgnore && (outputAjax = member.GetAttribute<AutoCSer.WebView.OutputAjaxAttribute>(true)) != null && outputAjax.IsSetup && outputAjax.BindingName == null)
+                        {
+                            SubString memberName = member.Member.Name;
+                            Get(ref memberName, false);
+                        }
                     }
                 }
             }
@@ -228,7 +242,7 @@ namespace AutoCSer.CodeGenerator
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             internal MemberNode Get(string name)
             {
-                SubString subName = new SubString { String = name, StartIndex = 0, Length = name.Length };
+                SubString subName = new SubString { String = name, Start = 0, Length = name.Length };
                 return Get(ref subName, false);
             }
         }

@@ -552,6 +552,16 @@ namespace AutoCSer.Example.OrmModel
 
 
 
+                /// <summary>
+                /// 获取数据
+                /// </summary>
+                /// <param name="Id">默认自增标识</param>
+                /// <returns></returns>
+                [AutoCSer.Net.TcpStaticServer.RemoteKey]
+                protected static tableType getSqlCache(int Id)
+                {
+                    return sqlCache[Id];
+                }
             }
         }
 }namespace AutoCSer.Example.OrmModel

@@ -54,5 +54,16 @@ namespace AutoCSer.Web.HttpServer
                 return AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Diagnostics.ProcessCopyServer));
             }
         }
+        /// <summary>
+        /// 搜索服务配置
+        /// </summary>
+        [AutoCSer.Config.Member(Name = AutoCSer.Web.SearchServer.Server.ServerName)]
+        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute SearchServerAttribute
+        {
+            get
+            {
+                return AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server));
+            }
+        }
     }
 }

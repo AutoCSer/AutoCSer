@@ -49,7 +49,6 @@
     <Compile Include="Metadata\MemberMapValue.cs" />
     <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
     <Compile Include="NET4.5\LogAttribute.cs" />
-    <Compile Include="NET4.5\RemoteMemberAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AnyCancel.cs" />
     <Compile Include="Cache\Copy.cs" />
@@ -163,15 +162,10 @@
     <Compile Include="MsSql\Sql2005.cs" />
     <Compile Include="NowTime.cs" />
     <Compile Include="OnTime.cs" />
-    <Compile Include="RemoteMemberAttribute.cs" />
-    <Compile Include="RemoteMemberCacheAttribute.cs" />
-    <Compile Include="RemoteMethodAttribute.cs" />
-    <Compile Include="RemotePrimaryKeyAttribute.cs" />
     <Compile Include="SelectQuery.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableAttribute.cs" />
     <Compile Include="TableColumnCollection.cs" />
-    <Compile Include="TcpMethodAttribute.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />

@@ -50,16 +50,6 @@
             <param name="onUpdated">更新数据回调</param>
             <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         </member>
-        <member name="T:AutoCSer.Sql.TcpMethodAttribute">
-            <summary>
-            TCP 调用函数配置
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.TcpMethodAttribute.GetParameterFlags">
-            <summary>
-            参数设置
-            </summary>
-        </member>
         <member name="T:AutoCSer.Sql.MsSql.Sql2005">
             <summary>
             SQL Server 2005 客户端
@@ -3055,59 +3045,6 @@
             Excel
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberAttribute">
-            <summary>
-            远程成员配置
-            </summary>
-            <summary>
-            远程成员配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.MemberName">
-            <summary>
-            成员名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.NameType">
-            <summary>
-            名称类型（用于成员缓存调用链）
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsCancel">
-            <summary>
-            是否取消生成
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.IsAwait">
-            <summary>
-            无意义，用于兼容 .NET 4.5 及以上版本
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.RemoteMemberAttribute.IsMethod">
-            <summary>
-            是否生成函数
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberAttribute.Type">
-            <summary>
-            名称类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.Concat">
-            <summary>
-            直接连接
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.Join">
-            <summary>
-            下划线连接
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberAttribute.Type.OnlyName">
-            <summary>
-            仅名称
-            </summary>
-        </member>
         <member name="T:AutoCSer.Sql.MemberAttribute">
             <summary>
             数据列配置
@@ -5320,6 +5257,11 @@
             默认为 false 生成数据更新成员位图类型使用 struct 定义，否则采用 class
             </summary>
         </member>
+        <member name="F:AutoCSer.Sql.ModelAttribute.IsRemoteKey">
+            <summary>
+            默认为 true 表示为 getSqlCache 函数生成 [AutoCSer.Net.TcpStaticServer.RemoteKey] 
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.ColumnCollectionType">
             <summary>
             列集合类型
@@ -6030,16 +5972,6 @@
             </summary>
             <param name="fieldName">索引列名称</param>
             <param name="fieldSqlName">索引列 Sql 名称</param>
-        </member>
-        <member name="T:AutoCSer.Sql.RemoteMethodAttribute">
-            <summary>
-            远程函数配置
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Sql.RemoteMethodAttribute.IsMethod">
-            <summary>
-            是否生成函数
-            </summary>
         </member>
         <member name="T:AutoCSer.Sql.LogStream.PrimaryKeyClient`3">
             <summary>
@@ -9932,11 +9864,6 @@
             数据库连接配置名称
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.RemotePrimaryKeyAttribute">
-            <summary>
-            关键字远程成员映射配置
-            </summary>
-        </member>
         <member name="T:AutoCSer.Sql.LogStream.LoadedType">
             <summary>
             日志流数据完成类型加载
@@ -10402,16 +10329,6 @@
             删除数据
             </summary>
             <param name="value">被删除的数据</param>
-        </member>
-        <member name="T:AutoCSer.Sql.RemoteMemberCacheAttribute">
-            <summary>
-            远程成员缓存配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.RemoteMemberCacheAttribute.IsNull">
-            <summary>
-            是否需要可空检查
-            </summary>
         </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.Event.Identity64`2">
             <summary>

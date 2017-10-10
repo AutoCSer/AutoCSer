@@ -168,7 +168,7 @@ namespace AutoCSer.HtmlNode
         {
             get
             {
-                if (Tag.Length == 0) return nodeText.Text;
+                if (Tag.Length == 0) return nodeText.Text.ToString() ?? string.Empty;
                 if (!NoTextTagName.TagNames.Contains(Tag))
                 {
                     if (ChildrenArray.Length != 0)
@@ -422,7 +422,7 @@ namespace AutoCSer.HtmlNode
                                                     }
                                                     for (start = current++; ((bits[*(byte*)current] & tagNameSplitBit) | *(((byte*)current) + 1)) != 0; ++current) ;
                                                     name.Set(html, (int)(start - htmlFixed), (int)(current - start));//.toLower()
-                                                    value.FormatHtml.Set(name, name.StartIndex, name.Length);
+                                                    value.FormatHtml.Set(name, name.Start, name.Length);
                                                     if (((bits[*(byte*)current] & attributeNameSplitBit) | *(((byte*)current) + 1)) != 0)
                                                     {
                                                         if (*current != '=')
@@ -493,7 +493,7 @@ namespace AutoCSer.HtmlNode
                                             int tagNameLength = Tag.Length + 2;
                                             fixed (char* tagNameFixed = Tag.String)
                                             {
-                                                char* tarNameStart = tagNameFixed + Tag.StartIndex;
+                                                char* tarNameStart = tagNameFixed + Tag.Start;
                                                 while ((int)(endTagRound - current) >= tagNameLength)
                                                 {
                                                     for (current += tagNameLength; *current != '>'; ++current) ;

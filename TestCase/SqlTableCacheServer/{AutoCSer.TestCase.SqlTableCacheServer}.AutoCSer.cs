@@ -5,10 +5,223 @@ using AutoCSer;
 #if NoAutoCSer
 #else
 #pragma warning disable
-namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
+namespace AutoCSer.TestCase.SqlTableCacheServer
 {
-        [AutoCSer.Json.Serialize(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
-        [AutoCSer.Json.Parse(Filter = AutoCSer.Metadata.MemberFilters.PublicInstanceField)]
+        public partial class Class
+        {
+            /// <summary>
+            /// 当前学生数量
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <returns></returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"StudentCount", IsClientRemoteMember = false, IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            internal static int GetStudentCount(int Id)
+            {
+                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
+                if (!value._IsSqlLogProxyLoaded_) sqlStream.WaitMember(4);
+                return value.SqlLogProxyMember/**/.StudentCount;
+            }
+        }
+}namespace AutoCSer.TestCase.SqlTableCacheServer
+{
+        public partial class Class
+        {
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            public partial struct RemoteExtension
+            {
+                /// <summary>
+                /// 班级表格定义
+                /// </summary>
+                internal AutoCSer.TestCase.SqlTableCacheServer.Class Value;
+                /// <summary>
+                /// 当前学生数量
+                /// </summary>
+                public int StudentCount
+                {
+                    get
+                    {
+                        if (Value._IsSqlLogProxyLoaded_) return Value.SqlLogProxyMember/**/.StudentCount;
+                        return TcpCall.Class.GetStudentCount(Value.Id);
+                    }
+                }
+            }
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            [AutoCSer.BinarySerialize.IgnoreMember]
+            [AutoCSer.Json.IgnoreMember]
+            public RemoteExtension Remote
+            {
+                get { return new RemoteExtension { Value = this }; }
+            }
+        }
+}namespace AutoCSer.TestCase.SqlTableCacheServer
+{
+        public partial class Class
+        {
+            /// <summary>
+            /// 获取学生标识集合（远程实例成员，推荐模式）
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <returns>获取学生标识集合（远程实例成员，推荐模式）</returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"StudentIds", IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            private static int[] getStudentIds(int Id)
+            {
+                return getSqlCache(Id).StudentIds;
+            }
+            /// <summary>
+            /// 获取学生标识（远程实例成员，推荐模式）
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <param name="index">学生索引</param>
+            /// <returns>学生标识集合</returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"GetStudentId", IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            private static int remote_GetStudentId(int Id, int index)
+            {
+                
+                return getSqlCache(Id).GetStudentId(index);
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <returns></returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"ExtensionItem", IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            private static int get_Extension_Item(int Id, int index)
+            {
+                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
+                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
+                    return value0[index];
+            }
+            /// <summary>
+            /// 获取学生标识集合（远程缓存成员）
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <returns>获取学生标识集合（远程缓存成员）</returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"ExtensionStudentIds", IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            private static int[] get_Extension_StudentIds(int Id)
+            {
+                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
+                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
+                    return value0.StudentIds;
+            }
+            /// <summary>
+            /// 获取学生标识（远程缓存成员）
+            /// </summary>
+            /// <param name="Id">班级标识（默认自增）</param>
+            /// <param name="index">学生索引</param>
+            /// <returns>学生标识</returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMethod(MemberName = @"ExtensionGetStudentId", IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            private static int remote_Extension_GetStudentId(int Id, int index)
+            {
+                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
+                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
+                    
+                    return value0/**/.GetStudentId(index);
+            }
+        }
+}namespace AutoCSer.TestCase.SqlTableCacheServer
+{
+        public partial class Class
+        {
+            /// <summary>
+            /// 远程对象扩展
+            /// </summary>
+            public partial struct RemoteExtension
+            {
+                /// <summary>
+                /// 获取学生标识集合（远程静态成员示例，需要自行保证第一个参数的正确性）
+                /// </summary>
+                /// <param name="index">学生索引</param>
+                public int GetStaticStudentId(int index)
+                {
+                    
+                    return  TcpCall.Class.GetStaticStudentId(Value.Id, index);
+                }
+                /// <summary>
+                /// 获取学生标识集合（远程静态成员示例，需要自行保证第一个参数的正确性）
+                /// </summary>
+                public int[] GetStaticStudentIds()
+                {
+                    
+                    return  TcpCall.Class.GetStaticStudentIds(Value.Id);
+                }
+                /// <summary>
+                /// 获取学生标识集合（远程实例成员，推荐模式）
+                /// </summary>
+                public int[] StudentIds
+                {
+                    get
+                    {
+                        return TcpCall.Class.getStudentIds(Value.Id);
+                    }
+                }
+                /// <summary>
+                /// 
+                /// </summary>
+                public int ExtensionItem(int index)
+                {
+                    
+                    return  TcpCall.Class.get_Extension_Item(Value.Id, index);
+                }
+                /// <summary>
+                /// 获取学生标识集合（远程缓存成员）
+                /// </summary>
+                public int[] ExtensionStudentIds
+                {
+                    get
+                    {
+                        return TcpCall.Class.get_Extension_StudentIds(Value.Id);
+                    }
+                }
+                /// <summary>
+                /// 获取学生标识（远程缓存成员）
+                /// </summary>
+                /// <param name="index">学生索引</param>
+                public int ExtensionGetStudentId(int index)
+                {
+                    
+                    return  TcpCall.Class.remote_Extension_GetStudentId(Value.Id, index);
+                }
+                /// <summary>
+                /// 获取学生标识（远程实例成员，推荐模式）
+                /// </summary>
+                /// <param name="index">学生索引</param>
+                public int GetStudentId(int index)
+                {
+                    
+                    return  TcpCall.Class.remote_GetStudentId(Value.Id, index);
+                }
+            }
+        }
+}namespace AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType
+{
+        public partial struct ClassStudent
+        {
+            /// <summary>
+            /// 获取学生信息
+            /// </summary>
+            /// <param name="value">关键字远程成员映射测试</param>
+            /// <returns>获取学生信息</returns>
+            [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"Student", IsAwait = false)]
+            [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
+            private static AutoCSer.TestCase.SqlTableCacheServer.Student getStudent(AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent value)
+            {
+                return value.Student;
+            }
+
+        }
+}namespace AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType
+{
         public partial struct ClassStudent
         {
             /// <summary>
@@ -19,7 +232,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
                 /// <summary>
                 /// 关键字远程成员映射测试
                 /// </summary>
-                internal AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent Value;
+                internal AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent Value;
                 /// <summary>
                 /// 获取学生信息
                 /// </summary>
@@ -39,202 +252,6 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
             public RemoteExtension Remote
             {
                 get { return new RemoteExtension { Value = this }; }
-            }
-
-            /// <summary>
-            /// 获取学生信息
-            /// </summary>
-            /// <param name="value">关键字远程成员映射测试</param>
-            /// <returns>获取学生信息</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"Student", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            private static AutoCSer.TestCase.SqlTableCacheServer.Student getStudent(AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent value)
-            {
-                return value.Student;
-            }
-
-        }
-}namespace AutoCSer.TestCase.SqlTableCacheServer
-{
-        public partial class Class
-        {
-            /// <summary>
-            /// 远程对象扩展
-            /// </summary>
-            public partial struct RemoteExtension
-            {
-                /// <summary>
-                /// 班级表格定义
-                /// </summary>
-                internal AutoCSer.TestCase.SqlTableCacheServer.Class Value;
-                /// <summary>
-                /// 获取学生标识集合（远程静态成员示例，需要自行保证第一个参数的正确性）
-                /// </summary>
-                /// <param name="index">学生索引</param>
-                public int GetStaticStudentId(int index)
-                {
-                        
-                        return TcpCall.Class.GetStaticStudentId(Value.Id, index);
-                }
-                /// <summary>
-                /// 获取学生标识集合（远程静态成员示例，需要自行保证第一个参数的正确性）
-                /// </summary>
-                public int[] GetStaticStudentIds()
-                {
-                        
-                        return TcpCall.Class.GetStaticStudentIds(Value.Id);
-                }
-                /// <summary>
-                /// 当前学生数量
-                /// </summary>
-                public int StudentCount
-                {
-                    get
-                    {
-                        if (Value._IsSqlLogProxyLoaded_) return Value.SqlLogProxyMember/**/.StudentCount;
-                        
-                        return TcpCall.Class.GetStudentCount(Value.Id);
-                    }
-                }
-                /// <summary>
-                /// 获取学生标识集合（远程实例成员，推荐模式）
-                /// </summary>
-                public int[] StudentIds
-                {
-                    get
-                    {
-                        
-                        return TcpCall.Class.getStudentIds(Value.Id);
-                    }
-                }
-                /// <summary>
-                /// 
-                /// </summary>
-                public int ExtensionItem(int index)
-                {
-                        
-                        return TcpCall.Class.get_Extension_Item(Value.Id, index);
-                }
-                /// <summary>
-                /// 获取学生标识集合（远程缓存成员）
-                /// </summary>
-                public int[] ExtensionStudentIds
-                {
-                    get
-                    {
-                        
-                        return TcpCall.Class.get_Extension_StudentIds(Value.Id);
-                    }
-                }
-                /// <summary>
-                /// 获取学生标识（远程缓存成员）
-                /// </summary>
-                /// <param name="index">学生索引</param>
-                public int ExtensionGetStudentId(int index)
-                {
-                        
-                        return TcpCall.Class.remote_Extension_GetStudentId(Value.Id, index);
-                }
-                /// <summary>
-                /// 获取学生标识（远程实例成员，推荐模式）
-                /// </summary>
-                /// <param name="index">学生索引</param>
-                public int GetStudentId(int index)
-                {
-                        
-                        return TcpCall.Class.remote_GetStudentId(Value.Id, index);
-                }
-            }
-            /// <summary>
-            /// 远程对象扩展
-            /// </summary>
-            [AutoCSer.BinarySerialize.IgnoreMember]
-            [AutoCSer.Json.IgnoreMember]
-            public RemoteExtension Remote
-            {
-                get { return new RemoteExtension { Value = this }; }
-            }
-
-            /// <summary>
-            /// 当前学生数量
-            /// </summary>
-            /// <param name="Id">班级标识（默认自增）</param>
-            /// <returns></returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"StudentCount", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            internal static int GetStudentCount(int Id)
-            {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = sqlCache[Id];
-                if (!value._IsSqlLogProxyLoaded_) sqlStream.WaitMember(4);
-                return value.SqlLogProxyMember/**/.StudentCount;
-
-            }
-
-            /// <summary>
-            /// 获取学生标识集合（远程实例成员，推荐模式）
-            /// </summary>
-            /// <param name="Id">班级标识（默认自增）</param>
-            /// <returns>获取学生标识集合（远程实例成员，推荐模式）</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"StudentIds", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            private static int[] getStudentIds(int Id)
-            {
-                return sqlCache[Id].StudentIds;
-            }
-            /// <summary>
-            /// 获取学生标识（远程实例成员，推荐模式）
-            /// </summary>
-            /// <param name="Id">班级标识（默认自增）</param>
-            /// <param name="index">学生索引</param>
-            /// <returns>学生标识集合</returns>
-            [AutoCSer.Sql.RemoteMethod(MemberName = @"GetStudentId", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            private static int remote_GetStudentId(int Id, int index)
-            {
-                
-                return sqlCache[Id].GetStudentId(index);
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="Id">班级标识（默认自增）</param>
-            /// <returns></returns>
-            [AutoCSer.Sql.RemoteMethod(MemberName = @"ExtensionItem", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            private static int get_Extension_Item(int Id, int index)
-            {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = sqlCache[Id];
-                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
-                    return value0[index];
-            }
-            /// <summary>
-            /// 获取学生标识集合（远程缓存成员）
-            /// </summary>
-            /// <param name="Id">班级标识（默认自增）</param>
-            /// <returns>获取学生标识集合（远程缓存成员）</returns>
-            [AutoCSer.Sql.RemoteMember(MemberName = @"ExtensionStudentIds", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            private static int[] get_Extension_StudentIds(int Id)
-            {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = sqlCache[Id];
-                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
-                    return value0.StudentIds;
-            }
-            /// <summary>
-            /// 获取学生标识（远程缓存成员）
-            /// </summary>
-            /// <param name="Id">班级标识（默认自增）</param>
-            /// <param name="index">学生索引</param>
-            /// <returns>学生标识</returns>
-            [AutoCSer.Sql.RemoteMethod(MemberName = @"ExtensionGetStudentId", IsAwait = false)]
-            [AutoCSer.Sql.TcpMethod(IsClientAwaiter = false)]
-            private static int remote_Extension_GetStudentId(int Id, int index)
-            {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = sqlCache[Id];
-                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
-                    
-                    return value0/**/.GetStudentId(index);
             }
         }
 }namespace AutoCSer.TestCase.SqlTableCacheServer
@@ -856,22 +873,22 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
 
             }
         }
-}namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
+}namespace AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType
 {
         public partial struct ClassStudent
         {
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static AutoCSer.TestCase.SqlTableCacheServer.Student _M12(AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent value)
+                public static AutoCSer.TestCase.SqlTableCacheServer.Student _M12(AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent value)
                 {
 
                     
-                    return AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent.getStudent(value);
+                    return AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent.getStudent(value);
                 }
             }
         }
-}namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
+}namespace AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType
 {
         /// <summary>
         /// TCP调用客户端
@@ -890,7 +907,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey
                 /// </summary>
                 /// <param name="value">关键字远程成员映射测试</param>
                 /// <returns>获取学生信息</returns>
-                public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> getStudent(AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent value)
+                public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> getStudent(AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent value)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p11> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p11>.Pop();
                     try
@@ -1655,7 +1672,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                         AutoCSer.TestCase.SqlTableCacheServer.Student Return;
 
                         
-                        Return = AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent/**/.TcpStaticServer._M12(inputParameter.p0);
+                        Return = AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent/**/.TcpStaticServer._M12(inputParameter.p0);
 
                         value.Value.Return = Return;
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -1884,7 +1901,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct _p10
             {
-                public AutoCSer.TestCase.SqlTableCacheServer.RemotePrimaryKey.ClassStudent p0;
+                public AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent p0;
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
