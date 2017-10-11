@@ -30,7 +30,7 @@ namespace AutoCSer.Web.Ajax
             if (file != null)
             {
                 string code;
-                file = file.ToLower();
+                file = file.FileNameToLower();
                 Monitor.Enter(codeLock);
                 if (codes.TryGetValue(file, out code)) Monitor.Exit(codeLock);
                 else
@@ -41,7 +41,7 @@ namespace AutoCSer.Web.Ajax
                         if (fileInfo.Exists)
                         {
                             string fileName = fileInfo.FullName;
-                            if (string.Compare(fileName, 0, path, 0, path.Length, true) == 0) codes.Add(file, code = File.ReadAllText(fileName));
+                            if (path.PathCompare(fileName) == 0) codes.Add(file, code = File.ReadAllText(fileName));
                         }
                     }
                     finally { Monitor.Exit(codeLock); }

@@ -48,8 +48,9 @@ namespace AutoCSer.Web.SearchServer
             switch (type)
             {
                 case DataType.HtmlTitle:
+                    return (weight << 4);
                 case DataType.HtmlImage:
-                    return (weight << 1) + weight;
+                    return (weight << 2);
             }
             return weight;
         }

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Text;
 using AutoCSer.Extension;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace AutoCSer.Web.SearchServer
 {
@@ -28,11 +30,157 @@ namespace AutoCSer.Web.SearchServer
         [AutoCSer.Json.IgnoreMember]
         [AutoCSer.BinarySerialize.IgnoreMember]
         internal string Text;
+        /// <summary>
+        /// 图片集合
+        /// </summary>
+        [AutoCSer.Json.IgnoreMember]
+        [AutoCSer.BinarySerialize.IgnoreMember]
+        internal HtmlImage[] Images;
 
         /// <summary>
         /// HTML 信息缓存
         /// </summary>
         internal static SegmentArray<Html> Cache;
+        /// <summary>
+        /// 页面地址集合
+        /// </summary>
+        private static readonly Dictionary<string, Html> urls = DictionaryCreator.CreateOnly<string, Html>();
+        /// <summary>
+        /// HTML 文件监视器
+        /// </summary>
+        private static readonly FileSystemWatcher htmlWatcher;
+        /// <summary>
+        /// HTML 文件更新访问锁
+        /// </summary>
+        private static readonly object htmlLock = new object();
+        /// <summary>
+        /// 空 HTML 信息
+        /// </summary>
+        private static readonly Html Null = new Html();
+        /// <summary>
+        /// 新建 HTML 文件处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void onCreatedHtml(object sender, FileSystemEventArgs e)
+        {
+            try
+            {
+                FileInfo htmlFile = new FileInfo(e.FullPath);
+                Html newHtml = getHtml(htmlFile);
+                if (newHtml != null)
+                {
+                    Html html;
+                    string url = htmlFile.FullName.Substring(AutoCSer.Web.Config.Search.HtmlPath.Length).Replace('\\', '/'), lowerUrl = url.FileNameToLower();
+                    Monitor.Enter(htmlLock);
+                    if (urls.TryGetValue(lowerUrl, out html) && html != Null)
+                    {
+                        Monitor.Exit(htmlLock);
+                        if (html.Title != newHtml.Title)
+                        {
+                            Searcher.Default.Update(new DataKey { Type = DataType.HtmlTitle, Id = html.Id }, newHtml.Title, html.Title);
+                            html.Title = newHtml.Title;
+                        }
+                        if (html.Text != newHtml.Text)
+                        {
+                            Searcher.Default.Update(new DataKey { Type = DataType.HtmlBodyText, Id = html.Id }, newHtml.Text, html.Text);
+                            html.Text = newHtml.Text;
+                        }
+                        HtmlImage.Free(ref html.Images);
+                        html.Images = newHtml.Images;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            urls[lowerUrl] = newHtml;
+                        }
+                        finally { Monitor.Exit(htmlLock); }
+                        newHtml.Url = url;
+                        newHtml.Id = Cache.GetIndex(newHtml);
+                        Searcher.Default.Add(new DataKey { Id = newHtml.Id, Type = DataType.HtmlTitle }, newHtml.Title);
+                        Searcher.Default.Add(new DataKey { Id = newHtml.Id, Type = DataType.HtmlBodyText }, newHtml.Text);
+                        html = newHtml;
+                    }
+                    foreach (HtmlImage image in html.Images)
+                    {
+                        image.GetIndex(html.Id);
+                        Searcher.Default.Add(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+            }
+        }
+        /// <summary>
+        /// 删除 HTML 文件处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void onDeleteHtml(object sender, FileSystemEventArgs e)
+        {
+            try
+            {
+                Html html;
+                string url = new FileInfo(e.FullPath).FullName.Substring(AutoCSer.Web.Config.Search.HtmlPath.Length).Replace('\\', '/').FileNameToLower();
+                Monitor.Enter(htmlLock);
+                if (urls.TryGetValue(url, out html) && html != Null) urls[url] = Null;
+                Monitor.Exit(htmlLock);
+                if (html != Null && html != null) html.onDeleteHtml();
+            }
+            catch (Exception error)
+            {
+                AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+            }
+        }
+        /// <summary>
+        /// 删除 HTML 文件处理
+        /// </summary>
+        private void onDeleteHtml()
+        {
+            Searcher.Default.Remove(new DataKey { Type = DataType.HtmlTitle, Id = Id }, Title);
+            Searcher.Default.Remove(new DataKey { Type = DataType.HtmlBodyText, Id = Id }, Text);
+            HtmlImage.Free(ref Images);
+        }
+        /// <summary>
+        /// Title 节点筛选器
+        /// </summary>
+        private static readonly AutoCSer.HtmlNode.Filter titleFilter = AutoCSer.HtmlNode.Filter.Get(@"/html[0]/head[0]/title[0]");
+        /// <summary>
+        /// BODY 节点筛选器
+        /// </summary>
+        private static readonly AutoCSer.HtmlNode.Filter bodyFilter = AutoCSer.HtmlNode.Filter.Get(@"/html[0]/body[0]");
+        /// <summary>
+        /// 获取 HTML 信息
+        /// </summary>
+        /// <param name="htmlFile">HTML 文件</param>
+        /// <returns>HTML 信息</returns>
+        private static Html getHtml(FileInfo htmlFile)
+        {
+            AutoCSer.HtmlNode.Node htmlNode = new AutoCSer.HtmlNode.Node(File.ReadAllText(htmlFile.FullName, Encoding.UTF8));
+            foreach (AutoCSer.HtmlNode.Node bodyNode in bodyFilter.Get(htmlNode))
+            {
+                foreach (AutoCSer.HtmlNode.Node titleNode in titleFilter.Get(htmlNode))
+                {
+                    string title, bodyText;
+                    if (!string.IsNullOrEmpty(title = titleNode.Text) && !string.IsNullOrEmpty(bodyText = bodyNode.Text))
+                    {
+                        LeftArray<HtmlImage> images = default(LeftArray<HtmlImage>);
+                        foreach (AutoCSer.HtmlNode.Node imgNode in bodyNode.GetNodesByTagName("img"))
+                        {
+                            string alt = imgNode["alt"], src = imgNode["src"] ?? imgNode["@src"];
+                            if (!string.IsNullOrEmpty(alt) && !string.IsNullOrEmpty(src)) images.Add(new HtmlImage { Url = src, Title = alt });
+                        }
+                        return new Html { Title = title, Text = bodyText, Images = images.ToArray() };
+                    }
+                    break;
+                }
+                break;
+            }
+            return null;
+        }
         static Html()
         {
             try
@@ -41,42 +189,31 @@ namespace AutoCSer.Web.SearchServer
                 using (AutoCSer.Search.StaticSearcher<DataKey>.InitializeAdder adder = Searcher.Default.GetInitializeAdder())
                 {
                     int urlIndex = AutoCSer.Web.Config.Search.HtmlPath.Length;
-                    AutoCSer.HtmlNode.Filter bodyFilter = AutoCSer.HtmlNode.Filter.Get(@"/html[0]/body[0]"), titleFilter = AutoCSer.HtmlNode.Filter.Get(@"/html[0]/head[0]/title[0]");
                     foreach (FileInfo htmlFile in new DirectoryInfo(AutoCSer.Web.Config.Search.HtmlPath).GetFiles("*.html", SearchOption.AllDirectories))
                     {
-                        string fileName = htmlFile.FullName;
-                        AutoCSer.HtmlNode.Node htmlNode = new AutoCSer.HtmlNode.Node(File.ReadAllText(fileName, Encoding.UTF8));
-                        foreach (AutoCSer.HtmlNode.Node bodyNode in bodyFilter.Get(htmlNode))
+                        Html html = getHtml(htmlFile);
+                        if (html != null)
                         {
-                            foreach (AutoCSer.HtmlNode.Node titleNode in titleFilter.Get(htmlNode))
+                            html.Url = htmlFile.FullName.Substring(urlIndex).Replace('\\', '/');
+                            urls.Add(html.Url.FileNameToLower(), html);
+                            html.Id = Cache.GetIndex(html);
+                            adder.Add(new DataKey { Id = html.Id, Type = DataType.HtmlTitle }, html.Title);
+                            adder.Add(new DataKey { Id = html.Id, Type = DataType.HtmlBodyText }, html.Text);
+                            foreach (HtmlImage image in html.Images)
                             {
-                                string title = titleNode.Text, text = bodyNode.Text;
-                                if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(text))
-                                {
-                                    Html html = new Html { Url = fileName.Substring(urlIndex).Replace('\\', '/'), Title = title, Text = text };
-                                    html.Id = Cache.GetIndex(html);
-                                    adder.Add(new DataKey { Id = html.Id, Type = DataType.HtmlTitle }, html.Title);
-                                    adder.Add(new DataKey { Id = html.Id, Type = DataType.HtmlBodyText }, html.Text);
-
-                                    foreach (AutoCSer.HtmlNode.Node imgNode in bodyNode.GetNodesByTagName("img"))
-                                    {
-                                        string alt = imgNode["alt"], src = imgNode["@src"];
-                                        if (!string.IsNullOrEmpty(alt) && !string.IsNullOrEmpty(src))
-                                        {
-                                            HtmlImage image = new HtmlImage { HtmlId = html.Id, Url = src, Title = alt };
-                                            image.Id = HtmlImage.Cache.GetIndex(image);
-                                            adder.Add(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title);
-                                        }
-                                    }
-                                }
-                                break;
+                                image.GetIndex(html.Id);
+                                adder.Add(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title);
                             }
-                            break;
                         }
                     }
                 }
             }
             finally { Searcher.Default.Initialized(); }
+            htmlWatcher = new FileSystemWatcher(AutoCSer.Web.Config.Search.HtmlPath, "*.html");
+            htmlWatcher.IncludeSubdirectories = false;
+            htmlWatcher.EnableRaisingEvents = true;
+            htmlWatcher.Created += onCreatedHtml;
+            htmlWatcher.Deleted += onDeleteHtml;
         }
     }
 }

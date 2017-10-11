@@ -26,6 +26,10 @@ namespace AutoCSer.Web.SearchServer
             {
                 return arrays[index >> maxBits][index & arrayAnd];
             }
+            set
+            {
+                arrays[index >> maxBits][index & arrayAnd] = value;
+            }
         }
         /// <summary>
         /// 数组集合位置

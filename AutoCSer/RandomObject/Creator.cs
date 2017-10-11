@@ -288,7 +288,7 @@ namespace AutoCSer.RandomObject
                     return;
                 }
             }
-            if (type.IsPointer || type.IsInterface) return;
+            if (type.IsPointer || type.IsInterface || typeof(Delegate).IsAssignableFrom(type)) return;
             isValueType = type.IsValueType;
 #if NOJIT
             MemberCreator = new memberRandom().Random();

@@ -12,7 +12,7 @@ namespace AutoCSer.Web.Ajax
         /// <summary>
         /// 示例代码路径
         /// </summary>
-        private static readonly string path = AutoCSer.Web.Config.Deploy.ServerPath.ToLower() + @"example\";
+        private static readonly string path = (AutoCSer.Web.Config.Deploy.ServerPath + @"Example\").FileNameToLower();
         /// <summary>
         /// 获取示例代码
         /// </summary>

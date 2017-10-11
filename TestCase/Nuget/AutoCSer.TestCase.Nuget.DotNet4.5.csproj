@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoCSer, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AutoCSer.DotNet4.5V.1.1.24\lib\AutoCSer.dll</HintPath>
+      <HintPath>..\..\packages\AutoCSer.DotNet4.5V.1.1.25\lib\AutoCSer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

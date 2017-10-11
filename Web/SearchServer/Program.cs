@@ -7,6 +7,7 @@ namespace AutoCSer.Web.SearchServer
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(Html.Cache[0] != null);
             AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server)); 
             do
             {

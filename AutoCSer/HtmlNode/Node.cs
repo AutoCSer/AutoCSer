@@ -323,6 +323,7 @@ namespace AutoCSer.HtmlNode
                         char* script;
                         byte* bits = Bits.Byte;
                         bool isErrorHtml = false;
+                        current = start;
                         if (endQuote1 == null) endQuote1 = start;
                         if (endQuote2 == null) endQuote2 = start;
                         while (current <= endTag)
