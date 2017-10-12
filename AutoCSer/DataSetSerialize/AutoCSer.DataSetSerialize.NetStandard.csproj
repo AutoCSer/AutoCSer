@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.DataSetSerialize</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.DataSetSerialize.NetStandard</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.DataSetSerialize 是一个简单的 DataSet 二进制序列化包装组件。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;DataSetSerialize;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;DataSetSerialize;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.DataSetSerialize.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="DataReader.cs" />
+    <Compile Include="DataSet.cs" />
+    <Compile Include="DataSource.cs" />
+    <Compile Include="DataTable.cs" />
+    <Compile Include="DataWriter.cs" />
+    <Compile Include="Extension\DateTime.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

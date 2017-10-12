@@ -77,7 +77,7 @@ namespace AutoCSer.Search
                 Node[] nodes;
                 cache.Add(node, this.nodeIndex = GetNodeIndex(out nodes));
                 int nodeIndex = this.nodeIndex;
-                nodes[nodeIndex & ArrayPool.ArraySizeAnd].Set(create(node.Nodes), node.Value, create(node.Link));
+                nodes[nodeIndex & ArrayPool.ArraySizeAnd].Set(create(node.Nodes), node.Value);//create(node.Link)
                 return nodeIndex;
             }
             /// <summary>
@@ -93,6 +93,33 @@ namespace AutoCSer.Search
                 foreach (KeyValuePair<char, StringTrieGraph.Node> value in nodes) array[index++].Set(value.Key, create(value.Value));
                 if(array.Length > 1) Array.Sort(array, sortHandle);
                 return array;
+            }
+            /// <summary>
+            /// 创建失败节点
+            /// </summary>
+            /// <param name="node"></param>
+            private void createLink(StringTrieGraph.Node node)
+            {
+                if (node != null)
+                {
+                    if (node.Link != null)
+                    {
+                        this.nodeIndex = cache[node];
+                        NodePool.Pool[this.nodeIndex >> ArrayPool.ArraySizeBit][this.nodeIndex & ArrayPool.ArraySizeAnd].Link = cache[node.Link];
+                    }
+                    createLink(node.Nodes);
+                }
+            }
+            /// <summary>
+            /// 创建失败节点
+            /// </summary>
+            /// <param name="nodes">节点集合</param>
+            private void createLink(Dictionary<char, StringTrieGraph.Node> nodes)
+            {
+                if (nodes != null && nodes.Count != 0)
+                {
+                    foreach (StringTrieGraph.Node value in nodes.Values) createLink(value);
+                }
             }
             /// <summary>
             /// 节点字符排序

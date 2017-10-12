@@ -192,6 +192,7 @@ namespace AutoCSer.Search
                                         word = start;
                                     }
                                 }
+                                if (word != segment && type != (byte)WordType.Keep) addWord((int)(word - textFixed), (int)(start - word));
                                 addWord((int)(segment - textFixed), (int)(start - segment));
                             }
                             else

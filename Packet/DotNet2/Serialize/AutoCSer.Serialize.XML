@@ -6655,6 +6655,12 @@
             </summary>
             <param name="value">字符串</param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.Serializer.Serialize(System.Type)">
+            <summary>
+            类型信息序列化
+            </summary>
+            <param name="value">类型信息</param>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.serializeMethods">
             <summary>
             基本类型转换函数
@@ -7803,6 +7809,12 @@
             字符串序列化
             </summary>
             <param name="array">字符串数组</param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.Serializer.memberSerialize(System.Type)">
+            <summary>
+            类型信息序列化
+            </summary>
+            <param name="value">类型信息</param>
         </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.memberSerializeMethods">
             <summary>
@@ -12374,6 +12386,12 @@
             </summary>
             <param name="value">字符串</param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.memberDeSerialize(System.Type@)">
+            <summary>
+            类型信息反序列化
+            </summary>
+            <param name="value">类型信息</param>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializer.memberDeSerializeMethods">
             <summary>
             基本类型转换函数
@@ -12781,6 +12799,12 @@
             反序列化
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.deSerialize(System.Type@)">
+            <summary>
+            类型信息反序列化
+            </summary>
+            <param name="value">类型信息</param>
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializer.deSerializeMethods">
             <summary>
@@ -15207,6 +15231,11 @@
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.RemoteTypeError">
             <summary>
             远程类型加载失败
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeState.ErrorType">
+            <summary>
+            类型解析错误
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.Custom">

@@ -197,6 +197,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Search.NetStandard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Example.Search.NetCore", "Example\Search\AutoCSer.Example.Search.NetCore.csproj", "{71C325AE-DE30-435C-8A7F-D1810AB19299}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.DataSetSerialize.NetStandard", "AutoCSer\DataSetSerialize\AutoCSer.DataSetSerialize.NetStandard.csproj", "{D6ADD939-520F-4746-B440-7E88F5676A95}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCSer.Expand.NetStandard", "AutoCSer\Expand\AutoCSer.Expand.NetStandard.csproj", "{0F65CEA7-B56C-4950-AB07-7FB630704470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -527,6 +531,14 @@ Global
 		{71C325AE-DE30-435C-8A7F-D1810AB19299}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71C325AE-DE30-435C-8A7F-D1810AB19299}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71C325AE-DE30-435C-8A7F-D1810AB19299}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6ADD939-520F-4746-B440-7E88F5676A95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6ADD939-520F-4746-B440-7E88F5676A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6ADD939-520F-4746-B440-7E88F5676A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6ADD939-520F-4746-B440-7E88F5676A95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F65CEA7-B56C-4950-AB07-7FB630704470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F65CEA7-B56C-4950-AB07-7FB630704470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F65CEA7-B56C-4950-AB07-7FB630704470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F65CEA7-B56C-4950-AB07-7FB630704470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -622,6 +634,8 @@ Global
 		{38C36678-D77F-49DF-8888-8D0A2B5F2DF8} = {9CA9DCBA-34C3-468C-A51D-21974F54149D}
 		{63C4A585-298B-4633-9634-758BE30F0DE0} = {7F00A04D-FB56-4E23-9761-75E9AECE1CA6}
 		{71C325AE-DE30-435C-8A7F-D1810AB19299} = {9CA9DCBA-34C3-468C-A51D-21974F54149D}
+		{D6ADD939-520F-4746-B440-7E88F5676A95} = {7E123828-E966-48BA-B898-331F74E4650C}
+		{0F65CEA7-B56C-4950-AB07-7FB630704470} = {7F00A04D-FB56-4E23-9761-75E9AECE1CA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63559F49-B0D6-4D4D-A689-C10163549A56}

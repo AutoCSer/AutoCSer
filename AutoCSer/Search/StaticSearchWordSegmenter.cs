@@ -232,6 +232,7 @@ namespace AutoCSer.Search
                                         word = start;
                                     }
                                 }
+                                if (word != segment && type != (byte)WordType.Keep) addWord((int)(word - textFixed), (int)(start - word), (WordType)type);
                                 addWord((int)(segment - textFixed), (int)(start - segment), (WordType)wordType);
                             }
                             else

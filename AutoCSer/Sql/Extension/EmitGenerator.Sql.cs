@@ -13,10 +13,6 @@ namespace AutoCSer.Extension
     internal static class EmitGenerator_Sql
     {
         /// <summary>
-        /// 内存字符流写入字符方法信息
-        /// </summary>
-        private static readonly MethodInfo charStreamWriteCharMethod = typeof(CharStream).GetMethod("Write", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(char) }, null);
-        /// <summary>
         /// 写入字符
         /// </summary>
         /// <param name="generator"></param>
@@ -27,7 +23,7 @@ namespace AutoCSer.Extension
         {
             generator.Emit(target);
             generator.int32(value);
-            generator.Emit(OpCodes.Callvirt, charStreamWriteCharMethod);
+            generator.Emit(OpCodes.Callvirt, AutoCSer.Extension.EmitGenerator.CharStreamWriteCharMethod);
         }
         /// <summary>
         /// 内存字符流写入字符串方法信息

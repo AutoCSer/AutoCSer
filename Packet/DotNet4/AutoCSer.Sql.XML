@@ -4878,30 +4878,6 @@
             int引用参数类型
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.Field.nullableHasValues">
-            <summary>
-            可空类型是否为空判断函数信息集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Field.GetNullableHasValue(System.Type)">
-            <summary>
-            获取可空类型是否为空判断函数信息
-            </summary>
-            <param name="type"></param>
-            <returns>可空类型是否为空判断函数信息</returns>
-        </member>
-        <member name="F:AutoCSer.Sql.Field.nullableValues">
-            <summary>
-            可空类型获取数据函数信息集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.Field.GetNullableValue(System.Type)">
-            <summary>
-            获取可空类型获取数据函数信息
-            </summary>
-            <param name="type"></param>
-            <returns>可空类型获取数据函数信息</returns>
-        </member>
         <member name="M:AutoCSer.Sql.Field.Get(AutoCSer.Metadata.FieldIndex[],System.Boolean)">
             <summary>
             获取字段成员集合
@@ -7562,11 +7538,6 @@
         <member name="T:AutoCSer.Extension.EmitGenerator_Sql">
             <summary>
             MSIL生成
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator_Sql.charStreamWriteCharMethod">
-            <summary>
-            内存字符流写入字符方法信息
             </summary>
         </member>
         <member name="M:AutoCSer.Extension.EmitGenerator_Sql.charStreamWriteChar(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Char)">

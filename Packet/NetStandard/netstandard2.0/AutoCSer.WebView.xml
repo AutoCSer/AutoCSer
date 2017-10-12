@@ -201,6 +201,193 @@
             新建文件监视链表
             </summary>
         </member>
+        <member name="T:AutoCSer.Extension.Number_WebView">
+            <summary>
+            数值相关扩展操作
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Extension.Number_WebView.CheckHex(System.UInt32,System.Char*)">
+            <summary>
+            数字值转换为十六进制字符串
+            </summary>
+            <param name="value">数字值</param>
+            <param name="hexs">十六进制字符串</param>
+            <returns>0表示相等</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.Number_WebView.CheckHex(System.UInt64,System.Char*)">
+            <summary>
+            转换16位十六进制字符串
+            </summary>
+            <param name="value">数字值</param>
+            <param name="hexs">16位十六进制字符串</param>
+            <returns>0表示相等</returns>
+        </member>
+        <member name="T:AutoCSer.WebView.Poll.Session">
+            <summary>
+            会话超时集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.Session.sessions">
+            <summary>
+            长连接轮询验证集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.Session.sessionLock">
+            <summary>
+            长连接轮询验证访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.Session.timeoutTicks">
+            <summary>
+            超时时钟周期
+            </summary>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.Session.#ctor(System.Int64)">
+            <summary>
+            会话超时集合
+            </summary>
+            <param name="timeoutTicks">超时时钟周期</param>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.Session.Get(System.Int32,AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            获取用户长连接轮询验证
+            </summary>
+            <param name="userId">用户标识</param>
+            <param name="sessionId">长连接轮询验证,0表示失败</param>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.Session.Add(System.Int32)">
+            <summary>
+            添加用户长连接轮询验证
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.Session.Remove(System.Int32)">
+            <summary>
+            删除用户长连接轮询验证
+            </summary>
+            <param name="userId"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.Session.Verify(AutoCSer.WebView.Poll.VerifyInfo@)">
+            <summary>
+            轮询验证检测
+            </summary>
+            <param name="verify">轮询验证输入参数信息</param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.WebView.Poll.SessionPool">
+            <summary>
+            长连接轮询会话超时集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.SessionPool.sessions">
+            <summary>
+            长连接轮询验证集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.#ctor(System.Int32)">
+            <summary>
+            超时秒数
+            </summary>
+            <param name="timeoutSeconds"></param>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.getString(System.Int32)">
+            <summary>
+            获取用户长连接轮询验证
+            </summary>
+            <param name="userId">用户标识</param>
+            <returns>长连接轮询验证</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.get(System.Int32,AutoCSer.Net.HttpDomainServer.SessionId@)">
+            <summary>
+            获取用户长连接轮询验证
+            </summary>
+            <param name="userId">用户标识</param>
+            <param name="sessionId">长连接轮询验证,0表示失败</param>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.Get(System.Int32)">
+            <summary>
+            获取用户长连接轮询验证
+            </summary>
+            <param name="userId">用户标识</param>
+            <returns>长连接轮询验证</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.add(System.Int32)">
+            <summary>
+            添加用户长连接轮询验证
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.Remove(System.Int32)">
+            <summary>
+            删除用户长连接轮询验证
+            </summary>
+            <param name="userId">用户标识</param>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionPool.Verify(AutoCSer.WebView.Poll.VerifyInfo@)">
+            <summary>
+            轮询验证检测
+            </summary>
+            <param name="verify">轮询验证输入参数信息</param>
+            <returns>是否通过验证</returns>
+        </member>
+        <member name="T:AutoCSer.WebView.Poll.SessionTimeout">
+            <summary>
+            会话超时
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.SessionTimeout.Timeout">
+            <summary>
+            超时
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.SessionTimeout.SessionId">
+            <summary>
+            会话标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionTimeout.New(System.Int64)">
+            <summary>
+            创建会话标识
+            </summary>
+            <param name="timeoutTicks">超时时钟周期</param>
+            <returns>会话标识</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionTimeout.Get(System.Int64)">
+            <summary>
+            获取会话标识
+            </summary>
+            <param name="timeoutTicks">超时时钟周期</param>
+            <returns>会话标识</returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionTimeout.Check(System.String)">
+            <summary>
+            会话标识验证
+            </summary>
+            <param name="verify"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.WebView.Poll.SessionTimeout.Clear">
+            <summary>
+            清除数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.WebView.Poll.VerifyInfo">
+            <summary>
+            轮询验证输入参数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.VerifyInfo.UserId">
+            <summary>
+            用户标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.WebView.Poll.VerifyInfo.Verify">
+            <summary>
+            验证信息
+            </summary>
+        </member>
         <member name="T:AutoCSer.WebView.ViewBase">
             <summary>
             WEB 页面视图
@@ -4452,9 +4639,32 @@
             </summary>
             <param name="deSerializer">对象反序列化器</param>
         </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.SessionId.New">
+            <summary>
+            重置会话标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.SessionId.CheckHex(System.String)">
+            <summary>
+            判断是否匹配16进制字符串
+            </summary>
+            <param name="hex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.HttpDomainServer.SessionId.ToHex">
+            <summary>
+            转换成16进制字符串
+            </summary>
+            <returns></returns>
+        </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.SessionId.highRandom">
             <summary>
             随机数高位
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.SessionId.identityRandom">
+            <summary>
+            随机数自增标识
             </summary>
         </member>
         <member name="T:AutoCSer.Net.HttpDomainServer.StaticFileServer">

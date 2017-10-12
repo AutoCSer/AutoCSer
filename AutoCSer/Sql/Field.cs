@@ -295,41 +295,7 @@ namespace AutoCSer.Sql
         /// </summary>
         internal static readonly Type RefIntType = typeof(int).MakeByRefType();
 #endif
-        /// <summary>
-        /// 可空类型是否为空判断函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableHasValues = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 获取可空类型是否为空判断函数信息
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns>可空类型是否为空判断函数信息</returns>
-        internal static MethodInfo GetNullableHasValue(Type type)
-        {
-            MethodInfo method;
-            if (nullableHasValues.TryGetValue(type, out method)) return method;
-            method = type.GetProperty("HasValue", BindingFlags.Instance | BindingFlags.Public).GetGetMethod();
-            nullableHasValues.Set(type, method);
-            return method;
-        }
 
-        /// <summary>
-        /// 可空类型获取数据函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableValues = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 获取可空类型获取数据函数信息
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns>可空类型获取数据函数信息</returns>
-        internal static MethodInfo GetNullableValue(Type type)
-        {
-            MethodInfo method;
-            if (nullableValues.TryGetValue(type, out method)) return method;
-            method = type.GetProperty("Value", BindingFlags.Instance | BindingFlags.Public).GetGetMethod();
-            nullableValues.Set(type, method);
-            return method;
-        }
         /// <summary>
         /// 获取字段成员集合
         /// </summary>
@@ -428,8 +394,6 @@ namespace AutoCSer.Sql
         {
             sqlColumnTypes.Clear();
             verifyTypes.Clear();
-            nullableHasValues.Clear();
-            nullableValues.Clear();
         }
         static Field()
         {

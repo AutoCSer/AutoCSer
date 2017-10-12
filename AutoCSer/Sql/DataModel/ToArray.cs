@@ -75,14 +75,14 @@ namespace AutoCSer.Sql.DataModel
                     Label end = generator.DefineLabel();
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field.FieldInfo);
-                    generator.Emit(OpCodes.Call, Field.GetNullableHasValue(field.NullableDataType));
+                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableHasValue(field.NullableDataType));
                     generator.Emit(OpCodes.Brtrue_S, end);
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldflda, field.FieldInfo);
-                    generator.Emit(OpCodes.Call, Field.GetNullableValue(field.NullableDataType));
+                    generator.Emit(OpCodes.Call, AutoCSer.Emit.Pub.GetNullableValue(field.NullableDataType));
                     generator.Emit(OpCodes.Box, field.DataType);
                     generator.Emit(OpCodes.Stelem_Ref);
                     generator.MarkLabel(end);

@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Expand</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.Expand.NetStandard</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.Expand 是一个杂乱小工具整合项目。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;Expand;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;Expand;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.Expand.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Email\Content.cs" />
+    <Compile Include="Email\EventSender.cs" />
+    <Compile Include="Email\Sender.cs" />
+    <Compile Include="Email\Smtp.cs" />
+    <Compile Include="JsonFile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleMapping32.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="NumberToCharStream\Join.cs" />
+    <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
+    <Compile Include="NumberToCharStream\JoinMethod.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

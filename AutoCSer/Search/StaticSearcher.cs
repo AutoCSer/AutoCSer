@@ -511,14 +511,14 @@ namespace AutoCSer.Search
         public unsafe KeyValue<int, int>[] FormatTextIndexs(ref keyType key, ref string text, ref LeftArray<KeyValue<HashString, QueryResult>> results, int maxLength)
         {
             if (text.Length <= maxLength) return GetResultIndexs(ref key, text.Length, ref results);
-            int count = results.Length, index0 = 0, endIndex = 0;
+            int count = results.Length, index0 = int.MaxValue, endIndex = 0;
             ResultIndexArray indexArray;
             foreach (KeyValue<HashString, QueryResult> result in results.Array)
             {
                 if (result.Value.Dictionary.TryGetValue(key, out indexArray))
                 {
                     int index = indexArray.Indexs[0];
-                    if (index > index0)
+                    if (index < index0 || (index == index0 && index + result.Key.String.Length > endIndex))
                     {
                         index0 = index;
                         endIndex = index + result.Key.String.Length;
@@ -563,14 +563,22 @@ namespace AutoCSer.Search
                             {
                                 foreach (int index in indexArray.Indexs)
                                 {
-                                    if (index >= startIndex && index + wordLenght <= endIndex) map.Set(index - startIndex, wordLenght);
+                                    if (index >= startIndex)
+                                    {
+                                        if (index + wordLenght <= endIndex) map.Set(index - startIndex, wordLenght);
+                                        else break;
+                                    }
                                 }
                             }
                             else
                             {
                                 foreach (int index in indexArray.Indexs)
                                 {
-                                    if (index >= startIndex && index < endIndex) map.Set(index - startIndex);
+                                    if (index >= startIndex)
+                                    {
+                                        if (index < endIndex) map.Set(index - startIndex);
+                                        else break;
+                                    }
                                 }
                             }
                         }

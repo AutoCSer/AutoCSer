@@ -8757,6 +8757,11 @@
             非托管内存数据流当前数据长度
             </summary>
         </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.CharStreamWriteCharMethod">
+            <summary>
+            内存字符流写入字符方法信息
+            </summary>
+        </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.int32(System.Reflection.Emit.ILGenerator,System.Int32)">
             <summary>
             加载Int32数据
@@ -9162,7 +9167,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodBaseAttribute.IsVerifyMethod">
             <summary>
-            申明验证方法，客户端只有通过了验证才能调用其它函数。一个 TCP 服务只能指定一个验证方法（对于跨类型单例服务只能定义在 AutoCSer.code.cSharp.tcpCall.IsServer = true 的 class 中），且返回值类型必须为 bool。从安全的角度考虑，实际项目中的服务都应该定义验证方法，除非你能保证该服务绝对不会被其它人建立非法连接。比如参考 AutoCSer.net.tcp.timeVerifyServer。
+            申明验证方法，客户端只有通过了验证才能调用其它函数。一个 TCP 服务只能指定一个验证方法（对于跨类型单例服务只能定义在 AutoCSer.Net.TcpStaticServer.ServerAttribute.IsServer = true 的 class 中），且返回值类型必须为 bool。从安全的角度考虑，实际项目中的服务都应该定义验证方法，除非你能保证该服务绝对不会被其它人建立非法连接。比如参考 AutoCSer.net.tcp.timeVerifyServer。
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.MethodBaseAttribute.IsServerSerialize">
@@ -14773,6 +14778,12 @@
             </summary>
             <param name="value">字符串</param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.memberDeSerialize(System.Type@)">
+            <summary>
+            类型信息反序列化
+            </summary>
+            <param name="value">类型信息</param>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializer.memberDeSerializeMethods">
             <summary>
             基本类型转换函数
@@ -15180,6 +15191,12 @@
             反序列化
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.deSerialize(System.Type@)">
+            <summary>
+            类型信息反序列化
+            </summary>
+            <param name="value">类型信息</param>
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializer.deSerializeMethods">
             <summary>
@@ -17370,6 +17387,12 @@
             </summary>
             <param name="value">字符串</param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.Serializer.Serialize(System.Type)">
+            <summary>
+            类型信息序列化
+            </summary>
+            <param name="value">类型信息</param>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.serializeMethods">
             <summary>
             基本类型转换函数
@@ -18518,6 +18541,12 @@
             字符串序列化
             </summary>
             <param name="array">字符串数组</param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.Serializer.memberSerialize(System.Type)">
+            <summary>
+            类型信息序列化
+            </summary>
+            <param name="value">类型信息</param>
         </member>
         <member name="F:AutoCSer.BinarySerialize.Serializer.memberSerializeMethods">
             <summary>
@@ -19954,6 +19983,21 @@
             <param name="fileName"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.PubPath.FileNameToLower(System.String)">
+            <summary>
+            文件名转小写（MONO 不做处理）
+            </summary>
+            <param name="fileName">文件名</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.PubPath.PathCompare(System.String,System.String)">
+            <summary>
+            文件路径比较
+            </summary>
+            <param name="path">文件路径</param>
+            <param name="fileName">文件名称</param>
+            <returns>匹配返回 0</returns>
+        </member>
         <member name="T:AutoCSer.Net.TcpStaticServer.Client">
             <summary>
             TCP 静态服务客户端
@@ -20733,6 +20777,36 @@
             </summary>
             <param name="name"></param>
             <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Emit.Pub.nullableHasValues">
+            <summary>
+            可空类型是否为空判断函数信息集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Emit.Pub.GetNullableHasValue(System.Type)">
+            <summary>
+            获取可空类型是否为空判断函数信息
+            </summary>
+            <param name="type"></param>
+            <returns>可空类型是否为空判断函数信息</returns>
+        </member>
+        <member name="F:AutoCSer.Emit.Pub.nullableValues">
+            <summary>
+            可空类型获取数据函数信息集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Emit.Pub.GetNullableValue(System.Type)">
+            <summary>
+            获取可空类型获取数据函数信息
+            </summary>
+            <param name="type"></param>
+            <returns>可空类型获取数据函数信息</returns>
+        </member>
+        <member name="M:AutoCSer.Emit.Pub.clearCache(System.Int32)">
+            <summary>
+            清除缓存数据
+            </summary>
+            <param name="count">保留缓存数据数量</param>
         </member>
         <member name="T:AutoCSer.DictionaryCreator">
             <summary>
@@ -26090,6 +26164,13 @@
             </summary>
             <param name="value">数字值</param>
             <param name="hexs">十六进制字符串</param>
+        </member>
+        <member name="M:AutoCSer.Extension.Number.toHex(System.UInt64,System.Char*)">
+            <summary>
+            转换16位十六进制字符串
+            </summary>
+            <param name="value">数字值</param>
+            <param name="hexs">16位十六进制字符串</param>
         </member>
         <member name="M:AutoCSer.Extension.Number.toHex(System.UInt64)">
             <summary>
@@ -32132,6 +32213,11 @@
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.RemoteTypeError">
             <summary>
             远程类型加载失败
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeState.ErrorType">
+            <summary>
+            类型解析错误
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializeState.Custom">

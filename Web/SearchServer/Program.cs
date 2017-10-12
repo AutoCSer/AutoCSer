@@ -7,7 +7,10 @@ namespace AutoCSer.Web.SearchServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Html.Cache[0] != null);
+            foreach (KeyValue<HashString, AutoCSer.Search.StaticSearcher<DataKey>.QueryResult> result in Searcher.Default.Search("AutoCSer"))
+            {
+                Console.WriteLine(result.Key.ToString() + " " + result.Value.Count.ToString());
+            }
             AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server)); 
             do
             {

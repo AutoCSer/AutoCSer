@@ -8775,6 +8775,11 @@
             非托管内存数据流当前数据长度
             </summary>
         </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.CharStreamWriteCharMethod">
+            <summary>
+            内存字符流写入字符方法信息
+            </summary>
+        </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.int32(System.Reflection.Emit.ILGenerator,System.Int32)">
             <summary>
             加载Int32数据
@@ -20789,6 +20794,36 @@
             <param name="name"></param>
             <returns></returns>
         </member>
+        <member name="F:AutoCSer.Emit.Pub.nullableHasValues">
+            <summary>
+            可空类型是否为空判断函数信息集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Emit.Pub.GetNullableHasValue(System.Type)">
+            <summary>
+            获取可空类型是否为空判断函数信息
+            </summary>
+            <param name="type"></param>
+            <returns>可空类型是否为空判断函数信息</returns>
+        </member>
+        <member name="F:AutoCSer.Emit.Pub.nullableValues">
+            <summary>
+            可空类型获取数据函数信息集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Emit.Pub.GetNullableValue(System.Type)">
+            <summary>
+            获取可空类型获取数据函数信息
+            </summary>
+            <param name="type"></param>
+            <returns>可空类型获取数据函数信息</returns>
+        </member>
+        <member name="M:AutoCSer.Emit.Pub.clearCache(System.Int32)">
+            <summary>
+            清除缓存数据
+            </summary>
+            <param name="count">保留缓存数据数量</param>
+        </member>
         <member name="T:AutoCSer.DictionaryCreator">
             <summary>
             创建字典
@@ -25917,6 +25952,13 @@
             </summary>
             <param name="value">数字值</param>
             <param name="hexs">十六进制字符串</param>
+        </member>
+        <member name="M:AutoCSer.Extension.Number.toHex(System.UInt64,System.Char*)">
+            <summary>
+            转换16位十六进制字符串
+            </summary>
+            <param name="value">数字值</param>
+            <param name="hexs">16位十六进制字符串</param>
         </member>
         <member name="M:AutoCSer.Extension.Number.toHex(System.UInt64)">
             <summary>

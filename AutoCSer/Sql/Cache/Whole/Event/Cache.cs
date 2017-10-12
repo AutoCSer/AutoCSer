@@ -133,7 +133,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 FieldInfo logProxyLoadedField = typeof(modelType).GetField(LogStream.Log.IsSqlLogProxyLoadedName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
                 if (logProxyLoadedField != null)
                 {
-                    DynamicMethod dynamicMethod = new DynamicMethod("setIsLogProxyLoaded", null, new System.Type[] { typeof(modelType) }, typeof(modelType), true);
+                    DynamicMethod dynamicMethod = new DynamicMethod("SetIsLogProxyLoaded", null, new System.Type[] { typeof(modelType) }, typeof(modelType), true);
                     ILGenerator generator = dynamicMethod.GetILGenerator();
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.int32(1);

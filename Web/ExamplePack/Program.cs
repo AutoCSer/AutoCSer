@@ -157,7 +157,8 @@ namespace AutoCSer.Tool.OpenPack
                     case 5: isDircectory = string.Compare(nextDircectory.Name, "MySql", true); break;
                     case 6:
                         isDircectory = string.Compare(nextDircectory.Name, "Deploy", true);
-                        if(isDircectory!=0) isDircectory = string.Compare(nextDircectory.Name, "Search", true);
+                        if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "Search", true);
+                        if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "Expand", true);
                         break;
                     case 7: isDircectory = string.Compare(nextDircectory.Name, "Drawing", true); break;
                     case 8: isDircectory = string.Compare(nextDircectory.Name, "HtmlNode", true); break;
@@ -173,6 +174,7 @@ namespace AutoCSer.Tool.OpenPack
                         isDircectory = string.Compare(nextDircectory.Name, "TcpStreamServer", true);
                         if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "TcpSimpleServer", true);
                         break;
+                    case 16: isDircectory = string.Compare(nextDircectory.Name, "DataSetSerialize", true); break;
                     case 17: isDircectory = string.Compare(nextDircectory.Name, "RawSocketListener", true); break;
                     default: isDircectory = 1; break;
                 }

@@ -67,7 +67,9 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.HtmlNode")]
 [assembly: InternalsVisibleTo("AutoCSer.HtmlTitle")]
 [assembly: InternalsVisibleTo("AutoCSer.RawSocketListener")]
+[assembly: InternalsVisibleTo("AutoCSer.DataSetSerialize")]
 
+[assembly: InternalsVisibleTo("AutoCSer.Expand")]
 [assembly: InternalsVisibleTo("AutoCSer.CodeGenerator.Custom")]//用户自定义代码生成预留程序集名称
 [assembly: InternalsVisibleTo("AutoCSer.Custom")]//预留程序集名称，开发者可以自建项目暴露 AutoCSer 的 internal 访问权限
 [assembly: InternalsVisibleTo("AutoCSer.TestCase")]

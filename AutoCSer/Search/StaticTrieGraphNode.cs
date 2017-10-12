@@ -32,13 +32,12 @@ namespace AutoCSer.Search
             /// </summary>
             /// <param name="nodes"></param>
             /// <param name="value"></param>
-            /// <param name="link"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal void Set(KeyValue<keyType, int>[] nodes, valueType value, int link)
+            internal void Set(KeyValue<keyType, int>[] nodes, valueType value)
             {
                 Nodes = nodes;
                 Value = value;
-                Link = link;
+                Link = 0;
             }
             /// <summary>
             /// 初始化重置数据

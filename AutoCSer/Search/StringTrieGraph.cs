@@ -280,7 +280,7 @@ namespace AutoCSer.Search
                         break;
                     case UnicodeCategory.OtherLetter: *start = (byte)WordType.OtherLetter; break;
                     default:
-                        if (code == '&' || code == '.' || code == '+' || code == '#') *start = (byte)WordType.Keep;
+                        if (code == '&' || code == '.' || code == '+' || code == '#' || code == '-' || code == '_') *start = (byte)WordType.Keep;
                         break;
                 }
             }

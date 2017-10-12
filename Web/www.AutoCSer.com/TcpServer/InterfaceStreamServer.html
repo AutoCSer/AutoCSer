@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0E3DE67"></script>
-    <title>TCP 接口服务框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0E56BAF"></script>
+    <title>TCP 接口应答流服务框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
         a:hover{text-decoration: underline;}
@@ -11,36 +11,36 @@
 </head>
 <body>
     <p>
-        高性能的 TCP 应答流服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html?v=E3DE67">全局默认配置</a>，需要引用 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.TcpStreamServer.dll。
-        <br />TCP 接口服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html?v=E3DE67">静态代码生成</a>的 <a href="/TcpServer/MethodStreamServer.html?v=E3DE67">TCP 函数应答流服务框架</a>上手简单，但功能支持相对简单，<b>只支持同步模式</b>。
+        高性能的 TCP 应答流服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html?v=E56BAF">全局默认配置</a>，需要引用 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.TcpStreamServer.dll。
+        <br />TCP 接口服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html?v=E56BAF">静态代码生成</a>的 <a href="/TcpServer/MethodStreamServer.html?v=E56BAF">TCP 函数应答流服务框架</a>上手简单，但功能支持相对简单，<b>只支持同步模式</b>。
         <br />框架根据应用场景分为<b>内部服务</b>与<b>开放服务</b>，两种服务的默认配置参数与防御攻击策略不同。
-<br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html?v=E3DE67">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html?v=E3DE67">服务注册</a>。
-<br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出无等待时间，使用 <a href="/Serialize/Json.html?v=E3DE67">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
+<br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html?v=E56BAF">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html?v=E56BAF">服务注册</a>。
+<br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出无等待时间，使用 <a href="/Serialize/Json.html?v=E56BAF">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
 <br />注意：interface 接口定义必须使用 public 修饰，而且对于其它程序集可见。
     </p>
     <div><h1>内部服务</h1></div>
     <div>
         <p>
             . 支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpInterfaceStreamServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpInterfaceStreamServer\RefOut.cs</a></div>
         </p>
         <p>
             . 对于没有返回值且可靠性要求不高的需求，支持仅发送请求模式（无需服务端响应），返回值类型必须为 void，不支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpInterfaceStreamServer\SendOnly.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpInterfaceStreamServer\SendOnly.cs</a></div>
         </p>
         <p>
             . 支持接口继承与显示接口实现
-            <div> 参考示例 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">TcpInterfaceStreamServer\Inherit.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">TcpInterfaceStreamServer\Inherit.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=E3DE67">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=E3DE67">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=E56BAF">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=E56BAF">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamServerPerformance\AutoCSer.TestCase.TcpInternalStreamServerPerformance.Emit
-            <br /><a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamClientPerformance\AutoCSer.TestCase.TcpInternalStreamClientPerformance.Emit
+            <br /><a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamServerPerformance\AutoCSer.TestCase.TcpInternalStreamServerPerformance.Emit
+            <br /><a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamClientPerformance\AutoCSer.TestCase.TcpInternalStreamClientPerformance.Emit
             <br /><img @src="//f.autocser.com/TcpServer/InterfaceStreamServer.png" alt="TCP 接口应答流服务框架 内部服务 吞吐性能测试" />
             <br /><img @src="//f.autocser.com/TcpServer/InterfaceStreamServer.Core.png" alt=".NET Core TCP 接口应答流服务框架 内部服务 吞吐性能测试" />
             <br />从测试结果看来 .NET Core 的吞吐性能有较大提升。
@@ -50,25 +50,25 @@
     <div>
         <p>
             . 支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">TcpInterfaceOpenStreamServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">TcpInterfaceOpenStreamServer\RefOut.cs</a></div>
         </p>
         <p>
             . 对于没有返回值且可靠性要求不高的需求，支持仅发送请求模式（无需服务端响应），返回值类型必须为 void，不支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">TcpInterfaceOpenStreamServer\SendOnly.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">TcpInterfaceOpenStreamServer\SendOnly.cs</a></div>
         </p>
         <p>
             . 支持接口继承与显示接口实现
-            <div> 参考示例 <a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">TcpInterfaceOpenStreamServer\Inherit.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">TcpInterfaceOpenStreamServer\Inherit.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=E3DE67">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=E3DE67">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=E56BAF">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=E56BAF">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamServerPerformance\AutoCSer.TestCase.TcpOpenStreamServerPerformance.Emit
-            <br /><a href="/Index.html?v=E3DE67" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamClientPerformance\AutoCSer.TestCase.TcpOpenStreamClientPerformance.Emit
+            <br /><a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamServerPerformance\AutoCSer.TestCase.TcpOpenStreamServerPerformance.Emit
+            <br /><a href="/Index.html?v=E56BAF" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpStreamClientPerformance\AutoCSer.TestCase.TcpOpenStreamClientPerformance.Emit
             <br /><img @src="//f.autocser.com/TcpServer/InterfaceOpenStreamServer.png" alt="TCP 接口应答流服务框架 开放服务 吞吐性能测试" />
             <br /><img @src="//f.autocser.com/TcpServer/InterfaceOpenStreamServer.Core.png" alt=".NET Core TCP 接口应答流服务框架 开放服务 吞吐性能测试" />
             <br />从测试结果看来 .NET Core 的吞吐性能有较大提升。
