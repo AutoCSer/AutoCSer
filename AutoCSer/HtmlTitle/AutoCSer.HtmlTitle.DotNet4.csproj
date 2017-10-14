@@ -78,7 +78,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChineseEncoder.cs" />
     <Compile Include="HeaderName.cs" />
     <Compile Include="HttpClient.cs" />
     <Compile Include="ConfigLoader.cs" />
@@ -93,7 +92,12 @@
     <Compile Include="UnionType.cs" />
     <Compile Include="Uri.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\WebClient\AutoCSer.WebClient.DotNet4.csproj">
+      <Project>{CDE5C9F0-F89B-47D9-9471-CD68970536D7}</Project>
+      <Name>AutoCSer.WebClient.DotNet4</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

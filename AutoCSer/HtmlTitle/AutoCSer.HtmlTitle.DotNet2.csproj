@@ -44,7 +44,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChineseEncoder.cs" />
     <Compile Include="HeaderName.cs" />
     <Compile Include="HttpClient.cs" />
     <Compile Include="ConfigLoader.cs" />
@@ -58,6 +57,12 @@
     <Compile Include="SocketAsyncType.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="Uri.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebClient\AutoCSer.WebClient.DotNet2.csproj">
+      <Project>{BECE1F60-D488-49FC-9CEB-2D7E4A217B76}</Project>
+      <Name>AutoCSer.WebClient.DotNet2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

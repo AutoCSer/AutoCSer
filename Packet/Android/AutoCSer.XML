@@ -6233,6 +6233,14 @@
             <param name="dataArray"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Date.toDateString(System.DateTime,System.Char)">
+            <summary>
+            时间转换成日期字符串(yyyy/MM/dd)
+            </summary>
+            <param name="time">时间</param>
+            <param name="split">分隔符</param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Diagnostics.ConfigLoader">
             <summary>
             配置加载
@@ -7158,7 +7166,7 @@
         </member>
         <member name="T:AutoCSer.Emit.Field">
             <summary>
-            公共类型
+            字段操作
             </summary>
         </member>
         <member name="M:AutoCSer.Emit.Field.UnsafeSetField``2(System.String)">
@@ -9395,6 +9403,22 @@
             <param name="right">不能为null</param>
             <param name="count">字符数量,大于等于0</param>
             <returns>是否相等</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.StringExtension.trimStartNotEmpty(System.Char*,System.Char*)">
+            <summary>
+            字符查找
+            </summary>
+            <param name="start">起始位置,不能为null</param>
+            <param name="end">结束位置,不能为null</param>
+            <returns>字符位置,失败为null</returns>
+        </member>
+        <member name="M:AutoCSer.Extension.StringExtension.trimEndNotEmpty(System.Char*,System.Char*)">
+            <summary>
+            字符查找
+            </summary>
+            <param name="start">起始位置,不能为null</param>
+            <param name="end">结束位置,不能为null</param>
+            <returns>字符位置,失败为null</returns>
         </member>
         <member name="T:AutoCSer.Extension.TypeExtension">
             <summary>
@@ -13148,6 +13172,40 @@
         <member name="M:AutoCSer.Json.Serializer.Pop">
             <summary>
             退出对象节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomSerialize``1(``0)">
+            <summary>
+            对象转换JSON字符串
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomWriteFirstName(System.String)">
+            <summary>
+            写入对象名称
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomWriteNextName(System.String)">
+            <summary>
+            写入对象名称
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomObjectEnd">
+            <summary>
+            写入对象结束括号
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomArrayStart">
+            <summary>
+            写入数组开始括号
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomArrayEnd">
+            <summary>
+            写入数组结束括号
             </summary>
         </member>
         <member name="M:AutoCSer.Json.Serializer.classSerialize``1(``0)">
@@ -31042,6 +31100,26 @@
             <param name="other"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.SubString.Trim">
+            <summary>
+            删除前后空格
+            </summary>
+            <returns>删除前后空格</returns>
+        </member>
+        <member name="M:AutoCSer.SubString.TrimEnd(System.Char)">
+            <summary>
+            删除后缀
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.SubString.StartsWith(System.String)">
+            <summary>
+            是否以字符串开始
+            </summary>
+            <param name="value">字符串</param>
+            <returns>是否以字符串开始</returns>
+        </member>
         <member name="T:AutoCSer.Threading.AutoWaitHandle">
             <summary>
             一次性等待锁
@@ -33564,7 +33642,7 @@
             </summary>
             <param name="data">数据</param>
         </member>
-        <member name="M:AutoCSer.UnmanagedStream.write(System.Byte*,System.Int32)">
+        <member name="M:AutoCSer.UnmanagedStream.WriteNotEmpty(System.Byte*,System.Int32)">
             <summary>
             写入数据
             </summary>
@@ -34731,6 +34809,40 @@
             判断否存存在数据
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.UInt32@)">
+            <summary>
+            数字解析
+            </summary>
+            <param name="value">数据</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.Nullable{System.UInt32}@)">
+            <summary>
+            数字解析
+            </summary>
+            <param name="value">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.String@)">
+            <summary>
+            字符串解析
+            </summary>
+            <param name="value">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomEnumByte``1(``0@)">
+            <summary>
+            枚举值解析
+            </summary>
+            <param name="value">目标数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomIgnoreValue">
+            <summary>
+            忽略数据
+            </summary>
+            <returns>是否成功</returns>
         </member>
         <member name="M:AutoCSer.Xml.Parser.CheckNoConstructor``1(``0@,System.Boolean)">
             <summary>

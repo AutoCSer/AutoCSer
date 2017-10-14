@@ -7960,6 +7960,40 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.UInt32@)">
+            <summary>
+            数字解析
+            </summary>
+            <param name="value">数据</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.Nullable{System.UInt32}@)">
+            <summary>
+            数字解析
+            </summary>
+            <param name="value">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.String@)">
+            <summary>
+            字符串解析
+            </summary>
+            <param name="value">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomEnumByte``1(``0@)">
+            <summary>
+            枚举值解析
+            </summary>
+            <param name="value">目标数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomIgnoreValue">
+            <summary>
+            忽略数据
+            </summary>
+            <returns>是否成功</returns>
+        </member>
         <member name="M:AutoCSer.Xml.Parser.CheckNoConstructor``1(``0@,System.Boolean)">
             <summary>
             找不到构造函数

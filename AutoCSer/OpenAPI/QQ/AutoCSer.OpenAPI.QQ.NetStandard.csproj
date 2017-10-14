@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.OpenAPI.QQ</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.OpenAPI.QQ.NetStandard</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.OpenAPI.QQ 是一个简单的 QQ 开放平台 API 调用组件。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;OpenAPI_QQ;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;OpenAPI_QQ;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.OpenAPI.QQ.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="API.cs" />
+    <Compile Include="AppId.cs" />
+    <Compile Include="Blog.cs" />
+    <Compile Include="BlogReturn.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="CommentQuery.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="ErrorCode.cs" />
+    <Compile Include="Feeds.cs" />
+    <Compile Include="Form.cs" />
+    <Compile Include="Format.cs" />
+    <Compile Include="Microblog.cs" />
+    <Compile Include="MicroblogId.cs" />
+    <Compile Include="MicroblogReturn.cs" />
+    <Compile Include="Return.cs" />
+    <Compile Include="OpenId.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleUserInfo.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="TokenOpenId.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="UserInfoBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.OpenAPI.NetStandard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

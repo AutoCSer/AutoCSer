@@ -160,10 +160,14 @@ namespace AutoCSer.Tool.OpenPack
                         if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "Search", true);
                         if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "Expand", true);
                         break;
-                    case 7: isDircectory = string.Compare(nextDircectory.Name, "Drawing", true); break;
+                    case 7:
+                        isDircectory = string.Compare(nextDircectory.Name, "Drawing", true);
+                        if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "OpenAPI", true);
+                        break;
                     case 8: isDircectory = string.Compare(nextDircectory.Name, "HtmlNode", true); break;
                     case 9:
                         isDircectory = string.Compare(nextDircectory.Name, "DiskBlock", true);
+                        if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "WebClient", true);
                         if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "HtmlTitle", true);
                         break;
                     case 10: isDircectory = string.Compare(nextDircectory.Name, "Properties", true); break;

@@ -10590,6 +10590,40 @@
             退出对象节点
             </summary>
         </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomSerialize``1(``0)">
+            <summary>
+            对象转换JSON字符串
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomWriteFirstName(System.String)">
+            <summary>
+            写入对象名称
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomWriteNextName(System.String)">
+            <summary>
+            写入对象名称
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomObjectEnd">
+            <summary>
+            写入对象结束括号
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomArrayStart">
+            <summary>
+            写入数组开始括号
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomArrayEnd">
+            <summary>
+            写入数组结束括号
+            </summary>
+        </member>
         <member name="M:AutoCSer.Json.Serializer.classSerialize``1(``0)">
             <summary>
             引用类型对象转换JSON字符串
@@ -17121,6 +17155,40 @@
             判断否存存在数据
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.UInt32@)">
+            <summary>
+            数字解析
+            </summary>
+            <param name="value">数据</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.Nullable{System.UInt32}@)">
+            <summary>
+            数字解析
+            </summary>
+            <param name="value">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomParse(System.String@)">
+            <summary>
+            字符串解析
+            </summary>
+            <param name="value">数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomEnumByte``1(``0@)">
+            <summary>
+            枚举值解析
+            </summary>
+            <param name="value">目标数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Xml.Parser.CustomIgnoreValue">
+            <summary>
+            忽略数据
+            </summary>
+            <returns>是否成功</returns>
         </member>
         <member name="M:AutoCSer.Xml.Parser.CheckNoConstructor``1(``0@,System.Boolean)">
             <summary>

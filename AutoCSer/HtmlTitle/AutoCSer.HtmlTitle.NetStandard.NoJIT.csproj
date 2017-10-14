@@ -32,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="ChineseEncoder.cs" />
     <Compile Include="HeaderName.cs" />
     <Compile Include="HttpClient.cs" />
     <Compile Include="ConfigLoader.cs" />
@@ -46,6 +45,10 @@
     <Compile Include="SocketAsyncType.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="Uri.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebClient\AutoCSer.WebClient.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
   <ItemGroup>

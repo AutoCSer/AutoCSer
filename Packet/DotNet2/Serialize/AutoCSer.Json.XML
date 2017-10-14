@@ -7867,6 +7867,40 @@
             退出对象节点
             </summary>
         </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomSerialize``1(``0)">
+            <summary>
+            对象转换JSON字符串
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomWriteFirstName(System.String)">
+            <summary>
+            写入对象名称
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomWriteNextName(System.String)">
+            <summary>
+            写入对象名称
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomObjectEnd">
+            <summary>
+            写入对象结束括号
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomArrayStart">
+            <summary>
+            写入数组开始括号
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.CustomArrayEnd">
+            <summary>
+            写入数组结束括号
+            </summary>
+        </member>
         <member name="M:AutoCSer.Json.Serializer.classSerialize``1(``0)">
             <summary>
             引用类型对象转换JSON字符串

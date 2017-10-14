@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D96CFF29-AB8F-42EC-81E7-7784B40527DE}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.OpenAPI.Weixin</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;OpenAPI_Weixin;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;OpenAPI_Weixin;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.OpenAPI.Weixin.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\Android\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Account.cs" />
+    <Compile Include="AccountList.cs" />
+    <Compile Include="AccountListItem.cs" />
+    <Compile Include="API.cs" />
+    <Compile Include="AppPrePayId.cs" />
+    <Compile Include="AppPrePayIdOrder.cs" />
+    <Compile Include="AppPrePayIdQuery.cs" />
+    <Compile Include="Article.cs" />
+    <Compile Include="ArticleMessage.cs" />
+    <Compile Include="Articles.cs" />
+    <Compile Include="ArticleSummary.cs" />
+    <Compile Include="ArticleSummaryResult.cs" />
+    <Compile Include="ArticleTotal.cs" />
+    <Compile Include="ArticleTotalDetail.cs" />
+    <Compile Include="ArticleTotalResult.cs" />
+    <Compile Include="ArticleUrl.cs" />
+    <Compile Include="AutoReply.cs" />
+    <Compile Include="AutoReplyContent.cs" />
+    <Compile Include="AutoReplyKeyword.cs" />
+    <Compile Include="AutoReplyMatchMode.cs" />
+    <Compile Include="AutoReplyMode.cs" />
+    <Compile Include="AutoReplyNews.cs" />
+    <Compile Include="AutoReplyNewsList.cs" />
+    <Compile Include="AutoReplyReply.cs" />
+    <Compile Include="AutoReplyType.cs" />
+    <Compile Include="BankType.cs" />
+    <Compile Include="Bill.cs" />
+    <Compile Include="BillQuery.cs" />
+    <Compile Include="BillTotal.cs" />
+    <Compile Include="BillType.cs" />
+    <Compile Include="BulkCardMessage.cs" />
+    <Compile Include="BulkMessage.cs" />
+    <Compile Include="BulkMessageBase.cs" />
+    <Compile Include="BulkMessageFilter.cs" />
+    <Compile Include="BulkMessageType.cs" />
+    <Compile Include="CallbakIP.cs" />
+    <Compile Include="CardMessage.cs" />
+    <Compile Include="CloseOrderResult.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Counts.cs" />
+    <Compile Include="CustomListResult.cs" />
+    <Compile Include="CustomRecord.cs" />
+    <Compile Include="CustomRecordList.cs" />
+    <Compile Include="CustomSession.cs" />
+    <Compile Include="CustomSessionTime.cs" />
+    <Compile Include="CustomTime.cs" />
+    <Compile Include="DateRange.cs" />
+    <Compile Include="DeleteGroupId.cs" />
+    <Compile Include="DeleteGroupQuery.cs" />
+    <Compile Include="Emit\Property.cs" />
+    <Compile Include="Emit\Pub.cs" />
+    <Compile Include="ErrorCode.cs" />
+    <Compile Include="ErrorCodeEnum.cs" />
+    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extension\String.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="GroupCount.cs" />
+    <Compile Include="GroupIdResult.cs" />
+    <Compile Include="GroupName.cs" />
+    <Compile Include="GroupQuery.cs" />
+    <Compile Include="GroupResult.cs" />
+    <Compile Include="GroupsResult.cs" />
+    <Compile Include="Industry.cs" />
+    <Compile Include="IndustryQuery.cs" />
+    <Compile Include="InterfaceSummary.cs" />
+    <Compile Include="InterfaceSummaryHour.cs" />
+    <Compile Include="InterfaceSummaryHourResult.cs" />
+    <Compile Include="InterfaceSummaryResult.cs" />
+    <Compile Include="KeywordAutoReply.cs" />
+    <Compile Include="KeywordAutoReplyList.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="LongUrl.cs" />
+    <Compile Include="Media.cs" />
+    <Compile Include="MediaCount.cs" />
+    <Compile Include="MediaItem.cs" />
+    <Compile Include="MediaList.cs" />
+    <Compile Include="MediaMessage.cs" />
+    <Compile Include="MediaQuery.cs" />
+    <Compile Include="MediaQueryType.cs" />
+    <Compile Include="MediaType.cs" />
+    <Compile Include="MediaUrl.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MenuInfoResult.cs" />
+    <Compile Include="MenuQeury.cs" />
+    <Compile Include="MenuResult.cs" />
+    <Compile Include="MenuType.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageAccount.cs" />
+    <Compile Include="MessageBase.cs" />
+    <Compile Include="MessageCard.cs" />
+    <Compile Include="MessageCount.cs" />
+    <Compile Include="MessageCountHour.cs" />
+    <Compile Include="MessageCountHourResult.cs" />
+    <Compile Include="MessageCountResult.cs" />
+    <Compile Include="MessageDistributed.cs" />
+    <Compile Include="MessageDistributedResult.cs" />
+    <Compile Include="MessageId.cs" />
+    <Compile Include="MessageIdQuery.cs" />
+    <Compile Include="MessageStatus.cs" />
+    <Compile Include="MessageType.cs" />
+    <Compile Include="MusicMessage.cs" />
+    <Compile Include="News.cs" />
+    <Compile Include="NewsContent.cs" />
+    <Compile Include="NewsItem.cs" />
+    <Compile Include="NewsList.cs" />
+    <Compile Include="NewsMessage.cs" />
+    <Compile Include="OnlineAccount.cs" />
+    <Compile Include="OnlineAccountResult.cs" />
+    <Compile Include="OpenIdItem.cs" />
+    <Compile Include="OpenIdList.cs" />
+    <Compile Include="OpenIdMessage.cs" />
+    <Compile Include="OpenidQuery.cs" />
+    <Compile Include="OrderQuery.cs" />
+    <Compile Include="OrderResult.cs" />
+    <Compile Include="OrderResultTradeState.cs" />
+    <Compile Include="PayNotify.cs" />
+    <Compile Include="PayNotifyCoupon.cs" />
+    <Compile Include="PrePayId.cs" />
+    <Compile Include="PrePayIdQuery.cs" />
+    <Compile Include="PrePayIdQueryBase.cs" />
+    <Compile Include="PreviewMessage.cs" />
+    <Compile Include="ProductUrlSign.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QrCode.cs" />
+    <Compile Include="QrCodeAction.cs" />
+    <Compile Include="QrCodeLongUrl.cs" />
+    <Compile Include="QrCodeQuery.cs" />
+    <Compile Include="QrCodeShortUrl.cs" />
+    <Compile Include="RecordQuery.cs" />
+    <Compile Include="Refund.cs" />
+    <Compile Include="RefundChannel.cs" />
+    <Compile Include="RefundCoupon.cs" />
+    <Compile Include="RefundQuery.cs" />
+    <Compile Include="RefundResult.cs" />
+    <Compile Include="RefundStatus.cs" />
+    <Compile Include="ResultCode.cs" />
+    <Compile Include="Return.cs" />
+    <Compile Include="ReturnCode.cs" />
+    <Compile Include="ReturnCodeEnum.cs" />
+    <Compile Include="ReturnSign.cs" />
+    <Compile Include="SceneId.cs" />
+    <Compile Include="SendTemplate.cs" />
+    <Compile Include="SendVideo.cs" />
+    <Compile Include="SHA.cs" />
+    <Compile Include="ShakeAroundAccount.cs" />
+    <Compile Include="ShakeAroundAccountStatus.cs" />
+    <Compile Include="ShakeAroundAccountStatusResult.cs" />
+    <Compile Include="ShortUrl.cs" />
+    <Compile Include="Sign.cs" />
+    <Compile Include="SignAttribute.cs" />
+    <Compile Include="SignDynamicMethod.cs" />
+    <Compile Include="SignMemberAttribute.cs" />
+    <Compile Include="SignQuery.cs" />
+    <Compile Include="SubMenu.cs" />
+    <Compile Include="Template.cs" />
+    <Compile Include="TemplateId.cs" />
+    <Compile Include="TemplateQuery.cs" />
+    <Compile Include="TextMessage.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="TradeType.cs" />
+    <Compile Include="UpdateGroupQuery.cs" />
+    <Compile Include="UpdateGroupsQuery.cs" />
+    <Compile Include="UpdateRemarkQuery.cs" />
+    <Compile Include="UploadArticle.cs" />
+    <Compile Include="UploadVideo.cs" />
+    <Compile Include="UrlResult.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="UserCumulate.cs" />
+    <Compile Include="UserCumulateResult.cs" />
+    <Compile Include="UserLanguage.cs" />
+    <Compile Include="UserListQuery.cs" />
+    <Compile Include="UserListResult.cs" />
+    <Compile Include="UserRead.cs" />
+    <Compile Include="UserReadHour.cs" />
+    <Compile Include="UserReadHourResult.cs" />
+    <Compile Include="UserReadResult.cs" />
+    <Compile Include="UserShare.cs" />
+    <Compile Include="UserShareHour.cs" />
+    <Compile Include="UserShareHourResult.cs" />
+    <Compile Include="UserShareResult.cs" />
+    <Compile Include="UserSummary.cs" />
+    <Compile Include="UserSummaryResult.cs" />
+    <Compile Include="VideoMessage.cs" />
+    <Compile Include="VideoUrl.cs" />
+    <Compile Include="WaitCustomSession.cs" />
+    <Compile Include="WaitSession.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WebClient\AutoCSer.WebClient.Android.csproj">
+      <Project>{ddd67c69-9e99-4721-b896-7880dc6ceaaa}</Project>
+      <Name>AutoCSer.WebClient.Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AutoCSer.OpenAPI.Android.csproj">
+      <Project>{f6cd32ca-626c-4c31-a92d-8bf47aa77697}</Project>
+      <Name>AutoCSer.OpenAPI.Android</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

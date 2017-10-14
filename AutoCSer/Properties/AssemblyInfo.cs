@@ -69,6 +69,14 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.RawSocketListener")]
 [assembly: InternalsVisibleTo("AutoCSer.DataSetSerialize")]
 
+[assembly: InternalsVisibleTo("AutoCSer.WebClient")]
+[assembly: InternalsVisibleTo("AutoCSer.OpenAPI")]
+[assembly: InternalsVisibleTo("AutoCSer.OpenAPI.51Nod")]
+[assembly: InternalsVisibleTo("AutoCSer.OpenAPI.Weixin")]
+[assembly: InternalsVisibleTo("AutoCSer.OpenAPI.QQ")]
+[assembly: InternalsVisibleTo("AutoCSer.OpenAPI.Renren")]
+[assembly: InternalsVisibleTo("AutoCSer.OpenAPI.Weibo")]
+
 [assembly: InternalsVisibleTo("AutoCSer.Expand")]
 [assembly: InternalsVisibleTo("AutoCSer.CodeGenerator.Custom")]//用户自定义代码生成预留程序集名称
 [assembly: InternalsVisibleTo("AutoCSer.Custom")]//预留程序集名称，开发者可以自建项目暴露 AutoCSer 的 internal 访问权限

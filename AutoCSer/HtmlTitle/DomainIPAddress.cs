@@ -64,7 +64,7 @@ namespace AutoCSer.Net.HtmlTitle
                     finally { Monitor.Exit(domainIpLock); }
                     if (value.Ips == null)
                     {
-                        if (value.Domain == null) value.Domain = Memory_HtmlTitle.BytesToStringNotEmpty(domainStart, domain.Length);
+                        if (value.Domain == null) value.Domain = Memory_WebClient.BytesToStringNotEmpty(domainStart, domain.Length);
                         IPAddress ip;
                         if (IPAddress.TryParse(value.Domain, out ip))
                         {

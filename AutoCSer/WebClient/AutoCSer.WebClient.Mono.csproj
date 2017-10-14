@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F2C11B3-7FF4-4696-A3CB-F00A1B0B1839}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.WebClient</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>WebClient;MONO;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>WebClient;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile></DocumentationFile>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="AutoCSer">
+      <HintPath>..\..\Packet\Mono\AutoCSer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChineseEncoder.cs" />
+    <Compile Include="CompressionStream.cs" />
+    <Compile Include="DeCompressor.cs" />
+    <Compile Include="DeflateStream.cs" />
+    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Form\CustomAttribute.cs" />
+    <Compile Include="Form\FormAttribute.cs" />
+    <Compile Include="Form\Getter.cs" />
+    <Compile Include="Form\GetterDynamicMethod.cs" />
+    <Compile Include="Form\MemberAttribute.cs" />
+    <Compile Include="GZipStream.cs" />
+    <Compile Include="HeaderName.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request.cs" />
+    <Compile Include="UriCreator.cs" />
+    <Compile Include="UriFlags.cs" />
+    <Compile Include="Client.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

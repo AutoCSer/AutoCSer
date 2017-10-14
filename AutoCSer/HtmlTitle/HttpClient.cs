@@ -473,7 +473,7 @@ Host: ").getBytes();
                             if (isHttps)
                             {
                                 string host;
-                                fixed (byte* hostFixed = hostBuffer.Buffer) host = AutoCSer.Extension.Memory_HtmlTitle.BytesToStringNotEmpty(hostFixed + hostBuffer.StartIndex, hostSize);
+                                fixed (byte* hostFixed = hostBuffer.Buffer) host = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(hostFixed + hostBuffer.StartIndex, hostSize);
                                 if (validateCertificate == null)
                                 {
                                     validateCertificate = onValidateCertificate;
@@ -915,7 +915,7 @@ Host: ").getBytes();
                                 isEncoding = 1;
                                 byte* start = current;
                                 while (*current != 13 && *current != ';') ++current;
-                                string encodingString = AutoCSer.Extension.Memory_HtmlTitle.BytesToStringNotEmpty(start, (int)(current - start));
+                                string encodingString = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(start, (int)(current - start));
                                 try
                                 {
                                     responseEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
@@ -936,7 +936,7 @@ Host: ").getBytes();
                 }
                 return false;
             }
-            return false;
+            //return false;
         }
         /// <summary>
         /// 检测分段传输长度
@@ -1122,7 +1122,7 @@ Host: ").getBytes();
                                 while (*start == '"' || *start == '\'') ++start;
                                 byte* encoding = start;
                                 while ((uint)((*start | 0x20) - 'a') < 26 || (uint)(*start - '0') < 10 || *start == '-') ++start;
-                                string encodingString = AutoCSer.Extension.Memory_HtmlTitle.BytesToStringNotEmpty(encoding, (int)(start - encoding));
+                                string encodingString = AutoCSer.Extension.Memory_WebClient.BytesToStringNotEmpty(encoding, (int)(start - encoding));
                                 try
                                 {
                                     htmlEncoding = AutoCSer.EncodingCacheOther.GetEncoding(encodingString);
