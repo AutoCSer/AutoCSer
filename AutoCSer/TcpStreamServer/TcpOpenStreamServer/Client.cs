@@ -3,6 +3,7 @@ using System.Threading;
 using System.Net;
 using AutoCSer.Log;
 using AutoCSer.Extension;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpOpenStreamServer
 {
@@ -54,6 +55,88 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 if (check(ipAddress, port)) CreateSocket = new ClientSocket(this, ipAddress, port, 1);
                 else SocketWait.Set();
             }
+        }
+        /// <summary>
+        /// 获取客户端远程表达式节点
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <param name="clientNode">客户端远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.ReturnType GetRemoteExpressionClientNode(RemoteExpression.Node node, out RemoteExpression.ClientNode clientNode)
+        {
+            return Sender.GetRemoteExpressionClientNode(node, out clientNode);
+        }
+        /// <summary>
+        /// 获取客户端远程表达式节点
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>客户端远程表达式节点</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public RemoteExpression.ClientNode GetRemoteExpressionClientNode(RemoteExpression.Node node)
+        {
+            return Sender.GetRemoteExpressionClientNode(node);
+        }
+        /// <summary>
+        /// 获取客户端远程表达式参数节点
+        /// </summary>
+        /// <typeparam name="returnType">返回值类型</typeparam>
+        /// <param name="node">远程表达式参数节点</param>
+        /// <returns>客户端远程表达式参数节点</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public RemoteExpression.ClientNode<returnType> GetRemoteExpressionClientNodeParameter<returnType>(RemoteExpression.Node<returnType> node)
+        {
+            return Sender.GetRemoteExpressionClientNodeParameter(node);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.ReturnType CallRemoteExpression(RemoteExpression.Node node)
+        {
+            return Sender.CallRemoteExpression(node);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.ReturnValue<returnType> GetRemoteExpression<returnType>(RemoteExpression.Node<returnType> node)
+        {
+            return Sender.GetRemoteExpression(node);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.ReturnValue<RemoteExpression.ReturnValue> GetRemoteExpression(RemoteExpression.ClientNode node)
+        {
+            return Sender.GetRemoteExpression(node);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.AwaiterBox<RemoteExpression.ReturnValue> GetRemoteExpressionAwaiter(RemoteExpression.Node node)
+        {
+            return Sender.GetRemoteExpressionAwaiter(node);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.AwaiterBox<RemoteExpression.ReturnValue> GetRemoteExpressionAwaiter(RemoteExpression.ClientNode node)
+        {
+            return Sender.GetRemoteExpressionAwaiter(node);
         }
     }
     /// <summary>

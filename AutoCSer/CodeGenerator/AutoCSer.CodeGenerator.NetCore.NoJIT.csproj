@@ -62,6 +62,7 @@
     <Compile Include="TemplateGenerator\Generator.cs" />
     <Compile Include="TemplateGenerator\JavaScriptTypeDefinition.cs" />
     <Compile Include="TemplateGenerator\MemberGenerator.cs" />
+    <Compile Include="TemplateGenerator\RemoteExpression.cs" />
     <Compile Include="TemplateGenerator\TcpInternalServer.cs" />
     <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
     <Compile Include="TemplateGenerator\TcpInternalStreamServer.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Template\Ajax.cs" />
     <Compile Include="Template\DataPrimaryKey.cs" />
     <Compile Include="Template\Pub.cs" />
+    <Compile Include="Template\RemoteExpression.cs" />
     <Compile Include="Template\TcpInternalServer.cs" />
     <Compile Include="Template\TcpInternalSimpleServer.cs" />
     <Compile Include="Template\TcpInternalStreamServer.cs" />

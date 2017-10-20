@@ -1211,6 +1211,12 @@
             <param name="size"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadInt">
+            <summary>
+            读取一个整数
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.createArray``1(``0[]@,System.Int32)">
             <summary>
             创建数组
@@ -16355,6 +16361,21 @@
             成员选择类型
             </summary>
         </member>
+        <member name="T:AutoCSer.Metadata.MemberFilterAttribute.NonPublic">
+            <summary>
+            默认非公有成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.Filter">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.MemberFilters">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
         <member name="T:AutoCSer.Metadata.MemberFilterAttribute.PublicInstance">
             <summary>
             默认公有动态成员
@@ -16505,6 +16526,16 @@
             静态属性成员
             </summary>
         </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Public">
+            <summary>
+            公共成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.NonPublic">
+            <summary>
+            非公共成员
+            </summary>
+        </member>
         <member name="F:AutoCSer.Metadata.MemberFilters.Instance">
             <summary>
             动态成员
@@ -16513,6 +16544,16 @@
         <member name="F:AutoCSer.Metadata.MemberFilters.Static">
             <summary>
             静态成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Field">
+            <summary>
+            字段
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Property">
+            <summary>
+            属性
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.MemberIndexGroup">
@@ -17664,918 +17705,742 @@
             返回值
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod">
+        <member name="T:AutoCSer.Net.RemoteExpression.ClientNode">
             <summary>
-            动态函数
+            客户端远程表达式节点
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.dynamicMethod">
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.CommandInfo">
             <summary>
-            动态函数
+            远程表达式命令信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.generator">
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.Node">
             <summary>
-            
+            远程表达式节点
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.#ctor(System.Type)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.Checker">
             <summary>
-            动态函数
-            </summary>
-            <param name="type"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.Push(AutoCSer.BinarySerialize.FieldSize)">
-            <summary>
-            添加字段
-            </summary>
-            <param name="field">字段信息</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.FixedFill(System.Int32)">
-            <summary>
-            填充对齐数据
-            </summary>
-            <param name="fixedFillSize"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.Create``1">
-            <summary>
-            创建成员转换委托
-            </summary>
-            <returns>成员转换委托</returns>
-        </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.DeSerializeMethod">
-            <summary>
-            基本类型反序列化函数
+            客户端检测服务端映射标识
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.DeSerializer">
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.ClientNodeId">
             <summary>
-            简单反序列化
+            客户端映射标识
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.Read">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.SetNull">
             <summary>
-            当前读取位置
+            清除数据
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.End">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.GetReturnValue">
             <summary>
-            结束位置
+            服务端获取返回值
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Boolean@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.serialize(AutoCSer.BinarySerialize.Serializer)">
             <summary>
-            逻辑值反序列化
+            客户端序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">逻辑值</param>
-            <returns></returns>
+            <param name="serializer"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Boolean}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
             <summary>
-            逻辑值反序列化
+            服务端反序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">逻辑值</param>
-            <returns></returns>
+            <param name="deSerializer"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Byte@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.serialize(AutoCSer.Json.Serializer)">
             <summary>
-            数值反序列化
+            客户端序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="serializer"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Byte}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.deSerialize(AutoCSer.Json.Parser)">
             <summary>
-            数值反序列化
+            服务端反序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="parser"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.SByte@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.ClientNode`1">
             <summary>
-            数值反序列化
+            客户端远程表达式参数节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <typeparam name="returnType">返回值类型</typeparam>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.SByte}@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode`1.Node">
             <summary>
-            数值反序列化
+            远程表达式节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Int16@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode`1.Checker">
             <summary>
-            数值反序列化
+            客户端检测服务端映射标识
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Int16}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.GetReturnValue">
             <summary>
-            数值反序列化
+            服务端获取返回值
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.UInt16@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.serialize(AutoCSer.BinarySerialize.Serializer)">
             <summary>
-            数值反序列化
+            客户端序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="serializer"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.UInt16}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
             <summary>
-            数值反序列化
+            服务端反序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="deSerializer"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Int32@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.serialize(AutoCSer.Json.Serializer)">
             <summary>
-            数值反序列化
+            客户端序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="serializer"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Int32}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.deSerialize(AutoCSer.Json.Parser)">
             <summary>
-            数值反序列化
+            服务端反序列化
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="parser"></param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.UInt32@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.GenericNode">
             <summary>
-            数值反序列化
+            远程表达式泛型节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.UInt32}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode.#ctor">
             <summary>
-            数值反序列化
+            远程表达式泛型节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Int64@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode.#ctor(System.Int32)">
             <summary>
-            数值反序列化
+            远程表达式泛型节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="clientNodeId">客户端映射标识</param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Int64}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode.Cast``1">
             <summary>
-            数值反序列化
+            类型转换
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <typeparam name="nodeType"></typeparam>
+            <returns>远程表达式节点</returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.UInt64@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.GenericNode`1">
             <summary>
-            数值反序列化
+            远程表达式泛型节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <typeparam name="returnType">返回值类型</typeparam>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.UInt64}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode`1.#ctor">
             <summary>
-            数值反序列化
+            远程表达式泛型节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Single@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode`1.#ctor(System.Int32)">
             <summary>
-            数值反序列化
+            远程表达式泛型节点
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <param name="clientNodeId">客户端映射标识</param>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Single}@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode`1.Cast``1">
             <summary>
-            数值反序列化
+            类型转换
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
+            <typeparam name="nodeType"></typeparam>
+            <returns>远程表达式节点</returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Double@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.MemberAttribute">
             <summary>
-            数值反序列化
+            远程表达式成员配置
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Double}@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.MemberAttribute.MemberIdentity">
             <summary>
-            数值反序列化
+            自定义成员编号，用于表达式节点名称冲突问题，默认为 0 表示不编号
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Decimal@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.MemberAttribute.IsReturn">
             <summary>
-            数值反序列化
+            默认为 true 表示允许返回数据
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Decimal}@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker">
             <summary>
-            数值反序列化
+            客户端检测服务端映射标识
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Char@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Input">
             <summary>
-            字符反序列化
+            请求数据
             </summary>
-            <param name="data"></param>
-            <param name="value">字符</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Char}@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Input.CommandInfo">
             <summary>
-            字符反序列化
+            远程表达式服务端节点标识解析命令信息
             </summary>
-            <param name="data"></param>
-            <param name="value">字符</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.DateTime@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Input.Types">
             <summary>
-            数值反序列化
+            表达式服务端节点类型集合
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.DateTime}@)">
+        <member name="T:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output">
             <summary>
-            时间反序列化
+            返回数据
             </summary>
-            <param name="data"></param>
-            <param name="value">时间</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Guid@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output.Return">
             <summary>
-            数值反序列化
+            表达式服务端节点标识集合
             </summary>
-            <param name="data"></param>
-            <param name="value">数值</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Guid}@)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output.OutputInfo">
             <summary>
-            Guid反序列化
+            远程表达式服务端节点标识解析输出参数信息
             </summary>
-            <param name="data"></param>
-            <param name="value">Guid</param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.String@,System.Byte*)">
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo">
             <summary>
-            字符串反序列化
+            远程表达式服务端节点标识解析输出参数信息
             </summary>
-            <param name="start"></param>
-            <param name="value">字符串</param>
-            <param name="end"></param>
-            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.Compile(System.Type[])">
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.ServerNodeIds">
             <summary>
-            预编译类型
+            服务端映射标识集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.serverNodeIdLock">
+            <summary>
+            服务端映射标识集合访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Get(System.Type)">
+            <summary>
+            获取服务端映射标识
+            </summary>
+            <param name="nodeType">远程表达式节点类型</param>
+            <returns>服务端映射标识</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Get(AutoCSer.RemoteType[])">
+            <summary>
+            获取服务端映射标识集合
             </summary>
             <param name="types"></param>
+            <returns></returns>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerializeMethods">
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Check(AutoCSer.Net.RemoteExpression.Node)">
             <summary>
-            基本类型转换函数
+            服务端映射标识检测
             </summary>
+            <param name="node"></param>
+            <returns>是否映射成功</returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.GetDeSerializeMethod(System.Type)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Check(AutoCSer.Net.RemoteExpression.Node,AutoCSer.LeftArray{System.Type}@)">
             <summary>
-            获取基本类型转换函数
+            服务端映射标识检测
             </summary>
-            <param name="type">基本类型</param>
-            <returns>转换函数</returns>
-        </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod">
-            <summary>
-            动态函数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.dynamicMethod">
-            <summary>
-            动态函数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.generator">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.#ctor(System.Type,System.Int32)">
-            <summary>
-            动态函数
-            </summary>
-            <param name="type"></param>
-            <param name="fixedSize"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.Push(AutoCSer.BinarySerialize.FieldSize)">
-            <summary>
-            添加字段
-            </summary>
-            <param name="field">字段信息</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.FixedFill(System.Int32)">
-            <summary>
-            填充对齐数据
-            </summary>
-            <param name="fixedFillSize"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.Create``1">
-            <summary>
-            创建成员转换委托
-            </summary>
-            <returns>成员转换委托</returns>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteByteMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteSByteMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteShortMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteUShortMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteIntMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteUIntMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteLongMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteULongMethod">
-            <summary>
-            非托管内存数据流写数据函数信息
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.SerializeMethod">
-            <summary>
-            基本类型序列化函数
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.Serializer">
-            <summary>
-            简单序列化
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Boolean)">
-            <summary>
-            逻辑值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">逻辑值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Boolean})">
-            <summary>
-            逻辑值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">逻辑值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Byte)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Byte})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.SByte)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.SByte})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Int16)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Int16})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.UInt16)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.UInt16})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Int32)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Int32})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.UInt32)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.UInt32})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Int64)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Int64})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.UInt64)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.UInt64})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Single)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Single})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Double)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Double})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Decimal)">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Decimal})">
-            <summary>
-            数值序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">数值</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Char)">
-            <summary>
-            字符序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">字符</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Char})">
-            <summary>
-            字符序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">字符</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.DateTime)">
-            <summary>
-            时间序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">时间</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.DateTime})">
-            <summary>
-            时间序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">时间</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Guid)">
-            <summary>
-            Guid序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">Guid</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Guid})">
-            <summary>
-            Guid序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">Guid</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.String)">
-            <summary>
-            字符串序列化
-            </summary>
-            <param name="stream"></param>
-            <param name="value">字符串</param>
-        </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.Compile(System.Type[])">
-            <summary>
-            预编译类型
-            </summary>
+            <param name="node"></param>
             <param name="types"></param>
+            <returns>是否映射成功</returns>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.Serializer.serializeMethods">
+        <member name="T:AutoCSer.Net.RemoteExpression.TypeAttribute">
             <summary>
-            基本类型转换函数
+            远程表达式类型配置
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.GetSerializeMethod(System.Type)">
+        <member name="T:AutoCSer.Net.RemoteExpression.Node">
             <summary>
-            获取基本类型转换函数
+            远程表达式节点
             </summary>
-            <param name="type">基本类型</param>
-            <returns>转换函数</returns>
         </member>
-        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.IsType(System.Type)">
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName">
             <summary>
-            判断是否可序列化类型
+            远程表达式容器类型名称
             </summary>
-            <param name="type"></param>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.Parent">
+            <summary>
+            父节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.ClientNodeId">
+            <summary>
+            客户端映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.#ctor">
+            <summary>
+            远程表达式节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.#ctor(System.Int32)">
+            <summary>
+            远程表达式节点
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParent(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            序列化父节点
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameter``1(AutoCSer.BinarySerialize.Serializer,``0)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameterStruct``1(AutoCSer.BinarySerialize.Serializer,``0@)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.DeSerialize(AutoCSer.BinarySerialize.DeSerializer,AutoCSer.Net.RemoteExpression.Node@)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParent(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            反序列化父节点
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameter``1(AutoCSer.BinarySerialize.DeSerializer,``0@)">
+            <summary>
+            参数反序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="deSerializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameterStruct``1(AutoCSer.BinarySerialize.DeSerializer,``0@)">
+            <summary>
+            参数反序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="deSerializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeStart(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            JSON 序列化开始
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParent(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            JSON 序列化父节点并结束
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameter``1(AutoCSer.Json.Serializer,``0)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameterStruct``1(AutoCSer.Json.Serializer,``0@)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.DeSerialize(AutoCSer.Json.Parser,AutoCSer.Net.RemoteExpression.Node@)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParent(AutoCSer.Json.Parser)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameter``1(AutoCSer.Json.Parser,``0@)">
+            <summary>
+            参数反序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="parser"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.get">
+            <summary>
+            获取服务端数据
+            </summary>
+            <returns>数据值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.getParentValue">
+            <summary>
+            获取父节点数据
+            </summary>
+            <returns>父节点数据</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.getReturn">
+            <summary>
+            获取返回值
+            </summary>
             <returns></returns>
         </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.TypeDeSerializer`1">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Get(System.Int32)">
             <summary>
-            简单反序列化
+            获取返回值
             </summary>
-            <typeparam name="valueType">对象类型</typeparam>
+            <param name="clientNodeId">客户端映射标识</param>
+            <returns>返回值</returns>
         </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.TypeDeSerializer`1.SimpleDeSerializer">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.CheckServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@)">
             <summary>
-            简单反序列化委托
+            服务端映射标识检测
             </summary>
-            <param name="start"></param>
-            <param name="value">目标数据</param>
-            <param name="end"></param>
-            <returns></returns>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.TypeDeSerializer`1.DeSerialize">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@)">
             <summary>
-            简单反序列化委托
+            参数服务端映射标识检测
             </summary>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
         </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.TypeSerializer`1">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.setParameter``1(AutoCSer.Net.RemoteExpression.ClientNode{``0}@,AutoCSer.Net.RemoteExpression.Node{``0})">
             <summary>
-            简单序列化
+            设置远程表达式节点参数
             </summary>
-            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="returnType"></typeparam>
+            <param name="clientNode"></param>
+            <param name="node"></param>
         </member>
-        <member name="T:AutoCSer.Net.SimpleSerialize.TypeSerializer`1.SimpleSerializer">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.setParameter``1(``0@,System.Object)">
             <summary>
-            简单序列化委托
+            用于代码生成
             </summary>
-            <param name="stream"></param>
-            <param name="value">目标数据</param>
+            <typeparam name="valueType"></typeparam>
+            <param name="clientNode"></param>
+            <param name="node"></param>
         </member>
-        <member name="F:AutoCSer.Net.SimpleSerialize.TypeSerializer`1.Serializer">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.checkServerNodeId``1(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@,AutoCSer.Net.RemoteExpression.ClientNode{``0}@)">
             <summary>
-            成员序列化
+            服务端映射标识检测
             </summary>
+            <typeparam name="returnType"></typeparam>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
+            <param name="clientNode"></param>
         </member>
-        <member name="T:AutoCSer.Net.SocketAsyncEventArgsPool">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.checkServerNodeId``1(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@,``0@)">
             <summary>
-            套接字异步事件对象池
+            用于代码生成
             </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
+            <param name="clientNode"></param>
         </member>
-        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.maxCount">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Cast(AutoCSer.Net.RemoteExpression.Node)">
             <summary>
-            缓存数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.head">
-            <summary>
-            套接字异步事件对象池首节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.popLock">
-            <summary>
-            套接字异步事件对象池弹出节点访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.count">
-            <summary>
-            缓存数量
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SocketAsyncEventArgsPool.Get">
-            <summary>
-            弹出节点
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.SocketAsyncEventArgsPool.PushNotNull(System.Net.Sockets.SocketAsyncEventArgs@)">
-            <summary>
-            添加节点
+            远程表达式泛型节点类型转换
             </summary>
             <param name="value"></param>
         </member>
-        <member name="T:AutoCSer.Net.SocketLink">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.registerClient(System.Func{AutoCSer.Net.RemoteExpression.ReturnValue})">
             <summary>
-            套接字链表
+            客户端表达式节点注册
+            </summary>
+            <param name="createReturnValue">新建一个返回值的委托</param>
+            <returns>表达式节点映射编号</returns>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.types">
+            <summary>
+            服务端节点类型集合
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketLink.Socket">
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.typeLock">
             <summary>
-            套接字
+            服务端节点类型集合访问锁
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SocketLink.DisposeSocket">
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.createNodes">
             <summary>
-            释放套接字
+            创建服务端表达式委托集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SocketLink.Cancel">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Get(AutoCSer.RemoteType[])">
             <summary>
-            释放套接字
+            获取服务端节点标识
             </summary>
+            <param name="remoteTypes"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SocketLink.Start(AutoCSer.Net.TcpOpenServer.Server,AutoCSer.Net.TcpOpenServer.ServerSocket@)">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.createNew``1">
             <summary>
-            创建 TCP 服务端套接字
+            创建节点
             </summary>
-            <param name="server"></param>
-            <param name="serverSocket"></param>
+            <typeparam name="valueType"></typeparam>
             <returns></returns>
         </member>
-        <member name="T:AutoCSer.Net.SocketTimeoutLink">
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.createNodeMethod">
             <summary>
-            套接字超时链表节点
+            创建节点函数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.timeoutSeconds">
+        <member name="T:AutoCSer.Net.RemoteExpression.Node`1">
             <summary>
-            超时秒数
+            远程表达式节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.#ctor">
+            <summary>
+            远程表达式节点
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.Socket">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.#ctor(System.Int32)">
             <summary>
-            套接字
+            远程表达式节点
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.GetValue">
+            <summary>
+            获取返回值
+            </summary>
+            <returns>返回值</returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ReturnValue">
+            <summary>
+            返回值
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.timeoutSocket">
+        <member name="T:AutoCSer.Net.RemoteExpression.ReturnValue.Output">
             <summary>
-            超时操作验证标识
+            输出数据
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.nextTimeout">
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.Output.Return">
             <summary>
-            下一个超时节点
+            返回值
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.previousTimeout">
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.Output.OutputInfo">
             <summary>
-            上一个超时节点
+            远程表达式服务端节点标识解析输出参数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.timeoutCount">
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.Output.OutputThreadInfo">
             <summary>
-            超时计数
+            远程表达式服务端节点标识解析输出参数信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.isSetReceiveTimeout">
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.ClientNodeId">
             <summary>
-            是否设置了超时
+            客户端映射标识
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.ReceiveSizeLessCount">
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.TryGetValue``1(``0@)">
             <summary>
-            接收数据量过低次数
+            尝试获取泛型数据
             </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.setTimeout(System.Int64,System.Net.Sockets.Socket)">
-            <summary>
-            设置超时秒数
-            </summary>
-            <param name="timeoutSeconds"></param>
-            <param name="socket"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.setTimeout(System.Int64,System.Net.Sockets.Socket,System.UInt16)">
-            <summary>
-            设置超时秒数
-            </summary>
-            <param name="timeoutSeconds"></param>
-            <param name="socket"></param>
-            <param name="timeoutCount"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.setTimeout(System.Int64)">
-            <summary>
-            设置超时秒数
-            </summary>
-            <param name="timeoutSeconds"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.getTimeoutSocket(System.Net.Sockets.Socket@)">
-            <summary>
-            获取超时操作验证标识
-            </summary>
-            <param name="socket"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.waitCancelTimeout">
-            <summary>
-            等待取消超时
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.freeTimeout">
-            <summary>
-            弹出节点
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.DisposeSocket(System.Net.Sockets.Socket)">
-            <summary>
-            释放套接字
-            </summary>
-            <param name="socket"></param>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.DisposeSocket">
-            <summary>
-            释放套接字
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.SocketTimeoutLink.TimerLink">
-            <summary>
-            套接字超时
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.TimerLink.Head">
-            <summary>
-            链表首节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.TimerLink.End">
-            <summary>
-            链表尾部
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.SocketTimeoutLink.TimerLink.queueLock">
-            <summary>
-            链表访问锁
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.#ctor(System.Int32)">
-            <summary>
-            定时器双向链表节点
-            </summary>
-            <param name="seconds">超时秒数</param>
-        </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.Push(AutoCSer.Net.SocketTimeoutLink,System.Net.Sockets.Socket,System.UInt16)">
-            <summary>
-            添加超时套接字
-            </summary>
+            <typeparam name="returnType"></typeparam>
             <param name="value"></param>
-            <param name="socket"></param>
-            <param name="count"></param>
+            <returns></returns>
         </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.Cancel(AutoCSer.Net.SocketTimeoutLink)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.GetValue``1(``0)">
             <summary>
-            弹出节点
+            获取泛型数据
             </summary>
+            <typeparam name="returnType"></typeparam>
+            <param name="nullValue">失败默认值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ReturnValue)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.OnTimer">
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
             <summary>
-            定时器触发
+            客户端反序列化返回值
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.BinarySerialize.DeSerializer,AutoCSer.Net.RemoteExpression.ReturnValue@)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="deSerializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.Json.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ReturnValue)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.Json.Parser,AutoCSer.Net.RemoteExpression.ReturnValue@)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.createReturnValues">
+            <summary>
+            新建返回值的委托集合
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.onTimer">
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.createReturnValueLock">
             <summary>
-            定时器触发
+            新建返回值的委托集合访问锁
             </summary>
         </member>
-        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.Get(System.Int32)">
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.RegisterClient(System.Func{AutoCSer.Net.RemoteExpression.ReturnValue})">
             <summary>
-            获取套接字超时
+            客户端表达式节点注册
             </summary>
-            <param name="seconds"></param>
-            <returns></returns>
+            <param name="createReturnValue">新建一个返回值的委托</param>
+            <returns>表达式节点映射编号</returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ReturnValue`1">
+            <summary>
+            返回值
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue`1.Value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.serialize(AutoCSer.Json.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="T:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionNodeIdServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionNodeIdServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.Client">
             <summary>
@@ -18655,6 +18520,64 @@
             </summary>
             <param name="data"></param>
             <returns>是否添加到发送队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <param name="clientNode">客户端远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>客户端远程表达式节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionClientNodeParameter``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+            <param name="node">远程表达式参数节点</param>
+            <returns>客户端远程表达式参数节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.CallRemoteExpression(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpression``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
         </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.Client`1">
             <summary>
@@ -19660,6 +19583,18 @@
             发送数据
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketSender.GetRemoteExpressionNodeId(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式服务端节点标识
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketSender.GetRemoteExpression(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="data"></param>
+        </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.ServerSocketTask">
             <summary>
             TCP 内部服务端套接字任务处理
@@ -19786,6 +19721,62 @@
             TCP 内部服务端套接字任务处理配置
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.Sender">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.inputParameter">
+            <summary>
+            输入参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.Set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            设置参数
+            </summary>
+            <param name="sender">套接字</param>
+            <param name="taskType"></param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.Sender">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.inputParameter">
+            <summary>
+            输入参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.Set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,AutoCSer.RemoteType[])">
+            <summary>
+            设置参数
+            </summary>
+            <param name="sender">套接字</param>
+            <param name="taskType"></param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpOpenServer.Client">
             <summary>
             TCP 开放服务客户端
@@ -19835,6 +19826,64 @@
             </summary>
             <param name="data"></param>
             <returns>是否添加到发送队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <param name="clientNode">客户端远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>客户端远程表达式节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionClientNodeParameter``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+            <param name="node">远程表达式参数节点</param>
+            <returns>客户端远程表达式参数节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.CallRemoteExpression(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpression``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
         </member>
         <member name="T:AutoCSer.Net.TcpOpenServer.Client`1">
             <summary>
@@ -20840,6 +20889,18 @@
             <param name="sender"></param>
             <param name="async">异步回调参数</param>
         </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketSender.GetRemoteExpressionNodeId(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式服务端节点标识
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketSender.GetRemoteExpression(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="data"></param>
+        </member>
         <member name="T:AutoCSer.Net.TcpOpenServer.ServerSocketTask">
             <summary>
             TCP 服务端套接字任务处理
@@ -20935,6 +20996,919 @@
             <summary>
             TCP 服务套接字数据发送
             </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod">
+            <summary>
+            动态函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.dynamicMethod">
+            <summary>
+            动态函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.generator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.#ctor(System.Type)">
+            <summary>
+            动态函数
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.Push(AutoCSer.BinarySerialize.FieldSize)">
+            <summary>
+            添加字段
+            </summary>
+            <param name="field">字段信息</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.FixedFill(System.Int32)">
+            <summary>
+            填充对齐数据
+            </summary>
+            <param name="fixedFillSize"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializeDynamicMethod.Create``1">
+            <summary>
+            创建成员转换委托
+            </summary>
+            <returns>成员转换委托</returns>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.DeSerializeMethod">
+            <summary>
+            基本类型反序列化函数
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.DeSerializer">
+            <summary>
+            简单反序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.Read">
+            <summary>
+            当前读取位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.End">
+            <summary>
+            结束位置
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Boolean@)">
+            <summary>
+            逻辑值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">逻辑值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Boolean}@)">
+            <summary>
+            逻辑值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">逻辑值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Byte@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Byte}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.SByte@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.SByte}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Int16@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Int16}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.UInt16@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.UInt16}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Int32@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Int32}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.UInt32@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.UInt32}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Int64@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Int64}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.UInt64@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.UInt64}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Single@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Single}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Double@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Double}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Decimal@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Decimal}@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Char@)">
+            <summary>
+            字符反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Char}@)">
+            <summary>
+            字符反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.DateTime@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.DateTime}@)">
+            <summary>
+            时间反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Guid@)">
+            <summary>
+            数值反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.Nullable{System.Guid}@)">
+            <summary>
+            Guid反序列化
+            </summary>
+            <param name="data"></param>
+            <param name="value">Guid</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerialize(System.Byte*,System.String@,System.Byte*)">
+            <summary>
+            字符串反序列化
+            </summary>
+            <param name="start"></param>
+            <param name="value">字符串</param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.DeSerializer.deSerializeMethods">
+            <summary>
+            基本类型转换函数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.DeSerializer.GetDeSerializeMethod(System.Type)">
+            <summary>
+            获取基本类型转换函数
+            </summary>
+            <param name="type">基本类型</param>
+            <returns>转换函数</returns>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod">
+            <summary>
+            动态函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.dynamicMethod">
+            <summary>
+            动态函数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.generator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.#ctor(System.Type,System.Int32)">
+            <summary>
+            动态函数
+            </summary>
+            <param name="type"></param>
+            <param name="fixedSize"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.Push(AutoCSer.BinarySerialize.FieldSize)">
+            <summary>
+            添加字段
+            </summary>
+            <param name="field">字段信息</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.FixedFill(System.Int32)">
+            <summary>
+            填充对齐数据
+            </summary>
+            <param name="fixedFillSize"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.Create``1">
+            <summary>
+            创建成员转换委托
+            </summary>
+            <returns>成员转换委托</returns>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteByteMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteSByteMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteShortMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteUShortMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteIntMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteUIntMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteLongMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteULongMethod">
+            <summary>
+            非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.SerializeMethod">
+            <summary>
+            基本类型序列化函数
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.Serializer">
+            <summary>
+            简单序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Boolean)">
+            <summary>
+            逻辑值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">逻辑值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Boolean})">
+            <summary>
+            逻辑值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">逻辑值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Byte)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Byte})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.SByte)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.SByte})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Int16)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Int16})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.UInt16)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.UInt16})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Int32)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Int32})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.UInt32)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.UInt32})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Int64)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Int64})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.UInt64)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.UInt64})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Single)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Single})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Double)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Double})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Decimal)">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Decimal})">
+            <summary>
+            数值序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">数值</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Char)">
+            <summary>
+            字符序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">字符</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Char})">
+            <summary>
+            字符序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">字符</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.DateTime)">
+            <summary>
+            时间序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">时间</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.DateTime})">
+            <summary>
+            时间序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">时间</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Guid)">
+            <summary>
+            Guid序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">Guid</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.Nullable{System.Guid})">
+            <summary>
+            Guid序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">Guid</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.serialize(AutoCSer.UnmanagedStream,System.String)">
+            <summary>
+            字符串序列化
+            </summary>
+            <param name="stream"></param>
+            <param name="value">字符串</param>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.Compile(System.Type[])">
+            <summary>
+            预编译类型
+            </summary>
+            <param name="types"></param>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.Serializer.serializeMethods">
+            <summary>
+            基本类型转换函数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.GetSerializeMethod(System.Type)">
+            <summary>
+            获取基本类型转换函数
+            </summary>
+            <param name="type">基本类型</param>
+            <returns>转换函数</returns>
+        </member>
+        <member name="M:AutoCSer.Net.SimpleSerialize.Serializer.IsType(System.Type)">
+            <summary>
+            判断是否可序列化类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.TypeDeSerializer`1">
+            <summary>
+            简单反序列化
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.TypeDeSerializer`1.SimpleDeSerializer">
+            <summary>
+            简单反序列化委托
+            </summary>
+            <param name="start"></param>
+            <param name="value">目标数据</param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.TypeDeSerializer`1.DeSerialize">
+            <summary>
+            简单反序列化委托
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.TypeSerializer`1">
+            <summary>
+            简单序列化
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Net.SimpleSerialize.TypeSerializer`1.SimpleSerializer">
+            <summary>
+            简单序列化委托
+            </summary>
+            <param name="stream"></param>
+            <param name="value">目标数据</param>
+        </member>
+        <member name="F:AutoCSer.Net.SimpleSerialize.TypeSerializer`1.Serializer">
+            <summary>
+            成员序列化
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SocketAsyncEventArgsPool">
+            <summary>
+            套接字异步事件对象池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.maxCount">
+            <summary>
+            缓存数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.head">
+            <summary>
+            套接字异步事件对象池首节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.popLock">
+            <summary>
+            套接字异步事件对象池弹出节点访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketAsyncEventArgsPool.count">
+            <summary>
+            缓存数量
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketAsyncEventArgsPool.Get">
+            <summary>
+            弹出节点
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SocketAsyncEventArgsPool.PushNotNull(System.Net.Sockets.SocketAsyncEventArgs@)">
+            <summary>
+            添加节点
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="T:AutoCSer.Net.SocketLink">
+            <summary>
+            套接字链表
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketLink.Socket">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketLink.DisposeSocket">
+            <summary>
+            释放套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketLink.Cancel">
+            <summary>
+            释放套接字
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SocketLink.Start(AutoCSer.Net.TcpOpenServer.Server,AutoCSer.Net.TcpOpenServer.ServerSocket@)">
+            <summary>
+            创建 TCP 服务端套接字
+            </summary>
+            <param name="server"></param>
+            <param name="serverSocket"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.SocketTimeoutLink">
+            <summary>
+            套接字超时链表节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.timeoutSeconds">
+            <summary>
+            超时秒数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.Socket">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.timeoutSocket">
+            <summary>
+            超时操作验证标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.nextTimeout">
+            <summary>
+            下一个超时节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.previousTimeout">
+            <summary>
+            上一个超时节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.timeoutCount">
+            <summary>
+            超时计数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.isSetReceiveTimeout">
+            <summary>
+            是否设置了超时
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.ReceiveSizeLessCount">
+            <summary>
+            接收数据量过低次数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.setTimeout(System.Int64,System.Net.Sockets.Socket)">
+            <summary>
+            设置超时秒数
+            </summary>
+            <param name="timeoutSeconds"></param>
+            <param name="socket"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.setTimeout(System.Int64,System.Net.Sockets.Socket,System.UInt16)">
+            <summary>
+            设置超时秒数
+            </summary>
+            <param name="timeoutSeconds"></param>
+            <param name="socket"></param>
+            <param name="timeoutCount"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.setTimeout(System.Int64)">
+            <summary>
+            设置超时秒数
+            </summary>
+            <param name="timeoutSeconds"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.getTimeoutSocket(System.Net.Sockets.Socket@)">
+            <summary>
+            获取超时操作验证标识
+            </summary>
+            <param name="socket"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.waitCancelTimeout">
+            <summary>
+            等待取消超时
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.freeTimeout">
+            <summary>
+            弹出节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.DisposeSocket(System.Net.Sockets.Socket)">
+            <summary>
+            释放套接字
+            </summary>
+            <param name="socket"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.DisposeSocket">
+            <summary>
+            释放套接字
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.SocketTimeoutLink.TimerLink">
+            <summary>
+            套接字超时
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.TimerLink.Head">
+            <summary>
+            链表首节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.TimerLink.End">
+            <summary>
+            链表尾部
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.SocketTimeoutLink.TimerLink.queueLock">
+            <summary>
+            链表访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.#ctor(System.Int32)">
+            <summary>
+            定时器双向链表节点
+            </summary>
+            <param name="seconds">超时秒数</param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.Push(AutoCSer.Net.SocketTimeoutLink,System.Net.Sockets.Socket,System.UInt16)">
+            <summary>
+            添加超时套接字
+            </summary>
+            <param name="value"></param>
+            <param name="socket"></param>
+            <param name="count"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.Cancel(AutoCSer.Net.SocketTimeoutLink)">
+            <summary>
+            弹出节点
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.OnTimer">
+            <summary>
+            定时器触发
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.onTimer">
+            <summary>
+            定时器触发
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.SocketTimeoutLink.TimerLink.Get(System.Int32)">
+            <summary>
+            获取套接字超时
+            </summary>
+            <param name="seconds"></param>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.TcpRegister.Cache">
             <summary>
@@ -24129,10 +25103,18 @@
             <summary>
             TCP 服务客户端套接字数据发送
             </summary>
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.commandClient">
             <summary>
             TCP 服务客户端
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.remoteExpressionServerNodeIdChecker">
+            <summary>
+            远程表达式客户端检测服务端映射标识
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.#ctor(AutoCSer.Net.TcpServer.ClientSocket{`0})">
@@ -24381,6 +25363,85 @@
             <param name="commandIndex"></param>
             <returns>是否添加到发送队列</returns>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionNodeId(AutoCSer.RemoteType[])">
+            <summary>
+            获取远程表达式服务端节点标识
+            </summary>
+            <param name="types">表达式服务端节点类型集合</param>
+            <returns>表达式服务端节点标识集合</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <param name="clientNode">客户端远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>客户端远程表达式节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionClientNodeParameter``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+            <param name="node">远程表达式参数节点</param>
+            <returns>客户端远程表达式参数节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.getRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallRemoteExpression(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpression``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.getRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.BuildOutput">
             <summary>
             发送数据
@@ -24436,6 +25497,23 @@
             <param name="identityCommand">命令信息</param>
             <param name="onCall">回调委托</param>
             <returns>保持回调</returns>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender`1.RemoteExpressionServerNodeIdChecker">
+            <summary>
+            远程表达式客户端检测服务端映射标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.RemoteExpressionServerNodeIdChecker.Sender">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.RemoteExpressionServerNodeIdChecker.Get(AutoCSer.RemoteType[])">
+            <summary>
+            获取服务端映射标识集合
+            </summary>
+            <param name="types"></param>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientSocketSenderBase">
             <summary>
@@ -26809,6 +27887,11 @@
             取消保持回调
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ReturnType.RemoteExpressionServerNodeError">
+            <summary>
+            远程表达式映射失败
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ReturnType.Success">
             <summary>
             成功，最大占用 3b，低端是服务端状态，用于 Identity 最高 3 位
@@ -26847,6 +27930,16 @@
         <member name="F:AutoCSer.Net.TcpServer.ReturnType.ClientReceiveError">
             <summary>
             客户端接收数据错误
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ReturnType.RemoteExpressionNotSupport">
+            <summary>
+            服务配置不支持远程表达式
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ReturnType.RemoteExpressionCheckerError">
+            <summary>
+            远程表达式客户端检测服务端映射标识不匹配
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ReturnValue">
@@ -27029,6 +28122,21 @@
             连接检测命令
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.RemoteExpressionCommandIndex">
+            <summary>
+            远程表达式服务端节点调用命令
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.RemoteExpressionNodeIdCommandIndex">
+            <summary>
+            远程表达式服务端节点标识解析命令
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.MergeCommandIndex">
+            <summary>
+            客户端流合并命令
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.Server.CustomDataCommandIndex">
             <summary>
             自定义数据包命令
@@ -27037,11 +28145,6 @@
         <member name="F:AutoCSer.Net.TcpServer.Server.CancelKeepCommandIndex">
             <summary>
             取消保持回调命令
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server.MergeCommandIndex">
-            <summary>
-            客户端流合并命令
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Server.MinCommandIndex">
@@ -27181,6 +28284,11 @@
             TCP 服务配置
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.RemoteExpressionServerTask">
+            <summary>
+            远程表达式服务端任务类型，默认为 Timeout
+            </summary>
+        </member>
         <member name="P:AutoCSer.Net.TcpServer.ServerAttribute.GetMaxCustomDataSize">
             <summary>
             客户端最大自定义数据包字节大小，0 表示不限
@@ -27307,6 +28415,21 @@
             服务端监听
             </summary>
             <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.isCustomData">
+            <summary>
+            是否支持自定义数据包
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.isKeepCallback">
+            <summary>
+            是否支持保持回调
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.isMergeCommand">
+            <summary>
+            是否支持合并命令处理
+            </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerBase`1.setCommandData(System.Int32)">
             <summary>
@@ -27480,6 +28603,11 @@
         <member name="F:AutoCSer.Net.TcpServer.ServerBaseAttribute.IsCompileSerialize">
             <summary>
             默认为 true 表示在初始化的时候启动序列化预编译任务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBaseAttribute.IsRemoteExpression">
+            <summary>
+            默认为 false 表示不支持远程表达式
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerBaseAttribute.GetConfig``1(System.String,System.Type,``0)">
@@ -28114,6 +29242,11 @@
         <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender`4.Server">
             <summary>
             TCP 服务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender`4.IsServerBuildOutputThread">
+            <summary>
+            服务端创建输出是否开启线程
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.#ctor(AutoCSer.Net.TcpServer.ServerSocket{`0,`1,`2,`3},AutoCSer.Threading.Thread.CallType)">

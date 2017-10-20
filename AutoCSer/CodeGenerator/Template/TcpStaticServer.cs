@@ -882,12 +882,8 @@ namespace AutoCSer.CodeGenerator.Template
         public/*NOTE*/ partial/*NOTE*/ class @ServerName
         {
             #region IF ServiceAttribute.IsSegmentation
-            #region LOOP MethodIndexs
-            #region NOT IsNullMethod
             #region FROMNAME Parameter
             #endregion FROMNAME Parameter
-            #endregion NOT IsNullMethod
-            #endregion LOOP MethodIndexs
             #endregion IF ServiceAttribute.IsSegmentation
             /// <summary>
             /// TCP 静态调用客户端参数
@@ -1041,7 +1037,7 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion NOT Attribute.IsCancel
             private static @MemberType.FullName @GetLinkMemberName(/*PUSH:RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteKeyMember*//*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
             {
-                @Type.FullName value = @GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
+                @Type.FullName _value_ = @GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
                 #region LOOP Members
                 #region PUSH Member
                 @MemberType.FullName @IndexName = /*NOTE*/(@MemberType.FullName)/*NOTE*/@ParentIndexName/**/.@MemberName;
@@ -1088,7 +1084,7 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion NOT Attribute.IsCancel
             private static @MethodReturnType.FullName @RemoteLinkMethodName(/*PUSH:RemoteKeyMember*/@MemberType.FullName @MemberName/*PUSH:RemoteKeyMember*//*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
-                @Type.FullName value = @GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
+                @Type.FullName _value_ = @GetRemoteMethodName(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
                 #region LOOP Members
                 #region PUSH Member
                 @MemberType.FullName @IndexName = /*NOTE*/(@MemberType.FullName)/*NOTE*/@ParentIndexName/**/.@MemberName;
@@ -1161,10 +1157,10 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion NOT AttributeIsMethod
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
             #endregion NOT Attribute.IsCancel
-            private static @MethodReturnType.FullName @RemoteTypeMethodName(@Type.FullName value/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
+            private static @MethodReturnType.FullName @RemoteTypeMethodName(@Type.FullName _value_/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
                 /*IF:IsMethodReturn*/
-                return /*IF:IsMethodReturn*//*NOTE*/(@MethodReturnType.FullName)/*NOTE*/value.@MethodName(/*LOOP:Parameters*/@ParameterJoinName/*LOOP:Parameters*/);
+                return /*IF:IsMethodReturn*//*NOTE*/(@MethodReturnType.FullName)/*NOTE*/_value_.@MethodName(/*LOOP:Parameters*/@ParameterJoinName/*LOOP:Parameters*/);
             }
             #endregion PUSH Method
             #endregion LOOP RemoteMembers
@@ -1190,7 +1186,7 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion NOT AttributeIsMethod
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
             #endregion NOT Attribute.IsCancel
-            private static @MemberType.FullName @GetLinkTypeMemberName(@Type.FullName value/*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
+            private static @MemberType.FullName @GetLinkTypeMemberName(@Type.FullName _value_/*LOOP:PropertyParameters*/, @ParameterTypeRefName @ParameterName/*LOOP:PropertyParameters*/)
             {
                 #region LOOP Members
                 #region PUSH Member
@@ -1216,7 +1212,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <summary>
             /// @XmlDocument
             /// </summary>
-            /// <param name="value">@Type.XmlDocument</param>
+            /// <param name="_value_">@Type.XmlDocument</param>
             #region LOOP Parameters
             #region IF XmlDocument
             /// <param name="@ParameterName">@XmlDocument</param>
@@ -1232,7 +1228,7 @@ namespace AutoCSer.CodeGenerator.Template
             #endregion NOT AttributeIsMethod
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(/*NOT:Attribute.IsAwait*/IsClientAwaiter = false/*NOT:Attribute.IsAwait*/)]
             #endregion NOT Attribute.IsCancel
-            private static @MethodReturnType.FullName @RemoteLinkTypeMethodName(@Type.FullName value/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
+            private static @MethodReturnType.FullName @RemoteLinkTypeMethodName(@Type.FullName _value_/*LOOP:Parameters*/, @ParameterTypeRefName @ParameterName/*LOOP:Parameters*/)
             {
                 #region LOOP Members
                 #region PUSH Member
@@ -1311,7 +1307,7 @@ namespace AutoCSer.CodeGenerator.Template
                     public /*IF:Attribute.IsAwait*/AutoCSer.Net.TcpServer.AwaiterBox</*IF:Attribute.IsAwait*/@MethodReturnType.FullName/*IF:Attribute.IsAwait*/>/*IF:Attribute.IsAwait*/ @AttributeMethodName(/*LOOP:NextParameters*/@ParameterTypeRefName @ParameterJoinName/*LOOP:NextParameters*/)
                     {
                         /*IF:IsMethodReturn*/
-                        return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName/*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
+                        return /*IF:IsMethodReturn*/ /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*//*LOOP:NextParameters*/, @ParameterName/*LOOP:NextParameters*/);
                     }
                     #endregion IF IsMethod
                     #region NOT IsMethod
@@ -1322,7 +1318,7 @@ namespace AutoCSer.CodeGenerator.Template
                     {
                         get
                         {
-                            return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(@MemberName);
+                            return /*NOTE*/(AutoCSer.Net.TcpServer.AwaiterBox<MemberType.FullName>)/*NOTE*/TcpCall.@TypeName/*PUSH:Method*/.@StaticMethodName/*PUSH:Method*/(/*PUSH:RemoteKeyMember*/@MemberName/*PUSH:RemoteKeyMember*/);
                         }
                     }
                     #endregion NOT IsMethod

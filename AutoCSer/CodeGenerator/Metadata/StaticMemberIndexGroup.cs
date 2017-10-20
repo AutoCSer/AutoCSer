@@ -24,7 +24,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         /// <param name="type">对象类型</param>
         /// <returns>成员索引分组</returns>
-        private static MemberIndexGroup getStatic(Type type)
+        internal static MemberIndexGroup Get(Type type)
         {
             MemberIndexGroup value;
             Monitor.Enter(cacheLock);
@@ -48,7 +48,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         public static MemberIndexInfo[] Get<attributeType>(Type type, MemberFilters filter, bool isFilter, bool isAttribute, bool isBaseType)
              where attributeType : AutoCSer.Metadata.IgnoreMemberAttribute
         {
-            return getStatic(type).Find(filter, isFilter).getFindArray(value => isAttribute ? value.IsAttribute<attributeType>(isBaseType) : !value.IsIgnoreAttribute<attributeType>(isBaseType));
+            return Get(type).Find(filter, isFilter).getFindArray(value => isAttribute ? value.IsAttribute<attributeType>(isBaseType) : !value.IsIgnoreAttribute<attributeType>(isBaseType));
         }
     }
 }

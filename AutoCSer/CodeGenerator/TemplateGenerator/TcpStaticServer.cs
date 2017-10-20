@@ -350,14 +350,14 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public string IndexName
                 {
-                    get { return "value" + Index.toString(); }
+                    get { return "_value" + Index.toString() +"_"; }
                 }
                 /// <summary>
                 /// 局部变量名称
                 /// </summary>
                 public string ParentIndexName
                 {
-                    get { return Index == 0 ? "value" : ("value" + (Index - 1).toString()); }
+                    get { return Index == 0 ? "_value_" : ("_value" + (Index - 1).toString() + "_"); }
                 }
                 /// <summary>
                 /// 是否需要可空检查
@@ -389,7 +389,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public string IndexName
                 {
-                    get { return "value" + (Members.Length - 1).toString(); }
+                    get { return "_value" + (Members.Length - 1).toString() + "_"; }
                 }
                 /// <summary>
                 /// 属性参数集合

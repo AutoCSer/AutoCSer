@@ -74,6 +74,26 @@ namespace AutoCSer.CodeGenerator.Metadata
             get { return MethodName; }
         }
         /// <summary>
+        /// 方法泛型名称
+        /// </summary>
+        public string GenericMethodName
+        {
+            get
+            {
+                return MethodName + GenericParameterName;
+            }
+        }
+        /// <summary>
+        /// 方法泛型名称
+        /// </summary>
+        public string GenericStaticMethodName
+        {
+            get
+            {
+                return StaticMethodName + GenericParameterName;
+            }
+        }
+        /// <summary>
         /// 异步函数名称
         /// </summary>
         public string TaskAsyncMethodName

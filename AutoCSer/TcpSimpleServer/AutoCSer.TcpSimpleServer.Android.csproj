@@ -98,6 +98,7 @@
     <Compile Include="TcpSimpleServer\ISetTcpServer.cs" />
     <Compile Include="TcpSimpleServer\MethodAttribute.cs" />
     <Compile Include="TcpSimpleServer\OutputInfo.cs" />
+    <Compile Include="TcpSimpleServer\RemoteExpressionServerNodeIdChecker.cs" />
     <Compile Include="TcpSimpleServer\Server.cs" />
     <Compile Include="TcpSimpleServer\ServerAttribute.cs" />
     <Compile Include="TcpSimpleServer\ServerBuffer.cs" />

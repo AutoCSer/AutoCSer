@@ -31,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpStaticServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -53,10 +54,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Property.cs" />
     <Compile Include="RefOut.cs" />
+    <Compile Include="Expression.cs" />
+    <Compile Include="RemoteKey.cs" />
+    <Compile Include="RemoteLinkType.cs" />
     <Compile Include="SendOnly.cs" />
     <Compile Include="ServerName.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Example.TcpStaticServer}.TcpStaticServer.Example1.Client.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

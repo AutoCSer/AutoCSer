@@ -111,6 +111,13 @@ namespace AutoCSer.CodeGenerator.Metadata
             }
         }
         /// <summary>
+        /// 是否静态类型
+        /// </summary>
+        public bool IsStatic
+        {
+            get { return Type != null && Type.IsAbstract && Type.IsSealed; }
+        }
+        /// <summary>
         /// 是否值类型(排除可空类型)
         /// </summary>
         public bool IsStruct

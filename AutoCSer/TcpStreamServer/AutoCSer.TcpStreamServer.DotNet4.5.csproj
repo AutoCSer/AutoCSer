@@ -106,6 +106,7 @@
     <Compile Include="TcpStreamServer\MethodAttribute.cs" />
     <Compile Include="TcpStreamServer\NET4.5\ClientSocketSender.cs" />
     <Compile Include="TcpStreamServer\NET4.5\MethodAttribute.cs" />
+    <Compile Include="TcpStreamServer\RemoteExpressionServerNodeIdChecker.cs" />
     <Compile Include="TcpStreamServer\Server.cs" />
     <Compile Include="TcpStreamServer\ServerAttribute.cs" />
     <Compile Include="TcpStreamServer\ServerOutput\Output.cs" />

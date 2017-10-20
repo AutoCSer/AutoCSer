@@ -153,6 +153,10 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         internal readonly attributeType Attribute;
         /// <summary>
+        /// 远程表达式客户端检测服务端映射标识
+        /// </summary>
+        private readonly RemoteExpressionServerNodeIdChecker remoteExpressionServerNodeIdChecker;
+        /// <summary>
         /// 套接字访问锁
         /// </summary>
         internal readonly object SocketLock = new object();
@@ -168,6 +172,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         {
             Attribute = attribute;
             SubBuffer.Pool.GetPool(attribute.GetSendBufferSize).Get(ref Buffer);
+            if (attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Client = this };
         }
         /// <summary>
         /// 释放资源
@@ -686,6 +691,117 @@ namespace AutoCSer.Net.TcpSimpleServer
                 Monitor.Exit(SocketLock);
             }
             return returnType;
+        }
+        /// <summary>
+        /// 获取远程表达式服务端节点标识
+        /// </summary>
+        /// <param name="types">表达式服务端节点类型集合</param>
+        /// <returns>表达式服务端节点标识集合</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal TcpServer.ReturnValue<int[]> GetRemoteExpressionNodeId(RemoteType[] types)
+        {
+            RemoteExpression.ServerNodeIdChecker.Input inputParameter = new RemoteExpression.ServerNodeIdChecker.Input { Types = types };
+            RemoteExpression.ServerNodeIdChecker.Output outputParameter = default(RemoteExpression.ServerNodeIdChecker.Output);
+            TcpServer.ReturnType returnType = Get(RemoteExpression.ServerNodeIdChecker.Input.CommandInfo, ref inputParameter, ref outputParameter);
+            return new TcpServer.ReturnValue<int[]> { Type = returnType, Value = outputParameter.Return };
+        }
+        /// <summary>
+        /// 获取客户端远程表达式节点
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <param name="clientNode">客户端远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        public TcpServer.ReturnType GetRemoteExpressionClientNode(RemoteExpression.Node node, out RemoteExpression.ClientNode clientNode)
+        {
+            RemoteExpressionServerNodeIdChecker checker = remoteExpressionServerNodeIdChecker;
+            TcpServer.ReturnType returnType = checker.Check(node);
+            clientNode = returnType == TcpServer.ReturnType.Success ? new RemoteExpression.ClientNode { Node = node, Checker = checker, ClientNodeId = node.ClientNodeId } : default(RemoteExpression.ClientNode);
+            return returnType;
+        }
+        /// <summary>
+        /// 获取客户端远程表达式节点
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>客户端远程表达式节点</returns>
+        public RemoteExpression.ClientNode GetRemoteExpressionClientNode(RemoteExpression.Node node)
+        {
+            RemoteExpressionServerNodeIdChecker checker = remoteExpressionServerNodeIdChecker;
+            if (checker.Check(node) == TcpServer.ReturnType.Success) return new RemoteExpression.ClientNode { Node = node, Checker = checker, ClientNodeId = node.ClientNodeId };
+            throw new InvalidCastException();
+        }
+        /// <summary>
+        /// 获取客户端远程表达式参数节点
+        /// </summary>
+        /// <typeparam name="returnType">返回值类型</typeparam>
+        /// <param name="node">远程表达式参数节点</param>
+        /// <returns>客户端远程表达式参数节点</returns>
+        public RemoteExpression.ClientNode<returnType> GetRemoteExpressionClientNodeParameter<returnType>(RemoteExpression.Node<returnType> node)
+        {
+            RemoteExpressionServerNodeIdChecker checker = remoteExpressionServerNodeIdChecker;
+            if (checker.Check(node) == TcpServer.ReturnType.Success) return new RemoteExpression.ClientNode<returnType> { Node = node, Checker = checker };
+            throw new InvalidCastException();
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        private TcpServer.ReturnValue<RemoteExpression.ReturnValue> getRemoteExpression(ref RemoteExpression.ClientNode node)
+        {
+            RemoteExpression.ReturnValue.Output outputParameter = default(RemoteExpression.ReturnValue.Output);
+            TcpServer.ReturnType returnType = Get(RemoteExpression.ClientNode.CommandInfo, ref node, ref outputParameter);
+            return new TcpServer.ReturnValue<RemoteExpression.ReturnValue> { Type = returnType, Value = outputParameter.Return };
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.ReturnType CallRemoteExpression(RemoteExpression.Node node)
+        {
+            if (remoteExpressionServerNodeIdChecker != null)
+            {
+                RemoteExpression.ClientNode clientNode;
+                TcpServer.ReturnType type = GetRemoteExpressionClientNode(node, out clientNode);
+                return type == TcpServer.ReturnType.Success ? getRemoteExpression(ref clientNode).Type : type;
+            }
+            return TcpServer.ReturnType.RemoteExpressionNotSupport;
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        public TcpServer.ReturnValue<returnType> GetRemoteExpression<returnType>(RemoteExpression.Node<returnType> node)
+        {
+            if (remoteExpressionServerNodeIdChecker != null)
+            {
+                RemoteExpression.ClientNode clientNode;
+                TcpServer.ReturnType type = GetRemoteExpressionClientNode(node, out clientNode);
+                if (type == TcpServer.ReturnType.Success)
+                {
+                    TcpServer.ReturnValue<RemoteExpression.ReturnValue> value = getRemoteExpression(ref clientNode);
+                    if (value.Type == TcpServer.ReturnType.Success) return ((RemoteExpression.ReturnValue<returnType>)value.Value).Value;
+                    return new TcpServer.ReturnValue<returnType> { Type = value.Type };
+                }
+                return new TcpServer.ReturnValue<returnType> { Type = type };
+            }
+            return new TcpServer.ReturnValue<returnType> { Type = TcpServer.ReturnType.RemoteExpressionNotSupport };
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="node">远程表达式节点</param>
+        /// <returns>返回值类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public TcpServer.ReturnValue<RemoteExpression.ReturnValue> GetRemoteExpression(RemoteExpression.ClientNode node)
+        {
+            if (remoteExpressionServerNodeIdChecker != null)
+            {
+                return node.Checker != remoteExpressionServerNodeIdChecker ? getRemoteExpression(ref node) : new TcpServer.ReturnValue<RemoteExpression.ReturnValue> { Type = TcpServer.ReturnType.RemoteExpressionCheckerError };
+            }
+            return new TcpServer.ReturnValue<RemoteExpression.ReturnValue> { Type = TcpServer.ReturnType.RemoteExpressionNotSupport };
         }
         /// <summary>
         /// 心跳检测

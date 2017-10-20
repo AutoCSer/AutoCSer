@@ -21,6 +21,7 @@
     <DefineConstants>TRACE;MONO;NOJIT;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netcoreapp2.0\AutoCSer.Example.TcpOpenStreamServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,6 +38,7 @@
   <ItemGroup>
     <Compile Include="ClientAsynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="NoAttribute.cs" />
     <Compile Include="Program.cs" />

@@ -3,7 +3,7 @@
 namespace AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType
 {
     /// <summary>
-    /// 关键字远程成员映射测试
+    /// 远程调用连类型映射测试
     /// </summary>
     [AutoCSer.Net.TcpStaticServer.Server(Name = Config.DataReaderServer, IsRemoteLinkType = true)]
     public partial struct ClassStudent

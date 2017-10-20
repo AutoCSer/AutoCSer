@@ -96,9 +96,9 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
             private static int get_Extension_Item(int Id, int index)
             {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
-                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
-                    return value0[index];
+                AutoCSer.TestCase.SqlTableCacheServer.Class _value_ = getSqlCache(Id);
+                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache _value0_ = _value_/**/.Extension;
+                    return _value0_[index];
             }
             /// <summary>
             /// 获取学生标识集合（远程缓存成员）
@@ -109,9 +109,9 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
             private static int[] get_Extension_StudentIds(int Id)
             {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
-                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
-                    return value0.StudentIds;
+                AutoCSer.TestCase.SqlTableCacheServer.Class _value_ = getSqlCache(Id);
+                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache _value0_ = _value_/**/.Extension;
+                    return _value0_.StudentIds;
             }
             /// <summary>
             /// 获取学生标识（远程缓存成员）
@@ -123,10 +123,10 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
             private static int remote_Extension_GetStudentId(int Id, int index)
             {
-                AutoCSer.TestCase.SqlTableCacheServer.Class value = getSqlCache(Id);
-                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache value0 = value/**/.Extension;
+                AutoCSer.TestCase.SqlTableCacheServer.Class _value_ = getSqlCache(Id);
+                AutoCSer.TestCase.SqlTableCacheServer.Class.MemberCache _value0_ = _value_/**/.Extension;
                     
-                    return value0/**/.GetStudentId(index);
+                    return _value0_/**/.GetStudentId(index);
             }
         }
 }namespace AutoCSer.TestCase.SqlTableCacheServer
@@ -210,7 +210,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// <summary>
             /// 获取学生信息
             /// </summary>
-            /// <param name="value">关键字远程成员映射测试</param>
+            /// <param name="value">远程调用连类型映射测试</param>
             /// <returns>获取学生信息</returns>
             [AutoCSer.Net.TcpStaticServer.RemoteMember(MemberName = @"Student", IsAwait = false)]
             [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(IsClientAwaiter = false)]
@@ -230,7 +230,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             public partial struct RemoteExtension
             {
                 /// <summary>
-                /// 关键字远程成员映射测试
+                /// 远程调用连类型映射测试
                 /// </summary>
                 internal AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent Value;
                 /// <summary>
@@ -896,7 +896,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         public static partial class TcpCall
         {
             /// <summary>
-            /// 关键字远程成员映射测试
+            /// 远程调用连类型映射测试
             /// </summary>
             public partial struct ClassStudent
             {
@@ -905,7 +905,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                 /// <summary>
                 /// 获取学生信息
                 /// </summary>
-                /// <param name="value">关键字远程成员映射测试</param>
+                /// <param name="value">远程调用连类型映射测试</param>
                 /// <returns>获取学生信息</returns>
                 public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.SqlTableCacheServer.Student> getStudent(AutoCSer.TestCase.SqlTableCacheServer.RemoteLinkType.ClassStudent value)
                 {

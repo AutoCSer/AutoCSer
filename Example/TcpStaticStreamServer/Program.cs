@@ -32,6 +32,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer
                             Console.WriteLine(RefOut.TestCase());
                             Console.WriteLine(ClientAsynchronous.TestCase());
                             Console.WriteLine(SendOnly.TestCase());
+                            Console.WriteLine(Expression.TestCase());
                             Console.WriteLine("Over");
                         }
                         else Console.WriteLine("示例服务启动失败");

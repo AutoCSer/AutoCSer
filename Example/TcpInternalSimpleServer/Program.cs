@@ -25,6 +25,7 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                     Console.WriteLine(Property.TestCase());
                     Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(Asynchronous.TestCase());
+                    Console.WriteLine(Expression.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
 #if !DotNetStandard

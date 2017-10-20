@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--Include:Include\LoadHeader[,远程表达式链]-->
+<body>
+    <p>
+        <b>远程表达式链</b>是一个可独立于具体 RPC 实现的通用组件，可以用于实现内部服务无 API 化，客户端可以灵活自主的调用服务端暴露的字段 / 属性 / 函数。
+        <br /><b>该功能需要在工程项目中配置<a href="/CodeGenerator.html">静态代码生成</a>。</b>
+    </p>
+    <p>1. 根据需求给需要暴露的 class / struct 添加 <b>partial</b> 修饰符，如果该 class 是一个嵌套类型，需要给所有上级 class 都添加 <b>partial</b> 修饰符，因为<a href="/CodeGenerator.html">静态代码生成</a>需要与它公用同一个类型以生成远程表达式节点信息。</p>
+    <p>2. 给该 class / struct 添加远程表达式类型申明配置 <b>[AutoCSer.Net.RemoteExpression.Type]</b>，并给需要暴露的成员添加远程表达式成员申明配置 <b>[AutoCSer.Net.RemoteExpression.Member]</b>。</p>
+    <p>3. 给该工程项目配置<a href="/CodeGenerator.html">静态代码生成</a>并编译项目，然后将生成的远程表达式节点信息代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。由于远程表达式节点信息可能存在相互引用，<b>可能需要连续编译三次</b>调用代码生成才能生成包含完整的远程表达式节点信息代码的程序集。</p>
+    <p>
+        <a href="/Index.html" title="Go to the home page to download">AutoCSer</a> 中的 RPC 框架都集成支持<b>远程表达式链</b>，但是由于安全问题默认是禁用状态，需要在相关服务的申明配置中设置 <b>IsRemoteExpression = true</b>，比如
+        <!--Include:Include\GetCode[Example,1,启用支持远程表达式支持,TcpStaticServer\RefOut.cs]-->
+        <!--Include:Include\GetCode[Example,g,内部静态服务（含泛型示例）,TcpStaticServer\Expression.cs]-->
+    </p>
+    <p>
+        下面是各 RPC 框架的调用示例
+    </p>
+    <p>
+        TCP 接口服务框架
+        <!--Include:Include\GetCode[Example,2,内部服务,TcpInterfaceServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,3,开放服务,TcpInterfaceOpenServer\Expression.cs]-->
+    </p>
+    <p>
+        TCP 函数服务框架
+        <!--Include:Include\GetCode[Example,4,内部静态服务（含泛型示例）,TcpStaticServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,5,内部实例服务,TcpInternalServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,6,开放服务,TcpOpenServer\Expression.cs]-->
+    </p>
+    <p>
+        TCP 接口应答流服务框架
+        <!--Include:Include\GetCode[Example,7,内部服务,TcpInterfaceStreamServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,8,开放服务,TcpInterfaceOpenStreamServer\Expression.cs]-->
+    </p>
+    <p>
+        TCP 函数应答流服务框架
+        <!--Include:Include\GetCode[Example,9,内部静态服务,TcpStaticStreamServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,a,内部实例服务,TcpInternalStreamServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,b,开放服务,TcpOpenStreamServer\Expression.cs]-->
+    </p>
+    <p>
+        TCP 接口同步应答服务框架
+        <!--Include:Include\GetCode[Example,c,内部服务,TcpInterfaceSimpleServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,d,开放服务,TcpInterfaceOpenSimpleServer\Expression.cs]-->
+    </p>
+    <p>
+        TCP 函数同步应答服务框架
+        <!--Include:Include\GetCode[Example,e,内部静态服务,TcpStaticSimpleServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,f,内部实例服务,TcpInternalSimpleServer\Expression.cs]-->
+        <!--Include:Include\GetCode[Example,h,开放服务,TcpOpenSimpleServer\Expression.cs]-->
+    </p>
+</body>
+</html>

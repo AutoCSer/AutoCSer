@@ -233,6 +233,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.OpenAPI.Weibo.DotN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.OpenAPI.Weixin.DotNet4.5", "AutoCSer\OpenAPI\Weixin\AutoCSer.OpenAPI.Weixin.DotNet4.5.csproj", "{DAF77056-5A3F-4B75-BC0F-546B4ABB6813}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCSer.Web.SearchServer.DotNet4.5", "Web\SearchServer\AutoCSer.Web.SearchServer.DotNet4.5.csproj", "{77E798B9-AD20-4DF9-A2DF-4EA200116A92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -627,6 +629,10 @@ Global
 		{DAF77056-5A3F-4B75-BC0F-546B4ABB6813}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAF77056-5A3F-4B75-BC0F-546B4ABB6813}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAF77056-5A3F-4B75-BC0F-546B4ABB6813}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77E798B9-AD20-4DF9-A2DF-4EA200116A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77E798B9-AD20-4DF9-A2DF-4EA200116A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77E798B9-AD20-4DF9-A2DF-4EA200116A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77E798B9-AD20-4DF9-A2DF-4EA200116A92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -737,5 +743,6 @@ Global
 		{6B9092C5-9B53-4A64-964B-462CF041283B} = {F7CCDC3B-31C5-417F-8D89-E2EBF997F2D4}
 		{0FE31CF7-A007-4647-96BE-54190F57FF65} = {F7CCDC3B-31C5-417F-8D89-E2EBF997F2D4}
 		{DAF77056-5A3F-4B75-BC0F-546B4ABB6813} = {F7CCDC3B-31C5-417F-8D89-E2EBF997F2D4}
+		{77E798B9-AD20-4DF9-A2DF-4EA200116A92} = {9831F3E4-1D5B-4AC8-8C25-7353F2ED15F0}
 	EndGlobalSection
 EndGlobal

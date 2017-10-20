@@ -50,6 +50,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpInterfaceSimpleServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -62,10 +63,12 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Expression.cs" />
     <Compile Include="Inherit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefOut.cs" />
+    <Compile Include="{AutoCSer.Example.TcpInterfaceSimpleServer}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet2.csproj">

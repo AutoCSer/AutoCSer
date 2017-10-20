@@ -458,42 +458,45 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             {
                 receiveCount = asyncEventArgs.BytesTransferred;
 #endif
-                    if (receiveCount >= sizeof(int))
+                if (receiveCount >= sizeof(int))
+                {
+                    fixed (byte* receiveDataFixed = Buffer.Buffer)
                     {
-                        fixed (byte* receiveDataFixed = Buffer.Buffer)
+                        command = *(int*)(bufferStart = receiveDataFixed + Buffer.StartIndex);
+                        int commandIndex = base.commandIndex;
+                        if (Server.IsCommand(commandIndex))
                         {
-                            command = *(int*)(bufferStart = receiveDataFixed + Buffer.StartIndex);
-                            int commandIndex = base.commandIndex;
-                            if (Server.IsCommand(commandIndex))
+                            if (commandIndex != TcpServer.Server.CheckCommandIndex)
                             {
-                                if (commandIndex >= TcpServer.Server.CommandStartIndex)
+                                if (((uint)command & (uint)TcpServer.CommandFlags.NullData) == 0)
                                 {
-                                    if (((uint)command & (uint)TcpServer.CommandFlags.NullData) == 0)
+                                    if (receiveCount >= sizeof(int) * 2)
                                     {
-                                        if (receiveCount >= sizeof(int) * 2)
+                                        if ((compressionDataSize = *(int*)(bufferStart + sizeof(uint))) > 0)
                                         {
-                                            if ((compressionDataSize = *(int*)(bufferStart + sizeof(uint))) > 0)
+                                            dataSize = compressionDataSize;
+                                            receiveIndex = sizeof(int) + sizeof(uint);
+                                            return checkCommandData();
+                                        }
+                                        else if (compressionDataSize < 0 && receiveCount >= (sizeof(int) * 2 + sizeof(uint)))
+                                        {
+                                            if ((dataSize = *(int*)(bufferStart + (sizeof(uint) + sizeof(int)))) > (compressionDataSize = -compressionDataSize))
                                             {
-                                                dataSize = compressionDataSize;
-                                                receiveIndex = sizeof(int) + sizeof(uint);
+                                                receiveIndex = sizeof(int) * 2 + sizeof(uint);
                                                 return checkCommandData();
-                                            }
-                                            else if (compressionDataSize < 0 && receiveCount >= (sizeof(int) * 2 + sizeof(uint)))
-                                            {
-                                                if ((dataSize = *(int*)(bufferStart + (sizeof(uint) + sizeof(int)))) > (compressionDataSize = -compressionDataSize))
-                                                {
-                                                    receiveIndex = sizeof(int) * 2 + sizeof(uint);
-                                                    return checkCommandData();
-                                                }
                                             }
                                         }
                                     }
-                                    else if (receiveCount == sizeof(int)) return Server.DoCommand(commandIndex, this, ref SubArray<byte>.Null);
                                 }
-                                else if (((commandIndex ^ TcpServer.Server.CheckCommandIndex) | (receiveCount ^ sizeof(int))) == 0) return Send(TcpServer.ReturnType.Success);
+                                else if (receiveCount == sizeof(int) && commandIndex != TcpServer.Server.RemoteExpressionCommandIndex && commandIndex != TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
+                                {
+                                    return Server.DoCommand(commandIndex, this, ref SubArray<byte>.Null);
+                                }
                             }
+                            else if (receiveCount == sizeof(int)) return Send(TcpServer.ReturnType.Success);
                         }
                     }
+                }
 #if DOTNET2
                 }
 #endif
@@ -775,7 +778,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         private bool doCommandMark(ref SubArray<byte> data)
         {
             if (MarkData != 0) TcpServer.CommandBuffer.Mark(ref data, MarkData);
-            return Server.DoCommand(commandIndex, this, ref data);
+            switch (commandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
+            {
+                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: return getRemoteExpressionNodeId(ref data); 
+                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: return getRemoteExpression(ref data);
+                default: return Server.DoCommand(commandIndex, this, ref data);
+            }
         }
         /// <summary>
         /// 命令处理委托
@@ -786,9 +794,65 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         private bool doCommand(ref SubBuffer.PoolBufferFull buffer)
         {
             SubArray<byte> data = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = dataSize };
-            bool value = Server.DoCommand(commandIndex, this, ref data);
+            bool value;
+            switch (commandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
+            {
+                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: value = getRemoteExpressionNodeId(ref data); break;
+                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: value = getRemoteExpression(ref data); break;
+                default: value = Server.DoCommand(commandIndex, this, ref data); break;
+            }
             buffer.PoolBuffer.Free();
             return value;
+        }
+        /// <summary>
+        /// 获取远程表达式服务端节点标识
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private bool getRemoteExpressionNodeId(ref SubArray<byte> data)
+        {
+            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+            try
+            {
+                RemoteExpression.ServerNodeIdChecker.Input inputParameter = default(RemoteExpression.ServerNodeIdChecker.Input);
+                if (DeSerialize(ref data, ref inputParameter, false))
+                {
+                    RemoteExpression.ServerNodeIdChecker.Output outputParameter = new RemoteExpression.ServerNodeIdChecker.Output { Return = RemoteExpression.Node.Get(inputParameter.Types) };
+                    return Send(TcpSimpleServer.OutputInfo.RemoteExpressionNodeId, ref outputParameter);
+                }
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+            }
+            catch (Exception error)
+            {
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                Log(error);
+            }
+            return SendOutput(returnType);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private bool getRemoteExpression(ref SubArray<byte> data)
+        {
+            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+            try
+            {
+                RemoteExpression.ClientNode inputParameter = default(RemoteExpression.ClientNode);
+                if (DeSerialize(ref data, ref inputParameter, false))
+                {
+                    RemoteExpression.ReturnValue.Output outputParameter = new RemoteExpression.ReturnValue.Output { Return = inputParameter.GetReturnValue() };
+                    return Send(TcpSimpleServer.OutputInfo.RemoteExpression, ref outputParameter);
+                }
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+            }
+            catch (Exception error)
+            {
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                Log(error);
+            }
+            return SendOutput(returnType);
         }
 
         /// <summary>

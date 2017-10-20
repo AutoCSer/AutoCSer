@@ -21,6 +21,7 @@
     <DefineConstants>TRACE;MONO;NOJIT;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netcoreapp2.0\AutoCSer.Example.TcpStaticServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -38,6 +39,7 @@
     <Compile Include="Asynchronous.cs" />
     <Compile Include="ClientAsynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="KeepCallback.cs" />
     <Compile Include="NoAttribute.cs" />
@@ -45,10 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Property.cs" />
     <Compile Include="RefOut.cs" />
+    <Compile Include="RemoteKey.cs" />
+    <Compile Include="RemoteLinkType.cs" />
     <Compile Include="SendOnly.cs" />
     <Compile Include="ServerName.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Example.TcpStaticServer}.TcpStaticServer.Example1.Client.cs" />
   </ItemGroup>
 
   <ItemGroup>

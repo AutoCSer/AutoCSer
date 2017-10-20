@@ -5,7 +5,7 @@ namespace AutoCSer.Example.TcpStaticServer
     /// <summary>
     /// ref / out 参数测试 示例
     /// </summary>
-    [AutoCSer.Net.TcpStaticServer.Server(Name = ServerName.Example1, Host = "127.0.0.1", Port = 12800, IsServer = true)]
+    [AutoCSer.Net.TcpStaticServer.Server(Name = ServerName.Example1, Host = "127.0.0.1", Port = 12800, IsServer = true, IsSegmentation = true, IsRemoteExpression = true)]
     partial class RefOut
     {
         /// <summary>

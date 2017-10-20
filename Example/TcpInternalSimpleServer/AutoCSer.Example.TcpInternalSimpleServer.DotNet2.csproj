@@ -50,6 +50,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpInternalSimpleServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -66,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asynchronous.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="NoAttribute.cs" />
     <Compile Include="Program.cs" />

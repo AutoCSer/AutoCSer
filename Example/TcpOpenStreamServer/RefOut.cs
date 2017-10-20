@@ -5,7 +5,7 @@ namespace AutoCSer.Example.TcpOpenStreamServer
     /// <summary>
     /// ref / out 参数测试 示例
     /// </summary>
-    [AutoCSer.Net.TcpOpenStreamServer.Server(Host = "127.0.0.1", Port = 13704)]
+    [AutoCSer.Net.TcpOpenStreamServer.Server(Host = "127.0.0.1", Port = 13704, IsRemoteExpression = true)]
     partial class RefOut
     {
         /// <summary>

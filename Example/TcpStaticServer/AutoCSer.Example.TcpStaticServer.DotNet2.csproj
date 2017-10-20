@@ -50,6 +50,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpStaticServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -70,6 +71,7 @@
     </Compile>
     <Compile Include="ClientAsynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="KeepCallback.cs">
       <SubType>Code</SubType>
@@ -81,12 +83,15 @@
     <Compile Include="RefOut.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RemoteKey.cs" />
+    <Compile Include="RemoteLinkType.cs" />
     <Compile Include="SendOnly.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ServerName.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Example.TcpStaticServer}.TcpStaticServer.Example1.Client.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

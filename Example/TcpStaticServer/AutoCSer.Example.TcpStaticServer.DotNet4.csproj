@@ -66,6 +66,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpStaticServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -109,6 +110,7 @@
     <Compile Include="Asynchronous.cs" />
     <Compile Include="ClientAsynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="KeepCallback.cs" />
     <Compile Include="NoAttribute.cs" />
@@ -116,10 +118,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Property.cs" />
     <Compile Include="RefOut.cs" />
+    <Compile Include="RemoteKey.cs" />
+    <Compile Include="RemoteLinkType.cs" />
     <Compile Include="SendOnly.cs" />
     <Compile Include="ServerName.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Example.TcpStaticServer}.TcpStaticServer.Example1.Client.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

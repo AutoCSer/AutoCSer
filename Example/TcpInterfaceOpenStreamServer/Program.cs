@@ -22,6 +22,7 @@ namespace AutoCSer.Example.TcpInterfaceOpenStreamServer
                     Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(SendOnly.TestCase());
                     Console.WriteLine(Inherit.TestCase());
+                    Console.WriteLine(Expression.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
 #if !DotNetStandard

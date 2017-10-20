@@ -31,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpStaticStreamServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -45,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ClientAsynchronous.cs" />
     <Compile Include="ClientTaskAsync.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="NoAttribute.cs" />
     <Compile Include="Program.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="ServerName.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticStreamServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Example.TcpStaticStreamServer}.TcpStaticStreamServer.StreamExample1.Client.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.DotNet4.5.csproj">

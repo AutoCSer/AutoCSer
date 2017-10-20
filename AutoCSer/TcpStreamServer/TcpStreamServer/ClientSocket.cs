@@ -69,7 +69,7 @@ namespace AutoCSer.Net.TcpStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void onReceive(ref SubArray<byte> data)
         {
-            CommandQueue.LinkNext.OnReceive(ref data);
+            getCurrentCommand().OnReceive(ref data);
             freeCommand();
         }
         /// <summary>
@@ -82,10 +82,30 @@ namespace AutoCSer.Net.TcpStreamServer
             SubArray<byte> data = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = compressionDataSize };
             try
             {
-                CommandQueue.LinkNext.OnReceive(ref data);
+                getCurrentCommand().OnReceive(ref data);
             }
             finally { buffer.Free(); }
             freeCommand();
+        }
+        /// <summary>
+        /// 获取当前执行命令
+        /// </summary>
+        /// <returns></returns>
+        private TcpServer.ClientCommand.CommandBase getCurrentCommand()
+        {
+            TcpServer.ClientCommand.CommandBase command = CommandQueue, nextCommand = command.LinkNext;
+            if (new UnionType { Value = nextCommand }.ClientCommand.IsBuildError)
+            {
+                do
+                {
+                    new UnionType { Value = command }.ClientCommand.Free();
+                    command = nextCommand;
+                    nextCommand = nextCommand.LinkNext;
+                }
+                while (new UnionType { Value = nextCommand }.ClientCommand.IsBuildError);
+                CommandQueue = command;
+            }
+            return nextCommand;
         }
         /// <summary>
         /// 释放 TCP 客户端输出信息

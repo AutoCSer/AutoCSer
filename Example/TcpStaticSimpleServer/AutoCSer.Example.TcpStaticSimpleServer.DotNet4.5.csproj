@@ -31,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpStaticSimpleServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -44,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asynchronous.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="NoAttribute.cs" />
     <Compile Include="Program.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="ServerName.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="{AutoCSer.Example.TcpStaticSimpleServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Example.TcpStaticSimpleServer}.TcpStaticSimpleServer.Example1.Client.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.5.csproj">

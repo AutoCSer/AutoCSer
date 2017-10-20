@@ -43,6 +43,19 @@
             . 支持异步回调注册，也就是说客户端一个请求，服务器端可以任意多次回调回应，服务端被动推送是典型的应用场景。
             <!--Include:Include\GetCode[Example,8,,TcpStaticServer\KeepCallback.cs]-->
         </p>
+        <p>
+            . 支持实例对象调用链映射，因为需要在服务端定位目标对象，所以需要为实例<b>关键字</b>与配套的静态<b>定位函数</b>分别配置 <b>[AutoCSer.Net.TcpStaticServer.RemoteKey]</b>。
+            <br />根据需求为对其它程序集不可见（private / protected / internal）的目标实例 字段 / 无参属性 / 函数 配置 <b>[AutoCSer.Net.TcpStaticServer.RemoteMember]</b> 或者 <b>[AutoCSer.Net.TcpStaticServer.RemoteMethod]</b>，前者对于没有输入参数的调用都将映射为属性，后者将所有调用都映射为函数。
+            <br />根据需求为对其它程序集不可见（private / protected / internal）的调用链中间实例 字段 / 无参属性 配置 <b>[AutoCSer.Net.TcpStaticServer.RemoteLink]</b>，调用链实例类型不支持循环。
+            <!--Include:Include\GetCode[Example,t,,TcpStaticServer\RemoteKey.cs]-->
+            . 在 <b>[AutoCSer.Net.TcpStaticServer.Server(Name = ServerName.Example1, IsRemoteLinkType = true)]</b> 中配置 <b>IsRemoteLinkType = true</b> 可以直接将当前类型的对象当作调用链目标对象，而无须配置 [AutoCSer.Net.TcpStaticServer.RemoteKey]，需要注意的是这种模式在远程调用的时候会序列化整个对象而不是关键字，所以一般用于临时性的多关键字对象定位处理。
+            <!--Include:Include\GetCode[Example,u,,TcpStaticServer\RemoteLinkType.cs]-->
+            <br />此功能存在多次生成依赖，<b>可能需要连续编译三次</b>调用代码生成才能生成包含完整的调用链代码的程序集。
+        </p>
+        <p>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
+            <!--Include:Include\GetCode[Example,v,,TcpStaticServer\Expression.cs]-->
+        </p>
         <!--Include:Include\SimpleSerialize-->
         <p>
             由于 <b>内部静态服务</b> 与 <b>内部实例服务</b> 对于性能影响的区别仅仅在于静态函数与实例函数调用的差别，不存在本质性的差别，所以性能测试项目请参考 <b>内部实例服务</b>。
@@ -83,6 +96,10 @@
         <p>
             . 支持异步回调注册，也就是说客户端一个请求，服务器端可以任意多次回调回应，服务端被动推送是典型的应用场景。
             <!--Include:Include\GetCode[Example,h,,TcpInternalServer\KeepCallback.cs]-->
+        </p>
+        <p>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
+            <!--Include:Include\GetCode[Example,w,,TcpInternalServer\Expression.cs]-->
         </p>
         <!--Include:Include\SimpleSerialize-->
         <p>
@@ -128,7 +145,11 @@
         </p>
         <p>
             . 支持异步回调注册，也就是说客户端一个请求，服务器端可以任意多次回调回应，服务端被动推送是典型的应用场景。
-            <!--Include:Include\GetCode[Example,t,,TcpOpenServer\KeepCallback.cs]-->
+            <!--Include:Include\GetCode[Example,x,,TcpOpenServer\KeepCallback.cs]-->
+        </p>
+        <p>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
+            <!--Include:Include\GetCode[Example,y,,TcpOpenServer\Expression.cs]-->
         </p>
         <!--Include:Include\SimpleSerialize-->
         <p>

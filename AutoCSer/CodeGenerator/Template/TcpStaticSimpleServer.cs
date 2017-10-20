@@ -502,12 +502,8 @@ namespace AutoCSer.CodeGenerator.Template
         public/*NOTE*/ partial/*NOTE*/ class @ServerName
         {
             #region IF ServiceAttribute.IsSegmentation
-            #region LOOP MethodIndexs
-            #region NOT IsNullMethod
             #region FROMNAME Parameter
             #endregion FROMNAME Parameter
-            #endregion NOT IsNullMethod
-            #endregion LOOP MethodIndexs
             #endregion IF ServiceAttribute.IsSegmentation
             /// <summary>
             /// TCP 静态调用客户端参数

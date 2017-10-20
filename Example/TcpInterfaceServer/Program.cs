@@ -24,6 +24,7 @@ namespace AutoCSer.Example.TcpInterfaceServer
                     Console.WriteLine(Asynchronous.TestCase());
                     Console.WriteLine(KeepCallback.TestCase());
                     Console.WriteLine(Inherit.TestCase());
+                    Console.WriteLine(Expression.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
 #if !DotNetStandard

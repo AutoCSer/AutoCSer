@@ -1140,6 +1140,12 @@
             <param name="size"></param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadInt">
+            <summary>
+            读取一个整数
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.createArray``1(``0[]@,System.Int32)">
             <summary>
             创建数组
@@ -11794,6 +11800,21 @@
             成员选择类型
             </summary>
         </member>
+        <member name="T:AutoCSer.Metadata.MemberFilterAttribute.NonPublic">
+            <summary>
+            默认非公有成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.Filter">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.MemberFilters">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
         <member name="T:AutoCSer.Metadata.MemberFilterAttribute.PublicInstance">
             <summary>
             默认公有动态成员
@@ -11944,6 +11965,16 @@
             静态属性成员
             </summary>
         </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Public">
+            <summary>
+            公共成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.NonPublic">
+            <summary>
+            非公共成员
+            </summary>
+        </member>
         <member name="F:AutoCSer.Metadata.MemberFilters.Instance">
             <summary>
             动态成员
@@ -11952,6 +11983,16 @@
         <member name="F:AutoCSer.Metadata.MemberFilters.Static">
             <summary>
             静态成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Field">
+            <summary>
+            字段
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Property">
+            <summary>
+            属性
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.MemberIndexGroup">

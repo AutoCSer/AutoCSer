@@ -31,6 +31,7 @@ namespace AutoCSer.Example.TcpOpenServer
                     Console.WriteLine(SendOnly.TestCase());
                     Console.WriteLine(Asynchronous.TestCase());
                     Console.WriteLine(KeepCallback.TestCase());
+                    Console.WriteLine(Expression.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
 #if !DotNetStandard

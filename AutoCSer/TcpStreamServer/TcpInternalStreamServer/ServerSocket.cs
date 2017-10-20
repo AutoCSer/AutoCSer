@@ -500,7 +500,8 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                     if (isCommand) return false;
                                     goto COPY;
                                 }
-                                Server.DoCommand(command, Sender, ref SubArray<byte>.Null);
+                                if (command != TcpServer.Server.RemoteExpressionCommandIndex && command != TcpServer.Server.RemoteExpressionNodeIdCommandIndex) Server.DoCommand(command, Sender, ref SubArray<byte>.Null);
+                                else return false;
                             }
                             receiveIndex += sizeof(int);
                             isCommand = false;
@@ -759,19 +760,24 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         private void doCommandMark(ref SubArray<byte> data)
         {
             if (MarkData != 0) TcpServer.CommandBuffer.Mark(ref data, MarkData);
-            Server.DoCommand(command, Sender, ref data);
+            switch (command - TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
+            {
+                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpressionNodeId(ref data, Server.Attribute.IsServerBuildOutputThread); return;
+                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpression(ref data, Server.Attribute.IsServerBuildOutputThread); return;
+                default: Server.DoCommand(command, Sender, ref data); return;
+            }
         }
-        /// <summary>
-        /// 命令处理委托
-        /// </summary>
-        /// <param name="buffer"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void doCommand(ref SubBuffer.PoolBufferFull buffer)
-        {
-            SubArray<byte> data = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = compressionDataSize };
-            Server.DoCommand(command, Sender, ref data);
-            buffer.PoolBuffer.Free();
-        }
+        ///// <summary>
+        ///// 命令处理委托
+        ///// </summary>
+        ///// <param name="buffer"></param>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //private void doCommand(ref SubBuffer.PoolBufferFull buffer)
+        //{
+        //    SubArray<byte> data = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = compressionDataSize };
+        //    Server.DoCommand(command, Sender, ref data);
+        //    buffer.PoolBuffer.Free();
+        //}
         /// <summary>
         /// 检查命令数据
         /// </summary>
@@ -1004,30 +1010,43 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                         CommandIndex = (uint)(command = *(int*)start) & TcpServer.Server.CommandFlagsAnd;
                         if (Server.IsCommand(command &= (int)TcpServer.Server.CommandIndexAnd))
                         {
-                            if (command != TcpServer.Server.CheckCommandIndex)
+                            switch (command - TcpServer.Server.MinCommandIndex)
                             {
-                                if ((CommandIndex & (uint)TcpServer.CommandFlags.NullData) == 0)
-                                {
-                                    if ((compressionDataSize = *(int*)(start + sizeof(int))) > 0 && (start += sizeof(int) * 2) + compressionDataSize <= end)
+                                case TcpServer.Server.CheckCommandIndex - TcpServer.Server.MinCommandIndex:
+                                    start += sizeof(int);
+                                    break;
+                                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.MinCommandIndex:
+                                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.MinCommandIndex:
+                                    if ((CommandIndex & (uint)TcpServer.CommandFlags.NullData) == 0
+                                         && (compressionDataSize = *(int*)(start + sizeof(int))) > 0 && (start += sizeof(int) * 2) + compressionDataSize <= end)
                                     {
                                         if (MarkData != 0) TcpServer.CommandBuffer.Mark(start, MarkData, compressionDataSize);
                                         data.Set((int)(start - dataFixed), compressionDataSize);
-                                        Server.DoCommand(command, Sender, ref data);
+                                        if (command == TcpServer.Server.RemoteExpressionCommandIndex) Sender.GetRemoteExpression(ref data, Server.Attribute.IsServerBuildOutputThread);
+                                        else Sender.GetRemoteExpressionNodeId(ref data, Server.Attribute.IsServerBuildOutputThread);
                                         start += compressionDataSize;
+                                        break;
                                     }
-                                    else
+                                    buffer.PoolBuffer.Free();
+                                    return false;
+                                default:
+                                    if ((CommandIndex & (uint)TcpServer.CommandFlags.NullData) == 0)
                                     {
+                                        if ((compressionDataSize = *(int*)(start + sizeof(int))) > 0 && (start += sizeof(int) * 2) + compressionDataSize <= end)
+                                        {
+                                            if (MarkData != 0) TcpServer.CommandBuffer.Mark(start, MarkData, compressionDataSize);
+                                            data.Set((int)(start - dataFixed), compressionDataSize);
+                                            Server.DoCommand(command, Sender, ref data);
+                                            start += compressionDataSize;
+                                            break;
+                                        }
                                         buffer.PoolBuffer.Free();
                                         return false;
                                     }
-                                }
-                                else
-                                {
                                     Server.DoCommand(command, Sender, ref SubArray<byte>.Null);
                                     start += sizeof(int);
-                                }
+                                    break;
                             }
-                            else start += sizeof(int);
                         }
                         else
                         {

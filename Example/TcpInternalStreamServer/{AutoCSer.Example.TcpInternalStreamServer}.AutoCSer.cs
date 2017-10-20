@@ -7,6 +7,744 @@ using AutoCSer;
 #pragma warning disable
 namespace AutoCSer.Example.TcpInternalStreamServer
 {
+        internal partial class Expression
+        {
+            /// <summary>
+            /// 远程表达式测试 远程表达式
+            /// </summary>
+            public class RemoteExpression : AutoCSer.Net.RemoteExpression.Node
+            {
+                internal RemoteExpression() : base() { }
+                protected RemoteExpression(int clientNodeId) : base(clientNodeId) { }
+                private static readonly RemoteExpression _static_ = new RemoteExpression();
+                /// <summary>
+                /// 远程表达式静态字段测试 远程表达式
+                /// </summary>
+                public sealed class StaticFieldRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node1.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>(); }
+                    }
+                    public StaticFieldRemoteExpression() { }
+                    internal StaticFieldRemoteExpression(RemoteExpression _parent_) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(StaticFieldRemoteExpression)));
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 getValue()
+                    {
+                        return AutoCSer.Example.TcpInternalStreamServer.Expression/**/.StaticField;
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式静态字段测试 远程表达式
+                /// </summary>
+                public static readonly StaticFieldRemoteExpression StaticField = new StaticFieldRemoteExpression(_static_);
+                /// <summary>
+                /// 远程表达式静态属性测试 远程表达式
+                /// </summary>
+                public sealed class StaticPropertyRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node1.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>(); }
+                    }
+                    public StaticPropertyRemoteExpression() { }
+                    internal StaticPropertyRemoteExpression(RemoteExpression _parent_) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(StaticPropertyRemoteExpression)));
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 getValue()
+                    {
+                        return AutoCSer.Example.TcpInternalStreamServer.Expression/**/.StaticProperty;
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式静态属性测试 远程表达式
+                /// </summary>
+                public static readonly StaticPropertyRemoteExpression StaticProperty = new StaticPropertyRemoteExpression(_static_);
+                /// <summary>
+                /// 远程表达式静态方法测试 远程表达式
+                /// </summary>
+                public sealed class StaticMethodRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node1.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>(); }
+                    }
+                    private int value;
+                    public StaticMethodRemoteExpression() { }
+                    internal StaticMethodRemoteExpression(RemoteExpression _parent_, int value) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                        this.value = value;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(StaticMethodRemoteExpression)));
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParameterStruct(deSerializer, ref value);
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParameter(parser, ref value);
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 getValue()
+                    {
+                        return AutoCSer.Example.TcpInternalStreamServer.Expression/**/.StaticMethod(value);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式静态方法测试 远程表达式
+                /// </summary>
+                /// <param name="value">远程表达式静态方法测试</param>
+                /// <returns>远程表达式静态方法测试 远程表达式</returns>
+                public static StaticMethodRemoteExpression StaticMethod(int value) { return new StaticMethodRemoteExpression(_static_, value); }
+            }
+        }
+}namespace AutoCSer.Example.TcpInternalStreamServer
+{
+    internal static partial class Expression
+    {
+        internal partial class Node1
+        {
+            /// <summary>
+            /// 远程表达式测试 远程表达式
+            /// </summary>
+            public class RemoteExpression : AutoCSer.Net.RemoteExpression.Node<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>
+            {
+                internal RemoteExpression() : base(_clientNodeId_.Id) { }
+                protected RemoteExpression(int clientNodeId) : base(clientNodeId) { }
+                private static class _clientNodeId_
+                {
+                    internal static readonly int Id = registerClient(_createReturnValue_);
+                    private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>(); }
+                }
+                private AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 _getValue_()
+                {
+                    object _value_ = base.getParentValue();
+                    return _value_ != null ? (AutoCSer.Example.TcpInternalStreamServer.Expression.Node1)_value_ : default(AutoCSer.Example.TcpInternalStreamServer.Expression.Node1);
+                }
+                protected override object get()
+                {
+                    return _getValue_();
+                }
+                protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                {
+                    AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 value = _getValue_();
+                    return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1> { Value = value } : null;
+                }
+                /// <summary>
+                /// 远程表达式实例字段测试 远程表达式
+                /// </summary>
+                public sealed class ValueRemoteExpression : AutoCSer.Net.RemoteExpression.Node<int>
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<int>(); }
+                    }
+                    public ValueRemoteExpression() { }
+                    internal ValueRemoteExpression(RemoteExpression _parent_) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(ValueRemoteExpression)));
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParent(parser);
+                    }
+                    private int getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node1)_value_).Value;
+                        }
+                        return default(int);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        int value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<int> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式实例字段测试 远程表达式
+                /// </summary>
+                public ValueRemoteExpression Value { get { return new ValueRemoteExpression(this); } }
+                /// <summary>
+                ///  远程表达式
+                /// </summary>
+                public sealed class ItemRemoteExpression : AutoCSer.Net.RemoteExpression.Node<int>
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<int>(); }
+                    }
+                    private int value;
+                    public ItemRemoteExpression() { }
+                    internal ItemRemoteExpression(RemoteExpression _parent_, int value) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                        this.value = value;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(ItemRemoteExpression)));
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParameterStruct(deSerializer, ref value);
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParameter(parser, ref value);
+                        deSerializeParent(parser);
+                    }
+                    private int getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node1)_value_)[value];
+                        }
+                        return default(int);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        int value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<int> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                ///  远程表达式
+                /// </summary>
+                /// <param name="value"></param>
+                /// <returns> 远程表达式</returns>
+                public ItemRemoteExpression this[int value] { get { return new ItemRemoteExpression(this, value); } }
+                /// <summary>
+                /// 远程表达式实例属性测试 远程表达式
+                /// </summary>
+                public sealed class NextNodeRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node2.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2>(); }
+                    }
+                    public NextNodeRemoteExpression() { }
+                    internal NextNodeRemoteExpression(RemoteExpression _parent_) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(NextNodeRemoteExpression)));
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node2 getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node1)_value_).NextNode;
+                        }
+                        return default(AutoCSer.Example.TcpInternalStreamServer.Expression.Node2);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node2 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式实例属性测试 远程表达式
+                /// </summary>
+                public NextNodeRemoteExpression NextNode { get { return new NextNodeRemoteExpression(this); } }
+                /// <summary>
+                /// 远程表达式实例方法测试 远程表达式
+                /// </summary>
+                public sealed class GetNextNodeRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node2.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2>(); }
+                    }
+                    private int value;
+                    public GetNextNodeRemoteExpression() { }
+                    internal GetNextNodeRemoteExpression(RemoteExpression _parent_, int value) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                        this.value = value;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(GetNextNodeRemoteExpression)));
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParameterStruct(deSerializer, ref value);
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParameter(parser, ref value);
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node2 getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node1)_value_).GetNextNode(value);
+                        }
+                        return default(AutoCSer.Example.TcpInternalStreamServer.Expression.Node2);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node2 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式实例方法测试 远程表达式
+                /// </summary>
+                /// <param name="value">远程表达式实例方法测试</param>
+                /// <returns>远程表达式实例方法测试 远程表达式</returns>
+                public GetNextNodeRemoteExpression GetNextNode(int value) { return new GetNextNodeRemoteExpression(this, value); }
+            }
+        }
+    }
+}namespace AutoCSer.Example.TcpInternalStreamServer
+{
+    internal static partial class Expression
+    {
+        internal partial class Node2
+        {
+            /// <summary>
+            /// 远程表达式测试 远程表达式
+            /// </summary>
+            public class RemoteExpression : AutoCSer.Net.RemoteExpression.Node<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2>
+            {
+                internal RemoteExpression() : base(_clientNodeId_.Id) { }
+                protected RemoteExpression(int clientNodeId) : base(clientNodeId) { }
+                private static class _clientNodeId_
+                {
+                    internal static readonly int Id = registerClient(_createReturnValue_);
+                    private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2>(); }
+                }
+                private AutoCSer.Example.TcpInternalStreamServer.Expression.Node2 _getValue_()
+                {
+                    object _value_ = base.getParentValue();
+                    return _value_ != null ? (AutoCSer.Example.TcpInternalStreamServer.Expression.Node2)_value_ : default(AutoCSer.Example.TcpInternalStreamServer.Expression.Node2);
+                }
+                protected override object get()
+                {
+                    return _getValue_();
+                }
+                protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                {
+                    AutoCSer.Example.TcpInternalStreamServer.Expression.Node2 value = _getValue_();
+                    return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node2> { Value = value } : null;
+                }
+                /// <summary>
+                /// 远程表达式实例字段测试 远程表达式
+                /// </summary>
+                public sealed class ValueRemoteExpression : AutoCSer.Net.RemoteExpression.Node<int>
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<int>(); }
+                    }
+                    public ValueRemoteExpression() { }
+                    internal ValueRemoteExpression(RemoteExpression _parent_) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(ValueRemoteExpression)));
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParent(parser);
+                    }
+                    private int getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node2)_value_).Value;
+                        }
+                        return default(int);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        int value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<int> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式实例字段测试 远程表达式
+                /// </summary>
+                public ValueRemoteExpression Value { get { return new ValueRemoteExpression(this); } }
+                /// <summary>
+                ///  远程表达式
+                /// </summary>
+                public sealed class ItemRemoteExpression : AutoCSer.Net.RemoteExpression.Node<int>
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<int>(); }
+                    }
+                    private int value;
+                    public ItemRemoteExpression() { }
+                    internal ItemRemoteExpression(RemoteExpression _parent_, int value) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                        this.value = value;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(ItemRemoteExpression)));
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParameterStruct(deSerializer, ref value);
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParameter(parser, ref value);
+                        deSerializeParent(parser);
+                    }
+                    private int getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node2)_value_)[value];
+                        }
+                        return default(int);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        int value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<int> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                ///  远程表达式
+                /// </summary>
+                /// <param name="value"></param>
+                /// <returns> 远程表达式</returns>
+                public ItemRemoteExpression this[int value] { get { return new ItemRemoteExpression(this, value); } }
+                /// <summary>
+                /// 远程表达式实例属性测试 远程表达式
+                /// </summary>
+                public sealed class LastNodeRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node1.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>(); }
+                    }
+                    public LastNodeRemoteExpression() { }
+                    internal LastNodeRemoteExpression(RemoteExpression _parent_) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(LastNodeRemoteExpression)));
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node2)_value_).LastNode;
+                        }
+                        return default(AutoCSer.Example.TcpInternalStreamServer.Expression.Node1);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式实例属性测试 远程表达式
+                /// </summary>
+                public LastNodeRemoteExpression LastNode { get { return new LastNodeRemoteExpression(this); } }
+                /// <summary>
+                /// 远程表达式实例方法测试 远程表达式
+                /// </summary>
+                public sealed class GetLastNodeRemoteExpression : AutoCSer.Example.TcpInternalStreamServer.Expression.Node1.RemoteExpression
+                {
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1>(); }
+                    }
+                    private int value;
+                    public GetLastNodeRemoteExpression() { }
+                    internal GetLastNodeRemoteExpression(RemoteExpression _parent_, int value) : base(_clientNodeId_.Id)
+                    {
+                        this.Parent = _parent_;
+                        this.value = value;
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(GetLastNodeRemoteExpression)));
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {
+                        deSerializeParameterStruct(deSerializer, ref value);
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);
+                        serializeParameterStruct(serializer, ref value);
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {
+                        deSerializeParameter(parser, ref value);
+                        deSerializeParent(parser);
+                    }
+                    private AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 getValue()
+                    {
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {
+                            
+                            return ((AutoCSer.Example.TcpInternalStreamServer.Expression.Node2)_value_).GetLastNode(value);
+                        }
+                        return default(AutoCSer.Example.TcpInternalStreamServer.Expression.Node1);
+                    }
+                    protected override object get()
+                    {
+                        
+                        return getValue();
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {
+                        AutoCSer.Example.TcpInternalStreamServer.Expression.Node1 value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<AutoCSer.Example.TcpInternalStreamServer.Expression.Node1> { Value = value } : null;
+                    }
+                }
+                /// <summary>
+                /// 远程表达式实例方法测试 远程表达式
+                /// </summary>
+                /// <param name="value">远程表达式实例方法测试</param>
+                /// <returns>远程表达式实例方法测试 远程表达式</returns>
+                public GetLastNodeRemoteExpression GetLastNode(int value) { return new GetLastNodeRemoteExpression(this, value); }
+            }
+        }
+    }
+}namespace AutoCSer.Example.TcpInternalStreamServer
+{
         internal partial class ClientAsynchronous
         {
             /// <summary>
@@ -175,6 +913,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
+                /// <summary>
+                /// 同步函数客户端异步测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
@@ -203,6 +946,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 同步函数客户端异步测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> AddAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
@@ -225,6 +973,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     return _awaiter_;
                 }
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
+                /// <summary>
+                /// 同步函数客户端异步测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public void Add(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<int>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalStreamServer._p2>> _onOutput_ = _TcpClient_.GetCallback<int, TcpInternalStreamServer._p2>(_onReturn_);
@@ -434,6 +1187,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
+                /// <summary>
+                /// 同步函数客户端 async / await 测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
@@ -462,6 +1220,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 同步函数客户端 async / await 测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> AddAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
@@ -484,6 +1247,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     return _awaiter_;
                 }
 #if !DOTNET2 && !DOTNET4
+                /// <summary>
+                /// 同步函数客户端 async / await 测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> AddAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -794,6 +1562,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
 
 
+                /// <summary>
+                /// 只读字段支持
+                /// </summary>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> GetField
                 {
                     get
@@ -819,6 +1590,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeOutputParamter = true };
 
 
+                /// <summary>
+                /// 可写字段支持
+                /// </summary>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> SetField
                 {
                     get
@@ -1049,6 +1823,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
+                /// <summary>
+                /// 无需 TCP 远程函数申明配置测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
@@ -1077,6 +1856,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 无需 TCP 远程函数申明配置测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> AddAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
@@ -1497,6 +2281,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
 
+                /// <summary>
+                /// 只读属性支持
+                /// </summary>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> GetProperty
                 {
                     get
@@ -1582,6 +2369,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a3 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 3 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
 
+                /// <summary>
+                /// 可写属性支持
+                /// </summary>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> SetProperty
                 {
                     get
@@ -1816,6 +2606,13 @@ namespace AutoCSer.Example.TcpInternalStreamServer
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
 
+                /// <summary>
+                /// ref / out 参数测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
+                /// <param name="product">乘积</param>
+                /// <returns>和</returns>
                 public AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add(int left, ref int right, out int product)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
@@ -1992,6 +2789,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
 
+                /// <summary>
+                /// 仅发送请求测试
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 public void SetSum(int left, int right)
                 {
@@ -2186,6 +2988,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
+                /// <summary>
+                /// 支持公共函数
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
@@ -2214,6 +3021,11 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
+                /// <summary>
+                /// 支持公共函数
+                /// </summary>
+                /// <param name="left">加法左值</param>
+                /// <param name="right">加法右值</param>
                 public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> AddAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();

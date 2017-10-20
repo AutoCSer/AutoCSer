@@ -596,6 +596,11 @@
             TCP 服务
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerSocketSender`4.IsServerBuildOutputThread">
+            <summary>
+            服务端创建输出是否开启线程
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerSocketSender`4.#ctor(AutoCSer.Net.TcpServer.ServerSocket{`0,`1,`2,`3},AutoCSer.Threading.Thread.CallType)">
             <summary>
             TCP 服务套接字数据发送
@@ -860,6 +865,11 @@
             取消保持回调
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ReturnType.RemoteExpressionServerNodeError">
+            <summary>
+            远程表达式映射失败
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ReturnType.Success">
             <summary>
             成功，最大占用 3b，低端是服务端状态，用于 Identity 最高 3 位
@@ -898,6 +908,16 @@
         <member name="F:AutoCSer.Net.TcpServer.ReturnType.ClientReceiveError">
             <summary>
             客户端接收数据错误
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ReturnType.RemoteExpressionNotSupport">
+            <summary>
+            服务配置不支持远程表达式
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ReturnType.RemoteExpressionCheckerError">
+            <summary>
+            远程表达式客户端检测服务端映射标识不匹配
             </summary>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.ClientCommand.OutputCommandBase`1">
@@ -3861,6 +3881,11 @@
             默认为 true 表示在初始化的时候启动序列化预编译任务
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerBaseAttribute.IsRemoteExpression">
+            <summary>
+            默认为 false 表示不支持远程表达式
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerBaseAttribute.GetConfig``1(System.String,System.Type,``0)">
             <summary>
             获取配置信息
@@ -3915,6 +3940,11 @@
             是否使用 JSON 序列化
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.RemoteExpressionServerTask">
+            <summary>
+            远程表达式服务端任务类型，默认为 Timeout
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.IsClientAwaiter">
             <summary>
             默认为 false 表示更注重客户端异步吞吐性能，否则更注重客户端 await 吞吐性能
@@ -3965,6 +3995,21 @@
             连接检测命令
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.RemoteExpressionCommandIndex">
+            <summary>
+            远程表达式服务端节点调用命令
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.RemoteExpressionNodeIdCommandIndex">
+            <summary>
+            远程表达式服务端节点标识解析命令
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.Server.MergeCommandIndex">
+            <summary>
+            客户端流合并命令
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.Server.CustomDataCommandIndex">
             <summary>
             自定义数据包命令
@@ -3973,11 +4018,6 @@
         <member name="F:AutoCSer.Net.TcpServer.Server.CancelKeepCommandIndex">
             <summary>
             取消保持回调命令
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.Server.MergeCommandIndex">
-            <summary>
-            客户端流合并命令
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Server.MinCommandIndex">
@@ -4390,6 +4430,21 @@
         <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.IsListen">
             <summary>
             是否服务处于监听状态
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.isCustomData">
+            <summary>
+            是否支持自定义数据包
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.isKeepCallback">
+            <summary>
+            是否支持保持回调
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBase`1.isMergeCommand">
+            <summary>
+            是否支持合并命令处理
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpServer.Server`1.onCustomData">
@@ -5026,6 +5081,156 @@
             </summary>
             <param name="type"></param>
             <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ReturnValue">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.ClientNodeId">
+            <summary>
+            客户端映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.TryGetValue``1(``0@)">
+            <summary>
+            尝试获取泛型数据
+            </summary>
+            <typeparam name="returnType"></typeparam>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.GetValue``1(``0)">
+            <summary>
+            获取泛型数据
+            </summary>
+            <typeparam name="returnType"></typeparam>
+            <param name="nullValue">失败默认值</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ReturnValue)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.BinarySerialize.DeSerializer,AutoCSer.Net.RemoteExpression.ReturnValue@)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="deSerializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.Json.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ReturnValue)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.deSerialize(AutoCSer.Json.Parser,AutoCSer.Net.RemoteExpression.ReturnValue@)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.createReturnValues">
+            <summary>
+            新建返回值的委托集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.createReturnValueLock">
+            <summary>
+            新建返回值的委托集合访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue.RegisterClient(System.Func{AutoCSer.Net.RemoteExpression.ReturnValue})">
+            <summary>
+            客户端表达式节点注册
+            </summary>
+            <param name="createReturnValue">新建一个返回值的委托</param>
+            <returns>表达式节点映射编号</returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ReturnValue.Output">
+            <summary>
+            输出数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.Output.Return">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.Output.OutputInfo">
+            <summary>
+            远程表达式服务端节点标识解析输出参数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue.Output.OutputThreadInfo">
+            <summary>
+            远程表达式服务端节点标识解析输出参数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ReturnValue`1">
+            <summary>
+            返回值
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ReturnValue`1.Value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.serialize(AutoCSer.Json.Serializer)">
+            <summary>
+            服务端序列化返回值
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
         </member>
         <member name="T:AutoCSer.Net.BufferIndex">
             <summary>
@@ -5743,6 +5948,21 @@
             </summary>
         </member>
         <member name="P:AutoCSer.Metadata.MemberFilterAttribute.Instance.MemberFilters">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberFilterAttribute.NonPublic">
+            <summary>
+            默认非公有成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.Filter">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.MemberFilters">
             <summary>
             成员选择类型
             </summary>
@@ -7140,6 +7360,34 @@
             <param name="server"></param>
             <param name="serverSocket"></param>
             <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.Sender">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.inputParameter">
+            <summary>
+            输入参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.Set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            设置参数
+            </summary>
+            <param name="sender">套接字</param>
+            <param name="taskType"></param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
         </member>
         <member name="T:AutoCSer.MethodImplAttribute">
             <summary>
@@ -9347,6 +9595,529 @@
             <param name="attribute"></param>
             <returns></returns>
         </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender`1">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+            <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSenderBase">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.OutputWaitHandle">
+            <summary>
+            等待事件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.SendMarkData">
+            <summary>
+            发送变换数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.SendCount">
+            <summary>
+            套接字发送数据次数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.#ctor(AutoCSer.Net.TcpServer.ClientSocketBase)">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+            <param name="socket">TCP 服务客户端套接字</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.Close">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.Check">
+            <summary>
+            心跳检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.VirtualBuildOutput">
+            <summary>
+            创建输出
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.nullCallback(AutoCSer.Net.TcpServer.ReturnValue)">
+            <summary>
+            默认空回调委托
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.NullCallback">
+            <summary>
+            默认空回调委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.ClientSocket">
+            <summary>
+            TCP 服务客户端套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.Outputs">
+            <summary>
+            TCP 客户端输出信息链表
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender.#ctor(AutoCSer.Net.TcpServer.ClientSocket)">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+            <param name="socket">TCP 服务客户端套接字</param>
+        </member>
+        <member name="P:AutoCSer.Net.TcpServer.ClientSocketSender.IsSocket">
+            <summary>
+            套接字是否有效
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.commandClient">
+            <summary>
+            TCP 服务客户端
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.remoteExpressionServerNodeIdChecker">
+            <summary>
+            远程表达式客户端检测服务端映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.#ctor(AutoCSer.Net.TcpServer.ClientSocket{`0})">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+            <param name="socket">TCP 服务客户端套接字</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``0}@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}}@,``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}}@,``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``0}@,``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="outputParameter">输出参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@,``1@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+            <param name="outputParameter">输出参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call``1(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue},``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallKeep``1(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue},``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallKeep(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue@,``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@)">
+            <summary>
+            TCP调用（用于代码生成编译）
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue@)">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallOnly``1(AutoCSer.Net.TcpServer.CommandInfo,``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallOnly(AutoCSer.Net.TcpServer.CommandInfo)">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}},``0@,``1@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="inputParameter">输入参数</param>
+            <param name="outputParameter">输出参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}},``0@)">
+            <summary>
+            TCP调用并返回参数值
+            </summary>
+            <typeparam name="outputParameterType">输出参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="callback">异步回调</param>
+            <param name="outputParameter">输出参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.Awaiter,``0@)">
+            <summary>
+            TCP调用
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}},``0@)">
+            <summary>
+            TCP调用（用于代码生成编译）
+            </summary>
+            <typeparam name="inputParameterType">输入参数类型</typeparam>
+            <typeparam name="outputParameterType">输入参数类型</typeparam>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <param name="inputParameter">输入参数</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.Awaiter)">
+            <summary>
+            TCP调用
+            </summary>
+            <param name="identityCommand">命令信息</param>
+            <param name="onCall">回调委托</param>
+            <returns>保持回调</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.push(AutoCSer.Net.TcpServer.ClientCommand.Command)">
+            <summary>
+            添加命令
+            </summary>
+            <param name="command">当前命令</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Check">
+            <summary>
+            心跳检测
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CustomData(System.Byte[])">
+            <summary>
+            发送自定义数据
+            </summary>
+            <param name="data"></param>
+            <returns>是否添加到发送队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CustomData(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            发送自定义数据
+            </summary>
+            <param name="data"></param>
+            <returns>是否添加到发送队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CancelKeep(System.Int32)">
+            <summary>
+            取消保持回调
+            </summary>
+            <param name="commandIndex"></param>
+            <returns>是否添加到发送队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionNodeId(AutoCSer.RemoteType[])">
+            <summary>
+            获取远程表达式服务端节点标识
+            </summary>
+            <param name="types">表达式服务端节点类型集合</param>
+            <returns>表达式服务端节点标识集合</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <param name="clientNode">客户端远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>客户端远程表达式节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionClientNodeParameter``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+            <param name="node">远程表达式参数节点</param>
+            <returns>客户端远程表达式参数节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.getRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallRemoteExpression(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpression``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.getRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.BuildOutput">
+            <summary>
+            发送数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender`1.RemoteExpressionServerNodeIdChecker">
+            <summary>
+            远程表达式客户端检测服务端映射标识
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker">
+            <summary>
+            客户端检测服务端映射标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.ServerNodeIds">
+            <summary>
+            服务端映射标识集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.serverNodeIdLock">
+            <summary>
+            服务端映射标识集合访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Get(System.Type)">
+            <summary>
+            获取服务端映射标识
+            </summary>
+            <param name="nodeType">远程表达式节点类型</param>
+            <returns>服务端映射标识</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Get(AutoCSer.RemoteType[])">
+            <summary>
+            获取服务端映射标识集合
+            </summary>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Check(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            服务端映射标识检测
+            </summary>
+            <param name="node"></param>
+            <returns>是否映射成功</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Check(AutoCSer.Net.RemoteExpression.Node,AutoCSer.LeftArray{System.Type}@)">
+            <summary>
+            服务端映射标识检测
+            </summary>
+            <param name="node"></param>
+            <param name="types"></param>
+            <returns>是否映射成功</returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Input">
+            <summary>
+            请求数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Input.CommandInfo">
+            <summary>
+            远程表达式服务端节点标识解析命令信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Input.Types">
+            <summary>
+            表达式服务端节点类型集合
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output">
+            <summary>
+            返回数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output.Return">
+            <summary>
+            表达式服务端节点标识集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output.OutputInfo">
+            <summary>
+            远程表达式服务端节点标识解析输出参数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo">
+            <summary>
+            远程表达式服务端节点标识解析输出参数信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.RemoteExpressionServerNodeIdChecker.Sender">
+            <summary>
+            TCP 服务客户端套接字数据发送
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.RemoteExpressionServerNodeIdChecker.Get(AutoCSer.RemoteType[])">
+            <summary>
+            获取服务端映射标识集合
+            </summary>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.Emit.ServerMetadataBase">
             <summary>
             TCP 服务端元数据
@@ -10271,6 +11042,21 @@
         <member name="P:AutoCSer.Net.TcpInternalServer.MethodClient`1._TcpClient_">
             <summary>
             TCP 内部服务客户端
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.MemberAttribute">
+            <summary>
+            远程表达式成员配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.MemberAttribute.MemberIdentity">
+            <summary>
+            自定义成员编号，用于表达式节点名称冲突问题，默认为 0 表示不编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.MemberAttribute.IsReturn">
+            <summary>
+            默认为 true 表示允许返回数据
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.PropertyIndex">
@@ -12693,351 +13479,16 @@
             TCP 内部服务客户端套接字数据发送
             </summary>
         </member>
-        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender`1">
-            <summary>
-            TCP 服务客户端套接字数据发送
-            </summary>
-            <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-        </member>
-        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSender">
-            <summary>
-            TCP 服务客户端套接字数据发送
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Net.TcpServer.ClientSocketSenderBase">
-            <summary>
-            TCP 服务客户端套接字数据发送
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.OutputWaitHandle">
-            <summary>
-            等待事件
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.SendMarkData">
-            <summary>
-            发送变换数据
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.SendCount">
-            <summary>
-            套接字发送数据次数
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.#ctor(AutoCSer.Net.TcpServer.ClientSocketBase)">
-            <summary>
-            TCP 服务客户端套接字数据发送
-            </summary>
-            <param name="socket">TCP 服务客户端套接字</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.Close">
-            <summary>
-            释放资源
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.Check">
-            <summary>
-            心跳检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.VirtualBuildOutput">
-            <summary>
-            创建输出
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSenderBase.nullCallback(AutoCSer.Net.TcpServer.ReturnValue)">
-            <summary>
-            默认空回调委托
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSenderBase.NullCallback">
-            <summary>
-            默认空回调委托
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.ClientSocket">
-            <summary>
-            TCP 服务客户端套接字
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender.Outputs">
-            <summary>
-            TCP 客户端输出信息链表
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender.#ctor(AutoCSer.Net.TcpServer.ClientSocket)">
-            <summary>
-            TCP 服务客户端套接字数据发送
-            </summary>
-            <param name="socket">TCP 服务客户端套接字</param>
-        </member>
-        <member name="P:AutoCSer.Net.TcpServer.ClientSocketSender.IsSocket">
-            <summary>
-            套接字是否有效
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpServer.ClientSocketSender`1.commandClient">
-            <summary>
-            TCP 服务客户端
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.#ctor(AutoCSer.Net.TcpServer.ClientSocket{`0})">
-            <summary>
-            TCP 服务客户端套接字数据发送
-            </summary>
-            <param name="socket">TCP 服务客户端套接字</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}}@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``0}@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetKeep``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}}@,``0@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Get``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}}@,``0@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="inputParameter">输入参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``0}@,``0@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="outputParameter">输出参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitGet``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@,``1@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="inputParameter">输入参数</param>
-            <param name="outputParameter">输出参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call``1(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue},``0@)">
-            <summary>
-            TCP调用
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <param name="inputParameter">输入参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallKeep``1(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue},``0@)">
-            <summary>
-            TCP调用
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Call(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
-            <summary>
-            TCP调用
-            </summary>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallKeep(AutoCSer.Net.TcpServer.CommandInfo,System.Action{AutoCSer.Net.TcpServer.ReturnValue})">
-            <summary>
-            TCP调用
-            </summary>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue@,``0@)">
-            <summary>
-            TCP调用
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue{``1}@,``0@)">
-            <summary>
-            TCP调用（用于代码生成编译）
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.WaitCall(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.AutoWaitReturnValue@)">
-            <summary>
-            TCP调用
-            </summary>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallOnly``1(AutoCSer.Net.TcpServer.CommandInfo,``0@)">
-            <summary>
-            TCP调用
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="inputParameter">输入参数</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CallOnly(AutoCSer.Net.TcpServer.CommandInfo)">
-            <summary>
-            TCP调用
-            </summary>
-            <param name="identityCommand">命令信息</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}},``0@,``1@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="inputParameter">输入参数</param>
-            <param name="outputParameter">输出参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``0}},``0@)">
-            <summary>
-            TCP调用并返回参数值
-            </summary>
-            <typeparam name="outputParameterType">输出参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="callback">异步回调</param>
-            <param name="outputParameter">输出参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``1(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.Awaiter,``0@)">
-            <summary>
-            TCP调用
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter``2(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.Callback{AutoCSer.Net.TcpServer.ReturnValue{``1}},``0@)">
-            <summary>
-            TCP调用（用于代码生成编译）
-            </summary>
-            <typeparam name="inputParameterType">输入参数类型</typeparam>
-            <typeparam name="outputParameterType">输入参数类型</typeparam>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <param name="inputParameter">输入参数</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.GetAwaiter(AutoCSer.Net.TcpServer.CommandInfo,AutoCSer.Net.TcpServer.Awaiter)">
-            <summary>
-            TCP调用
-            </summary>
-            <param name="identityCommand">命令信息</param>
-            <param name="onCall">回调委托</param>
-            <returns>保持回调</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.push(AutoCSer.Net.TcpServer.ClientCommand.Command)">
-            <summary>
-            添加命令
-            </summary>
-            <param name="command">当前命令</param>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.Check">
-            <summary>
-            心跳检测
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CustomData(System.Byte[])">
-            <summary>
-            发送自定义数据
-            </summary>
-            <param name="data"></param>
-            <returns>是否添加到发送队列</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CustomData(AutoCSer.SubArray{System.Byte}@)">
-            <summary>
-            发送自定义数据
-            </summary>
-            <param name="data"></param>
-            <returns>是否添加到发送队列</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.CancelKeep(System.Int32)">
-            <summary>
-            取消保持回调
-            </summary>
-            <param name="commandIndex"></param>
-            <returns>是否添加到发送队列</returns>
-        </member>
-        <member name="M:AutoCSer.Net.TcpServer.ClientSocketSender`1.BuildOutput">
-            <summary>
-            发送数据
-            </summary>
-        </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ClientSocketSender.#ctor(AutoCSer.Net.TcpInternalServer.ClientSocket)">
             <summary>
             TCP 服务客户端套接字数据发送
             </summary>
             <param name="socket">TCP 服务客户端套接字</param>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.TypeAttribute">
+            <summary>
+            远程表达式类型配置
+            </summary>
         </member>
         <member name="T:AutoCSer.MemberCopy.MemberDynamicMethod">
             <summary>
@@ -13872,6 +14323,12 @@
             移动当前读取数据位置，负数表示自定义序列化失败
             </summary>
             <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadInt">
+            <summary>
+            读取一个整数
+            </summary>
             <returns></returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.createArray``1(``0[]@,System.Int32)">
@@ -16329,6 +16786,333 @@
             <param name="log">日志接口</param>
             <param name="onCustomData">自定义数据包处理</param>
             <returns>TCP 服务</returns>
+        </member>
+        <member name="T:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.Node">
+            <summary>
+            远程表达式节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName">
+            <summary>
+            远程表达式容器类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.Parent">
+            <summary>
+            父节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.ClientNodeId">
+            <summary>
+            客户端映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.#ctor">
+            <summary>
+            远程表达式节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.#ctor(System.Int32)">
+            <summary>
+            远程表达式节点
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParent(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            序列化父节点
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameter``1(AutoCSer.BinarySerialize.Serializer,``0)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameterStruct``1(AutoCSer.BinarySerialize.Serializer,``0@)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.DeSerialize(AutoCSer.BinarySerialize.DeSerializer,AutoCSer.Net.RemoteExpression.Node@)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParent(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            反序列化父节点
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameter``1(AutoCSer.BinarySerialize.DeSerializer,``0@)">
+            <summary>
+            参数反序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="deSerializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameterStruct``1(AutoCSer.BinarySerialize.DeSerializer,``0@)">
+            <summary>
+            参数反序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="deSerializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeStart(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            JSON 序列化开始
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParent(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+            <summary>
+            JSON 序列化父节点并结束
+            </summary>
+            <param name="serializer"></param>
+            <param name="checker"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameter``1(AutoCSer.Json.Serializer,``0)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameterStruct``1(AutoCSer.Json.Serializer,``0@)">
+            <summary>
+            参数序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="serializer"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.DeSerialize(AutoCSer.Json.Parser,AutoCSer.Net.RemoteExpression.Node@)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParent(AutoCSer.Json.Parser)">
+            <summary>
+            客户端反序列化返回值
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameter``1(AutoCSer.Json.Parser,``0@)">
+            <summary>
+            参数反序列化
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+            <param name="parser"></param>
+            <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.get">
+            <summary>
+            获取服务端数据
+            </summary>
+            <returns>数据值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.getParentValue">
+            <summary>
+            获取父节点数据
+            </summary>
+            <returns>父节点数据</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.getReturn">
+            <summary>
+            获取返回值
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Get(System.Int32)">
+            <summary>
+            获取返回值
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+            <returns>返回值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.CheckServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@)">
+            <summary>
+            服务端映射标识检测
+            </summary>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@)">
+            <summary>
+            参数服务端映射标识检测
+            </summary>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.setParameter``1(AutoCSer.Net.RemoteExpression.ClientNode{``0}@,AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            设置远程表达式节点参数
+            </summary>
+            <typeparam name="returnType"></typeparam>
+            <param name="clientNode"></param>
+            <param name="node"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.setParameter``1(``0@,System.Object)">
+            <summary>
+            用于代码生成
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="clientNode"></param>
+            <param name="node"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.checkServerNodeId``1(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@,AutoCSer.Net.RemoteExpression.ClientNode{``0}@)">
+            <summary>
+            服务端映射标识检测
+            </summary>
+            <typeparam name="returnType"></typeparam>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
+            <param name="clientNode"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.checkServerNodeId``1(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker,AutoCSer.LeftArray{System.Type}@,``0@)">
+            <summary>
+            用于代码生成
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="checker"></param>
+            <param name="checkTypes"></param>
+            <param name="clientNode"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Cast(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            远程表达式泛型节点类型转换
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.registerClient(System.Func{AutoCSer.Net.RemoteExpression.ReturnValue})">
+            <summary>
+            客户端表达式节点注册
+            </summary>
+            <param name="createReturnValue">新建一个返回值的委托</param>
+            <returns>表达式节点映射编号</returns>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.types">
+            <summary>
+            服务端节点类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.typeLock">
+            <summary>
+            服务端节点类型集合访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.createNodes">
+            <summary>
+            创建服务端表达式委托集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.Get(AutoCSer.RemoteType[])">
+            <summary>
+            获取服务端节点标识
+            </summary>
+            <param name="remoteTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.createNew``1">
+            <summary>
+            创建节点
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node.createNodeMethod">
+            <summary>
+            创建节点函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.Node`1">
+            <summary>
+            远程表达式节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.#ctor">
+            <summary>
+            远程表达式节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.#ctor(System.Int32)">
+            <summary>
+            远程表达式节点
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.GetValue">
+            <summary>
+            获取返回值
+            </summary>
+            <returns>返回值</returns>
         </member>
         <member name="T:AutoCSer.Extension.SocketExtension">
             <summary>
@@ -20222,6 +21006,64 @@
             <param name="data"></param>
             <returns>是否添加到发送队列</returns>
         </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <param name="clientNode">客户端远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>客户端远程表达式节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionClientNodeParameter``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+            <param name="node">远程表达式参数节点</param>
+            <returns>客户端远程表达式参数节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.CallRemoteExpression(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpression``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
         <member name="P:AutoCSer.Net.TcpInternalServer.Client.AutoCSer#Net#TcpRegister#IClient#ServerName">
             <summary>
             服务名称
@@ -20565,6 +21407,16 @@
         <member name="F:AutoCSer.Net.SimpleSerialize.SerializeDynamicMethod.unmanagedStreamUnsafeWriteULongMethod">
             <summary>
             非托管内存数据流写数据函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionNodeIdServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.GetRemoteExpressionNodeIdServerCall.Call">
+            <summary>
+            调用处理
             </summary>
         </member>
         <member name="T:System.Collections.Generic.HashSet`1">
@@ -27185,6 +28037,34 @@
             <param name="name">配置名称</param>
             <returns></returns>
         </member>
+        <member name="T:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall">
+            <summary>
+            获取远程表达式服务端节点标识同步调用
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.Sender">
+            <summary>
+            套接字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.inputParameter">
+            <summary>
+            输入参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.Set(AutoCSer.Net.TcpOpenServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerTaskType,AutoCSer.RemoteType[])">
+            <summary>
+            设置参数
+            </summary>
+            <param name="sender">套接字</param>
+            <param name="taskType"></param>
+            <param name="inputParameter">输入参数</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.GetRemoteExpressionNodeIdServerCall.Call">
+            <summary>
+            调用处理
+            </summary>
+        </member>
         <member name="T:AutoCSer.MemberCopy.CustomAttribute">
             <summary>
             自定义类型成员复制函数标识配置
@@ -29882,6 +30762,53 @@
             线程切换检测
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.GenericNode">
+            <summary>
+            远程表达式泛型节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode.#ctor">
+            <summary>
+            远程表达式泛型节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode.#ctor(System.Int32)">
+            <summary>
+            远程表达式泛型节点
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode.Cast``1">
+            <summary>
+            类型转换
+            </summary>
+            <typeparam name="nodeType"></typeparam>
+            <returns>远程表达式节点</returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.GenericNode`1">
+            <summary>
+            远程表达式泛型节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode`1.#ctor">
+            <summary>
+            远程表达式泛型节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode`1.#ctor(System.Int32)">
+            <summary>
+            远程表达式泛型节点
+            </summary>
+            <param name="clientNodeId">客户端映射标识</param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.GenericNode`1.Cast``1">
+            <summary>
+            类型转换
+            </summary>
+            <typeparam name="nodeType"></typeparam>
+            <returns>远程表达式节点</returns>
+        </member>
         <member name="T:AutoCSer.Memory">
             <summary>
             内存或字节数组处理
@@ -31382,6 +32309,110 @@
             基本类型反序列化函数
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ClientNode">
+            <summary>
+            客户端远程表达式节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.CommandInfo">
+            <summary>
+            远程表达式命令信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.Node">
+            <summary>
+            远程表达式节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.Checker">
+            <summary>
+            客户端检测服务端映射标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode.ClientNodeId">
+            <summary>
+            客户端映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.SetNull">
+            <summary>
+            清除数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.GetReturnValue">
+            <summary>
+            服务端获取返回值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.serialize(AutoCSer.Json.Serializer)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.ClientNode`1">
+            <summary>
+            客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode`1.Node">
+            <summary>
+            远程表达式节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.ClientNode`1.Checker">
+            <summary>
+            客户端检测服务端映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.GetReturnValue">
+            <summary>
+            服务端获取返回值
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.serialize(AutoCSer.BinarySerialize.Serializer)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.serialize(AutoCSer.Json.Serializer)">
+            <summary>
+            客户端序列化
+            </summary>
+            <param name="serializer"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ClientNode`1.deSerialize(AutoCSer.Json.Parser)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+        </member>
         <member name="T:AutoCSer.Metadata.MemberMap">
             <summary>
             成员位图
@@ -32833,6 +33864,18 @@
             </summary>
             <param name="async">异步回调参数</param>
         </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketSender.GetRemoteExpressionNodeId(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式服务端节点标识
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.ServerSocketSender.GetRemoteExpression(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="data"></param>
+        </member>
         <member name="T:AutoCSer.Net.TcpOpenServer.Client">
             <summary>
             TCP 开放服务客户端
@@ -32877,6 +33920,64 @@
             </summary>
             <param name="data"></param>
             <returns>是否添加到发送队列</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node,AutoCSer.Net.RemoteExpression.ClientNode@)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <param name="clientNode">客户端远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionClientNode(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取客户端远程表达式节点
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>客户端远程表达式节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionClientNodeParameter``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取客户端远程表达式参数节点
+            </summary>
+            <typeparam name="returnType">返回值类型</typeparam>
+            <param name="node">远程表达式参数节点</param>
+            <returns>客户端远程表达式参数节点</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.CallRemoteExpression(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpression``1(AutoCSer.Net.RemoteExpression.Node{``0})">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpression(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.Node)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpOpenServer.Client.GetRemoteExpressionAwaiter(AutoCSer.Net.RemoteExpression.ClientNode)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="node">远程表达式节点</param>
+            <returns>返回值类型</returns>
         </member>
         <member name="P:AutoCSer.Net.TcpOpenServer.Client.Sender">
             <summary>
@@ -32961,6 +34062,18 @@
             <summary>
             发送数据
             </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketSender.GetRemoteExpressionNodeId(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式服务端节点标识
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpInternalServer.ServerSocketSender.GetRemoteExpression(AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            获取远程表达式数据
+            </summary>
+            <param name="data"></param>
         </member>
         <member name="T:AutoCSer.Net.TcpInternalServer.ClientSocket">
             <summary>
@@ -34084,6 +35197,16 @@
             静态属性成员
             </summary>
         </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Public">
+            <summary>
+            公共成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.NonPublic">
+            <summary>
+            非公共成员
+            </summary>
+        </member>
         <member name="F:AutoCSer.Metadata.MemberFilters.Instance">
             <summary>
             动态成员
@@ -34092,6 +35215,16 @@
         <member name="F:AutoCSer.Metadata.MemberFilters.Static">
             <summary>
             静态成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Field">
+            <summary>
+            字段
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Property">
+            <summary>
+            属性
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.AttributeMethod">

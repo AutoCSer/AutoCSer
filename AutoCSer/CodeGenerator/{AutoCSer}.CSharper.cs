@@ -1723,6 +1723,3541 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
     }
     }
 }
+namespace AutoCSer.CodeGenerator.TemplateGenerator
+{
+    internal abstract partial class RemoteExpression
+    {
+    internal partial class Generator
+    {
+        /// <summary>
+        /// 生成代码
+        /// </summary>
+        /// <param name="isOut">是否输出代码</param>
+        protected override void create(bool _isOut_)
+        {
+            if (outStart(AutoCSer.CodeGenerator.CodeLanguage.CSharp, _isOut_))
+            {
+                
+            _code_.Add(@"
+        ");
+            _code_.Add(TypeNameDefinition);
+            _code_.Add(@"
+        {
+            /// <summary>
+            /// ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.XmlDocument);
+                    }
+                }
+            _code_.Add(@" 远程表达式
+            /// </summary>
+            public class ");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@" : AutoCSer.Net.RemoteExpression.Node");
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+                if (!(bool)_value1_.IsStatic)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@">");
+            }
+            _code_.Add(@"
+            {
+                internal ");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@"() : base(");
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+                if (!(bool)_value1_.IsStatic)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"_clientNodeId_.Id");
+            }
+            _code_.Add(@") { }
+                protected ");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@"(int clientNodeId) : base(clientNodeId) { }");
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+                if (!(bool)_value1_.IsStatic)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                private static class _clientNodeId_
+                {
+                    internal static readonly int Id = registerClient(_createReturnValue_);
+                    private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@">(); }
+                }
+                private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@" _getValue_()
+                {
+                    object _value_ = base.getParentValue();
+                    return _value_ != null ? (");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_ : default(");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@");
+                }
+                protected override object get()
+                {
+                    return _getValue_();
+                }
+                protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                {
+                    ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@" value = _getValue_();
+                    return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@"> { Value = value } : null;
+                }");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MemberExpression[] _value1_;
+                    _value1_ = Members;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MemberExpression _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>
+                public sealed class ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@" : ");
+            _code_.Add(_value2_.MemberRemoteExpressionTypeName);
+            _code_.Add(@"
+                {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(); }
+                    }");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"() { }
+                    internal ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@" _parent_");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@") : base(");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"_clientNodeId_.Id");
+            }
+            _code_.Add(@")
+                    {
+                        this.Parent = _parent_;");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        setParameter(ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                if (!(bool)_value4_.IsClientNodeParameter)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@" = ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@")));");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameter(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameterStruct(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                        deSerializeParameter(parser, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(parser);
+                    }");
+            _if_ = false;
+                    if (_value2_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    protected override void checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        checkServerNodeId(checker, ref checkTypes, ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }");
+            }
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" getValue()
+                    {");
+            _if_ = false;
+                    if (_value2_.IsStatic)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value3_.StaticMethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.StaticPropertyName);
+            _code_.Add(@";");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsStatic)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ");
+            }
+            _code_.Add(@"((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+            _code_.Add(_value3_.MethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                    if (_value3_.Length != 0)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_)[");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"];");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                if (_value3_.Length == 0)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.MemberName);
+            }
+                }
+            _code_.Add(@";");
+            }
+            }
+            _code_.Add(@"
+                        }
+                        return default(");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@");");
+            }
+            _code_.Add(@"
+                    }
+                    protected override object get()
+                    {
+                        ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+            }
+            _code_.Add(@"getValue();");
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> { Value = value } : null;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        getValue();
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                }");
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                    if (_value3_.Length != 0)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                /// <param name=""");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@""">");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@"</param>");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                /// <returns>");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式</returns>
+                public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@" this[");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"] { get { return new ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(this");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"); } }");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                if (_value3_.Length == 0)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>
+                public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@" ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.MemberName);
+            }
+                }
+            _code_.Add(@" { get { return new ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(this); } }");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MethodExpression[] _value1_;
+                    _value1_ = Methods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MethodExpression _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>
+                public sealed class ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@" : ");
+            _code_.Add(_value2_.MemberRemoteExpressionTypeName);
+            _code_.Add(@"
+                {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(); }
+                    }");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"() { }
+                    internal ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@" _parent_");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@") : base(");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"_clientNodeId_.Id");
+            }
+            _code_.Add(@")
+                    {
+                        this.Parent = _parent_;");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        setParameter(ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                if (!(bool)_value4_.IsClientNodeParameter)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@" = ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@")));");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameter(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameterStruct(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                        deSerializeParameter(parser, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(parser);
+                    }");
+            _if_ = false;
+                    if (_value2_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    protected override void checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        checkServerNodeId(checker, ref checkTypes, ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }");
+            }
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" getValue()
+                    {");
+            _if_ = false;
+                    if (_value2_.IsStatic)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value3_.StaticMethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.StaticPropertyName);
+            _code_.Add(@";");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsStatic)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ");
+            }
+            _code_.Add(@"((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+            _code_.Add(_value3_.MethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                    if (_value3_.Length != 0)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_)[");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"];");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                if (_value3_.Length == 0)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.MemberName);
+            }
+                }
+            _code_.Add(@";");
+            }
+            }
+            _code_.Add(@"
+                        }
+                        return default(");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@");");
+            }
+            _code_.Add(@"
+                    }
+                    protected override object get()
+                    {
+                        ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+            }
+            _code_.Add(@"getValue();");
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> { Value = value } : null;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        getValue();
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                }
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                /// <param name=""");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@""">");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@"</param>");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                /// <returns>");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式</returns>
+                public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@" ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.GenericMethodName);
+            }
+                }
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@") { return new ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@"(this");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"); }");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _if_ = false;
+                    if (StaticMemberCount != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                private static readonly ");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@" _static_ = new ");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@"();");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberExpression[] _value1_;
+                    _value1_ = StaticMembers;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberExpression _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>
+                public sealed class ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@" : ");
+            _code_.Add(_value2_.MemberRemoteExpressionTypeName);
+            _code_.Add(@"
+                {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(); }
+                    }");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"() { }
+                    internal ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@" _parent_");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@") : base(");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"_clientNodeId_.Id");
+            }
+            _code_.Add(@")
+                    {
+                        this.Parent = _parent_;");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        setParameter(ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                if (!(bool)_value4_.IsClientNodeParameter)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@" = ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@")));");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameter(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameterStruct(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                        deSerializeParameter(parser, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(parser);
+                    }");
+            _if_ = false;
+                    if (_value2_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    protected override void checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        checkServerNodeId(checker, ref checkTypes, ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }");
+            }
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" getValue()
+                    {");
+            _if_ = false;
+                    if (_value2_.IsStatic)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value3_.StaticMethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.StaticPropertyName);
+            _code_.Add(@";");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsStatic)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ");
+            }
+            _code_.Add(@"((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+            _code_.Add(_value3_.MethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                    if (_value3_.Length != 0)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_)[");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"];");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                if (_value3_.Length == 0)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.MemberName);
+            }
+                }
+            _code_.Add(@";");
+            }
+            }
+            _code_.Add(@"
+                        }
+                        return default(");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@");");
+            }
+            _code_.Add(@"
+                    }
+                    protected override object get()
+                    {
+                        ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+            }
+            _code_.Add(@"getValue();");
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> { Value = value } : null;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        getValue();
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                }
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>
+                public static readonly ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@" ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value2_.StaticPropertyName);
+            }
+                }
+            _code_.Add(@" = new ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(_static_);");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethodExpression[] _value1_;
+                    _value1_ = StaticMethods;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethodExpression _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>
+                public sealed class ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@" : ");
+            _code_.Add(_value2_.MemberRemoteExpressionTypeName);
+            _code_.Add(@"
+                {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    private static class _clientNodeId_
+                    {
+                        internal static readonly int Id = registerClient(_createReturnValue_);
+                        private static AutoCSer.Net.RemoteExpression.ReturnValue _createReturnValue_() { return new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(); }
+                    }");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    public ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"() { }
+                    internal ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+            _code_.Add(@"(");
+            _code_.Add(RemoteExpressionTypeName);
+            _code_.Add(@" _parent_");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@") : base(");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"_clientNodeId_.Id");
+            }
+            _code_.Add(@")
+                    {
+                        this.Parent = _parent_;");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        setParameter(ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                if (!(bool)_value4_.IsClientNodeParameter)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@" = ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@";");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }
+                    protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializer.Stream.Write(checker.Get(typeof(");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@")));");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameter(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        deSerializeParameterStruct(deSerializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(deSerializer);
+                    }
+                    protected override void serialize(AutoCSer.Json.Serializer serializer, AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker)
+                    {
+                        serializeStart(serializer, checker);");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                    if (_value5_.IsNull)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameter(serializer, ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
+                    {
+                if (!(bool)_value5_.IsNull)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serializeParameterStruct(serializer, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        serializeParent(serializer, checker);
+                    }
+                    protected override void deSerialize(AutoCSer.Json.Parser parser)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                        deSerializeParameter(parser, ref ");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                        deSerializeParent(parser);
+                    }");
+            _if_ = false;
+                    if (_value2_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    protected override void checkParameterServerNodeId(AutoCSer.Net.RemoteExpression.ServerNodeIdChecker checker, ref LeftArray<System.Type> checkTypes)
+                    {");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _if_ = false;
+                    if (_value4_.IsClientNodeParameter)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        checkServerNodeId(checker, ref checkTypes, ref this.");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@");");
+            }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                    }");
+            }
+            _code_.Add(@"
+                    private ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" getValue()
+                    {");
+            _if_ = false;
+                    if (_value2_.IsStatic)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value3_.StaticMethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.");
+            _code_.Add(_value2_.StaticPropertyName);
+            _code_.Add(@";");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsStatic)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        object _value_ = getParentValue();
+                        if (_value_ != null)
+                        {");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ");
+            }
+            _code_.Add(@"((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = Type;
+                    if (_value4_ != null)
+                    {
+            _code_.Add(_value4_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+            _code_.Add(_value3_.MethodName);
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value4_;
+                    _value4_ = _value2_.IntputParameters;
+                    if (_value4_ != null)
+                    {
+                        int _loopIndex4_ = _loopIndex_, _loopCount4_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value4_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value5_ in _value4_)
+                        {
+            _code_.Add(_value5_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex4_;
+                        _loopCount_ = _loopCount4_;
+                    }
+                }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.Method == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                    if (_value3_.Length != 0)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_)[");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"];");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                if (_value3_.Length == 0)
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            return ((");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@")_value_).");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.MemberName);
+            }
+                }
+            _code_.Add(@";");
+            }
+            }
+            _code_.Add(@"
+                        }
+                        return default(");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@");");
+            }
+            _code_.Add(@"
+                    }
+                    protected override object get()
+                    {
+                        ");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return ");
+            }
+            _code_.Add(@"getValue();");
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                    protected override AutoCSer.Net.RemoteExpression.ReturnValue getReturn()
+                    {");
+            _if_ = false;
+                    if (_value2_.MemberIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@" value = getValue();
+                        return value != null ? new AutoCSer.Net.RemoteExpression.ReturnValue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> { Value = value } : null;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MemberIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        getValue();
+                        return null;");
+            }
+            _code_.Add(@"
+                    }
+                }
+                /// <summary>
+                /// ");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式
+                /// </summary>");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@"
+                /// <param name=""");
+            _code_.Add(_value4_.ParameterName);
+            _code_.Add(@""">");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@"</param>");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"
+                /// <returns>");
+            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(@" 远程表达式</returns>
+                public static ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@" ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value3_.GenericStaticMethodName);
+            }
+                }
+            _code_.Add(@"(");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.RemoteExpressionParameterType;
+                    if (_value5_ != null)
+                    {
+            _code_.Add(_value5_.FullName);
+                    }
+                }
+            _code_.Add(@" ");
+            _code_.Add(_value4_.ParameterJoinName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@") { return new ");
+            _code_.Add(_value2_.MemberNodeTypeName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.GenericParameterName);
+                    }
+                }
+            _code_.Add(@"(_static_");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter[] _value3_;
+                    _value3_ = _value2_.IntputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionParameter _value4_ in _value3_)
+                        {
+            _code_.Add(@", ");
+            _code_.Add(_value4_.ParameterName);
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"); }");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"
+            }
+        }");
+                if (_isOut_) outEnd();
+            }
+        }
+    }
+    }
+}
 #if DOTNET2
 #else
 #if MONO
@@ -48464,36 +51999,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
                 {
-                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
-                    _value1_ = MethodIndexs;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterTypes[] _value1_;
+                    _value1_ = ParameterTypes;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
-                        {
-            _if_ = false;
-                if (!(bool)_value2_.IsNullMethod)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterTypes[] _value3_;
-                    _value3_ = ParameterTypes;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterTypes _value4_ in _value3_)
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterTypes _value2_ in _value1_)
                         {
             _code_.Add(@"
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false");
             _if_ = false;
-                if (!(bool)_value4_.IsSerializeReferenceMember)
+                if (!(bool)_value2_.IsSerializeReferenceMember)
                 {
                     _if_ = true;
                 }
@@ -48503,7 +52021,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@")]");
             _if_ = false;
-                    if (_value4_.IsSerializeBox)
+                    if (_value2_.IsSerializeBox)
                     {
                         _if_ = true;
                 }
@@ -48515,13 +52033,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct ");
-            _code_.Add(_value4_.ParameterTypeName);
+            _code_.Add(_value2_.ParameterTypeName);
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-                    if (_value5_.Type != null)
+                    if (_value3_.Type != null)
                     {
                         _if_ = true;
                     }
@@ -48535,10 +52053,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 #else
                      : AutoCSer.Net.IReturnParameter<");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@">
@@ -48547,39 +52065,39 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
             {");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value5_;
-                    _value5_ = _value4_.Parameters;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value3_;
+                    _value3_ = _value2_.Parameters;
+                    if (_value3_ != null)
                     {
-                        int _loopIndex5_ = _loopIndex_, _loopCount5_ = _loopCount_;
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
                         _loopIndex_ = 0;
-                        _loopCount_ = _value5_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ in _value5_)
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ in _value3_)
                         {
             _code_.Add(@"
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value7_ = _value6_.ParameterType;
-                    if (_value7_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
                     {
-            _code_.Add(_value7_.FullName);
+            _code_.Add(_value5_.FullName);
                     }
                 }
             _code_.Add(@" ");
-            _code_.Add(_value6_.ParameterName);
+            _code_.Add(_value4_.ParameterName);
             _code_.Add(@";");
                             ++_loopIndex_;
                         }
-                        _loopIndex_ = _loopIndex5_;
-                        _loopCount_ = _loopCount5_;
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
                     }
                 }
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-                    if (_value5_.Type != null)
+                    if (_value3_.Type != null)
                     {
                         _if_ = true;
                     }
@@ -48591,20 +52109,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 [AutoCSer.Json.IgnoreMember]
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@" Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@" Return
@@ -48619,10 +52137,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get { return Ret; }
                     set { Ret = (");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@")value; }
@@ -48631,13 +52149,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
             }");
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -49799,7 +53310,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value5_.FullName);
                     }
                 }
-            _code_.Add(@" value = ");
+            _code_.Add(@" _value_ = ");
             _code_.Add(_value1_.GetRemoteMethodName);
             _code_.Add(@"(");
                 {
@@ -50201,7 +53712,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value5_.FullName);
                     }
                 }
-            _code_.Add(@" value = ");
+            _code_.Add(@" _value_ = ");
             _code_.Add(_value1_.GetRemoteMethodName);
             _code_.Add(@"(");
                 {
@@ -50734,7 +54245,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value5_.FullName);
                     }
                 }
-            _code_.Add(@" value");
+            _code_.Add(@" _value_");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value5_;
                     _value5_ = _value4_.Parameters;
@@ -50768,7 +54279,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 return ");
             }
-            _code_.Add(@"value.");
+            _code_.Add(@"_value_.");
             _code_.Add(_value4_.MethodName);
             _code_.Add(@"(");
                 {
@@ -50976,7 +54487,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value5_.FullName);
                     }
                 }
-            _code_.Add(@" value");
+            _code_.Add(@" _value_");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value5_;
                     _value5_ = _value3_.PropertyParameters;
@@ -51173,7 +54684,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value4_.XmlDocument);
             _code_.Add(@"
             /// </summary>
-            /// <param name=""value"">");
+            /// <param name=""_value_"">");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value1_.Type;
                     if (_value5_ != null)
@@ -51323,7 +54834,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value5_.FullName);
                     }
                 }
-            _code_.Add(@" value");
+            _code_.Add(@" _value_");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value5_;
                     _value5_ = _value4_.Parameters;
@@ -51816,7 +55327,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
                 }
             _code_.Add(@"(");
-            _code_.Add(_value4_.MemberName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value5_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value5_ = _value1_.RemoteKeyMember;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value5_.MemberName);
+            }
+                }
                 {
                     AutoCSer.SubArray<AutoCSer.CodeGenerator.Metadata.MethodParameter> _value5_;
                     _value5_ = _value3_.NextParameters;
@@ -51911,7 +55434,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
                 }
             _code_.Add(@"(");
-            _code_.Add(_value4_.MemberName);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value5_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value5_ = _value1_.RemoteKeyMember;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value5_.MemberName);
+            }
+                }
             _code_.Add(@");
                         }
                     }");
@@ -56442,36 +59977,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
                 {
-                    AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
-                    _value1_ = MethodIndexs;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterTypes[] _value1_;
+                    _value1_ = ParameterTypes;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute,AutoCSer.Net.TcpStaticSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod _value2_ in _value1_)
-                        {
-            _if_ = false;
-                if (!(bool)_value2_.IsNullMethod)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterTypes[] _value3_;
-                    _value3_ = ParameterTypes;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterTypes _value4_ in _value3_)
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterTypes _value2_ in _value1_)
                         {
             _code_.Add(@"
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false");
             _if_ = false;
-                if (!(bool)_value4_.IsSerializeReferenceMember)
+                if (!(bool)_value2_.IsSerializeReferenceMember)
                 {
                     _if_ = true;
                 }
@@ -56481,7 +59999,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@")]");
             _if_ = false;
-                    if (_value4_.IsSerializeBox)
+                    if (_value2_.IsSerializeBox)
                     {
                         _if_ = true;
                 }
@@ -56493,13 +60011,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct ");
-            _code_.Add(_value4_.ParameterTypeName);
+            _code_.Add(_value2_.ParameterTypeName);
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-                    if (_value5_.Type != null)
+                    if (_value3_.Type != null)
                     {
                         _if_ = true;
                     }
@@ -56513,10 +60031,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 #else
                      : AutoCSer.Net.IReturnParameter<");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@">
@@ -56525,39 +60043,39 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
             {");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value5_;
-                    _value5_ = _value4_.Parameters;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value3_;
+                    _value3_ = _value2_.Parameters;
+                    if (_value3_ != null)
                     {
-                        int _loopIndex5_ = _loopIndex_, _loopCount5_ = _loopCount_;
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
                         _loopIndex_ = 0;
-                        _loopCount_ = _value5_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ in _value5_)
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ in _value3_)
                         {
             _code_.Add(@"
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value7_ = _value6_.ParameterType;
-                    if (_value7_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
                     {
-            _code_.Add(_value7_.FullName);
+            _code_.Add(_value5_.FullName);
                     }
                 }
             _code_.Add(@" ");
-            _code_.Add(_value6_.ParameterName);
+            _code_.Add(_value4_.ParameterName);
             _code_.Add(@";");
                             ++_loopIndex_;
                         }
-                        _loopIndex_ = _loopIndex5_;
-                        _loopCount_ = _loopCount5_;
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
                     }
                 }
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-                    if (_value5_.Type != null)
+                    if (_value3_.Type != null)
                     {
                         _if_ = true;
                     }
@@ -56569,20 +60087,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 [AutoCSer.Json.IgnoreMember]
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@" Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@" Return
@@ -56597,10 +60115,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get { return Ret; }
                     set { Ret = (");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@")value; }
@@ -56609,13 +60127,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
             }");
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -63363,36 +66874,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
                 {
-                    AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
-                    _value1_ = MethodIndexs;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterTypes[] _value1_;
+                    _value1_ = ParameterTypes;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute,AutoCSer.Net.TcpStaticStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod _value2_ in _value1_)
-                        {
-            _if_ = false;
-                if (!(bool)_value2_.IsNullMethod)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterTypes[] _value3_;
-                    _value3_ = ParameterTypes;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterTypes _value4_ in _value3_)
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterTypes _value2_ in _value1_)
                         {
             _code_.Add(@"
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false");
             _if_ = false;
-                if (!(bool)_value4_.IsSerializeReferenceMember)
+                if (!(bool)_value2_.IsSerializeReferenceMember)
                 {
                     _if_ = true;
                 }
@@ -63402,7 +66896,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@")]");
             _if_ = false;
-                    if (_value4_.IsSerializeBox)
+                    if (_value2_.IsSerializeBox)
                     {
                         _if_ = true;
                 }
@@ -63414,13 +66908,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct ");
-            _code_.Add(_value4_.ParameterTypeName);
+            _code_.Add(_value2_.ParameterTypeName);
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-                    if (_value5_.Type != null)
+                    if (_value3_.Type != null)
                     {
                         _if_ = true;
                     }
@@ -63434,10 +66928,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 #else
                      : AutoCSer.Net.IReturnParameter<");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@">
@@ -63446,39 +66940,39 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
             {");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value5_;
-                    _value5_ = _value4_.Parameters;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter[] _value3_;
+                    _value3_ = _value2_.Parameters;
+                    if (_value3_ != null)
                     {
-                        int _loopIndex5_ = _loopIndex_, _loopCount5_ = _loopCount_;
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
                         _loopIndex_ = 0;
-                        _loopCount_ = _value5_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ in _value5_)
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ in _value3_)
                         {
             _code_.Add(@"
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value7_ = _value6_.ParameterType;
-                    if (_value7_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.ParameterType;
+                    if (_value5_ != null)
                     {
-            _code_.Add(_value7_.FullName);
+            _code_.Add(_value5_.FullName);
                     }
                 }
             _code_.Add(@" ");
-            _code_.Add(_value6_.ParameterName);
+            _code_.Add(_value4_.ParameterName);
             _code_.Add(@";");
                             ++_loopIndex_;
                         }
-                        _loopIndex_ = _loopIndex5_;
-                        _loopCount_ = _loopCount5_;
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
                     }
                 }
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-                    if (_value5_.Type != null)
+                    if (_value3_.Type != null)
                     {
                         _if_ = true;
                     }
@@ -63490,20 +66984,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 [AutoCSer.Json.IgnoreMember]
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@" Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
                 public ");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@" Return
@@ -63518,10 +67012,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get { return Ret; }
                     set { Ret = (");
                 {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value5_ = _value4_.MethodReturnType;
-                    if (_value5_ != null)
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
                     {
-            _code_.Add(_value5_.FullName);
+            _code_.Add(_value3_.FullName);
                     }
                 }
             _code_.Add(@")value; }
@@ -63530,13 +67024,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
             }");
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;

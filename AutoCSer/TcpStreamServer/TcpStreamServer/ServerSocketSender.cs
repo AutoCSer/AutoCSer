@@ -246,6 +246,58 @@ namespace AutoCSer.Net.TcpStreamServer
             if (Outputs.IsPushHead(output)) TryBuildOutput(isBuildOutputThread);
         }
         /// <summary>
+        /// 获取远程表达式服务端节点标识
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="isBuildOutputThread"></param>
+        internal void GetRemoteExpressionNodeId(ref SubArray<byte> data, bool isBuildOutputThread)
+        {
+            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+            try
+            {
+                RemoteExpression.ServerNodeIdChecker.Input inputParameter = default(RemoteExpression.ServerNodeIdChecker.Input);
+                if (DeSerialize(ref data, ref inputParameter, false))
+                {
+                    TcpServer.ReturnValue<RemoteExpression.ServerNodeIdChecker.Output> outputParameter = new RemoteExpression.ServerNodeIdChecker.Output { Return = RemoteExpression.Node.Get(inputParameter.Types) };
+                    Push(isBuildOutputThread ? RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo : RemoteExpression.ServerNodeIdChecker.Output.OutputInfo, ref outputParameter);
+                    return;
+                }
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+            }
+            catch (Exception error)
+            {
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                AddLog(error);
+            }
+            Push(returnType);
+        }
+        /// <summary>
+        /// 获取远程表达式数据
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="isBuildOutputThread"></param>
+        internal void GetRemoteExpression(ref SubArray<byte> data, bool isBuildOutputThread)
+        {
+            AutoCSer.Net.TcpServer.ReturnType returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+            try
+            {
+                RemoteExpression.ClientNode inputParameter = default(RemoteExpression.ClientNode);
+                if (DeSerialize(ref data, ref inputParameter, false))
+                {
+                    TcpServer.ReturnValue<RemoteExpression.ReturnValue.Output> outputParameter = new RemoteExpression.ReturnValue.Output { Return = inputParameter.GetReturnValue() };
+                    Push(isBuildOutputThread ? RemoteExpression.ReturnValue.Output.OutputThreadInfo : RemoteExpression.ReturnValue.Output.OutputInfo, ref outputParameter);
+                    return;
+                }
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+            }
+            catch (Exception error)
+            {
+                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                AddLog(error);
+            }
+            Push(returnType);
+        }
+        /// <summary>
         /// 尝试启动创建输出线程
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

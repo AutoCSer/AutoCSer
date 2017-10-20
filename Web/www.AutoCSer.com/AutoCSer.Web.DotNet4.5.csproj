@@ -114,6 +114,7 @@
     <Content Include="TcpServer\InterfaceOpenStreamServer.Core.png" />
     <Content Include="TcpServer\InterfaceOpenStreamServer.png" />
     <Content Include="TcpServer\InterfaceServer.Core.png" />
+    <Content Include="TcpServer\RemoteExpression.page.html" />
     <Content Include="TcpServer\InterfaceStreamServer.Core.png" />
     <Content Include="TcpServer\InterfaceStreamServer.page.html" />
     <Content Include="TcpServer\InterfaceStreamServer.png" />

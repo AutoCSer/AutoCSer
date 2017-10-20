@@ -19,11 +19,11 @@ namespace AutoCSer.Example.TcpInternalServer
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/MethodServer.html
 ");
+                    Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(NoAttribute.TestCase());
                     Console.WriteLine(Static.TestCase());
                     Console.WriteLine(Field.TestCase());
                     Console.WriteLine(Property.TestCase());
-                    Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(ClientAsynchronous.TestCase());
 #if !DOTNET2 && !DOTNET4
                     Console.WriteLine(ClientTaskAsync.TestCase());
@@ -31,6 +31,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     Console.WriteLine(SendOnly.TestCase());
                     Console.WriteLine(Asynchronous.TestCase());
                     Console.WriteLine(KeepCallback.TestCase());
+                    Console.WriteLine(Expression.TestCase());
                     Console.WriteLine("Over");
                     Console.ReadKey();
 #if !DotNetStandard

@@ -5,7 +5,7 @@ namespace AutoCSer.Example.TcpInternalServer
     /// <summary>
     /// ref / out 参数测试 示例
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12904)]
+    [AutoCSer.Net.TcpInternalServer.Server(Host = "127.0.0.1", Port = 12904, IsRemoteExpression = true)]
     partial class RefOut
     {
         /// <summary>

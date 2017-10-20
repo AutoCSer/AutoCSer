@@ -31,6 +31,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
                             Console.WriteLine(Property.TestCase());
                             Console.WriteLine(RefOut.TestCase());
                             Console.WriteLine(Asynchronous.TestCase());
+                            Console.WriteLine(Expression.TestCase());
                             Console.WriteLine("Over");
                         }
                         else Console.WriteLine("示例服务启动失败");

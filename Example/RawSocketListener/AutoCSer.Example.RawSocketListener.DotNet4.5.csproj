@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4030D1C1-27DD-4A6E-B744-402BA91765D1}</ProjectGuid>
+    <ProjectGuid>{5E4FA710-75AE-4FB9-8AFC-E4572B19B240}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoCSer.Example.RawSocketListener</RootNamespace>

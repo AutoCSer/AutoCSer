@@ -29,7 +29,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// <summary>
         /// 参数类型
         /// </summary>
-        public class ParameterType : Pub { }
+        public partial class ParameterType : Pub { }
         ///// <summary>
         ///// 返回值类型
         ///// </summary>

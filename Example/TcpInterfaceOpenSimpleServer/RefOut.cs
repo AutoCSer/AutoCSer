@@ -5,7 +5,7 @@ namespace AutoCSer.Example.TcpInterfaceOpenSimpleServer
     /// <summary>
     /// ref / out 参数测试接口
     /// </summary>
-    [AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 13500)]
+    [AutoCSer.Net.TcpOpenSimpleServer.Server(Host = "127.0.0.1", Port = 13500, IsRemoteExpression = true)]
     public interface IRefOut
     {
         /// <summary>

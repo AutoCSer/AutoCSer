@@ -20,6 +20,27 @@ namespace AutoCSer.Net.TcpSimpleServer
         where serverSocketType : ServerSocket
     {
         /// <summary>
+        /// 是否支持自定义数据包
+        /// </summary>
+        protected override bool isCustomData
+        {
+            get { return false; }
+        }
+        /// <summary>
+        /// 是否支持保持回调
+        /// </summary>
+        protected override bool isKeepCallback
+        {
+            get { return false; }
+        }
+        /// <summary>
+        /// 是否支持合并命令处理
+        /// </summary>
+        protected override bool isMergeCommand
+        {
+            get { return false; }
+        }
+        /// <summary>
         /// TCP 服务客户端
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>

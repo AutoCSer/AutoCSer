@@ -139,6 +139,7 @@
     <Compile Include="TcpStreamServer\Emit\ServerMetadata.cs" />
     <Compile Include="TcpStreamServer\Emit\StreamParameterType.cs" />
     <Compile Include="TcpStreamServer\MethodAttribute.cs" />
+    <Compile Include="TcpStreamServer\RemoteExpressionServerNodeIdChecker.cs" />
     <Compile Include="TcpStreamServer\Server.cs" />
     <Compile Include="TcpStreamServer\ServerAttribute.cs" />
     <Compile Include="TcpStreamServer\ServerOutput\Output.cs" />

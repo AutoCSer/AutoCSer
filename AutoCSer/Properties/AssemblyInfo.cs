@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 #if !DotNetStandard
 [assembly: AssemblyTitle("AutoCSer")]
 [assembly: AssemblyCopyright("Copyright © 肖进 2017")]
-[assembly: AssemblyDescription("AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP 接口服务框架、TCP 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。")]
+[assembly: AssemblyDescription("AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP / RPC 接口服务框架、TCP / RPC 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyProduct("AutoCSer")]
 [assembly: AssemblyCompany("")]

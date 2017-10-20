@@ -14,12 +14,14 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;MONO;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\netcoreapp2.0\AutoCSer.Example.TcpInterfaceStreamServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -34,11 +36,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Expression.cs" />
     <Compile Include="Inherit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefOut.cs" />
     <Compile Include="SendOnly.cs" />
+    <Compile Include="{AutoCSer.Example.TcpInterfaceStreamServer}.AutoCSer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,5 +54,9 @@
       <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if exist &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; dotnet &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; &quot;$(ProjectName)&quot; &quot;$(ProjectDir) &quot; &quot;$(TargetPath) &quot; &quot;$(TargetName)&quot;" />
+  </Target>
 
 </Project>

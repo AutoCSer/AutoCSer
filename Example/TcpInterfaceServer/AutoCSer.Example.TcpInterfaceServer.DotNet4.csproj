@@ -66,6 +66,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.Example.TcpInterfaceServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -102,14 +103,19 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Asynchronous.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Inherit.cs" />
     <Compile Include="KeepCallback.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefOut.cs" />
     <Compile Include="SendOnly.cs" />
+    <Compile Include="{AutoCSer.Example.TcpInterfaceServer}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -119,6 +125,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

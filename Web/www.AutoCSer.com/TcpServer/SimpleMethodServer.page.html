@@ -29,6 +29,10 @@
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
             <!--Include:Include\GetCode[Example,7,,TcpStaticSimpleServer\Asynchronous.cs]-->
         </p>
+        <p>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
+            <!--Include:Include\GetCode[Example,q,,TcpStaticSimpleServer\Expression.cs]-->
+        </p>
         <!--Include:Include\SimpleSerialize-->
         <p>
             由于 <b>内部静态服务</b> 与 <b>内部实例服务</b> 对于性能影响的区别仅仅在于静态函数与实例函数调用的差别，不存在本质性的差别，所以性能测试项目请参考 <b>内部实例服务</b>。
@@ -55,6 +59,10 @@
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
             <!--Include:Include\GetCode[Example,g,,TcpInternalSimpleServer\Asynchronous.cs]-->
+        </p>
+        <p>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
+            <!--Include:Include\GetCode[Example,r,,TcpInternalSimpleServer\Expression.cs]-->
         </p>
         <!--Include:Include\SimpleSerialize-->
         <p>
@@ -85,6 +93,10 @@
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
             <!--Include:Include\GetCode[Example,p,,TcpOpenSimpleServer\Asynchronous.cs]-->
+        </p>
+        <p>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
+            <!--Include:Include\GetCode[Example,s,,TcpOpenSimpleServer\Expression.cs]-->
         </p>
         <!--Include:Include\SimpleSerialize-->
         <p>
