@@ -78,7 +78,7 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <summary>
         /// 释放计数更新任务
         /// </summary>
-        private sealed class FreeTask : LinkQueueTaskNode<FreeTask>
+        private sealed class FreeTask : Threading.LinkQueueTaskNode<FreeTask>
         {
             /// <summary>
             /// 计数成员
@@ -107,9 +107,9 @@ namespace AutoCSer.Sql.Cache.Whole
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 Sql.Table<valueType, modelType> table = countMember.table;
                 table.Client.Update(table, ref connection, value, countMember.memberMap, ref Query, true);
                 LinkNext = null;
@@ -132,7 +132,7 @@ namespace AutoCSer.Sql.Cache.Whole
         /// <summary>
         /// 更新计数任务
         /// </summary>
-        private sealed class UpdateTask : LinkQueueTaskNode<UpdateTask>
+        private sealed class UpdateTask : Threading.LinkQueueTaskNode<UpdateTask>
         {
             /// <summary>
             /// 计数成员
@@ -155,9 +155,9 @@ namespace AutoCSer.Sql.Cache.Whole
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     Sql.Table<valueType, modelType> table = countMember.table;
@@ -420,7 +420,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 }
                 catch (Exception error)
                 {
-                    table.Log.add(Log.LogType.Error, error);
+                    table.Log.Add(Log.LogType.Error, error);
                 }
                 finally
                 {
@@ -440,7 +440,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 second = timeout;
                 if (isDisposed == 0 || Interlocked.Exchange(ref second, 0) == 0) return;
             }
-            Client client = table.Client;
+            Sql.Client client = table.Client;
             UpdateQuery<modelType> query = new UpdateQuery<modelType> { MemberMap = selectMemberMap };
             do
             {
@@ -477,7 +477,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 }
                 catch (Exception error)
                 {
-                    table.Log.add(Log.LogType.Error, error);
+                    table.Log.Add(Log.LogType.Error, error);
                 }
                 finally { query.ClearSql(); }
             }

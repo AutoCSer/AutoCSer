@@ -61,7 +61,7 @@ namespace AutoCSer.DiskBlock
         {
             this.OnWrite = onWrite;
             SubBuffer.Pool.GetBuffer(ref Buffer, (Size = buffer.Buffer.Length) + sizeof(int));
-            Array.Copy(buffer.Buffer.Array, buffer.Buffer.Start, Buffer.Buffer, Buffer.StartIndex + sizeof(int), Size);
+            System.Buffer.BlockCopy(buffer.Buffer.Array, buffer.Buffer.Start, Buffer.Buffer, Buffer.StartIndex + sizeof(int), Size);
             fixed (byte* bufferFixed = Buffer.Buffer) *(int*)(bufferFixed + Buffer.StartIndex) = Size;
         }
         /// <summary>

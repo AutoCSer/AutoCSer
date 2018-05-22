@@ -60,7 +60,7 @@ namespace AutoCSer
             }
             catch (Exception error)
             {
-                log.add(Log.LogType.Error, error, fileName);
+                log.Add(Log.LogType.Error, error, fileName);
             }
             if (isFile && !isJson) AutoCSer.IO.File.MoveBak(fileName);
         }
@@ -109,7 +109,7 @@ namespace AutoCSer
             }
             catch (Exception error)
             {
-                log.add(Log.LogType.Error, error, fileName);
+                log.Add(Log.LogType.Error, error, fileName);
             }
             return false;
         }

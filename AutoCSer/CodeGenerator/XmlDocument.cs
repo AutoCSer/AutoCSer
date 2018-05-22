@@ -57,9 +57,9 @@ namespace AutoCSer.CodeGenerator
                                     }
                                 }
                             }
-                            else AutoCSer.Log.Pub.Log.wait(Log.LogType.All, "XML文档解析失败 " + fileName);
+                            else AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, "XML文档解析失败 " + fileName);
                         }
-                        else AutoCSer.Log.Pub.Log.wait(Log.LogType.All, "没有找到XML文档注释 " + fileName);
+                        else AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, "没有找到XML文档注释 " + fileName);
                     }
                     assemblyLock.Set(assembly, value);
                 }

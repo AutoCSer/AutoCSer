@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EF134581-1B02-433A-BD34-C3875438DCFD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.CacheServer</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CacheServer;MONO;NOJIT;UNITY3D</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;CacheServer;MONO;NOJIT;UNITY3D</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\AutoCSer.CacheServer.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoCSer, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\Unity3D.NOJIT\AutoCSer.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoCSer.Sort, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Packet\Unity3D.NoJIT\AutoCSer.Sort.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffer.cs" />
+    <Compile Include="BufferCount.cs" />
+    <Compile Include="CacheGetStep.cs" />
+    <Compile Include="CacheGetter.cs" />
+    <Compile Include="CacheManager.cs" />
+    <Compile Include="CacheReturnParameter.cs" />
+    <Compile Include="Cache\Value\Binary.cs" />
+    <Compile Include="Cache\Value\Json.cs" />
+    <Compile Include="DataStructure\Abstract\IValueNode.cs" />
+    <Compile Include="DataStructure\Value\Extension.cs" />
+    <Compile Include="FileBackup.cs" />
+    <Compile Include="ServerCall\CacheGetterGetQueue.cs" />
+    <Compile Include="ServerCall\GetCache.cs" />
+    <Compile Include="SlaveClient.cs" />
+    <Compile Include="SlaveServer.cs" />
+    <Compile Include="SlaveServerConfig.cs" />
+    <Compile Include="Snapshot\Array.cs" />
+    <Compile Include="Snapshot\Cache.cs" />
+    <Compile Include="Cache\HashCodeKey.cs" />
+    <Compile Include="Cache\Value\LinkNode.cs" />
+    <Compile Include="Cache\Value\Node.cs" />
+    <Compile Include="Emit\Constructor.cs" />
+    <Compile Include="FileReader.cs" />
+    <Compile Include="FileStreamWriter.cs" />
+    <Compile Include="LoadData.cs" />
+    <Compile Include="OnTime.cs" />
+    <Compile Include="OperationParameter\NodeParser.cs" />
+    <Compile Include="Cache\Array.cs" />
+    <Compile Include="Cache\Dictionary.cs" />
+    <Compile Include="Cache\FragmentArray.cs" />
+    <Compile Include="Cache\FragmentDictionary.cs" />
+    <Compile Include="DataStructureParser.cs" />
+    <Compile Include="Cache\Value\FragmentHashSet.cs" />
+    <Compile Include="Cache\Value\HashSet.cs" />
+    <Compile Include="Cache\Node.cs" />
+    <Compile Include="Cache\SearchTreeDictionary.cs" />
+    <Compile Include="Cache\Value\Array.cs" />
+    <Compile Include="Cache\Value\Dictionary.cs" />
+    <Compile Include="Cache\Value\FragmentArray.cs" />
+    <Compile Include="Cache\Value\FragmentDictionary.cs" />
+    <Compile Include="Cache\Value\Link.cs" />
+    <Compile Include="Cache\Value\SearchTreeDictionary.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="ConfigLoader.cs" />
+    <Compile Include="ClientDataStructure.cs" />
+    <Compile Include="DataStructureItem.cs" />
+    <Compile Include="DataStructure\Abstract\Array.cs" />
+    <Compile Include="DataStructure\Abstract\Value.cs" />
+    <Compile Include="DataStructure\Abstract\ValueDictionary.cs" />
+    <Compile Include="DataStructure\Abstract\NodeDictionary.cs" />
+    <Compile Include="DataStructure\Abstract\NodeArray.cs" />
+    <Compile Include="DataStructure\Abstract\Collections.cs" />
+    <Compile Include="DataStructure\Abstract\Dictionary.cs" />
+    <Compile Include="DataStructure\Abstract\HashSet.cs" />
+    <Compile Include="DataStructure\Abstract\ValueArray.cs" />
+    <Compile Include="DataStructure\Parameter\Operation.cs" />
+    <Compile Include="DataStructure\Parameter\OperationBool.cs" />
+    <Compile Include="DataStructure\Parameter\QueryReturnValue.cs" />
+    <Compile Include="DataStructure\Parameter\OperationReturnValue.cs" />
+    <Compile Include="DataStructure\Parameter\QueryBool.cs" />
+    <Compile Include="DataStructure\Parameter\QueryInt.cs" />
+    <Compile Include="DataStructure\Parameter\Node.cs" />
+    <Compile Include="DataStructure\ValueArray.cs" />
+    <Compile Include="DataStructure\ValueDictionary.cs" />
+    <Compile Include="DataStructure\ValueFragmentArray.cs" />
+    <Compile Include="DataStructure\ValueFragmentDictionary.cs" />
+    <Compile Include="DataStructure\Abstract\IValue.cs" />
+    <Compile Include="DataStructure\Abstract\NodeType.cs" />
+    <Compile Include="DataStructure\Abstract\SearchTreeDictionary.cs" />
+    <Compile Include="DataStructure\ValueSearchTreeDictionary.cs" />
+    <Compile Include="DataStructure\Value\Integer.cs" />
+    <Compile Include="DataStructure\Value\Number.cs" />
+    <Compile Include="IndexIdentity.cs" />
+    <Compile Include="MasterClient.cs" />
+    <Compile Include="MasterServer.cs" />
+    <Compile Include="MasterServerConfig.cs" />
+    <Compile Include="OperationParameter\ClientDataStructure.cs" />
+    <Compile Include="OperationParameter\QueryNode.cs" />
+    <Compile Include="OperationParameter\OperationNode.cs" />
+    <Compile Include="OperationParameter\OperationType.cs" />
+    <Compile Include="OperationParameter\RemoveDataStructure.cs" />
+    <Compile Include="OperationParameter\Serializer.cs" />
+    <Compile Include="ReadFileParameter.cs" />
+    <Compile Include="ReturnParameter.cs" />
+    <Compile Include="ReturnType.cs" />
+    <Compile Include="ReturnValue.cs" />
+    <Compile Include="ReturnValueNode.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="ServerCall\CacheManager.cs" />
+    <Compile Include="ServerCall\CacheManagerServerCallType.cs" />
+    <Compile Include="ServerConfig.cs" />
+    <Compile Include="DataStructureBuffer.cs" />
+    <Compile Include="ServerDataStructure.cs" />
+    <Compile Include="Snapshot\Dictionary.cs" />
+    <Compile Include="Snapshot\Node.cs" />
+    <Compile Include="Snapshot\ServerDataStructure.cs" />
+    <Compile Include="Snapshot\Value\Array.cs" />
+    <Compile Include="Snapshot\Value\Dictionary.cs" />
+    <Compile Include="Snapshot\Value\HashSet.cs" />
+    <Compile Include="Snapshot\Value\Link.cs" />
+    <Compile Include="UnionType.cs" />
+    <Compile Include="ValueData\BinarySerializer.cs" />
+    <Compile Include="ValueData\Decimal.cs" />
+    <Compile Include="DataStructure\Array.cs" />
+    <Compile Include="DataStructure\Value\Binary.cs" />
+    <Compile Include="DataStructure\FragmentHashSet.cs" />
+    <Compile Include="DataStructure\HashSet.cs" />
+    <Compile Include="DataStructure\Dictionary.cs" />
+    <Compile Include="DataStructure\FragmentArray.cs" />
+    <Compile Include="DataStructure\FragmentDictionary.cs" />
+    <Compile Include="DataStructure\Link.cs" />
+    <Compile Include="DataStructure\Abstract\Node.cs" />
+    <Compile Include="DataStructure\SearchTreeDictionary.cs" />
+    <Compile Include="DataStructure\Value\Json.cs" />
+    <Compile Include="DataStructure\Value\Value.cs" />
+    <Compile Include="ValueData\GetData.cs" />
+    <Compile Include="ValueData\Guid.cs" />
+    <Compile Include="ValueData\JsonSerializer.cs" />
+    <Compile Include="ValueData\Data.cs" />
+    <Compile Include="ValueData\Bit64.cs" />
+    <Compile Include="ValueData\DataType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValueData\SetData.cs" />
+    <Compile Include="ValueData\UnionType.cs" />
+    <Compile Include="{AutoCSer.CacheServer}.AutoCSer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

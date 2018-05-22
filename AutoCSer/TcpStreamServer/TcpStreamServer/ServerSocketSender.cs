@@ -145,7 +145,7 @@ namespace AutoCSer.Net.TcpStreamServer
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void AddLog(Exception error)
         {
-            Server.Log.add(AutoCSer.Log.LogType.Error, error);
+            Server.Log.Add(AutoCSer.Log.LogType.Error, error);
         }
 
         /// <summary>

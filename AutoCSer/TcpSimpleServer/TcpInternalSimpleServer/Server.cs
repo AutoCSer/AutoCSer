@@ -45,7 +45,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue)
             : base(attribute, log, verify, isCallQueue)
         {
-            if (!attribute.IsServer) Log.add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + attribute.ServerName);
+            if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + attribute.ServerName);
         }
         /// <summary>
         /// 停止服务监听
@@ -72,9 +72,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     {
                         if (tcpRegisterClient.Register(this))
                         {
-                            Log.add(AutoCSer.Log.LogType.Info, Attribute.ServerName + " 注册 " + Attribute.Host + ":" + Attribute.Port.toString() + " => " + Attribute.RegisterHost + ":" + Attribute.RegisterPort.toString());
+                            Log.Add(AutoCSer.Log.LogType.Info, Attribute.ServerName + " 注册 " + Attribute.Host + ":" + Attribute.Port.toString() + " => " + Attribute.RegisterHost + ":" + Attribute.RegisterPort.toString());
                         }
-                        else Log.add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + Attribute.ServerName + " 失败 ");
+                        else Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + Attribute.ServerName + " 失败 ");
                     }
                     return true;
                 }
@@ -125,7 +125,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }
@@ -173,7 +173,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }

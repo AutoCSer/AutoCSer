@@ -35,7 +35,7 @@ namespace AutoCSer.Sql
                         long identity = identity64;
                         if (value <= identity) return;
                         if (Interlocked.CompareExchange(ref identity64, value, identity) == identity) return;
-                        Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, "Id " + identity.toString() + " 被修改");
+                        Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, "Id " + identity.toString() + " 被修改");
                     }
                     while (true);
                 }
@@ -75,7 +75,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 操作队列
         /// </summary>
-        private readonly LinkQueueTask queue;
+        private readonly Threading.LinkQueueTask queue;
         /// <summary>
         /// 日志处理
         /// </summary>
@@ -133,7 +133,7 @@ namespace AutoCSer.Sql
             ignoreCase = connection.ClientAttribute.IgnoreCase;
             TableName = tableName;
             this.nowTimes = nowTimes;
-            queue = new LinkQueueTask(Client, AutoCSer.Threading.ThreadPool.Tiny);
+            queue = new Threading.LinkQueueTask(Client, AutoCSer.Threading.ThreadPool.Tiny);
             CacheLoadWait.Set(0);
             if (isCreateCacheWait) createCacheWait.Set(0);
         }
@@ -173,7 +173,7 @@ namespace AutoCSer.Sql
                 {
                     exception = error;
                 }
-                if (exception != null) Log.add(AutoCSer.Log.LogType.Error, exception, "索引 " + TableName + "." + name + " 创建失败");
+                if (exception != null) Log.Add(AutoCSer.Log.LogType.Error, exception, "索引 " + TableName + "." + name + " 创建失败");
             }
         }
         /// <summary>
@@ -205,7 +205,7 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void AddQueue(LinkQueueTaskNode value)
+        internal void AddQueue(Threading.LinkQueueTaskNode value)
         {
             queue.Add(value);
         }
@@ -272,13 +272,13 @@ namespace AutoCSer.Sql
                     }
                     if (nextLength < 0)
                     {
-                        Log.add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 超长 " + length.toString());
+                        Log.Add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 超长 " + length.toString());
                         return false;
                     }
                 }
                 else if (value.Length > length)
                 {
-                    Log.add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 超长 " + value.Length.toString() + " > " + length.toString());
+                    Log.Add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 超长 " + value.Length.toString() + " > " + length.toString());
                     return false;
                 }
             }
@@ -292,7 +292,7 @@ namespace AutoCSer.Sql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal void NullVerify(string memberName)
         {
-            Log.add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 不能为null");
+            Log.Add(AutoCSer.Log.LogType.Error, TableName + "." + memberName + " 不能为null");
         }
 #if !NOJIT
         /// <summary>
@@ -378,6 +378,13 @@ namespace AutoCSer.Sql
         where modelType : class
     {
         /// <summary>
+        /// 数据更新事件
+        /// </summary>
+        /// <param name="newValue">更新后的数据</param>
+        /// <param name="oldValue">更新前的数据</param>
+        /// <param name="memberMap">更新数据成员</param>
+        public delegate void OnTableUpdated(tableType newValue, tableType oldValue, MemberMap<modelType> memberMap);
+        /// <summary>
         /// 数据表格
         /// </summary>
         /// <param name="attribute">数据库表格配置</param>
@@ -389,7 +396,7 @@ namespace AutoCSer.Sql
             if (connection == null)
             {
                 IsError = true;
-                Log.add(AutoCSer.Log.LogType.Fatal, TableName + " 初始化失败");
+                Log.Add(AutoCSer.Log.LogType.Fatal, TableName + " 初始化失败");
                 return;
             }
             using (connection)
@@ -430,7 +437,7 @@ namespace AutoCSer.Sql
                         else newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.SqlName), ignoreCase));
                         if (newColumns.count() != 0)
                         {
-                            Log.add(AutoCSer.Log.LogType.Error, "表格 " + memberTable.Columns.Name + " 字段类型不匹配 : " + newColumns.JoinString(",", value => value.SqlName));
+                            Log.Add(AutoCSer.Log.LogType.Error, "表格 " + memberTable.Columns.Name + " 字段类型不匹配 : " + newColumns.JoinString(",", value => value.SqlName));
                         }
                     }
                 }
@@ -550,7 +557,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 更新数据之后的处理事件 [更新后的数据 + 更新前的数据 + 更新成员位图]
         /// </summary>
-        public event Action<tableType, tableType, MemberMap<modelType>> OnUpdated;
+        public event OnTableUpdated OnUpdated;
         /// <summary>
         /// 更新数据之后的处理事件
         /// </summary>
@@ -608,7 +615,7 @@ namespace AutoCSer.Sql
         /// <param name="onDeleted">删除记录事件</param>
         /// <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
         /// <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
-        public void CacheLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, MemberMap<modelType>> onUpdated = null, Action<tableType> onDeleted = null, bool isLoadMemberCache = true, bool isSqlStreamTypeCount = true)
+        public void CacheLoaded(Action<tableType> onInserted = null, OnTableUpdated onUpdated = null, Action<tableType> onDeleted = null, bool isLoadMemberCache = true, bool isSqlStreamTypeCount = true)
         {
             if (Interlocked.CompareExchange(ref isLoadCache, 1, 0) == 0)
             {
@@ -634,7 +641,7 @@ namespace AutoCSer.Sql
             {
                 for (Type type = typeof(tableType); type != typeof(modelType); type = type.BaseType)
                 {
-                    if (type.IsGenericType && TypeAttribute.GetAttribute<MemberCacheAttribute>(type, false) != null)
+                    if (type.IsGenericType && TypeAttribute.GetAttribute<MemberCacheLinkAttribute>(type, false) != null)
                     {
                         Type[] types = type.GetGenericArguments();
                         if (types.Length == 2) memberCacheType = types[1];
@@ -659,7 +666,7 @@ namespace AutoCSer.Sql
                 {
                     foreach (object attribute in field.GetCustomAttributes(false))
                     {
-                        MemberCacheAttribute memberCacheAttribute = attribute as MemberCacheAttribute;
+                        MemberCacheLinkAttribute memberCacheAttribute = attribute as MemberCacheLinkAttribute;
                         if (memberCacheAttribute != null && memberCacheAttribute.CacheType != null)
                         {
                             cacheTypes.Add(memberCacheAttribute.CacheType);
@@ -668,7 +675,7 @@ namespace AutoCSer.Sql
                     }
                 }
             }
-            MemberCacheWait.Load(typeof(tableType), cacheTypes);
+            MemberCacheLinkWait.Load(typeof(tableType), cacheTypes);
         }
         /// <summary>
         /// 等待成员扩展缓存初始化
@@ -676,7 +683,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void WaitMemberCache()
         {
-            MemberCacheWait.Wait(typeof(tableType));
+            MemberCacheLinkWait.Wait(typeof(tableType));
         }
         /// <summary>
         /// 获取查询信息
@@ -703,7 +710,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 同步获取数据
         /// </summary>
-        internal sealed class Selecter : LinkQueueTaskNode<Selecter>
+        internal sealed class Selecter : Threading.LinkQueueTaskNode<Selecter>
         {
             /// <summary>
             /// 数据表格
@@ -732,9 +739,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     Value = Table.Select(ref connection, ref Query);
@@ -784,9 +791,23 @@ namespace AutoCSer.Sql
             finally { selecter.Push(); }
         }
         /// <summary>
+        /// 获取数据库记录集合
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="where">查询条件</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <returns>数据库记录集合</returns>
+        internal LeftArray<tableType> Select(ref DbConnection connection, Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
+        {
+            CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
+            SelectQuery<modelType> query = default(SelectQuery<modelType>);
+            Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
+            return Select(ref connection, ref query);
+        }
+        /// <summary>
         /// 同步获取数据
         /// </summary>
-        internal sealed class Getter : LinkQueueTaskNode<Getter>
+        internal sealed class Getter : Threading.LinkQueueTaskNode<Getter>
         {
             /// <summary>
             /// 数据表格
@@ -819,9 +840,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     isValue = table.Client.Get(table, ref connection, Value, ref Query);
@@ -897,9 +918,36 @@ namespace AutoCSer.Sql
             return Get((long)identity, memberMap);
         }
         /// <summary>
+        /// 根据自增 Id 获取数据库记录
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="identity">自增 Id</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <returns>数据对象</returns>
+        public tableType Get(ref DbConnection connection, long identity, MemberMap<modelType> memberMap = null)
+        {
+            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            DataModel.Model<modelType>.SetIdentity(value, identity);
+            GetQuery<modelType> query = default(GetQuery<modelType>);
+            Client.GetByIdentity(this, value, memberMap, ref query);
+            return Client.Get(this, ref connection, value, ref query) ? value : null;
+        }
+        /// <summary>
+        /// 根据自增 Id 获取数据库记录
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="identity">自增 Id</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <returns>数据对象</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public tableType Get(ref DbConnection connection, int identity, MemberMap<modelType> memberMap = null)
+        {
+            return Get(ref connection, (long)identity, memberMap);
+        }
+        /// <summary>
         /// 同步添加数据
         /// </summary>
-        internal sealed class Inserter : LinkQueueTaskNode<Inserter>
+        internal sealed class Inserter : Threading.LinkQueueTaskNode<Inserter>
         {
             /// <summary>
             /// 数据表格
@@ -936,9 +984,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     isValue = table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction);
@@ -1014,7 +1062,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 异步添加数据
         /// </summary>
-        internal sealed class AsynchronousInserter : LinkQueueTaskNode<AsynchronousInserter>
+        internal sealed class AsynchronousInserter : Threading.LinkQueueTaskNode<AsynchronousInserter>
         {
             /// <summary>
             /// 数据表格
@@ -1040,9 +1088,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     if (table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction))
@@ -1116,7 +1164,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 同步更新数据
         /// </summary>
-        internal sealed class Updater : LinkQueueTaskNode<Updater>
+        internal sealed class Updater : Threading.LinkQueueTaskNode<Updater>
         {
             /// <summary>
             /// 数据表格
@@ -1157,9 +1205,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     isValue = table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction);
@@ -1235,7 +1283,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 异步更新数据
         /// </summary>
-        internal sealed class AsynchronousUpdater : LinkQueueTaskNode<AsynchronousUpdater>
+        internal sealed class AsynchronousUpdater : Threading.LinkQueueTaskNode<AsynchronousUpdater>
         {
             /// <summary>
             /// 数据表格
@@ -1265,9 +1313,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     if (table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction))
@@ -1341,7 +1389,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 同步删除数据
         /// </summary>
-        internal sealed class Deletor : LinkQueueTaskNode<Deletor>
+        internal sealed class Deletor : Threading.LinkQueueTaskNode<Deletor>
         {
             /// <summary>
             /// 数据表格
@@ -1378,9 +1426,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     isValue = table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction);
@@ -1479,7 +1527,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 异步删除数据
         /// </summary>
-        internal sealed class AsynchronousDeletor : LinkQueueTaskNode<AsynchronousDeletor>
+        internal sealed class AsynchronousDeletor : Threading.LinkQueueTaskNode<AsynchronousDeletor>
         {
             /// <summary>
             /// 数据表格
@@ -1505,9 +1553,9 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
-                LinkQueueTaskNode next = LinkNext;
+                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     if (table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction))
@@ -1614,6 +1662,14 @@ namespace AutoCSer.Sql
         where keyType : IEquatable<keyType>
     {
         /// <summary>
+        /// 获取数据委托
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="key">关键字</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <returns></returns>
+        public delegate tableType GetValue(ref DbConnection connection, keyType key, MemberMap<modelType> memberMap);
+        /// <summary>
         /// 设置关键字
         /// </summary>
         public readonly Action<modelType, keyType> SetPrimaryKey;
@@ -1656,7 +1712,6 @@ namespace AutoCSer.Sql
         /// <param name="key">关键字</param>
         /// <param name="memberMap">成员位图</param>
         /// <returns>数据对象</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public tableType GetByPrimaryKey(keyType key, MemberMap<modelType> memberMap = null)
         {
             tableType value = AutoCSer.Emit.Constructor<tableType>.New();
@@ -1671,6 +1726,21 @@ namespace AutoCSer.Sql
             }
             finally { getter.Push(); }
             return value;
+        }
+        /// <summary>
+        /// 根据关键字获取数据对象
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="key">关键字</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <returns>数据对象</returns>
+        public tableType GetByPrimaryKey(ref DbConnection connection, keyType key, MemberMap<modelType> memberMap = null)
+        {
+            tableType value = AutoCSer.Emit.Constructor<tableType>.New();
+            SetPrimaryKey(value, key);
+            GetQuery<modelType> query = default(GetQuery<modelType>);
+            Client.GetByPrimaryKey(this, value, memberMap, ref query);
+            return Client.Get(this, ref connection, value, ref query) ? value : null;
         }
     }
 }

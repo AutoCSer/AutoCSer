@@ -509,21 +509,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// SQL表格默认缓存 字段名称
             /// </summary>
-            public string CreateIdentityArrayMemberCacheName
-            {
-                get { return IdentityArrayCacheName; }
-            }
-            /// <summary>
-            /// SQL表格默认缓存 字段名称
-            /// </summary>
             public string CreateIdentityTreeCacheName
-            {
-                get { return IdentityArrayCacheName; }
-            }
-            /// <summary>
-            /// SQL表格默认缓存 字段名称
-            /// </summary>
-            public string CreateIdentityTreeMemberCacheName
             {
                 get { return IdentityArrayCacheName; }
             }
@@ -537,13 +523,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// SQL表格默认缓存 字段名称
             /// </summary>
-            public string CreatePrimaryKeyMemberCacheName
-            {
-                get { return IdentityArrayCacheName; }
-            }
-            /// <summary>
-            /// SQL表格默认缓存 字段名称
-            /// </summary>
             public string CreatePrimaryKeyArrayCacheName
             {
                 get { return IdentityArrayCacheName; }
@@ -551,21 +530,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// SQL表格默认缓存 字段名称
             /// </summary>
-            public string CreatePrimaryKeyArrayMemberCacheName
-            {
-                get { return IdentityArrayCacheName; }
-            }
-            /// <summary>
-            /// SQL表格默认缓存 字段名称
-            /// </summary>
             public string CreateMemberKeyCacheName
-            {
-                get { return IdentityArrayCacheName; }
-            }
-            /// <summary>
-            /// SQL表格默认缓存 字段名称
-            /// </summary>
-            public string CreateMemberKeyMemberCacheName
             {
                 get { return IdentityArrayCacheName; }
             }
@@ -734,11 +699,21 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 get
                 {
-                    if (Attribute.LogServerName != null && Attribute.IsLogClientGetCache) return true;
-                    if (Attribute.IsRemoteKey)
+                    //if (Attribute.LogServerName != null && Attribute.IsLogClientGetCache) return true;
+                    if (Attribute.IsRemoteKey || (Attribute.LogServerName != null && Attribute.IsLogClientGetCache))
                     {
-                        AutoCSer.Sql.Cache.Whole.Event.Type cacheType = CacheType;
-                        return cacheType != Sql.Cache.Whole.Event.Type.Unknown && cacheType != Sql.Cache.Whole.Event.Type.CreateMemberKey;
+                        switch (CacheType)
+                        {
+                            case Sql.Cache.Whole.Event.Type.IdentityArray:
+                            case Sql.Cache.Whole.Event.Type.IdentityTree:
+                            case Sql.Cache.Whole.Event.Type.PrimaryKeyArray:
+                            case Sql.Cache.Whole.Event.Type.PrimaryKey:
+                            case Sql.Cache.Whole.Event.Type.CreateIdentityArray:
+                            case Sql.Cache.Whole.Event.Type.CreateIdentityTree:
+                            case Sql.Cache.Whole.Event.Type.CreatePrimaryKey:
+                            case Sql.Cache.Whole.Event.Type.CreatePrimaryKeyArray:
+                                return true;
+                        }
                     }
                     return false;
                 }

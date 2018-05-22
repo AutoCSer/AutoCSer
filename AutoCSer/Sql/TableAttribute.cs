@@ -61,7 +61,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 数据库连接配置名称
         /// </summary>
-        internal virtual string ConnectionType
+        public virtual string ConnectionType
         {
             get { return ConnectionName; }
         }

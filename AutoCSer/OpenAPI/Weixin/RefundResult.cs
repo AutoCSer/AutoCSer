@@ -214,7 +214,7 @@ namespace AutoCSer.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<RefundResult>.Check(this, config.key, sign)) return true;
-                AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
             }
             return false;
         }

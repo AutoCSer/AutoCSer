@@ -8,13 +8,9 @@ namespace AutoCSer.CodeGenerator
     /// <summary>
     /// 自定义简单组合模板
     /// </summary>
-    //[Generator(Name = "自定义简单组合模板", IsAuto = true, IsTemplate = false)]
+    [Generator(Name = "自定义简单组合模板", IsAuto = true, IsTemplate = false)]
     internal sealed class CombinationTemplate : IGenerator
     {
-        /// <summary>
-        /// 自定义模板相对项目路径
-        /// </summary>
-        public static readonly string DefaultTemplatePath = (@"..\Sort\CombinationTemplate\").pathSeparator();
         /// <summary>
         /// 安装入口
         /// </summary>
@@ -24,21 +20,29 @@ namespace AutoCSer.CodeGenerator
         {
             if (parameter != null)
             {
-                //if (!parameter.IsAutoCSerCodeGenerator) return true;
-                string path = parameter.ProjectPath + DefaultTemplatePath;
-                if (Directory.Exists(path))
+                foreach (Type type in parameter.Types)
                 {
-                    LeftArray<string>[] codes = Directory.GetFiles(path, "*.cs").getArray(name => code(name));
-                    if (!codes.any(code => code.Length == 0))
+                    if (typeof(CombinationTemplateConfig).IsAssignableFrom(type) && type != typeof(CombinationTemplateConfig))
                     {
-                        string fileName = parameter.ProjectPath + @"..\Sort\{AutoCSer}.CombinationTemplate.cs";
-                        if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.getArray(code => code.ToArray()).getArray()) + Coder.FileEndCode))
+                        CombinationTemplateConfig config = (CombinationTemplateConfig)Activator.CreateInstance(type);
+                        DirectoryInfo directory = new DirectoryInfo(parameter.ProjectPath + config.TemplatePath);
+                        if (directory.Exists)
                         {
-                            Messages.Message(fileName + " 被修改");
+                            LeftArray<string>[] codes = Directory.GetFiles(directory.FullName, "*.cs").getArray(name => code(name));
+                            if (!codes.any(code => code.Length == 0))
+                            {
+                                string fileName = parameter.ProjectPath + @"{" + parameter.DefaultNamespace + "}.CombinationTemplate.cs";
+                                if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.getArray(code => code.ToArray()).getArray()) + Coder.FileEndCode))
+                                {
+                                    Messages.Message(fileName + " 被修改");
+                                }
+                                return true;
+                            }
                         }
-                        return true;
+                        else Messages.Message("没有找到自定义模板相对项目路径" + config.TemplatePath);
                     }
                 }
+                return true;
             }
             return false;
         }

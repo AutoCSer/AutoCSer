@@ -260,7 +260,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
                     try
@@ -291,7 +292,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -316,7 +318,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
-                public async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
+                public 
+                async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     if (_socket_ != null)
@@ -349,7 +352,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// <summary>
                 /// 简单计算测试
                 /// </summary>
-                public void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalStreamServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalStreamServer._p4>(_onReturn_);
                     try
@@ -584,7 +588,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
                     try
@@ -612,7 +617,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -634,7 +640,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     return _awaiter_;
                 }
 #if !DOTNET2 && !DOTNET4
-                public async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
+                public 
+                async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     if (_socket_ != null)
@@ -664,7 +671,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
 
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-                public void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalStreamServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalStreamServer._p4>(_onReturn_);
                     try
@@ -955,7 +963,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
                     try
@@ -983,7 +992,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     }
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -1005,7 +1015,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     return _awaiter_;
                 }
 #if !DOTNET2 && !DOTNET4
-                public async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
+                public 
+                async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     if (_socket_ != null)
@@ -1035,7 +1046,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
 
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-                public void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalStreamServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalStreamServer._p4>(_onReturn_);
                     try

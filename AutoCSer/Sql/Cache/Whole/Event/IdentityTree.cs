@@ -2,16 +2,17 @@
 using System.Linq.Expressions;
 using AutoCSer.Extension;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {
     /// <summary>
-    /// 自增ID整表排序树缓存
+    /// 自增 ID 整表排序树缓存
     /// </summary>
     /// <typeparam name="valueType">表格绑定类型</typeparam>
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="memberCacheType">成员缓存类型</typeparam>
-    public sealed unsafe class IdentityTree<valueType, modelType, memberCacheType> : IdentityCache<valueType, modelType, memberCacheType>
+    public unsafe partial class IdentityTree<valueType, modelType, memberCacheType> : IdentityCache<valueType, modelType, memberCacheType>
         where valueType : class, modelType
         where modelType : class
         where memberCacheType : class
@@ -31,7 +32,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="memberCache">成员缓存</param>
         /// <param name="group">数据分组</param>
         /// <param name="baseIdentity">基础ID</param>
-        public IdentityTree(Sql.Table<valueType, modelType> sqlTool, Expression<Func<valueType, memberCacheType>> memberCache, int group = 0, int baseIdentity = 0)
+        public IdentityTree(Sql.Table<valueType, modelType> sqlTool, Expression<Func<valueType, memberCacheType>> memberCache = null, int group = 0, int baseIdentity = 0)
             : base(sqlTool, memberCache, group, baseIdentity, true)
         {
             sqlTool.OnInserted += onInserted;
@@ -87,7 +88,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             }
             catch (Exception error)
             {
-                SqlTable.Log.add(AutoCSer.Log.LogType.Error, error);
+                SqlTable.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
             finally { Unmanaged.Free(ref newCounts); }
         }
@@ -122,7 +123,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 }
                 catch (Exception error)
                 {
-                    SqlTable.Log.add(AutoCSer.Log.LogType.Error, error);
+                    SqlTable.Log.Add(AutoCSer.Log.LogType.Error, error);
                 }
                 finally { Unmanaged.Free(ref newCounts); }
             }
@@ -157,6 +158,157 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             }
             Array[identity] = null;
             callOnDeleted(cacheValue);
+        }
+        /// <summary>
+        /// 获取记录起始位置
+        /// </summary>
+        /// <param name="skipCount">跳过记录数</param>
+        /// <returns>起始位置</returns>
+        private int getIndex(int skipCount)
+        {
+            if (skipCount == 0) return 1;
+            int* intCounts = counts.Int;
+            int index = size != int.MaxValue ? size >> 1 : 0x40000000, step = index;
+            while (intCounts[index] != skipCount)
+            {
+                step >>= 1;
+                if (intCounts[index] < skipCount)
+                {
+                    skipCount -= intCounts[index];
+                    index += step;
+                }
+                else index -= step;
+            }
+            return index + 1;
+        }
+        /// <summary>
+        /// 获取分页记录集合
+        /// </summary>
+        /// <param name="pageSize">分页长度</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">记录总数</param>
+        /// <returns>分页记录集合</returns>
+        private valueType[] getPage(int pageSize, int currentPage, out int count)
+        {
+            PageCount page = new PageCount(count = Count, pageSize, currentPage);
+            valueType[] values = new valueType[page.CurrentPageSize];
+            int startIndex = getIndex(page.SkipCount);
+            for (int writeIndex = 0, index = startIndex; writeIndex != values.Length; ++index)
+            {
+                valueType value = Array[index];
+                while (value == null) value = Array[++index];
+                values[writeIndex++] = value;
+            }
+            return values;
+        }
+        /// <summary>
+        /// 获取分页记录集合
+        /// </summary>
+        /// <param name="pageSize">分页长度</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">记录总数</param>
+        /// <returns>分页记录集合</returns>
+        private valueType[] getPageDesc(int pageSize, int currentPage, out int count)
+        {
+            PageCount page = new PageCount(count = Count, pageSize, currentPage);
+            valueType[] values = new valueType[page.CurrentPageSize];
+            int startIndex = getIndex(Count - page.SkipCount - page.CurrentPageSize);
+            for (int writeIndex = values.Length, index = startIndex; writeIndex != 0; ++index)
+            {
+                valueType value = Array[index];
+                while (value == null) value = Array[++index];
+                values[--writeIndex] = value;
+            }
+            return values;
+        }
+        /// <summary>
+        /// 获取分页记录集合
+        /// </summary>
+        private sealed class PageTask : Threading.PageTask<valueType>
+        {
+            /// <summary>
+            /// 自增 ID 整表排序树缓存
+            /// </summary>
+            private IdentityTree<valueType, modelType, memberCacheType> tree;
+            /// <summary>
+            /// 等待缓存加载
+            /// </summary>
+            private AutoCSer.Threading.AutoWaitHandle wait;
+            /// <summary>
+            /// 获取分页记录集合
+            /// </summary>
+            /// <param name="tree"></param>
+            /// <param name="pageSize"></param>
+            /// <param name="currentPage"></param>
+            /// <param name="isDesc"></param>
+            internal PageTask(IdentityTree<valueType, modelType, memberCacheType> tree, int pageSize, int currentPage, bool isDesc)
+                : base(pageSize, currentPage, isDesc)
+            {
+                this.tree = tree;
+                wait.Set(0);
+            }
+            /// <summary>
+            /// 获取分页记录集合
+            /// </summary>
+            /// <param name="connection"></param>
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            {
+                try
+                {
+                    values = isDesc ? tree.getPageDesc(pageSize, currentPage, out count) : tree.getPage(pageSize, currentPage, out count);
+                }
+                finally
+                {
+                    wait.Set();
+                }
+                return LinkNext;
+            }
+            /// <summary>
+            /// 获取分页记录集合
+            /// </summary>
+            /// <param name="count"></param>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal valueType[] Wait(out int count)
+            {
+                wait.Wait();
+                count = this.count;
+                return values;
+            }
+        }
+        /// <summary>
+        /// 获取分页记录集合
+        /// </summary>
+        /// <param name="pageSize">分页长度</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">记录总数</param>
+        /// <param name="isDesc">是否逆序</param>
+        /// <returns>分页记录集合</returns>
+        public valueType[] GetPage(int pageSize, int currentPage, out int count, bool isDesc = true)
+        {
+            PageTask task = new PageTask(this, pageSize, currentPage, isDesc);
+            SqlTable.AddQueue(task);
+            return task.Wait(out count);
+        }
+    }
+    /// <summary>
+    /// 自增ID整表排序树缓存
+    /// </summary>
+    /// <typeparam name="valueType">表格绑定类型</typeparam>
+    /// <typeparam name="modelType">表格模型类型</typeparam>
+    public sealed unsafe class IdentityTree<valueType, modelType> : IdentityTree<valueType, modelType, valueType>
+        where valueType : class, modelType
+        where modelType : class
+    {
+        /// <summary>
+        /// 自增ID整表数组缓存
+        /// </summary>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="group">数据分组</param>
+        /// <param name="baseIdentity">基础ID</param>
+        public IdentityTree(Sql.Table<valueType, modelType> sqlTool, int group = 0, int baseIdentity = 0)
+            : base(sqlTool, null, group, baseIdentity)
+        {
         }
     }
 }

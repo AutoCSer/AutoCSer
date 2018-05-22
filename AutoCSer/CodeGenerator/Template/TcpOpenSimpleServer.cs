@@ -395,7 +395,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region NOT MemberIndex
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -476,7 +476,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF MethodIsReturn
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters

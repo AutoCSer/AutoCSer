@@ -812,7 +812,7 @@ namespace AutoCSer.Net.TcpStreamServer
                                 sendData.MoveStart(-(sizeof(int) * 2));
                                 fixed (byte* sendDataFixed = sendData.Array)
                                 {
-                                    byte* dataStart = dataFixed + sendData.Start;
+                                    byte* dataStart = sendDataFixed + sendData.Start;
                                     *(int*)dataStart = *(int*)-compressionDataSize;
                                     *(int*)(dataStart + sizeof(int)) = outputLength;
                                 }
@@ -863,7 +863,7 @@ namespace AutoCSer.Net.TcpStreamServer
             }
             catch (Exception error)
             {
-                commandClient.Log.add(AutoCSer.Log.LogType.Error, error);
+                commandClient.Log.Add(AutoCSer.Log.LogType.Error, error);
                 buildInfo.IsError = true;
             }
             finally

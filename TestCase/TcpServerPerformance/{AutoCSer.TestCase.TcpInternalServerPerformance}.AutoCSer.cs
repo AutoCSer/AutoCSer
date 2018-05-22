@@ -568,7 +568,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
                     try
@@ -599,7 +600,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int left, int right)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -624,7 +626,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 客户端同步计算测试
                 /// </summary>
-                public async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
+                public 
+                async System.Threading.Tasks.Task<AutoCSer.Net.TcpServer.ReturnValue<int>> addAsync(int left, int right)
                 {
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                     if (_socket_ != null)
@@ -657,7 +660,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 异步计算测试
                 /// </summary>
-                public void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addAsynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -707,7 +711,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// 计算回调测试
                 /// </summary>
                 /// <returns>保持异步回调</returns>
-                public AutoCSer.Net.TcpServer.KeepCallback addCustomSerialize(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>> _onReturn_)
+                public 
+                AutoCSer.Net.TcpServer.KeepCallback addCustomSerialize(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p6>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize, TcpInternalServer._p6>(_onReturn_);
                     try
@@ -745,7 +750,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 计算队列测试
                 /// </summary>
-                public void addQueue(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addQueue(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -779,7 +785,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// 计算回调测试
                 /// </summary>
                 /// <returns>保持异步回调</returns>
-                public AutoCSer.Net.TcpServer.KeepCallback addRegister(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                AutoCSer.Net.TcpServer.KeepCallback addRegister(Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -824,7 +831,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 简单计算测试
                 /// </summary>
-                public void addSynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addSynchronous(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -857,7 +865,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public void addTcpTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addTcpTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -890,7 +899,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public void addThreadPool(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addThreadPool(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try
@@ -923,7 +933,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public void addTimeoutTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
+                public 
+                void addTimeoutTask(int left, int right, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> _onReturn_)
                 {
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p4>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.TestCase.TcpServerPerformance.Add, TcpInternalServer._p4>(_onReturn_);
                     try

@@ -44,7 +44,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     AutoCSer.Data.MemberAttribute attribute = member.GetSetupAttribute<AutoCSer.Data.MemberAttribute>(false);
                     members.Add(new KeyValue<MemberIndex, AutoCSer.Data.MemberAttribute>(member, attribute));
                 }
-                PrimaryKeys = members.getSort(value => value.Value.PrimaryKeyIndex)
+                PrimaryKeys = members.GetSort(value => value.Value.PrimaryKeyIndex)
                     .getArray(value => value.Key);
                 create(true);
             }

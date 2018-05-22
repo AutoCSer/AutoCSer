@@ -7,7 +7,7 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 随机对象生成参数
         /// </summary>
-        private static readonly AutoCSer.RandomObject.Config randomConfig = new AutoCSer.RandomObject.Config { IsSecondDateTime = true, IsParseFloat = true };
+        internal static readonly AutoCSer.RandomObject.Config RandomConfig = new AutoCSer.RandomObject.Config { IsSecondDateTime = true, IsParseFloat = true };
         /// <summary>
         /// 带成员位图的JSON序列化参数配置
         /// </summary>
@@ -23,7 +23,7 @@ namespace AutoCSer.TestCase
         internal static bool TestCase()
         {
             #region 引用类型字段成员JSON序列化测试
-            Data.FieldData filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(randomConfig);
+            Data.FieldData filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(RandomConfig);
             string jsonString = AutoCSer.Json.Serializer.Serialize(filedData);
             //AutoCSer.Log.Trace.Console(jsonString);
             Data.FieldData newFieldData = AutoCSer.Json.Parser.Parse<Data.FieldData>(jsonString);
@@ -45,7 +45,7 @@ namespace AutoCSer.TestCase
             #endregion
 
             #region 引用类型属性成员JSON序列化测试
-            Data.PropertyData propertyData = AutoCSer.RandomObject.Creator<Data.PropertyData>.Create(randomConfig);
+            Data.PropertyData propertyData = AutoCSer.RandomObject.Creator<Data.PropertyData>.Create(RandomConfig);
             jsonString = AutoCSer.Json.Serializer.Serialize(propertyData);
             Data.PropertyData newPropertyData = AutoCSer.Json.Parser.Parse<Data.PropertyData>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.PropertyData>.Equals(propertyData, newPropertyData))
@@ -55,7 +55,7 @@ namespace AutoCSer.TestCase
             #endregion
 
             #region 值类型字段成员JSON序列化测试
-            Data.StructFieldData structFieldData = AutoCSer.RandomObject.Creator<Data.StructFieldData>.Create(randomConfig);
+            Data.StructFieldData structFieldData = AutoCSer.RandomObject.Creator<Data.StructFieldData>.Create(RandomConfig);
             jsonString = AutoCSer.Json.Serializer.Serialize(structFieldData);
             Data.StructFieldData newStructFieldData = AutoCSer.Json.Parser.Parse<Data.StructFieldData>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.StructFieldData>.Equals(structFieldData, newStructFieldData))
@@ -75,7 +75,7 @@ namespace AutoCSer.TestCase
             #endregion
 
             #region 值类型属性成员JSON序列化测试
-            Data.StructPropertyData structPropertyData = AutoCSer.RandomObject.Creator<Data.StructPropertyData>.Create(randomConfig);
+            Data.StructPropertyData structPropertyData = AutoCSer.RandomObject.Creator<Data.StructPropertyData>.Create(RandomConfig);
             jsonString = AutoCSer.Json.Serializer.Serialize(structPropertyData);
             Data.StructPropertyData newStructPropertyData = AutoCSer.Json.Parser.Parse<Data.StructPropertyData>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.StructPropertyData>.Equals(structPropertyData, newStructPropertyData))

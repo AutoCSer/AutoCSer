@@ -110,7 +110,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
             }
             catch (Exception error)
             {
-                Socket.Log.add(AutoCSer.Log.LogType.Error, error);
+                Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
             setTask();
         }
@@ -152,7 +152,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
             }
             catch (Exception error)
             {
-                socket.Log.add(AutoCSer.Log.LogType.Error, error);
+                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
         }
         /// <summary>

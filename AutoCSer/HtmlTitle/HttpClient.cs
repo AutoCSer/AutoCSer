@@ -230,7 +230,7 @@ Host: ").getBytes();
             }
             catch (Exception error)
             {
-                task.Log.add(Log.LogType.Error, error);
+                task.Log.Add(Log.LogType.Error, error);
             }
         }
         /// <summary>
@@ -550,7 +550,7 @@ Host: ").getBytes();
                 }
                 catch (Exception error)
                 {
-                    task.Log.add(Log.LogType.Error, error);
+                    task.Log.Add(Log.LogType.Error, error);
                 }
             }
             callback(null);
@@ -610,7 +610,7 @@ Host: ").getBytes();
                 }
                 catch (Exception error)
                 {
-                    task.Log.add(Log.LogType.Error, error);
+                    task.Log.Add(Log.LogType.Error, error);
                 }
             }
             callback(null);
@@ -922,7 +922,7 @@ Host: ").getBytes();
                                 }
                                 catch
                                 {
-                                    task.Log.add(Log.LogType.Info, "编码解析错误 " + encodingString, (StackFrame)null, true);
+                                    task.Log.Add(Log.LogType.Info, "编码解析错误 " + encodingString, (StackFrame)null, true);
                                     htmlEncoding = Encoding.UTF8;
                                 }
                                 if (isHtml != 0) return true;
@@ -1129,7 +1129,7 @@ Host: ").getBytes();
                                 }
                                 catch
                                 {
-                                    task.Log.add(Log.LogType.Info, "编码解析错误 " + encodingString, (StackFrame)null, true);
+                                    task.Log.Add(Log.LogType.Info, "编码解析错误 " + encodingString, (StackFrame)null, true);
                                     htmlEncoding = Encoding.UTF8;
                                 }
                                 if (htmlEncoding != null && title.StartIndex != 0)

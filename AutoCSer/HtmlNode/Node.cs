@@ -358,7 +358,7 @@ namespace AutoCSer.HtmlNode
                                             while (((bits[*(byte*)current] & tagNameSplitBit) | *(((byte*)current) + 1)) != 0) ++current;
                                             Tag.Set(html, (int)((start += 2) - htmlFixed), (int)(current - start));
                                             int startIndex = children.Length - 1;
-                                            while (startIndex >= 0 && (children.Array[startIndex].nodeText.FormatHtml.String != null || !children.Array[startIndex].Tag.equalCase(ref Tag))) --startIndex;
+                                            while (startIndex >= 0 && (children.Array[startIndex].nodeText.FormatHtml.String != null || !children.Array[startIndex].Tag.EqualCase(ref Tag))) --startIndex;
                                             if (startIndex != -1)
                                             {
                                                 int nodeCount;
@@ -624,7 +624,7 @@ namespace AutoCSer.HtmlNode
             {
                 foreach (KeyValue<SubString, FormatString> attribute in AttributeArray)
                 {
-                    if (attribute.Key.equalCase(name)) return index;
+                    if (attribute.Key.EqualCase(name)) return index;
                     ++index;
                 }
             }
@@ -675,7 +675,7 @@ namespace AutoCSer.HtmlNode
             {
                 foreach (Node value in ChildrenArray)
                 {
-                    if (value.Tag.equalCase(tagName)) return value;
+                    if (value.Tag.EqualCase(tagName)) return value;
                 }
             }
             return null;
@@ -691,7 +691,7 @@ namespace AutoCSer.HtmlNode
             {
                 foreach (Node value in ChildrenArray)
                 {
-                    if (value.Tag.equalCase(tagName)) yield return value;
+                    if (value.Tag.EqualCase(tagName)) yield return value;
                 }
             }
         }
@@ -714,7 +714,7 @@ namespace AutoCSer.HtmlNode
         {
             foreach (Node value in ChildrenArray)
             {
-                if (value.Tag.equalCase(tagName)) yield return value;
+                if (value.Tag.EqualCase(tagName)) yield return value;
                 foreach (Node node in value.getNodesByTagName(tagName)) yield return node;
             }
         }

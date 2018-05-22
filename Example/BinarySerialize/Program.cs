@@ -21,6 +21,7 @@ namespace AutoCSer.Example.BinarySerialize
             Console.WriteLine(CustomStruct.TestCase());
             Console.WriteLine(Json.TestCase());
             Console.WriteLine(BaseType.TestCase());
+            Console.WriteLine(RealType.TestCase());
             Console.WriteLine("Over");
             Console.ReadKey();
         }

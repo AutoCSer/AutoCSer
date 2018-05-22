@@ -119,7 +119,7 @@ namespace AutoCSer.CodeGenerator
             {
                 if (history.Contains(this))
                 {
-                    AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, @"HTML循环引用:
+                    AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, @"HTML循环引用:
 " + history.JoinString(@"
 ", value => value.fileName) + @"
 " + fileName);
@@ -149,7 +149,7 @@ namespace AutoCSer.CodeGenerator
                         if (index != 0)
                         {
                             int splitIndex = splitCode.IndexOf("*/", StringComparison.Ordinal);
-                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, "非法标签:" + jsInclude[0] + splitCode);
+                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + jsInclude[0] + splitCode);
                             HtmlJs file;
                             if (htmlAuto.Htmls.TryGetValue(new FileInfo(IncludePath + splitCode.Substring(0, splitIndex)).FullName.toLowerNotEmpty(), out file))
                             {
@@ -161,7 +161,7 @@ namespace AutoCSer.CodeGenerator
                                 newCode.Add(code.Substring(startIndex + jsIncludeLength + (splitIndex += 2), splitCode.Length - splitIndex));
                                 startIndex += jsIncludeLength + splitCode.Length;
                             }
-                            else AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + jsExtension + @"
+                            else AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + jsExtension + @"
 in " + this.fileName + @"
 " + splitCode);
                         }
@@ -188,7 +188,7 @@ in " + this.fileName + @"
                         if (index != 0)
                         {
                             int splitIndex = splitCode.IndexOf("-->", StringComparison.Ordinal);
-                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, "非法标签:" + htmlInclude[0] + splitCode);
+                            if (splitIndex == -1) AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "非法标签:" + htmlInclude[0] + splitCode);
                             SubString name = new SubString { String = code, Start = startIndex + htmlIncludeLength, Length = splitIndex }, memberName = default(SubString);
                             LeftArray<SubString> array = default(LeftArray<SubString>);
                             bool isHash = false;
@@ -260,7 +260,7 @@ in " + this.fileName + @"
                                 newCode.Add(code.Substring(startIndex + htmlIncludeLength + (splitIndex += 3), splitCode.Length - splitIndex));
                                 startIndex += htmlIncludeLength + splitCode.Length;
                             }
-                            else AutoCSer.Log.Pub.Log.waitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + htmlExtension + @"
+                            else AutoCSer.Log.Pub.Log.WaitThrow(Log.LogType.All, "未找到文件:" + IncludePath + splitCode.Substring(0, splitIndex) + htmlExtension + @"
 in " + this.fileName + @"");
                         }
                         ++index;

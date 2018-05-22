@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Sql.Cache
 {
@@ -13,11 +14,7 @@ namespace AutoCSer.Sql.Cache
         /// <summary>
         /// 数据数组
         /// </summary>
-        private LeftArray<valueType> array;
-        /// <summary>
-        /// 是否存在被删除数据
-        /// </summary>
-        private bool isDelete;
+        internal LeftArray<valueType> Array;
         /// <summary>
         /// 数据是否已经排序
         /// </summary>
@@ -29,7 +26,7 @@ namespace AutoCSer.Sql.Cache
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Insert(valueType value)
         {
-            array.Add(value);
+            Array.Add(value);
             isSorted = false;
         }
         /// <summary>
@@ -47,12 +44,44 @@ namespace AutoCSer.Sql.Cache
         /// <param name="value"></param>
         internal void Delete(valueType value)
         {
-            int index = System.Array.IndexOf(array.Array, value, 0, array.Length);
-            if (index != -1)
-            {
-                array.Array[index] = null;
-                isDelete = true;
-            }
+            if (Array.RemoveToEnd(value)) isSorted = false;
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="sorter"></param>
+        /// <param name="index">分页大小</param>
+        /// <returns>数据对象</returns>
+        internal valueType At(Func<LeftArray<valueType>, LeftArray<valueType>> sorter, int index)
+        {
+            if (!isSorted) Array = sorter(Array);
+            return (uint)index < Array.Length ? Array.Array[index] : null;
+        }
+        /// <summary>
+        /// 获取分页数据集合
+        /// </summary>
+        /// <param name="sorter"></param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">数据总数</param>
+        /// <returns>分页数据集合</returns>
+        internal valueType[] GetPage(Func<LeftArray<valueType>, LeftArray<valueType>> sorter, int pageSize, int currentPage, out int count)
+        {
+            if (!isSorted) Array = sorter(Array);
+            return Array.GetPage(pageSize, currentPage, out count);
+        }
+        /// <summary>
+        /// 获取分页数据集合
+        /// </summary>
+        /// <param name="sorter"></param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">数据总数</param>
+        /// <returns>分页数据集合</returns>
+        internal valueType[] GetPageDesc(Func<LeftArray<valueType>, LeftArray<valueType>> sorter, int pageSize, int currentPage, out int count)
+        {
+            if (!isSorted) Array = sorter(Array);
+            return Array.GetPageDesc(pageSize, currentPage, out count);
         }
     }
 }

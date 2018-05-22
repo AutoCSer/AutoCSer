@@ -1783,16 +1783,22 @@ module AutoCSer {
             return 0;
         }
         static $GetScrollLeft(): number {
-            return document.body.scrollLeft || document.documentElement.scrollLeft;
+            return Math.max(document.body.scrollLeft, document.documentElement.scrollLeft);
         }
         static $SetScrollLeft(Left: number) {
             return document.body.scrollLeft = document.documentElement.scrollLeft = Left;
         }
         static $GetScrollTop(): number {
-            return document.body.scrollTop || document.documentElement.scrollTop;
+            return Math.max(document.body.scrollTop, document.documentElement.scrollTop);
         }
         static $SetScrollTop(Top: number) {
             document.body.scrollTop = document.documentElement.scrollTop = Top;
+        }
+        static $GetScrollHeight(): number {
+            return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        }
+        static $GetScrollWidth(): number {
+            return Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
         }
         static $ScrollTopById(Id: string) {
             var Element = this.$IdElement(Id);

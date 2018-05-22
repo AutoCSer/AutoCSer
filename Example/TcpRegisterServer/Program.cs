@@ -14,7 +14,7 @@ namespace AutoCSer.Example.TcpRegisterServer
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else
             bool createdProcessWait;
-            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.TestCase.TcpRegisterServer", out createdProcessWait);
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, "AutoCSer.Example.TcpRegisterServer", out createdProcessWait);
             if (createdProcessWait)
             {
                 using (processWait)

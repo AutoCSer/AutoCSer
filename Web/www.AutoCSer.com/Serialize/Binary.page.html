@@ -28,13 +28,17 @@
         <!--Include:Include\GetCode[Example,8,,BinarySerialize\BaseType.cs]-->
     </p>
     <p>
+        . 由于安全问题，默认不支持抽象类型与接口类型的序列化操作，可配置支持转换为该对象的真实类型序列化。
+        <!--Include:Include\GetCode[Example,c,,BinarySerialize\RealType.cs]-->
+    </p>
+    <p>
         . 由于二进制序列化对数据结构定义更新不友好，对于非稳定字段数据支持 <a href="/Serialize/Json.html">Json 序列化</a>扩展。
         <!--Include:Include\GetCode[Example,9,,BinarySerialize\Json.cs]-->
     </p>
     <p>
         . 支持自定义序列化函数，对于引用类型必须是静态函数，对于值类型必须是成员函数，必须同时定义序列化与反序列化两个函数并自行保证序列化数据的可逆性。
         <!--Include:Include\GetCode[Example,a,引用类型,BinarySerialize\CustomClass.cs]-->
-        <!--Include:Include\GetCode[Example,c,值类型,BinarySerialize\CustomStruct.cs]-->
+        <!--Include:Include\GetCode[Example,d,值类型,BinarySerialize\CustomStruct.cs]-->
     </p>
 </body>
 </html>

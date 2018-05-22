@@ -66,6 +66,7 @@
   <ItemGroup>
     <Content Include="Android\Index.page.html" />
     <Content Include="Android\Index.page.js" />
+    <Content Include="Log.page.html" />
     <Content Include="Search.page.html" />
     <Content Include="CodeGenerator.page.html" />
     <Content Include="CodeGenerator.png" />

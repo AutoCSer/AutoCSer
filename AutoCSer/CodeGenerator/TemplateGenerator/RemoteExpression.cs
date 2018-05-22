@@ -84,12 +84,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 远程表达式成员
             /// </summary>
-            internal abstract class Expression
+            internal class Expression
             {
                 /// <summary>
                 /// 远程表达式成员配置
                 /// </summary>
                 public AutoCSer.Net.RemoteExpression.MemberAttribute Attribute;
+                /// <summary>
+                /// 当前类型
+                /// </summary>
+                public ExtensionType Type;
                 /// <summary>
                 /// 成员信息
                 /// </summary>
@@ -111,17 +115,22 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 /// <summary>
-                /// 远程表达式成员节点类型名称
+                /// 泛型实例化远程表达式成员节点类型名称
                 /// </summary>
                 public string GenericMemberNodeTypeName
                 {
                     get
                     {
-                        string name = MemberNodeTypeName;
-                        if (Method != null) name += Method.GenericParameterName;
-                        return name;
+                        return MemberNodeTypeName;
+                        //string name = MemberNodeTypeName;
+                        //if (Method != null) name += Method.GenericParameterName;
+                        //return name;
                     }
                 }
+                /// <summary>
+                /// 泛型实例化父节点远程表达式成员节点类型名称
+                /// </summary>
+                public string GenericParentMemberNodeTypeName;
                 /// <summary>
                 /// 返回值类型
                 /// </summary>
@@ -144,21 +153,29 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get { return Attribute.IsReturn && MethodReturnType.Type != typeof(void); }
                 }
                 /// <summary>
+                /// 返回值是否可空类型
+                /// </summary>
+                public bool ReturnTypeIsNull
+                {
+                    get { return MemberIsReturn && MethodReturnType.IsNull; }
+                }
+                /// <summary>
                 /// 远程表达式成员节点继承类型
                 /// </summary>
                 public string MemberRemoteExpressionTypeName
                 {
                     get
                     {
+                        Type methodReturnType = MethodReturnType.Type;
                         if (MemberIsReturn)
                         {
-                            if (MethodReturnType.Type.IsGenericParameter) return typeof(AutoCSer.Net.RemoteExpression.GenericNode<>).MakeGenericType(MethodReturnType).fullName();
-                            Type nodeType = MethodReturnType.Type.GetNestedType(AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName, BindingFlags.Public);
-                            if (nodeType == null) return typeof(AutoCSer.Net.RemoteExpression.Node<>).MakeGenericType(MethodReturnType).fullName();
-                            if (nodeType.IsGenericTypeDefinition) nodeType = nodeType.MakeGenericType(MethodReturnType.Type.GetGenericArguments());
+                            if (methodReturnType.IsGenericParameter) return typeof(AutoCSer.Net.RemoteExpression.GenericNode<>).MakeGenericType(methodReturnType).fullName();
+                            Type nodeType = methodReturnType.GetNestedType(AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName, BindingFlags.Public);
+                            if (nodeType == null) return typeof(AutoCSer.Net.RemoteExpression.Node<>).MakeGenericType(methodReturnType).fullName();
+                            if (nodeType.IsGenericTypeDefinition) nodeType = nodeType.MakeGenericType(methodReturnType.GetGenericArguments());
                             return nodeType.fullName();
                         }
-                        return (MethodReturnType.Type.IsGenericParameter ? typeof(AutoCSer.Net.RemoteExpression.GenericNode) : typeof(AutoCSer.Net.RemoteExpression.Node)).fullName();
+                        return (methodReturnType.IsGenericParameter ? typeof(AutoCSer.Net.RemoteExpression.GenericNode) : typeof(AutoCSer.Net.RemoteExpression.Node)).fullName();
                     }
                 }
                 /// <summary>
@@ -203,17 +220,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get { return false; }
                 }
+                /// <summary>
+                /// 泛型实例化表达式成员集合
+                /// </summary>
+                public ExpressionMemberGroup GenericMemberGroup;
+                /// <summary>
+                /// 检测泛型实例化表达式成员集合
+                /// </summary>
+                internal void CheckGenericMemberGroup()
+                {
+                    if (Attribute.IsGenericTypeInstantiation && MethodReturnType.Type.IsGenericType)
+                    {
+                        GenericMemberGroup = new ExpressionMemberGroup(MethodReturnType, Method == null ? MemberNodeTypeName : (MemberNodeTypeName + Method.GenericParameterName));
+                        if (!GenericMemberGroup.IsMember) GenericMemberGroup = null;
+                    }
+                }
             }
             /// <summary>
             /// 远程表达式成员
             /// </summary>
-            internal class MemberExpression : Expression
-            {
-            }
-            /// <summary>
-            /// 远程表达式成员
-            /// </summary>
-            internal sealed class StaticMemberExpression : MemberExpression
+            internal sealed class StaticExpression : Expression
             {
                 /// <summary>
                 /// 是否静态成员
@@ -224,22 +250,110 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
             /// <summary>
-            /// 远程表达式成员
+            /// 表达式成员集合
             /// </summary>
-            internal class MethodExpression : Expression
-            {
-            }
-            /// <summary>
-            /// 远程表达式成员
-            /// </summary>
-            internal sealed class StaticMethodExpression : MethodExpression
+            internal sealed class ExpressionMemberGroup
             {
                 /// <summary>
-                /// 是否静态成员
+                /// 节点名称集合
                 /// </summary>
-                public override bool IsStatic
+                private static readonly HashSet<string> nodeTypeNames = HashSetCreator.CreateOnly<string>();
+                /// <summary>
+                /// 当前类型
+                /// </summary>
+                private ExtensionType type;
+                /// <summary>
+                /// 泛型实例化父节点远程表达式成员节点类型名称
+                /// </summary>
+                private string memberNodeTypeName;
+                /// <summary>
+                /// 实例字段 / 属性
+                /// </summary>
+                public Expression[] Members;
+                /// <summary>
+                /// 静态字段 / 属性
+                /// </summary>
+                public StaticExpression[] StaticMembers;
+                /// <summary>
+                /// 成员是否有效
+                /// </summary>
+                internal bool IsMember = true;
+                /// <summary>
+                /// 表达式成员集合
+                /// </summary>
+                /// <param name="type"></param>
+                /// <param name="memberNodeTypeName"></param>
+                internal ExpressionMemberGroup(ExtensionType type, string memberNodeTypeName)
                 {
-                    get { return true; }
+                    this.type = type;
+                    this.memberNodeTypeName = memberNodeTypeName;
+                    LeftArray<Expression> members = default(LeftArray<Expression>);
+                    nodeTypeNames.Clear();
+                    foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, true, false))
+                    {
+                        if (!member.IsIgnore && member.CanGet)
+                        {
+                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                            IsMember &= addMember(ref members, new Expression { Attribute = attribute,Member = member, IntputParameters = member.IsField ? NullValue<ExpressionParameter>.Array : ExpressionParameter.Get(MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array)) });
+                        }
+                    }
+                    foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Instance, false, true, false))
+                    {
+                        if (!member.IsIgnore)
+                        {
+                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                            IsMember &= addMember(ref members, new Expression { Attribute = attribute, Method = member, IntputParameters = ExpressionParameter.Get(member.Parameters) });
+                        }
+                    }
+                    Members = members.ToArray();
+                    if (memberNodeTypeName == null)
+                    {
+                        LeftArray<StaticExpression> staticMembers = default(LeftArray<StaticExpression>);
+                        foreach (MemberIndex member in MemberIndex.GetStaticMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Static, true, false))
+                        {
+                            if (!member.IsIgnore && member.CanGet)
+                            {
+                                AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                                IsMember &= addMember(ref staticMembers, new StaticExpression { Attribute = attribute, Member = member, IntputParameters = NullValue<ExpressionParameter>.Array });
+                            }
+                        }
+                        foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(type, AutoCSer.Metadata.MemberFilters.Static, false, true, false))
+                        {
+                            if (!member.IsIgnore)
+                            {
+                                AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
+                                IsMember &= addMember(ref staticMembers, new StaticExpression { Attribute = attribute, Method = member, IntputParameters = ExpressionParameter.Get(member.Parameters) });
+                            }
+                        }
+                        StaticMembers = staticMembers.ToArray();
+                    }
+                    else StaticMembers = NullValue<StaticExpression>.Array;
+                    if ((IsMember &= (Members.Length | StaticMembers.Length) != 0) && memberNodeTypeName == null)
+                    {
+                        foreach (Expression member in Members) member.CheckGenericMemberGroup();
+                        foreach (StaticExpression member in StaticMembers) member.CheckGenericMemberGroup();
+                    }
+                }
+                /// <summary>
+                /// 添加成员
+                /// </summary>
+                /// <typeparam name="expressionType"></typeparam>
+                /// <param name="members"></param>
+                /// <param name="member"></param>
+                /// <returns></returns>
+                private bool addMember<expressionType>(ref LeftArray<expressionType> members, expressionType member)
+                    where expressionType : Expression
+                {
+                    string name = member.GenericMemberNodeTypeName;
+                    if (!nodeTypeNames.Add(name))
+                    {
+                        Messages.Add(type.FullName + " 远程表达式节点类型名称冲突 " + name);
+                        return false;
+                    }
+                    member.Type = type;
+                    member.GenericParentMemberNodeTypeName = memberNodeTypeName;
+                    members.Add(member);
+                    return true;
                 }
             }
             /// <summary>
@@ -250,103 +364,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get { return AutoCSer.Net.RemoteExpression.Node.RemoteExpressionTypeName; }
             }
             /// <summary>
-            /// 实例字段 / 属性
+            /// 表达式成员集合
             /// </summary>
-            internal MemberExpression[] Members;
-            /// <summary>
-            /// 实例方法
-            /// </summary>
-            internal MethodExpression[] Methods;
-            /// <summary>
-            /// 静态字段 / 属性
-            /// </summary>
-            internal StaticMemberExpression[] StaticMembers;
-            /// <summary>
-            /// 静态方法
-            /// </summary>
-            internal StaticMethodExpression[] StaticMethods;
-            /// <summary>
-            /// 静态成员数量
-            /// </summary>
-            internal int StaticMemberCount
-            {
-                get { return StaticMembers.Length + StaticMethods.Length; }
-            }
-            /// <summary>
-            /// 节点名称集合
-            /// </summary>
-            private HashSet<string> nodeTypeNames = HashSetCreator.CreateOnly<string>();
+            internal ExpressionMemberGroup MemberGroup;
 
             /// <summary>
             /// 安装下一个类型
             /// </summary>
             protected override void nextCreate()
             {
-                if (!Type.Type.IsInterface)
-                {
-                    LeftArray<MemberExpression> members = default(LeftArray<MemberExpression>);
-                    nodeTypeNames.Clear();
-                    bool isMember = true;
-                    foreach (MemberIndex member in MemberIndex.GetMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.Instance, true, false))
-                    {
-                        if (!member.IsIgnore && member.CanGet)
-                        {
-                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
-                            isMember &= addMember(ref members, new MemberExpression { Attribute = attribute, Member = member, IntputParameters = member.IsField ? NullValue<ExpressionParameter>.Array : ExpressionParameter.Get(MethodParameter.Get(((PropertyInfo)member.Member).GetGetMethod(true), NullValue<Type>.Array)) });
-                        }
-                    }
-                    Members = members.ToArray();
-                    LeftArray<MethodExpression> methods = default(LeftArray<MethodExpression>);
-                    foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.Instance, false, true, false))
-                    {
-                        if (!member.IsIgnore)
-                        {
-                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
-                            isMember &= addMember(ref methods, new MethodExpression { Attribute = attribute, Method = member, IntputParameters = ExpressionParameter.Get(member.Parameters) });
-                        }
-                    }
-                    Methods = methods.ToArray();
-                    LeftArray<StaticMemberExpression> staticMembers = default(LeftArray<StaticMemberExpression>);
-                    foreach (MemberIndex member in MemberIndex.GetStaticMembers<AutoCSer.Net.RemoteExpression.MemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.Static, true, false))
-                    {
-                        if (!member.IsIgnore && member.CanGet)
-                        {
-                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
-                            isMember &= addMember(ref staticMembers, new StaticMemberExpression { Attribute = attribute, Member = member, IntputParameters = NullValue<ExpressionParameter>.Array });
-                        }
-                    }
-                    StaticMembers = staticMembers.ToArray();
-                    LeftArray<StaticMethodExpression> staticMethods = default(LeftArray<StaticMethodExpression>);
-                    foreach (MethodIndex member in MethodIndex.GetMethods<AutoCSer.Net.RemoteExpression.MemberAttribute>(Type, AutoCSer.Metadata.MemberFilters.Static, false, true, false))
-                    {
-                        if (!member.IsIgnore)
-                        {
-                            AutoCSer.Net.RemoteExpression.MemberAttribute attribute = member.GetAttribute<AutoCSer.Net.RemoteExpression.MemberAttribute>(false);
-                            isMember &= addMember(ref staticMethods, new StaticMethodExpression { Attribute = attribute, Method = member, IntputParameters = ExpressionParameter.Get(member.Parameters) });
-                        }
-                    }
-                    StaticMethods = staticMethods.ToArray();
-                    if (isMember && (Members.Length | Methods.Length | StaticMemberCount) != 0) create(true);
-                }
-            }
-            /// <summary>
-            /// 添加成员
-            /// </summary>
-            /// <typeparam name="expressionType"></typeparam>
-            /// <param name="members"></param>
-            /// <param name="member"></param>
-            /// <returns></returns>
-            private bool addMember<expressionType>(ref LeftArray<expressionType> members, expressionType member)
-                where expressionType : Expression
-            {
-                string name = member.MemberNodeTypeName;
-                if (!nodeTypeNames.Add(name))
-                {
-                    Messages.Add(Type.FullName + " 远程表达式节点类型名称冲突 " + name);
-                    return false;
-                }
-                members.Add(member);
-                return true;
+                if (!Type.Type.IsInterface && (MemberGroup = new ExpressionMemberGroup(Type, null)).IsMember) create(true);
             }
             /// <summary>
             /// 安装完成处理

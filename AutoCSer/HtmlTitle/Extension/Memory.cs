@@ -31,7 +31,7 @@ namespace AutoCSer.Extension
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>是否相等</returns>
-        internal static bool equalCase(this SubArray<byte> left, ref SubArray<byte> right)
+        internal static bool EqualCase(this SubArray<byte> left, ref SubArray<byte> right)
         {
             if (left.Length == 0) return right.Length == 0 && !((left.Array == null) ^ (right.Array == null));
             if (right.Length == left.Length)

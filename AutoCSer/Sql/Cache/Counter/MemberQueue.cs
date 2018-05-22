@@ -2,6 +2,7 @@
 using AutoCSer.Metadata;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Data.Common;
 
 namespace AutoCSer.Sql.Cache.Counter
 {
@@ -86,6 +87,30 @@ namespace AutoCSer.Sql.Cache.Counter
         /// </summary>
         /// <param name="node"></param>
         protected abstract void removeCounter(memberCacheType node);
+        /// <summary>
+        /// 获取缓存数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        protected cacheValueType get(memberCacheType node)
+        {
+            cacheValueType value = getMemberValue(node);
+            if (value != null && node != end)
+            {
+                memberCacheType previous = getPrevious(node), next = getNext(node);
+                if (previous == null) setPrevious(header = next, null);
+                else
+                {
+                    setNext(previous, next);
+                    setPrevious(next, previous);
+                }
+                setNext(end, node);
+                setPrevious(node, end);
+                setNext(node, null);
+                end = node;
+            }
+            return value;
+        }
         /// <summary>
         /// 添加节点
         /// </summary>
@@ -196,7 +221,7 @@ namespace AutoCSer.Sql.Cache.Counter
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="memberCacheType">成员缓存类型</typeparam>
     /// <typeparam name="keyType">关键字类型</typeparam>
-    public sealed class MemberQueue<valueType, modelType, memberCacheType, keyType>
+    public sealed partial class MemberQueue<valueType, modelType, memberCacheType, keyType>
         : MemberQueue<valueType, modelType, memberCacheType, keyType, memberCacheType, keyType, valueType>
         where valueType : class, modelType
         where modelType : class
@@ -206,18 +231,37 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <summary>
         /// 数据获取器
         /// </summary>
-        private readonly Func<keyType, MemberMap<modelType>, valueType> getValue;
+        private readonly Table<valueType, modelType, keyType>.GetValue getValue;
+        /// <summary>
+        /// 缓存数据
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>缓存数据</returns>
+        public valueType this[keyType key]
+        {
+            get
+            {
+                memberCacheType node = counter.GetByKey(key);
+                if (node != null)
+                {
+                    GetTask task = new GetTask(this, node, key);
+                    counter.SqlTable.AddQueue(task);
+                    return task.Wait();
+                }
+                return null;
+            }
+        }
         /// <summary>
         /// 先进先出优先队列缓存
         /// </summary>
         /// <param name="counter">缓存计数器</param>
-        /// <param name="getValue">数据获取器,禁止锁操作</param>
+        /// <param name="getValue">数据获取器,禁止数据库与锁操作</param>
         /// <param name="valueMember">节点成员</param>
         /// <param name="previousMember">前一个节点成员</param>
         /// <param name="nextMember">后一个节点成员</param>
         /// <param name="maxCount">缓存默认最大容器大小</param>
         public MemberQueue(Event.Member<valueType, modelType, memberCacheType, keyType, memberCacheType> counter
-            , Func<keyType, MemberMap<modelType>, valueType> getValue, Expression<Func<memberCacheType, valueType>> valueMember
+            , Table<valueType, modelType, keyType>.GetValue getValue, Expression<Func<memberCacheType, valueType>> valueMember
             , Expression<Func<memberCacheType, memberCacheType>> previousMember, Expression<Func<memberCacheType, memberCacheType>> nextMember, int maxCount = 0)
             : base(counter, counter.GetKey, valueMember, previousMember, nextMember, maxCount)
         {
@@ -256,6 +300,87 @@ namespace AutoCSer.Sql.Cache.Counter
             memberCacheType node = counter.GetValue(value);
             //memberCacheType node = counter.GetByKey(getKey(value));
             if (getMemberValue(node) != null) removeNode(node);
+        }
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        private sealed class GetTask : Threading.LinkQueueTaskNode
+        {
+            /// <summary>
+            /// 先进先出优先队列缓存
+            /// </summary>
+            private MemberQueue<valueType, modelType, memberCacheType, keyType> queue;
+            /// <summary>
+            /// 成员缓存
+            /// </summary>
+            private memberCacheType node;
+            /// <summary>
+            /// 返回值
+            /// </summary>
+            private valueType value;
+            /// <summary>
+            /// 关键字
+            /// </summary>
+            private keyType key;
+            /// <summary>
+            /// 等待缓存加载
+            /// </summary>
+            private AutoCSer.Threading.AutoWaitHandle wait;
+            /// <summary>
+            /// 获取数据
+            /// </summary>
+            /// <param name="queue"></param>
+            /// <param name="node"></param>
+            /// <param name="key"></param>
+            internal GetTask(MemberQueue<valueType, modelType, memberCacheType, keyType> queue, memberCacheType node, keyType key)
+            {
+                this.queue = queue;
+                this.node = node;
+                this.key = key;
+                wait.Set(0);
+            }
+            /// <summary>
+            /// 获取数据
+            /// </summary>
+            /// <param name="connection"></param>
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            {
+                try
+                {
+                    value = queue.get(ref connection, node, key);
+                }
+                finally
+                {
+                    wait.Set();
+                }
+                return LinkNext;
+            }
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal valueType Wait()
+            {
+                wait.Wait();
+                return value;
+            }
+        }
+        /// <summary>
+        /// 获取缓存数据
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="node"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private valueType get(ref DbConnection connection, memberCacheType node, keyType key)
+        {
+            valueType value = get(node);
+            if (value == null && (value = counter.Get(key)) == null)
+            {
+                if ((value = getValue(ref connection, key, counter.MemberMap)) != null) onInserted(value);
+            }
+            return value;
         }
     }
 }

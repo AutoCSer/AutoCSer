@@ -103,7 +103,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (!dictionary.Remove(key))
             {
-                cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
         }
         /// <summary>

@@ -90,7 +90,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// <summary>
             /// 学生列表
             /// </summary>
-            [AutoCSer.Sql.MemberCache(CacheType = typeof(Student))]
+            [AutoCSer.Sql.MemberCacheLink(CacheType = typeof(Student))]
             internal ListArray<Student> Students;
             /// <summary>
             /// 获取学生标识集合（远程缓存成员）
@@ -100,7 +100,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             {
                 get
                 {
-                    return Students.toLeftArray().GetArray(value => value.Id);
+                    return Students.ToLeftArray().GetArray(value => value.Id);
                 }
             }
             /// <summary>
@@ -127,6 +127,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <summary>
         /// 扩展缓存数据
         /// </summary>
+        [AutoCSer.Sql.MemberCache]
         private MemberCache extension;
         /// <summary>
         /// 扩展缓存数据
@@ -148,7 +149,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         {
             get
             {
-                return Extension.Students.toLeftArray().GetArray(value => value.Id);
+                return Extension.Students.ToLeftArray().GetArray(value => value.Id);
             }
         }
         /// <summary>
@@ -160,7 +161,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod]
         internal static int[] GetStaticStudentIds(int id)
         {
-            return Loader.Cache[id].extension.Students.toLeftArray().GetArray(value => value.Id);
+            return Loader.Cache[id].extension.Students.ToLeftArray().GetArray(value => value.Id);
         }
 
         /// <summary>
@@ -219,13 +220,17 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             /// <summary>
             /// 数据缓存
             /// </summary>
-            internal static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<Class, SqlModel.Class, MemberCache> Cache = WaitCache.Set(createCache(value => value.extension));
+            internal static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<Class, SqlModel.Class, MemberCache> Cache;
             /// <summary>
             /// 数据缓存初始化
             /// </summary>
             static Loader()
             {
-                if (sqlTable != null) sqlLoaded();
+                if (sqlTable != null)
+                {
+                    Cache = WaitCache.Set(sqlCache);
+                    sqlLoaded();
+                }
             }
         }
         /// <summary>

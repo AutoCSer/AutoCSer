@@ -50,7 +50,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = 1)]
+        [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = AutoCSer.Net.TcpServer.TimeVerifyServer.CommandIdentity)]
         protected virtual bool verify(serverSocketType socket, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             TcpServer.ServerBaseAttribute attribute = server.Attribute;

@@ -66,7 +66,7 @@ namespace AutoCSer.Search
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.add(Log.LogType.Error, error);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
                 while (searcher.isDisposed == 0 && (data = data.LinkNext) != null);

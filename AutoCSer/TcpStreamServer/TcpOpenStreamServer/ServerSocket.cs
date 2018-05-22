@@ -193,7 +193,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             }
             catch (Exception error)
             {
-                Server.Log.add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
             }
             Close();
         }
@@ -267,18 +267,18 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                                     }
                                     else
                                     {
-                                        if (Server.Log.isAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + compressionDataSize.toString() + " > " + maxVerifyDataSize.toString());
+                                        if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Debug)) Server.Log.Add(AutoCSer.Log.LogType.Debug, "TCP 验证函数接收数据长度超限 " + compressionDataSize.toString() + " > " + maxVerifyDataSize.toString());
                                         return false;
                                     }
                                 }
                                 else return false;
                             }
-                            if (Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
+                            if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
                             {
 #if !DOTNET2
                             Socket socket = Socket;
 #endif
-                                Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
+                                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数命令错误" : ("TCP 验证函数命令错误 " + socket.RemoteEndPoint.ToString()));
                             }
                         }
                     }
@@ -332,10 +332,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Server.CancelReceiveVerifyCommandTimeout(this);
 #endif
             if (isVerifyData()) return true;
-            if (!IsVerifyMethod && Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
+            if (!IsVerifyMethod && Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
             {
                 Socket socket = Socket;
-                Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证函数调用失败" : ("TCP 验证函数调用失败 " + socket.RemoteEndPoint.ToString()));
             }
             return false;
         }
@@ -374,10 +374,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 socketError = receiveAsyncEventArgs.SocketError;
 #endif
             }
-            else if (Server.Log.isAnyType(AutoCSer.Log.LogType.Info))
+            else if (Server.Log.IsAnyType(AutoCSer.Log.LogType.Info))
             {
                 Socket socket = Socket;
-                Server.Log.add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()));
+                Server.Log.Add(AutoCSer.Log.LogType.Info, socket == null ? "TCP 验证数据接收超时" : ("TCP 验证数据接收超时 " + socket.RemoteEndPoint.ToString()));
             }
             return false;
         }

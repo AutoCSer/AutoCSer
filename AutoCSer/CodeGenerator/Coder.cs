@@ -371,7 +371,7 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
             }
             return false;
         }
@@ -391,7 +391,7 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
             }
             return false;
         }
@@ -427,7 +427,7 @@ using AutoCSer;
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
+                AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, "文件创建失败 : " + fileName);
             }
             return false;
         }

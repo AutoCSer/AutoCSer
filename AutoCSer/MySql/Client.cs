@@ -230,7 +230,7 @@ show index from `" + tableName + @"`;"))
                         {
                             Name = index.Key.ToString(),
                             Type = index.Value[0].Type,
-                            Columns = index.Value.toLeftArray().getSort(value => value.Index).getArray(column => column.Column)
+                            Columns = index.Value.ToLeftArray().GetSort(value => value.Index).getArray(column => column.Column)
                         })
                     };
                 }
@@ -777,7 +777,7 @@ update `");
                 {
                     sqlStream.WriteNotNull("delete from `");
                     sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("' where ");
+                    sqlStream.WriteNotNull("` where ");
                     sqlStream.WriteNotNull(DataModel.Model<modelType>.IdentitySqlName);
                     sqlStream.Write('=');
                     AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
@@ -792,7 +792,7 @@ update `");
                 {
                     sqlStream.WriteNotNull("delete from `");
                     sqlStream.WriteNotNull(sqlTool.TableName);
-                    sqlStream.WriteNotNull("' where ");
+                    sqlStream.WriteNotNull("` where ");
                     DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, ConstantConverter.Default);
                     sqlStream.Write(';');
                     query.InsertSql = sqlStream.ToString();

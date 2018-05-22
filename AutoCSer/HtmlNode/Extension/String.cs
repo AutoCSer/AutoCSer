@@ -34,7 +34,7 @@ namespace AutoCSer.Extension
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        internal static bool equalCase(this SubString left, ref SubString right)
+        internal static bool EqualCase(this SubString left, ref SubString right)
         {
             if (left.Length == right.Length)
             {
@@ -63,7 +63,7 @@ namespace AutoCSer.Extension
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        internal static bool equalCase(this SubString left, string right)
+        internal static bool EqualCase(this SubString left, string right)
         {
             if (right == null) return left.String == null;
             if (left.Length == right.Length)

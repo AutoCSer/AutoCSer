@@ -66,7 +66,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onInserted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 ListArray<valueType> list = getMember(target);
@@ -98,7 +98,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 ListArray<valueType> list = getMember(target);
@@ -112,7 +112,7 @@ namespace AutoCSer.Sql.Cache.Whole
                         return;
                     }
                 }
-                cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
         }
         /// <summary>
@@ -123,6 +123,107 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value)
         {
             onDeleted(value, getKey(value));
+        }
+        /// <summary>
+        /// 获取缓存
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public LeftArray<valueType> GetCache(keyType key)
+        {
+            targetType target = getValue(key);
+            if (target != null) return new LeftArray<valueType>(getMember(target));
+            return default(LeftArray<valueType>);
+        }
+        /// <summary>
+        /// 获取匹配数据数量
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>匹配数据数量</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public int Count(keyType key)
+        {
+            return GetCache(key).Length;
+        }
+        /// <summary>
+        /// 获取匹配数据数量
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="isValue">数据匹配器</param>
+        /// <returns>匹配数据数量</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public int Count(keyType key, Func<valueType, bool> isValue)
+        {
+            return GetCache(key).GetCount(isValue);
+        }
+        /// <summary>
+        /// 获取第一个匹配数据
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="isValue">数据匹配器</param>
+        /// <returns>第一个匹配数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType FirstOrDefault(keyType key, Func<valueType, bool> isValue)
+        {
+            return GetCache(key).FirstOrDefault(isValue);
+        }
+        /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>数据集合</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType[] GetArray(keyType key)
+        {
+            return GetCache(key).GetArray();
+        }
+        /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        /// <typeparam name="arrayType"></typeparam>
+        /// <param name="key">关键字</param>
+        /// <param name="getValue">数组转换</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public arrayType[] GetArray<arrayType>(keyType key, Func<valueType, arrayType> getValue)
+        {
+            return GetCache(key).GetArray(getValue);
+        }
+        /// <summary>
+        /// 获取匹配数据集合
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="isValue">数据匹配器</param>
+        /// <returns>匹配数据集合</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType[] GetFindArray(keyType key, Func<valueType, bool> isValue)
+        {
+            return GetCache(key).GetFindArray(isValue);
+        }
+        /// <summary>
+        /// 获取分页数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public valueType[] GetPage(keyType key, int pageSize, int currentPage, out int count)
+        {
+            return GetCache(key).GetPage(pageSize, currentPage, out count);
+        }
+        /// <summary>
+        /// 获取逆序分页数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public valueType[] GetPageDesc(keyType key, int pageSize, int currentPage, out int count)
+        {
+            return GetCache(key).GetPageDesc(pageSize, currentPage, out count);
         }
     }
 }

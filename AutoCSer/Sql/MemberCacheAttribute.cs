@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql
 {
     /// <summary>
-    /// 成员扩展缓存初始化依赖类型声明配置
+    /// 表格缓存扩展成员申明
     /// </summary>
-    public sealed class MemberCacheAttribute : Attribute
+    public sealed class MemberCacheAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
     {
-        /// <summary>
-        /// 初始化依赖类型
-        /// </summary>
-        public Type CacheType;
     }
 }

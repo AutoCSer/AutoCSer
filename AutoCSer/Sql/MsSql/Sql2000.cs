@@ -823,7 +823,7 @@ end");
                     }
                     catch (Exception error)
                     {
-                        sqlTool.Log.add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
                     }
                 }
             }

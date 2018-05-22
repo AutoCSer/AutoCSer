@@ -367,11 +367,6 @@
             自定义简单组合模板
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.CombinationTemplate.DefaultTemplatePath">
-            <summary>
-            自定义模板相对项目路径
-            </summary>
-        </member>
         <member name="M:AutoCSer.CodeGenerator.CombinationTemplate.Run(AutoCSer.CodeGenerator.ProjectParameter)">
             <summary>
             安装入口
@@ -2737,6 +2732,11 @@
             远程表达式成员配置
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.Type">
+            <summary>
+            当前类型
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.Member">
             <summary>
             成员信息
@@ -2754,7 +2754,12 @@
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.GenericMemberNodeTypeName">
             <summary>
-            远程表达式成员节点类型名称
+            泛型实例化远程表达式成员节点类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.GenericParentMemberNodeTypeName">
+            <summary>
+            泛型实例化父节点远程表达式成员节点类型名称
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.MethodReturnType">
@@ -2770,6 +2775,11 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.MemberIsReturn">
             <summary>
             是否存在返回值
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.ReturnTypeIsNull">
+            <summary>
+            返回值是否可空类型
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.MemberRemoteExpressionTypeName">
@@ -2802,77 +2812,69 @@
             是否静态成员
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MemberExpression">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.GenericMemberGroup">
+            <summary>
+            泛型实例化表达式成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.CheckGenericMemberGroup">
+            <summary>
+            检测泛型实例化表达式成员集合
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticExpression">
             <summary>
             远程表达式成员
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberExpression">
-            <summary>
-            远程表达式成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberExpression.IsStatic">
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticExpression.IsStatic">
             <summary>
             是否静态成员
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MethodExpression">
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup">
             <summary>
-            远程表达式成员
+            表达式成员集合
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethodExpression">
-            <summary>
-            远程表达式成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethodExpression.IsStatic">
-            <summary>
-            是否静态成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.RemoteExpressionTypeName">
-            <summary>
-            远程表达式容器类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Members">
-            <summary>
-            实例字段 / 属性
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Methods">
-            <summary>
-            实例方法
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMembers">
-            <summary>
-            静态字段 / 属性
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethods">
-            <summary>
-            静态方法
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberCount">
-            <summary>
-            静态成员数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.nodeTypeNames">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.nodeTypeNames">
             <summary>
             节点名称集合
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.nextCreate">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.type">
             <summary>
-            安装下一个类型
+            当前类型
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.addMember``1(AutoCSer.LeftArray{``0}@,``0)">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.memberNodeTypeName">
+            <summary>
+            泛型实例化父节点远程表达式成员节点类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.Members">
+            <summary>
+            实例字段 / 属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.StaticMembers">
+            <summary>
+            静态字段 / 属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.IsMember">
+            <summary>
+            成员是否有效
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.#ctor(AutoCSer.CodeGenerator.Metadata.ExtensionType,System.String)">
+            <summary>
+            表达式成员集合
+            </summary>
+            <param name="type"></param>
+            <param name="memberNodeTypeName"></param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.addMember``1(AutoCSer.LeftArray{``0}@,``0)">
             <summary>
             添加成员
             </summary>
@@ -2880,6 +2882,21 @@
             <param name="members"></param>
             <param name="member"></param>
             <returns></returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.RemoteExpressionTypeName">
+            <summary>
+            远程表达式容器类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MemberGroup">
+            <summary>
+            表达式成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.onCreated">
             <summary>
@@ -3643,6 +3660,11 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.IsCallQueue">
             <summary>
             是否提供独占的 TCP 服务器端同步调用队列
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.IsInternalClient">
+            <summary>
+            仅程序集可见
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.isSetTcpServer">
@@ -6233,6 +6255,25 @@
             @XmlDocument 远程表达式
             </summary>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.GenericMemberNodeTypeName">
+            <summary>
+            @XmlDocument 远程表达式
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.GenericMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument 远程表达式</returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.Item(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument 远程表达式</returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.MemberName">
+            <summary>
+            @XmlDocument 远程表达式
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument 远程表达式</returns>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.Item(AutoCSer.CodeGenerator.Template.Pub.FullName)">
             <returns>@XmlDocument 远程表达式</returns>
         </member>
@@ -6241,16 +6282,13 @@
             @XmlDocument 远程表达式
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericStaticMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
             <returns>@XmlDocument 远程表达式</returns>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.StaticPropertyName">
             <summary>
             @XmlDocument 远程表达式
             </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericStaticMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
-            <returns>@XmlDocument 远程表达式</returns>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.TcpInternalServer.TypeNameDefinition.RememberIdentityCommeandName">
             <summary>

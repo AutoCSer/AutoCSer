@@ -15,7 +15,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="memberCacheType">成员缓存类型</typeparam>
     /// <typeparam name="keyType">关键字类型</typeparam>
-    public sealed class PrimaryKeyArray<valueType, modelType, memberCacheType, keyType> : Key<valueType, modelType, memberCacheType, keyType>
+    public class PrimaryKeyArray<valueType, modelType, memberCacheType, keyType> : Key<valueType, modelType, memberCacheType, keyType>
         where valueType : class, modelType
         where modelType : class
         where memberCacheType : class
@@ -67,7 +67,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="sqlTool">SQL操作工具</param>
         /// <param name="memberCache">成员缓存</param>
         /// <param name="group">数据分组</param>
-        public PrimaryKeyArray(Sql.Table<valueType, modelType, keyType> sqlTool, Expression<Func<valueType, memberCacheType>> memberCache, int group = 0)
+        public PrimaryKeyArray(Sql.Table<valueType, modelType, keyType> sqlTool, Expression<Func<valueType, memberCacheType>> memberCache = null, int group = 0)
             : base(sqlTool, memberCache, sqlTool.GetPrimaryKey, group)
         {
             dictionaryArray.Reset();
@@ -121,7 +121,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 update(cacheValue, value, oldValue, memberMap);
                 callOnUpdated(cacheValue, value, oldValue, memberMap);
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
         /// <summary>
         /// 删除数据
@@ -131,7 +131,28 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         {
             dictionaryArray.Remove(GetKey(value), out value);
             if (value != null) callOnDeleted(value); 
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+        }
+    }
+    /// <summary>
+    /// 关键字整表缓存
+    /// </summary>
+    /// <typeparam name="valueType">表格绑定类型</typeparam>
+    /// <typeparam name="modelType">表格模型类型</typeparam>
+    /// <typeparam name="keyType">关键字类型</typeparam>
+    public sealed class PrimaryKeyArray<valueType, modelType, keyType> : PrimaryKeyArray<valueType, modelType, valueType, keyType>
+        where valueType : class, modelType
+        where modelType : class
+        where keyType : IEquatable<keyType>
+    {
+        /// <summary>
+        /// 关键字整表缓存
+        /// </summary>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="group">数据分组</param>
+        public PrimaryKeyArray(Sql.Table<valueType, modelType, keyType> sqlTool, int group = 0)
+            : base(sqlTool, null, group)
+        {
         }
     }
 }

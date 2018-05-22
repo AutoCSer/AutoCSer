@@ -27,7 +27,7 @@ namespace AutoCSer.OpenAPI.Weixin
         {
             if (card_ext.signature == null)
             {
-                AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "卡券扩展 签名为空");
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "卡券扩展 签名为空");
                 serializer.CharStream.WriteJsonObject();
             }
             else

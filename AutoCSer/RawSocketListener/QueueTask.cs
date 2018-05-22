@@ -85,7 +85,7 @@ namespace AutoCSer.Net.RawSocketListener
                     }
                     catch (Exception error)
                     {
-                        log.add(Log.LogType.Error, error);
+                        log.Add(Log.LogType.Error, error);
                     }
                     value = value.LinkNext;
                 }

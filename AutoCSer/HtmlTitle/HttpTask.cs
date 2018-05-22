@@ -199,7 +199,7 @@ namespace AutoCSer.Net.HtmlTitle
                     }
                     catch (Exception error)
                     {
-                        Log.add(AutoCSer.Log.LogType.Error, error);
+                        Log.Add(AutoCSer.Log.LogType.Error, error);
                     }
                     if (client == null)
                     {
@@ -251,7 +251,7 @@ namespace AutoCSer.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                 }
                 try
                 {
@@ -259,7 +259,7 @@ namespace AutoCSer.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                 }
                 goto START;
             }

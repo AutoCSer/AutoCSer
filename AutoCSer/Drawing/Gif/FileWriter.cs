@@ -145,7 +145,7 @@ namespace AutoCSer.Drawing.Gif
                     }
                     catch (Exception error)
                     {
-                        log.add(AutoCSer.Log.LogType.Error, error);
+                        log.Add(AutoCSer.Log.LogType.Error, error);
                     }
                 }
             }
@@ -167,7 +167,7 @@ namespace AutoCSer.Drawing.Gif
                 }
                 catch (Exception error)
                 {
-                    log.add(AutoCSer.Log.LogType.Error, error);
+                    log.Add(AutoCSer.Log.LogType.Error, error);
                     if (fileStream != null)
                     {
                         fileStream.Dispose();
@@ -247,7 +247,7 @@ namespace AutoCSer.Drawing.Gif
             }
             catch (Exception error)
             {
-                log.add(AutoCSer.Log.LogType.Error, error);
+                log.Add(AutoCSer.Log.LogType.Error, error);
                 return false;
             }
             try

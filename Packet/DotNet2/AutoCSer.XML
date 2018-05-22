@@ -795,6 +795,26 @@
             TCP 服务默认端口号
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.ServerPort.KeyValueStreamSlaveServer">
+            <summary>
+            K-V 数据库从服务 8988
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.KeyValueStreamMasterServer">
+            <summary>
+            K-V 数据库主服务 8989
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.SlaveCacheServer">
+            <summary>
+            可持久化缓存从服务 8990
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.ServerPort.MasterCacheServer">
+            <summary>
+            可持久化缓存主服务 8991
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.ServerPort.Search">
             <summary>
             搜索服务 8992
@@ -2199,6 +2219,11 @@
             <param name="other">字节数组HASH</param>
             <returns>是否相等</returns>
         </member>
+        <member name="M:AutoCSer.HashBytes.CopyData">
+            <summary>
+            复制 HASH 的字节数组
+            </summary>
+        </member>
         <member name="T:AutoCSer.Extension.TypeExtension">
             <summary>
             类型扩展操作
@@ -3351,10 +3376,11 @@
             弹出节点访问锁
             </summary>
         </member>
-        <member name="M:AutoCSer.Threading.QueueTaskThread`1.#ctor">
+        <member name="M:AutoCSer.Threading.QueueTaskThread`1.#ctor(System.Boolean)">
             <summary>
             TCP 服务器端同步调用任务处理
             </summary>
+            <param name="isBackground">是否后台线程</param>
         </member>
         <member name="M:AutoCSer.Threading.QueueTaskThread`1.run">
             <summary>
@@ -3573,6 +3599,12 @@
             </summary>
         </member>
         <member name="M:AutoCSer.SubArray`1.#ctor(`0[])">
+            <summary>
+            数组子串
+            </summary>
+            <param name="array">数组</param>
+        </member>
+        <member name="M:AutoCSer.SubArray`1.#ctor(AutoCSer.ListArray{`0})">
             <summary>
             数组子串
             </summary>
@@ -3940,6 +3972,11 @@
             是否使用 JSON 序列化
             </summary>
         </member>
+        <member name="P:AutoCSer.Net.TcpServer.ServerBaseAttribute.GetIsInternalClient">
+            <summary>
+            默认为 false 表示客户端 API 公共可见，设置为 true 表示仅程序集可见
+            </summary>
+        </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerAttribute.RemoteExpressionServerTask">
             <summary>
             远程表达式服务端任务类型，默认为 Timeout
@@ -4071,6 +4108,12 @@
             <param name="commandIndex"></param>
             <param name="type"></param>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.Server.AppendTcpQueue(AutoCSer.Net.TcpServer.ServerCallBase)">
+            <summary>
+            添加 TCP 任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
+            </summary>
+            <param name="call">TCP 服务器端同步调用</param>
         </member>
         <member name="T:AutoCSer.Net.TcpServer.Server`1">
             <summary>
@@ -5208,6 +5251,12 @@
             返回值
             </summary>
         </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.op_Implicit(`0)~AutoCSer.Net.RemoteExpression.ReturnValue{`0}">
+            <summary>
+            返回值隐式转换
+            </summary>
+            <param name="value">返回值</param>
+        </member>
         <member name="M:AutoCSer.Net.RemoteExpression.ReturnValue`1.serialize(AutoCSer.BinarySerialize.Serializer)">
             <summary>
             服务端序列化返回值
@@ -5397,6 +5446,14 @@
             </summary>
         </member>
         <member name="M:AutoCSer.Json.Serializer.SerializeTcpServer``1(``0@,AutoCSer.UnmanagedStream)">
+            <summary>
+            序列化
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <param name="stream"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Json.Serializer.SerializeTcpServer``1(``0,AutoCSer.UnmanagedStream)">
             <summary>
             序列化
             </summary>
@@ -6387,6 +6444,16 @@
             <param name="name">配置名称</param>
             <returns></returns>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.CombinationTemplateConfig">
+            <summary>
+            自定义简单组合模板参数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.CombinationTemplateConfig.TemplatePath">
+            <summary>
+            自定义模板相对项目路径
+            </summary>
+        </member>
         <member name="T:AutoCSer.BinarySerialize.SerializeMemberDynamicMethod">
             <summary>
             动态函数
@@ -6818,6 +6885,11 @@
             HTML 标题获取客户端操作
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer">
+            <summary>
+            缓存服务获取数据缓冲区
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -6907,6 +6979,11 @@
         <member name="F:AutoCSer.SubBuffer.Size.Kilobyte64">
             <summary>
             64KB
+            </summary>
+        </member>
+        <member name="F:AutoCSer.SubBuffer.Size.Kilobyte128">
+            <summary>
+            128KB
             </summary>
         </member>
         <member name="T:AutoCSer.StateSearcher.CharSearcher">
@@ -9085,11 +9162,6 @@
             <param name="generator"></param>
             <param name="value"></param>
         </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator.memberMapIsMemberMethod">
-            <summary>
-            判断成员位图是否匹配成员索引
-            </summary>
-        </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.memberMapIsMember(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)">
             <summary>
             判断成员位图是否匹配成员索引
@@ -9097,11 +9169,6 @@
             <param name="generator"></param>
             <param name="target"></param>
             <param name="value"></param>
-        </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator.memberMapSetMemberMethod">
-            <summary>
-            设置成员索引
-            </summary>
         </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.memberMapSetMember(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)">
             <summary>
@@ -9151,6 +9218,320 @@
             <param name="generator"></param>
             <param name="type"></param>
             <param name="local"></param>
+        </member>
+        <member name="T:AutoCSer.Extension.EmitGenerator.MemberMap">
+            <summary>
+            成员位图函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMap">
+            <summary>
+            成员位图
+            </summary>
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.copyTo(AutoCSer.Metadata.MemberMap)">
+            <summary>
+            复制成员位图
+            </summary>
+            <param name="other"></param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.and(AutoCSer.Metadata.MemberMap)">
+            <summary>
+            成员交集运算
+            </summary>
+            <param name="other">成员位图</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.xor(AutoCSer.Metadata.MemberMap)">
+            <summary>
+            成员异或运算,忽略默认成员
+            </summary>
+            <param name="other">成员位图</param>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.map">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Type">
+            <summary>
+            成员位图类型信息
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.#ctor(AutoCSer.Metadata.MemberMap.TypeInfo)">
+            <summary>
+            成员位图
+            </summary>
+            <param name="type">成员位图类型信息</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Empty">
+            <summary>
+            清空所有成员
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Full">
+            <summary>
+            添加所有成员
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.IsMember(System.Int32)">
+            <summary>
+            判断成员索引是否有效
+            </summary>
+            <param name="memberIndex">成员索引</param>
+            <returns>成员索引是否有效</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.Int32)">
+            <summary>
+            清除成员索引,忽略默认成员
+            </summary>
+            <param name="memberIndex">成员索引</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.String)">
+            <summary>
+            清除成员索引,忽略默认成员
+            </summary>
+            <param name="memberName">成员名称</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.Int32)">
+            <summary>
+            设置成员索引,忽略默认成员
+            </summary>
+            <param name="memberIndex">成员索引</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.String)">
+            <summary>
+            设置成员索引,忽略默认成员
+            </summary>
+            <param name="memberName">成员名称</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.BinarySerialize(AutoCSer.UnmanagedStream)">
+            <summary>
+            序列化
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.GetFieldDeSerialize">
+            <summary>
+            获取字段成员反序列化位图
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.equals(AutoCSer.Metadata.MemberMap)">
+            <summary>
+            比较是否相等
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.equals(System.Byte*)">
+            <summary>
+            比较是否相等
+            </summary>
+            <param name="otherMap"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.IsAnyMember">
+            <summary>
+            是否存在成员
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.IsDefault">
+            <summary>
+            是否默认全部成员有效
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMap.TypeInfo">
+            <summary>
+            成员位图类型信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Pool">
+            <summary>
+            成员位图内存池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.NameIndexSearcher">
+            <summary>
+            名称索引查找数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.#ctor(System.Type,AutoCSer.Metadata.MemberIndexInfo[],System.Int32)">
+            <summary>
+            成员位图类型信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="members">成员索引集合</param>
+            <param name="fieldCount">字段成员数量</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMemberIndex(System.String)">
+            <summary>
+            获取成员索引
+            </summary>
+            <param name="name">成员名称</param>
+            <returns>成员索引,失败返回-1</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetClear">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMap">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.Push(System.Byte*@)">
+            <summary>
+            成员位图入池
+            </summary>
+            <param name="map">成员位图</param>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberCount">
+            <summary>
+            成员数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.FieldCount">
+            <summary>
+            字段成员数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberMapSize">
+            <summary>
+            成员位图字节数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.BinarySerializeSize">
+            <summary>
+            字段成员位图序列化字节数量
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMap.Pool">
+            <summary>
+            成员位图内存池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memorySize">
+            <summary>
+            成员位图内存池字节大小
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.maxMemberMapCount">
+            <summary>
+            成员位图内存池支持最大成员数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.free">
+            <summary>
+            空闲内存地址
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.size">
+            <summary>
+            成员位图字节数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.freeLock">
+            <summary>
+            空闲内存地址访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.clearCount">
+            <summary>
+            填充整数数量
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.#ctor(System.Int32)">
+            <summary>
+            成员位图内存池
+            </summary>
+            <param name="size">成员位图字节数量</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Get">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetClear">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Push(System.Byte*@)">
+            <summary>
+            成员位图入池
+            </summary>
+            <param name="map">成员位图</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetPool(System.Int32)">
+            <summary>
+            获取成员位图内存池
+            </summary>
+            <param name="size">成员位图字节数量</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.pools">
+            <summary>
+            成员位图内存池集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.poolLock">
+            <summary>
+            成员位图内存池集合访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryCount">
+            <summary>
+            内存申请数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryStart">
+            <summary>
+            成员位图内存池起始位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryEnd">
+            <summary>
+            成员位图内存池结束位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryLock">
+            <summary>
+            成员位图内存池访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.createLock">
+            <summary>
+            成员位图内存池访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.MemberMap.IsMemberMethod">
+            <summary>
+            判断成员位图是否匹配成员索引
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.MemberMap.SetMemberMethod">
+            <summary>
+            设置成员索引
+            </summary>
         </member>
         <member name="T:AutoCSer.Emit.EnumCast`2">
             <summary>
@@ -9568,6 +9949,11 @@
         <member name="T:AutoCSer.Net.TcpServer.TimeVerifyServer">
             <summary>
             时间验证服务
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.TimeVerifyServer.CommandIdentity">
+            <summary>
+            时间验证函数 命令序号
             </summary>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.TimeVerifyServer.Md5(System.String,System.UInt64,System.Int64)">
@@ -11057,6 +11443,11 @@
         <member name="F:AutoCSer.Net.RemoteExpression.MemberAttribute.IsReturn">
             <summary>
             默认为 true 表示允许返回数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.MemberAttribute.IsGenericTypeInstantiation">
+            <summary>
+            默认为 false 表示不生成远程表达式泛型实例化代码，否则表示如果该成员类型为泛型类型时实例化泛型远程表达式
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.PropertyIndex">
@@ -13041,6 +13432,13 @@
             </summary>
             <param name="value"></param>
         </member>
+        <member name="M:AutoCSer.Net.TcpServer.ServerCallQueue.CheckAdd(AutoCSer.Net.TcpServer.ServerCallBase)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Net.TcpServer.ServerCallQueue.run">
             <summary>
             TCP 服务器端同步调用任务处理
@@ -13755,7 +14153,7 @@
             日志扩展
             </summary>
         </member>
-        <member name="M:AutoCSer.Extension.Log.isAnyType(AutoCSer.Log.ILog,AutoCSer.Log.LogType)">
+        <member name="M:AutoCSer.Extension.Log.IsAnyType(AutoCSer.Log.ILog,AutoCSer.Log.LogType)">
             <summary>
             判断是否支持任意类型
             </summary>
@@ -13763,7 +14161,7 @@
             <param name="type">日志类型</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Extension.Log.isAllType(AutoCSer.Log.ILog,AutoCSer.Log.LogType)">
+        <member name="M:AutoCSer.Extension.Log.IsAllType(AutoCSer.Log.ILog,AutoCSer.Log.LogType)">
             <summary>
             判断是否支持所有类型
             </summary>
@@ -13771,7 +14169,7 @@
             <param name="type">日志类型</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Extension.Log.add(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackFrame,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.Add(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackFrame,System.Boolean)">
             <summary>
             添加日志
             </summary>
@@ -13781,7 +14179,7 @@
             <param name="stackFrame">堆栈帧函数信息</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.add(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackTrace,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.Add(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackTrace,System.Boolean)">
             <summary>
             添加日志
             </summary>
@@ -13791,7 +14189,7 @@
             <param name="stackTrace">调用堆栈</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.add(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.Exception,System.String,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.Add(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.Exception,System.String,System.Boolean)">
             <summary>
             添加日志
             </summary>
@@ -13801,7 +14199,7 @@
             <param name="message">提示信息</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.wait(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackFrame,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.Wait(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackFrame,System.Boolean)">
             <summary>
             同步添加日志
             </summary>
@@ -13811,7 +14209,7 @@
             <param name="stackFrame">堆栈帧函数信息</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.wait(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackTrace,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.Wait(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackTrace,System.Boolean)">
             <summary>
             同步添加日志
             </summary>
@@ -13821,7 +14219,7 @@
             <param name="stackTrace">调用堆栈</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.wait(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.Exception,System.String,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.Wait(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.Exception,System.String,System.Boolean)">
             <summary>
             同步添加日志
             </summary>
@@ -13871,7 +14269,7 @@
             <param name="message">提示信息</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.waitThrow(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackFrame,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.WaitThrow(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackFrame,System.Boolean)">
             <summary>
             同步添加日志并抛出异常
             </summary>
@@ -13881,7 +14279,7 @@
             <param name="stackFrame">堆栈帧函数信息</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.waitThrow(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackTrace,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.WaitThrow(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.String,System.Diagnostics.StackTrace,System.Boolean)">
             <summary>
             同步添加日志并抛出异常
             </summary>
@@ -13891,7 +14289,7 @@
             <param name="stackTrace">调用堆栈</param>
             <param name="isCache">是否缓存</param>
         </member>
-        <member name="M:AutoCSer.Extension.Log.waitThrow(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.Exception,System.String,System.Boolean)">
+        <member name="M:AutoCSer.Extension.Log.WaitThrow(AutoCSer.Log.ILog,AutoCSer.Log.LogType,System.Exception,System.String,System.Boolean)">
             <summary>
             同步添加日志并抛出异常
             </summary>
@@ -13906,7 +14304,7 @@
             单向动态数组扩展操作
             </summary>
         </member>
-        <member name="M:AutoCSer.Extension.ListArray.toLeftArray``1(AutoCSer.ListArray{``0})">
+        <member name="M:AutoCSer.Extension.ListArray.ToLeftArray``1(AutoCSer.ListArray{``0})">
             <summary>
             转换数组子串
             </summary>
@@ -13995,6 +14393,11 @@
         <member name="T:AutoCSer.DomainUnload.Type">
             <summary>
             卸载处理类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.DomainUnload.Type.Action">
+            <summary>
+            委托
             </summary>
         </member>
         <member name="F:AutoCSer.DomainUnload.Type.LogFileDispose">
@@ -14154,6 +14557,42 @@
             <param name="read"></param>
             <param name="size"></param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.GetData(System.Byte*,System.Int32)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="read"></param>
+            <param name="size"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.CopyTo(System.Byte*,AutoCSer.SubArray{System.Byte}@)">
+            <summary>
+            复制数据
+            </summary>
+            <param name="read"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.SetBuffer(AutoCSer.SubArray{System.Byte}@,System.Byte*)">
+            <summary>
+            设置数据字节数组
+            </summary>
+            <param name="data"></param>
+            <param name="start"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.DeSerializeString(System.String@)">
+            <summary>
+            反序列化字符串
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.DeSerializeString(System.Byte*@,System.Byte*)">
+            <summary>
+            反序列化字符串
+            </summary>
+            <param name="start"></param>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.Compile(System.Type[])">
             <summary>
             预编译类型
@@ -14309,7 +14748,7 @@
             <summary>
             对象null值检测
             </summary>
-            <returns></returns>
+            <returns>返回 0 表示 null</returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.VerifyRead(System.Int32)">
             <summary>
@@ -15789,6 +16228,11 @@
             <param name="type">基本类型</param>
             <returns>反序列化函数</returns>
         </member>
+        <member name="P:AutoCSer.BinarySerialize.DeSerializer.NextSize">
+            <summary>
+            未处理数据字节数
+            </summary>
+        </member>
         <member name="P:AutoCSer.BinarySerialize.DeSerializer.CustomRead">
             <summary>
             自定义序列化获取当前读取数据位置
@@ -16238,7 +16682,7 @@
         </member>
         <member name="M:AutoCSer.Threading.Interlocked.CompareExchangeYield(System.Int32@)">
             <summary>
-            将目标值从0改置为1,循环等待周期切换(适应于等待时间极短的情况)
+            循环等待(适应于等待时间极短的情况)
             </summary>
             <param name="value">目标值</param>
         </member>
@@ -16828,12 +17272,11 @@
             </summary>
             <param name="clientNodeId">客户端映射标识</param>
         </member>
-        <member name="M:AutoCSer.Net.RemoteExpression.Node.serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameter(AutoCSer.BinarySerialize.Serializer)">
             <summary>
             客户端序列化
             </summary>
             <param name="serializer"></param>
-            <param name="checker"></param>
         </member>
         <member name="M:AutoCSer.Net.RemoteExpression.Node.Serialize(AutoCSer.BinarySerialize.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
             <summary>
@@ -16864,6 +17307,12 @@
             <typeparam name="parameterType"></typeparam>
             <param name="serializer"></param>
             <param name="parameter"></param>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameter(AutoCSer.BinarySerialize.DeSerializer)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="deSerializer"></param>
         </member>
         <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerialize(AutoCSer.BinarySerialize.DeSerializer)">
             <summary>
@@ -16900,12 +17349,11 @@
             <param name="deSerializer"></param>
             <param name="parameter"></param>
         </member>
-        <member name="M:AutoCSer.Net.RemoteExpression.Node.serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.serializeParameter(AutoCSer.Json.Serializer)">
             <summary>
             客户端序列化
             </summary>
             <param name="serializer"></param>
-            <param name="checker"></param>
         </member>
         <member name="M:AutoCSer.Net.RemoteExpression.Node.Serialize(AutoCSer.Json.Serializer,AutoCSer.Net.RemoteExpression.ServerNodeIdChecker)">
             <summary>
@@ -16944,6 +17392,12 @@
             <param name="serializer"></param>
             <param name="parameter"></param>
         </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerializeParameter(AutoCSer.Json.Parser)">
+            <summary>
+            服务端反序列化
+            </summary>
+            <param name="parser"></param>
+        </member>
         <member name="M:AutoCSer.Net.RemoteExpression.Node.deSerialize(AutoCSer.Json.Parser)">
             <summary>
             服务端反序列化
@@ -16970,18 +17424,6 @@
             <typeparam name="parameterType"></typeparam>
             <param name="parser"></param>
             <param name="parameter"></param>
-        </member>
-        <member name="M:AutoCSer.Net.RemoteExpression.Node.get">
-            <summary>
-            获取服务端数据
-            </summary>
-            <returns>数据值</returns>
-        </member>
-        <member name="M:AutoCSer.Net.RemoteExpression.Node.getParentValue">
-            <summary>
-            获取父节点数据
-            </summary>
-            <returns>父节点数据</returns>
         </member>
         <member name="M:AutoCSer.Net.RemoteExpression.Node.getReturn">
             <summary>
@@ -17108,11 +17550,39 @@
             </summary>
             <param name="clientNodeId">客户端映射标识</param>
         </member>
-        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.GetValue">
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.getValue">
+            <summary>
+            服务端获取数据
+            </summary>
+            <returns>返回值</returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.getReturn">
             <summary>
             获取返回值
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.GetValue">
+            <summary>
+            服务端获取数据
+            </summary>
             <returns>返回值</returns>
+        </member>
+        <member name="T:AutoCSer.Net.RemoteExpression.Node`1.ReturnClientNodeId">
+            <summary>
+            客户端返回值映射标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.RemoteExpression.Node`1.ReturnClientNodeId.Id">
+            <summary>
+            客户端返回值映射标识
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.RemoteExpression.Node`1.ReturnClientNodeId.createReturnValue">
+            <summary>
+            创建客户端返回值类型
+            </summary>
+            <returns>创建客户端返回值类型</returns>
         </member>
         <member name="T:AutoCSer.Extension.SocketExtension">
             <summary>
@@ -17278,7 +17748,36 @@
             成员复制扩展操作
             </summary>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``2(``1,AutoCSer.Metadata.MemberMap{``1})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="baseType">复制成员对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``2(``0,AutoCSer.Metadata.MemberMap{``1})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="baseType">复制成员对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``1(``0,AutoCSer.Metadata.MemberMap{``0})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -17287,7 +17786,7 @@
             <param name="readValue">被复制对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0@,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0@,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -17296,7 +17795,7 @@
             <param name="readValue">被复制对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -17305,7 +17804,7 @@
             <param name="writeValue">目标对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0@,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0@,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -17837,6 +18336,14 @@
             </summary>
             <typeparam name="valueType">目标数据类型</typeparam>
             <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.Serializer.SerializeTcpServer``1(``0,AutoCSer.UnmanagedStream)">
+            <summary>
+            序列化
+            </summary>
+            <typeparam name="valueType">目标数据类型</typeparam>
+            <param name="value">数据对象</param>
+            <param name="stream"></param>
         </member>
         <member name="M:AutoCSer.BinarySerialize.Serializer.Compile(System.Type[])">
             <summary>
@@ -20347,12 +20854,6 @@
             </summary>
             <param name="size"></param>
         </member>
-        <member name="M:AutoCSer.UnmanagedStream.GetPrepSizeCurrent(System.Int32)">
-            <summary>
-            预增数据流长度
-            </summary>
-            <param name="size">增加长度</param>
-        </member>
         <member name="M:AutoCSer.UnmanagedStream.GetSubBuffer(AutoCSer.SubBuffer.PoolBufferFull@,System.Int32)">
             <summary>
             转换成字节数组
@@ -20415,6 +20916,19 @@
             预增数据流长度
             </summary>
             <param name="length">增加长度</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.GetPrepSizeCurrent(System.Int32)">
+            <summary>
+            预增数据流长度
+            </summary>
+            <param name="size">增加长度</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.AddSize(System.Int32)">
+            <summary>
+            增加流长度并返回增加后的流长度
+            </summary>
+            <param name="length">增加长度</param>
+            <returns>增加后的流长度</returns>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.Write(System.Boolean)">
             <summary>
@@ -21834,6 +22348,14 @@
             创建字典
             </summary>
             <typeparam name="valueType">数据类型</typeparam>
+            <returns>字典</returns>
+        </member>
+        <member name="M:AutoCSer.DictionaryCreator.CreateHashBytes``1(System.Int32)">
+            <summary>
+            创建字典
+            </summary>
+            <typeparam name="valueType">数据类型</typeparam>
+            <param name="capacity">初始化容器尺寸</param>
             <returns>字典</returns>
         </member>
         <member name="M:AutoCSer.DictionaryCreator.CreateSubString``1">
@@ -23340,7 +23862,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerBaseAttribute.SendBufferSize">
             <summary>
-            服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 64KB。
+            服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 128KB。
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerBaseAttribute.ServerSendBufferMaxSize">
@@ -23350,7 +23872,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerBaseAttribute.ReceiveBufferSize">
             <summary>
-            服务器端接受数据（包括客户端发送数据）缓冲区初始化字节数，默认为 64KB。
+            服务器端接受数据（包括客户端发送数据）缓冲区初始化字节数，默认为 128KB。
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpInternalServer.ServerBaseAttribute.ReceiveVerifyCommandSeconds">
@@ -24472,6 +24994,11 @@
             用于在配置文件中标识当前程序是否服务端，当在标识为服务端的环境中使用客户端调用时会输出警告日志，提示用户判断是否混淆了客户端与服务端。
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpInternalServer.ServerAttribute.IsInternalClient">
+            <summary>
+            默认为 false 表示客户端 API 公共可见，设置为 true 表示仅程序集可见
+            </summary>
+        </member>
         <member name="M:AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(System.String,System.Type)">
             <summary>
             获取配置信息
@@ -24483,6 +25010,11 @@
         <member name="P:AutoCSer.Net.TcpInternalServer.ServerAttribute.GetMemberFilters">
             <summary>
             成员选择类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Net.TcpInternalServer.ServerAttribute.GetIsInternalClient">
+            <summary>
+            客户端 API 是否仅程序集可见
             </summary>
         </member>
         <member name="T:System.Func`1">
@@ -26131,6 +26663,11 @@
             数组子串
             </summary>
         </member>
+        <member name="F:AutoCSer.LeftArray`1.defalutArraySize">
+            <summary>
+            默认数组长度
+            </summary>
+        </member>
         <member name="F:AutoCSer.LeftArray`1.Array">
             <summary>
             原数组
@@ -26518,6 +27055,9 @@
             <summary>
             Guid 联合体
             </summary>
+            <summary>
+            Guid 联合体
+            </summary>
         </member>
         <member name="F:AutoCSer.GuidCreator.Value">
             <summary>
@@ -26529,6 +27069,25 @@
             转换成字符串
             </summary>
             <param name="data"></param>
+        </member>
+        <member name="M:AutoCSer.GuidCreator.Equals(System.Guid*)">
+            <summary>
+            判断是否相等
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.GuidCreator.Equals(AutoCSer.GuidCreator)">
+            <summary>
+            判断是否相等
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.GuidCreator.HashCode">
+            <summary>
+            获取哈希值
+            </summary>
         </member>
         <member name="T:AutoCSer.Extension.Number">
             <summary>
@@ -26808,7 +27367,7 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Extension.Number.bitCount(System.UInt32)">
+        <member name="M:AutoCSer.Extension.Number.bitCount(System.UInt64)">
             <summary>
             获取二进制1位的个数
             </summary>
@@ -27240,6 +27799,16 @@
             
             </summary>
         </member>
+        <member name="F:AutoCSer.Date.NowTime.NextSecondTicks">
+            <summary>
+            下一秒时钟周期
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.CurrentSeconds">
+            <summary>
+            当前时钟秒数计数
+            </summary>
+        </member>
         <member name="F:AutoCSer.Date.NowTime.Flag">
             <summary>
             定时触发类型
@@ -27258,6 +27827,16 @@
         <member name="F:AutoCSer.Date.NowTime.SqlOnTime">
             <summary>
             定时触发 Sql 扩展
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.CacheOnTime">
+            <summary>
+            定时触发 缓存 扩展
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.KeyValueStreamOnTime">
+            <summary>
+            定时触发 K-V 缓存数据库 扩展
             </summary>
         </member>
         <member name="M:AutoCSer.Date.NowTime.refreshTime(System.Object)">
@@ -27309,6 +27888,26 @@
         <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.SqlCountMember">
             <summary>
             Sql 成员计数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.CacheFile">
+            <summary>
+            缓存文件刷新
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.CacheTimeout">
+            <summary>
+            缓存数据超时处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.KeyValueStreamFile">
+            <summary>
+            K-V 缓存数据库文件刷新
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.KeyValueStreamTimeout">
+            <summary>
+            K-V 缓存数据超时处理
             </summary>
         </member>
         <member name="T:AutoCSer.Data.PrimaryKey`2">
@@ -32412,305 +33011,6 @@
             服务端反序列化
             </summary>
             <param name="parser"></param>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMap">
-            <summary>
-            成员位图
-            </summary>
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.copyTo(AutoCSer.Metadata.MemberMap)">
-            <summary>
-            复制成员位图
-            </summary>
-            <param name="other"></param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.and(AutoCSer.Metadata.MemberMap)">
-            <summary>
-            成员交集运算
-            </summary>
-            <param name="other">成员位图</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.xor(AutoCSer.Metadata.MemberMap)">
-            <summary>
-            成员异或运算,忽略默认成员
-            </summary>
-            <param name="other">成员位图</param>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.map">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Type">
-            <summary>
-            成员位图类型信息
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.#ctor(AutoCSer.Metadata.MemberMap.TypeInfo)">
-            <summary>
-            成员位图
-            </summary>
-            <param name="type">成员位图类型信息</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Dispose">
-            <summary>
-            释放资源
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Empty">
-            <summary>
-            清空所有成员
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Full">
-            <summary>
-            添加所有成员
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.IsMember(System.Int32)">
-            <summary>
-            判断成员索引是否有效
-            </summary>
-            <param name="memberIndex">成员索引</param>
-            <returns>成员索引是否有效</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.Int32)">
-            <summary>
-            清除成员索引,忽略默认成员
-            </summary>
-            <param name="memberIndex">成员索引</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.String)">
-            <summary>
-            清除成员索引,忽略默认成员
-            </summary>
-            <param name="memberName">成员名称</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.Int32)">
-            <summary>
-            设置成员索引,忽略默认成员
-            </summary>
-            <param name="memberIndex">成员索引</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.String)">
-            <summary>
-            设置成员索引,忽略默认成员
-            </summary>
-            <param name="memberName">成员名称</param>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.BinarySerialize(AutoCSer.UnmanagedStream)">
-            <summary>
-            序列化
-            </summary>
-            <param name="stream"></param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.GetFieldDeSerialize">
-            <summary>
-            获取字段成员反序列化位图
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.equals(AutoCSer.Metadata.MemberMap)">
-            <summary>
-            比较是否相等
-            </summary>
-            <param name="other"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.equals(System.Byte*)">
-            <summary>
-            比较是否相等
-            </summary>
-            <param name="otherMap"></param>
-            <returns></returns>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.IsAnyMember">
-            <summary>
-            是否存在成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.IsDefault">
-            <summary>
-            是否默认全部成员有效
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMap.TypeInfo">
-            <summary>
-            成员位图类型信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Type">
-            <summary>
-            类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Pool">
-            <summary>
-            成员位图内存池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.NameIndexSearcher">
-            <summary>
-            名称索引查找数据
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.#ctor(System.Type,AutoCSer.Metadata.MemberIndexInfo[],System.Int32)">
-            <summary>
-            成员位图类型信息
-            </summary>
-            <param name="type">类型</param>
-            <param name="members">成员索引集合</param>
-            <param name="fieldCount">字段成员数量</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMemberIndex(System.String)">
-            <summary>
-            获取成员索引
-            </summary>
-            <param name="name">成员名称</param>
-            <returns>成员索引,失败返回-1</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetClear">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMap">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.Push(System.Byte*@)">
-            <summary>
-            成员位图入池
-            </summary>
-            <param name="map">成员位图</param>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberCount">
-            <summary>
-            成员数量
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.FieldCount">
-            <summary>
-            字段成员数量
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberMapSize">
-            <summary>
-            成员位图字节数量
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.BinarySerializeSize">
-            <summary>
-            字段成员位图序列化字节数量
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMap.Pool">
-            <summary>
-            成员位图内存池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memorySize">
-            <summary>
-            成员位图内存池字节大小
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.maxMemberMapCount">
-            <summary>
-            成员位图内存池支持最大成员数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.free">
-            <summary>
-            空闲内存地址
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.size">
-            <summary>
-            成员位图字节数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.freeLock">
-            <summary>
-            空闲内存地址访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.clearCount">
-            <summary>
-            填充整数数量
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.#ctor(System.Int32)">
-            <summary>
-            成员位图内存池
-            </summary>
-            <param name="size">成员位图字节数量</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Get">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetClear">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Push(System.Byte*@)">
-            <summary>
-            成员位图入池
-            </summary>
-            <param name="map">成员位图</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetPool(System.Int32)">
-            <summary>
-            获取成员位图内存池
-            </summary>
-            <param name="size">成员位图字节数量</param>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.pools">
-            <summary>
-            成员位图内存池集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.poolLock">
-            <summary>
-            成员位图内存池集合访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryCount">
-            <summary>
-            内存申请数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryStart">
-            <summary>
-            成员位图内存池起始位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryEnd">
-            <summary>
-            成员位图内存池结束位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryLock">
-            <summary>
-            成员位图内存池访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.createLock">
-            <summary>
-            成员位图内存池访问锁
-            </summary>
         </member>
         <member name="T:AutoCSer.Metadata.MemberMap`1">
             <summary>

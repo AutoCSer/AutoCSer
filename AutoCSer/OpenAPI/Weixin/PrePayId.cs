@@ -24,7 +24,7 @@ namespace AutoCSer.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<PrePayId>.Check(this, config.key, sign)) return true;
-                config.PayLog.add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
             }
             return false;
         }

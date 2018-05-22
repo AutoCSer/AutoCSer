@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using AutoCSer.Metadata;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {
@@ -64,6 +66,61 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             , Expression<Func<memberCacheType, memberCacheType>> previousMember, Expression<Func<memberCacheType, memberCacheType>> nextMember, int group = 1, int maxCount = 0)
         {
             return CreateCounter(member, group).CreateMemberQueue(valueMember, previousMember, nextMember, maxCount);
+        }
+
+        /// <summary>
+        /// 修改数据库记录
+        /// </summary>
+        /// <param name="value">待修改数据</param>
+        /// <param name="memberMap">需要修改的字段成员位图</param>
+        /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+        /// <returns>是否修改成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool Update(valueType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = false)
+        {
+            valueType cacheLock = this[AutoCSer.Sql.DataModel.Model<modelType>.GetIdentity32(value)];
+            return cacheLock != null && SqlTable.Update(value, memberMap, isIgnoreTransaction);
+        }
+        /// <summary>
+        /// 修改数据库记录
+        /// </summary>
+        /// <param name="value">待修改数据</param>
+        /// <param name="memberMap">需要修改的字段成员位图</param>
+        /// <param name="onUpdated">更新数据回调</param>
+        /// <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+        /// <returns>是否修改成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Update(valueType value, MemberMap<modelType> memberMap, Action<valueType> onUpdated, bool isIgnoreTransaction = false)
+        {
+            valueType cacheLock = this[AutoCSer.Sql.DataModel.Model<modelType>.GetIdentity32(value)];
+            if (cacheLock != null) SqlTable.Update(value, memberMap, onUpdated, isIgnoreTransaction);
+            else if (onUpdated != null) onUpdated(null);
+        }
+        /// <summary>
+        /// 删除数据库记录
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+        /// <returns>是否成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool Delete(int identity, bool isIgnoreTransaction = false)
+        {
+            valueType value = this[identity];
+            return value != null && SqlTable.Delete(value, isIgnoreTransaction);
+        }
+        /// <summary>
+        /// 删除数据库记录
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <param name="onDeleted">删除数据回调</param>
+        /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+        /// <returns>是否成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Delete(int identity, Action<valueType> onDeleted, bool isIgnoreTransaction = false)
+        {
+            valueType value = this[identity];
+            if (value != null) SqlTable.Delete(value, onDeleted, isIgnoreTransaction);
+            else if (onDeleted != null) onDeleted(null);
         }
     }
 }

@@ -103,7 +103,7 @@ namespace AutoCSer.Drawing.Gif
                     catch (Exception error)
                     {
                         bitmap.Dispose();
-                        AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
                     }
                 }
             }

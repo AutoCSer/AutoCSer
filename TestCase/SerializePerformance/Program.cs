@@ -66,13 +66,13 @@ http://www.AutoCSer.com/Serialize/Json.html");
             time.Start();
             for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Property Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object "+ ((json.Length * count * 2) >> 20).toString() + "MB Property Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<PropertyData>(json);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Property Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB Property Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// JSON 序列化测试
@@ -87,13 +87,13 @@ http://www.AutoCSer.com/Serialize/Json.html");
             time.Start();
             for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float Property Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Property Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FloatPropertyData>(json);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float Property Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Property Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// JSON序列化测试
@@ -108,13 +108,13 @@ http://www.AutoCSer.com/Serialize/Json.html");
             time.Start();
             for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Field Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FieldData>(json);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// JSON序列化测试
@@ -129,13 +129,13 @@ http://www.AutoCSer.com/Serialize/Json.html");
             time.Start();
             for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float Field Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FloatFieldData>(json);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// XML 序列化测试
@@ -145,18 +145,18 @@ http://www.AutoCSer.com/Serialize/Json.html");
         {
             Console.WriteLine(@"
 http://www.AutoCSer.com/Serialize/Xml.html");
-            string json = null;
+            string xml = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Xml.Serializer.Serialize(value);
+            for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<PropertyData>(json);
+            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<PropertyData>(xml);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// XML 序列化测试
@@ -166,18 +166,18 @@ http://www.AutoCSer.com/Serialize/Xml.html");
         {
             Console.WriteLine(@"
 http://www.AutoCSer.com/Serialize/Xml.html");
-            string json = null;
+            string xml = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Xml.Serializer.Serialize(value);
+            for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FloatPropertyData>(json);
+            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FloatPropertyData>(xml);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// XML序列化测试
@@ -192,13 +192,13 @@ http://www.AutoCSer.com/Serialize/Xml.html");
             time.Start();
             for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FieldData>(xml);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// XML序列化测试
@@ -213,13 +213,13 @@ http://www.AutoCSer.com/Serialize/Xml.html");
             time.Start();
             for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FloatFieldData>(xml);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// 二进制序列化测试
@@ -234,13 +234,13 @@ http://www.AutoCSer.com/Serialize/Binary.html");
             time.Start();
             for (int index = count; index != 0; --index) bytes = AutoCSer.BinarySerialize.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Binary Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((bytes.Length * count) >> 20).toString() + "MB Binary Serialize " + time.ElapsedMilliseconds.toString() + "ms");
 
             time.Reset();
             time.Start();
             for (int index = count; index != 0; --index) value = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<FloatFieldData>(bytes);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object Binary DeSerialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((bytes.Length * count) >> 20).toString() + "MB Binary DeSerialize " + time.ElapsedMilliseconds.toString() + "ms");
         }
     }
 }

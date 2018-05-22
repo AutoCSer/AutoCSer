@@ -95,7 +95,7 @@ namespace AutoCSer.Sql.ColumnGroup
             Type type = typeof(valueType);
             if (type.IsEnum || !type.IsValueType)
             {
-                AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, type.fullName() + " 非值类型，不能用作数据列");
+                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, type.fullName() + " 非值类型，不能用作数据列");
                 return;
             }
             attribute = TypeAttribute.GetAttribute<ColumnAttribute>(type, true) ?? ColumnAttribute.Default;

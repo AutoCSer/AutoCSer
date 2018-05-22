@@ -318,8 +318,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return (Attribute.GetIsClientAsynchronous && IsOutputParameter) || IsKeepCallback != 0;
-                        //return IsOutputParameter || IsKeepCallback;
+                        return Attribute.GetIsClientAsynchronous || IsKeepCallback != 0;
+                        //return (Attribute.GetIsClientAsynchronous && IsOutputParameter) || IsKeepCallback != 0;
                     }
                 }
                 /// <summary>
@@ -735,6 +735,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 是否提供独占的 TCP 服务器端同步调用队列
             /// </summary>
             public bool IsCallQueue;
+            /// <summary>
+            /// 仅程序集可见
+            /// </summary>
+            public string IsInternalClient
+            {
+                get
+                {
+                    return Attribute.GetIsInternalClient ? "internal " : "public ";
+                }
+            }
 #if NOJIT
             /// <summary>
             /// 是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数

@@ -78,7 +78,7 @@ namespace AutoCSer.Sql.Cache.Whole
             {
                 Array.Add(key, cacheValue);
                 Array.Remove(oldKey, out value);
-                if (value == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                if (value == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
         }
         /// <summary>
@@ -89,7 +89,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value)
         {
             Array.Remove(getKey(value), out value);
-            if (value == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            if (value == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
     }
 }

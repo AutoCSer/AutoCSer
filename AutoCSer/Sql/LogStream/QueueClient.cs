@@ -118,7 +118,7 @@ namespace AutoCSer.Sql.LogStream
             }
             catch (Exception error)
             {
-                log.add(AutoCSer.Log.LogType.Error, error);
+                log.Add(AutoCSer.Log.LogType.Error, error);
             }
             this.error();
         }
@@ -193,7 +193,7 @@ namespace AutoCSer.Sql.LogStream
                                         if (data.Value.Value.MemberMap == null && !isErrorMemberMap)
                                         {
                                             isErrorMemberMap = true;
-                                            log.add(AutoCSer.Log.LogType.Warn, "客户端缓存数据缺少成员位图信息 " + typeof(valueType).fullName());
+                                            log.Add(AutoCSer.Log.LogType.Warn, "客户端缓存数据缺少成员位图信息 " + typeof(valueType).fullName());
                                         }
                                         return;
                                     }
@@ -212,7 +212,7 @@ namespace AutoCSer.Sql.LogStream
                     }
                     catch (Exception error)
                     {
-                        log.add(AutoCSer.Log.LogType.Error, error);
+                        log.Add(AutoCSer.Log.LogType.Error, error);
                     }
                 }
                 this.error();

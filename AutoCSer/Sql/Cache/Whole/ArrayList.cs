@@ -115,7 +115,7 @@ namespace AutoCSer.Sql.Cache.Whole
                     return;
                 }
             }
-            cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
         /// <summary>
         /// 删除数据
@@ -125,6 +125,32 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value)
         {
             onDeleted(value, getIndex(value));
+        }
+        /// <summary>
+        /// 获取分页数据
+        /// </summary>
+        /// <param name="index">数组索引</param>
+        /// <param name="pageSize">分页长度</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">记录总数</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType[] GetPage(int index, int pageSize, int currentPage, out int count)
+        {
+            return new LeftArray<valueType>(array[index]).GetPage(pageSize, currentPage, out count);
+        }
+        /// <summary>
+        /// 获取逆序分页数据
+        /// </summary>
+        /// <param name="index">数组索引</param>
+        /// <param name="pageSize">分页长度</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">记录总数</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType[] GetPageDesc(int index, int pageSize, int currentPage, out int count)
+        {
+            return new LeftArray<valueType>(array[index]).GetPageDesc(pageSize, currentPage, out count);
         }
     }
 }

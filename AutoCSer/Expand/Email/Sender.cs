@@ -94,7 +94,7 @@ namespace AutoCSer.Email
                     }
                     catch (Exception error)
                     {
-                        log.add(Log.LogType.Debug | Log.LogType.Info, error, "邮件发送失败 : " + content.SendTo);
+                        log.Add(Log.LogType.Debug | Log.LogType.Info, error, "邮件发送失败 : " + content.SendTo);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace AutoCSer.Email
                 }
                 catch (Exception error)
                 {
-                    log.add(Log.LogType.Debug | Log.LogType.Info, error, "邮件发送失败 : " + content.SendTo);
+                    log.Add(Log.LogType.Debug | Log.LogType.Info, error, "邮件发送失败 : " + content.SendTo);
                 }
                 if (message != null) message.Dispose();
             }

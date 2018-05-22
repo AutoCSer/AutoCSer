@@ -18,7 +18,7 @@ namespace AutoCSer.OpenAPI.Weixin
             if (IsReturn)
             {
                 if (appid == config.appid && mch_id == config.mch_id && Sign<CloseOrderResult>.Check(this, config.key, sign)) return true;
-                AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this), new System.Diagnostics.StackFrame(), false);
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "签名验证错误 " + AutoCSer.Json.Serializer.Serialize(this), new System.Diagnostics.StackFrame(), false);
             }
             return false;
         }

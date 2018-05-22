@@ -24,7 +24,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <summary>
         /// 重置缓存
         /// </summary>
-        private sealed class resetTask : LinkQueueTaskNode
+        private sealed class ResetTask : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// SQL 表格缓存
@@ -47,7 +47,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             /// </summary>
             /// <param name="cache"></param>
             /// <param name="where"></param>
-            internal resetTask(Cache<valueType, modelType> cache, Expression<Func<modelType, bool>> where)
+            internal ResetTask(Cache<valueType, modelType> cache, Expression<Func<modelType, bool>> where)
             {
                 byte isQuery = 0;
                 try
@@ -67,7 +67,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             /// </summary>
             /// <param name="connection"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
                 try
                 {
@@ -152,7 +152,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void reset(Expression<Func<modelType, bool>> expression)
         {
-            resetTask task = new resetTask(this, expression);
+            ResetTask task = new ResetTask(this, expression);
             SqlTable.AddQueue(task);
             task.Wait();
         }
@@ -200,7 +200,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <summary>
         /// 更新记录事件 [缓存数据 + 更新后的数据 + 更新前的数据 + 更新数据成员]
         /// </summary>
-        public event Action<valueType, valueType, valueType, MemberMap<modelType>> OnUpdated;
+        public event OnCacheUpdated OnUpdated;
         /// <summary>
         /// 更新记录
         /// </summary>
@@ -234,7 +234,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="onDeleted">删除记录事件</param>
         /// <param name="isLoadMemberCache">是否加载缓存依赖类型</param>
         /// <param name="isSqlStreamTypeCount">是否日志流计数完成类型注册</param>
-        public void Loaded(Action<valueType> onInserted = null, Action<valueType, valueType, valueType, MemberMap<modelType>> onUpdated = null, Action<valueType> onDeleted = null, bool isLoadMemberCache = true, bool isSqlStreamTypeCount = true)
+        public void Loaded(Action<valueType> onInserted = null, OnCacheUpdated onUpdated = null, Action<valueType> onDeleted = null, bool isLoadMemberCache = true, bool isSqlStreamTypeCount = true)
         {
             if (onInserted != null) OnInserted += onInserted;
             if (onUpdated != null) OnUpdated += onUpdated;
@@ -529,6 +529,40 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             return cache;
         }
         /// <summary>
+        /// 创建分组字典缓存
+        /// </summary>
+        /// <typeparam name="keyType">分组关键字类型</typeparam>
+        /// <typeparam name="sortType">排序关键字类型</typeparam>
+        /// <param name="getKey">分组关键字获取器</param>
+        /// <param name="getSort">排序关键字获取器</param>
+        /// <param name="isReset">是否初始化数据</param>
+        /// <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
+        /// <returns></returns>
+        public DictionarySearchTreeDictionary<valueType, modelType, keyType, sortType> CreateDictionarySearchTreeDictionary<keyType, sortType>(Func<valueType, keyType> getKey, Func<valueType, sortType> getSort, bool isReset = true, bool isSave = false)
+            where keyType : IEquatable<keyType>
+            where sortType : IComparable<sortType>
+        {
+            DictionarySearchTreeDictionary<valueType, modelType, keyType, sortType> cache = new DictionarySearchTreeDictionary<valueType, modelType, keyType, sortType>(this, getKey, getSort, isReset);
+            if (isSave) memberCaches.Add(cache);
+            return cache;
+        }
+        /// <summary>
+        /// 创建分组列表缓存
+        /// </summary>
+        /// <typeparam name="keyType"></typeparam>
+        /// <param name="getKey">字典关键字获取器</param>
+        /// <param name="isRemoveEnd">分组关键字获取器</param>
+        /// <param name="isReset">是否初始化数据</param>
+        /// <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
+        /// <returns></returns>
+        public DictionaryList<valueType, modelType, keyType> CreateDictionaryList<keyType>(Func<valueType, keyType> getKey, bool isRemoveEnd = false, bool isReset = true, bool isSave = false)
+            where keyType : IEquatable<keyType>
+        {
+            DictionaryList<valueType, modelType, keyType> cache = new DictionaryList<valueType, modelType, keyType>(this, getKey, isRemoveEnd, isReset);
+            if (isSave) memberCaches.Add(cache);
+            return cache;
+        }
+        /// <summary>
         /// 创建数组列表缓存
         /// </summary>
         /// <param name="getIndex">数组索引获取器</param>
@@ -705,7 +739,31 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             {
                 if (memberCache == null)
                 {
-                    if (typeof(valueType) != typeof(memberCacheType)) throw new InvalidCastException(typeof(valueType).fullName() + " != " + typeof(memberCacheType).fullName());
+                    if (typeof(valueType) != typeof(memberCacheType))
+                    {
+                        FieldIndex memberField = null;
+                        foreach (FieldIndex field in MemberIndexGroup<valueType>.GetFields(MemberFilters.NonPublicInstance))
+                        {
+                            if (field.Member.FieldType == typeof(memberCacheType))
+                            {
+                                if(memberField == null) memberField = field;
+                                if (field.IsAttribute<MemberCacheAttribute>(false))
+                                {
+                                    memberField = field;
+                                    break;
+                                }
+                            }
+                        }
+                        if (memberField == null) throw new InvalidCastException(typeof(valueType).fullName() + " != " + typeof(memberCacheType).fullName());
+                        else
+                        {
+                            if (AutoCSer.Emit.Constructor<memberCacheType>.New == null) throw new InvalidOperationException("找不到无参构造函数 " + typeof(memberCacheType).FullName);
+                            GetMemberCache = AutoCSer.Emit.Field.UnsafeGetField<valueType, memberCacheType>(memberField.Member);
+                            setMemberCache = AutoCSer.Emit.Field.UnsafeSetField<valueType, memberCacheType>(memberField.Member);
+                            GetAllMemberCache = getAllMemberCache;
+                            setMemberCacheValue = AutoCSer.Emit.Field.UnsafeSetField<memberCacheType, valueType>("Value");
+                        }
+                    }
                     //GetAllValue = getAllValue;
                 }
                 else

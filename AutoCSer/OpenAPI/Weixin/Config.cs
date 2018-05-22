@@ -91,7 +91,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 else value = token;
                 if (SHA.Sha1(AutoCSer.Extension.String_Weixin.ConcatBytes(nonce, timestamp, value)).checkLowerHexNotNull(signature)) return true;
             }
-            AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "微信服务器验证错误 signature[" + signature + @"] timestamp[" + timestamp + "] nonce[" + nonce + "] token[" + token + "]");
+            AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "微信服务器验证错误 signature[" + signature + @"] timestamp[" + timestamp + "] nonce[" + nonce + "] token[" + token + "]");
             return false;
         }
         /// <summary>

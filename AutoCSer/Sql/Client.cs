@@ -68,7 +68,7 @@ namespace AutoCSer.Sql
                         connection.Dispose();
                         connection = null;
                     }
-                    AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, exception);
+                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, exception);
                 }
             }
             return connection;
@@ -363,7 +363,7 @@ namespace AutoCSer.Sql
                             }
                             catch (Exception error)
                             {
-                                sqlTool.Log.add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
                             }
                             if (reader != null)
                             {
@@ -450,7 +450,7 @@ namespace AutoCSer.Sql
                     }
                     catch (Exception error)
                     {
-                        sqlTool.Log.add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
                     }
                 }
             }

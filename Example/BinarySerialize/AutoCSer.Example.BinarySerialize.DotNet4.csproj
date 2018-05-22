@@ -118,6 +118,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Property.cs" />
     <Compile Include="PublicInstanceField.cs" />
+    <Compile Include="RealType.cs" />
     <Compile Include="Reference.cs" />
   </ItemGroup>
   <ItemGroup>

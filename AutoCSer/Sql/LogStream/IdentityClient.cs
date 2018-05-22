@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.LogStream
                 }
                 catch (Exception error)
                 {
-                    client.log.add(AutoCSer.Log.LogType.Error, error);
+                    client.log.Add(AutoCSer.Log.LogType.Error, error);
                 }
                 this.error();
             }
@@ -92,7 +92,7 @@ namespace AutoCSer.Sql.LogStream
                         }
                         catch (Exception error)
                         {
-                            client.log.add(AutoCSer.Log.LogType.Error, error);
+                            client.log.Add(AutoCSer.Log.LogType.Error, error);
                         }
                     }
                     this.error();

@@ -105,7 +105,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.add(Log.LogType.Error, error);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                 }
             }

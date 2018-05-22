@@ -115,6 +115,7 @@
       <HintPath>..\..\Packet\DotNet4\AutoCSer.WebView.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsynchronousMethod.cs" />

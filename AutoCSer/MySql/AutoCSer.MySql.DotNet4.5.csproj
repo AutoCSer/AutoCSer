@@ -41,10 +41,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Packet\DotNet4.5\AutoCSer.Sort.dll</HintPath>
     </Reference>
-    <Reference Include="AutoCSer.Sql, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.Sql.dll</HintPath>
-    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\..\ThirdParty\MySql.Data.dll</HintPath>
     </Reference>
@@ -59,6 +55,12 @@
     <Compile Include="IndexColumn.cs" />
     <Compile Include="TypeName.cs" />
     <Compile Include="UnionType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sql\AutoCSer.Sql.DotNet4.5.csproj">
+      <Project>{6d9b5bd4-a71b-4b21-8a33-761f948eed55}</Project>
+      <Name>AutoCSer.Sql.DotNet4.5</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -197,7 +197,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
                     buildInfo.IsError = true;
                 }
                 finally

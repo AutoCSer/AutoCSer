@@ -78,7 +78,7 @@ namespace AutoCSer.Deploy
                     if (Error == null) log.Type = LogType.Completed;
                     else
                     {
-                        AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, Error);
+                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, Error);
                         log.Type = LogType.Error;
                     }
                     if (!(isLog |= onLog(log))) Server.ClearClient(ref clientId);

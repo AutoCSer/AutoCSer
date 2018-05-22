@@ -3,7 +3,7 @@
 <!--Include:Include\Header[AutoCSer 首页]-->
 <body>
     <div>
-        <p><b class="AutoCSerClass" id="AutoCSerId" name="AutoCSerName" type="AutoCSerType">AutoCSer</b> 是一个以高效率为目标向导的<a href="/Global.html">整体开发框架</a>，是开源框架 <a href="https://fastcsharp.codeplex.com/" target="_blank">fastCSharp</a> 的闭源版本，<a href="https://fastcsharp.codeplex.com/" target="_blank">fastCSharp</a> 将不再更新。</p>
+        <p><b class="AutoCSerClass" id="AutoCSerId" name="AutoCSerName" type="AutoCSerType">AutoCSer</b> 是一个以高效率为目标向导的<a href="/Global.html">服务端整体开发框架</a>，是开源框架 <a href="https://fastcsharp.codeplex.com/" target="_blank">fastCSharp</a> 的闭源版本（核心部分闭源，周边开源），<a href="https://fastcsharp.codeplex.com/" target="_blank">fastCSharp</a> 将不再更新。</p>
         <p>
             <b>1. 开发效率</b>
             <br />. 采用自动化编码方案，结合静态代码生成技术与运行时代码生成技术 Emit，为应用层降低“代码杂音”。
@@ -19,18 +19,19 @@
         <p>支持 .NET Standard / Core 2.0 ，支持 AOT（NoJIT） 模式</p>
         <p>Windows 下最低支持 .NET Framework 2.0 SP2</p>
         <p>Unbuntu / CentOS 下支持 MONO + .NET4.5</p>
-        <p>支持基于 Xamarin.Forms 的 <a href="/Android/Index.html">Android</a> / IOS APP 开发</p>
+        <p>支持基于 Xamarin.Forms 的 <a href="/Android/Index.html">Android</a> / IOS APP 开发，支持 Unity3D 开发</p>
     </div>
 
     <div><h1>下载 Download</h1></div>
     <div> <a href="https://github.com/AutoCSer/AutoCSer" target="_blank">GitHub</a> | <a href="https://www.nuget.org/packages/AutoCSer.DotNet4.5V/" target="_blank">.NET 4.5 NuGet</a> | <a href="https://www.nuget.org/packages/AutoCSer.NetStandard/" target="_blank">.Net Standard 2.0 NuGet</a></div>
     <div>
         <p><a href="//__STATICDOMAIN__/Download/AutoCSer.Example.zip?__VERSIONNAME__=__VERSION__" target="_blank">AutoCSer.zip</a>\Packet\ 中包含各种目标框架下的 dll / pdb / xml 文件：</p>
-        <p>. <b>AutoCSer.dll</b> 是核心程序集，主要包括 <a href="/TcpServer/InterfaceServer.html">TCP 接口服务框架</a>、<a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>、<a href="/TcpServer/Register.html">TCP 内部服务注册组件</a> 与 <a href="/Serialize/Binary.html">二进制</a> / <a href="/Serialize/Json.html">JSON</a> / <a href="/Serialize/Xml.html">XML</a> 数据序列化组件。</p>
+        <p>. <b>AutoCSer.dll（闭源）</b> 是核心程序集，主要包括 <a href="/TcpServer/InterfaceServer.html">TCP 接口服务框架</a>、<a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>、<a href="/TcpServer/RemoteExpression.html">远程表达式链组件</a>、<a href="/TcpServer/Register.html">TCP 内部服务注册组件</a> 与 <a href="/Serialize/Binary.html">二进制</a> / <a href="/Serialize/Json.html">JSON</a> / <a href="/Serialize/Xml.html">XML</a> 数据序列化组件。</p>
         <p>. <b>AutoCSer.CodeGenerator.exe</b> / <b>AutoCSer.CodeGenerator</b> 项目用于<a href="/CodeGenerator.html">静态代码生成</a>，<a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>、<a href="/WebView/Index.html">前后端一体 WEB 视图框架</a>、<a href="/OrmCache/Index.html">ORM 内存索引缓存框架</a> 这些组件都依赖于它。</p>
-        <p>. <b>AutoCSer.WebView.dll</b> 主要包括 <a href="/WebView/Index.html">前后端一体 WEB 视图框架</a> 与 可嵌入的 <a href="/WebView/HttpServer.html">HTTP 服务器</a>。<b>\AutoCSer\Js\</b> 目录中包含 WEB 框架依赖的配套<a href="/WebView/Script.html">基础脚本类库</a>和一些我个人常用的其它脚本类库。</p>
+        <p>. <b>AutoCSer.WebView.dll（闭源）</b> 主要包括 <a href="/WebView/Index.html">前后端一体 WEB 视图框架</a> 与 可嵌入的 <a href="/WebView/HttpServer.html">HTTP 服务器</a>。<b>\AutoCSer\Js\</b> 目录中包含 WEB 框架依赖的配套<a href="/WebView/Script.html">基础脚本类库</a>和一些我个人常用的其它脚本类库。</p>
+        <p>. <b>AutoCSer.CacheServer</b> 项目是一个高性能的<a href="/CacheServer/Index.html">日志型内存数据库缓存服务组件</a>，示例项目是 AutoCSer.Example.CacheServer ，性能测试项目是 AutoCSer.TestCase.CacheServerPerformance / AutoCSer.TestCase.CacheClientPerformance 。</p>
         <p>. <b>AutoCSer.Sql.dll</b> / <b>AutoCSer.Sql</b> 项目主要包括 <a href="/OrmCache/Index.html">ORM 内存索引缓存框架</a>，暂时<b>不支持 .NET Framework 2.0 </b>，<b>AutoCSer.MySql</b> 是对 MySQL 的支持项目。</p>
-        <p>. <b>AutoCSer.Sort.dll</b> 主要包括一些排序相关的算法实现，相关性能测试项目包括 AutoCSer.TestCase.RadixSortPerformance / AutoCSer.TestCase.SearchTree 。</p>
+        <p>. <b>AutoCSer.Sort.dll（闭源）</b> 主要包括一些排序相关的算法实现，相关性能测试项目包括 AutoCSer.TestCase.RadixSortPerformance / AutoCSer.TestCase.SearchTree 。</p>
         <p>. <b>AutoCSer.TcpStreamServer.dll</b> / <b>AutoCSer.TcpStreamServer</b> 项目包括 <a href="/TcpServer/InterfaceStreamServer.html">TCP 接口应答流服务框架</a> 与 <a href="/TcpServer/MethodStreamServer.html">TCP 函数应答流服务框架</a>，服务端只支持单线程队列模式，在简单吞吐测试中 <a href="/TcpServer/MethodStreamServer.html">TCP 函数应答流服务框架</a> 比通用型的 <a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a> 表现要稍微好一点。</p>
         <p>. <b>AutoCSer.TcpSimpleServer.dll</b> / <b>AutoCSer.TcpSimpleServer</b> 项目包括 <a href="/TcpServer/SimpleInterfaceServer.html">TCP 接口同步应答服务框架</a> 与 <a href="/TcpServer/SimpleMethodServer.html">TCP 函数同步应答服务框架</a>，只支持同步应答模式。</p>
         <p>. <b>Serialize</b> 目录下的 AutoCSer.Serialize.dll / AutoCSer.Json.dll / AutoCSer.Xml.dll / AutoCSer.BinarySerialize.dll 是为序列化单独提供的类库，它们不依赖于 AutoCSer.dll 。</p>

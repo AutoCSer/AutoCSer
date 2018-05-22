@@ -48,10 +48,10 @@ namespace AutoCSer.OpenAPI.QQ
                     catch (Exception error)
                     {
                         isError = true;
-                        AutoCSer.Log.Pub.Log.add(Log.LogType.Error, error, json);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, json);
                     }
                     if (isJson && openId.openid != null) return openId;
-                    if (!isError) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, json);
+                    if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, json);
                 }
             }
             return default(OpenId);

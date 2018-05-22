@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoCSer.Extension;
+using System.Threading;
 
 namespace AutoCSer.Example.OrmTable
 {
@@ -32,12 +33,48 @@ namespace AutoCSer.Example.OrmTable
                     Console.WriteLine(value.toJson());
                     sqlTable.Update(new OrmOnly { Id = value.Id, Value = value.Value + 1 }, updateMemberMap);
                 }
-                foreach (OrmOnly value in sqlTable.Select())
+                //foreach (OrmOnly value in sqlTable.Select())
+                //{
+                //    Console.WriteLine(value.toJson());
+                //    sqlTable.Delete(value.Id);
+                //}
+                using (deleteWait = new AutoResetEvent(false))
                 {
-                    Console.WriteLine(value.toJson());
-                    sqlTable.Delete(value.Id);
+                    deleteCount = 1;
+                    foreach (OrmOnly value in sqlTable.Select())
+                    {
+                        Console.WriteLine(value.toJson());
+                        Interlocked.Increment(ref deleteCount);
+                        sqlTable.Delete(value.Id, onDeleted);
+                    }
+                    onDeleted();
+                    deleteWait.WaitOne();
                 }
             }
+        }
+        /// <summary>
+        /// 异步测试结束等待事件
+        /// </summary>
+        private static AutoResetEvent deleteWait;
+        /// <summary>
+        /// 异步删除计数
+        /// </summary>
+        private static int deleteCount;
+        /// <summary>
+        /// 异步删除完成处理
+        /// </summary>
+        private static void onDeleted()
+        {
+            if (System.Threading.Interlocked.Decrement(ref deleteCount) == 0) deleteWait.Set();
+        }
+        /// <summary>
+        /// 异步删除完成处理
+        /// </summary>
+        /// <param name="value"></param>
+        private static void onDeleted(OrmOnly value)
+        {
+            if (value == null) Console.WriteLine("Delete Error!");
+            onDeleted();
         }
     }
 }

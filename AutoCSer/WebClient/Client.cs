@@ -247,7 +247,7 @@ namespace AutoCSer.Net.WebClient
         {
             if (request.IsErrorOut)
             {
-                AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, error, (request.IsErrorOutUri ? request.Uri.AbsoluteUri : null) + " 抓取失败", !request.IsErrorOutUri);
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, (request.IsErrorOutUri ? request.Uri.AbsoluteUri : null) + " 抓取失败", !request.IsErrorOutUri);
             }
         }
         /// <summary>
@@ -293,7 +293,7 @@ namespace AutoCSer.Net.WebClient
                     }
                     catch(Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, error, key.ToString(), true);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, error, key.ToString(), true);
                     }
                 }
             }

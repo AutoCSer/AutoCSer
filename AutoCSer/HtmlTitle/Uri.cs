@@ -96,7 +96,7 @@ namespace AutoCSer.Net.HtmlTitle
                 }
                 catch (Exception error)
                 {
-                    log.add(Log.LogType.Error, error);
+                    log.Add(Log.LogType.Error, error);
                 }
                 value = nextValue;
             }

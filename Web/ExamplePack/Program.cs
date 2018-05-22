@@ -171,7 +171,10 @@ namespace AutoCSer.Tool.OpenPack
                         if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "HtmlTitle", true);
                         break;
                     case 10: isDircectory = string.Compare(nextDircectory.Name, "Properties", true); break;
-                    case 11: isDircectory = string.Compare(nextDircectory.Name, "FieldEquals", true); break;
+                    case 11:
+                        isDircectory = string.Compare(nextDircectory.Name, "FieldEquals", true);
+                        if (isDircectory != 0) isDircectory = string.Compare(nextDircectory.Name, "CacheServer", true);
+                        break;
                     case 12: isDircectory = string.Compare(nextDircectory.Name, "RandomObject", true); break;
                     case 13: isDircectory = string.Compare(nextDircectory.Name, "CodeGenerator", true); break;
                     case 15:

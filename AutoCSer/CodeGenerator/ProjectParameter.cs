@@ -132,7 +132,7 @@ namespace AutoCSer.CodeGenerator
             DefaultNamespace = defaultNamespace;
             IsProjectFile = isProjectFile;
             string assemblyFile = new FileInfo(assemblyPath).Name;
-            if (assemblyFile == "AutoCSer.CodeGenerator.exe") IsAutoCSerCodeGenerator = IsCombinationTemplate = true;
+            if (assemblyFile == "AutoCSer.CodeGenerator.exe") IsAutoCSerCodeGenerator = true;
             else if (assemblyFile == CustomConfig.CustomAssemblyName + ".dll") IsCustomCodeGenerator = true;
         }
         /// <summary>
@@ -192,12 +192,9 @@ namespace AutoCSer.CodeGenerator
                     if (IsAutoCSerCodeGenerator || IsCustomCodeGenerator)
                     {
                         run(new CSharper());
-                        //if (IsCombinationTemplate)
-                        //    run(new CombinationTemplate());
                     }
                     else
                     {
-
                         KeyValue<Type, GeneratorAttribute>[] generators = (CustomConfig.Default.IsAutoCSer ? CurrentAssembly.GetTypes() : NullValue<Type>.Array)
                             .concat(CustomConfig.Assembly == null ? null : CustomConfig.Assembly.GetTypes())
                             .getFind(type => !type.IsInterface && !type.IsAbstract && typeof(IGenerator).IsAssignableFrom(type))

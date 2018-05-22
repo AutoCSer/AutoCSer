@@ -6,7 +6,7 @@ namespace AutoCSer.TestCase.SqlModel
     /// 班级数据定义
     /// </summary>
     [AutoCSer.WebView.ClientType(PrefixName = Pub.WebViewClientTypePrefixName)]
-    [AutoCSer.Sql.Model(CacheType = AutoCSer.Sql.Cache.Whole.Event.Type.CreateIdentityArray, IsMemberCache = true, LogServerName = Pub.LogServerName, IsLogSerializeReferenceMember = false)]
+    [AutoCSer.Sql.Model(CacheType = AutoCSer.Sql.Cache.Whole.Event.Type.IdentityArray, IsMemberCache = true, LogServerName = Pub.LogServerName, IsLogSerializeReferenceMember = false)]
     public partial class Class
     {
         /// <summary>

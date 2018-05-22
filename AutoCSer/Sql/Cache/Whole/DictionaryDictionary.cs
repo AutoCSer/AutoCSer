@@ -101,7 +101,7 @@ namespace AutoCSer.Sql.Cache.Whole
                     {
                         dictionary.Add(key, cacheValue);
                     }
-                    else cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                    else cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
                 }
             }
             else
@@ -122,7 +122,7 @@ namespace AutoCSer.Sql.Cache.Whole
             {
                 if (dictionary.Count == 0) groups.Remove(groupKey);
             }
-            else cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
         /// <summary>
         /// 删除数据
@@ -132,6 +132,18 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value)
         {
             onDeleted(value, getGroupKey(value));
+        }
+        /// <summary>
+        /// 获取关键字集合
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public ICollection<RandomKey<keyType>> GetKeys(groupKeyType key)
+        {
+            Dictionary<RandomKey<keyType>, valueType> dictionary;
+            if (groups.TryGetValue(key, out dictionary)) return dictionary.Keys;
+            return NullValue<RandomKey<keyType>>.Array;
         }
     }
 }

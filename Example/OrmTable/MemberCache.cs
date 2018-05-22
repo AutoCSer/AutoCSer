@@ -21,16 +21,12 @@ namespace AutoCSer.Example.OrmTable
         /// <summary>
         /// 扩展缓存数据
         /// </summary>
+        [AutoCSer.Sql.MemberCache]
         internal MemberCacheExtension Extension;
 
         static MemberCache()
         {
-            if (sqlTable != null)
-            {
-                createCache(value => value.Extension);
-
-                sqlLoaded();
-            }
+            if (sqlTable != null) sqlLoaded();
         }
     }
 }

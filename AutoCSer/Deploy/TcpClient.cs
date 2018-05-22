@@ -90,7 +90,7 @@ namespace AutoCSer.Deploy
                     }
                     catch (Exception error)
                     {
-                        AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
 #if DotNetStandard
                         AutoCSer.Net.TcpServer.CommandBase.CloseClient(socket.Socket);
 #else

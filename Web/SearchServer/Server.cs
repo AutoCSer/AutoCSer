@@ -75,7 +75,7 @@ namespace AutoCSer.Web.SearchServer
                         case 0: value = NullValue<SearchItem>.Array; break;
                         case 1:
                             value = results[0].Value.Result.getLeftArray(results[0].Value.Count)
-                                .getRangeSortDesc(result => getWeight(result.Key.Type, result.Value.Indexs.Length), 0, pageSize, result => new SearchItem(results[0].Key, result));
+                                .GetRangeSortDesc(result => getWeight(result.Key.Type, result.Value.Indexs.Length), 0, pageSize, result => new SearchItem(results[0].Key, result));
                             break;
                         default:
                             value = Searcher.Default.GetWeights(ref results, Weight.Default)

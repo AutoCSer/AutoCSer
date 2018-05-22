@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CodeGenerator
 {
-
     /// <summary>
     /// CSharp代码生成数据视图生成
     /// </summary>

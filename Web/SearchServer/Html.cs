@@ -111,7 +111,7 @@ namespace AutoCSer.Web.SearchServer
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
         }
         /// <summary>
@@ -132,7 +132,7 @@ namespace AutoCSer.Web.SearchServer
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, error);
+                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
         }
         /// <summary>

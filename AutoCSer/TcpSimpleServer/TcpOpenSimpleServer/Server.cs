@@ -102,7 +102,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }
@@ -168,7 +168,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 catch (Exception error)
                 {
                     if (isListen == 0) return;
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                     Thread.Sleep(1);
                 }
             }
@@ -192,7 +192,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     }
                     catch (Exception error)
                     {
-                        Log.add(AutoCSer.Log.LogType.Debug, error);
+                        Log.Add(AutoCSer.Log.LogType.Debug, error);
                     }
                     if (serverSocket != null)
                     {

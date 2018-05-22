@@ -483,7 +483,7 @@ namespace AutoCSer.Example.OrmModel
             /// </summary>
             /// <typeparam name="tableType">表格映射类型</typeparam>
             /// <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
-            [AutoCSer.Sql.MemberCache]
+            [AutoCSer.Sql.MemberCacheLink]
             public abstract class SqlModel<tableType, memberCacheType> : AutoCSer.Example.OrmModel.MemberCache
                 where tableType : SqlModel<tableType, memberCacheType>
                 where memberCacheType : class
@@ -491,7 +491,7 @@ namespace AutoCSer.Example.OrmModel
                 /// <summary>
                 /// SQL表格操作工具
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.MemberCache> sqlTable = AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.MemberCache>.Get(true);
+                protected static readonly AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.MemberCache> sqlTable = AutoCSer.Sql.Table<tableType, AutoCSer.Example.OrmModel.MemberCache>.Get(false);
                 private static bool isSqlLoaded;
                 /// <summary>
                 /// 等待数据初始化完成
@@ -512,7 +512,7 @@ namespace AutoCSer.Example.OrmModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        sqlTable.WaitCreateCache();
+                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
                         isEventCacheLoaded = true;
                     }
                 }
@@ -522,33 +522,17 @@ namespace AutoCSer.Example.OrmModel
                 /// <param name="onInserted">添加记录事件</param>
                 /// <param name="onUpdated">更新记录事件</param>
                 /// <param name="onDeleted">删除记录事件</param>
-                protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.Example.OrmModel.MemberCache>> onUpdated = null, Action<tableType> onDeleted = null)
+                protected static void sqlLoaded(Action<tableType> onInserted = null, AutoCSer.Sql.Cache.Table<tableType, AutoCSer.Example.OrmModel.MemberCache>.OnCacheUpdated onUpdated = null, Action<tableType> onDeleted = null)
                 {
                     sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false);
                     sqlTable.LoadMemberCache(typeof(memberCacheType));
                     sqlTable.WaitMemberCache();
                 }
-
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.Example.OrmModel.MemberCache, memberCacheType> sqlCache;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <typeparam name="memberCacheType"></typeparam>
-                /// <param name="memberCache">成员缓存</param>
-                /// <param name="group">数据分组</param>
-                /// <param name="baseIdentity">基础ID</param>
-                /// <param name="isReset">是否初始化事件与数据</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.Example.OrmModel.MemberCache, memberCacheType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, int group = 0, int baseIdentity = 0, bool isReset = true)
-                {
-                    if (sqlTable == null) return null;
-                    sqlCache = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.Example.OrmModel.MemberCache, memberCacheType>(sqlTable, memberCache, group, baseIdentity, isReset);
-                    sqlTable.CacheCreated();
-                    return sqlCache;
-                }
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.Example.OrmModel.MemberCache, memberCacheType> sqlCache = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.Example.OrmModel.MemberCache, memberCacheType>(sqlTable);
+
 
 
 

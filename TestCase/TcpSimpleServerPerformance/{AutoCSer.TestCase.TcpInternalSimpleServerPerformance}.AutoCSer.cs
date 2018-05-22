@@ -362,7 +362,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 异步计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addAsynchronous(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> addAsynchronous(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -387,7 +388,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 计算队列测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addQueue(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> addQueue(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -412,7 +414,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 简单计算测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addSynchronous(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> addSynchronous(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -437,7 +440,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addTcpTask(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> addTcpTask(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -462,7 +466,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addThreadPool(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> addThreadPool(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -487,7 +492,8 @@ namespace AutoCSer.TestCase.TcpInternalSimpleServerPerformance
                 /// <summary>
                 /// 计算任务测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> addTimeoutTask(int left, int right)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> addTimeoutTask(int left, int right)
                 {
                     if (_isDisposed_ == 0)
                     {

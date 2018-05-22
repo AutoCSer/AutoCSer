@@ -55,7 +55,7 @@ namespace AutoCSer.Email
                 }
                 catch (Exception error)
                 {
-                    log.add(Log.LogType.Debug | Log.LogType.Info, error);
+                    log.Add(Log.LogType.Debug | Log.LogType.Info, error);
                 }
             }
         }

@@ -11,7 +11,7 @@ namespace AutoCSer.Sql.LogStream
     /// <summary>
     /// 日志
     /// </summary>
-    public abstract class Log : LinkQueueTaskNode
+    public abstract class Log : Threading.LinkQueueTaskNode
     {
         /// <summary>
         /// 计算列加载完成字段名称
@@ -149,7 +149,7 @@ namespace AutoCSer.Sql.LogStream
         /// 执行任务
         /// </summary>
         /// <param name="connection"></param>
-        internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+        internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
         {
             onLoaded();
             return LinkNext;
@@ -187,7 +187,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 添加日志处理委托
         /// </summary>
-        private sealed class AddOnLogTask : LinkQueueTaskNode
+        private sealed class AddOnLogTask : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 日志
@@ -205,7 +205,7 @@ namespace AutoCSer.Sql.LogStream
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
                 Log.add(OnLog, IsQueue);
                 return LinkNext;
@@ -214,7 +214,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 手动更新数据
         /// </summary>
-        private sealed class UpdateTask : LinkQueueTaskNode
+        private sealed class UpdateTask : Threading.LinkQueueTaskNode
         {
             /// <summary>
             /// 日志
@@ -232,7 +232,7 @@ namespace AutoCSer.Sql.LogStream
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
             {
                 Log.update(Value, MemberMap);
                 return LinkNext;

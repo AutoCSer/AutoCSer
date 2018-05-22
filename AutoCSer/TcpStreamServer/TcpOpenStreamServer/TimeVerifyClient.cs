@@ -53,10 +53,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 }
                 if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
                 {
-                    socket.Log.add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
                     return false;
                 }
-                socket.Log.add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                socket.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
             }
             while (true);
         }

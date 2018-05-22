@@ -14,7 +14,7 @@ namespace AutoCSer.Sql.Cache.Whole
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="keyType">分组字典关键字类型</typeparam>
     /// <typeparam name="targetType">目标数据类型</typeparam>
-    public class MemberLazyOrderArray<valueType, modelType, keyType, targetType> : Member<valueType, modelType, keyType, targetType, LazyOrderArray<valueType>>
+    public partial class MemberLazyOrderArray<valueType, modelType, keyType, targetType> : Member<valueType, modelType, keyType, targetType, LazyOrderArray<valueType>>
         where valueType : class, modelType
         where modelType : class
         where keyType : IEquatable<keyType>
@@ -67,7 +67,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onInserted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 LazyOrderArray<valueType> array = getMember(target);
@@ -88,11 +88,11 @@ namespace AutoCSer.Sql.Cache.Whole
             if (key.Equals(oldKey))
             {
                 targetType target = getValue(key);
-                if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+                if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
                 else
                 {
                     LazyOrderArray<valueType> array = getMember(target);
-                    if (array == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                    if (array == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
                     else array.Update(cacheValue);
                 }
             }
@@ -110,11 +110,11 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 LazyOrderArray<valueType> array = getMember(target);
-                if (array == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                if (array == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
                 else array.Delete(value);
             }
         }
@@ -126,6 +126,87 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value)
         {
             onDeleted(value, getKey(value));
+        }
+        /// <summary>
+        /// 获取缓存
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private LazyOrderArray<valueType> getCache(keyType key)
+        {
+            targetType target = getValue(key);
+            return target != null ? getMember(target) : null;
+        }
+        /// <summary>
+        /// 获取匹配数量
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>匹配数量</returns>
+        public int Count(keyType key)
+        {
+            LazyOrderArray<valueType> array = getCache(key);
+            return array == null ? 0 : array.Array.Length;
+        }
+        /// <summary>
+        /// 获取匹配的数据集合
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="isValue">数据匹配器</param>
+        /// <returns>数据集合</returns>
+        public valueType[] GetFindArray(keyType key, Func<valueType, bool> isValue)
+        {
+            LazyOrderArray<valueType> array = getCache(key);
+            return array == null ? NullValue<valueType>.Array : array.Array.GetFindArray(isValue);
+        }
+        /// <summary>
+        /// 获取不排序的数据集合
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>数据集合</returns>
+        public IEnumerable<valueType> GetCache(keyType key)
+        {
+            LazyOrderArray<valueType> array = getCache(key);
+            if (array != null) return array.Array;
+            return NullValue<valueType>.Array;
+        }
+        /// <summary>
+        /// 获取有序数据
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="index">关键字</param>
+        /// <returns>获取有序数据</returns>
+        public valueType At(keyType key, int index)
+        {
+            LazyOrderArray<valueType> array = getCache(key);
+            if (array != null && (uint)index < array.Array.Length)
+            {
+                Threading.LazyOrderArrayAtTask<valueType> task = new Threading.LazyOrderArrayAtTask<valueType>(index, array, sorter);
+                cache.SqlTable.AddQueue(task);
+                return task.Wait();
+            }
+            return null;
+        }
+        /// <summary>
+        /// 获取分页数据集合
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">数据总数</param>
+        /// <param name="isDesc">是否逆序</param>
+        /// <returns>分页数据集合</returns>
+        public valueType[] GetPage(keyType key, int pageSize, int currentPage, out int count, bool isDesc = false)
+        {
+            LazyOrderArray<valueType> array = getCache(key);
+            if (array != null)
+            {
+                Threading.LazyOrderArrayPageTask<valueType> task = new Threading.LazyOrderArrayPageTask<valueType>(pageSize, currentPage, isDesc, array, sorter);
+                cache.SqlTable.AddQueue(task);
+                return task.Wait(out count);
+            }
+            count = 0;
+            return NullValue<valueType>.Array;
         }
     }
 }

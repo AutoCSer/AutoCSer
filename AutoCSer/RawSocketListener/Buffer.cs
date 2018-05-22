@@ -20,10 +20,6 @@ namespace AutoCSer.Net.RawSocketListener
         /// </summary>
         private BufferCount bufferCount;
         /// <summary>
-        /// 是否已经释放资源
-        /// </summary>
-        private int isDisposed;
-        /// <summary>
         /// IPv4 数据包
         /// </summary>
         public Packet.Ip Ip
@@ -63,10 +59,11 @@ namespace AutoCSer.Net.RawSocketListener
         /// </summary>
         public void Dispose()
         {
-            if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
+            BufferCount bufferCount = Interlocked.Exchange(ref this.bufferCount, null);
+            if (bufferCount != null)
             {
-                array.SetNull();
                 bufferCount.Free();
+                array.SetNull();
             }
         }
         /// <summary>

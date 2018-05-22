@@ -77,7 +77,7 @@ namespace AutoCSer.Sql.Cache.Whole
         private void onInserted(valueType value, keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 memberKeyType memberKey = getMemberKey(value);
@@ -117,7 +117,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, keyType key, memberKeyType memberKey)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 Dictionary<RandomKey<memberKeyType>, ListArray<valueType>> dictionary = getMember(target);
@@ -139,7 +139,7 @@ namespace AutoCSer.Sql.Cache.Whole
                         }
                     }
                 }
-                cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
         }
         /// <summary>

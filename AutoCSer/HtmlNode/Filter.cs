@@ -157,6 +157,7 @@ namespace AutoCSer.HtmlNode
         public void Dispose()
         {
             Unmanaged.Free(ref valueData);
+            if (nextFilter != null) nextFilter.Dispose();
         }
         /// <summary>
         /// 解析下一个筛选功能
@@ -288,7 +289,7 @@ namespace AutoCSer.HtmlNode
         {
             foreach (Node nextNode in node.Nodes)
             {
-                if (nextNode.Tag.equalCase(value)) yield return nextNode;
+                if (nextNode.Tag.EqualCase(value)) yield return nextNode;
             }
         }
         /// <summary>
@@ -396,7 +397,7 @@ namespace AutoCSer.HtmlNode
                         {
                             foreach (Node nextNode in node.ChildrenArray)
                             {
-                                if (nextNode.Tag.equalCase(value)) yield return nextNode;
+                                if (nextNode.Tag.EqualCase(value)) yield return nextNode;
                             }
                         }
                         else
@@ -412,7 +413,7 @@ namespace AutoCSer.HtmlNode
                         int indexIndex = 0, index = indexs[0], count = 0;
                         foreach (Node nextNode in node.ChildrenArray)
                         {
-                            if (nextNode.Tag.equalCase(value))
+                            if (nextNode.Tag.EqualCase(value))
                             {
                                 if (count == index)
                                 {
@@ -447,7 +448,7 @@ namespace AutoCSer.HtmlNode
                         int count = index;
                         foreach (Node nextNode in node.ChildrenArray)
                         {
-                            if (nextNode.Tag.equalCase(value))
+                            if (nextNode.Tag.EqualCase(value))
                             {
                                 if (count == 0)
                                 {
@@ -548,7 +549,7 @@ namespace AutoCSer.HtmlNode
         {
             foreach (Node nextNode in node.GetFilterNodes(nodes))
             {
-                if (nextNode.Tag.equalCase(value)) yield return nextNode;
+                if (nextNode.Tag.EqualCase(value)) yield return nextNode;
             }
         }
         /// <summary>

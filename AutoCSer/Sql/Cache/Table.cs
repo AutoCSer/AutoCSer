@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.Metadata;
 
 namespace AutoCSer.Sql.Cache
 {
@@ -12,9 +13,18 @@ namespace AutoCSer.Sql.Cache
         where modelType : class
     {
         /// <summary>
+        /// 缓存更新事件
+        /// </summary>
+        /// <param name="cacheValue">缓存数据</param>
+        /// <param name="newValue">更新后的数据</param>
+        /// <param name="oldValue">更新前的数据</param>
+        /// <param name="memberMap">更新数据成员</param>
+        public delegate void OnCacheUpdated(valueType cacheValue, valueType newValue, valueType oldValue, MemberMap<modelType> memberMap);
+
+        /// <summary>
         /// SQL操作工具
         /// </summary>
-        internal readonly Sql.Table<valueType, modelType> SqlTable;
+        public readonly Sql.Table<valueType, modelType> SqlTable;
         /// <summary>
         /// 数据成员位图
         /// </summary>

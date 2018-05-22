@@ -11,7 +11,7 @@ namespace AutoCSer.Sql.Cache.Whole
     /// <typeparam name="valueType">表格绑定类型</typeparam>
     /// <typeparam name="modelType">表格模型类型</typeparam>
     /// <typeparam name="sortType">排序关键字类型</typeparam>
-    public class SearchTreeDictionary<valueType, modelType, sortType>
+    public partial class SearchTreeDictionary<valueType, modelType, sortType>
         where valueType : class, modelType
         where modelType : class
         where sortType : IComparable<sortType>
@@ -65,7 +65,7 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (!tree.TryAdd(getSort(value), value))
             {
-                cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
         }
         /// <summary>
@@ -90,8 +90,52 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             if (!tree.Remove(getSort(value)))
             {
-                cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
             }
+        }
+        /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        /// <returns>数据集合</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType[] GetArray()
+        {
+            int count;
+            return GetPage(int.MaxValue, 1, out count);
+        }
+        /// <summary>
+        /// 获取分页数据集合
+        /// </summary>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currentPage">分页页号</param>
+        /// <param name="count">数据总数</param>
+        /// <param name="isDesc">是否逆序</param>
+        /// <returns>分页数据集合</returns>
+        public valueType[] GetPage(int pageSize, int currentPage, out int count, bool isDesc = false)
+        {
+            Threading.SearchTreeDictionaryPageTask<valueType, sortType> task = new Threading.SearchTreeDictionaryPageTask<valueType, sortType>(pageSize, currentPage, isDesc, tree);
+            cache.SqlTable.AddQueue(task);
+            return task.Wait(out count);
+        }
+        /// <summary>
+        /// 根据关键字比它小的节点数量
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>节点数量</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public int CountLess(sortType key)
+        {
+            return tree.CountLess(ref key);
+        }
+        /// <summary>
+        /// 根据关键字比它大的节点数量
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>节点数量</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public int CountThan(sortType key)
+        {
+            return tree.CountThan(ref key);
         }
     }
 }

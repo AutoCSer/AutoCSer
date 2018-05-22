@@ -135,7 +135,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 }
             }
             finally { Monitor.Exit(getTokenLock); }
-            if (value != null) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "访问令牌获取失败 " + value.Message);
+            if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "访问令牌获取失败 " + value.Message);
             return null;
         }
         /// <summary>
@@ -247,7 +247,7 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -291,7 +291,7 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -339,7 +339,7 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                     }
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -390,7 +390,7 @@ namespace AutoCSer.OpenAPI.Weixin
                 {
                     if ((token = resetToken(token)) != null && (data = Config.Client.Download(urlPrefix + token)) != null && checkMediaData(data) == null) return data;
                 }
-                if (value != null) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
+                if (value != null) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, "API " + url + " 请求失败 " + value.Message);
             }
             return null;
         }
@@ -2157,13 +2157,13 @@ namespace AutoCSer.OpenAPI.Weixin
                         }
                         catch (Exception error)
                         {
-                            AutoCSer.Log.Pub.Log.add(Log.LogType.Error, error, text);
+                            AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, text);
                         }
                         return null;
                     }
                 }
             }
-            AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, text);
+            AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, text);
             return null;
         }
         /// <summary>

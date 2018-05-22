@@ -32,7 +32,7 @@ namespace AutoCSer.Sql.Cache
         /// <summary>
         /// 二维数组
         /// </summary>
-        private valueType[][] arrays;
+        internal valueType[][] Arrays;
         /// <summary>
         /// 有效数组数量
         /// </summary>
@@ -48,8 +48,8 @@ namespace AutoCSer.Sql.Cache
         /// <returns></returns>
         internal valueType this[int index]
         {
-            get { return arrays[index >> IdentityArray.ArrayShift][index & IdentityArray.ArraySizeAnd]; }
-            set { arrays[index >> IdentityArray.ArrayShift][index & IdentityArray.ArraySizeAnd] = value; }
+            get { return Arrays[index >> IdentityArray.ArrayShift][index & IdentityArray.ArraySizeAnd]; }
+            set { Arrays[index >> IdentityArray.ArrayShift][index & IdentityArray.ArraySizeAnd] = value; }
         }
         /// <summary>
         /// 数据枚举
@@ -59,7 +59,7 @@ namespace AutoCSer.Sql.Cache
             get
             {
                 int count = arrayCount;
-                foreach (valueType[] array in arrays)
+                foreach (valueType[] array in Arrays)
                 {
                     foreach (valueType value in array)
                     {
@@ -76,8 +76,8 @@ namespace AutoCSer.Sql.Cache
         internal IdentityArray(int size)
         {
             int newArrayCount = (size + IdentityArray.ArraySizeAnd) >> IdentityArray.ArrayShift;
-            arrays = new valueType[Math.Max(newArrayCount, 4)][];
-            for (arrayCount = 0; arrayCount < newArrayCount; arrays[arrayCount++] = new valueType[IdentityArray.ArraySize]) ;
+            Arrays = new valueType[Math.Max(newArrayCount, 4)][];
+            for (arrayCount = 0; arrayCount < newArrayCount; Arrays[arrayCount++] = new valueType[IdentityArray.ArraySize]) ;
             Length = arrayCount << IdentityArray.ArrayShift;
         }
         /// <summary>
@@ -87,14 +87,14 @@ namespace AutoCSer.Sql.Cache
         internal void ToSize(int size)
         {
             int newArrayCount = (size + IdentityArray.ArraySizeAnd) >> IdentityArray.ArrayShift;
-            if (arrays == null) arrays = new valueType[Math.Max(newArrayCount, 4)][];
-            else if (arrays.Length < newArrayCount)
+            if (Arrays == null) Arrays = new valueType[Math.Max(newArrayCount, 4)][];
+            else if (Arrays.Length < newArrayCount)
             {
-                valueType[][] newArrays = new valueType[Math.Max(arrays.Length << 1, newArrayCount)][];
-                Array.Copy(arrays, 0, newArrays, 0, arrayCount);
-                arrays = newArrays;
+                valueType[][] newArrays = new valueType[Math.Max(Arrays.Length << 1, newArrayCount)][];
+                Array.Copy(Arrays, 0, newArrays, 0, arrayCount);
+                Arrays = newArrays;
             }
-            while (arrayCount < newArrayCount) arrays[arrayCount++] = new valueType[IdentityArray.ArraySize];
+            while (arrayCount < newArrayCount) Arrays[arrayCount++] = new valueType[IdentityArray.ArraySize];
             Length = arrayCount << IdentityArray.ArrayShift;
         }
         /// <summary>
@@ -105,7 +105,7 @@ namespace AutoCSer.Sql.Cache
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal valueType GetRemove(int index)
         {
-            valueType[] array = arrays[index >> IdentityArray.ArrayShift];
+            valueType[] array = Arrays[index >> IdentityArray.ArrayShift];
             valueType value = array[index &= IdentityArray.ArraySizeAnd];
             array[index] = null;
             return value;

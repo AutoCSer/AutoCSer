@@ -117,7 +117,7 @@ namespace AutoCSer.Sql.DataModel
             {
                 if (memberMap.Value == group) return memberMap.Key;
             }
-            AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, typeof(modelType).fullName() + " 缺少缓存分组 " + group.toString());
+            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, typeof(modelType).fullName() + " 缺少缓存分组 " + group.toString());
             return null;
         }
         /// <summary>

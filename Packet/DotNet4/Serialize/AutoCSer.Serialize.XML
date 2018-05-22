@@ -3322,11 +3322,6 @@
             <param name="generator"></param>
             <param name="value"></param>
         </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator.memberMapIsMemberMethod">
-            <summary>
-            判断成员位图是否匹配成员索引
-            </summary>
-        </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.memberMapIsMember(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)">
             <summary>
             判断成员位图是否匹配成员索引
@@ -3334,11 +3329,6 @@
             <param name="generator"></param>
             <param name="target"></param>
             <param name="value"></param>
-        </member>
-        <member name="F:AutoCSer.Extension.EmitGenerator.memberMapSetMemberMethod">
-            <summary>
-            设置成员索引
-            </summary>
         </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.memberMapSetMember(System.Reflection.Emit.ILGenerator,System.Reflection.Emit.OpCode,System.Int32)">
             <summary>
@@ -3388,6 +3378,301 @@
             <param name="generator"></param>
             <param name="type"></param>
             <param name="local"></param>
+        </member>
+        <member name="T:AutoCSer.Extension.EmitGenerator.MemberMap">
+            <summary>
+            成员位图函数信息
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMap">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.map">
+            <summary>
+            成员位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Type">
+            <summary>
+            成员位图类型信息
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.#ctor(AutoCSer.Metadata.MemberMap.TypeInfo)">
+            <summary>
+            成员位图
+            </summary>
+            <param name="type">成员位图类型信息</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Empty">
+            <summary>
+            清空所有成员
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Full">
+            <summary>
+            添加所有成员
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.IsMember(System.Int32)">
+            <summary>
+            判断成员索引是否有效
+            </summary>
+            <param name="memberIndex">成员索引</param>
+            <returns>成员索引是否有效</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.Int32)">
+            <summary>
+            清除成员索引,忽略默认成员
+            </summary>
+            <param name="memberIndex">成员索引</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.String)">
+            <summary>
+            清除成员索引,忽略默认成员
+            </summary>
+            <param name="memberName">成员名称</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.Int32)">
+            <summary>
+            设置成员索引,忽略默认成员
+            </summary>
+            <param name="memberIndex">成员索引</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.String)">
+            <summary>
+            设置成员索引,忽略默认成员
+            </summary>
+            <param name="memberName">成员名称</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.BinarySerialize(AutoCSer.UnmanagedStream)">
+            <summary>
+            序列化
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.GetFieldDeSerialize">
+            <summary>
+            获取字段成员反序列化位图
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.equals(AutoCSer.Metadata.MemberMap)">
+            <summary>
+            比较是否相等
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.equals(System.Byte*)">
+            <summary>
+            比较是否相等
+            </summary>
+            <param name="otherMap"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.GetMemberName(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            获取成员名称
+            </summary>
+            <param name="memberExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.IsDefault">
+            <summary>
+            是否默认全部成员有效
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMap.TypeInfo">
+            <summary>
+            成员位图类型信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Pool">
+            <summary>
+            成员位图内存池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.NameIndexSearcher">
+            <summary>
+            名称索引查找数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.#ctor(System.Type,AutoCSer.Metadata.MemberIndexInfo[],System.Int32)">
+            <summary>
+            成员位图类型信息
+            </summary>
+            <param name="type">类型</param>
+            <param name="members">成员索引集合</param>
+            <param name="fieldCount">字段成员数量</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMemberIndex(System.String)">
+            <summary>
+            获取成员索引
+            </summary>
+            <param name="name">成员名称</param>
+            <returns>成员索引,失败返回-1</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetClear">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMap">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.Push(System.Byte*@)">
+            <summary>
+            成员位图入池
+            </summary>
+            <param name="map">成员位图</param>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberCount">
+            <summary>
+            成员数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.FieldCount">
+            <summary>
+            字段成员数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberMapSize">
+            <summary>
+            成员位图字节数量
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.BinarySerializeSize">
+            <summary>
+            字段成员位图序列化字节数量
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Metadata.MemberMap.Pool">
+            <summary>
+            成员位图内存池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memorySize">
+            <summary>
+            成员位图内存池字节大小
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.maxMemberMapCount">
+            <summary>
+            成员位图内存池支持最大成员数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.free">
+            <summary>
+            空闲内存地址
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.size">
+            <summary>
+            成员位图字节数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.freeLock">
+            <summary>
+            空闲内存地址访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.clearCount">
+            <summary>
+            填充整数数量
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.#ctor(System.Int32)">
+            <summary>
+            成员位图内存池
+            </summary>
+            <param name="size">成员位图字节数量</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Get">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetClear">
+            <summary>
+            获取成员位图
+            </summary>
+            <returns>成员位图</returns>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Push(System.Byte*@)">
+            <summary>
+            成员位图入池
+            </summary>
+            <param name="map">成员位图</param>
+        </member>
+        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetPool(System.Int32)">
+            <summary>
+            获取成员位图内存池
+            </summary>
+            <param name="size">成员位图字节数量</param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.pools">
+            <summary>
+            成员位图内存池集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.poolLock">
+            <summary>
+            成员位图内存池集合访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryCount">
+            <summary>
+            内存申请数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryStart">
+            <summary>
+            成员位图内存池起始位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryEnd">
+            <summary>
+            成员位图内存池结束位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryLock">
+            <summary>
+            成员位图内存池访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberMap.Pool.createLock">
+            <summary>
+            成员位图内存池访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.MemberMap.IsMemberMethod">
+            <summary>
+            判断成员位图是否匹配成员索引
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Extension.EmitGenerator.MemberMap.SetMemberMethod">
+            <summary>
+            设置成员索引
+            </summary>
         </member>
         <member name="T:AutoCSer.BinarySerialize.SerializeMemberAttribute">
             <summary>
@@ -4757,7 +5042,36 @@
             成员复制扩展操作
             </summary>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``2(``1,AutoCSer.Metadata.MemberMap{``1})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="baseType">复制成员对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``2(``0,AutoCSer.Metadata.MemberMap{``1})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="baseType">复制成员对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``1(``0,AutoCSer.Metadata.MemberMap{``0})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -4766,7 +5080,7 @@
             <param name="readValue">被复制对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0@,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0@,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -4775,7 +5089,7 @@
             <param name="readValue">被复制对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -4784,7 +5098,7 @@
             <param name="writeValue">目标对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0@,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0@,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -8127,43 +8441,6 @@
             字符串解析失败
             </summary>
         </member>
-        <member name="T:AutoCSer.WebView.ClientTypeAttribute">
-            <summary>
-            客户端视图绑定类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.DefaultMemberName">
-            <summary>
-            默认绑定成员名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.Null">
-            <summary>
-            默认客户端视图绑定类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.Name">
-            <summary>
-            客户端视图绑定类型名称（PrefixName 为 null 时有效）
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.PrefixName">
-            <summary>
-            客户端视图绑定类型前缀
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.MemberName">
-            <summary>
-            绑定成员名称,默认为Id
-            </summary>
-        </member>
-        <member name="M:AutoCSer.WebView.ClientTypeAttribute.GetClientName(System.Type)">
-            <summary>
-            客户端视图绑定类型名称
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
         <member name="T:AutoCSer.UnmanagedPool">
             <summary>
             非托管内存池
@@ -9345,6 +9622,11 @@
             HTML 标题获取客户端操作
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer">
+            <summary>
+            缓存服务获取数据缓冲区
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -9451,6 +9733,11 @@
             数组子串
             </summary>
             <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.LeftArray`1.defalutArraySize">
+            <summary>
+            默认数组长度
+            </summary>
         </member>
         <member name="F:AutoCSer.LeftArray`1.Array">
             <summary>
@@ -9938,7 +10225,7 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Extension.Number.bitCount(System.UInt32)">
+        <member name="M:AutoCSer.Extension.Number.bitCount(System.UInt64)">
             <summary>
             获取二进制1位的个数
             </summary>
@@ -11235,7 +11522,7 @@
             <summary>
             对象null值检测
             </summary>
-            <returns></returns>
+            <returns>返回 0 表示 null</returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.VerifyRead(System.Int32)">
             <summary>
@@ -12908,6 +13195,19 @@
             </summary>
             <param name="length">增加长度</param>
         </member>
+        <member name="M:AutoCSer.UnmanagedStream.GetPrepSizeCurrent(System.Int32)">
+            <summary>
+            预增数据流长度
+            </summary>
+            <param name="size">增加长度</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.AddSize(System.Int32)">
+            <summary>
+            增加流长度并返回增加后的流长度
+            </summary>
+            <param name="length">增加长度</param>
+            <returns>增加后的流长度</returns>
+        </member>
         <member name="M:AutoCSer.UnmanagedStream.Write(System.Boolean)">
             <summary>
             写数据
@@ -14333,11 +14633,6 @@
             JSON序列化类型配置
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.TypeSerializer`1.viewClientTypeName">
-            <summary>
-            客户端视图类型名称
-            </summary>
-        </member>
         <member name="F:AutoCSer.Json.TypeSerializer`1.isValueType">
             <summary>
             是否值类型
@@ -14800,11 +15095,6 @@
         <member name="F:AutoCSer.Json.SerializeConfig.IsDictionaryToObject">
             <summary>
             Dictionary 是否转换成对象模式输出
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Json.SerializeConfig.IsViewClientType">
-            <summary>
-            是否输出客户端视图绑定类型
             </summary>
         </member>
         <member name="F:AutoCSer.Json.SerializeConfig.IsMaxNumberToString">
@@ -17414,286 +17704,6 @@
             </summary>
             <param name="obj"></param>
             <returns></returns>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMap">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.map">
-            <summary>
-            成员位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Type">
-            <summary>
-            成员位图类型信息
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.#ctor(AutoCSer.Metadata.MemberMap.TypeInfo)">
-            <summary>
-            成员位图
-            </summary>
-            <param name="type">成员位图类型信息</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Dispose">
-            <summary>
-            释放资源
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Empty">
-            <summary>
-            清空所有成员
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Full">
-            <summary>
-            添加所有成员
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.IsMember(System.Int32)">
-            <summary>
-            判断成员索引是否有效
-            </summary>
-            <param name="memberIndex">成员索引</param>
-            <returns>成员索引是否有效</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.Int32)">
-            <summary>
-            清除成员索引,忽略默认成员
-            </summary>
-            <param name="memberIndex">成员索引</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.ClearMember(System.String)">
-            <summary>
-            清除成员索引,忽略默认成员
-            </summary>
-            <param name="memberName">成员名称</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.Int32)">
-            <summary>
-            设置成员索引,忽略默认成员
-            </summary>
-            <param name="memberIndex">成员索引</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.SetMember(System.String)">
-            <summary>
-            设置成员索引,忽略默认成员
-            </summary>
-            <param name="memberName">成员名称</param>
-            <returns>是否成功</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.BinarySerialize(AutoCSer.UnmanagedStream)">
-            <summary>
-            序列化
-            </summary>
-            <param name="stream"></param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.GetFieldDeSerialize">
-            <summary>
-            获取字段成员反序列化位图
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.equals(AutoCSer.Metadata.MemberMap)">
-            <summary>
-            比较是否相等
-            </summary>
-            <param name="other"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.equals(System.Byte*)">
-            <summary>
-            比较是否相等
-            </summary>
-            <param name="otherMap"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.GetMemberName(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            获取成员名称
-            </summary>
-            <param name="memberExpression"></param>
-            <returns></returns>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.IsDefault">
-            <summary>
-            是否默认全部成员有效
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMap.TypeInfo">
-            <summary>
-            成员位图类型信息
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Type">
-            <summary>
-            类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.Pool">
-            <summary>
-            成员位图内存池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.TypeInfo.NameIndexSearcher">
-            <summary>
-            名称索引查找数据
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.#ctor(System.Type,AutoCSer.Metadata.MemberIndexInfo[],System.Int32)">
-            <summary>
-            成员位图类型信息
-            </summary>
-            <param name="type">类型</param>
-            <param name="members">成员索引集合</param>
-            <param name="fieldCount">字段成员数量</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMemberIndex(System.String)">
-            <summary>
-            获取成员索引
-            </summary>
-            <param name="name">成员名称</param>
-            <returns>成员索引,失败返回-1</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetClear">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.GetMap">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.TypeInfo.Push(System.Byte*@)">
-            <summary>
-            成员位图入池
-            </summary>
-            <param name="map">成员位图</param>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberCount">
-            <summary>
-            成员数量
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.FieldCount">
-            <summary>
-            字段成员数量
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.MemberMapSize">
-            <summary>
-            成员位图字节数量
-            </summary>
-        </member>
-        <member name="P:AutoCSer.Metadata.MemberMap.TypeInfo.BinarySerializeSize">
-            <summary>
-            字段成员位图序列化字节数量
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Metadata.MemberMap.Pool">
-            <summary>
-            成员位图内存池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memorySize">
-            <summary>
-            成员位图内存池字节大小
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.maxMemberMapCount">
-            <summary>
-            成员位图内存池支持最大成员数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.free">
-            <summary>
-            空闲内存地址
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.size">
-            <summary>
-            成员位图字节数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.freeLock">
-            <summary>
-            空闲内存地址访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.clearCount">
-            <summary>
-            填充整数数量
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.#ctor(System.Int32)">
-            <summary>
-            成员位图内存池
-            </summary>
-            <param name="size">成员位图字节数量</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Get">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetClear">
-            <summary>
-            获取成员位图
-            </summary>
-            <returns>成员位图</returns>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.Push(System.Byte*@)">
-            <summary>
-            成员位图入池
-            </summary>
-            <param name="map">成员位图</param>
-        </member>
-        <member name="M:AutoCSer.Metadata.MemberMap.Pool.GetPool(System.Int32)">
-            <summary>
-            获取成员位图内存池
-            </summary>
-            <param name="size">成员位图字节数量</param>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.pools">
-            <summary>
-            成员位图内存池集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.poolLock">
-            <summary>
-            成员位图内存池集合访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryCount">
-            <summary>
-            内存申请数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryStart">
-            <summary>
-            成员位图内存池起始位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryEnd">
-            <summary>
-            成员位图内存池结束位置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.memoryLock">
-            <summary>
-            成员位图内存池访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Metadata.MemberMap.Pool.createLock">
-            <summary>
-            成员位图内存池访问锁
-            </summary>
         </member>
         <member name="T:AutoCSer.Metadata.MemberMap`1">
             <summary>

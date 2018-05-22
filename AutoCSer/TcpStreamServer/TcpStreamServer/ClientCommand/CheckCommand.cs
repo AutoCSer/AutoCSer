@@ -54,7 +54,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
                 }
                 catch (Exception error)
                 {
-                    socket.Log.add(AutoCSer.Log.LogType.Debug, error);
+                    socket.Log.Add(AutoCSer.Log.LogType.Debug, error);
                     return null;
                 }
             }

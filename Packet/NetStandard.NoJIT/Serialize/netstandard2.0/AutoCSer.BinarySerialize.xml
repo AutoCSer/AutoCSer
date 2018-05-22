@@ -1623,7 +1623,7 @@
             <summary>
             对象null值检测
             </summary>
-            <returns></returns>
+            <returns>返回 0 表示 null</returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.VerifyRead(System.Int32)">
             <summary>
@@ -1637,6 +1637,12 @@
             移动当前读取数据位置，负数表示自定义序列化失败
             </summary>
             <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadInt">
+            <summary>
+            读取一个整数
+            </summary>
             <returns></returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.createArray``1(``0[]@,System.Int32)">
@@ -6621,7 +6627,36 @@
             成员复制扩展操作
             </summary>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``2(``1,AutoCSer.Metadata.MemberMap{``1})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="baseType">复制成员对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``2(``0,AutoCSer.Metadata.MemberMap{``1})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <typeparam name="baseType">复制成员对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copy``1(``0,AutoCSer.Metadata.MemberMap{``0})">
+            <summary>
+            对象成员复制
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+            <param name="value">被复制对象</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -6630,7 +6665,7 @@
             <param name="readValue">被复制对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0@,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyForm``1(``0,``0@,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -6639,7 +6674,7 @@
             <param name="readValue">被复制对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -6648,7 +6683,7 @@
             <param name="writeValue">目标对象</param>
             <param name="memberMap">成员位图</param>
         </member>
-        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0@,AutoCSer.Metadata.MemberMap)">
+        <member name="M:AutoCSer.Extension.MemberCopy.copyTo``1(``0,``0@,AutoCSer.Metadata.MemberMap{``0})">
             <summary>
             对象成员复制
             </summary>
@@ -6935,7 +6970,7 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.Extension.Number.bitCount(System.UInt32)">
+        <member name="M:AutoCSer.Extension.Number.bitCount(System.UInt64)">
             <summary>
             获取二进制1位的个数
             </summary>
@@ -8031,11 +8066,6 @@
         <member name="F:AutoCSer.Json.TypeSerializer`1.attribute">
             <summary>
             JSON序列化类型配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Json.TypeSerializer`1.viewClientTypeName">
-            <summary>
-            客户端视图类型名称
             </summary>
         </member>
         <member name="F:AutoCSer.Json.TypeSerializer`1.isValueType">
@@ -10113,11 +10143,6 @@
             Dictionary 是否转换成对象模式输出
             </summary>
         </member>
-        <member name="F:AutoCSer.Json.SerializeConfig.IsViewClientType">
-            <summary>
-            是否输出客户端视图绑定类型
-            </summary>
-        </member>
         <member name="F:AutoCSer.Json.SerializeConfig.IsMaxNumberToString">
             <summary>
             超出最大有效精度的 long / ulong 是否转换成字符串
@@ -11121,6 +11146,11 @@
             </summary>
             <typeparam name="valueType"></typeparam>
         </member>
+        <member name="F:AutoCSer.LeftArray`1.defalutArraySize">
+            <summary>
+            默认数组长度
+            </summary>
+        </member>
         <member name="F:AutoCSer.LeftArray`1.Array">
             <summary>
             原数组
@@ -11836,6 +11866,21 @@
             成员选择类型
             </summary>
         </member>
+        <member name="T:AutoCSer.Metadata.MemberFilterAttribute.NonPublic">
+            <summary>
+            默认非公有成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.Filter">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
+        <member name="P:AutoCSer.Metadata.MemberFilterAttribute.NonPublic.MemberFilters">
+            <summary>
+            成员选择类型
+            </summary>
+        </member>
         <member name="T:AutoCSer.Metadata.MemberFilterAttribute.PublicInstance">
             <summary>
             默认公有动态成员
@@ -11986,6 +12031,16 @@
             静态属性成员
             </summary>
         </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Public">
+            <summary>
+            公共成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.NonPublic">
+            <summary>
+            非公共成员
+            </summary>
+        </member>
         <member name="F:AutoCSer.Metadata.MemberFilters.Instance">
             <summary>
             动态成员
@@ -11994,6 +12049,16 @@
         <member name="F:AutoCSer.Metadata.MemberFilters.Static">
             <summary>
             静态成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Field">
+            <summary>
+            字段
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Metadata.MemberFilters.Property">
+            <summary>
+            属性
             </summary>
         </member>
         <member name="T:AutoCSer.Metadata.MemberIndexGroup">
@@ -14816,6 +14881,11 @@
             HTML 标题获取客户端操作
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer">
+            <summary>
+            缓存服务获取数据缓冲区
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -15055,6 +15125,19 @@
             预增数据流长度
             </summary>
             <param name="length">增加长度</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.GetPrepSizeCurrent(System.Int32)">
+            <summary>
+            预增数据流长度
+            </summary>
+            <param name="size">增加长度</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.AddSize(System.Int32)">
+            <summary>
+            增加流长度并返回增加后的流长度
+            </summary>
+            <param name="length">增加长度</param>
+            <returns>增加后的流长度</returns>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.Write(System.Boolean)">
             <summary>
@@ -15382,56 +15465,6 @@
             转换成字符串
             </summary>
             <returns>字符串</returns>
-        </member>
-        <member name="T:AutoCSer.WebView.ClientTypeAttribute">
-            <summary>
-            客户端视图绑定类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.DefaultMemberName">
-            <summary>
-            默认绑定成员名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.Null">
-            <summary>
-            默认客户端视图绑定类型
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.Name">
-            <summary>
-            客户端视图绑定类型名称（PrefixName 为 null 时有效）
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.PrefixName">
-            <summary>
-            客户端视图绑定类型前缀
-            </summary>
-        </member>
-        <member name="F:AutoCSer.WebView.ClientTypeAttribute.MemberName">
-            <summary>
-            绑定成员名称,默认为Id
-            </summary>
-        </member>
-        <member name="M:AutoCSer.WebView.ClientTypeAttribute.GetClientName(System.Type)">
-            <summary>
-            客户端视图绑定类型名称
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="T:AutoCSer.Win32.Kernel32">
-            <summary>
-            kernel32.dll API
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Win32.Kernel32.RtlMoveMemory(System.Void*,System.Void*,System.Int32)">
-            <summary>
-            内存复制
-            </summary>
-            <param name="dest">目标位置</param>
-            <param name="src">源位置</param>
-            <param name="length">字节长度</param>
         </member>
     </members>
 </doc>

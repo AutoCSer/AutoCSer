@@ -50,6 +50,100 @@
             <param name="onUpdated">更新数据回调</param>
             <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
         </member>
+        <member name="T:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.PageTask`1">
+            <summary>
+            获取分页记录集合任务
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.LinkQueueTaskNode">
+            <summary>
+            链表任务队列节点
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LinkQueueTaskNode.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            执行任务
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.PageTask`1.values">
+            <summary>
+            分页记录集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.PageTask`1.pageSize">
+            <summary>
+            分页长度
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.PageTask`1.currentPage">
+            <summary>
+            分页页号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.PageTask`1.count">
+            <summary>
+            记录总数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.PageTask`1.isDesc">
+            <summary>
+            是否逆序
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.PageTask`1.#ctor(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="pageSize"></param>
+            <param name="currentPage"></param>
+            <param name="isDesc"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1.array">
+            <summary>
+            延时排序缓存数组
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1.sorter">
+            <summary>
+            排序器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1.#ctor(System.Int32,System.Int32,System.Boolean,AutoCSer.Sql.Cache.LazyOrderArray{`0},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}})">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="pageSize"></param>
+            <param name="currentPage"></param>
+            <param name="isDesc"></param>
+            <param name="array"></param>
+            <param name="sorter"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LazyOrderArrayPageTask`1.Wait(System.Int32@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.MsSql.Sql2005">
             <summary>
             SQL Server 2005 客户端
@@ -868,7 +962,7 @@
             等待缓存加载
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Table.AddQueue(AutoCSer.Sql.LinkQueueTaskNode)">
+        <member name="M:AutoCSer.Sql.Table.AddQueue(AutoCSer.Sql.Threading.LinkQueueTaskNode)">
             <summary>
             添加操作队列
             </summary>
@@ -1038,7 +1132,7 @@
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Action{`0},System.Action{`0,`0,AutoCSer.Metadata.MemberMap{`1}},System.Action{`0},System.Boolean,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Table`2.CacheLoaded(System.Action{`0},AutoCSer.Sql.Table{`0,`1}.OnTableUpdated,System.Action{`0},System.Boolean,System.Boolean)">
             <summary>
             缓存数据加载完成
             </summary>
@@ -1090,6 +1184,15 @@
             <param name="memberMap">成员位图</param>
             <returns>数据库记录集合</returns>
         </member>
+        <member name="M:AutoCSer.Sql.Table`2.Select(System.Data.Common.DbConnection@,System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            获取数据库记录集合
+            </summary>
+            <param name="connection"></param>
+            <param name="where">查询条件</param>
+            <param name="memberMap">成员位图</param>
+            <returns>数据库记录集合</returns>
+        </member>
         <member name="M:AutoCSer.Sql.Table`2.Get(System.Int64,AutoCSer.Metadata.MemberMap{`1})">
             <summary>
             根据自增 Id 获取数据库记录
@@ -1102,6 +1205,24 @@
             <summary>
             根据自增 Id 获取数据库记录
             </summary>
+            <param name="identity">自增 Id</param>
+            <param name="memberMap">成员位图</param>
+            <returns>数据对象</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Table`2.Get(System.Data.Common.DbConnection@,System.Int64,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            根据自增 Id 获取数据库记录
+            </summary>
+            <param name="connection"></param>
+            <param name="identity">自增 Id</param>
+            <param name="memberMap">成员位图</param>
+            <returns>数据对象</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Table`2.Get(System.Data.Common.DbConnection@,System.Int32,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            根据自增 Id 获取数据库记录
+            </summary>
+            <param name="connection"></param>
             <param name="identity">自增 Id</param>
             <param name="memberMap">成员位图</param>
             <returns>数据对象</returns>
@@ -1220,6 +1341,14 @@
             删除数据之后的处理事件
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.Table`2.OnTableUpdated">
+            <summary>
+            数据更新事件
+            </summary>
+            <param name="newValue">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap">更新数据成员</param>
+        </member>
         <member name="T:AutoCSer.Sql.Table`2.OnInsertCancel">
             <summary>
             添加数据之前的处理事件
@@ -1247,33 +1376,22 @@
             同步获取数据
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.LinkQueueTaskNode`1">
+        <member name="T:AutoCSer.Sql.Threading.LinkQueueTaskNode`1">
             <summary>
             链表任务队列节点
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.LinkQueueTaskNode">
-            <summary>
-            链表任务队列节点
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LinkQueueTaskNode.RunLinkQueueTask(System.Data.Common.DbConnection@)">
-            <summary>
-            执行任务
-            </summary>
-            <param name="connection"></param>
-        </member>
-        <member name="T:AutoCSer.Sql.LinkQueueTaskNode`1.YieldPool">
+        <member name="T:AutoCSer.Sql.Threading.LinkQueueTaskNode`1.YieldPool">
             <summary>
             链表节点池
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTaskNode`1.YieldPool.Default">
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTaskNode`1.YieldPool.Default">
             <summary>
             链表节点池
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.LinkQueueTaskNode`1.YieldPool.clearCache(System.Int32)">
+        <member name="M:AutoCSer.Sql.Threading.LinkQueueTaskNode`1.YieldPool.clearCache(System.Int32)">
             <summary>
             清除缓存数据
             </summary>
@@ -1789,6 +1907,24 @@
             <param name="memberMap">成员位图</param>
             <returns>数据对象</returns>
         </member>
+        <member name="M:AutoCSer.Sql.Table`3.GetByPrimaryKey(System.Data.Common.DbConnection@,`2,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            根据关键字获取数据对象
+            </summary>
+            <param name="connection"></param>
+            <param name="key">关键字</param>
+            <param name="memberMap">成员位图</param>
+            <returns>数据对象</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Table`3.GetValue">
+            <summary>
+            获取数据委托
+            </summary>
+            <param name="connection"></param>
+            <param name="key">关键字</param>
+            <param name="memberMap">成员位图</param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Sql.ModelTable`2.#ctor(AutoCSer.Sql.TableAttribute,System.Boolean)">
             <summary>
             数据表格
@@ -1910,6 +2046,28 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberDictionary`5.getCache(`2)">
+            <summary>
+            获取缓存
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberDictionary`5.GetArray(`2)">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.Whole.MemberDictionary`5.Item(`2,`3)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="key"></param>
+            <param name="valueKey"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression`3">
             <summary>
             自增ID整表数组缓存
@@ -2007,6 +2165,15 @@
             释放资源
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.Cache.Table`2.OnCacheUpdated">
+            <summary>
+            缓存更新事件
+            </summary>
+            <param name="cacheValue">缓存数据</param>
+            <param name="newValue">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap">更新数据成员</param>
+        </member>
         <member name="M:AutoCSer.Sql.Cache.Copy`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Int32)">
             <summary>
             SQL操作缓存
@@ -2085,7 +2252,7 @@
             </summary>
             <param name="value">被删除的对象</param>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.Loaded(System.Action{`0},System.Action{`0,`0,`0,AutoCSer.Metadata.MemberMap{`1}},System.Action{`0},System.Boolean,System.Boolean)">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.Loaded(System.Action{`0},AutoCSer.Sql.Cache.Table{`0,`1}.OnCacheUpdated,System.Action{`0},System.Boolean,System.Boolean)">
             <summary>
             缓存数据加载完成
             </summary>
@@ -2273,6 +2440,29 @@
             <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateDictionarySearchTreeDictionary``2(System.Func{`0,``0},System.Func{`0,``1},System.Boolean,System.Boolean)">
+            <summary>
+            创建分组字典缓存
+            </summary>
+            <typeparam name="keyType">分组关键字类型</typeparam>
+            <typeparam name="sortType">排序关键字类型</typeparam>
+            <param name="getKey">分组关键字获取器</param>
+            <param name="getSort">排序关键字获取器</param>
+            <param name="isReset">是否初始化数据</param>
+            <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateDictionaryList``1(System.Func{`0,``0},System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            创建分组列表缓存
+            </summary>
+            <typeparam name="keyType"></typeparam>
+            <param name="getKey">字典关键字获取器</param>
+            <param name="isRemoveEnd">分组关键字获取器</param>
+            <param name="isReset">是否初始化数据</param>
+            <param name="isSave">是否保存缓存对象防止被垃圾回收</param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.CreateArrayList(System.Func{`0,System.Int32},System.Int32,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             创建数组列表缓存
@@ -2393,45 +2583,45 @@
             删除记录事件
             </summary>
         </member>
-        <member name="T:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask">
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask">
             <summary>
             重置缓存
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.cache">
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.cache">
             <summary>
             SQL 表格缓存
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.wait">
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.wait">
             <summary>
             等待缓存加载
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.exception">
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.exception">
             <summary>
             异常信息
             </summary>
         </member>
-        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.Query">
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.Query">
             <summary>
             查询信息
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}})">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}})">
             <summary>
             重置缓存
             </summary>
             <param name="cache"></param>
             <param name="where"></param>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
             <summary>
             重置缓存
             </summary>
             <param name="connection"></param>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.resetTask.Wait">
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.Cache`2.ResetTask.Wait">
             <summary>
             等待缓存加载
             </summary>
@@ -2555,6 +2745,42 @@
             <param name="maxCount">缓存默认最大容器大小</param>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityMemberMap`3.Update(`0,AutoCSer.Metadata.MemberMap{`1},System.Boolean)">
+            <summary>
+            修改数据库记录
+            </summary>
+            <param name="value">待修改数据</param>
+            <param name="memberMap">需要修改的字段成员位图</param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+            <returns>是否修改成功</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityMemberMap`3.Update(`0,AutoCSer.Metadata.MemberMap{`1},System.Action{`0},System.Boolean)">
+            <summary>
+            修改数据库记录
+            </summary>
+            <param name="value">待修改数据</param>
+            <param name="memberMap">需要修改的字段成员位图</param>
+            <param name="onUpdated">更新数据回调</param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务（不是数据库事务）</param>
+            <returns>是否修改成功</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityMemberMap`3.Delete(System.Int32,System.Boolean)">
+            <summary>
+            删除数据库记录
+            </summary>
+            <param name="identity"></param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityMemberMap`3.Delete(System.Int32,System.Action{`0},System.Boolean)">
+            <summary>
+            删除数据库记录
+            </summary>
+            <param name="identity"></param>
+            <param name="onDeleted">删除数据回调</param>
+            <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+            <returns>是否成功</returns>
+        </member>
         <member name="P:AutoCSer.Sql.Cache.Whole.Event.IdentityMemberMap`3.Count">
             <summary>
             缓存数据数量
@@ -2670,6 +2896,22 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression`2">
+            <summary>
+            自增ID整表数组缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Int32,System.Int32)">
+            <summary>
+            自增ID整表数组缓存
+            </summary>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="group">数据分组</param>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere`3">
             <summary>
             自增ID整表数组缓存
@@ -2719,6 +2961,38 @@
             删除数据
             </summary>
             <param name="value">被删除的数据</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere`2">
+            <summary>
+            自增ID整表数组缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Func{`0,System.Boolean},System.Int32,System.Int32)">
+            <summary>
+            自增ID整表数组缓存
+            </summary>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="group">数据分组</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityArray`2">
+            <summary>
+            自增ID整表数组缓存
+            </summary>
+            <typeparam name="valueType">表格类型</typeparam>
+            <typeparam name="modelType">模型类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityArray`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            SQL操作缓存
+            </summary>
+            <param name="table">SQL操作工具</param>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+            <param name="isReset">是否初始化事件与数据</param>
         </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.Queue`5">
             <summary>
@@ -2793,12 +3067,12 @@
             数据获取器
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.#ctor(AutoCSer.Sql.Cache.Counter.Event.Cache{`0,`1,`2},System.Func{`2,AutoCSer.Metadata.MemberMap{`1},`0},System.Int32)">
+        <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.#ctor(AutoCSer.Sql.Cache.Counter.Event.Cache{`0,`1,`2},AutoCSer.Sql.Table{`0,`1,`2}.GetValue,System.Int32)">
             <summary>
             先进先出优先队列缓存
             </summary>
             <param name="counter">缓存计数器</param>
-            <param name="getValue">数据获取器,禁止锁操作</param>
+            <param name="getValue">数据获取器,禁止数据库与锁操作</param>
             <param name="maxCount">缓存默认最大容器大小</param>
         </member>
         <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.onInserted(`0)">
@@ -2828,6 +3102,65 @@
             删除数据
             </summary>
             <param name="value">被删除的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.get(System.Data.Common.DbConnection@,`2)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="connection"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.Counter.Queue`3.Item(`2)">
+            <summary>
+            缓存数据
+            </summary>
+            <param name="key">关键字</param>
+            <returns>缓存数据</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.#ctor(AutoCSer.Sql.Cache.Counter.Queue{`0,`1,`2},`2)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.Queue`3.GetTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.MemberQueue`2">
             <summary>
@@ -2901,6 +3234,13 @@
             </summary>
             <param name="node"></param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`2.get(`0)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="node"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`2.appendNode(`0,`1)">
             <summary>
             添加节点
@@ -2961,12 +3301,12 @@
             数据获取器
             </summary>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`4.#ctor(AutoCSer.Sql.Cache.Counter.Event.Member{`0,`1,`2,`3,`2},System.Func{`3,AutoCSer.Metadata.MemberMap{`1},`0},System.Linq.Expressions.Expression{System.Func{`2,`0}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Int32)">
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`4.#ctor(AutoCSer.Sql.Cache.Counter.Event.Member{`0,`1,`2,`3,`2},AutoCSer.Sql.Table{`0,`1,`3}.GetValue,System.Linq.Expressions.Expression{System.Func{`2,`0}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Int32)">
             <summary>
             先进先出优先队列缓存
             </summary>
             <param name="counter">缓存计数器</param>
-            <param name="getValue">数据获取器,禁止锁操作</param>
+            <param name="getValue">数据获取器,禁止数据库与锁操作</param>
             <param name="valueMember">节点成员</param>
             <param name="previousMember">前一个节点成员</param>
             <param name="nextMember">后一个节点成员</param>
@@ -2989,6 +3329,72 @@
             删除数据
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`4.get(System.Data.Common.DbConnection@,`2,`3)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="connection"></param>
+            <param name="node"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.Counter.MemberQueue`4.Item(`3)">
+            <summary>
+            缓存数据
+            </summary>
+            <param name="key">关键字</param>
+            <returns>缓存数据</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.node">
+            <summary>
+            成员缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.#ctor(AutoCSer.Sql.Cache.Counter.MemberQueue{`0,`1,`2,`3},`2,`3)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="node"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueue`4.GetTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Sql.ClientKindAttribute">
             <summary>
@@ -3105,59 +3511,6 @@
         <member name="P:AutoCSer.Sql.MemberAttribute.IsDefaultMember">
             <summary>
             是否数据库成员信息空值
-            </summary>
-        </member>
-        <member name="T:AutoCSer.Sql.LinkQueueTask">
-            <summary>
-            链表任务队列
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTask.client">
-            <summary>
-            SQL 客户端操作
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTask.threadPool">
-            <summary>
-            线程池
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTask.head">
-            <summary>
-            任务队列首节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTask.end">
-            <summary>
-            任务队列尾节点
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTask.queueLock">
-            <summary>
-            任务队列访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.LinkQueueTask.isThread">
-            <summary>
-            是否启动线程
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.LinkQueueTask.#ctor(AutoCSer.Sql.Client,AutoCSer.Threading.ThreadPool)">
-            <summary>
-            链表任务队列
-            </summary>
-            <param name="client">SQL 客户端操作</param>
-            <param name="threadPool">线程池</param>
-        </member>
-        <member name="M:AutoCSer.Sql.LinkQueueTask.Add(AutoCSer.Sql.LinkQueueTaskNode)">
-            <summary>
-            添加任务
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.LinkQueueTask.run">
-            <summary>
-            链表任务处理
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.CountAttribute">
@@ -3878,6 +4231,47 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArraySearchTreeDictionary`3.GetCount(System.Int32)">
+            <summary>
+            获取数据数量
+            </summary>
+            <param name="index">数组索引</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArraySearchTreeDictionary`3.GetPage(System.Int32,System.Int32,System.Int32,System.Int32@,System.Boolean)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="index">数组索引</param>
+            <param name="pageSize">分页长度</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">记录总数</param>
+            <param name="isDesc">是否逆序</param>
+            <returns>分页记录集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArraySearchTreeDictionary`3.GetArray(System.Int32)">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="index">数组索引</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArraySearchTreeDictionary`3.CountLess(System.Int32,`2)">
+            <summary>
+            根据关键字比它小的节点数量
+            </summary>
+            <param name="index">数组索引</param>
+            <param name="key">关键字</param>
+            <returns>节点数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArraySearchTreeDictionary`3.CountThan(System.Int32,`2)">
+            <summary>
+            根据关键字比它大的节点数量
+            </summary>
+            <param name="index">数组索引</param>
+            <param name="key">关键字</param>
+            <returns>节点数量</returns>
+        </member>
         <member name="F:AutoCSer.Sql.Cache.Whole.ArraySearchTreeDictionaryWhere`3.isValue">
             <summary>
             缓存值判定
@@ -3937,6 +4331,119 @@
             <param name="getKey">缓存关键字获取器</param>
             <param name="maxCount">缓存默认最大容器大小</param>
             <param name="getWhere">条件表达式获取器</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.TimerWhere`2">
+            <summary>
+            缓存时间事件
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <typeparam name="modelType"></typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Timer`2">
+            <summary>
+            缓存时间事件
+            </summary>
+            <typeparam name="valueType"></typeparam>
+            <typeparam name="modelType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.cache">
+            <summary>
+            整表缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.getTime">
+            <summary>
+            时间获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.runTimeHandle">
+            <summary>
+            事件委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.run">
+            <summary>
+            事件委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.minTime">
+            <summary>
+            最小事件时间
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.times">
+            <summary>
+            事件时间集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Timer`2.timeLock">
+            <summary>
+            事件时间访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Timer`2.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`0,System.DateTime},System.Action,System.Boolean)">
+            <summary>
+            缓存时间事件
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getTime">时间获取器</param>
+            <param name="run">事件委托</param>
+            <param name="isReset">是否绑定事件与重置数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Timer`2.Append(System.DateTime)">
+            <summary>
+            添加事件时间
+            </summary>
+            <param name="time"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Timer`2.runTime">
+            <summary>
+            时间事件
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Timer`2.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Timer`2.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.TimerWhere`2.isValue">
+            <summary>
+            数据匹配器
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.TimerWhere`2.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`0,System.DateTime},System.Action,System.Func{`0,System.Boolean})">
+            <summary>
+            缓存时间事件
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getTime">时间获取器</param>
+            <param name="run">事件委托</param>
+            <param name="isValue">数据匹配器</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.TimerWhere`2.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.TimerWhere`2.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
         </member>
         <member name="T:AutoCSer.Sql.LogStream.IdentityClient`2">
             <summary>
@@ -4329,7 +4836,7 @@
         </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3">
             <summary>
-            自增ID整表排序树缓存
+            自增 ID 整表排序树缓存
             </summary>
             <typeparam name="valueType">表格绑定类型</typeparam>
             <typeparam name="modelType">表格模型类型</typeparam>
@@ -4378,6 +4885,93 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.getIndex(System.Int32)">
+            <summary>
+            获取记录起始位置
+            </summary>
+            <param name="skipCount">跳过记录数</param>
+            <returns>起始位置</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.getPage(System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="pageSize">分页长度</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">记录总数</param>
+            <returns>分页记录集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.getPageDesc(System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="pageSize">分页长度</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">记录总数</param>
+            <returns>分页记录集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.GetPage(System.Int32,System.Int32,System.Int32@,System.Boolean)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="pageSize">分页长度</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">记录总数</param>
+            <param name="isDesc">是否逆序</param>
+            <returns>分页记录集合</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.PageTask">
+            <summary>
+            获取分页记录集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.PageTask.tree">
+            <summary>
+            自增 ID 整表排序树缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.PageTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.PageTask.#ctor(AutoCSer.Sql.Cache.Whole.Event.IdentityTree{`0,`1,`2},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="tree"></param>
+            <param name="pageSize"></param>
+            <param name="currentPage"></param>
+            <param name="isDesc"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.PageTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`3.PageTask.Wait(System.Int32@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`2">
+            <summary>
+            自增ID整表排序树缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.IdentityTree`2.#ctor(AutoCSer.Sql.Table{`0,`1},System.Int32,System.Int32)">
+            <summary>
+            自增ID整表数组缓存
+            </summary>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="group">数据分组</param>
+            <param name="baseIdentity">基础ID</param>
+        </member>
         <member name="T:AutoCSer.Extension.Type_Sql">
             <summary>
             类型扩展操作
@@ -4399,6 +4993,37 @@
             <summary>
             可空类型构造函数
             </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.QueueTask">
+            <summary>
+            SQL 队列任务
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.QueueTask.RunTask">
+            <summary>
+            运行任务
+            </summary>
+            <returns>下一个 SQL 队列任务</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.QueueTask.Add(System.Action)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.QueueTask.Add``1(System.Action{``0},``0)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="action">任务执行委托</param>
+            <param name="parameter">参数</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.QueueTask.Add``1(System.Action{``0},``0@)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="action">任务执行委托</param>
+            <param name="parameter">参数</param>
         </member>
         <member name="T:AutoCSer.Sql.ConfigLoader">
             <summary>
@@ -4565,6 +5190,26 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArrayList`2.GetPage(System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取分页数据
+            </summary>
+            <param name="index">数组索引</param>
+            <param name="pageSize">分页长度</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">记录总数</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.ArrayList`2.GetPageDesc(System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取逆序分页数据
+            </summary>
+            <param name="index">数组索引</param>
+            <param name="pageSize">分页长度</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">记录总数</param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.Type">
             <summary>
             计数缓存类型
@@ -4683,6 +5328,76 @@
             <summary>
             释放成员位图
             </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.TaskQueue">
+            <summary>
+            SQL 队列处理
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.TaskQueue.#ctor(System.Boolean)">
+            <summary>
+            SQL 队列处理
+            </summary>
+            <param name="isBackground">是否后台线程</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.TaskQueue.Add(AutoCSer.Sql.Threading.QueueTask)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.TaskQueue.run">
+            <summary>
+            TCP 服务器端同步调用任务处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.TaskQueue.Default">
+            <summary>
+            SQL 队列处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.TaskQueue.Background">
+            <summary>
+            SQL 队列处理
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.QueueTaskAction">
+            <summary>
+            任务信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.QueueTaskAction.Action">
+            <summary>
+            任务执行委托
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.QueueTaskAction.RunTask">
+            <summary>
+            运行任务
+            </summary>
+            <returns>下一个 SQL 队列任务</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.QueueTaskAction`1">
+            <summary>
+            任务信息
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.QueueTaskAction`1.Action">
+            <summary>
+            任务执行委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.QueueTaskAction`1.Parameter">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.QueueTaskAction`1.RunTask">
+            <summary>
+            运行任务
+            </summary>
+            <returns>下一个 SQL 队列任务</returns>
         </member>
         <member name="T:AutoCSer.Sql.TableColumnCollection">
             <summary>
@@ -5343,6 +6058,36 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.SearchTreeDictionary`3.GetArray">
+            <summary>
+            获取数据集合
+            </summary>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.SearchTreeDictionary`3.GetPage(System.Int32,System.Int32,System.Int32@,System.Boolean)">
+            <summary>
+            获取分页数据集合
+            </summary>
+            <param name="pageSize">分页大小</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">数据总数</param>
+            <param name="isDesc">是否逆序</param>
+            <returns>分页数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.SearchTreeDictionary`3.CountLess(`2)">
+            <summary>
+            根据关键字比它小的节点数量
+            </summary>
+            <param name="key">关键字</param>
+            <returns>节点数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.SearchTreeDictionary`3.CountThan(`2)">
+            <summary>
+            根据关键字比它大的节点数量
+            </summary>
+            <param name="key">关键字</param>
+            <returns>节点数量</returns>
+        </member>
         <member name="P:AutoCSer.Sql.Cache.Whole.SearchTreeDictionary`3.Count">
             <summary>
             获取缓存数量
@@ -5453,12 +6198,7 @@
         </member>
         <member name="T:AutoCSer.Sql.MemberCacheAttribute">
             <summary>
-            成员扩展缓存初始化依赖类型声明配置
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheAttribute.CacheType">
-            <summary>
-            初始化依赖类型
+            表格缓存扩展成员申明
             </summary>
         </member>
         <member name="T:AutoCSer.Sql.Cache.LazyOrderArray`1">
@@ -5467,14 +6207,9 @@
             </summary>
             <typeparam name="valueType"></typeparam>
         </member>
-        <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.array">
+        <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.Array">
             <summary>
             数据数组
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.isDelete">
-            <summary>
-            是否存在被删除数据
             </summary>
         </member>
         <member name="F:AutoCSer.Sql.Cache.LazyOrderArray`1.isSorted">
@@ -5499,6 +6234,120 @@
             删除数据
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.LazyOrderArray`1.At(System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Int32)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="sorter"></param>
+            <param name="index">分页大小</param>
+            <returns>数据对象</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.LazyOrderArray`1.GetPage(System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取分页数据集合
+            </summary>
+            <param name="sorter"></param>
+            <param name="pageSize">分页大小</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">数据总数</param>
+            <returns>分页数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.LazyOrderArray`1.GetPageDesc(System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}},System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取分页数据集合
+            </summary>
+            <param name="sorter"></param>
+            <param name="pageSize">分页大小</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">数据总数</param>
+            <returns>分页数据集合</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.ICustom`1">
+            <summary>
+            自定义缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.ICustom`1.Add(`0)">
+            <summary>
+            添加缓存数据
+            </summary>
+            <param name="value">缓存数据</param>
+            <returns>是否添加数据</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.ICustom`1.Update(`0,`0)">
+            <summary>
+            更新缓存数据
+            </summary>
+            <param name="value">缓存数据</param>
+            <param name="oldValue">旧数据</param>
+            <returns>添加数据返回正数，删除数据返回负数，没有变化返回0</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.ICustom`1.Remove(`0)">
+            <summary>
+            删除缓存数据
+            </summary>
+            <param name="value">缓存数据</param>
+            <returns>是否存在被删除数据</returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.ICustom`1.Values">
+            <summary>
+            所有缓存数据
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.LinkQueueTask">
+            <summary>
+            链表任务队列
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTask.client">
+            <summary>
+            SQL 客户端操作
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTask.threadPool">
+            <summary>
+            线程池
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTask.head">
+            <summary>
+            任务队列首节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTask.end">
+            <summary>
+            任务队列尾节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTask.queueLock">
+            <summary>
+            任务队列访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LinkQueueTask.isThread">
+            <summary>
+            是否启动线程
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LinkQueueTask.#ctor(AutoCSer.Sql.Client,AutoCSer.Threading.ThreadPool)">
+            <summary>
+            链表任务队列
+            </summary>
+            <param name="client">SQL 客户端操作</param>
+            <param name="threadPool">线程池</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LinkQueueTask.Add(AutoCSer.Sql.Threading.LinkQueueTaskNode)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LinkQueueTask.run">
+            <summary>
+            链表任务处理
+            </summary>
         </member>
         <member name="T:AutoCSer.Sql.Member.IntDate">
             <summary>
@@ -5779,6 +6628,28 @@
             缺少目标数据错误数量
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.MemberKey`5">
+            <summary>
+            关键字整表缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+            <typeparam name="memberKeyType"></typeparam>
+            <typeparam name="targetType"></typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.MemberKey`5.#ctor(AutoCSer.Sql.Table{`0,`1},System.Func{`1,`2},System.Func{`1,`3},System.Func{`2,`4},System.Linq.Expressions.Expression{System.Func{`4,System.Collections.Generic.Dictionary{AutoCSer.RandomKey{`3},`0}}},System.Func{System.Collections.Generic.IEnumerable{`4}},System.Int32)">
+            <summary>
+            关键字整表缓存
+            </summary>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="getKey">键值获取器</param>
+            <param name="getMemberKey">成员缓存键值获取器</param>
+            <param name="getValue"></param>
+            <param name="member">缓存成员</param>
+            <param name="getTargets"></param>
+            <param name="group">数据分组</param>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.Event.Member`5">
             <summary>
             缓存计数器
@@ -5839,6 +6710,13 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.Event.Member`5.Get(`3)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="key">关键字</param>
+            <returns>缓存数据</returns>
+        </member>
         <member name="M:AutoCSer.Sql.Cache.Counter.Event.Member`5.AddGetTarget(`0)">
             <summary>
             添加缓存数据
@@ -5856,6 +6734,13 @@
             <summary>
             缓存数据数量
             </summary>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.Counter.Event.Member`5.Item(`3)">
+            <summary>
+            获取缓存值
+            </summary>
+            <param name="key">关键字</param>
+            <returns>缓存值</returns>
         </member>
         <member name="E:AutoCSer.Sql.Cache.Counter.Event.Member`5.OnUpdated">
             <summary>
@@ -5898,6 +6783,280 @@
             </summary>
             <param name="type">数据类型</param>
             <returns>数据类型名称</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.MemberQueueList`4">
+            <summary>
+            先进先出优先队列缓存(不适应于update/delete)
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="memberCacheType">成员缓存类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.sqlTable">
+            <summary>
+            SQL操作工具
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.getKey">
+            <summary>
+            缓存关键字获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.getTarget">
+            <summary>
+            获取节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.getWhere">
+            <summary>
+            条件表达式获取器
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.#ctor(AutoCSer.Sql.Table{`0,`1},System.Func{`1,`3},System.Func{`3,`2},System.Func{`3,System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}}},System.Linq.Expressions.Expression{System.Func{`2,AutoCSer.ListArray{`0}}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Int32)">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+            <param name="sqlTable">数据表格</param>
+            <param name="getKey">缓存关键字获取器</param>
+            <param name="getTarget">获取节点</param>
+            <param name="getWhere">条件表达式获取器</param>
+            <param name="valueMember">节点成员</param>
+            <param name="previousMember">前一个节点成员</param>
+            <param name="nextMember">后一个节点成员</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.removeCounter(`2)">
+            <summary>
+            删除节点
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.onInserted(`0)">
+            <summary>
+            增加数据
+            </summary>
+            <param name="value">新增的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.onUpdated(`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap">更新成员位图</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.get(System.Data.Common.DbConnection@,`2,`3)">
+            <summary>
+            获取缓存数据集合
+            </summary>
+            <param name="connection"></param>
+            <param name="node"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.Item(`3)">
+            <summary>
+            缓存数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>缓存数据集合</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.node">
+            <summary>
+            成员缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.#ctor(AutoCSer.Sql.Cache.Counter.MemberQueueList{`0,`1,`2,`3},`2,`3)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="node"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueList`4.GetTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5">
+            <summary>
+            先进先出优先队列自定义缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="memberCacheType">成员缓存类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+            <typeparam name="cacheValueType">目标缓存类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.sqlTable">
+            <summary>
+            SQL操作工具
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.getKey">
+            <summary>
+            缓存关键字获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.getTarget">
+            <summary>
+            获取节点
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.getCache">
+            <summary>
+            获取缓存数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.#ctor(AutoCSer.Sql.Table{`0,`1},System.Func{`1,`3},System.Func{`3,`2},System.Func{`3,`4},System.Linq.Expressions.Expression{System.Func{`2,`4}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Linq.Expressions.Expression{System.Func{`2,`2}},System.Int32)">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+            <param name="sqlTable">数据表格</param>
+            <param name="getKey">缓存关键字获取器</param>
+            <param name="getTarget">获取节点</param>
+            <param name="getCache">获取缓存数据</param>
+            <param name="valueMember">节点成员</param>
+            <param name="previousMember">前一个节点成员</param>
+            <param name="nextMember">后一个节点成员</param>
+            <param name="maxCount">缓存默认最大容器大小</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.removeCounter(`2)">
+            <summary>
+            删除节点
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.onInserted(`0)">
+            <summary>
+            增加数据
+            </summary>
+            <param name="value">新增的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.onUpdated(`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap">更新成员位图</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.Remove(`3)">
+            <summary>
+            删除缓存
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.get(`2,`3)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="node"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.Item(`3)">
+            <summary>
+            缓存数据
+            </summary>
+            <param name="key">关键字</param>
+            <returns>缓存数据</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.node">
+            <summary>
+            成员缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.#ctor(AutoCSer.Sql.Cache.Counter.MemberQueueCustom{`0,`1,`2,`3,`4},`2,`3)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="node"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.MemberQueueCustom`5.GetTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Sql.SelectQuery`1">
             <summary>
@@ -6388,11 +7547,11 @@
             </summary>
             <param name="value">缓存数据</param>
         </member>
-        <member name="M:AutoCSer.Sql.Cache.Counter.Event.Cache`3.CreateQueue(System.Func{`2,AutoCSer.Metadata.MemberMap{`1},`0},System.Int32)">
+        <member name="M:AutoCSer.Sql.Cache.Counter.Event.Cache`3.CreateQueue(AutoCSer.Sql.Table{`0,`1,`2}.GetValue,System.Int32)">
             <summary>
             创建先进先出优先队列缓存
             </summary>
-            <param name="getValue">数据获取器,禁止锁操作</param>
+            <param name="getValue">数据获取器,禁止数据库与锁操作</param>
             <param name="maxCount">缓存默认最大容器大小</param>
             <returns></returns>
         </member>
@@ -6597,6 +7756,54 @@
             删除数据
             </summary>
             <param name="value">被删除的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.getCache(`2)">
+            <summary>
+            获取缓存
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.Count(`2)">
+            <summary>
+            获取匹配数量
+            </summary>
+            <param name="key">关键字</param>
+            <returns>匹配数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.GetFindArray(`2,System.Func{`0,System.Boolean})">
+            <summary>
+            获取匹配的数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.GetCache(`2)">
+            <summary>
+            获取不排序的数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.At(`2,System.Int32)">
+            <summary>
+            获取有序数据
+            </summary>
+            <param name="key">关键字</param>
+            <param name="index">关键字</param>
+            <returns>获取有序数据</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberLazyOrderArray`4.GetPage(`2,System.Int32,System.Int32,System.Int32@,System.Boolean)">
+            <summary>
+            获取分页数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="pageSize">分页大小</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">数据总数</param>
+            <param name="isDesc">是否逆序</param>
+            <returns>分页数据集合</returns>
         </member>
         <member name="T:AutoCSer.Sql.OnTime">
             <summary>
@@ -7650,6 +8857,26 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.getCache(`2,System.Int32)">
+            <summary>
+            获取缓存
+            </summary>
+            <param name="key"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberArrayLazyOrderArray`4.GetPage(`2,System.Int32,System.Int32,System.Int32,System.Int32@,System.Boolean)">
+            <summary>
+            获取分页数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="index">数组索引</param>
+            <param name="pageSize">分页大小</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">数据总数</param>
+            <param name="isDesc">是否逆序</param>
+            <returns>分页数据集合</returns>
+        </member>
         <member name="T:AutoCSer.Sql.LogStream.LogType">
             <summary>
             日志类型
@@ -8321,6 +9548,21 @@
             数据数量
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.PrimaryKey`3">
+            <summary>
+            关键字整表缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.PrimaryKey`3.#ctor(AutoCSer.Sql.Table{`0,`1,`2},System.Int32)">
+            <summary>
+            关键字整表缓存
+            </summary>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="group">数据分组</param>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray`4">
             <summary>
             关键字整表缓存
@@ -8397,6 +9639,21 @@
             <summary>
             数据数量
             </summary>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray`3">
+            <summary>
+            关键字整表缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">关键字类型</typeparam>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray`3.#ctor(AutoCSer.Sql.Table{`0,`1,`2},System.Int32)">
+            <summary>
+            关键字整表缓存
+            </summary>
+            <param name="sqlTool">SQL操作工具</param>
+            <param name="group">数据分组</param>
         </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.CountMember">
             <summary>
@@ -8734,6 +9991,52 @@
             <param name="member">字段表达式</param>
             <returns>成员索引</returns>
         </member>
+        <member name="T:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2">
+            <summary>
+            查找匹配记录集合
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="sortType">排序关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.tree">
+            <summary>
+            搜索树
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.isValue">
+            <summary>
+            数据匹配委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.array">
+            <summary>
+            匹配数据集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.#ctor(AutoCSer.SearchTree.Dictionary{`1,`0},System.Func{`0,System.Boolean})">
+            <summary>
+            获取匹配记录集合
+            </summary>
+            <param name="tree"></param>
+            <param name="isValue"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            查找匹配记录集合
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.SearchTreeDictionaryFindTask`2.Wait">
+            <summary>
+            获取匹配记录集合
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.MsSql.ExpressionConverter">
             <summary>
             表达式转换
@@ -8929,6 +10232,34 @@
             下一个节点
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.LogStream.Callback`1">
+            <summary>
+            日志流回调
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Callback`1.callbacks">
+            <summary>
+            回调委托集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.LogStream.Callback`1.callbackLock">
+            <summary>
+            回调委托集合访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Callback`1.Call(`0)">
+            <summary>
+            添加日志流
+            </summary>
+            <param name="log">日志数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.LogStream.Callback`1.Append(System.Func{AutoCSer.Net.TcpServer.ReturnValue{`0},System.Boolean})">
+            <summary>
+            添加日志回调委托
+            </summary>
+            <param name="callback">日志回调委托</param>
+        </member>
         <member name="T:AutoCSer.Sql.DataModel.PrimaryKeyWhere">
             <summary>
             关键字条件动态函数
@@ -9103,6 +10434,289 @@
             <param name="memberMap"></param>
         </member>
         <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.createList(System.Data.Common.DbConnection@,`3)">
+            <summary>
+            读取数据库数据列表
+            </summary>
+            <param name="connection"></param>
+            <param name="key">关键字</param>
+            <returns>数据列表</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.getList(System.Data.Common.DbConnection@,`3)">
+            <summary>
+            获取缓存数据集合
+            </summary>
+            <param name="connection"></param>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArray(`3)">
+            <summary>
+            获取缓存数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.GetFindArray(`3,System.Func{`0,System.Boolean})">
+            <summary>
+            获取缓存数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.FirstOrDefault(`3,System.Func{`0,System.Boolean})">
+            <summary>
+            获取一个匹配数据
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器,禁止数据库与锁操作</param>
+            <returns>匹配数据,失败返回null</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.#ctor(AutoCSer.Sql.Cache.Counter.QueueList{`0,`1,`2,`3},`3)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.GetArrayTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.isValue">
+            <summary>
+            数据匹配器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.#ctor(AutoCSer.Sql.Cache.Counter.QueueList{`0,`1,`2,`3},`3,System.Func{`0,System.Boolean})">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="key"></param>
+            <param name="isValue"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueList`4.FindTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionaryWhere`4">
+            <summary>
+            字典+搜索树缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">分组关键字类型</typeparam>
+            <typeparam name="sortType">排序关键字类型</typeparam>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4">
+            <summary>
+            字典+搜索树缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">分组关键字类型</typeparam>
+            <typeparam name="sortType">排序关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.cache">
+            <summary>
+            整表缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.getKey">
+            <summary>
+            分组关键字获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.getSort">
+            <summary>
+            排序关键字获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.groups">
+            <summary>
+            字典+搜索树缓存
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`0,`2},System.Func{`0,`3},System.Boolean)">
+            <summary>
+            分组列表缓存
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getKey">分组关键字获取器</param>
+            <param name="getSort">排序关键字获取器</param>
+            <param name="isReset">是否初始化</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.onInserted(`0,`2)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+            <param name="key">数据对象的关键字</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.onDeleted(`0,`2)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+            <param name="key">分组关键字</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.GetCount(`2)">
+            <summary>
+            获取数据数量
+            </summary>
+            <param name="key">关键字</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.GetPage(`2,System.Int32,System.Int32,System.Int32@,System.Boolean)">
+            <summary>
+            获取分页数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="pageSize">分页大小</param>
+            <param name="currentPage">分页页号</param>
+            <param name="count">数据总数</param>
+            <param name="isDesc">是否逆序</param>
+            <returns>分页数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.GetArray(`2)">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionary`4.GetFind(`2,System.Func{`0,System.Boolean})">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配委托</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionaryWhere`4.isValue">
+            <summary>
+            缓存值判定
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionaryWhere`4.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`0,`2},System.Func{`0,`3},System.Func{`0,System.Boolean})">
+            <summary>
+            分组列表缓存
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getKey">分组关键字获取器</param>
+            <param name="getSort">排序关键字获取器</param>
+            <param name="isValue">缓存值判定</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionaryWhere`4.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionaryWhere`4.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionarySearchTreeDictionaryWhere`4.onDeleted(`0)">
             <summary>
             删除数据
             </summary>
@@ -9318,6 +10932,80 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.GetCache(`2)">
+            <summary>
+            获取缓存
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.Count(`2)">
+            <summary>
+            获取匹配数据数量
+            </summary>
+            <param name="key">关键字</param>
+            <returns>匹配数据数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.Count(`2,System.Func{`0,System.Boolean})">
+            <summary>
+            获取匹配数据数量
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器</param>
+            <returns>匹配数据数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.FirstOrDefault(`2,System.Func{`0,System.Boolean})">
+            <summary>
+            获取第一个匹配数据
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器</param>
+            <returns>第一个匹配数据</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.GetArray(`2)">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.GetArray``1(`2,System.Func{`0,``0})">
+            <summary>
+            获取数据集合
+            </summary>
+            <typeparam name="arrayType"></typeparam>
+            <param name="key">关键字</param>
+            <param name="getValue">数组转换</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.GetFindArray(`2,System.Func{`0,System.Boolean})">
+            <summary>
+            获取匹配数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器</param>
+            <returns>匹配数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.GetPage(`2,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取分页数据
+            </summary>
+            <param name="key"></param>
+            <param name="pageSize"></param>
+            <param name="currentPage"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberList`4.GetPageDesc(`2,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            获取逆序分页数据
+            </summary>
+            <param name="key"></param>
+            <param name="pageSize"></param>
+            <param name="currentPage"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Whole.MemberDictionaryListWhere`5">
             <summary>
             分组列表缓存
@@ -9366,6 +11054,94 @@
             删除数据
             </summary>
             <param name="value">被删除的数据</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.DomainUnloadTransaction">
+            <summary>
+            应用程序卸载事件处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.DomainUnloadTransaction.action">
+            <summary>
+            任务执行委托
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.run">
+            <summary>
+            任务执行
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.RunTask">
+            <summary>
+            运行任务
+            </summary>
+            <returns>下一个 SQL 队列任务</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.AddQueueTask(System.Action)">
+            <summary>
+            添加 SQL 队列任务
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.AddQueueTask``1(System.Action{``0},``0)">
+            <summary>
+            添加 SQL 队列任务
+            </summary>
+            <param name="action">任务执行委托</param>
+            <param name="parameter">参数</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.AddQueueTask``1(System.Action{``0},``0@)">
+            <summary>
+            添加 SQL 队列任务
+            </summary>
+            <param name="action">任务执行委托</param>
+            <param name="parameter">参数</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.AddTask(System.Action)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.AddTask``1(System.Action{``0},``0)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="action">任务执行委托</param>
+            <param name="parameter">参数</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction.AddTask``1(System.Action{``0},``0@)">
+            <summary>
+            添加任务
+            </summary>
+            <param name="action">任务执行委托</param>
+            <param name="parameter">参数</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.DomainUnloadTransaction`1">
+            <summary>
+            应用程序卸载事件处理
+            </summary>
+            <typeparam name="parameterType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.DomainUnloadTransaction`1.Action">
+            <summary>
+            任务执行委托
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.DomainUnloadTransaction`1.Parameter">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction`1.Run">
+            <summary>
+            任务执行
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.DomainUnloadTransaction`1.RunTask">
+            <summary>
+            运行任务
+            </summary>
+            <returns>下一个 SQL 队列任务</returns>
         </member>
         <member name="T:AutoCSer.Sql.LogStream.MemberMapValue`2">
             <summary>
@@ -9650,6 +11426,13 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.MemberOrderList`4.GetCache(`2)">
+            <summary>
+            获取缓存
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.IdentityArray">
             <summary>
             缓存专用分段二维数组参数
@@ -9676,7 +11459,7 @@
             </summary>
             <typeparam name="valueType"></typeparam>
         </member>
-        <member name="F:AutoCSer.Sql.Cache.IdentityArray`1.arrays">
+        <member name="F:AutoCSer.Sql.Cache.IdentityArray`1.Arrays">
             <summary>
             二维数组
             </summary>
@@ -9757,6 +11540,40 @@
             获取数据库连接信息
             </summary>
             <returns>数据库连接信息</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.Client.IdentityMemberCache`1">
+            <summary>
+            成员缓存
+            </summary>
+            <typeparam name="valueType">缓存数据类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Client.IdentityMemberCache`1.Id">
+            <summary>
+            自增标识
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Client.IdentityMemberCache`1.cache">
+            <summary>
+            缓存信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.Client.IdentityMemberCache`1.cacheLock">
+            <summary>
+            缓存信息访问锁
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Client.IdentityMemberCache`1.Get(System.Int32)">
+            <summary>
+            获取缓存数据
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.Client.IdentityMemberCache`1.GetAll">
+            <summary>
+            获取所有数据
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Sql.TableAttribute">
             <summary>
@@ -9982,6 +11799,16 @@
             获取成员名称与类型集合函数信息
             </summary>
         </member>
+        <member name="T:AutoCSer.Sql.MemberCacheLinkAttribute">
+            <summary>
+            成员扩展缓存初始化依赖类型声明配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkAttribute.CacheType">
+            <summary>
+            初始化依赖类型
+            </summary>
+        </member>
         <member name="T:AutoCSer.Sql.Excel.Provider">
             <summary>
             Excel接口类型
@@ -10048,6 +11875,45 @@
             删除数据
             </summary>
             <param name="value">被删除的数据</param>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.SearchTreeDictionaryPageTask`2">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="sortType">排序关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.SearchTreeDictionaryPageTask`2.tree">
+            <summary>
+            搜索树
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.SearchTreeDictionaryPageTask`2.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.SearchTreeDictionaryPageTask`2.#ctor(System.Int32,System.Int32,System.Boolean,AutoCSer.SearchTree.Dictionary{`1,`0})">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="pageSize"></param>
+            <param name="currentPage"></param>
+            <param name="isDesc"></param>
+            <param name="tree"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.SearchTreeDictionaryPageTask`2.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.SearchTreeDictionaryPageTask`2.Wait(System.Int32@)">
+            <summary>
+            获取分页记录集合
+            </summary>
+            <param name="count"></param>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.Sql.MsSql.DbType">
             <summary>
@@ -10255,6 +12121,13 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryDictionary`4.GetKeys(`2)">
+            <summary>
+            获取关键字集合
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.QueueDictionary`5">
             <summary>
             先进先出优先队列 字典缓存
@@ -10301,6 +12174,220 @@
             </summary>
             <param name="value">被删除的数据</param>
         </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.getDictionary(System.Data.Common.DbConnection@,`3)">
+            <summary>
+            获取字典缓存
+            </summary>
+            <param name="connection"></param>
+            <param name="key">关键字</param>
+            <returns>字典缓存</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.get(System.Data.Common.DbConnection@,`3,`4)">
+            <summary>
+            获取匹配数据
+            </summary>
+            <param name="connection"></param>
+            <param name="key">关键字</param>
+            <param name="dictionaryKey">字典关键字</param>
+            <returns>匹配数据</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.Get(`3,`4,`0)">
+            <summary>
+            获取匹配数据
+            </summary>
+            <param name="key">关键字</param>
+            <param name="dictionaryKey">字典关键字</param>
+            <param name="nullValue">失败返回值</param>
+            <returns>匹配数据</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask">
+            <summary>
+            获取数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.queue">
+            <summary>
+            先进先出优先队列缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.value">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.key">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.dictionaryKey">
+            <summary>
+            字典关键字
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.#ctor(AutoCSer.Sql.Cache.Counter.QueueDictionary{`0,`1,`2,`3,`4},`3,`4)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="queue"></param>
+            <param name="key">关键字</param>
+            <param name="dictionaryKey">字典关键字</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Counter.QueueDictionary`5.GetTask.Wait">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Cache.Whole.DictionaryList`3">
+            <summary>
+            分组列表缓存
+            </summary>
+            <typeparam name="valueType">表格绑定类型</typeparam>
+            <typeparam name="modelType">表格模型类型</typeparam>
+            <typeparam name="keyType">分组字典关键字类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionaryList`3.cache">
+            <summary>
+            整表缓存
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionaryList`3.getKey">
+            <summary>
+            分组字典关键字获取器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionaryList`3.groups">
+            <summary>
+            分组数据
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Cache.Whole.DictionaryList`3.isRemoveEnd">
+            <summary>
+            移除数据并使用最后一个数据移动到当前位置
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.#ctor(AutoCSer.Sql.Cache.Whole.Event.Cache{`0,`1},System.Func{`0,`2},System.Boolean,System.Boolean)">
+            <summary>
+            分组列表缓存
+            </summary>
+            <param name="cache">整表缓存</param>
+            <param name="getKey">分组字典关键字获取器</param>
+            <param name="isRemoveEnd">移除数据并使用最后一个数据移动到当前位置</param>
+            <param name="isReset">是否绑定事件并重置数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.onInserted(`0)">
+            <summary>
+            添加数据
+            </summary>
+            <param name="value">数据对象</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.onUpdated(`0,`0,`0,AutoCSer.Metadata.MemberMap{`1})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="cacheValue"></param>
+            <param name="value">更新后的数据</param>
+            <param name="oldValue">更新前的数据</param>
+            <param name="memberMap"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.onDeleted(`0,`2)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+            <param name="key">被删除的数据关键字</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.onDeleted(`0)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="value">被删除的数据</param>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.Count(`2)">
+            <summary>
+            获取匹配数据数量
+            </summary>
+            <param name="key">关键字</param>
+            <returns>匹配数据数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.Count(`2,System.Func{`0,System.Boolean})">
+            <summary>
+            获取匹配数量
+            </summary>
+            <param name="key">关键字</param>
+            <param name="isValue">数据匹配器</param>
+            <returns>匹配数量</returns>
+        </member>
+        <member name="M:AutoCSer.Sql.Cache.Whole.DictionaryList`3.GetArray(`2)">
+            <summary>
+            获取数据集合
+            </summary>
+            <param name="key">关键字</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="T:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1">
+            <summary>
+            获取记录
+            </summary>
+            <typeparam name="valueType"></typeparam>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.array">
+            <summary>
+            延时排序缓存数组
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.sorter">
+            <summary>
+            排序器
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.wait">
+            <summary>
+            等待缓存加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.index">
+            <summary>
+            索引位置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.value">
+            <summary>
+            数据
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.#ctor(System.Int32,AutoCSer.Sql.Cache.LazyOrderArray{`0},System.Func{AutoCSer.LeftArray{`0},AutoCSer.LeftArray{`0}})">
+            <summary>
+            获取记录
+            </summary>
+            <param name="index"></param>
+            <param name="array"></param>
+            <param name="sorter"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.RunLinkQueueTask(System.Data.Common.DbConnection@)">
+            <summary>
+            获取记录
+            </summary>
+            <param name="connection"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.Threading.LazyOrderArrayAtTask`1.Wait">
+            <summary>
+            获取数据记录
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.Sql.Cache.Counter.Event.Identity64`2">
             <summary>
             自增id标识缓存计数器
@@ -10314,6 +12401,100 @@
             </summary>
             <param name="sqlTool">SQL操作工具</param>
             <param name="group">数据分组</param>
+        </member>
+        <member name="T:AutoCSer.Sql.MemberCacheLinkWait">
+            <summary>
+            成员扩展缓存初始化依赖类型加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.wait">
+            <summary>
+            成员扩展缓存初始化依赖类型加载等待事件
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.cacheTypes">
+            <summary>
+            成员扩展缓存初始化依赖类型集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.waits">
+            <summary>
+            依赖当前缓存初始化的类型集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.#ctor(AutoCSer.Sql.MemberCacheLinkWait)">
+            <summary>
+            成员扩展缓存初始化依赖类型加载
+            </summary>
+            <param name="wait">依赖当前缓存初始化的类型</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.#ctor(System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            成员扩展缓存初始化依赖类型加载
+            </summary>
+            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.set(System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            设置成员扩展缓存初始化依赖类型集合
+            </summary>
+            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.set(System.Type,System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            当前表格缓存加载完毕
+            </summary>
+            <param name="tableType">当前表格类型</param>
+            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.removeCacheType(System.Type)">
+            <summary>
+            移除成员扩展缓存初始化依赖类型
+            </summary>
+            <param name="cacheType"></param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.Wait">
+            <summary>
+            等待成员扩展缓存初始化依赖加载
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.loadTypes">
+            <summary>
+            数据完成类型加载集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.loadedLock">
+            <summary>
+            数据完成类型加载集合访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.emptyCacheTypes">
+            <summary>
+            成员扩展缓存初始化依赖类型空集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Sql.MemberCacheLinkWait.removeCacheTypes">
+            <summary>
+            待删除成员扩展缓存初始化依赖类型集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.Load(System.Type,System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            加载成员扩展缓存初始化依赖类型
+            </summary>
+            <param name="tableType">表格类型</param>
+            <param name="cacheTypes">表格成员扩展缓存初始化依赖类型集合</param>
+        </member>
+        <member name="M:AutoCSer.Sql.MemberCacheLinkWait.Wait(System.Type)">
+            <summary>
+            等待成员扩展缓存初始化
+            </summary>
+            <param name="tableType">等待成员扩展缓存初始化的类型</param>
+        </member>
+        <member name="P:AutoCSer.Sql.MemberCacheLinkWait.isCacheLoaded">
+            <summary>
+            当前表格缓存是否加载完毕
+            </summary>
         </member>
         <member name="T:AutoCSer.Sql.Excel.Client">
             <summary>
@@ -10678,100 +12859,6 @@
             反序列化
             </summary>
             <param name="deSerializer"></param>
-        </member>
-        <member name="T:AutoCSer.Sql.MemberCacheWait">
-            <summary>
-            成员扩展缓存初始化依赖类型加载
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.wait">
-            <summary>
-            成员扩展缓存初始化依赖类型加载等待事件
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.cacheTypes">
-            <summary>
-            成员扩展缓存初始化依赖类型集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.waits">
-            <summary>
-            依赖当前缓存初始化的类型集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.#ctor(AutoCSer.Sql.MemberCacheWait)">
-            <summary>
-            成员扩展缓存初始化依赖类型加载
-            </summary>
-            <param name="wait">依赖当前缓存初始化的类型</param>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.#ctor(System.Collections.Generic.HashSet{System.Type})">
-            <summary>
-            成员扩展缓存初始化依赖类型加载
-            </summary>
-            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.set(System.Collections.Generic.HashSet{System.Type})">
-            <summary>
-            设置成员扩展缓存初始化依赖类型集合
-            </summary>
-            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.set(System.Type,System.Collections.Generic.HashSet{System.Type})">
-            <summary>
-            当前表格缓存加载完毕
-            </summary>
-            <param name="tableType">当前表格类型</param>
-            <param name="cacheTypes">成员扩展缓存初始化依赖类型集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.removeCacheType(System.Type)">
-            <summary>
-            移除成员扩展缓存初始化依赖类型
-            </summary>
-            <param name="cacheType"></param>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.Wait">
-            <summary>
-            等待成员扩展缓存初始化依赖加载
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.loadTypes">
-            <summary>
-            数据完成类型加载集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.loadedLock">
-            <summary>
-            数据完成类型加载集合访问锁
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.emptyCacheTypes">
-            <summary>
-            成员扩展缓存初始化依赖类型空集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Sql.MemberCacheWait.removeCacheTypes">
-            <summary>
-            待删除成员扩展缓存初始化依赖类型集合
-            </summary>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.Load(System.Type,System.Collections.Generic.HashSet{System.Type})">
-            <summary>
-            加载成员扩展缓存初始化依赖类型
-            </summary>
-            <param name="tableType">表格类型</param>
-            <param name="cacheTypes">表格成员扩展缓存初始化依赖类型集合</param>
-        </member>
-        <member name="M:AutoCSer.Sql.MemberCacheWait.Wait(System.Type)">
-            <summary>
-            等待成员扩展缓存初始化
-            </summary>
-            <param name="tableType">等待成员扩展缓存初始化的类型</param>
-        </member>
-        <member name="P:AutoCSer.Sql.MemberCacheWait.isCacheLoaded">
-            <summary>
-            当前表格缓存是否加载完毕
-            </summary>
         </member>
     </members>
 </doc>

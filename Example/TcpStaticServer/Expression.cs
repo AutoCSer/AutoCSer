@@ -61,6 +61,28 @@ namespace AutoCSer.Example.TcpStaticServer
                 if (node == null) return Value - (value as Node2).Value;
                 return Value + node.Value;
             }
+            /// <summary>
+            /// 远程表达式泛型实例成员测试
+            /// </summary>
+            [AutoCSer.Net.RemoteExpression.Member(IsGenericTypeInstantiation = true)]
+            public GenericNode<Node1> Generic1
+            {
+                get
+                {
+                    return new GenericNode<Node1> { Value = new Node1 { Value = 1 } };
+                }
+            }
+            /// <summary>
+            /// 远程表达式泛型实例成员测试
+            /// </summary>
+            [AutoCSer.Net.RemoteExpression.Member]
+            public GenericNode<Node2> Generic2
+            {
+                get
+                {
+                    return new GenericNode<Node2> { Value = new Node2 { Value = 2 } };
+                }
+            }
         }
         /// <summary>
         /// 远程表达式测试
@@ -140,12 +162,12 @@ namespace AutoCSer.Example.TcpStaticServer
             return new Node1 { Value = value };
         }
         /// <summary>
-        /// 远程表达式泛型成员测试
+        /// 远程表达式泛型静态成员测试
         /// </summary>
-        [AutoCSer.Net.RemoteExpression.Member]
+        [AutoCSer.Net.RemoteExpression.Member(IsGenericTypeInstantiation = true)]
         internal static readonly GenericNode<Node1> Generic1 = new GenericNode<Node1> { Value = new Node1 { Value = 1 } };
         /// <summary>
-        /// 远程表达式泛型成员测试
+        /// 远程表达式泛型静态成员测试
         /// </summary>
         [AutoCSer.Net.RemoteExpression.Member]
         internal static GenericNode<Node2> Generic2
@@ -254,7 +276,7 @@ namespace AutoCSer.Example.TcpStaticServer
             {
                 return false;
             }
-            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.Generic1.Value.Cast<Expression.Node1.RemoteExpression>()).Value.Value != 1)
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.Generic1.Value.Value).Value != 1)
             {
                 return false;
             }
@@ -262,11 +284,35 @@ namespace AutoCSer.Example.TcpStaticServer
             {
                 return false;
             }
-            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.Generic1.Value.Cast<Expression.Node1.RemoteExpression>().Value).Value != 1)
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.Generic2.Value.Cast<Expression.Node2.RemoteExpression>().Value).Value != 2)
             {
                 return false;
             }
-            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.Generic2.Value.Cast<Expression.Node2.RemoteExpression>().Value).Value != 2)
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic1).Value.Value.Value != 1)
+            {
+                return false;
+            }
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic1.Value).Value.Value != 1)
+            {
+                return false;
+            }
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic1.Value.Value).Value != 1)
+            {
+                return false;
+            }
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic2).Value.Value.Value != 2)
+            {
+                return false;
+            }
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic2.Value).Value.Value != 2)
+            {
+                return false;
+            }
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic2.Value.Cast<Expression.Node2.RemoteExpression>()).Value.Value != 2)
+            {
+                return false;
+            }
+            if (TcpStaticClient.Example1.TcpClient.GetRemoteExpression(RemoteExpression.StaticField.Generic2.Value.Cast<Expression.Node2.RemoteExpression>().Value).Value != 2)
             {
                 return false;
             }

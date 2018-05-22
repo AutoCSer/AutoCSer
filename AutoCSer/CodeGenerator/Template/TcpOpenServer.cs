@@ -418,7 +418,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsClientSendOnly
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -452,7 +452,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsClientSynchronous
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -540,7 +540,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsClientAwaiter
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -593,7 +593,7 @@ namespace AutoCSer.CodeGenerator.Template
 #if !DOTNET2 && !DOTNET4
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -682,7 +682,7 @@ namespace AutoCSer.CodeGenerator.Template
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo @MethodAsynchronousIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex, TaskType = @ClientTask/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -794,7 +794,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF MethodIsReturn
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters

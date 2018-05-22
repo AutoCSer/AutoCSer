@@ -275,7 +275,7 @@ namespace AutoCSer.Search
                                 }
                                 if (--count == 0) break;
                             }
-                            foreach (ResultIndexLeftArray indexArray in result.Values) indexArray.Indexs.sort();
+                            foreach (ResultIndexLeftArray indexArray in result.Values) indexArray.Indexs.Sort();
                         }
                     }
                 }

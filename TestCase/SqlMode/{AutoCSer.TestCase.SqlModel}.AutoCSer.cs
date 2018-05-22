@@ -22,7 +22,7 @@ namespace AutoCSer.TestCase.SqlModel
             /// </summary>
             /// <typeparam name="tableType">表格映射类型</typeparam>
             /// <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
-            [AutoCSer.Sql.MemberCache]
+            [AutoCSer.Sql.MemberCacheLink]
             public abstract class SqlModel<tableType, memberCacheType> : AutoCSer.TestCase.SqlModel.Class, AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>
                 where tableType : SqlModel<tableType, memberCacheType>
                 where memberCacheType : class
@@ -30,7 +30,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <summary>
                 /// SQL表格操作工具
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Table<tableType, AutoCSer.TestCase.SqlModel.Class> sqlTable = AutoCSer.Sql.Table<tableType, AutoCSer.TestCase.SqlModel.Class>.Get(true);
+                protected static readonly AutoCSer.Sql.Table<tableType, AutoCSer.TestCase.SqlModel.Class> sqlTable = AutoCSer.Sql.Table<tableType, AutoCSer.TestCase.SqlModel.Class>.Get(false);
                 private static bool isSqlLoaded;
                 /// <summary>
                 /// 等待数据初始化完成
@@ -51,7 +51,7 @@ namespace AutoCSer.TestCase.SqlModel
                 {
                     if (!isEventCacheLoaded)
                     {
-                        sqlTable.WaitCreateCache();
+                        if (sqlCache == null) throw new NullReferenceException(AutoCSer.Extension.TypeExtension.fullName(typeof(tableType)) + ".sqlCache is null");
                         isEventCacheLoaded = true;
                     }
                 }
@@ -62,7 +62,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <param name="onUpdated">更新记录事件</param>
                 /// <param name="onDeleted">删除记录事件</param>
                 /// <param name="isMemberMap">是否支持成员位图</param>
-                protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Class>> onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
+                protected static void sqlLoaded(Action<tableType> onInserted = null, AutoCSer.Sql.Cache.Table<tableType, AutoCSer.TestCase.SqlModel.Class>.OnCacheUpdated onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
                 {
                     sqlStream.Set(sqlCache, isMemberMap);
                     sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false, false);
@@ -70,27 +70,11 @@ namespace AutoCSer.TestCase.SqlModel
                     sqlTable.AddLogStreamLoadedType(SqlLogMembers._LoadCount_, new AutoCSer.Sql.LogStream.LoadedType(typeof(AutoCSer.TestCase.SqlModel.Student), 0));
                     sqlTable.WaitMemberCache();
                 }
-
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Class, memberCacheType> sqlCache;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <typeparam name="memberCacheType"></typeparam>
-                /// <param name="memberCache">成员缓存</param>
-                /// <param name="group">数据分组</param>
-                /// <param name="baseIdentity">基础ID</param>
-                /// <param name="isReset">是否初始化事件与数据</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Class, memberCacheType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, int group = 0, int baseIdentity = 0, bool isReset = true)
-                {
-                    if (sqlTable == null) return null;
-                    sqlCache = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Class, memberCacheType>(sqlTable, memberCache, group, baseIdentity, isReset);
-                    sqlTable.CacheCreated();
-                    return sqlCache;
-                }
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Class, memberCacheType> sqlCache = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Class, memberCacheType>(sqlTable);
+
 
 
 
@@ -252,7 +236,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <param name="onUpdated">更新记录事件</param>
                 /// <param name="onDeleted">删除记录事件</param>
                 /// <param name="isMemberMap">是否支持成员位图</param>
-                protected static void sqlLoaded(Action<tableType> onInserted = null, Action<tableType, tableType, tableType, AutoCSer.Metadata.MemberMap<AutoCSer.TestCase.SqlModel.Student>> onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
+                protected static void sqlLoaded(Action<tableType> onInserted = null, AutoCSer.Sql.Cache.Table<tableType, AutoCSer.TestCase.SqlModel.Student>.OnCacheUpdated onUpdated = null, Action<tableType> onDeleted = null, bool isMemberMap = true)
                 {
                     sqlStream.Set(sqlCache, isMemberMap);
                     sqlCache/**/.Loaded(onInserted, onUpdated, onDeleted, false);
@@ -261,7 +245,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Student, tableType> sqlCache = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Student, tableType>(sqlTable, null);
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Student> sqlCache = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, AutoCSer.TestCase.SqlModel.Student>(sqlTable);
 
 
 

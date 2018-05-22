@@ -43,7 +43,7 @@ namespace AutoCSer.HtmlNode
         /// <returns>是否相等</returns>
         public bool Equals(CanNonRoundTagName other)
         {
-            return Name.equalCase(ref other.Name);
+            return Name.EqualCase(ref other.Name);
         }
         /// <summary>
         /// 判断是否相等

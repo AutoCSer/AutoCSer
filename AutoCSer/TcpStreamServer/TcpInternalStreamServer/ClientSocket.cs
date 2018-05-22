@@ -135,7 +135,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                             {
                                 if (isErrorLog)
                                 {
-                                    CommandClient.Log.add(AutoCSer.Log.LogType.Debug, CommandClient.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
+                                    CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, CommandClient.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
                                 }
                                 return;
                             }
@@ -157,7 +157,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     if (!isErrorLog)
                     {
                         isErrorLog = true;
-                        CommandClient.Log.add(AutoCSer.Log.LogType.Debug, error, CommandClient.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
+                        CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, CommandClient.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
                     }
                 }
                 if (isReceiveAsync) return;
@@ -213,7 +213,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
             }
             catch (Exception error)
             {
-                Log.add(AutoCSer.Log.LogType.Debug, error);
+                Log.Add(AutoCSer.Log.LogType.Debug, error);
             }
             if (CheckCreateVersion())
             {

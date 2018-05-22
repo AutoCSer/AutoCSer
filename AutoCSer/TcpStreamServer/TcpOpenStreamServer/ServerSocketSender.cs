@@ -213,7 +213,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 }
                 catch (Exception error)
                 {
-                    Server.Log.add(AutoCSer.Log.LogType.Error, error);
+                    Server.Log.Add(AutoCSer.Log.LogType.Error, error);
                     buildInfo.IsError = true;
                 }
                 finally
@@ -321,7 +321,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             }
             catch (Exception error)
             {
-                Server.Log.add(AutoCSer.Log.LogType.Debug, error);
+                Server.Log.Add(AutoCSer.Log.LogType.Debug, error);
             }
             if (IsSocket)
             {

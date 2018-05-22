@@ -367,11 +367,6 @@
             自定义简单组合模板
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.CombinationTemplate.DefaultTemplatePath">
-            <summary>
-            自定义模板相对项目路径
-            </summary>
-        </member>
         <member name="M:AutoCSer.CodeGenerator.CombinationTemplate.Run(AutoCSer.CodeGenerator.ProjectParameter)">
             <summary>
             安装入口
@@ -2737,6 +2732,11 @@
             远程表达式成员配置
             </summary>
         </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.Type">
+            <summary>
+            当前类型
+            </summary>
+        </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.Member">
             <summary>
             成员信息
@@ -2754,7 +2754,12 @@
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.GenericMemberNodeTypeName">
             <summary>
-            远程表达式成员节点类型名称
+            泛型实例化远程表达式成员节点类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.GenericParentMemberNodeTypeName">
+            <summary>
+            泛型实例化父节点远程表达式成员节点类型名称
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.MethodReturnType">
@@ -2770,6 +2775,11 @@
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.MemberIsReturn">
             <summary>
             是否存在返回值
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.ReturnTypeIsNull">
+            <summary>
+            返回值是否可空类型
             </summary>
         </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.MemberRemoteExpressionTypeName">
@@ -2802,77 +2812,69 @@
             是否静态成员
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MemberExpression">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.GenericMemberGroup">
+            <summary>
+            泛型实例化表达式成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Expression.CheckGenericMemberGroup">
+            <summary>
+            检测泛型实例化表达式成员集合
+            </summary>
+        </member>
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticExpression">
             <summary>
             远程表达式成员
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberExpression">
-            <summary>
-            远程表达式成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberExpression.IsStatic">
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticExpression.IsStatic">
             <summary>
             是否静态成员
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MethodExpression">
+        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup">
             <summary>
-            远程表达式成员
+            表达式成员集合
             </summary>
         </member>
-        <member name="T:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethodExpression">
-            <summary>
-            远程表达式成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethodExpression.IsStatic">
-            <summary>
-            是否静态成员
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.RemoteExpressionTypeName">
-            <summary>
-            远程表达式容器类型名称
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Members">
-            <summary>
-            实例字段 / 属性
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.Methods">
-            <summary>
-            实例方法
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMembers">
-            <summary>
-            静态字段 / 属性
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMethods">
-            <summary>
-            静态方法
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.StaticMemberCount">
-            <summary>
-            静态成员数量
-            </summary>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.nodeTypeNames">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.nodeTypeNames">
             <summary>
             节点名称集合
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.nextCreate">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.type">
             <summary>
-            安装下一个类型
+            当前类型
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.addMember``1(AutoCSer.LeftArray{``0}@,``0)">
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.memberNodeTypeName">
+            <summary>
+            泛型实例化父节点远程表达式成员节点类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.Members">
+            <summary>
+            实例字段 / 属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.StaticMembers">
+            <summary>
+            静态字段 / 属性
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.IsMember">
+            <summary>
+            成员是否有效
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.#ctor(AutoCSer.CodeGenerator.Metadata.ExtensionType,System.String)">
+            <summary>
+            表达式成员集合
+            </summary>
+            <param name="type"></param>
+            <param name="memberNodeTypeName"></param>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.ExpressionMemberGroup.addMember``1(AutoCSer.LeftArray{``0}@,``0)">
             <summary>
             添加成员
             </summary>
@@ -2880,6 +2882,21 @@
             <param name="members"></param>
             <param name="member"></param>
             <returns></returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.RemoteExpressionTypeName">
+            <summary>
+            远程表达式容器类型名称
+            </summary>
+        </member>
+        <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.MemberGroup">
+            <summary>
+            表达式成员集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.nextCreate">
+            <summary>
+            安装下一个类型
+            </summary>
         </member>
         <member name="M:AutoCSer.CodeGenerator.TemplateGenerator.RemoteExpression.Generator.onCreated">
             <summary>
@@ -3219,17 +3236,7 @@
             SQL表格默认缓存 字段名称
             </summary>
         </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityArrayMemberCacheName">
-            <summary>
-            SQL表格默认缓存 字段名称
-            </summary>
-        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityTreeCacheName">
-            <summary>
-            SQL表格默认缓存 字段名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateIdentityTreeMemberCacheName">
             <summary>
             SQL表格默认缓存 字段名称
             </summary>
@@ -3239,27 +3246,12 @@
             SQL表格默认缓存 字段名称
             </summary>
         </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyMemberCacheName">
-            <summary>
-            SQL表格默认缓存 字段名称
-            </summary>
-        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyArrayCacheName">
             <summary>
             SQL表格默认缓存 字段名称
             </summary>
         </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreatePrimaryKeyArrayMemberCacheName">
-            <summary>
-            SQL表格默认缓存 字段名称
-            </summary>
-        </member>
         <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateMemberKeyCacheName">
-            <summary>
-            SQL表格默认缓存 字段名称
-            </summary>
-        </member>
-        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.CreateMemberKeyMemberCacheName">
             <summary>
             SQL表格默认缓存 字段名称
             </summary>
@@ -4182,6 +4174,11 @@
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.IsCallQueue">
             <summary>
             是否提供独占的 TCP 服务器端同步调用队列
+            </summary>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.IsInternalClient">
+            <summary>
+            仅程序集可见
             </summary>
         </member>
         <member name="F:AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.GeneratorBase`3.nullRememberIdentityName">
@@ -6823,6 +6820,25 @@
             @XmlDocument 远程表达式
             </summary>
         </member>
+        <member name="T:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.GenericMemberNodeTypeName">
+            <summary>
+            @XmlDocument 远程表达式
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.GenericMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument 远程表达式</returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.Item(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument 远程表达式</returns>
+        </member>
+        <member name="P:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.MemberNodeTypeName.MemberName">
+            <summary>
+            @XmlDocument 远程表达式
+            </summary>
+        </member>
+        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+            <returns>@XmlDocument 远程表达式</returns>
+        </member>
         <member name="P:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.Item(AutoCSer.CodeGenerator.Template.Pub.FullName)">
             <returns>@XmlDocument 远程表达式</returns>
         </member>
@@ -6831,16 +6847,13 @@
             @XmlDocument 远程表达式
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
+        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericStaticMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
             <returns>@XmlDocument 远程表达式</returns>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.StaticPropertyName">
             <summary>
             @XmlDocument 远程表达式
             </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.RemoteExpression.TypeNameDefinition.RemoteExpressionTypeName.GenericStaticMethodName(AutoCSer.CodeGenerator.Template.Pub.FullName)">
-            <returns>@XmlDocument 远程表达式</returns>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.IsSqlLogProxyLoadedName">
             <summary>
@@ -6865,7 +6878,7 @@
             等待数据事件缓存数据初始化完成
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.sqlLoaded(System.Action{`0},System.Action{`0,`0,`0,AutoCSer.Metadata.MemberMap{AutoCSer.CodeGenerator.Template.Pub.FullName}},System.Action{`0},System.Boolean)">
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.sqlLoaded(System.Action{`0},AutoCSer.Sql.Cache.Table{`0,AutoCSer.CodeGenerator.Template.Pub.FullName}.OnCacheUpdated,System.Action{`0},System.Boolean)">
             <param name="isMemberMap">是否支持成员位图</param>
         </member>
         <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.IdentityArrayCacheName">
@@ -6888,7 +6901,7 @@
             SQL默认缓存
             </summary>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityArrayMemberCacheName">
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityArrayCacheName">
             <summary>
             SQL默认缓存
             </summary>
@@ -6904,20 +6917,6 @@
             <param name="isReset">是否初始化事件与数据</param>
             <returns></returns>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityArrayCacheName">
-            <summary>
-            SQL默认缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Int32,System.Int32,System.Boolean)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <param name="baseIdentity">基础ID</param>
-            <param name="group">数据分组</param>
-            <param name="isReset">是否初始化事件与数据</param>
-            <returns></returns>
-        </member>
         <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Func{`0,System.Boolean},System.Int32,System.Int32)">
             <summary>
             创建SQL默认缓存
@@ -6926,15 +6925,6 @@
             <param name="group">数据分组</param>
             <param name="baseIdentity">基础ID</param>
             <param name="isReset">是否初始化事件与数据</param>
-            <returns></returns>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Func{`0,System.Boolean},System.Int32,System.Int32)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
-            <param name="baseIdentity">基础ID</param>
-            <param name="group">数据分组</param>
             <returns></returns>
         </member>
         <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}},System.Int32,System.Int32)">
@@ -6947,16 +6937,7 @@
             <param name="isReset">是否初始化事件与数据</param>
             <returns></returns>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Linq.Expressions.Expression{System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,System.Boolean}},System.Int32,System.Int32)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
-            <param name="baseIdentity">基础ID</param>
-            <param name="group">数据分组</param>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityTreeMemberCacheName">
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityTreeCacheName">
             <summary>
             SQL默认缓存
             </summary>
@@ -6970,20 +6951,7 @@
             <param name="baseIdentity">基础ID</param>
             <returns></returns>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateIdentityTreeCacheName">
-            <summary>
-            SQL默认缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Int32,System.Int32)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <param name="group">数据分组</param>
-            <param name="baseIdentity">基础ID</param>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyMemberCacheName">
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyCacheName">
             <summary>
             SQL默认缓存
             </summary>
@@ -6997,19 +6965,7 @@
             <param name="group">数据分组</param>
             <returns></returns>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyCacheName">
-            <summary>
-            SQL默认缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache(System.Int32)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <param name="group">数据分组</param>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyArrayMemberCacheName">
+        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyArrayCacheName">
             <summary>
             SQL默认缓存
             </summary>
@@ -7023,46 +6979,12 @@
             <param name="group">数据分组</param>
             <returns></returns>
         </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreatePrimaryKeyArrayCacheName">
-            <summary>
-            SQL默认缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``1(System.Int32)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <param name="group">数据分组</param>
-            <returns></returns>
-        </member>
-        <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateMemberKeyMemberCacheName">
-            <summary>
-            SQL默认缓存
-            </summary>
-        </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``5(AutoCSer.Sql.Cache.Whole.Event.Key{``0,``1,``2,``3},System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``4},System.Linq.Expressions.Expression{System.Func{``2,System.Collections.Generic.Dictionary{AutoCSer.RandomKey{``4},`0}}},System.Int32)">
-            <summary>
-            创建SQL默认缓存
-            </summary>
-            <typeparam name="targetType"></typeparam>
-            <typeparam name="targetModelType"></typeparam>
-            <typeparam name="targetMemberCacheType"></typeparam>
-            <typeparam name="keyType"></typeparam>
-            <typeparam name="memberKeyType"></typeparam>
-            <param name="targetCache">目标缓存</param>
-            <param name="memberCache">成员缓存</param>
-            <param name="getKey">键值获取器</param>
-            <param name="getMemberKey">成员缓存键值获取器</param>
-            <param name="member">缓存成员</param>
-            <param name="group">数据分组</param>
-            <returns></returns>
-        </member>
         <member name="F:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.CreateMemberKeyCacheName">
             <summary>
             SQL默认缓存
             </summary>
         </member>
-        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``5(AutoCSer.Sql.Cache.Whole.Event.Key{``0,``1,``2,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``4},System.Linq.Expressions.Expression{System.Func{``2,System.Collections.Generic.Dictionary{AutoCSer.RandomKey{``4},`0}}},System.Int32)">
+        <member name="M:AutoCSer.CodeGenerator.Template.SqlModel.TypeNameDefinition.SqlModel`2.createCache``5(AutoCSer.Sql.Cache.Whole.Event.Key{``0,``1,``2,``3},System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``3},System.Func{AutoCSer.CodeGenerator.Template.Pub.FullName,``4},System.Linq.Expressions.Expression{System.Func{``2,System.Collections.Generic.Dictionary{AutoCSer.RandomKey{``4},`0}}},System.Int32)">
             <summary>
             创建SQL默认缓存
             </summary>

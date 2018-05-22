@@ -128,7 +128,7 @@ namespace AutoCSer.CodeGenerator
                                 .groupCount(value => value.Member.Name)
                                 .getFind(value => value.Value != 1)
                                 .GetArray(value => value.Key));
-                            AutoCSer.Log.Pub.Log.waitThrow(AutoCSer.Log.LogType.All, error, Type.FullName + " : " + output, true);
+                            AutoCSer.Log.Pub.Log.WaitThrow(AutoCSer.Log.LogType.All, error, Type.FullName + " : " + output, true);
                         }
                     }
                     return values;

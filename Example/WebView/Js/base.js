@@ -1884,16 +1884,22 @@ var AutoCSer;
 			return 0;
 		};
 		HtmlElement.$GetScrollLeft = function () {
-			return document.body.scrollLeft || document.documentElement.scrollLeft;
+			return Math.max(document.body.scrollLeft, document.documentElement.scrollLeft);
 		};
 		HtmlElement.$SetScrollLeft = function (Left) {
 			return document.body.scrollLeft = document.documentElement.scrollLeft = Left;
 		};
 		HtmlElement.$GetScrollTop = function () {
-			return document.body.scrollTop || document.documentElement.scrollTop;
+			return Math.max(document.body.scrollTop, document.documentElement.scrollTop);
 		};
 		HtmlElement.$SetScrollTop = function (Top) {
 			document.body.scrollTop = document.documentElement.scrollTop = Top;
+		};
+		HtmlElement.$GetScrollHeight = function () {
+			return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+		};
+		HtmlElement.$GetScrollWidth = function () {
+			return Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
 		};
 		HtmlElement.$ScrollTopById = function (Id) {
 			var Element = this.$IdElement(Id);

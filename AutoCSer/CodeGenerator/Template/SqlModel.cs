@@ -32,7 +32,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <typeparam name="tableType">表格映射类型</typeparam>
             #region IF IsMemberCache
             /// <typeparam name="memberCacheType">成员绑定缓存类型</typeparam>
-            [AutoCSer.Sql.MemberCache]
+            [AutoCSer.Sql.MemberCacheLink]
             #endregion IF IsMemberCache
             public abstract class SqlModel<tableType/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> : @Type.FullName/*IF:Attribute.LogServerName*/, AutoCSer.Sql.LogStream.IMemberMapValueLink<tableType>/*IF:Attribute.LogServerName*/
                 where tableType : SqlModel<tableType/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>
@@ -90,18 +90,14 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="isMemberMap">是否支持成员位图</param>
                 #endregion IF Attribute.LogServerName
                 #endregion IF IsSqlCacheLoaded
-                protected static void sqlLoaded(/*IF:IsSqlCacheLoaded*/Action<tableType> onInserted = null, Action</*IF:Attribute.IsLoadedCache*/tableType, /*IF:Attribute.IsLoadedCache*/tableType, tableType, AutoCSer.Metadata.MemberMap<@Type.FullName>> onUpdated = null, Action<tableType> onDeleted = null/*IF:Attribute.LogServerName*/, bool isMemberMap = true/*IF:Attribute.LogServerName*//*IF:IsSqlCacheLoaded*/)
+                #region IF Attribute.IsLoadedCache
+                protected static void sqlLoaded(/*IF:IsSqlCacheLoaded*/Action<tableType> onInserted = null, AutoCSer.Sql.Cache.Table<tableType, @Type.FullName>.OnCacheUpdated onUpdated = null, Action<tableType> onDeleted = null/*IF:Attribute.LogServerName*/, bool isMemberMap = true/*IF:Attribute.LogServerName*//*IF:IsSqlCacheLoaded*/)
                 {
                     #region IF IsSqlCacheLoaded
                     #region IF Attribute.LogServerName
                     sqlStream.Set(@IdentityArrayCacheName, isMemberMap);
                     #endregion IF Attribute.LogServerName
-                    #region IF Attribute.IsLoadedCache
                     @IdentityArrayCacheName/**/.Loaded(onInserted, onUpdated, onDeleted, false/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
-                    #endregion IF Attribute.IsLoadedCache
-                    #region NOT Attribute.IsLoadedCache
-                    sqlTable.CacheLoaded(onInserted, /*NOTE*/(Action<tableType, tableType, AutoCSer.Metadata.MemberMap<@Type.FullName>>)(object)/*NOTE*/onUpdated, onDeleted, false/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
-                    #endregion NOT Attribute.IsLoadedCache
                     #endregion IF IsSqlCacheLoaded
                     sqlTable.LoadMemberCache(/*IF:IsMemberCache*/typeof(memberCacheType)/*IF:IsMemberCache*/);
                     #region IF SqlStreamTypeCount
@@ -111,38 +107,56 @@ namespace AutoCSer.CodeGenerator.Template
                     sqlTable.WaitMemberCache();
                     #endregion IF IsMemberCache
                 }
+                #endregion IF Attribute.IsLoadedCache
+                #region NOT Attribute.IsLoadedCache
+                protected static void sqlLoaded(/*IF:IsSqlCacheLoaded*/Action<tableType> onInserted = null, AutoCSer.Sql.Table<tableType, @Type.FullName>.OnTableUpdated onUpdated = null, Action<tableType> onDeleted = null/*IF:Attribute.LogServerName*/, bool isMemberMap = true/*IF:Attribute.LogServerName*//*IF:IsSqlCacheLoaded*/)
+                {
+                    #region IF IsSqlCacheLoaded
+                    #region IF Attribute.LogServerName
+                    sqlStream.Set(@IdentityArrayCacheName, isMemberMap);
+                    #endregion IF Attribute.LogServerName
+                    sqlTable.CacheLoaded(onInserted, /*NOTE*/(AutoCSer.Sql.Table<tableType, @Type.FullName>.OnTableUpdated)(object)/*NOTE*/onUpdated, onDeleted, false/*IF:SqlStreamTypeCount*/, false/*IF:SqlStreamTypeCount*/);
+                    #endregion IF IsSqlCacheLoaded
+                    sqlTable.LoadMemberCache(/*IF:IsMemberCache*/typeof(memberCacheType)/*IF:IsMemberCache*/);
+                    #region IF SqlStreamTypeCount
+                    sqlTable.AddLogStreamLoadedType(SqlLogMembers._LoadCount_/*LOOP:SqlStreamCountTypes*/, new AutoCSer.Sql.LogStream.LoadedType(typeof(@SqlStreamCountType.FullName), @CountTypeNumber)/*LOOP:SqlStreamCountTypes*/);
+                    #endregion IF SqlStreamTypeCount
+                    #region IF IsMemberCache
+                    sqlTable.WaitMemberCache();
+                    #endregion IF IsMemberCache
+                }
+                #endregion NOT Attribute.IsLoadedCache
                 #endregion IF IsSqlLoaded
                 #region IF CacheType=IdentityArray
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, tableType> @IdentityArrayCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, tableType>(sqlTable, null);
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> @IdentityArrayCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>(sqlTable);
                 #endregion IF CacheType=IdentityArray
                 #region IF CacheType=IdentityTree
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, tableType> @IdentityTreeCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, tableType>(sqlTable, null);
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> @IdentityTreeCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>(sqlTable);
                 #endregion IF CacheType=IdentityTree
                 #region IF CacheType=PrimaryKey
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, tableType, @PrimaryKeyType> @PrimaryKeyCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, tableType, @PrimaryKeyType>(sqlTable, null);
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType> @PrimaryKeyCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType>(sqlTable);
                 #endregion IF CacheType=PrimaryKey
                 #region IF CacheType=PrimaryKeyArray
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static readonly AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, tableType, @PrimaryKeyType> @PrimaryKeyArrayCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, tableType, @PrimaryKeyType>(sqlTable, null);
+                protected static readonly AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType> @PrimaryKeyArrayCacheName = sqlTable == null ? null : new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType>(sqlTable);
                 #endregion IF CacheType=PrimaryKeyArray
 
                 #region IF CacheType=CreateIdentityArray
-                #region IF IsMemberCache
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, memberCacheType> @CreateIdentityArrayMemberCacheName;
+                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> @CreateIdentityArrayCacheName;
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -152,46 +166,23 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="baseIdentity">基础ID</param>
                 /// <param name="isReset">是否初始化事件与数据</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, memberCacheType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, int group = 0, int baseIdentity = 0, bool isReset = true)
+                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> createCache(/*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, /*IF:IsMemberCache*/int group = 0, int baseIdentity = 0, bool isReset = true)
                 {
                     if (sqlTable == null) return null;
-                    @CreateIdentityArrayMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, memberCacheType>(sqlTable, memberCache, group, baseIdentity, isReset);
-                    sqlTable.CacheCreated();
-                    #region IF NowTimeMembers.Length
-                    NowTimes.Load(@CreateIdentityArrayMemberCacheName/**/.Values);
-                    #endregion IF NowTimeMembers.Length
-                    #region IF CounterMembers.Length
-                    createCounter(@CreateIdentityArrayMemberCacheName);
-                    #endregion IF CounterMembers.Length
-                    return @CreateIdentityArrayMemberCacheName;
-                }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// SQL默认缓存
-                /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, tableType> @CreateIdentityArrayCacheName;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <param name="baseIdentity">基础ID</param>
-                /// <param name="group">数据分组</param>
-                /// <param name="isReset">是否初始化事件与数据</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, tableType> createCache(int group = 0, int baseIdentity = 0, bool isReset = true)
-                {
-                    if (sqlTable == null) return null;
-                    @CreateIdentityArrayCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName, tableType>(sqlTable, null, group, baseIdentity, isReset);
+                    @CreateIdentityArrayCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, group, baseIdentity, isReset);
                     sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreateIdentityArrayCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
+                    #region IF IsMemberCache
+                    #region IF CounterMembers.Length
+                    createCounter(@CreateIdentityArrayCacheName);
+                    #endregion IF CounterMembers.Length
+                    #endregion IF IsMemberCache
                     return @CreateIdentityArrayCacheName;
                 }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreateIdentityArray
                 #region IF CacheType=CreateIdentityArrayWhere
-                #region IF IsMemberCache
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -200,29 +191,13 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="baseIdentity">基础ID</param>
                 /// <param name="isReset">是否初始化事件与数据</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere<tableType, @Type.FullName, memberCacheType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, Func<tableType, bool> isValue, int group = 0, int baseIdentity = 0)
+                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> createCache(/*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, /*IF:IsMemberCache*/Func<tableType, bool> isValue, int group = 0, int baseIdentity = 0)
                 {
                     if (sqlTable == null) return null;
-                    return new AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere<tableType, @Type.FullName, memberCacheType>(sqlTable, memberCache, isValue, group, baseIdentity);
+                    return new AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, isValue, group, baseIdentity);
                 }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
-                /// <param name="baseIdentity">基础ID</param>
-                /// <param name="group">数据分组</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere<tableType, @Type.FullName, tableType> createCache(Func<tableType, bool> isValue, int group = 0, int baseIdentity = 0)
-                {
-                    if (sqlTable == null) return null;
-                    return new AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhere<tableType, @Type.FullName, tableType>(sqlTable, null, isValue, group, baseIdentity);
-                }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreateIdentityArrayWhere
                 #region IF CacheType=CreateIdentityArrayWhereExpression
-                #region IF IsMemberCache
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -231,33 +206,17 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="baseIdentity">基础ID</param>
                 /// <param name="isReset">是否初始化事件与数据</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression<tableType, @Type.FullName, memberCacheType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, System.Linq.Expressions.Expression<Func<@Type.FullName, bool>> isValue, int group = 0, int baseIdentity = 0)
+                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> createCache(/*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, /*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<@Type.FullName, bool>> isValue, int group = 0, int baseIdentity = 0)
                 {
                     if (sqlTable == null) return null;
-                    return new AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression<tableType, @Type.FullName, memberCacheType>(sqlTable, memberCache, isValue, group, baseIdentity);
+                    return new AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, isValue, group, baseIdentity);
                 }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <param name="isValue">数据匹配器,必须保证更新数据的匹配一致性</param>
-                /// <param name="baseIdentity">基础ID</param>
-                /// <param name="group">数据分组</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression<tableType, @Type.FullName, tableType> createCache(System.Linq.Expressions.Expression<Func<@Type.FullName, bool>> isValue, int group = 0, int baseIdentity = 0)
-                {
-                    if (sqlTable == null) return null;
-                    return new AutoCSer.Sql.Cache.Whole.Event.IdentityArrayWhereExpression<tableType, @Type.FullName, tableType>(sqlTable, null, isValue, group, baseIdentity);
-                }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreateIdentityArrayWhereExpression
                 #region IF CacheType=CreateIdentityTree
-                #region IF IsMemberCache
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, memberCacheType> @CreateIdentityTreeMemberCacheName;
+                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> @CreateIdentityTreeCacheName;
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -265,49 +224,27 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="group">数据分组</param>
                 /// <param name="baseIdentity">基础ID</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, memberCacheType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, int group = 0, int baseIdentity = 0)
+                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> createCache(/*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, /*IF:IsMemberCache*/int group = 0, int baseIdentity = 0)
                 {
                     if (sqlTable == null) return null;
-                    @CreateIdentityTreeMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, memberCacheType>(sqlTable, memberCache, group, baseIdentity);
-                    sqlTable.CacheCreated();
-                    #region IF NowTimeMembers.Length
-                    NowTimes.Load(@CreateIdentityTreeMemberCacheName/**/.Values);
-                    #endregion IF NowTimeMembers.Length
-                    #region IF CounterMembers.Length
-                    createCounter(@CreateIdentityTreeMemberCacheName);
-                    #endregion IF CounterMembers.Length
-                    return @CreateIdentityTreeMemberCacheName;
-                }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// SQL默认缓存
-                /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, tableType> @CreateIdentityTreeCacheName;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <param name="group">数据分组</param>
-                /// <param name="baseIdentity">基础ID</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, tableType> createCache(int group = 0, int baseIdentity = 0)
-                {
-                    if (sqlTable == null) return null;
-                    @CreateIdentityTreeCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName, tableType>(sqlTable, null, group, baseIdentity);
+                    @CreateIdentityTreeCacheName = new AutoCSer.Sql.Cache.Whole.Event.IdentityTree<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, group, baseIdentity);
                     sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreateIdentityTreeCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
+                    #region IF IsMemberCache
+                    #region IF CounterMembers.Length
+                    createCounter(@CreateIdentityTreeCacheName);
+                    #endregion IF CounterMembers.Length
+                    #endregion IF IsMemberCache
                     return @CreateIdentityTreeCacheName;
                 }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreateIdentityTree
                 #region IF CacheType=CreatePrimaryKey
-                #region IF IsMemberCache
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType> @CreatePrimaryKeyMemberCacheName;
+                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType> @CreatePrimaryKeyCacheName;
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -315,45 +252,22 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="memberCache">成员缓存</param>
                 /// <param name="group">数据分组</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType> createCache(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, int group = 0)
+                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType> createCache(/*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, /*IF:IsMemberCache*/int group = 0)
                 {
                     if (sqlTable == null) return null;
-                    @CreatePrimaryKeyMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType>(sqlTable, memberCache, group);
-                    sqlTable.CacheCreated();
-                    #region IF NowTimeMembers.Length
-                    NowTimes.Load(@CreatePrimaryKeyMemberCacheName/**/.Values);
-                    #endregion IF NowTimeMembers.Length
-                    return @CreatePrimaryKeyMemberCacheName;
-                }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// SQL默认缓存
-                /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, tableType, @PrimaryKeyType> @CreatePrimaryKeyCacheName;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <param name="group">数据分组</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, tableType, @PrimaryKeyType> createCache(int group = 0)
-                {
-                    if (sqlTable == null) return null;
-                    @CreatePrimaryKeyCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName, tableType, @PrimaryKeyType>(sqlTable, null, group);
+                    @CreatePrimaryKeyCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, group);
                     sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreatePrimaryKeyCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
                     return @CreatePrimaryKeyCacheName;
                 }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreatePrimaryKey
                 #region IF CacheType=CreatePrimaryKeyArray
-                #region IF IsMemberCache
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType> @CreatePrimaryKeyArrayMemberCacheName;
+                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType> @CreatePrimaryKeyArrayCacheName;
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -361,45 +275,22 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="memberCache">成员缓存</param>
                 /// <param name="group">数据分组</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType> createCache/*NOTE*/<T>/*NOTE*/(System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, int group = 0)
+                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType> createCache/*NOTE*/<T>/*NOTE*/(/*IF:IsMemberCache*/System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, /*IF:IsMemberCache*/int group = 0)
                 {
                     if (sqlTable == null) return null;
-                    @CreatePrimaryKeyArrayMemberCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, memberCacheType, @PrimaryKeyType>(sqlTable, memberCache, group);
-                    sqlTable.CacheCreated();
-                    #region IF NowTimeMembers.Length
-                    NowTimes.Load(@CreatePrimaryKeyArrayMemberCacheName/**/.Values);
-                    #endregion IF NowTimeMembers.Length
-                    return @CreatePrimaryKeyArrayMemberCacheName;
-                }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// SQL默认缓存
-                /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, tableType, @PrimaryKeyType> @CreatePrimaryKeyArrayCacheName;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <param name="group">数据分组</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, tableType, @PrimaryKeyType> createCache/*NOTE*/<T>/*NOTE*/(int group = 0)
-                {
-                    if (sqlTable == null) return null;
-                    @CreatePrimaryKeyArrayCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName, tableType, @PrimaryKeyType>(sqlTable, null, group);
+                    @CreatePrimaryKeyArrayCacheName = new AutoCSer.Sql.Cache.Whole.Event.PrimaryKeyArray<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, @PrimaryKeyType>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, group);
                     sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
                     NowTimes.Load(@CreatePrimaryKeyArrayCacheName/**/.Values);
                     #endregion IF NowTimeMembers.Length
                     return @CreatePrimaryKeyArrayCacheName;
                 }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreatePrimaryKeyArray
                 #region IF CacheType=CreateMemberKey
-                #region IF IsMemberCache
                 /// <summary>
                 /// SQL默认缓存
                 /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.Cache<tableType, @Type.FullName, memberCacheType> @CreateMemberKeyMemberCacheName;
+                protected static AutoCSer.Sql.Cache.Whole.Event.Cache<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/> @CreateMemberKeyCacheName;
                 /// <summary>
                 /// 创建SQL默认缓存
                 /// </summary>
@@ -415,7 +306,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="member">缓存成员</param>
                 /// <param name="group">数据分组</param>
                 /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, memberCacheType, keyType, memberKeyType, targetMemberCacheType> createCache<targetType, targetModelType, targetMemberCacheType, keyType, memberKeyType>(AutoCSer.Sql.Cache.Whole.Event.Key<targetType, targetModelType, targetMemberCacheType, keyType> targetCache, System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache, Func<@Type.FullName, keyType> getKey, Func<@Type.FullName, memberKeyType> getMemberKey, System.Linq.Expressions.Expression<Func<targetMemberCacheType, System.Collections.Generic.Dictionary<AutoCSer.RandomKey<memberKeyType>, tableType>>> member, int group = 0)
+                protected static AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, keyType, memberKeyType, targetMemberCacheType> createCache<targetType, targetModelType, targetMemberCacheType, keyType, memberKeyType>(AutoCSer.Sql.Cache.Whole.Event.Key<targetType, targetModelType, targetMemberCacheType, keyType> targetCache/*IF:IsMemberCache*/, System.Linq.Expressions.Expression<Func<tableType, memberCacheType>> memberCache/*IF:IsMemberCache*/, Func<@Type.FullName, keyType> getKey, Func<@Type.FullName, memberKeyType> getMemberKey, System.Linq.Expressions.Expression<Func<targetMemberCacheType, System.Collections.Generic.Dictionary<AutoCSer.RandomKey<memberKeyType>, tableType>>> member, int group = 0)
                     where keyType : struct, IEquatable<keyType>
                     where memberKeyType : struct, IEquatable<memberKeyType>
                     where targetType : class, targetModelType
@@ -423,44 +314,7 @@ namespace AutoCSer.CodeGenerator.Template
                     where targetMemberCacheType : class
                 {
                     if (sqlTable == null) return null;
-                    AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, memberCacheType, keyType, memberKeyType, targetMemberCacheType> cache = new AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, memberCacheType, keyType, memberKeyType, targetMemberCacheType>(sqlTable, memberCache, getKey, getMemberKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, group);
-                    @CreateMemberKeyMemberCacheName = cache;
-                    sqlTable.CacheCreated();
-                    #region IF NowTimeMembers.Length
-                    NowTimes.Load(cache.Values);
-                    #endregion IF NowTimeMembers.Length
-                    return cache;
-                }
-                #endregion IF IsMemberCache
-                #region NOT IsMemberCache
-                /// <summary>
-                /// SQL默认缓存
-                /// </summary>
-                protected static AutoCSer.Sql.Cache.Whole.Event.Cache<tableType, @Type.FullName, tableType> @CreateMemberKeyCacheName;
-                /// <summary>
-                /// 创建SQL默认缓存
-                /// </summary>
-                /// <typeparam name="targetType"></typeparam>
-                /// <typeparam name="targetModelType"></typeparam>
-                /// <typeparam name="targetMemberCacheType"></typeparam>
-                /// <typeparam name="keyType"></typeparam>
-                /// <typeparam name="memberKeyType"></typeparam>
-                /// <param name="targetCache">目标缓存</param>
-                /// <param name="memberCache">成员缓存</param>
-                /// <param name="getKey">键值获取器</param>
-                /// <param name="getMemberKey">成员缓存键值获取器</param>
-                /// <param name="member">缓存成员</param>
-                /// <param name="group">数据分组</param>
-                /// <returns></returns>
-                protected static AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, tableType, keyType, memberKeyType, targetMemberCacheType> createCache<targetType, targetModelType, targetMemberCacheType, keyType, memberKeyType>(AutoCSer.Sql.Cache.Whole.Event.Key<targetType, targetModelType, targetMemberCacheType, keyType> targetCache, Func<@Type.FullName, keyType> getKey, Func<@Type.FullName, memberKeyType> getMemberKey, System.Linq.Expressions.Expression<Func<targetMemberCacheType, System.Collections.Generic.Dictionary<AutoCSer.RandomKey<memberKeyType>, tableType>>> member, int group = 0)
-                    where keyType : struct, IEquatable<keyType>
-                    where memberKeyType : struct, IEquatable<memberKeyType>
-                    where targetType : class, targetModelType
-                    where targetModelType : class
-                    where targetMemberCacheType : class
-                {
-                    if (sqlTable == null) return null;
-                    AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, tableType, keyType, memberKeyType, targetMemberCacheType> cache = new AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName, tableType, keyType, memberKeyType, targetMemberCacheType>(sqlTable, null, getKey, getMemberKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, group);
+                    AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, keyType, memberKeyType, targetMemberCacheType> cache = new AutoCSer.Sql.Cache.Whole.Event.MemberKey<tableType, @Type.FullName/*IF:IsMemberCache*/, memberCacheType/*IF:IsMemberCache*/, keyType, memberKeyType, targetMemberCacheType>(sqlTable/*IF:IsMemberCache*/, memberCache/*IF:IsMemberCache*/, getKey, getMemberKey, targetCache.GetMemberCacheByKey, member, targetCache.GetAllMemberCache, group);
                     @CreateMemberKeyCacheName = cache;
                     sqlTable.CacheCreated();
                     #region IF NowTimeMembers.Length
@@ -468,7 +322,6 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF NowTimeMembers.Length
                     return cache;
                 }
-                #endregion NOT IsMemberCache
                 #endregion IF CacheType=CreateMemberKey
                 #region IF CacheType=Custom
                 /// <summary>

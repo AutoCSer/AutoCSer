@@ -67,7 +67,7 @@ namespace AutoCSer.Deploy
                 Data = File.ReadAllBytes(file.FullName);
                 LastWriteTimeUtc = file.LastWriteTimeUtc;
             }
-            else AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, "文件同步时间冲突 " + file.FullName);
+            else AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "文件同步时间冲突 " + file.FullName);
         }
     }
 }

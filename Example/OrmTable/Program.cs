@@ -8,7 +8,6 @@ namespace AutoCSer.Example.OrmTable
         {
             Console.WriteLine(@"http://www.AutoCSer.com/OrmCache/Index.html
 ");
-
             OrmOnly.Test();
             NowTime.Test();
 

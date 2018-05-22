@@ -78,7 +78,7 @@ namespace AutoCSer.OpenAPI.QQ
                         int.TryParse(query, out token.expires_in);
                     }
                 }
-                if (!token.IsToken) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, data);
+                if (!token.IsToken) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, data);
             }
             return token;
         }
@@ -89,7 +89,7 @@ namespace AutoCSer.OpenAPI.QQ
         /// <returns>API调用,失败返回null</returns>
         public API GetApi(string code)
         {
-            if (string.IsNullOrEmpty(site)) AutoCSer.Log.Pub.Log.add(Log.LogType.Error, "网站名称不能为空");
+            if (string.IsNullOrEmpty(site)) AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, "网站名称不能为空");
             else
             {
                 Token token = getToken(code);

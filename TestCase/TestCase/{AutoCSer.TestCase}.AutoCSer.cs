@@ -679,7 +679,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                     try
@@ -706,7 +707,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -733,7 +735,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Inc()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Inc()
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                     try
@@ -753,7 +756,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
+                public 
+                AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
                 {
                     AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -773,7 +777,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Set(int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Set(int a)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                     try
@@ -798,7 +803,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
+                public 
+                AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
                 {
                     AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -823,7 +829,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.Pop();
                     try
@@ -854,7 +861,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -881,7 +889,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 混合输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p5> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p5>.Pop();
                     try
@@ -919,7 +928,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc()
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.Pop();
                     try
@@ -943,7 +953,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -964,7 +975,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.Pop();
                     try
@@ -993,7 +1005,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -1018,7 +1031,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p6> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p6>.Pop();
                     try
@@ -1051,7 +1065,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 混合输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p7> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p7>.Pop();
                     try
@@ -1623,7 +1638,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 测试字段
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> field
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> field
                 {
                     get
                     {
@@ -1676,7 +1692,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
                 {
                     get
                     {
@@ -1740,7 +1757,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 2, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
                 {
                     get
                     {
@@ -1773,7 +1791,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 只读属性[不支持不可读属性]
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
                 {
                     get
                     {
@@ -1801,7 +1820,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 测试属性
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> property
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> property
                 {
                     get
                     {
@@ -2079,7 +2099,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<bool> login(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string user, string password)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<bool> login(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string user, string password)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
                     try
@@ -2110,7 +2131,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string user, string password)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string user, string password)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<bool>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
@@ -2138,7 +2160,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端读客户端标识测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<string> myName()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<string> myName()
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p3>.Pop();
                     try
@@ -2162,7 +2185,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端读客户端标识测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<string> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<string>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -2604,7 +2628,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2625,7 +2650,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Inc()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Inc()
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2639,7 +2665,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Set(int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Set(int a)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2658,7 +2685,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2683,7 +2711,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 混合输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2711,7 +2740,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc()
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2729,7 +2759,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2752,7 +2783,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -2776,7 +2808,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 混合输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -3109,7 +3142,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 测试字段
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> field
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> field
                 {
                     get
                     {
@@ -3143,7 +3177,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c2 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 2 + 128, InputParameterIndex = 3, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
                 {
                     get
                     {
@@ -3188,7 +3223,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c4 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 4 + 128, InputParameterIndex = 2, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
                 {
                     get
                     {
@@ -3212,7 +3248,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 只读属性[不支持不可读属性]
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
                 {
                     get
                     {
@@ -3231,7 +3268,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 测试属性
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> property
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> property
                 {
                     get
                     {
@@ -3458,7 +3496,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<bool> login(string user, string password)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<bool> login(string user, string password)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -3483,7 +3522,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端读客户端标识测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<string> myName()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<string> myName()
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -4196,7 +4236,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Add(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                     try
@@ -4223,7 +4264,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.Awaiter AddAwaiter(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -4250,7 +4292,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Inc()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Inc()
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                     try
@@ -4270,7 +4313,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
+                public 
+                AutoCSer.Net.TcpServer.Awaiter IncAwaiter()
                 {
                     AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -4290,7 +4334,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue Set(int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue Set(int a)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                     try
@@ -4315,7 +4360,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数无返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
+                public 
+                AutoCSer.Net.TcpServer.Awaiter SetAwaiter(int a)
                 {
                     AutoCSer.Net.TcpServer.Awaiter _awaiter_ = new AutoCSer.Net.TcpServer.Awaiter();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -4340,7 +4386,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3>.Pop();
                     try
@@ -4371,7 +4418,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 多参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> addAwaiter(int a, int b)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -4398,7 +4446,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 混合输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> add(int a, int b, out int c)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p5> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p5>.Pop();
                     try
@@ -4436,7 +4485,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc()
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3>.Pop();
                     try
@@ -4460,7 +4510,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 无参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter()
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -4481,7 +4532,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3>.Pop();
                     try
@@ -4510,7 +4562,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 单参数有返回值调用测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<int> incAwaiter(int a)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<int>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -4535,7 +4588,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(out int a)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p6> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p6>.Pop();
                     try
@@ -4568,7 +4622,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 混合输出参数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> inc(int a, out int b)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p7> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p7>.Pop();
                     try
@@ -5153,7 +5208,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 测试字段
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> field
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> field
                 {
                     get
                     {
@@ -5206,7 +5262,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a2 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> this[int left, int right]
                 {
                     get
                     {
@@ -5270,7 +5327,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 2, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
 
-                public AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> this[int index]
                 {
                     get
                     {
@@ -5303,7 +5361,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 只读属性[不支持不可读属性]
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> getProperty
                 {
                     get
                     {
@@ -5331,7 +5390,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 测试属性
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<int> property
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<int> property
                 {
                     get
                     {
@@ -5608,7 +5668,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<bool> login(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _sender_, string user, string password)
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<bool> login(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _sender_, string user, string password)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
                     try
@@ -5639,7 +5700,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端写客户端标识测试+服务器端验证函数测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _sender_, string user, string password)
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> loginAwaiter(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _sender_, string user, string password)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<bool> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<bool>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _sender_;
@@ -5667,7 +5729,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端读客户端标识测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.ReturnValue<string> myName()
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue<string> myName()
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p3>.Pop();
                     try
@@ -5691,7 +5754,8 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <summary>
                 /// 服务器端读客户端标识测试
                 /// </summary>
-                public AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
+                public 
+                AutoCSer.Net.TcpServer.AwaiterBoxReference<string> myNameAwaiter()
                 {
                     AutoCSer.Net.TcpServer.AwaiterBoxReference<string> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBoxReference<string>();
                     AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender _socket_ = _TcpClient_.Sender;

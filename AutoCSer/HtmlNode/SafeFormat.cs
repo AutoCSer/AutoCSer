@@ -29,7 +29,7 @@ namespace AutoCSer.HtmlNode
                         {
                             if (!SafeAttributeName.Names.Contains(attribute.Key))
                             {
-                                if (attribute.Key.equalCase("style"))
+                                if (attribute.Key.EqualCase("style"))
                                 {
                                     string style = formatStyle(attributeArray[index].Value.Text);
                                     if (style == null)
@@ -61,7 +61,7 @@ namespace AutoCSer.HtmlNode
                             bool isHrefBlank = false;
                             foreach (KeyValue<SubString, FormatString> attribute in node.AttributeArray)
                             {
-                                if (attribute.Key.equalCase("href"))
+                                if (attribute.Key.EqualCase("href"))
                                 {
                                     SubString href = attributeArray[index].Value.Text;
                                     if (href.Length != 0 && href[0] != '/') isHrefBlank = true;
@@ -73,7 +73,7 @@ namespace AutoCSer.HtmlNode
                                 index = 0;
                                 foreach (KeyValue<SubString, FormatString> attribute in node.AttributeArray)
                                 {
-                                    if (attribute.Key.equalCase("target"))
+                                    if (attribute.Key.EqualCase("target"))
                                     {
                                         attributeArray[index].Value.Text = "_blank";
                                         break;

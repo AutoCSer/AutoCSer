@@ -21,10 +21,14 @@ namespace AutoCSer.Example.Json
             value = mod5(value);
             return (value % 2) == 0 ? value : (value + 5);
         }
-        
-        static void Main(string[] args)
+
+        void T()
         {
-            Console.WriteLine(mod10(100));
+
+        }
+        static unsafe void Main(string[] args)
+        {
+            for (int i = 1; i <= 30; ++i) Console.WriteLine(i.ToString() + " : " + mod10(i));
 
             Console.WriteLine(@"http://www.AutoCSer.com/Serialize/Json.html
 ");

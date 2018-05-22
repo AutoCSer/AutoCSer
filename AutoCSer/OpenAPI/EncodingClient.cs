@@ -144,11 +144,11 @@ namespace AutoCSer.OpenAPI
                 catch (Exception error)
                 {
                     isError = true;
-                    AutoCSer.Log.Pub.Log.add(Log.LogType.Error, error, url + @"
+                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
 " + json);
                 }
                 if (isJson && value.IsReturn) return value;
-                if (!isError) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, url + @"
+                if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
 " + value.Message + @"
 " + json);
             }
@@ -207,11 +207,11 @@ namespace AutoCSer.OpenAPI
                 catch (Exception error)
                 {
                     isError = true;
-                    AutoCSer.Log.Pub.Log.add(Log.LogType.Error, error, url + @"
+                    AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error, url + @"
 " + xml);
                 }
                 if (isXml && (!isValue || value.IsReturn)) return value;
-                if (!isError) AutoCSer.Log.Pub.Log.add(Log.LogType.Debug | Log.LogType.Info, url + @"
+                if (!isError) AutoCSer.Log.Pub.Log.Add(Log.LogType.Debug | Log.LogType.Info, url + @"
 " + value.Message + @"
 " + xml);
             }

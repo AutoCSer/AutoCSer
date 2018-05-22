@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0209B040"></script>
+    <title>日志型内存数据库缓存服务组件 - C# 高性能自动化服务端框架 - 凹凸架构</title>
+        <style type="text/css">
+        a{text-decoration: none;}
+        a:hover{text-decoration: underline;}
+    </style>
+</head>
+<body>
+    <p>
+        AutoCSer 包含一个高性能日志型内存数据库缓存服务组件，支持若干<a href="/Config/Index.html?v=209B040">全局默认配置</a>，需要引用 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sort.dll + AutoCSer.CacheServer.dll 。
+    </p>
+    <div><h1>基本数据类型</h1></div>
+    <div>
+        <p>
+            . <b>AutoCSer.CacheServer.DataStructure.Value.Value</b>&lt;valueType&gt;
+            <br /> <b>valueType</b> 支持 <b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>, <b>byte[]</b>
+        </p>
+        <p>
+            . <b>AutoCSer.CacheServer.DataStructure.Value.Json</b>&lt;valueType&gt;
+            <br />JSON 序列化包装类型
+        </p>
+        <p>
+            . <b>AutoCSer.CacheServer.DataStructure.Value.Binary</b>&lt;valueType&gt;
+            <br />二进制序列化包装类型
+        </p>
+        <p>
+            . <b>关键字类型</b>必须为 <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>string</b>, <b>Guid</b>
+            <br />其中 <b>Guid</b> 为不可排序类型
+        </p>
+    </div>
+    <div><h1>数据节点</h1></div>
+    <div>
+        <p>
+            . 数组 <b>AutoCSer.CacheServer.DataStructure.ValueArray</b>&lt;nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.ValueFragmentArray</b>&lt;nodeType&gt;
+            <br /> <b>nodeType</b> 为 <b>基本数据类型</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">CacheServer\ValueArray.cs</a></div>
+        </p>
+        <p>
+            . 字典 <b>AutoCSer.CacheServer.DataStructure.ValueDictionary</b>&lt;keyType, nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.ValueFragmentDictionary</b>&lt;keyType, nodeType&gt;
+            <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>nodeType</b> 为 <b>基本数据类型</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">CacheServer\ValueDictionary.cs</a></div>
+        </p>
+        <p>
+            . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.ValueSearchTreeDictionary</b>&lt;keyType, nodeType&gt;
+            <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>nodeType</b> 为 <b>基本数据类型</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">CacheServer\ValueSearchTreeDictionary.cs</a></div>
+        </p>
+        <p>
+            . 哈希表 <b>AutoCSer.CacheServer.DataStructure.HashSet</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentHashSet</b>&lt;valueType&gt;
+            <br /> <b>valueType</b> 为 <b>关键字类型</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">CacheServer\HashSet.cs</a></div>
+        </p>
+        <p>
+            . 链表 <b>AutoCSer.CacheServer.DataStructure.Link</b>&lt;nodeType&gt;
+            <br /> <b>nodeType</b> 为 <b>基本数据类型</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">CacheServer\Link.cs</a></div>
+        </p>
+    </div>
+    <div><h1>嵌套节点</h1></div>
+    <div>
+        <p>
+            . 数组 <b>AutoCSer.CacheServer.DataStructure.Array</b>&lt;nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentArray</b>&lt;nodeType&gt;
+            <br /> <b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">CacheServer\Array.cs</a></div>
+        </p>
+        <p>
+            . 字典 <b>AutoCSer.CacheServer.DataStructure.Dictionary</b>&lt;keyType, nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentDictionary</b>&lt;keyType, nodeType&gt;
+            <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">CacheServer\Dictionary.cs</a></div>
+        </p>
+        <p>
+            . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.SearchTreeDictionary</b>&lt;keyType, nodeType&gt;
+            <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
+            <div> 参考示例 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">CacheServer\SearchTreeDictionary.cs</a></div>
+        </p>
+    </div>
+    <div>
+        <p>
+            性能测试项目
+            <br /><a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\TestCase\CacheServerPerformance\AutoCSer.TestCase.CacheServerPerformance
+            <br /><a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a>\TestCase\CacheClientPerformance\AutoCSer.TestCase.CacheClientPerformance
+        </p>
+    </div>
+</body>
+</html>

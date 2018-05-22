@@ -86,7 +86,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
         /// <summary>
         /// 更新记录事件 [缓存数据 + 更新后的数据 + 更新前的数据 + 更新数据成员]
         /// </summary>
-        public event Action<valueType, valueType, valueType, MemberMap<modelType>> OnUpdated;
+        public event OnCacheUpdated OnUpdated;
         /// <summary>
         /// 更新数据
         /// </summary>
@@ -155,16 +155,16 @@ namespace AutoCSer.Sql.Cache.Counter.Event
                     dictionary[key] = valueCount;
                 }
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
 
         /// <summary>
         /// 创建先进先出优先队列缓存
         /// </summary>
-        /// <param name="getValue">数据获取器,禁止锁操作</param>
+        /// <param name="getValue">数据获取器,禁止数据库与锁操作</param>
         /// <param name="maxCount">缓存默认最大容器大小</param>
         /// <returns></returns>
-        public Queue<valueType, modelType, keyType> CreateQueue(Func<keyType, MemberMap<modelType>, valueType> getValue, int maxCount = 0)
+        public Queue<valueType, modelType, keyType> CreateQueue(Table<valueType, modelType, keyType>.GetValue getValue, int maxCount = 0)
         {
             return new Queue<valueType, modelType, keyType>(this, getValue, maxCount);
         }

@@ -50,10 +50,10 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 }
                 if (isVerify.Type != TcpServer.ReturnType.Success || ticks <= lastTicks)
                 {
-                    client.Log.add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
+                    client.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证失败 [" + isVerify.Type.ToString() + "] " + ticks.toString() + " <= " + lastTicks.toString());
                     return false;
                 }
-                client.Log.add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
+                client.Log.Add(AutoCSer.Log.LogType.Error, "TCP客户端验证时间失败重试 " + ticks.toString() + " - " + lastTicks.toString());
             }
             while (true);
         }

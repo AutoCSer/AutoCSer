@@ -176,7 +176,7 @@ namespace AutoCSer.DiskBlock
                         }
                         catch (Exception error)
                         {
-                            log.add(LogType.Error, error);
+                            log.Add(LogType.Error, error);
                         }
                         head = head.Error();
                     }
@@ -283,7 +283,7 @@ namespace AutoCSer.DiskBlock
                         }
                         catch (Exception error)
                         {
-                            log.add(LogType.Error, error);
+                            log.Add(LogType.Error, error);
                         }
                         if (head == null) break;
                         head = head.Error();
@@ -303,7 +303,7 @@ namespace AutoCSer.DiskBlock
                         }
                         catch (Exception error)
                         {
-                            log.add(LogType.Error, error);
+                            log.Add(LogType.Error, error);
                             while (waitFlushRequest != null) waitFlushRequest = waitFlushRequest.Error();
                         }
                     }

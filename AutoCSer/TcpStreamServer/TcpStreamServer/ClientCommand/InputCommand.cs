@@ -123,7 +123,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
             }
             catch (Exception error)
             {
-                socket.Log.add(AutoCSer.Log.LogType.Error, error);
+                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
         }
         /// <summary>

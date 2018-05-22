@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinarySerialize.cs" />
+    <Compile Include="CacheServer.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DiskBlock\File.cs" />
@@ -95,6 +96,10 @@
     <Compile Include="{AutoCSer.TestCase}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\CacheServer\AutoCSer.CacheServer.DotNet4.5.csproj">
+      <Project>{a84e71a5-e8c2-4068-bb64-7d3910ccdb83}</Project>
+      <Name>AutoCSer.CacheServer.DotNet4.5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.DotNet4.5.csproj">
       <Project>{2e20aeca-b2e6-4dcb-9ee3-47d8036b6626}</Project>
       <Name>AutoCSer.DiskBlock.DotNet4.5</Name>

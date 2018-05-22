@@ -318,7 +318,7 @@ namespace AutoCSer.Deploy
                             case "ace": nextDirectory = js(nextDirectoryInfo, lastWriteTime, new string[] { "ace.js" }); break;
                             case "mathJax": nextDirectory = js(nextDirectoryInfo, lastWriteTime, new string[] { "MathJax.js" }); break;
                             case "highcharts": nextDirectory = js(nextDirectoryInfo, false, lastWriteTime); break;
-                            default: AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, "未知的js文件夹 " + nextDirectoryInfo.fullName()); nextDirectory = new Directory(); break;
+                            default: AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "未知的js文件夹 " + nextDirectoryInfo.fullName()); nextDirectory = new Directory(); break;
                         }
                         if (nextDirectory.Name != null) directorys.Add(nextDirectory);
                     }

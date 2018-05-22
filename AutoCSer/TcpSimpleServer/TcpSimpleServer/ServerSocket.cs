@@ -252,7 +252,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Log(Exception error)
         {
-            Server.Log.add(AutoCSer.Log.LogType.Error, error);
+            Server.Log.Add(AutoCSer.Log.LogType.Error, error);
         }
         /// <summary>
         /// 创建输出数据

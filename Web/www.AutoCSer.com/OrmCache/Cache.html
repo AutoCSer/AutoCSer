@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=EF6E7A"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=209B040"></script>
     <title>ORM 内存索引缓存 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -15,21 +15,21 @@
     </div>
     <div>
         <p>
-            在说缓存之前需要先了解 <a href="/Index.html?v=EF6E7A" title="Go to the home page to download">AutoCSer</a> 的核心设计目标<a href="/Global.html?v=EF6E7A">统一规划全局数据定义</a>。
+            在说缓存之前需要先了解 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a> 的核心设计目标<a href="/Global.html?v=209B040">统一规划全局数据定义</a>。
             <br />下面我来说说我为了实现这个目标在实战中是如何规划与设计数据定义的，当然这些只是实现这个目标的一条途径与我个人的一些经验（仅供参考），并不是说一定要这样去做才能达到设计目标。
             <br />这里主要说的是需要持久化的数据，我认为关系型数据库的<b>二维表格</b> + 表格之间的<b>关联关系</b>是通用的适合查询与持久化的数据描述方式，所以我会和使用关系数据库一样先把数据按照需求规划到不同的<b>表格数据模型</b>。
             <br />一个<b>表格数据模型</b>主要由<b>物理数据</b>与<b>逻辑数据</b>两部分组成，<b>物理数据</b>映射到物理存储设备（比如数据库表格字段），<b>逻辑数据</b>主要由其它数据缓存实时计算而来。
             <br /><b>物理数据</b>需要根据缓存策略需求分成多个分组，比如 查询数据 + 常用数据 + 各种小数据 使用默认的整表缓存分组，非常用数据 + 大文本数据 使用具有淘汰策略的扩展缓存分组。对于数据量较小而且内存充足的需求可以考虑只使用默认的整表缓存分组。
-            <br />数据 API 服务化的序列化操作默认仅处理<b>表格数据模型</b>，所以<b>表格数据模型</b>的默认生成代码中会包含入侵派生类型的<a href="/Serialize/Binary.html?v=EF6E7A">二进制序列化配置</a>与 <a href="/Serialize/Json.html?v=EF6E7A">JSON 序列化配置</a>，<b>表格数据模型</b>中<b>不应该</b>包含其它字段或者属性。
+            <br />数据 API 服务化的序列化操作默认仅处理<b>表格数据模型</b>，所以<b>表格数据模型</b>的默认生成代码中会包含入侵派生类型的<a href="/Serialize/Binary.html?v=209B040">二进制序列化配置</a>与 <a href="/Serialize/Json.html?v=209B040">JSON 序列化配置</a>，<b>表格数据模型</b>中<b>不应该</b>包含其它字段或者属性。
             <br /><b>数据表格</b>继承自<b>表格数据模型</b>，主要包括 4 方面的扩展数据定义：基于表格数据模型的<b>计算属性</b>、数据服务<b>本地关联扩展</b>、数据服务<b>本地缓存关联扩展</b>、数据服务<b>远程关联扩展</b>。
             <br />由于基于缓存的数据服务初始化时间可能比较长，为了让数据服务更新部署的时候尽可能小的影响到数据的读取，所以数据服务分为<b>写服务</b>与<b>读服务</b>。服务更新的时候先停止旧的写服务，然后启动新的写服务并同时预加载缓存数据，然后启动新的读服务并停止旧的读服务。
         </p>
     </div>
     <div>
         <p>
-            <a href="/Index.html?v=EF6E7A" title="Go to the home page to download">AutoCSer</a> 在命名空间 <b>AutoCSer.Sql.Cache</b> 中提供了一些常用的缓存组件，命名空间 <b>AutoCSer.Sql.Cache.Whole</b> 是整表缓存组件，命名空间 <b>AutoCSer.Sql.Cache.Counter</b> 是具有淘汰策略的缓存组件。
+            <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a> 在命名空间 <b>AutoCSer.Sql.Cache</b> 中提供了一些常用的缓存组件，命名空间 <b>AutoCSer.Sql.Cache.Whole</b> 是整表缓存组件，命名空间 <b>AutoCSer.Sql.Cache.Counter</b> 是具有淘汰策略的缓存组件。
             <br />每一个缓存分组只能有一个主缓存，主缓存用于管理缓存数据对象并对外提供缓存数据更新事件。命名空间 <b>AutoCSer.Sql.Cache.Whole.Event</b> 是整表主缓存组件，命名空间 <b>AutoCSer.Sql.Cache.Counter.Event</b> 是具有淘汰策略的主缓存组件。
-            <br />如果 <a href="/Index.html?v=EF6E7A" title="Go to the home page to download">AutoCSer</a> 提供的缓存组件无法满足你的需求，你可以自定义数据结构并绑定<b>数据表格</b>的写操作事件 <b>OnInserted</b> / <b>OnUpdated</b> / <b>OnDeleted</b> 同步更新数据。
+            <br />如果 <a href="/Index.html?v=209B040" title="Go to the home page to download">AutoCSer</a> 提供的缓存组件无法满足你的需求，你可以自定义数据结构并绑定<b>数据表格</b>的写操作事件 <b>OnInserted</b> / <b>OnUpdated</b> / <b>OnDeleted</b> 同步更新数据。
         </p>
     </div>
     <!--

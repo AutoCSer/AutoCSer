@@ -141,7 +141,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 update(cacheValue, value, oldValue, memberMap);
                 callOnUpdated(cacheValue, value, oldValue, memberMap);
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
         /// <summary>
         /// 删除数据
@@ -155,7 +155,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 --Count;
                 callOnDeleted(cacheValue);
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
     }
     /// <summary>
@@ -167,7 +167,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
     /// <typeparam name="keyType">关键字类型</typeparam>
     /// <typeparam name="memberKeyType"></typeparam>
     /// <typeparam name="targetType"></typeparam>
-    public sealed class MemberKey<valueType, modelType, memberCacheType, keyType, memberKeyType, targetType> : Cache<valueType, modelType, memberCacheType>
+    public class MemberKey<valueType, modelType, memberCacheType, keyType, memberKeyType, targetType> : Cache<valueType, modelType, memberCacheType>
         where valueType : class, modelType
         where modelType : class
         where memberCacheType : class
@@ -284,7 +284,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             if (target == null)
             {
                 ++MissTargetCount;
-                SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, "没有找到目标数据 " + typeof(targetType).FullName + "." + getKey(value).ToString());
+                SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, "没有找到目标数据 " + typeof(targetType).FullName + "." + getKey(value).ToString());
             }
             else
             {
@@ -322,7 +322,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 update(cacheValue, value, oldValue, memberMap);
                 callOnUpdated(cacheValue, value, oldValue, memberMap);
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
         /// <summary>
         /// 删除数据
@@ -339,7 +339,39 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 callOnDeleted(cacheValue);
                 --Count;
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+        }
+    }
+    /// <summary>
+    /// 关键字整表缓存
+    /// </summary>
+    /// <typeparam name="valueType">表格绑定类型</typeparam>
+    /// <typeparam name="modelType">表格模型类型</typeparam>
+    /// <typeparam name="keyType">关键字类型</typeparam>
+    /// <typeparam name="memberKeyType"></typeparam>
+    /// <typeparam name="targetType"></typeparam>
+    public sealed class MemberKey<valueType, modelType, keyType, memberKeyType, targetType> : MemberKey<valueType, modelType, valueType, keyType, memberKeyType, targetType>
+        where valueType : class, modelType
+        where modelType : class
+        where keyType : struct, IEquatable<keyType>
+        where memberKeyType : struct, IEquatable<memberKeyType>
+        where targetType : class
+    {
+        /// <summary>
+        /// 关键字整表缓存
+        /// </summary>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="getKey">键值获取器</param>
+        /// <param name="getMemberKey">成员缓存键值获取器</param>
+        /// <param name="getValue"></param>
+        /// <param name="member">缓存成员</param>
+        /// <param name="getTargets"></param>
+        /// <param name="group">数据分组</param>
+        public MemberKey(Sql.Table<valueType, modelType> sqlTool, Func<modelType, keyType> getKey, Func<modelType, memberKeyType> getMemberKey, Func<keyType, targetType> getValue
+            , Expression<Func<targetType, Dictionary<RandomKey<memberKeyType>, valueType>>> member
+            , Func<IEnumerable<targetType>> getTargets, int group = 0)
+            : base(sqlTool, null, getKey, getMemberKey, getValue, member, getTargets, group)
+        {
         }
     }
 }

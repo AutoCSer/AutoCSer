@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
 using AutoCSer.Extension;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Sql.Cache.Counter.Event
 {
@@ -45,6 +46,18 @@ namespace AutoCSer.Sql.Cache.Counter.Event
         /// </summary>
         public int Count { get; private set; }
         /// <summary>
+        /// 获取缓存值
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>缓存值</returns>
+        public valueType this[keyType key]
+        {
+            get
+            {
+                return Get(key);
+            }
+        }
+        /// <summary>
         /// 缓存计数
         /// </summary>
         /// <param name="cache"></param>
@@ -75,7 +88,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
         /// <summary>
         /// 更新记录事件 [缓存数据 + 更新后的数据 + 更新前的数据 + 更新数据成员]
         /// </summary>
-        public event Action<valueType, valueType, valueType, MemberMap<modelType>> OnUpdated;
+        public event OnCacheUpdated OnUpdated;
         /// <summary>
         /// 更新数据
         /// </summary>
@@ -107,6 +120,17 @@ namespace AutoCSer.Sql.Cache.Counter.Event
                 setMember(cache, new KeyValue<valueType, int>(null, cacheValue.Value));
                 --Count;
             }
+        }
+        /// <summary>
+        /// 获取缓存数据
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>缓存数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal valueType Get(keyType key)
+        {
+            targetType value = GetByKey(key);
+            return value == null ? null : GetMember(value).Key;
         }
         /// <summary>
         /// 添加缓存数据
@@ -151,7 +175,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
                     setMember(cache, valueCount);
                 }
             }
-            else SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+            else SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
         }
     }
 }

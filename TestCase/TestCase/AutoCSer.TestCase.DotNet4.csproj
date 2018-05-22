@@ -97,6 +97,7 @@
     <Compile Include="BinarySerialize.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CacheServer.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DiskBlock\File.cs" />
@@ -177,6 +178,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\CacheServer\AutoCSer.CacheServer.DotNet4.csproj">
+      <Project>{7A0F21AC-A944-493B-898E-B933F53F2135}</Project>
+      <Name>AutoCSer.CacheServer.DotNet4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.DotNet4.csproj">
       <Project>{469F2B22-0258-4688-BDBF-31027F253B9A}</Project>
       <Name>AutoCSer.DiskBlock.DotNet4</Name>

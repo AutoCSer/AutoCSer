@@ -83,10 +83,19 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\Counter\MemberQueueCustom.cs" />
+    <Compile Include="Cache\Counter\MemberQueueList.cs" />
+    <Compile Include="Cache\ICustom.cs" />
     <Compile Include="Cache\LazyOrderArray.cs" />
+    <Compile Include="Cache\Whole\Client\IdentityMemberCache.cs" />
+    <Compile Include="Cache\Whole\DictionaryList.cs" />
+    <Compile Include="Cache\Whole\DictionarySearchTreeDictionary.cs" />
+    <Compile Include="Cache\Whole\DictionarySearchTreeDictionaryWhere.cs" />
     <Compile Include="Cache\Whole\MemberArrayLazyOrderArray.cs" />
     <Compile Include="Cache\Whole\MemberLazyOrderArray.cs" />
     <Compile Include="Cache\Whole\MemberLazyOrderArrayWhere.cs" />
+    <Compile Include="Cache\Whole\Timer.cs" />
+    <Compile Include="Cache\Whole\TimerWhere.cs" />
     <Compile Include="ClientKind.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
@@ -101,7 +110,8 @@
     <Compile Include="Extension\SqlTable.cs" />
     <Compile Include="Extension\Type.Sql.cs" />
     <Compile Include="MemberCacheAttribute.cs" />
-    <Compile Include="MemberCacheWait.cs" />
+    <Compile Include="MemberCacheLinkAttribute.cs" />
+    <Compile Include="MemberCacheLinkWait.cs" />
     <Compile Include="Metadata\MemberMapValue.cs" />
     <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
     <Compile Include="NET2.0\LogAttribute.cs" />
@@ -195,9 +205,8 @@
     <Compile Include="IgnoreMemberAttribute.cs" />
     <Compile Include="InsertQuery.cs" />
     <Compile Include="IVerify.cs" />
-    <Compile Include="LinkQueueTask.cs" />
-    <Compile Include="LinkQueueTaskNode.cs" />
     <Compile Include="LogAttribute.cs" />
+    <Compile Include="LogStream\Callback.cs" />
     <Compile Include="LogStream\Client.cs" />
     <Compile Include="LogStream\IdentityClient.cs" />
     <Compile Include="LogStream\IMemberMapValueLink.cs" />
@@ -222,6 +231,17 @@
     <Compile Include="Table.cs" />
     <Compile Include="TableAttribute.cs" />
     <Compile Include="TableColumnCollection.cs" />
+    <Compile Include="Threading\DomainUnloadTransaction.cs" />
+    <Compile Include="Threading\LazyOrderArrayAtTask.cs" />
+    <Compile Include="Threading\LazyOrderArrayPageTask.cs" />
+    <Compile Include="Threading\LinkQueueTask.cs" />
+    <Compile Include="Threading\LinkQueueTaskNode.cs" />
+    <Compile Include="Threading\PageTask.cs" />
+    <Compile Include="Threading\QueueTask.cs" />
+    <Compile Include="Threading\QueueTaskAction.cs" />
+    <Compile Include="Threading\SearchTreeDictionaryFindTask.cs" />
+    <Compile Include="Threading\SearchTreeDictionaryPageTask.cs" />
+    <Compile Include="Threading\TaskQueue.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />

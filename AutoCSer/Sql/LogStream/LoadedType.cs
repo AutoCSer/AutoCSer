@@ -118,7 +118,7 @@ namespace AutoCSer.Sql.LogStream
                 }
             }
             finally { Monitor.Exit(loadedLock); }
-            if (isLoaded) AutoCSer.Log.Pub.Log.add(AutoCSer.Log.LogType.Error, "数据完成类型注册冲突 " + modelType.fullName() + "[" + tableNumber.toString() + "]");
+            if (isLoaded) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, "数据完成类型注册冲突 " + modelType.fullName() + "[" + tableNumber.toString() + "]");
         }
         /// <summary>
         /// 数据完成类型注册

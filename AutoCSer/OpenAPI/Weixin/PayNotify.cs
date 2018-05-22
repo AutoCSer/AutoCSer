@@ -149,7 +149,7 @@ namespace AutoCSer.OpenAPI.Weixin
             {
                 if (config == null) config = Config.Default;
                 if (appid == config.appid && mch_id == config.mch_id && Sign<PayNotify>.Check(this, config.key, sign)) return true;
-                config.PayLog.add(Log.LogType.Debug | Log.LogType.Info, "微信支付回调验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
+                config.PayLog.Add(Log.LogType.Debug | Log.LogType.Info, "微信支付回调验证错误 " + AutoCSer.Json.Serializer.Serialize(this));
             }
             return false;
         }
@@ -170,7 +170,7 @@ namespace AutoCSer.OpenAPI.Weixin
         /// <returns></returns>
         public ReturnCode GetErrorResult(string return_msg, Config config = null)
         {
-            (config ?? Config.Default).PayLog.add(Log.LogType.Debug | Log.LogType.Info, return_msg);
+            (config ?? Config.Default).PayLog.Add(Log.LogType.Debug | Log.LogType.Info, return_msg);
             return new ReturnCode { return_msg = return_msg };
         }
     }

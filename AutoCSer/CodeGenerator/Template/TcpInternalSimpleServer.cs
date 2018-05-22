@@ -397,7 +397,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region NOT MemberIndex
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -410,7 +410,8 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF Method.ReturnXmlDocument
                 /// <returns>@Method.ReturnXmlDocument</returns>
                 #endregion IF Method.ReturnXmlDocument
-                public AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ /*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
+                /*AT:IsInternalClient*/
+                AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ /*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
                 {
                     #region IF Attribute.IsExpired
                     #region LOOP InputParameters
@@ -478,7 +479,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF MethodIsReturn
                 #region IF Method.XmlDocument
                 /// <summary>
-                /// @Method.XmlDocument
+                /// @Method.XmlDocument/*IF:Attribute.IsExpired*/ [ Expired ]/*IF:Attribute.IsExpired*/
                 /// </summary>
                 #endregion IF Method.XmlDocument
                 #region LOOP InputParameters
@@ -489,7 +490,8 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion PUSH MethodParameter
                 #endregion LOOP InputParameters
                 #region IF InputParameterIndex
-                public AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> this[/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/]
+                /*AT:IsInternalClient*/
+                AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> this[/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/]
                 {
                     get
                     {
@@ -546,7 +548,8 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 #endregion IF InputParameterIndex
                 #region NOT InputParameterIndex
-                public AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> @PropertyName
+                /*AT:IsInternalClient*/
+                AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> @PropertyName
                 {
                     get
                     {

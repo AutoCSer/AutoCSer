@@ -24,7 +24,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="group">数据分组</param>
         /// <param name="baseIdentity">基础ID</param>
         /// <param name="isReset">是否初始化事件与数据</param>
-        public IdentityArray(Sql.Table<valueType, modelType> table, Expression<Func<valueType, memberCacheType>> memberCache, int group = 0, int baseIdentity = 0, bool isReset = true)
+        public IdentityArray(Sql.Table<valueType, modelType> table, Expression<Func<valueType, memberCacheType>> memberCache = null, int group = 0, int baseIdentity = 0, bool isReset = true)
             : base(table, memberCache, group, baseIdentity, isReset)
         {
             if (isReset)
@@ -86,6 +86,27 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             valueType cacheValue = Array.GetRemove(identity);
             --Count;
             callOnDeleted(cacheValue);
+        }
+    }
+    /// <summary>
+    /// 自增ID整表数组缓存
+    /// </summary>
+    /// <typeparam name="valueType">表格类型</typeparam>
+    /// <typeparam name="modelType">模型类型</typeparam>
+    public class IdentityArray<valueType, modelType> : IdentityArray<valueType, modelType, valueType>
+        where valueType : class, modelType
+        where modelType : class
+    {
+        /// <summary>
+        /// SQL操作缓存
+        /// </summary>
+        /// <param name="table">SQL操作工具</param>
+        /// <param name="group">数据分组</param>
+        /// <param name="baseIdentity">基础ID</param>
+        /// <param name="isReset">是否初始化事件与数据</param>
+        public IdentityArray(Sql.Table<valueType, modelType> table, int group = 0, int baseIdentity = 0, bool isReset = true)
+            : base(table, null, group, baseIdentity, isReset)
+        {
         }
     }
 }

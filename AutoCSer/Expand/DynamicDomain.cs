@@ -55,7 +55,7 @@ namespace AutoCSer
                     }
                     catch (Exception error)
                     {
-                        Log.add(AutoCSer.Log.LogType.Error, error, "动态应用程序域加载程序集 " + assemblyFileName + " 失败");
+                        Log.Add(AutoCSer.Log.LogType.Error, error, "动态应用程序域加载程序集 " + assemblyFileName + " 失败");
                     }
                 }
                 return null;
@@ -88,7 +88,7 @@ namespace AutoCSer
                     }
                     catch (Exception error)
                     {
-                        Log.add(AutoCSer.Log.LogType.Error, error);
+                        Log.Add(AutoCSer.Log.LogType.Error, error);
                     }
                 }
                 return null;
@@ -107,7 +107,7 @@ namespace AutoCSer
                 }
                 catch (Exception error)
                 {
-                    Log.add(AutoCSer.Log.LogType.Error, error);
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                 }
                 return null;
             }
@@ -191,7 +191,7 @@ namespace AutoCSer
                 }
                 catch (Exception error)
                 {
-                    log.add(Log.LogType.Error, error);
+                    log.Add(Log.LogType.Error, error);
                 }
                 domain = null;
                 loader = null;

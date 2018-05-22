@@ -19,7 +19,7 @@ namespace AutoCSer.Net.RawSocketListener
         /// <summary>
         /// 缓冲区池
         /// </summary>
-        internal static readonly AutoCSer.SubBuffer.Pool BufferPool = AutoCSer.SubBuffer.Pool.GetPool(SubBuffer.Size.Byte512);
+        internal static readonly AutoCSer.SubBuffer.Pool BufferPool = AutoCSer.SubBuffer.Pool.GetPool(SubBuffer.Size.Kilobyte128);
 
         /// <summary>
         /// 监听套接字
@@ -69,6 +69,10 @@ namespace AutoCSer.Net.RawSocketListener
         /// 缓冲区起始位置
         /// </summary>
         private int bufferIndex;
+        /// <summary>
+        /// 缓冲区结束位置
+        /// </summary>
+        private int bufferEndIndex;
         /// <summary>
         /// 是否处理错误状态
         /// </summary>
@@ -176,7 +180,7 @@ namespace AutoCSer.Net.RawSocketListener
                 }
                 catch (Exception error)
                 {
-                    if (!IsError) this.log.add(Log.LogType.Error, error, "监听初始化失败，可能需要管理员权限。");
+                    if (!IsError) this.log.Add(Log.LogType.Error, error, "监听初始化失败，可能需要管理员权限。");
                 }
                 IsError = true;
             }
@@ -193,17 +197,19 @@ namespace AutoCSer.Net.RawSocketListener
             {
                 buffer = new BufferCount();
                 bufferIndex = buffer.Buffer.StartIndex;
+                bufferEndIndex = bufferIndex + BufferPool.Size;
             }
-            socket.BeginReceive(buffer.Buffer.Buffer, bufferIndex, packetSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
+            socket.BeginReceive(buffer.Buffer.Buffer, bufferIndex, bufferEndIndex - bufferIndex, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
             return socketError == SocketError.Success;
 #else
             START:
             if (buffer == null)
             {
                 buffer = new BufferCount();
-                async.SetBuffer(buffer.Buffer.Buffer, bufferIndex = buffer.Buffer.StartIndex, packetSize);
+                async.SetBuffer(buffer.Buffer.Buffer, bufferIndex = buffer.Buffer.StartIndex, BufferPool.Size);
+                bufferEndIndex = bufferIndex + BufferPool.Size;
             }
-            else async.SetBuffer(bufferIndex, packetSize);
+            else async.SetBuffer(bufferIndex, bufferEndIndex - bufferIndex);
             if (socket.ReceiveAsync(async)) return true;
             if (async.SocketError == SocketError.Success)
             {
@@ -251,7 +257,7 @@ namespace AutoCSer.Net.RawSocketListener
             }
             catch (Exception error)
             {
-                this.log.add(Log.LogType.Error, error);
+                this.log.Add(Log.LogType.Error, error);
             }
             if (isDisposed == 0) start();
             else free();

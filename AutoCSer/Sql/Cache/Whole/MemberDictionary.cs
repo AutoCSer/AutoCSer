@@ -27,6 +27,29 @@ namespace AutoCSer.Sql.Cache.Whole
         /// </summary>
         private readonly Func<modelType, valueKeyType> getValueKey;
         /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="valueKey"></param>
+        /// <returns></returns>
+        public valueType this[keyType key, valueKeyType valueKey]
+        {
+            get
+            {
+                targetType target = getValue(key);
+                if (target != null)
+                {
+                    Dictionary<RandomKey<valueKeyType>, valueType> values = getMember(target);
+                    if (values != null)
+                    {
+                        valueType value;
+                        if (values.TryGetValue(valueKey, out value)) return value;
+                    }
+                }
+                return null;
+            }
+        }
+        /// <summary>
         /// 分组字典缓存
         /// </summary>
         /// <param name="cache">整表缓存</param>
@@ -70,7 +93,7 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onInserted(valueType value, ref keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 Dictionary<RandomKey<valueKeyType>, valueType> dictionary = getMember(target);
@@ -94,7 +117,7 @@ namespace AutoCSer.Sql.Cache.Whole
                 if (!oldValueKey.Equals(newValueKey))
                 {
                     targetType target = getValue(newKey);
-                    if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + newKey.ToString());
+                    if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + newKey.ToString());
                     else
                     {
                         Dictionary<RandomKey<valueKeyType>, valueType> dictionary = getMember(target);
@@ -107,7 +130,7 @@ namespace AutoCSer.Sql.Cache.Whole
                             }
                             dictionary.Add(newValueKey, cacheValue);
                         }
-                        cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
+                        cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, typeof(valueType).FullName + " 缓存同步错误");
                     }
                 }
             }
@@ -125,13 +148,13 @@ namespace AutoCSer.Sql.Cache.Whole
         protected void onDeleted(valueType value, ref keyType key)
         {
             targetType target = getValue(key);
-            if (target == null) cache.SqlTable.Log.add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
+            if (target == null) cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Debug | AutoCSer.Log.LogType.Info, typeof(valueType).FullName + " 没有找到缓存目标对象 " + key.ToString());
             else
             {
                 Dictionary<RandomKey<valueKeyType>, valueType> dictionary = getMember(target);
                 if (dictionary == null || !dictionary.Remove(getValueKey(value)))
                 {
-                    cache.SqlTable.Log.add(AutoCSer.Log.LogType.Fatal, (typeof(valueType).FullName + " 缓存同步错误"));
+                    cache.SqlTable.Log.Add(AutoCSer.Log.LogType.Fatal, (typeof(valueType).FullName + " 缓存同步错误"));
                 }
             }
         }
@@ -144,6 +167,31 @@ namespace AutoCSer.Sql.Cache.Whole
         {
             keyType key = getKey(value);
             onDeleted(value, ref key);
+        }
+        /// <summary>
+        /// 获取缓存
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private Dictionary<RandomKey<valueKeyType>, valueType>.ValueCollection getCache(keyType key)
+        {
+            targetType target = getValue(key);
+            if (target != null)
+            {
+                Dictionary<RandomKey<valueKeyType>, valueType> dictionary = getMember(target);
+                if (dictionary != null) return dictionary.Values;
+            }
+            return null;
+        }
+        /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>数据集合</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType[] GetArray(keyType key)
+        {
+            return getCache(key).getArray();
         }
     }
 }

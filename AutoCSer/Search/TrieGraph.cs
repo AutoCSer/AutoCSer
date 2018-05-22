@@ -75,7 +75,7 @@ namespace AutoCSer.Search
                         if (builder.ThreadException == null) reader.Add(ref builder.Writer);
                         else
                         {
-                            log.add(Log.LogType.Error, builder.ThreadException);
+                            log.Add(Log.LogType.Error, builder.ThreadException);
                             isError = true;
                         }
                     }

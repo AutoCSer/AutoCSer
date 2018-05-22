@@ -64,11 +64,11 @@ namespace AutoCSer.CodeGenerator
             if (messages.Count != 0)
             {
 #if DOTNET2
-                AutoCSer.Log.Pub.Log.wait(Log.LogType.All, messages.getArray().joinString(@"
+                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, messages.getArray().joinString(@"
 - - - - - - - -
 "));
 #else
-                AutoCSer.Log.Pub.Log.wait(Log.LogType.All, messages.joinString(@"
+                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, messages.joinString(@"
 - - - - - - - -
 "));
 #endif
@@ -78,11 +78,11 @@ namespace AutoCSer.CodeGenerator
             if (errors.Count != 0)
             {
 #if DOTNET2
-                AutoCSer.Log.Pub.Log.wait(Log.LogType.All, errors.getArray().joinString(@"
+                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, errors.getArray().joinString(@"
 - - - - - - - -
 "));
 #else
-                AutoCSer.Log.Pub.Log.wait(Log.LogType.All, errors.joinString(@"
+                AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, errors.joinString(@"
 - - - - - - - -
 "));
 #endif
@@ -91,7 +91,7 @@ namespace AutoCSer.CodeGenerator
             }
             if (exceptions.Length != 0)
             {
-                foreach (Exception error in exceptions) AutoCSer.Log.Pub.Log.wait(Log.LogType.All, error);
+                foreach (Exception error in exceptions) AutoCSer.Log.Pub.Log.Wait(Log.LogType.All, error);
                 exceptions.Length = 0;
                 isError = true;
             }
