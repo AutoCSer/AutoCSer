@@ -63,7 +63,7 @@
         </member>
         <member name="F:AutoCSer.WebView.ViewAttribute.MaxMemoryStreamSize">
             <summary>
-            接收 HTTP Body 数据内存缓冲区的最大字节数，默认为 64KB，超出限定则使用文件储存方式。
+            接收 HTTP Body 数据内存缓冲区的最大字节数，默认为 128KB，超出限定则使用文件储存方式。
             </summary>
         </member>
         <member name="F:AutoCSer.WebView.ViewAttribute.RewritePath">
@@ -1332,6 +1332,11 @@
         <member name="F:AutoCSer.Net.HttpDomainServer.Server.WebConfig">
             <summary>
             网站生成配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.HttpDomainServer.Server.WebConfigIgnoreCase">
+            <summary>
+            是否忽略大小写
             </summary>
         </member>
         <member name="F:AutoCSer.Net.HttpDomainServer.Server.RegisterServer">
@@ -4098,17 +4103,17 @@
         </member>
         <member name="P:AutoCSer.WebView.Config.IsCssStaticFileDomain">
             <summary>
-            是否对 css 缺省域名替换为静态文件域名
+            是否对 css 缺省域名替换为静态文件域名，默认为 true
             </summary>
         </member>
         <member name="P:AutoCSer.WebView.Config.IsWebView">
             <summary>
-            是否进行WebView前期处理（格式化HTML、CSS）
+            是否进行WebView前期处理，默认为 true（格式化HTML、CSS）
             </summary>
         </member>
         <member name="P:AutoCSer.WebView.Config.IsCopyScript">
             <summary>
-            是否复制js脚本文件
+            是否复制 js 脚本文件，默认为 true
             </summary>
         </member>
         <member name="P:AutoCSer.WebView.Config.ExportPathType">
@@ -4118,7 +4123,7 @@
         </member>
         <member name="P:AutoCSer.WebView.Config.ViewJsDirectory">
             <summary>
-            WEB视图扩展默认目录名称
+            WEB视图扩展默认目录名称，默认为 viewJs
             </summary>
         </member>
         <member name="P:AutoCSer.WebView.Config.IncludeDirectories">
@@ -4133,12 +4138,17 @@
         </member>
         <member name="P:AutoCSer.WebView.Config.IsHtmlLinkVersion">
             <summary>
-            本地 HTML 文件链接是否添加版本号
+            本地 HTML 文件链接是否添加版本号，默认为 false
             </summary>
         </member>
         <member name="P:AutoCSer.WebView.Config.IgnoreCase">
             <summary>
-            是否忽略大小写
+            是否忽略大小写，默认为 false
+            </summary>
+        </member>
+        <member name="P:AutoCSer.WebView.Config.IsFastestCompressionLevel">
+            <summary>
+            默认为 true 表示 GZip 启用快速压缩，否则使用默认压缩
             </summary>
         </member>
         <member name="T:AutoCSer.WebView.Config.Null">
@@ -5737,12 +5747,6 @@
             </summary>
         </member>
         <member name="M:AutoCSer.Net.Http.Response.GetCompress(AutoCSer.SubArray{System.Byte}@,AutoCSer.SubArray{System.Byte}@,System.Int32)">
-            <summary>
-            压缩处理
-            </summary>
-            <param name="data"></param>
-            <param name="compressData"></param>
-            <param name="seek"></param>
             <returns></returns>
         </member>
         <member name="P:AutoCSer.Net.Http.Response.IsFile">
@@ -7812,7 +7816,7 @@
         </member>
         <member name="F:AutoCSer.WebView.MethodAttribute.MaxMemoryStreamSize">
             <summary>
-            接收 HTTP Body 数据内存缓冲区的最大字节数，默认为 64KB，超出限定则使用文件储存方式。
+            接收 HTTP Body 数据内存缓冲区的最大字节数，默认为 128KB，超出限定则使用文件储存方式。
             </summary>
         </member>
         <member name="F:AutoCSer.WebView.MethodAttribute.FullName">
@@ -9221,7 +9225,7 @@
         </member>
         <member name="F:AutoCSer.WebView.AjaxAttribute.MaxMemoryStreamSize">
             <summary>
-            接收 HTTP Body 数据内存缓冲区的最大字节数，默认为 64KB，超出限定则使用文件储存方式。
+            接收 HTTP Body 数据内存缓冲区的最大字节数，默认为 128KB，超出限定则使用文件储存方式。
             </summary>
         </member>
         <member name="T:AutoCSer.Net.Http.SocketFlag">
@@ -9966,26 +9970,9 @@
             </summary>
         </member>
         <member name="M:AutoCSer.IO.Compression.GzipCompressor.Get(System.Byte[],System.Int32,System.Int32,AutoCSer.SubBuffer.PoolBufferFull@,AutoCSer.SubArray{System.Byte}@,System.Int32,System.Int32)">
-            <summary>
-            数据压缩
-            </summary>
-            <param name="data"></param>
-            <param name="startIndex"></param>
-            <param name="count"></param>
-            <param name="buffer">输出缓冲区</param>
-            <param name="compressData">压缩数据</param>
-            <param name="seek">起始位置</param>
-            <param name="compressHeadSize">压缩多余头部</param>
             <returns>是否压缩成功</returns>
         </member>
         <member name="M:AutoCSer.IO.Compression.GzipCompressor.Get(AutoCSer.SubArray{System.Byte}@,AutoCSer.SubArray{System.Byte}@,System.Int32,System.Int32)">
-            <summary>
-            数据压缩
-            </summary>
-            <param name="data"></param>
-            <param name="compressData">压缩数据</param>
-            <param name="seek">起始位置</param>
-            <param name="compressHeadSize">压缩多余头部</param>
             <returns>是否压缩成功</returns>
         </member>
         <member name="T:AutoCSer.WebView.PubErrorParameter">

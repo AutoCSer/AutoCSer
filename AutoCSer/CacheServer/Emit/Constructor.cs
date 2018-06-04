@@ -18,9 +18,9 @@ namespace AutoCSer.Emit
         /// <param name="type"></param>
         /// <param name="parameterTypes">参数类型</param>
         /// <returns>构造函数委托</returns>
-        internal static Delegate Create(Type type, Type[] parameterTypes)
+        internal static Delegate CreateDataStructure(Type type, Type[] parameterTypes)
         {
-            DynamicMethod dynamicMethod = new DynamicMethod("CacheConstructor", type, parameterTypes, type, true);
+            DynamicMethod dynamicMethod = new DynamicMethod("DataStructureConstructor", type, parameterTypes, type, true);
             ILGenerator generator = dynamicMethod.GetILGenerator();
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameterTypes, null));
@@ -31,14 +31,16 @@ namespace AutoCSer.Emit
         /// 创建构造函数委托
         /// </summary>
         /// <param name="type"></param>
+        /// <param name="parameterTypes">参数类型</param>
         /// <returns>构造函数委托</returns>
-        internal static Delegate Create(Type type)
+        internal static Delegate CreateCache(Type type, Type[] parameterTypes)
         {
-            DynamicMethod dynamicMethod = new DynamicMethod("CacheConstructor", type, NullValue<Type>.Array, type, true);
+            DynamicMethod dynamicMethod = new DynamicMethod("CacheConstructor", type, parameterTypes, type, true);
             ILGenerator generator = dynamicMethod.GetILGenerator();
-            generator.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null));
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameterTypes, null));
             generator.Emit(OpCodes.Ret);
-            return dynamicMethod.CreateDelegate(typeof(Func<>).MakeGenericType(type));
+            return dynamicMethod.CreateDelegate(typeof(AutoCSer.CacheServer.Cache.Constructor<>).MakeGenericType(type));
         }
 #endif
     }

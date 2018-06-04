@@ -41,6 +41,8 @@
     <Compile Include="Link.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueueConsumer.cs" />
+    <Compile Include="QueueConsumers.cs" />
     <Compile Include="SearchTreeDictionary.cs" />
     <Compile Include="ValueArray.cs" />
     <Compile Include="ValueDictionary.cs" />

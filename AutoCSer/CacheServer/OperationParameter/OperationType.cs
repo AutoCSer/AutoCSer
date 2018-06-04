@@ -65,5 +65,22 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 判断是否存在关键字
         /// </summary>
         ContainsKey,
+
+        /// <summary>
+        /// 消息队列获取当前读取数据标识
+        /// </summary>
+        MessageQueueGetDequeueIdentity,
+        /// <summary>
+        /// 消息队列设置当前读取数据标识
+        /// </summary>
+        MessageQueueSetDequeueIdentity,
+        /// <summary>
+        /// 消息队列添加数据
+        /// </summary>
+        MessageQueueEnqueue,
+        /// <summary>
+        /// 消息队列获取数据
+        /// </summary>
+        MessageQueueDequeue,
     }
 }

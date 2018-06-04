@@ -14,16 +14,16 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <summary>
         /// 数据节点
         /// </summary>
+        /// <param name="parent">父节点</param>
+        protected Value(Abstract.Node parent) : base(parent) { }
+        /// <summary>
+        /// 数据节点
+        /// </summary>
         /// <param name="value">数据</param>
         protected Value(valueType value)
         {
             ValueData.Data<valueType>.SetData(ref Parameter, value);
         }
-        /// <summary>
-        /// 数据节点
-        /// </summary>
-        /// <param name="parent">父节点</param>
-        protected Value(Abstract.Node parent) : base(parent) { }
         /// <summary>
         /// 创建数据节点
         /// </summary>

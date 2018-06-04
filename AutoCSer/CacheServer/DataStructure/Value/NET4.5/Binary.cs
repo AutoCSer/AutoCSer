@@ -12,9 +12,9 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        public async Task<ReturnValueNode<Binary<valueType>>> GetTask()
+        public async Task<ReturnValue<Binary<valueType>>> QueryTask()
         {
-            return new ReturnValueNode<Binary<valueType>>(await ClientDataStructure.Client.QueryTask(GetNode()));
+            return new ReturnValue<Binary<valueType>>(await ClientDataStructure.Client.QueryTask(GetQueryNode()));
         }
     }
 }

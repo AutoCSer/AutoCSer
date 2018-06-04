@@ -19,5 +19,14 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// await
         /// </summary>
         Awaiter,
+
+        /// <summary>
+        /// 线程池
+        /// </summary>
+        ThreadPool,
+        /// <summary>
+        /// IO 线程同步
+        /// </summary>
+        SynchronousStream,
     }
 }

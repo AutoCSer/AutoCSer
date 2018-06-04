@@ -73,6 +73,7 @@
     <Content Include="Android\Index.page.html" />
     <Content Include="Android\Index.page.js" />
     <Content Include="CacheServer\Index.page.html" />
+    <Content Include="CacheServer\MessageQueue.page.html" />
     <Content Include="CodeGenerator.png" />
     <Content Include="Config\Index.page.html" />
     <Content Include="Global.page.html" />

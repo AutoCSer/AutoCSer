@@ -235,7 +235,7 @@ namespace AutoCSer.CacheServer
             return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
         }
         /// <summary>
-        /// 获取数据
+        /// 获取 JSON 反序列化数据
         /// </summary>
         /// <returns></returns>
         internal unsafe ReturnValue<valueType> GetJson<valueType>()
@@ -243,18 +243,13 @@ namespace AutoCSer.CacheServer
             if (Type == ReturnType.Success)
             {
                 valueType value = default(valueType);
-                SubArray<byte> data = Parameter.SubByteArray;
-                fixed (byte* dataFixed = data.Array)
-                {
-                    byte* start = dataFixed + data.Start;
-                    if (AutoCSer.Json.Parser.UnsafeParse<valueType>((char*)start, data.Length >> 1, ref value).State == Json.ParseState.Success) return value;
-                }
+                if (Parameter.GetJson(ref value)) return value;
                 return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError, TcpReturnType = Parameter.TcpReturnType };
             }
             return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
         }
         /// <summary>
-        /// 获取数据
+        /// 获取二进制反序列化数据
         /// </summary>
         /// <returns></returns>
         internal ReturnValue<valueType> GetBinary<valueType>()
@@ -262,7 +257,7 @@ namespace AutoCSer.CacheServer
             if (Type == ReturnType.Success)
             {
                 valueType value = default(valueType);
-                if (AutoCSer.BinarySerialize.DeSerializer.DeSerialize(Parameter.SubByteArray, ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success) return value;
+                if (Parameter.GetBinary(ref value)) return value;
                 return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError };
             }
             return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
@@ -410,7 +405,7 @@ namespace AutoCSer.CacheServer
         private void serialize(AutoCSer.BinarySerialize.Serializer serializer)
         {
             UnmanagedStream stream = serializer.Stream;
-            stream.Write((uint)(byte)Type);
+            stream.Write(IsDeSerializeStream ? (uint)(byte)Type + 0x100U : (uint)(byte)Type);
             if (Type == ReturnType.Success) Parameter.Serialize(stream);
         }
         /// <summary>
@@ -421,10 +416,11 @@ namespace AutoCSer.CacheServer
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
         {
-            Type = (ReturnType)(byte)(uint)deSerializer.ReadInt();
+            uint type = (uint)deSerializer.ReadInt();
+            Type = (ReturnType)(byte)type;
             if (Type == ReturnType.Success)
             {
-                if (IsDeSerializeStream ? Parameter.DeSerializeSynchronous(deSerializer) : Parameter.DeSerialize(deSerializer)) return;
+                if ((IsDeSerializeStream = (type & 0x100U) != 0) ? Parameter.DeSerializeSynchronous(deSerializer) : Parameter.DeSerialize(deSerializer)) return;
                 Type = ReturnType.DeSerializeError;
             }
         }
@@ -444,10 +440,9 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="onReturn"></param>
         /// <returns></returns>
-        public static Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> GetCallback<nodeType>(Action<ReturnValueNode<nodeType>> onReturn)
-            where nodeType : DataStructure.Abstract.Node, DataStructure.Abstract.IValue
+        public static Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> GetCallback<valueType>(Action<ReturnValue<valueType>> onReturn)
         {
-            if (onReturn != null) return value => onReturn(new ReturnValueNode<nodeType>(value));
+            if (onReturn != null) return value => onReturn(new ReturnValue<valueType>(ref value));
             return null;
         }
     }

@@ -12,11 +12,15 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 数据缓冲区计数
         /// </summary>
-        private volatile BufferCount bufferCount;
+        internal BufferCount BufferCount;
         /// <summary>
         /// 数据
         /// </summary>
         internal SubArray<byte> Array;
+        /// <summary>
+        /// 引用计数
+        /// </summary>
+        private volatile int referenceCount;
         /// <summary>
         /// 数据缓冲区
         /// </summary>
@@ -37,45 +41,40 @@ namespace AutoCSer.CacheServer
         /// <param name="count">字节数量</param>
         internal Buffer(BufferCount bufferCount, int index, int count)
         {
-            this.bufferCount = bufferCount;
+            this.BufferCount = bufferCount;
             Array.Set(bufferCount.Buffer.Buffer, index, count);
-            Interlocked.Increment(ref bufferCount.Count);
+            referenceCount = 1;
         }
         /// <summary>
-        /// 数据缓冲区
+        /// 增加引用计数
         /// </summary>
-        /// <param name="buffer">数据</param>
-        internal Buffer(ref SubArray<byte> buffer)
-        {
-            Array = buffer;
-        }
-        /// <summary>
-        /// 数据缓冲区
-        /// </summary>
-        /// <param name="buffer">数据缓冲区</param>
-        internal Buffer(Buffer buffer)
-        {
-            bufferCount = buffer.bufferCount;
-            Array = buffer.Array;
-            Interlocked.Increment(ref bufferCount.Count);
-        }
-        /// <summary>
-        /// 复制数据缓冲区
-        /// </summary>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Buffer Copy()
+        internal void Reference()
         {
-            return bufferCount != null ? new Buffer(this) : new Buffer(ref Array);
+            Interlocked.Increment(ref referenceCount);
+        }
+        /// <summary>
+        /// 释放引用计数
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void FreeReference()
+        {
+            if (Interlocked.Decrement(ref referenceCount) == 0)
+            {
+                BufferCount.Free();
+                BufferCount = null;
+            }
         }
         /// <summary>
         /// 释放资源
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Dispose()
         {
-            BufferCount bufferCount = Interlocked.Exchange(ref this.bufferCount, null);
-            if (bufferCount != null) bufferCount.Free();
+            if (BufferCount != null)
+            {
+                BufferCount.Free();
+                BufferCount = null;
+            }
         }
         /// <summary>
         /// 设置服务端数据结构索引标识
@@ -94,6 +93,15 @@ namespace AutoCSer.CacheServer
             fixed (byte* bufferFixed = Array.Array) identity.UnsafeSerialize(bufferFixed + (Array.Start + OperationParameter.Serializer.HeaderSize));
         }
         /// <summary>
+        /// 设置数据
+        /// </summary>
+        /// <param name="array"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Set(ref SubArray<byte> array)
+        {
+            Array = array;
+        }
+        /// <summary>
         /// 复制数据
         /// </summary>
         /// <param name="buffer"></param>
@@ -104,7 +112,7 @@ namespace AutoCSer.CacheServer
         {
             System.Buffer.BlockCopy(Array.Array, Array.Start, buffer.Buffer, buffer.StartIndex + index, Array.Length);
             index += Array.Length;
-            Dispose();
+            FreeReference();
             return LinkNext;
         }
         /// <summary>
@@ -116,7 +124,7 @@ namespace AutoCSer.CacheServer
         internal Buffer Copy(byte[] bigBuffer)
         {
             System.Buffer.BlockCopy(Array.Array, Array.Start, bigBuffer, sizeof(int), Array.Length);
-            Dispose();
+            FreeReference();
             return LinkNext;
         }
         /// <summary>
@@ -127,7 +135,7 @@ namespace AutoCSer.CacheServer
         internal void CopyTo(UnmanagedStream stream)
         {
             stream.Write(ref Array);
-            Dispose();
+            FreeReference();
         }
         /// <summary>
         /// 复制数据
@@ -140,7 +148,7 @@ namespace AutoCSer.CacheServer
             if (stream.FreeSize - sizeof(int) > Array.Length)
             {
                 stream.Write(ref Array);
-                Dispose();
+                FreeReference();
                 return true;
             }
             return false;
@@ -154,7 +162,7 @@ namespace AutoCSer.CacheServer
         {
             while (buffer != null)
             {
-                buffer.Dispose();
+                buffer.FreeReference();
                 buffer = buffer.LinkNext;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
 using AutoCSer.CacheServer.DataStructure.Value;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Example.CacheServer
 {
@@ -14,10 +15,10 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 ValueArray 的数组缓存
-            ValueArray<Value<int>> array = client.GetOrCreateDataStructure<ValueArray<Value<int>>>("ValueArray").Value;
+            ValueArray<int> array = client.GetOrCreateDataStructure<ValueArray<int>>("ValueArray").Value;
             if (array == null)
             {
                 return false;
@@ -30,7 +31,7 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        internal static bool TestCase(ValueArray<Value<int>> array)
+        internal static bool TestCase(ValueArray<int> array)
         {
 
             #region array[1] = 9;
@@ -42,8 +43,8 @@ namespace AutoCSer.Example.CacheServer
             #endregion
 
             #region 获取索引为 1 的数据
-            AutoCSer.CacheServer.ReturnValueNode<Value<int>> value = array.Get(1);
-            if (value.Get().Value != 9)
+            AutoCSer.CacheServer.ReturnValue<int> value = array.Get(1);
+            if (value.Value != 9)
             {
                 return false;
             }

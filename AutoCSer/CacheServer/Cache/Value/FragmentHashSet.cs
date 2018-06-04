@@ -20,6 +20,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private int count;
         /// <summary>
+        /// 256 基分片 哈希表节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private FragmentHashSet(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -144,26 +149,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建哈希表 数据节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentHashSet<valueType> create()
+        private static FragmentHashSet<valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new FragmentHashSet<valueType>();
+            return new FragmentHashSet<valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<FragmentHashSet<valueType>> constructor;
+        private static readonly NodeInfo<FragmentHashSet<valueType>> nodeInfo;
         static FragmentHashSet()
         {
+            nodeInfo = new NodeInfo<FragmentHashSet<valueType>>
+            {
 #if NOJIT
-            constructor = (Func<FragmentHashSet<valueType>>)Delegate.CreateDelegate(typeof(Func<FragmentHashSet<valueType>>), typeof(FragmentHashSet<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<FragmentHashSet<valueType>>)Delegate.CreateDelegate(typeof(Constructor<FragmentHashSet<valueType>>), typeof(FragmentHashSet<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<FragmentHashSet<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentHashSet<valueType>));
+                Constructor = (Constructor<FragmentHashSet<valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(FragmentHashSet<valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

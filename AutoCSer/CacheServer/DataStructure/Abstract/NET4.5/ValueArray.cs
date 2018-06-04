@@ -6,28 +6,28 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
     /// <summary>
     /// 数组节点
     /// </summary>
-    public abstract partial class ValueArray<nodeType>
+    public abstract partial class ValueArray<valueType>
     {
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public async Task<ReturnValueNode<nodeType>> GetTask(int index)
+        public async Task<ReturnValue<valueType>> GetTask(int index)
         {
-            return new ReturnValueNode<nodeType>(await ClientDataStructure.Client.QueryTask(GetNode(index)));
+            return new ReturnValue<valueType>(await ClientDataStructure.Client.QueryTask(GetNode(index)));
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public async Task<AutoCSer.CacheServer.ReturnValue<bool>> SetTask(int index, nodeType valueNode)
+        public async Task<ReturnValue<bool>> SetTask(int index, valueType value)
         {
-            Parameter.OperationBool node = GetSetNode(index, valueNode);
+            Parameter.OperationBool node = GetSetNode(index, value);
             if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationTask(node));
-            return new AutoCSer.CacheServer.ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
     }
 }

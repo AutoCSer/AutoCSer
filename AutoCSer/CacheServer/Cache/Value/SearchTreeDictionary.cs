@@ -17,6 +17,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private readonly AutoCSer.SearchTree.Dictionary<keyType, valueType> dictionary = new AutoCSer.SearchTree.Dictionary<keyType, valueType>();
         /// <summary>
+        /// 搜索树字典 数据节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private SearchTreeDictionary(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -138,26 +143,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建搜索树字典 数据节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static SearchTreeDictionary<keyType, valueType> create()
+        private static SearchTreeDictionary<keyType, valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new SearchTreeDictionary<keyType, valueType>();
+            return new SearchTreeDictionary<keyType, valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<SearchTreeDictionary<keyType, valueType>> constructor;
+        private static readonly NodeInfo<SearchTreeDictionary<keyType, valueType>> nodeInfo;
         static SearchTreeDictionary()
         {
+            nodeInfo = new NodeInfo<SearchTreeDictionary<keyType, valueType>>
+            {
 #if NOJIT
-            constructor = (Func<SearchTreeDictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Func<SearchTreeDictionary<keyType, valueType>>), typeof(SearchTreeDictionary<keyType, valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<SearchTreeDictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Constructor<SearchTreeDictionary<keyType, valueType>>), typeof(SearchTreeDictionary<keyType, valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<SearchTreeDictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.Create(typeof(SearchTreeDictionary<keyType, valueType>));
+                Constructor = (Constructor<SearchTreeDictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(SearchTreeDictionary<keyType, valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

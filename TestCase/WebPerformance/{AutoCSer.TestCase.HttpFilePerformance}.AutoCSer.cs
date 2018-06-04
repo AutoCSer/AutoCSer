@@ -22,7 +22,7 @@ namespace AutoCSer.TestCase.HttpFilePerformance
                     return names;
                 }
             }
-            private static readonly AutoCSer.WebView.CallMethodInfo _i0 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)65536, MaxPostDataSize = 4194304, IsOnlyPost = false };
+            private static readonly AutoCSer.WebView.CallMethodInfo _i0 = new AutoCSer.WebView.CallMethodInfo { MethodIndex = 0, MaxMemoryStreamSize = (AutoCSer.SubBuffer.Size)131072, MaxPostDataSize = 4194304, IsOnlyPost = false };
             protected override void call(int callIndex, AutoCSer.Net.Http.SocketBase socket)
             {
                 switch (callIndex)

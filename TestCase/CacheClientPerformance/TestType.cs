@@ -12,10 +12,6 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         ArraySetNodeCache,
         /// <summary>
-        /// 设置数组数据（相同的数据，客户端会产生 1 个操作节点对象）
-        /// </summary>
-        ArraySetValueCache,
-        /// <summary>
         /// 设置数组数据（客户端会产生 1 个数据节点对象与 1 个操作节点对象）
         /// </summary>
         ArraySet,
@@ -32,10 +28,6 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// 设置字典数据（执行相同指令，客户端不会产生临时节点对象）
         /// </summary>
         DictionarySetNodeCache,
-        /// <summary>
-        /// 设置字典数据（相同的数据，客户端会产生 1 个操作节点对象）
-        /// </summary>
-        DictionarySetValueCache,
         /// <summary>
         /// 设置字典数据（客户端会产生 1 个数据节点对象与 1 个操作节点对象）
         /// </summary>
@@ -94,5 +86,18 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// 获取 Json 数据（客户端会产生 1 个查询节点对象）
         /// </summary>
         JsonGet,
+
+        /// <summary>
+        /// 消息队列同时添加与处理消息（生产消费实时并行测试）
+        /// </summary>
+        MessageQueueMixing,
+        /// <summary>
+        /// 消息队列添加消息
+        /// </summary>
+        MessageQueueEnqueue,
+        /// <summary>
+        /// 消息队列处理消息
+        /// </summary>
+        MessageQueueDequeue,
     }
 }

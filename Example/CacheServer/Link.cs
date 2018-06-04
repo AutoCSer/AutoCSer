@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
 using AutoCSer.CacheServer.DataStructure.Value;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Example.CacheServer
 {
@@ -14,10 +15,10 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 Link 的链表缓存
-            Link<Value<int>> link = client.GetOrCreateDataStructure<Link<Value<int>>>("Link").Value;
+            Link<int> link = client.GetOrCreateDataStructure<Link<int>>("Link").Value;
             if (link == null)
             {
                 return false;
@@ -30,7 +31,7 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="link"></param>
         /// <returns></returns>
-        internal static bool TestCase(Link<Value<int>> link)
+        internal static bool TestCase(Link<int> link)
         {
             #region 链表尾部追加数据 3，链表结果为 3
             AutoCSer.CacheServer.ReturnValue<bool> isSet = link.Append(3);
@@ -81,8 +82,8 @@ namespace AutoCSer.Example.CacheServer
             #endregion
 
             #region 获取第 3 个数据
-            AutoCSer.CacheServer.ReturnValueNode<Value<int>> value = link.Get(2);
-            if (value.Get().Value != 3)
+            AutoCSer.CacheServer.ReturnValue<int> value = link.Get(2);
+            if (value.Value != 3)
             {
                 return false;
             }
@@ -90,7 +91,7 @@ namespace AutoCSer.Example.CacheServer
 
             #region 获取倒数第 2 个数据
             value = link.Get(-2);
-            if (value.Get().Value != 4)
+            if (value.Value != 4)
             {
                 return false;
             }
@@ -98,7 +99,7 @@ namespace AutoCSer.Example.CacheServer
 
             #region 弹出第一个数据，链表结果为 2 -> 3 -> 4 -> 5
             value = link.Dequeue();
-            if (value.Get().Value != 1)
+            if (value.Value != 1)
             {
                 return false;
             }
@@ -106,7 +107,7 @@ namespace AutoCSer.Example.CacheServer
 
             #region 弹出最后一个数据，链表结果为 2 -> 3 -> 4
             value = link.StackPop();
-            if (value.Get().Value != 5)
+            if (value.Value != 5)
             {
                 return false;
             }
@@ -114,7 +115,7 @@ namespace AutoCSer.Example.CacheServer
 
             #region 获取并删除第 2 个数据，链表结果为 2 -> 4
             value = link.GetRemove(1);
-            if (value.Get().Value != 3)
+            if (value.Value != 3)
             {
                 return false;
             }

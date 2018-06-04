@@ -55,7 +55,7 @@ namespace AutoCSer.CacheServer.DataStructure
 #if NOJIT
             constructor = (Func<Abstract.Node, FragmentDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, FragmentDictionary<keyType, nodeType>>), typeof(FragmentDictionary<keyType, nodeType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, FragmentDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentDictionary<keyType, nodeType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, FragmentDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(FragmentDictionary<keyType, nodeType>), NodeConstructorParameterTypes);
 #endif
         }
     }

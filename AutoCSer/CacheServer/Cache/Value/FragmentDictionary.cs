@@ -21,6 +21,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private int count;
         /// <summary>
+        /// 256 基分片 字典 数据节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private FragmentDictionary(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -160,26 +165,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建字典 数据节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentDictionary<keyType, valueType> create()
+        private static FragmentDictionary<keyType, valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new FragmentDictionary<keyType, valueType>();
+            return new FragmentDictionary<keyType, valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<FragmentDictionary<keyType, valueType>> constructor;
+        private static readonly NodeInfo<FragmentDictionary<keyType, valueType>> nodeInfo;
         static FragmentDictionary()
         {
+            nodeInfo = new NodeInfo<FragmentDictionary<keyType, valueType>>
+            {
 #if NOJIT
-            constructor = (Func<FragmentDictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Func<FragmentDictionary<keyType, valueType>>), typeof(FragmentDictionary<keyType, valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<FragmentDictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Constructor<FragmentDictionary<keyType, valueType>>), typeof(FragmentDictionary<keyType, valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<FragmentDictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentDictionary<keyType, valueType>));
+                Constructor = (Constructor<FragmentDictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(FragmentDictionary<keyType, valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

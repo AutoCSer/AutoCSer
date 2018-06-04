@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
 using AutoCSer.CacheServer.DataStructure.Value;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Example.CacheServer
 {
@@ -14,10 +15,10 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 ValueDictionary 的字典缓存
-            ValueDictionary<int, Value<int>> dictionary = client.GetOrCreateDataStructure<ValueDictionary<int, Value<int>>>("ValueDictionary").Value;
+            ValueDictionary<int, int> dictionary = client.GetOrCreateDataStructure<ValueDictionary<int, int>>("ValueDictionary").Value;
             if (dictionary == null)
             {
                 return false;
@@ -31,7 +32,7 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="dictionary"></param>
         /// <returns></returns>
-        internal static bool TestCase(ValueDictionary<int, Value<int>> dictionary)
+        internal static bool TestCase(ValueDictionary<int, int> dictionary)
         {
             #region dictionary[1] = 9;
             AutoCSer.CacheServer.ReturnValue<bool> isSet = dictionary.Set(1, 9);
@@ -50,8 +51,8 @@ namespace AutoCSer.Example.CacheServer
             #endregion
 
             #region 获取关键字为 1 的数据
-            AutoCSer.CacheServer.ReturnValueNode<Value<int>> value = dictionary.Get(1);
-            if (value.Get().Value != 9)
+            AutoCSer.CacheServer.ReturnValue<int> value = dictionary.Get(1);
+            if (value.Value != 9)
             {
                 return false;
             }

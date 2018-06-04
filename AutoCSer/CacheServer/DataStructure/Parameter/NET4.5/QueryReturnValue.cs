@@ -6,30 +6,16 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
     /// <summary>
     /// 查询参数节点
     /// </summary>
-    public sealed partial class QueryReturnValue<nodeType>
+    public sealed partial class QueryReturnValue<valueType>
     {
         /// <summary>
         /// 查询数据
         /// </summary>
         /// <returns></returns>
-        public async Task<ReturnValueNode<nodeType>> QueryTask()
+        public async Task<ReturnValue<valueType>> QueryTask()
         {
-            return new ReturnValueNode<nodeType>(await ClientDataStructure.Client.QueryTask(this));
+            return new ReturnValue<valueType>(await Parent.ClientDataStructure.Client.QueryTask(this));
         }
     }
-    ///// <summary>
-    ///// 查询参数节点
-    ///// </summary>
-    //public sealed partial class QueryReturnValueNew<valueType>
-    //{
-    //    /// <summary>
-    //    /// 查询数据
-    //    /// </summary>
-    //    /// <returns></returns>
-    //    public async Task<Abstract.ReturnValueNew<valueType>> QueryTask()
-    //    {
-    //        return new Abstract.ReturnValueNew<valueType>(await ClientDataStructure.Client.QueryTask(this));
-    //    }
-    //}
 }
 

@@ -22,9 +22,14 @@ namespace AutoCSer.TestCase.CacheServerPerformance
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/CacheServer/Index.html
 ");
+                    DirectoryInfo messageQueueDirectory = new DirectoryInfo("MessageQueue");
+                    if (messageQueueDirectory.Exists)
+                    {
+                        foreach (DirectoryInfo directory in messageQueueDirectory.GetDirectories()) directory.Delete(true);
+                    }
                     CacheServer.MasterServerConfig fileConfig = new CacheServer.MasterServerConfig { FileName = "PerformanceTest", IsIgnoreFileEndError = true };
-                    FileInfo file = new FileInfo(fileConfig.FileName + ".amc");
-                    if (file.Exists) file.Delete();
+                    deleteFile(fileConfig.FileName + ".amc");
+                    deleteFile(fileConfig.FileName + ".amcs");
 
                     AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalServer.ServerAttribute>(typeof(AutoCSer.CacheServer.MasterServer), false);
                     serverAttribute.VerifyString = "!2#4%6&8QwErTyAsDfZx";
@@ -55,7 +60,10 @@ namespace AutoCSer.TestCase.CacheServerPerformance
                             FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\CacheClientPerformance\bin\Release\AutoCSer.TestCase.CacheClientPerformance.exe".pathSeparator()));
 #endif
                             if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.CacheClientPerformance.exe"));
-                            if (clientFile.Exists) Process.Start(clientFile.FullName);
+                            if (clientFile.Exists)
+                            {
+                                Process.Start(clientFile.FullName);
+                            }
 #endif
                             else Console.WriteLine("未找到缓存服务性能测试服务 客户端程序");
                             Console.WriteLine("Press quit to exit.");
@@ -71,6 +79,15 @@ namespace AutoCSer.TestCase.CacheServerPerformance
                 }
             }
 #endif
+        }
+        /// <summary>
+        /// 删除历史文件
+        /// </summary>
+        /// <param name="fileName"></param>
+        private static void deleteFile(string fileName)
+        {
+            FileInfo file = new FileInfo(fileName);
+            if (file.Exists) file.Delete();
         }
     }
 }

@@ -11,11 +11,11 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 缓存管理
         /// </summary>
-        private AutoCSer.CacheServer.CacheManager cache;
+        private readonly AutoCSer.CacheServer.CacheManager cache;
         /// <summary>
         /// 调用类型
         /// </summary>
-        private CacheManagerServerCallType type;
+        private readonly CacheManagerServerCallType type;
         /// <summary>
         /// 缓存管理 TCP 服务器端同步调用
         /// </summary>

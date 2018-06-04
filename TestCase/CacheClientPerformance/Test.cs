@@ -19,7 +19,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// <summary>
         /// 测试客户端
         /// </summary>
-        protected readonly AutoCSer.CacheServer.MasterClient client;
+        protected readonly AutoCSer.CacheServer.Client client;
         /// <summary>
         /// 测试等待
         /// </summary>
@@ -61,7 +61,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         /// <param name="client">测试客户端</param>
         /// <param name="isFile">服务端是否文件持久化</param>
-        protected Test(AutoCSer.CacheServer.MasterClient client, bool isFile)
+        protected Test(AutoCSer.CacheServer.Client client, bool isFile)
         {
             this.client = client;
             this.isFile = isFile;
@@ -72,12 +72,15 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         /// <param name="callbackType"></param>
         /// <param name="type"></param>
-        protected void start(CallbackType callbackType, TestType type)
+        /// <param name="mul"></param>
+        protected void start(CallbackType callbackType, TestType type, int callbackMul = 1)
         {
             this.callbackType = callbackType;
             this.type = type;
-            callbackCount = count = callbackType == CallbackType.Synchronous ? loopCount / 50 : loopCount;
+            count = (callbackType == CallbackType.Synchronous ? loopCount / 50 : loopCount);
+            callbackCount = count * callbackMul;
             errorCount = 0;
+            Console.WriteLine("start " + count.toString() + " " + callbackType.ToString() + " " + type.ToString() + (isFile ? " + File" : null));
             waitEvent.Reset();
             time.Restart();
         }
@@ -87,16 +90,50 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// <param name="value"></param>
         protected void setCallback(AutoCSer.CacheServer.ReturnValue<bool> value)
         {
-            if (!value.Value) ++errorCount;
+            setCallback(value.Value);
+        }
+        /// <summary>
+        /// 测试回调
+        /// </summary>
+        /// <param name="value"></param>
+        protected void setCallback(bool value)
+        {
+            if (!value) ++errorCount;
             if (--callbackCount == 0) waitEvent.Set();
         }
         /// <summary>
         /// 测试回调
         /// </summary>
         /// <param name="value"></param>
-        protected void getCallback(AutoCSer.CacheServer.ReturnValueNode<Value<int>> value)
+        protected void setCallbackInterlocked(AutoCSer.CacheServer.ReturnValue<bool> value)
         {
-            if(value.Get().Type != AutoCSer.CacheServer.ReturnType.Success) ++errorCount;
+            setCallbackInterlocked(value.Value);
+        }
+        /// <summary>
+        /// 测试回调
+        /// </summary>
+        /// <param name="value"></param>
+        protected void setCallbackInterlocked(bool value)
+        {
+            if (!value) Interlocked.Increment(ref errorCount);
+            if (Interlocked.Decrement(ref callbackCount) == 0) waitEvent.Set();
+        }
+        /// <summary>
+        /// 测试回调
+        /// </summary>
+        /// <param name="errorCount"></param>
+        protected void setCallbackInterlocked(int errorCount)
+        {
+            Interlocked.Add(ref this.errorCount, errorCount);
+            if (Interlocked.Add(ref this.callbackCount, -count) == 0) waitEvent.Set();
+        }
+        /// <summary>
+        /// 测试回调
+        /// </summary>
+        /// <param name="value"></param>
+        protected void getCallback(AutoCSer.CacheServer.ReturnValue<int> value)
+        {
+            if(value.Type != AutoCSer.CacheServer.ReturnType.Success) ++errorCount;
             getCallback();
         }
         protected void getCallback()
@@ -112,7 +149,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             waitEvent.WaitOne();
             time.Stop();
             long milliseconds = Math.Max(time.ElapsedMilliseconds, 1);
-            Console.WriteLine(count.toString() + " / " + milliseconds.toString() + "ms = " + (count / milliseconds) + "/ms " + (errorCount == 0 ? null : (" ERROR[" + errorCount.toString() + "]")) + " " + callbackType.ToString() + " " + type.ToString() + (isFile ? " + File" : null));
+            Console.WriteLine(count.toString() + " / " + milliseconds.toString() + "ms = " + (count / milliseconds) + "/ms " + (errorCount == 0 ? null : (" ERROR[" + errorCount.toString() + "]")));
             Console.WriteLine(@"Sleep 3000ms
 ");
             System.Threading.Thread.Sleep(3000);

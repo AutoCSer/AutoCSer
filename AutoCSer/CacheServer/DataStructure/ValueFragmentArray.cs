@@ -7,9 +7,8 @@ namespace AutoCSer.CacheServer.DataStructure
     /// <summary>
     /// 32768 基分段 数组节点
     /// </summary>
-    /// <typeparam name="nodeType">元素节点类型</typeparam>
-    public sealed class ValueFragmentArray<nodeType> : Abstract.ValueArray<nodeType>
-        where nodeType : Abstract.Node, Abstract.IValue
+    /// <typeparam name="valueType">元素节点类型</typeparam>
+    public sealed class ValueFragmentArray<valueType> : Abstract.ValueArray<valueType>
     {
         /// <summary>
         /// 32768 基分段 数组节点
@@ -26,6 +25,7 @@ namespace AutoCSer.CacheServer.DataStructure
         internal override void SerializeDataStructure(UnmanagedStream stream)
         {
             stream.Write((byte)Abstract.NodeType.ValueFragmentArray);
+            stream.Write((byte)ValueData.Data<valueType>.DataType);
             serializeParentDataStructure(stream);
         }
 
@@ -37,22 +37,22 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static ValueFragmentArray<nodeType> create(Abstract.Node parent)
+        private static ValueFragmentArray<valueType> create(Abstract.Node parent)
         {
-            return new ValueFragmentArray<nodeType>(parent);
+            return new ValueFragmentArray<valueType>(parent);
         }
 #endif
         /// <summary>
         /// 构造函数
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Abstract.Node, ValueFragmentArray<nodeType>> constructor;
+        private static readonly Func<Abstract.Node, ValueFragmentArray<valueType>> constructor;
         static ValueFragmentArray()
         {
 #if NOJIT
-            constructor = (Func<Abstract.Node, ValueFragmentArray<nodeType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, ValueFragmentArray<nodeType>>), typeof(ValueFragmentArray<nodeType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
+            constructor = (Func<Abstract.Node, ValueFragmentArray<valueType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, ValueFragmentArray<valueType>>), typeof(ValueFragmentArray<valueType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, ValueFragmentArray<nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(ValueFragmentArray<nodeType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, ValueFragmentArray<valueType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(ValueFragmentArray<valueType>), NodeConstructorParameterTypes);
 #endif
         }
     }

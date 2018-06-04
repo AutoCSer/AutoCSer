@@ -20,6 +20,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private int count;
         /// <summary>
+        /// 32768 基分段 数组 数据节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private FragmentArray(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -146,26 +151,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建数组节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentArray<valueType> create()
+        private static FragmentArray<valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new FragmentArray<valueType>();
+            return new FragmentArray<valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<FragmentArray<valueType>> constructor;
+        private static readonly NodeInfo<FragmentArray<valueType>> nodeInfo;
         static FragmentArray()
         {
+            nodeInfo = new NodeInfo<FragmentArray<valueType>>
+            {
 #if NOJIT
-            constructor = (Func<FragmentArray<valueType>>)Delegate.CreateDelegate(typeof(Func<FragmentArray<valueType>>), typeof(FragmentArray<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<FragmentArray<valueType>>)Delegate.CreateDelegate(typeof(Constructor<FragmentArray<valueType>>), typeof(FragmentArray<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<FragmentArray<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentArray<valueType>));
+                Constructor = (Constructor<FragmentArray<valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(FragmentArray<valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

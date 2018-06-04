@@ -20,6 +20,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private int count;
         /// <summary>
+        /// 数组 数据节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private Array(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -138,26 +143,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建数组节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Array<valueType> create()
+        private static Array<valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new Array<valueType>();
+            return new Array<valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Array<valueType>> constructor;
+        private static readonly NodeInfo<Array<valueType>> nodeInfo;
         static Array()
         {
+            nodeInfo = new NodeInfo<Array<valueType>>
+            {
 #if NOJIT
-            constructor = (Func<Array<valueType>>)Delegate.CreateDelegate(typeof(Func<Array<valueType>>), typeof(Array<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<Array<valueType>>)Delegate.CreateDelegate(typeof(Constructor<Array<valueType>>), typeof(Array<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<Array<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(Array<valueType>));
+                Constructor = (Constructor<Array<valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(Array<valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

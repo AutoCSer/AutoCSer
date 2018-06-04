@@ -38,6 +38,11 @@ namespace AutoCSer.CacheServer.Cache
         /// </summary>
         private int count;
         /// <summary>
+        /// 32768 基分段 数组节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private FragmentArray(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -76,6 +81,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (arrays.Length != 0)
                     {
+                        OnRemoved();
                         arrays = NullValue<nodeType[]>.Array;
                         count = 0;
                         parser.IsOperation = true;
@@ -105,7 +111,7 @@ namespace AutoCSer.CacheServer.Cache
                 int index = indexParameter & FragmentArray.ArraySizeAnd;
                 if (array[index] == null)
                 {
-                    array[index] = nodeConstructor();
+                    array[index] = nodeConstructor(ref parser);
                     parser.IsOperation = true;
                     if (indexParameter >= count) count = indexParameter + 1;
                 }
@@ -123,10 +129,12 @@ namespace AutoCSer.CacheServer.Cache
             if ((uint)index < count)
             {
                 nodeType[] array = arrays[index >> FragmentArray.ArrayShift];
-                if (array[index &= FragmentArray.ArraySizeAnd] != null)
+                nodeType node = array[index &= FragmentArray.ArraySizeAnd];
+                if (node != null)
                 {
                     parser.IsOperation = true;
                     array[index] = null;
+                    if (nodeInfo.IsOnRemovedEvent) node.OnRemoved();
                 }
                 parser.ReturnParameter.Set(true);
             }
@@ -164,6 +172,29 @@ namespace AutoCSer.CacheServer.Cache
         }
 
         /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        internal override void OnRemoved()
+        {
+            if (nodeInfo.IsOnRemovedEvent && count != 0)
+            {
+                int index = 0;
+                foreach (nodeType[] nodeArray in arrays)
+                {
+                    if (nodeArray != null)
+                    {
+                        foreach (nodeType node in nodeArray)
+                        {
+                            if (node != null) node.OnRemoved();
+                            if (++index >= count) return;
+                        }
+                    }
+                    else index += FragmentArray.ArraySize;
+                    if (index >= count) return;
+                }
+            }
+        }
+        /// <summary>
         /// 创建缓存快照
         /// </summary>
         /// <returns></returns>
@@ -191,31 +222,37 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建数组节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentArray<nodeType> create()
+        private static FragmentArray<nodeType> create(ref OperationParameter.NodeParser parser)
         {
-            return new FragmentArray<nodeType>();
+            return new FragmentArray<nodeType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<FragmentArray<nodeType>> constructor;
+        private static readonly NodeInfo<FragmentArray<nodeType>> nodeInfo;
         /// <summary>
         /// 子节点构造函数
         /// </summary>
-        private static readonly Func<nodeType> nodeConstructor;
+        private static readonly Constructor<nodeType> nodeConstructor;
         static FragmentArray()
         {
+            NodeInfo<nodeType> nextNodeInfo = (NodeInfo<nodeType>)typeof(nodeType).GetField(NodeInfoFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            nodeInfo = new NodeInfo<FragmentArray<nodeType>>
+            {
+                IsOnRemovedEvent = nextNodeInfo.IsOnRemovedEvent,
 #if NOJIT
-            constructor = (Func<FragmentArray<nodeType>>)Delegate.CreateDelegate(typeof(Func<FragmentArray<nodeType>>), typeof(FragmentArray<nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<FragmentArray<nodeType>>)Delegate.CreateDelegate(typeof(Constructor<FragmentArray<nodeType>>), typeof(FragmentArray<nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<FragmentArray<nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentArray<nodeType>));
+                Constructor = (Constructor<FragmentArray<nodeType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(FragmentArray<nodeType>), NodeConstructorParameterTypes)
 #endif
-            nodeConstructor = (Func<nodeType>)typeof(nodeType).GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            };
+            nodeConstructor = nextNodeInfo.Constructor;
         }
     }
 }

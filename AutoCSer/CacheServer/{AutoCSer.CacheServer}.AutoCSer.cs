@@ -17,21 +17,29 @@ namespace AutoCSer.CacheServer
             /// </summary>
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
-                KeyValue<string, int>[] names = new KeyValue<string, int>[14];
+                KeyValue<string, int>[] names = new KeyValue<string, int>[22];
                 names[0].Set(@"(System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>,bool>)GetCache", 0);
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"()GetFileVersion", 2);
                 names[3].Set(@"(AutoCSer.CacheServer.OperationParameter.ClientDataStructure)GetOrCreate", 3);
                 names[4].Set(@"()NewFileStream", 4);
                 names[5].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)Operation", 5);
-                names[6].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationOnly", 6);
-                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationStream", 7);
-                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)Query", 8);
-                names[9].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryStream", 9);
-                names[10].Set(@"(ulong,long,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReadFileParameter>,bool>)ReadFile", 10);
-                names[11].Set(@"(AutoCSer.CacheServer.OperationParameter.RemoveDataStructure)Remove", 11);
-                names[12].Set(@"(bool)SetCanWrite", 12);
-                names[13].Set(@"()WriteFile", 13);
+                names[6].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)OperationAsynchronous", 6);
+                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationAsynchronousOnly", 7);
+                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)OperationAsynchronousStream", 8);
+                names[9].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationOnly", 9);
+                names[10].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationStream", 10);
+                names[11].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)Query", 11);
+                names[12].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronous", 12);
+                names[13].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronousStream", 13);
+                names[14].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallback", 14);
+                names[15].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallbackStream", 15);
+                names[16].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryOnly", 16);
+                names[17].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryStream", 17);
+                names[18].Set(@"(ulong,long,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReadFileParameter>,bool>)ReadFile", 18);
+                names[19].Set(@"(AutoCSer.CacheServer.OperationParameter.RemoveDataStructure)Remove", 19);
+                names[20].Set(@"(bool)SetCanWrite", 20);
+                names[21].Set(@"()WriteFile", 21);
                 return names;
             }
             /// <summary>
@@ -52,7 +60,7 @@ namespace AutoCSer.CacheServer
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("MasterCache", typeof(AutoCSer.CacheServer.MasterServer))), verify, onCustomData, log, true)
                 {
                     Value = value ?? new AutoCSer.CacheServer.MasterServer();
-                    setCommandData(14);
+                    setCommandData(22);
                     setCommand(0);
                     setVerifyCommand(1);
                     setCommand(2);
@@ -67,6 +75,14 @@ namespace AutoCSer.CacheServer
                     setCommand(11);
                     setCommand(12);
                     setCommand(13);
+                    setCommand(14);
+                    setCommand(15);
+                    setCommand(16);
+                    setCommand(17);
+                    setCommand(18);
+                    setCommand(19);
+                    setCommand(20);
+                    setCommand(21);
                     Value.SetTcpServer(this);
                     if (attribute.IsAutoServer) Start();
                 }
@@ -204,28 +220,15 @@ namespace AutoCSer.CacheServer
                             sender.Push(returnType);
                             return;
                         case 6:
-                            try
-                            {
-                                _p8 inputParameter = new _p8();
-                                if (sender.DeSerialize(ref data, ref inputParameter))
-                                {
-                                    (_s6/**/.Pop() ?? new _s6()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
-                                    return;
-                                }
-                            }
-                            catch (Exception error)
-                            {
-                                sender.AddLog(error);
-                            }
-                            return;
-                        case 7:
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
                                 _p8 inputParameter = new _p8();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s7/**/.Pop() ?? new _s7()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
+                                    _p9 outputParameter = new _p9();
+                                    
+                                    Value.OperationAsynchronous(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c6, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -237,20 +240,31 @@ namespace AutoCSer.CacheServer
                             }
                             sender.Push(returnType);
                             return;
+                        case 7:
+                            try
+                            {
+                                _p8 inputParameter = new _p8();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    (_s7/**/.Pop() ?? new _s7()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
+                                    return;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                sender.AddLog(error);
+                            }
+                            return;
                         case 8:
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p10 inputParameter = new _p10();
+                                _p8 inputParameter = new _p8();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p9 _outputParameter_ = new _p9();
+                                    _p9 outputParameter = new _p9();
                                     
-                                    AutoCSer.CacheServer.ReturnParameter Return;
-                                    
-                                    Return = Value.Query(inputParameter.p0);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c8, ref _outputParameter_);
+                                    Value.OperationAsynchronousStream(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c8, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -263,40 +277,28 @@ namespace AutoCSer.CacheServer
                             sender.Push(returnType);
                             return;
                         case 9:
-                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p10 inputParameter = new _p10();
+                                _p8 inputParameter = new _p8();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p9 _outputParameter_ = new _p9();
-                                    
-                                    AutoCSer.CacheServer.ReturnParameter Return;
-                                    
-                                    Return = Value.QueryStream(inputParameter.p0);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c9, ref _outputParameter_);
+                                    (_s9/**/.Pop() ?? new _s9()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
                             }
                             catch (Exception error)
                             {
-                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                                 sender.AddLog(error);
                             }
-                            sender.Push(returnType);
                             return;
                         case 10:
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p11 inputParameter = new _p11();
-                                if (sender.DeSerialize(ref data, ref inputParameter, true))
+                                _p8 inputParameter = new _p8();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p12 outputParameter = new _p12();
-                                    
-                                    Value.ReadFile(inputParameter.p1, inputParameter.p0, sender.GetCallback<_p12, AutoCSer.CacheServer.ReadFileParameter>(_c10, ref outputParameter));
+                                    (_s10/**/.Pop() ?? new _s10()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -312,10 +314,16 @@ namespace AutoCSer.CacheServer
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p13 inputParameter = new _p13();
+                                _p10 inputParameter = new _p10();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s11/**/.Pop() ?? new _s11()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
+                                    _p9 _outputParameter_ = new _p9();
+                                    
+                                    AutoCSer.CacheServer.ReturnParameter Return;
+                                    
+                                    Return = Value.Query(inputParameter.p0);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c11, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -331,10 +339,12 @@ namespace AutoCSer.CacheServer
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
-                                _p14 inputParameter = new _p14();
-                                if (sender.DeSerialize(ref data, ref inputParameter, true))
+                                _p10 inputParameter = new _p10();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s12/**/.Pop() ?? new _s12()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
+                                    _p9 outputParameter = new _p9();
+                                    
+                                    Value.QueryAsynchronous(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c12, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -350,8 +360,171 @@ namespace AutoCSer.CacheServer
                             returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
                             try
                             {
+                                _p10 inputParameter = new _p10();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    (_s13/**/.Pop() ?? new _s13()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
+                                    _p9 outputParameter = new _p9();
+                                    
+                                    Value.QueryAsynchronousStream(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c13, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 14:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p10 inputParameter = new _p10();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p9 outputParameter = new _p9();
+                                    
+                                    Value.QueryKeepCallback(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c14, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 15:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p10 inputParameter = new _p10();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p9 outputParameter = new _p9();
+                                    
+                                    Value.QueryKeepCallbackStream(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c15, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 16:
+                            try
+                            {
+                                _p10 inputParameter = new _p10();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.QueryOnly(inputParameter.p0);
+                                    return;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                sender.AddLog(error);
+                            }
+                            return;
+                        case 17:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p10 inputParameter = new _p10();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p9 _outputParameter_ = new _p9();
+                                    
+                                    AutoCSer.CacheServer.ReturnParameter Return;
+                                    
+                                    Return = Value.QueryStream(inputParameter.p0);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c17, ref _outputParameter_);
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 18:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p11 inputParameter = new _p11();
+                                if (sender.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    _p12 outputParameter = new _p12();
+                                    
+                                    Value.ReadFile(inputParameter.p1, inputParameter.p0, sender.GetCallback<_p12, AutoCSer.CacheServer.ReadFileParameter>(_c18, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 19:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p13 inputParameter = new _p13();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    (_s19/**/.Pop() ?? new _s19()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 20:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p14 inputParameter = new _p14();
+                                if (sender.DeSerialize(ref data, ref inputParameter, true))
+                                {
+                                    (_s20/**/.Pop() ?? new _s20()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 21:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    (_s21/**/.Pop() ?? new _s21()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
                                     return;
                                 }
                             }
@@ -467,7 +640,35 @@ namespace AutoCSer.CacheServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
-                sealed class _s6 : AutoCSer.Net.TcpInternalServer.ServerCall<_s6, AutoCSer.CacheServer.MasterServer, _p8>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                sealed class _s7 : AutoCSer.Net.TcpInternalServer.ServerCall<_s7, AutoCSer.CacheServer.MasterServer, _p8>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.OperationAsynchronousOnly(inputParameter.p0);
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void Call()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket) get(ref value);
+                        push(this);
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                sealed class _s9 : AutoCSer.Net.TcpInternalServer.ServerCall<_s9, AutoCSer.CacheServer.MasterServer, _p8>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
                     {
@@ -492,8 +693,8 @@ namespace AutoCSer.CacheServer
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
-                sealed class _s7 : AutoCSer.Net.TcpInternalServer.ServerCall<_s7, AutoCSer.CacheServer.MasterServer, _p8>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                sealed class _s10 : AutoCSer.Net.TcpInternalServer.ServerCall<_s10, AutoCSer.CacheServer.MasterServer, _p8>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p9> value)
                     {
@@ -520,16 +721,21 @@ namespace AutoCSer.CacheServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, _c7, ref value);
+                            Sender.Push(CommandIndex, _c10, ref value);
                         }
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 12, IsKeepCallback = 1, IsBuildOutputThread = true };
-                sealed class _s11 : AutoCSer.Net.TcpInternalServer.ServerCall<_s11, AutoCSer.CacheServer.MasterServer, _p13>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c12 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c13 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c14 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c15 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c16 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c17 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c18 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 12, IsKeepCallback = 1, IsBuildOutputThread = true };
+                sealed class _s19 : AutoCSer.Net.TcpInternalServer.ServerCall<_s19, AutoCSer.CacheServer.MasterServer, _p13>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p6> value)
                     {
@@ -556,13 +762,13 @@ namespace AutoCSer.CacheServer
                         if (Sender.IsSocket)
                         {
                             get(ref value);
-                            Sender.Push(CommandIndex, _c11, ref value);
+                            Sender.Push(CommandIndex, _c19, ref value);
                         }
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
-                sealed class _s12 : AutoCSer.Net.TcpInternalServer.ServerCall<_s12, AutoCSer.CacheServer.MasterServer, _p14>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c19 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
+                sealed class _s20 : AutoCSer.Net.TcpInternalServer.ServerCall<_s20, AutoCSer.CacheServer.MasterServer, _p14>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
                     {
@@ -591,8 +797,8 @@ namespace AutoCSer.CacheServer
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c12 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
-                sealed class _s13 : AutoCSer.Net.TcpInternalServer.ServerCall<_s13, AutoCSer.CacheServer.MasterServer>
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c20 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
+                sealed class _s21 : AutoCSer.Net.TcpInternalServer.ServerCall<_s21, AutoCSer.CacheServer.MasterServer>
                 {
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
                     {
@@ -621,7 +827,7 @@ namespace AutoCSer.CacheServer
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c13 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c21 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
                 static TcpInternalServer()
                 {
                     CompileSerialize(new System.Type[] { typeof(_p11), typeof(_p14), null }
@@ -1197,7 +1403,147 @@ namespace AutoCSer.CacheServer
                     }
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 8, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+
+                /// <summary>
+                /// 异步操作数据
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点操作参数</param>
+                internal 
+                AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> OperationAsynchronous(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
+                {
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p9> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p9>.Pop();
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            TcpInternalServer._p9 _outputParameter_ = new TcpInternalServer._p9
+                            {
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p8, TcpInternalServer._p9>(_c6, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                    }
+                    finally
+                    {
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p9>.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 异步操作数据
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点操作参数</param>
+                internal 
+                AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter> OperationAsynchronousAwaiter(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p8, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>>(_a6, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                /// <summary>
+                /// 异步操作数据
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点操作参数</param>
+                internal 
+                void OperationAsynchronous(AutoCSer.CacheServer.OperationParameter.OperationNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p9>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            _socket_.Get<TcpInternalServer._p8, TcpInternalServer._p9>(_ac6, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 8, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+
+                /// <summary>
+                /// 模拟异步操作数据
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点操作参数</param>
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                internal void OperationAsynchronousOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
+                {
+                    TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                    {
+                        
+                        p0 = parameter,
+                    };
+                    _TcpClient_.Sender.CallOnly(_c7, ref _inputParameter_);
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                /// <summary>
+                /// 异步操作数据
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点操作参数</param>
+                internal 
+                void OperationAsynchronousStream(AutoCSer.CacheServer.OperationParameter.OperationNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p9>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            _socket_.Get<TcpInternalServer._p8, TcpInternalServer._p9>(_ac8, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 8, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
                 /// <summary>
                 /// 操作数据
@@ -1211,11 +1557,11 @@ namespace AutoCSer.CacheServer
                         
                         p0 = parameter,
                     };
-                    _TcpClient_.Sender.CallOnly(_c6, ref _inputParameter_);
+                    _TcpClient_.Sender.CallOnly(_c9, ref _inputParameter_);
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
                 /// <summary>
                 /// 操作数据并返回参数
                 /// </summary>
@@ -1235,7 +1581,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = parameter,
                             };
-                            _socket_.Get<TcpInternalServer._p8, TcpInternalServer._p9>(_ac7, ref _onOutput_, ref _inputParameter_);
+                            _socket_.Get<TcpInternalServer._p8, TcpInternalServer._p9>(_ac10, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -1248,8 +1594,8 @@ namespace AutoCSer.CacheServer
                     }
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 表达式节点查询
@@ -1273,7 +1619,7 @@ namespace AutoCSer.CacheServer
                             TcpInternalServer._p9 _outputParameter_ = new TcpInternalServer._p9
                             {
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p10, TcpInternalServer._p9>(_c8, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p10, TcpInternalServer._p9>(_c11, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
@@ -1302,13 +1648,13 @@ namespace AutoCSer.CacheServer
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p10, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>>(_a8, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p10, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>>(_a11, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
                 /// <summary>
                 /// 表达式节点查询
                 /// </summary>
@@ -1328,7 +1674,97 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = parameter,
                             };
-                            _socket_.Get<TcpInternalServer._p10, TcpInternalServer._p9>(_ac8, ref _onOutput_, ref _inputParameter_);
+                            _socket_.Get<TcpInternalServer._p10, TcpInternalServer._p9>(_ac11, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                internal 
+                AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> QueryAsynchronous(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                {
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p9> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p9>.Pop();
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            TcpInternalServer._p9 _outputParameter_ = new TcpInternalServer._p9
+                            {
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p10, TcpInternalServer._p9>(_c12, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                    }
+                    finally
+                    {
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p9>.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                internal 
+                AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter> QueryAsynchronousAwaiter(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p10, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>>(_a12, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                internal 
+                void QueryAsynchronous(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p9>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            _socket_.Get<TcpInternalServer._p10, TcpInternalServer._p9>(_ac12, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -1342,7 +1778,127 @@ namespace AutoCSer.CacheServer
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac13 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 13 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                internal 
+                void QueryAsynchronousStream(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p9>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            _socket_.Get<TcpInternalServer._p10, TcpInternalServer._p9>(_ac13, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac14 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 14 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1 };
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                /// <returns>保持异步回调</returns>
+                internal 
+                AutoCSer.Net.TcpServer.KeepCallback QueryKeepCallback(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p9>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            return _socket_.GetKeep<TcpInternalServer._p10, TcpInternalServer._p9>(_ac14, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                    return null;
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac15 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 15 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsKeepCallback = 1 };
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                /// <returns>保持异步回调</returns>
+                internal 
+                AutoCSer.Net.TcpServer.KeepCallback QueryKeepCallbackStream(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p9>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            return _socket_.GetKeep<TcpInternalServer._p10, TcpInternalServer._p9>(_ac15, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p9> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                    return null;
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c16 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 16 + 128, InputParameterIndex = 10, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+
+                /// <summary>
+                /// 表达式节点查询
+                /// </summary>
+                /// <param name="parameter">数据结构定义节点查询参数</param>
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                internal void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                {
+                    TcpInternalServer._p10 _inputParameter_ = new TcpInternalServer._p10
+                    {
+                        
+                        p0 = parameter,
+                    };
+                    _TcpClient_.Sender.CallOnly(_c16, ref _inputParameter_);
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac17 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 17 + 128, InputParameterIndex = 10, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
                 /// <summary>
                 /// 表达式节点查询
                 /// </summary>
@@ -1362,7 +1918,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = parameter,
                             };
-                            _socket_.Get<TcpInternalServer._p10, TcpInternalServer._p9>(_ac9, ref _onOutput_, ref _inputParameter_);
+                            _socket_.Get<TcpInternalServer._p10, TcpInternalServer._p9>(_ac17, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -1376,7 +1932,7 @@ namespace AutoCSer.CacheServer
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac10 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 11, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac18 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 18 + 128, InputParameterIndex = 11, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1, IsSimpleSerializeInputParamter = true };
                 /// <summary>
                 /// 读取物理文件
                 /// </summary>
@@ -1397,7 +1953,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = index,
                             };
-                            return _socket_.GetKeep<TcpInternalServer._p11, TcpInternalServer._p12>(_ac10, ref _onOutput_, ref _inputParameter_);
+                            return _socket_.GetKeep<TcpInternalServer._p11, TcpInternalServer._p12>(_ac18, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -1411,8 +1967,8 @@ namespace AutoCSer.CacheServer
                     return null;
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c19 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 19 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a19 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 19 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 删除数据结构定义
@@ -1434,7 +1990,7 @@ namespace AutoCSer.CacheServer
                             TcpInternalServer._p6 _outputParameter_ = new TcpInternalServer._p6
                             {
                             };
-                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p13, TcpInternalServer._p6>(_c11, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p13, TcpInternalServer._p6>(_c19, ref _wait_, ref _inputParameter_, ref _outputParameter_);
                             return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.IndexIdentity> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
@@ -1461,13 +2017,13 @@ namespace AutoCSer.CacheServer
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.IndexIdentity> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.IndexIdentity>);
-                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p13, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.IndexIdentity>>(_a11, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p13, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.IndexIdentity>>(_a19, _awaiter_, ref _inputParameter_, ref _outputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac19 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 19 + 128, InputParameterIndex = 13, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
                 /// <summary>
                 /// 删除数据结构定义
                 /// </summary>
@@ -1485,7 +2041,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = parameter,
                             };
-                            _socket_.Get<TcpInternalServer._p13, TcpInternalServer._p6>(_ac11, ref _onOutput_, ref _inputParameter_);
+                            _socket_.Get<TcpInternalServer._p13, TcpInternalServer._p6>(_ac19, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally
@@ -1498,8 +2054,8 @@ namespace AutoCSer.CacheServer
                     }
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c20 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 20 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a20 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 20 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
 
                 /// <summary>
                 /// 设置是否允许写操作
@@ -1519,7 +2075,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = canWrite,
                             };
-                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_.WaitCall(_c12, ref _wait_, ref _inputParameter_) };
+                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_.WaitCall(_c20, ref _wait_, ref _inputParameter_) };
                         }
                     }
                     finally
@@ -1545,13 +2101,13 @@ namespace AutoCSer.CacheServer
                             p0 = canWrite,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                        _returnType_ = _socket_.GetAwaiter(_a12, _awaiter_, ref _inputParameter_);
+                        _returnType_ = _socket_.GetAwaiter(_a20, _awaiter_, ref _inputParameter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac20 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 20 + 128, InputParameterIndex = 14, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeInputParamter = true };
                 /// <summary>
                 /// 设置是否允许写操作
                 /// </summary>
@@ -1569,7 +2125,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = canWrite,
                             };
-                            _socket_.Call(_ac12, _onReturn_, ref _inputParameter_);
+                            _socket_.Call(_ac20, _onReturn_, ref _inputParameter_);
                             _onReturn_ = null;
                         }
                     }
@@ -1579,8 +2135,8 @@ namespace AutoCSer.CacheServer
                     }
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c13 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 13 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a13 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 13 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c21 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 21 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a21 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 21 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
                 /// <summary>
                 /// 数据立即写入文件
@@ -1594,7 +2150,7 @@ namespace AutoCSer.CacheServer
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                         if (_socket_ != null)
                         {
-                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_.WaitCall(_c13, ref _wait_) };
+                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_.WaitCall(_c21, ref _wait_) };
                         }
                     }
                     finally
@@ -1614,13 +2170,13 @@ namespace AutoCSer.CacheServer
                     if (_socket_ != null)
                     {
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
-                        _returnType_ = _socket_.GetAwaiter(_a13, _awaiter_);
+                        _returnType_ = _socket_.GetAwaiter(_a21, _awaiter_);
                         if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
                     }
                     else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
                     return _awaiter_;
                 }
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac13 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 13 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac21 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 21 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
                 /// <summary>
                 /// 数据立即写入文件
                 /// </summary>
@@ -1632,7 +2188,7 @@ namespace AutoCSer.CacheServer
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                         if (_socket_ != null)
                         {
-                            _socket_.Call(_ac13, _onReturn_);
+                            _socket_.Call(_ac21, _onReturn_);
                             _onReturn_ = null;
                         }
                     }
@@ -1665,12 +2221,17 @@ namespace AutoCSer.CacheServer
             /// </summary>
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
-                KeyValue<string, int>[] names = new KeyValue<string, int>[5];
+                KeyValue<string, int>[] names = new KeyValue<string, int>[10];
                 names[0].Set(@"(AutoCSer.CacheServer.OperationParameter.ClientDataStructure)Get", 0);
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"(System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>,bool>)GetCache", 2);
                 names[3].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)Query", 3);
-                names[4].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryStream", 4);
+                names[4].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronous", 4);
+                names[5].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronousStream", 5);
+                names[6].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallback", 6);
+                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallbackStream", 7);
+                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryOnly", 8);
+                names[9].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryStream", 9);
                 return names;
             }
             /// <summary>
@@ -1691,12 +2252,17 @@ namespace AutoCSer.CacheServer
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("SlaveCache", typeof(AutoCSer.CacheServer.SlaveServer))), verify, onCustomData, log, false)
                 {
                     Value = value ?? new AutoCSer.CacheServer.SlaveServer();
-                    setCommandData(5);
+                    setCommandData(10);
                     setCommand(0);
                     setVerifyCommand(1);
                     setCommand(2);
                     setCommand(3);
                     setCommand(4);
+                    setCommand(5);
+                    setCommand(6);
+                    setCommand(7);
+                    setCommand(8);
+                    setCommand(9);
                     Value.SetTcpServer(this);
                     if (attribute.IsAutoServer) Start();
                 }
@@ -1814,13 +2380,113 @@ namespace AutoCSer.CacheServer
                                 _p6 inputParameter = new _p6();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
+                                    _p7 outputParameter = new _p7();
+                                    
+                                    Value.QueryAsynchronous(inputParameter.p0, sender.GetCallback<_p7, AutoCSer.CacheServer.ReturnParameter>(_c4, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 5:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p7 outputParameter = new _p7();
+                                    
+                                    Value.QueryAsynchronousStream(inputParameter.p0, sender.GetCallback<_p7, AutoCSer.CacheServer.ReturnParameter>(_c5, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 6:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p7 outputParameter = new _p7();
+                                    
+                                    Value.QueryKeepCallback(inputParameter.p0, sender.GetCallback<_p7, AutoCSer.CacheServer.ReturnParameter>(_c6, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 7:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    _p7 outputParameter = new _p7();
+                                    
+                                    Value.QueryKeepCallbackStream(inputParameter.p0, sender.GetCallback<_p7, AutoCSer.CacheServer.ReturnParameter>(_c7, ref outputParameter));
+                                    return;
+                                }
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
+                        case 8:
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
+                                    
+                                    Value.QueryOnly(inputParameter.p0);
+                                    return;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                sender.AddLog(error);
+                            }
+                            return;
+                        case 9:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                _p6 inputParameter = new _p6();
+                                if (sender.DeSerialize(ref data, ref inputParameter))
+                                {
                                     _p7 _outputParameter_ = new _p7();
                                     
                                     AutoCSer.CacheServer.ReturnParameter Return;
                                     
                                     Return = Value.QueryStream(inputParameter.p0);
                                     _outputParameter_.Return = Return;
-                                    sender.Push(_c4, ref _outputParameter_);
+                                    sender.Push(_c9, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1840,6 +2506,11 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsKeepCallback = 1, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsKeepCallback = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };
                 static TcpInternalServer()
                 {
                     CompileSerialize(new System.Type[] { null }
@@ -2190,8 +2861,190 @@ namespace AutoCSer.CacheServer
                     }
                 }
 
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _a4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                internal 
+                AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> QueryAsynchronous(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                {
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p7> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p7>.Pop();
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            TcpInternalServer._p7 _outputParameter_ = new TcpInternalServer._p7
+                            {
+                            };
+                            AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitGet<TcpInternalServer._p6, TcpInternalServer._p7>(_c4, ref _wait_, ref _inputParameter_, ref _outputParameter_);
+                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = _returnType_, Value = _outputParameter_.Return };
+                        }
+                    }
+                    finally
+                    {
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p7>.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                }
+                internal 
+                AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter> QueryAsynchronousAwaiter(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                {
+                    AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<AutoCSer.CacheServer.ReturnParameter>();
+                    AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    if (_socket_ != null)
+                    {
+                        TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        AutoCSer.Net.TcpServer.ReturnType _returnType_;
+                        AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>);
+                        _returnType_ = _socket_.GetAwaiter<TcpInternalServer._p6, AutoCSer.Net.TcpServer.AwaiterReturnValueBox<AutoCSer.CacheServer.ReturnParameter>>(_a4, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                        if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                    }
+                    else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                    return _awaiter_;
+                }
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout };
+                internal 
+                void QueryAsynchronous(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p7>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            _socket_.Get<TcpInternalServer._p6, TcpInternalServer._p7>(_ac4, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac5 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 5 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                internal 
+                void QueryAsynchronousStream(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p7>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            _socket_.Get<TcpInternalServer._p6, TcpInternalServer._p7>(_ac5, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac6 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 6 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsKeepCallback = 1 };
+                /// <returns>保持异步回调</returns>
+                internal 
+                AutoCSer.Net.TcpServer.KeepCallback QueryKeepCallback(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p7>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            return _socket_.GetKeep<TcpInternalServer._p6, TcpInternalServer._p7>(_ac6, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                    return null;
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsKeepCallback = 1 };
+                /// <returns>保持异步回调</returns>
+                internal 
+                AutoCSer.Net.TcpServer.KeepCallback QueryKeepCallbackStream(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
+                {
+                    AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7>> _onOutput_ = _TcpClient_.GetCallback<AutoCSer.CacheServer.ReturnParameter, TcpInternalServer._p7>(_onReturn_);
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                            {
+                                
+                                p0 = parameter,
+                            };
+                            return _socket_.GetKeep<TcpInternalServer._p6, TcpInternalServer._p7>(_ac7, ref _onOutput_, ref _inputParameter_);
+                        }
+                    }
+                    finally
+                    {
+                        if (_onOutput_ != null)
+                        {
+                            AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> _outputParameter_ = new AutoCSer.Net.TcpServer.ReturnValue<TcpInternalServer._p7> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                            _onOutput_.Call(ref _outputParameter_);
+                        }
+                    }
+                    return null;
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c8 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 8 + 128, InputParameterIndex = 6, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+
+                [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+                internal void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                {
+                    TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                    {
+                        
+                        p0 = parameter,
+                    };
+                    _TcpClient_.Sender.CallOnly(_c8, ref _inputParameter_);
+                }
+
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac9 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 9 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
                 internal 
                 void QueryStream(AutoCSer.CacheServer.OperationParameter.QueryNode parameter, Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>> _onReturn_)
                 {
@@ -2206,7 +3059,7 @@ namespace AutoCSer.CacheServer
                                 
                                 p0 = parameter,
                             };
-                            _socket_.Get<TcpInternalServer._p6, TcpInternalServer._p7>(_ac4, ref _onOutput_, ref _inputParameter_);
+                            _socket_.Get<TcpInternalServer._p6, TcpInternalServer._p7>(_ac9, ref _onOutput_, ref _inputParameter_);
                         }
                     }
                     finally

@@ -14,10 +14,10 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 Dictionary 的字典缓存
-            Dictionary<int, Link<Value<int>>> dictionary = client.GetOrCreateDataStructure<Dictionary<int, Link<Value<int>>>>("Dictionary").Value;
+            Dictionary<int, Link<int>> dictionary = client.GetOrCreateDataStructure<Dictionary<int, Link<int>>>("Dictionary").Value;
             if (dictionary == null)
             {
                 return false;
@@ -25,7 +25,7 @@ namespace AutoCSer.Example.CacheServer
             #endregion
 
             #region 创建或者获取关键字为 1 的子节点
-            Link<Value<int>> link = dictionary.GetOrCreate(1).Value;
+            Link<int> link = dictionary.GetOrCreate(1).Value;
             if (link == null)
             {
                 return false;

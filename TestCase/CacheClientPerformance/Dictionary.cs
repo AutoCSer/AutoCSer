@@ -16,16 +16,16 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// <summary>
         /// 测试字典节点
         /// </summary>
-        private readonly ValueDictionary<int, Value<int>> dictionary;
+        private readonly ValueDictionary<int, int> dictionary;
         /// <summary>
         /// 简单数组测试
         /// </summary>
         /// <param name="client">测试客户端</param>
         /// <param name="isFile">服务端是否文件持久化</param>
-        internal Dictionary(AutoCSer.CacheServer.MasterClient client, bool isFile) : base(client, isFile)
+        internal Dictionary(AutoCSer.CacheServer.Client client, bool isFile) : base(client, isFile)
         {
-            getCallbackReturnParameter = AutoCSer.CacheServer.ReturnParameter.GetCallback<Value<int>>(getCallback);
-            dictionary = client.GetOrCreateDataStructure<ValueDictionary<int, Value<int>>>("Dictionary");
+            getCallbackReturnParameter = AutoCSer.CacheServer.ReturnParameter.GetCallback<int>(getCallback);
+            dictionary = client.GetOrCreateDataStructure<ValueDictionary<int, int>>("Dictionary");
         }
         /// <summary>
         /// 测试
@@ -43,11 +43,6 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             }
             wait();
 
-            start(CallbackType.Asynchronous, TestType.DictionarySetValueCache);
-            Value<int> value = int.MaxValue - count;
-            for (int index = count; index != 0; dictionary.Set(--index, value, setCallbackReturnParameter)) ;
-            wait();
-
             dictionary.Clear();
 
             start(CallbackType.Asynchronous, TestType.DictionarySet);
@@ -59,7 +54,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             wait();
 
             start(CallbackType.Asynchronous, TestType.DictionaryGetNodeCache);
-            AutoCSer.CacheServer.DataStructure.Parameter.QueryReturnValue<Value<int>> getNode = dictionary.GetNode(count - 1);
+            AutoCSer.CacheServer.DataStructure.Parameter.QueryReturnValue<int> getNode = dictionary.GetNode(count - 1);
             for (int index = count; index != 0;)
             {
                 --index;

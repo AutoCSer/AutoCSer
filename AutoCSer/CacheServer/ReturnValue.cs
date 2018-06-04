@@ -39,5 +39,27 @@ namespace AutoCSer.CacheServer
             if (value.Type == ReturnType.Success) return value.Value;
             throw new InvalidCastException(value.Type.ToString());
         }
+        /// <summary>
+        /// 返回值
+        /// </summary>
+        /// <param name="value">返回值</param>
+        internal ReturnValue(ref AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
+        {
+            Type = value.Value.Type;
+            TcpReturnType = value.Type;
+            if (Type == ReturnType.Success) Value = ValueData.Data<returnType>.GetData(ref value.Value.Parameter);
+            else Value = default(returnType);
+        }
+        /// <summary>
+        /// 返回值
+        /// </summary>
+        /// <param name="value">返回值</param>
+        internal ReturnValue(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
+        {
+            Type = value.Value.Type;
+            TcpReturnType = value.Type;
+            if (Type == ReturnType.Success) Value = ValueData.Data<returnType>.GetData(ref value.Value.Parameter);
+            else Value = default(returnType);
+        }
     }
 }

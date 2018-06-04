@@ -16,16 +16,16 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// <summary>
         /// 测试数组节点
         /// </summary>
-        private readonly ValueArray<Value<int>> array;
+        private readonly ValueArray<int> array;
         /// <summary>
         /// 简单数组测试
         /// </summary>
         /// <param name="client">测试客户端</param>
         /// <param name="isFile">服务端是否文件持久化</param>
-        internal Array(AutoCSer.CacheServer.MasterClient client, bool isFile) : base(client, isFile)
+        internal Array(AutoCSer.CacheServer.Client client, bool isFile) : base(client, isFile)
         {
-            getCallbackReturnParameter = AutoCSer.CacheServer.ReturnParameter.GetCallback<Value<int>>(getCallback);
-            array = client.GetOrCreateDataStructure<ValueArray<Value<int>>>("Array");
+            getCallbackReturnParameter = AutoCSer.CacheServer.ReturnParameter.GetCallback<int>(getCallback);
+            array = client.GetOrCreateDataStructure<ValueArray<int>>("Array");
         }
         /// <summary>
         /// 测试
@@ -43,10 +43,10 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             }
             wait();
 
-            start(CallbackType.Asynchronous, TestType.ArraySetValueCache);
-            Value<int> value = int.MaxValue - count;
-            for (int index = count; index != 0; array.Set(--index, value, setCallbackReturnParameter)) ;
-            wait();
+            //start(CallbackType.Asynchronous, TestType.ArraySetValueCache);
+            //Value<int> value = int.MaxValue - count;
+            //for (int index = count; index != 0; array.Set(--index, value, setCallbackReturnParameter)) ;
+            //wait();
 
             start(CallbackType.Asynchronous, TestType.ArraySet);
             for (int index = count; index != 0;)
@@ -57,7 +57,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             wait();
 
             start(CallbackType.Asynchronous, TestType.ArrayGetNodeCache);
-            AutoCSer.CacheServer.DataStructure.Parameter.QueryReturnValue<Value<int>> getNode = array.GetNode(count - 1);
+            AutoCSer.CacheServer.DataStructure.Parameter.QueryReturnValue<int> getNode = array.GetNode(count - 1);
             for (int index = count; index != 0;)
             {
                 --index;

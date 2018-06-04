@@ -16,35 +16,35 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         Value,
         /// <summary>
-        /// 字典节点
+        /// 字典节点（嵌套节点）
         /// </summary>
         Dictionary,
         /// <summary>
-        /// 搜索树字典节点
+        /// 搜索树字典节点（嵌套节点）
         /// </summary>
         SearchTreeDictionary,
         /// <summary>
-        /// 数组节点
+        /// 数组节点（嵌套节点）
         /// </summary>
         Array,
         /// <summary>
-        /// 哈希表节点
+        /// 哈希表节点（数据节点）
         /// </summary>
         HashSet,
         /// <summary>
-        /// 链表节点
+        /// 链表节点（数据节点）
         /// </summary>
         Link,
         /// <summary>
-        /// 256 基分片 字典节点
+        /// 256 基分片 字典节点（嵌套节点）
         /// </summary>
         FragmentDictionary,
         /// <summary>
-        /// 32768 基分段 数组节点 
+        /// 32768 基分段 数组节点（嵌套节点）
         /// </summary>
         FragmentArray,
         /// <summary>
-        /// 256 基分片 哈希表节点
+        /// 256 基分片 哈希表节点（数据节点）
         /// </summary>
         FragmentHashSet,
 
@@ -68,5 +68,18 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// 32768 基分段 数组节点（数据节点）
         /// </summary>
         ValueFragmentArray,
+
+        /// <summary>
+        /// 队列消费节点（数据节点）
+        /// </summary>
+        MessageQueueConsumer,
+        /// <summary>
+        /// 多消费者队列消费节点（数据节点）
+        /// </summary>
+        MessageQueueConsumers,
+        /// <summary>
+        /// 消息节点（数据节点）
+        /// </summary>
+        Messages,
     }
 }

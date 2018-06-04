@@ -198,19 +198,21 @@ namespace AutoCSer.CacheServer
         /// 添加数据
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="isBuffer"></param>
         /// <returns></returns>
-        internal bool Append(Buffer buffer, ref byte isBuffer)
+        internal bool Append(Buffer buffer)
         {
             switch (step)
             {
-                case CacheGetStep.Loaded: return onCache(new CacheReturnParameter { Buffer = buffer });
+                case CacheGetStep.Loaded:
+                    buffer.Reference();
+                    if (onCache(new CacheReturnParameter { Buffer = buffer })) return true;
+                    buffer.FreeReference();
+                    return false;
                 case CacheGetStep.Error: return false;
                 default:
                     if (Date.Now <= timeout)
                     {
-                        if (isBuffer == 0) isBuffer = 1;
-                        else buffer = buffer.Copy();
+                        buffer.Reference();
                         queue.Push(buffer);
                         return true;
                     }

@@ -11,6 +11,11 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
     public abstract class Node
     {
         /// <summary>
+        /// 构造函数字段名称
+        /// </summary>
+        internal const string ConstructorFieldName = "constructor";
+
+        /// <summary>
         /// 父节点
         /// </summary>
         internal Node Parent;
@@ -114,7 +119,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         internal static Delegate GetConstructor(Type type)
         {
             Delegate constructor;
-            if (!constructors.TryGetValue(type, out constructor)) constructors.Set(type, constructor = (Delegate)type.GetField(Cache.Node.ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null));
+            if (!constructors.TryGetValue(type, out constructor)) constructors.Set(type, constructor = (Delegate)type.GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null));
             return constructor;
         }
     }

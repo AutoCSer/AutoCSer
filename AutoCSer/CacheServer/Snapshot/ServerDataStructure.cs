@@ -31,7 +31,7 @@ namespace AutoCSer.CacheServer.Snapshot
             fixed (char* nameFixed = CacheName) AutoCSer.BinarySerialize.Serializer.Serialize(nameFixed, stream, CacheName.Length);
             int startIndex = stream.ByteSize;
             stream.Write(ref NodeData);
-            stream.ByteSize += (startIndex - stream.ByteSize) & 3;
+            stream.SerializeFillWithStartIndex(startIndex);
             operationSerializer.End(OperationParameter.OperationType.GetOrCreateDataStructure);
         }
     }

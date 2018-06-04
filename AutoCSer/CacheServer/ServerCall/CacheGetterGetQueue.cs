@@ -11,7 +11,7 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 获取缓存数据
         /// </summary>
-        private CacheGetter getter;
+        private readonly CacheGetter getter;
         /// <summary>
         /// 获取缓存操作队列
         /// </summary>

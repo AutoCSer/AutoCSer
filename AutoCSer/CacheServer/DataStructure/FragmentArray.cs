@@ -8,7 +8,7 @@ namespace AutoCSer.CacheServer.DataStructure
     /// 32768 基分段 数组节点
     /// </summary>
     /// <typeparam name="nodeType">元素节点类型</typeparam>
-    public sealed class FragmentArray<nodeType> : Abstract.NodeArray<nodeType>
+    public sealed class FragmentArray<nodeType> : Abstract.Array<nodeType>
         where nodeType : Abstract.Node
     {
         /// <summary>
@@ -52,7 +52,7 @@ namespace AutoCSer.CacheServer.DataStructure
 #if NOJIT
             constructor = (Func<Abstract.Node, FragmentArray<nodeType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, FragmentArray<nodeType>>), typeof(FragmentArray<nodeType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, FragmentArray<nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentArray<nodeType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, FragmentArray<nodeType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(FragmentArray<nodeType>), NodeConstructorParameterTypes);
 #endif
         }
     }

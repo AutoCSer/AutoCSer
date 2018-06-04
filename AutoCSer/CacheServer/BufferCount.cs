@@ -12,11 +12,11 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 缓冲区大小
         /// </summary>
-        private const SubBuffer.Size bufferSize = SubBuffer.Size.Kilobyte128;
+        internal const SubBuffer.Size BufferSize = SubBuffer.Size.Kilobyte128;
         /// <summary>
         /// 缓冲区池
         /// </summary>
-        private static readonly AutoCSer.SubBuffer.Pool bufferPool = AutoCSer.SubBuffer.Pool.GetPool(bufferSize);
+        private static readonly AutoCSer.SubBuffer.Pool bufferPool = AutoCSer.SubBuffer.Pool.GetPool(BufferSize);
 
         /// <summary>
         /// 数据缓冲区
@@ -33,7 +33,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 可用大小
         /// </summary>
-        private int size;
+        internal int Size;
         /// <summary>
         /// 数据缓冲区计数
         /// </summary>
@@ -41,7 +41,7 @@ namespace AutoCSer.CacheServer
         {
             bufferPool.Get(ref Buffer);
             index = Buffer.StartIndex;
-            size = (int)bufferSize;
+            Size = (int)BufferSize;
             Count = 1;
         }
         /// <summary>
@@ -60,12 +60,31 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Buffer get(int size)
         {
-            if (this.size >= size)
+            if (this.Size >= size)
             {
                 Buffer buffer = new Buffer(this, index, size);
                 index += size;
-                this.size -= size;
+                this.Size -= size;
+                Interlocked.Increment(ref Count);
                 return buffer;
+            }
+            return null;
+        }
+        /// <summary>
+        /// 获取数据缓冲区
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal BufferCount Get(ref SubArray<byte> data)
+        {
+            if (Size >= data.Length)
+            {
+                data.Set(Buffer.Buffer, index, data.Length);
+                index += data.Length;
+                Size -= data.Length;
+                Interlocked.Increment(ref Count);
+                return this;
             }
             return null;
         }
@@ -89,7 +108,7 @@ namespace AutoCSer.CacheServer
         /// <returns></returns>
         internal static Buffer GetBuffer(int size)
         {
-            if (size > (int)bufferSize) return new Buffer(size);
+            if (size > (int)BufferSize) return new Buffer(size);
             Buffer buffer;
             while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer);
             try
@@ -117,7 +136,7 @@ namespace AutoCSer.CacheServer
                         newBufferCount = new BufferCount();
                         step = 1;
                         buffer = newBufferCount.get(size);
-                        if (newBufferCount.size > oldBufferCount.size)
+                        if (newBufferCount.Size > oldBufferCount.Size)
                         {
                             step = 0xff;
                             bufferCount = newBufferCount;

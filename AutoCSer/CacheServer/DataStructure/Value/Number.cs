@@ -69,15 +69,15 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        public ReturnValueNode<Number<valueType>> Get()
+        public ReturnValue<Number<valueType>> Get()
         {
-            return new ReturnValueNode<Number<valueType>>(ClientDataStructure.Client.Query(GetNode()));
+            return new ReturnValue<Number<valueType>>(ClientDataStructure.Client.Query(GetNode()));
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="onGet"></param>
-        public void Get(Action<ReturnValueNode<Number<valueType>>> onGet)
+        public void Get(Action<ReturnValue<Number<valueType>>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
             ClientDataStructure.Client.Query(GetNode(), onGet);
@@ -96,7 +96,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// </summary>
         /// <param name="onGet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void GetStream(Action<ReturnValueNode<Number<valueType>>> onGet)
+        public void GetStream(Action<ReturnValue<Number<valueType>>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
             ClientDataStructure.Client.QueryStream(GetNode(), onGet);
@@ -123,7 +123,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
 #if NOJIT
             constructor = (Func<Abstract.Node, Number<valueType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, Number<valueType>>), typeof(Number<valueType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, Number<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(Number<valueType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, Number<valueType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(Number<valueType>), NodeConstructorParameterTypes);
 #endif
         }
     }

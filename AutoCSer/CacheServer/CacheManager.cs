@@ -14,11 +14,18 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 缓存从服务
         /// </summary>
-        private readonly SlaveServer slaveServer;
+        internal readonly SlaveServer SlaveServer;
         /// <summary>
         /// 缓存服务配置
         /// </summary>
         internal readonly ServerConfig Config;
+        /// <summary>
+        /// 缓存主服务配置
+        /// </summary>
+        internal MasterServerConfig MasterConfig
+        {
+            get { return new UnionType { Value = Config }.MasterServerConfig; }
+        }
         /// <summary>
         /// 缓存服务
         /// </summary>
@@ -27,6 +34,18 @@ namespace AutoCSer.CacheServer
         /// TCP 服务器端同步调用队列处理
         /// </summary>
         private readonly AutoCSer.Net.TcpServer.ServerCallCanDisposableQueue tcpQueue;
+        /// <summary>
+        /// 查询数据缓冲区
+        /// </summary>
+        private readonly Buffer queryBuffer = new Buffer();
+        /// <summary>
+        /// 数据缓冲区
+        /// </summary>
+        private readonly Buffer loadBuffer;
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        private readonly Action disposeHandle;
         /// <summary>
         /// 文件流写入器
         /// </summary>
@@ -48,10 +67,6 @@ namespace AutoCSer.CacheServer
         /// </summary>
         private CacheGetter currentGetter;
         /// <summary>
-        /// 数据缓冲区
-        /// </summary>
-        private Buffer loadBuffer;
-        /// <summary>
         /// 数据结构定义集合
         /// </summary>
         internal readonly Dictionary<HashString, ServerDataStructure> DataStructures = DictionaryCreator<HashString>.Create<ServerDataStructure>();
@@ -64,6 +79,14 @@ namespace AutoCSer.CacheServer
         /// </summary>
         internal LeftArray<int> FreeIndexs;
         /// <summary>
+        /// 加载中的消息队列集合
+        /// </summary>
+        internal LeftArray<Cache.MessageQueue.Node> LoadMessageQueues;
+        /// <summary>
+        /// 创建缓存节点后的回调操作
+        /// </summary>
+        internal Action<IndexIdentity> OnDataStructureCreated;
+        /// <summary>
         /// 是否允许写操作
         /// </summary>
         internal bool CanWrite;
@@ -75,6 +98,10 @@ namespace AutoCSer.CacheServer
         /// 是否已经加载完成
         /// </summary>
         internal bool IsLoaded;
+        /// <summary>
+        /// 是否写文件持久化
+        /// </summary>
+        internal bool IsFile;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
@@ -91,9 +118,13 @@ namespace AutoCSer.CacheServer
             tcpQueue = tcpServer.CallQueue;
             if (config.IsFile)
             {
+                disposeHandle = Dispose;
+                IsFile = true;
                 File = new FileStreamWriter(this, config);
+                foreach (Cache.MessageQueue.Node messageQueue in LoadMessageQueues) messageQueue.Start();
+                LoadMessageQueues.SetNull();
                 IsLoaded = CanWrite = true;
-                AutoCSer.DomainUnload.Unloader.Add((Action)Dispose, DomainUnload.Type.Action);
+                AutoCSer.DomainUnload.Unloader.Add(disposeHandle, DomainUnload.Type.Action);
             }
             else IsLoaded = CanWrite = true;
         }
@@ -104,7 +135,7 @@ namespace AutoCSer.CacheServer
         /// <param name="tcpServer">缓存服务</param>
         internal CacheManager(SlaveServer slaveServer, AutoCSer.Net.TcpInternalServer.Server tcpServer)
         {
-            this.slaveServer = slaveServer;
+            SlaveServer = slaveServer;
             TcpServer = tcpServer;
             Config = slaveServer.Config;
             CanWrite = false;
@@ -118,7 +149,7 @@ namespace AutoCSer.CacheServer
             if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
             {
                 //timeout.Free();
-                if (File != null) AutoCSer.DomainUnload.Unloader.Remove((Action)Dispose, DomainUnload.Type.Action, false);
+                if (File != null) AutoCSer.DomainUnload.Unloader.Remove(disposeHandle, DomainUnload.Type.Action, false);
                 tcpQueue.Add(new ServerCall.CacheManager(this, ServerCall.CacheManagerServerCallType.Dispose));
             }
         }
@@ -246,7 +277,7 @@ namespace AutoCSer.CacheServer
         /// <returns>是否加载成功</returns>
         internal bool Load(ref LoadData loadData)
         {
-            OperationParameter.NodeParser parser = new OperationParameter.NodeParser(ref loadData);
+            OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, ref loadData);
             do
             {
                 if (parser.Load(ref loadData))
@@ -290,7 +321,7 @@ namespace AutoCSer.CacheServer
         private bool loadDataStructure(Buffer buffer)
         {
             DataStructureBuffer dataStructureBuffer = new DataStructureBuffer(buffer);
-            ServerDataStructure dataStructure = new ServerDataStructure(ref dataStructureBuffer);
+            ServerDataStructure dataStructure = new ServerDataStructure(this, buffer, ref dataStructureBuffer);
             int index = dataStructureBuffer.Identity.Index;
             if (loadBuffer == null)
             {
@@ -319,6 +350,7 @@ namespace AutoCSer.CacheServer
                     if (!isRebuild && loadBuffer == null) FreeIndexs.Add(index);
                     Array[index].LoadFree(dataStructureBuffer.Identity.Identity);
                     DataStructures.Remove(name);
+                    dataStructure.Node.OnRemoved();
                     return true;
                 }
             }
@@ -365,12 +397,15 @@ namespace AutoCSer.CacheServer
         /// <param name="buffer">数据缓冲区</param>
         private void onOperation(Buffer buffer)
         {
-            byte isBuffer = 0;
             if (File != null)
             {
-                isBuffer = 1;
+                buffer.Reference();
                 File.BufferLink.Push(buffer);
-                if (NewFile != null) NewFile.BufferLink.Push(buffer.Copy());
+                if (NewFile != null)
+                {
+                    buffer.Reference();
+                    NewFile.BufferLink.Push(buffer);
+                }
             }
             CacheGetter getter = getterLink;
             if (getter != null)
@@ -378,7 +413,7 @@ namespace AutoCSer.CacheServer
                 CacheGetter father = null;
                 do
                 {
-                    if (getter.Append(buffer, ref isBuffer))
+                    if (getter.Append(buffer))
                     {
                         father = getter;
                         getter = getter.LinkNext;
@@ -393,7 +428,7 @@ namespace AutoCSer.CacheServer
                 }
                 while (getter != null);
             }
-            if (isBuffer == 0) buffer.Dispose();
+            buffer.FreeReference();
         }
         /// <summary>
         /// 添加数据结构定义
@@ -411,25 +446,28 @@ namespace AutoCSer.CacheServer
                 {
                     if (dataStructure.IsNodeData(ref dataStructureBuffer.Data))
                     {
-                        buffer.Dispose();
+                        buffer.FreeReference();
                         return dataStructure.Identity;
                     }
-                    buffer.Dispose();
+                    buffer.FreeReference();
                     return new IndexIdentity { ReturnType = ReturnType.DataStructureNameExists };
                 }
-                if ((dataStructure = new ServerDataStructure(ref dataStructureBuffer)).Node != null)
+                OnDataStructureCreated = onDataStructureCreated;
+                if ((dataStructure = new ServerDataStructure(this, buffer, ref dataStructureBuffer)).Node != null)
                 {
                     int index = getFreeIndex();
                     DataStructures.Add(name, dataStructure);
                     Array[index].Set(index, dataStructure);
                     buffer.SetIdentity(ref dataStructure.Identity);
                     onOperation(buffer);
+                    OnDataStructureCreated(dataStructure.Identity);
+                    OnDataStructureCreated = onDataStructureCreated;
                     return dataStructure.Identity;
                 }
-                buffer.Dispose();
-                return new IndexIdentity { ReturnType = ReturnType.ServerDataStructureCreateError };
+                buffer.FreeReference();
+                return new IndexIdentity { ReturnType = dataStructure.ReturnType };
             }
-            buffer.Dispose();
+            buffer.FreeReference();
             return new IndexIdentity { ReturnType = ReturnType.CanNotWrite };
         }
         /// <summary>
@@ -451,12 +489,13 @@ namespace AutoCSer.CacheServer
                     buffer.SetIdentity(new IndexIdentity { Index = index, Identity = Array[index].Free() });
                     DataStructures.Remove(name);
                     onOperation(buffer);
+                    dataStructure.Node.OnRemoved();
                     return dataStructure.Identity;
                 }
-                buffer.Dispose();
+                buffer.FreeReference();
                 return new IndexIdentity { ReturnType = ReturnType.DataStructureNameNotFound };
             }
-            buffer.Dispose();
+            buffer.FreeReference();
             return new IndexIdentity { ReturnType = ReturnType.CanNotWrite };
         }
         /// <summary>
@@ -468,47 +507,68 @@ namespace AutoCSer.CacheServer
         {
             if (CanWrite)
             {
-                SubArray<byte> queryData = buffer.Array;
-                fixed (byte* dataFixed = queryData.Array)
+                fixed (byte* dataFixed = buffer.Array.Array)
                 {
-                    OperationParameter.NodeParser parser = new OperationParameter.NodeParser(ref queryData, dataFixed);
+                    OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, buffer, dataFixed);
                     ServerDataStructure dataStructure = parser.Get(Array);
                     if (dataStructure != null)
                     {
                         dataStructure.Node.Operation(ref parser);
                         if (parser.IsOperation) onOperation(buffer);
-                        else buffer.Dispose();
+                        else buffer.FreeReference();
                         return parser.ReturnParameter;
                     }
                 }
-                buffer.Dispose();
+                buffer.FreeReference();
                 return new ReturnParameter { Type = ReturnType.DataStructureIdentityError };
             }
-            buffer.Dispose();
+            buffer.FreeReference();
             return new ReturnParameter { Type = ReturnType.CanNotWrite };
         }
-        ///// <summary>
-        ///// 查询数据
-        ///// </summary>
-        ///// <param name="buffer">数据缓冲区</param>
-        ///// <returns>返回参数</returns>
-        //internal ReturnParameter Query(Buffer buffer)
-        //{
-        //    SubArray<byte> queryData = buffer.Array;
-        //    fixed (byte* dataFixed = queryData.Array)
-        //    {
-        //        OperationParameter.NodeParser parser = new OperationParameter.NodeParser(ref queryData, dataFixed);
-        //        ServerDataStructure dataStructure = parser.Get(Array);
-        //        if (dataStructure != null)
-        //        {
-        //            dataStructure.Node.Query(ref parser);
-        //            buffer.Dispose();
-        //            return parser.ReturnParameter;
-        //        }
-        //    }
-        //    buffer.Dispose();
-        //    return new ReturnParameter { Type = ReturnType.DataStructureIdentityError };
-        //}
+        /// <summary>
+        /// 操作数据
+        /// </summary>
+        /// <param name="buffer">数据缓冲区</param>
+        /// <param name="onOperation"></param>
+        internal void Operation(Buffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        {
+            int isReturn = 0;
+            try
+            {
+                if (CanWrite)
+                {
+                    fixed (byte* dataFixed = buffer.Array.Array)
+                    {
+                        OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, buffer, dataFixed);
+                        ServerDataStructure dataStructure = parser.Get(Array);
+                        if (dataStructure != null)
+                        {
+                            parser.OnReturn = onOperation;
+                            try
+                            {
+                                dataStructure.Node.Operation(ref parser);
+                            }
+                            finally
+                            {
+                                if (parser.OnReturn == null) isReturn = 1;
+                            }
+                            if (parser.IsOperation) this.onOperation(buffer);
+                            else buffer.FreeReference();
+                            return;
+                        }
+                    }
+                    buffer.FreeReference();
+                    isReturn = 1;
+                    onOperation(new ReturnParameter { Type = ReturnType.DataStructureIdentityError });
+                    return;
+                }
+                buffer.FreeReference();
+            }
+            finally
+            {
+                if (isReturn == 0) onOperation(new ReturnParameter { Type = ReturnType.CanNotWrite });
+            }
+        }
         /// <summary>
         /// 查询数据
         /// </summary>
@@ -516,9 +576,10 @@ namespace AutoCSer.CacheServer
         /// <returns>返回参数</returns>
         internal ReturnParameter Query(ref SubArray<byte> queryData)
         {
+            queryBuffer.Set(ref queryData);
             fixed (byte* dataFixed = queryData.Array)
             {
-                OperationParameter.NodeParser parser = new OperationParameter.NodeParser(ref queryData, dataFixed);
+                OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
                 ServerDataStructure dataStructure = parser.Get(Array);
                 if (dataStructure != null)
                 {
@@ -527,6 +588,41 @@ namespace AutoCSer.CacheServer
                 }
             }
             return new ReturnParameter { Type = ReturnType.DataStructureIdentityError };
+        }
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="queryData">查询数据</param>
+        /// <param name="onQuery"></param>
+        /// <param name="isDeSerializeStream">是否反序列化网络流，否则需要 Copy 数据</param>
+        internal void Query(ref SubArray<byte> queryData, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery, bool isDeSerializeStream)
+        {
+            try
+            {
+                queryBuffer.Set(ref queryData);
+                fixed (byte* dataFixed = queryData.Array)
+                {
+                    OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
+                    ServerDataStructure dataStructure = parser.Get(Array);
+                    if (dataStructure != null)
+                    {
+                        parser.SetOnReturn(onQuery, isDeSerializeStream);
+                        onQuery = null;
+                        try
+                        {
+                            dataStructure.Node.Query(ref parser);
+                        }
+                        finally
+                        {
+                            parser.CallOnReturn();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (onQuery != null) onQuery(new ReturnParameter { Type = ReturnType.DataStructureIdentityError });
+            }
         }
 
         /// <summary>
@@ -543,13 +639,13 @@ namespace AutoCSer.CacheServer
             {
                 if (dataStructure.IsNodeData(ref dataStructureBuffer.Data))
                 {
-                    buffer.Dispose();
+                    buffer.FreeReference();
                     return dataStructure.Identity;
                 }
-                buffer.Dispose();
+                buffer.FreeReference();
                 return new IndexIdentity { ReturnType = ReturnType.DataStructureNameExists };
             }
-            buffer.Dispose();
+            buffer.FreeReference();
             return new IndexIdentity { ReturnType = ReturnType.DataStructureNameNotFound };
         }
         /// <summary>
@@ -581,11 +677,21 @@ namespace AutoCSer.CacheServer
                 }
                 else
                 {
-                    slaveServer.Cache = this;
+                    SlaveServer.Cache = this;
                     IsLoaded = true;
                     NextGetter();
                 }
             }
         }
+
+        /// <summary>
+        /// 创建缓存节点后的回调操作
+        /// </summary>
+        private static readonly Action<IndexIdentity> onDataStructureCreated = onDataStructureCreatedNull;
+        /// <summary>
+        /// 创建缓存节点后的回调操作
+        /// </summary>
+        /// <param name="identity"></param>
+        private static void onDataStructureCreatedNull(IndexIdentity identity) { }
     }
 }

@@ -16,6 +16,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private readonly System.Collections.Generic.HashSet<HashCodeKey<valueType>> hashSet = AutoCSer.HashSetCreator<HashCodeKey<valueType>>.Create();
         /// <summary>
+        /// 哈希表节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private HashSet(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -119,26 +124,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建哈希表节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static HashSet<valueType> create()
+        private static HashSet<valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new HashSet<valueType>();
+            return new HashSet<valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<HashSet<valueType>> constructor;
+        private static readonly NodeInfo<HashSet<valueType>> nodeInfo;
         static HashSet()
         {
+            nodeInfo = new NodeInfo<HashSet<valueType>>
+            {
 #if NOJIT
-            constructor = (Func<HashSet<valueType>>)Delegate.CreateDelegate(typeof(Func<HashSet<valueType>>), typeof(HashSet<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<HashSet<valueType>>)Delegate.CreateDelegate(typeof(Constructor<HashSet<valueType>>), typeof(HashSet<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<HashSet<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(HashSet<valueType>));
+                Constructor = (Constructor<HashSet<valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(HashSet<valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

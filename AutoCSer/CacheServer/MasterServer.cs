@@ -17,6 +17,7 @@ namespace AutoCSer.CacheServer
         /// 缓存主服务默认配置
         /// </summary>
         private static readonly MasterServerConfig defaultConfig = ConfigLoader.GetUnion(typeof(MasterServerConfig)).MasterServerConfig ?? new MasterServerConfig();
+
         /// <summary>
         /// 缓存主服务配置
         /// </summary>
@@ -32,6 +33,7 @@ namespace AutoCSer.CacheServer
         public MasterServer(MasterServerConfig config)
         {
             Config = config ?? defaultConfig;
+            if (Config.MinCompressSize <= 0) Config.MinCompressSize = int.MaxValue;
         }
         /// <summary>
         /// 设置TCP服务端
@@ -171,6 +173,53 @@ namespace AutoCSer.CacheServer
         internal void OperationOnly(OperationParameter.OperationNode parameter)
         {
             Cache.Operation(parameter.Buffer);
+        }
+
+        /// <summary>
+        /// 异步操作数据
+        /// </summary>
+        /// <param name="parameter">数据结构定义节点操作参数</param>
+        /// <param name="onOperation"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
+        internal void OperationAsynchronous(OperationParameter.OperationNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        {
+            TcpServer.CallQueue.Add(new ServerCall.OperationAsynchronous(Cache, parameter.Buffer, onOperation));
+        }
+        /// <summary>
+        /// 异步操作数据
+        /// </summary>
+        /// <param name="parameter">数据结构定义节点操作参数</param>
+        /// <param name="onOperation"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
+        internal void OperationAsynchronousStream(OperationParameter.OperationNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        {
+            TcpServer.CallQueue.Add(new ServerCall.OperationAsynchronous(Cache, parameter.Buffer, onOperation));
+        }
+        /// <summary>
+        /// 模拟异步操作数据
+        /// </summary>
+        /// <param name="parameter">数据结构定义节点操作参数</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientSendOnly = true)]
+        internal void OperationAsynchronousOnly(OperationParameter.OperationNode parameter)
+        {
+            Cache.Operation(parameter.Buffer, nullCallbackHandle);
+        }
+
+        /// <summary>
+        /// 异步操作空回调
+        /// </summary>
+        private static readonly Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> nullCallbackHandle = nullCallback;
+        /// <summary>
+        /// 异步操作空回调
+        /// </summary>
+        /// <param name="returnParameter"></param>
+        /// <returns></returns>
+        private static bool nullCallback(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> returnParameter)
+        {
+            return true;
         }
     }
 }

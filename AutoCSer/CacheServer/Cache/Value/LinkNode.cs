@@ -42,6 +42,18 @@ namespace AutoCSer.CacheServer.Cache.Value
             Value = value;
         }
         /// <summary>
+        /// 链表节点（构造尾节点）
+        /// </summary>
+        /// <param name="previous">上一个节点</param>
+        /// <param name="value">数据</param>
+        internal LinkNode(LinkNode<valueType> previous, valueType value)
+        {
+            Previous = previous;
+            Next = null;
+            Value = value;
+            previous.Next = this;
+        }
+        /// <summary>
         /// 删除当前节点
         /// </summary>
         /// <param name="link"></param>

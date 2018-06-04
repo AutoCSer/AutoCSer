@@ -23,16 +23,18 @@ namespace AutoCSer.TestCase.CacheClientPerformance
                     serverAttribute.VerifyString = "!2#4%6&8QwErTyAsDfZx";
                     AutoCSer.Net.TcpInternalServer.ServerAttribute fileServerAttribute = AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute);
                     fileServerAttribute.Port -= 1;
-                    using (AutoCSer.CacheServer.MasterClient client = new AutoCSer.CacheServer.MasterClient(new AutoCSer.CacheServer.MasterServer.TcpInternalClient(serverAttribute)))
-                    using (AutoCSer.CacheServer.MasterClient fileClient = new AutoCSer.CacheServer.MasterClient(new AutoCSer.CacheServer.MasterServer.TcpInternalClient(fileServerAttribute)))
+                    using (AutoCSer.CacheServer.Client client = new AutoCSer.CacheServer.Client(new AutoCSer.CacheServer.MasterServer.TcpInternalClient(serverAttribute)))
+                    using (AutoCSer.CacheServer.Client fileClient = new AutoCSer.CacheServer.Client(new AutoCSer.CacheServer.MasterServer.TcpInternalClient(fileServerAttribute)))
                     {
                         do
                         {
-                            new Array(client, false).Test();
-                            new Array(fileClient, true).Test();
+                            new MessageQueue(fileClient).Test();
 
                             new Dictionary(client, false).Test();
                             new Dictionary(fileClient, true).Test();
+
+                            new Array(client, false).Test();
+                            new Array(fileClient, true).Test();
 
                             new Binary(client, false).Test();
                             new Binary(fileClient, true).Test();

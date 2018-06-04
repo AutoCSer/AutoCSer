@@ -156,7 +156,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         static Dictionary()
         {
             if (!ValueData.Data<keyType>.IsHashKey) throw new InvalidCastException("不支持关键字类型 " + typeof(keyType).fullName());
-            nodeConstructor = (Func<Node, nodeType>)typeof(nodeType).GetField(Cache.Node.ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            nodeConstructor = (Func<Node, nodeType>)typeof(nodeType).GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading;
 using AutoCSer.CacheServer.DataStructure;
 using AutoCSer.CacheServer.DataStructure.Value;
+using AutoCSer.Extension;
 
 namespace AutoCSer.TestCase.CacheClientPerformance
 {
@@ -23,7 +24,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         /// <param name="client">测试客户端</param>
         /// <param name="isFile">服务端是否文件持久化</param>
-        internal Json(AutoCSer.CacheServer.MasterClient client, bool isFile) : base(client, isFile)
+        internal Json(AutoCSer.CacheServer.Client client, bool isFile) : base(client, isFile)
         {
             getCallbackReturnParameter = AutoCSer.CacheServer.ReturnParameter.GetCallback<Json<int>>(getCallback);
             dictionary = client.GetOrCreateDataStructure<ValueDictionary<int, Json<int>>>("Json");
@@ -32,7 +33,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// 测试回调
         /// </summary>
         /// <param name="value"></param>
-        private void getCallback(AutoCSer.CacheServer.ReturnValueNode<Json<int>> value)
+        private void getCallback(AutoCSer.CacheServer.ReturnValue<Json<int>> value)
         {
             if (value.Get().Type != AutoCSer.CacheServer.ReturnType.Success) ++errorCount;
             getCallback();

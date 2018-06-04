@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <returns></returns>
         public async Task<ReturnValue<bool>> OperationTask()
         {
-            return Client.GetBool(await ClientDataStructure.Client.OperationTask(this));
+            return Client.GetBool(await Parent.ClientDataStructure.Client.OperationTask(this));
         }
     }
 }

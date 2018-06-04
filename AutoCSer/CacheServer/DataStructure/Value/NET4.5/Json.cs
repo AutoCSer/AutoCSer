@@ -12,9 +12,9 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        public async Task<ReturnValueNode<Json<valueType>>> GetTask()
+        public async Task<ReturnValue<Json<valueType>>> QueryTask()
         {
-            return new ReturnValueNode<Json<valueType>>(await ClientDataStructure.Client.QueryTask(GetNode()));
+            return new ReturnValue<Json<valueType>>(await ClientDataStructure.Client.QueryTask(GetQueryNode()));
         }
     }
 }

@@ -50,6 +50,18 @@ namespace AutoCSer.CacheServer
         DataStructureNameExists,
 
         /// <summary>
+        /// 缓存节点解析失败
+        /// </summary>
+        CacheNodeParseError,
+        /// <summary>
+        /// 没有找到缓存节点信息
+        /// </summary>
+        NotFoundCacheNodeInfo,
+        /// <summary>
+        /// 缓存节点需要文件持久化支持
+        /// </summary>
+        CacheNodeNeedFile,
+        /// <summary>
         /// 服务端数据结构定义信息初始化错误
         /// </summary>
         ServerDataStructureCreateError,
@@ -114,5 +126,38 @@ namespace AutoCSer.CacheServer
         /// 没有找到缓存管理
         /// </summary>
         NotFoundSlaveCache,
+
+        /// <summary>
+        /// 消息队列已经被释放
+        /// </summary>
+        MessageQueueDisposed,
+        /// <summary>
+        /// 消息队列缓冲区已经被释放（主要是持久化异常）
+        /// </summary>
+        MessageQueueBufferDisposed,
+        /// <summary>
+        /// 消息队列没有找到写文件（可能初始化失败）
+        /// </summary>
+        MessageQueueNotFoundWriter,
+        /// <summary>
+        /// 消息队列读取初始化错误
+        /// </summary>
+        MessageQueueCreateReaderError,
+        /// <summary>
+        /// 消息队列读取编号超出范围
+        /// </summary>
+        MessageQueueReaderIndexOutOfRange,
+        /// <summary>
+        /// 消息队列没有找到读文件（可能已经被释放）
+        /// </summary>
+        MessageQueueNotFoundReader,
+        /// <summary>
+        /// 消息队列读文件数据标识不匹配
+        /// </summary>
+        MessageQueueReaderIdentityError,
+        /// <summary>
+        /// 消息队列读取委托已经存在
+        /// </summary>
+        MessageQueueGetMessageExists,
     }
 }

@@ -14,10 +14,10 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 Array 的数组缓存
-            Array<ValueDictionary<int, Value<int>>> array = client.GetOrCreateDataStructure<Array<ValueDictionary<int, Value<int>>>>("Array").Value;
+            Array<ValueDictionary<int, int>> array = client.GetOrCreateDataStructure<Array<ValueDictionary<int, int>>>("Array").Value;
             if (array == null)
             {
                 return false;
@@ -25,7 +25,7 @@ namespace AutoCSer.Example.CacheServer
             #endregion
 
             #region 创建或者获取子节点
-            ValueDictionary<int, Value<int>> dictionary = array.GetOrCreate(1).Value;
+            ValueDictionary<int, int> dictionary = array.GetOrCreate(1).Value;
             if (dictionary == null)
             {
                 return false;

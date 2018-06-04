@@ -51,7 +51,7 @@ namespace AutoCSer.TestCase.ChatClient
             });
             this.client._TcpClient_.OnSetSocket((socket) =>
             {
-                if (socket.IsSocketVersion(ref this.socket))
+                if (socket != null && socket.IsSocketVersion(ref this.socket))
                 {
                     getUserKeepCallback = client.getUser((user) =>
                     {

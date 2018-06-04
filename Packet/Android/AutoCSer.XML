@@ -2670,11 +2670,6 @@
             是否检测引用类型对象的真实类型
             </summary>
         </member>
-        <member name="F:AutoCSer.BinarySerialize.SerializeConfig.IsFill">
-            <summary>
-            是否填充空白字符，用于两次序列化字节数据的一致性
-            </summary>
-        </member>
         <member name="P:AutoCSer.BinarySerialize.SerializeConfig.HeaderValue">
             <summary>
             序列化头部数据
@@ -6140,16 +6135,6 @@
         <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.CacheTimeout">
             <summary>
             缓存数据超时处理
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.KeyValueStreamFile">
-            <summary>
-            K-V 缓存数据库文件刷新
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.KeyValueStreamTimeout">
-            <summary>
-            K-V 缓存数据超时处理
             </summary>
         </member>
         <member name="F:AutoCSer.Date.NowTime.Flag">
@@ -22178,14 +22163,9 @@
             TCP 注册服务客户端
             </summary>
         </member>
-        <member name="F:AutoCSer.Net.TcpRegister.Client.readerSocket">
+        <member name="F:AutoCSer.Net.TcpRegister.Client.checkSocketVersion">
             <summary>
-            TCP 注册服务客户端套接字
-            </summary>
-        </member>
-        <member name="F:AutoCSer.Net.TcpRegister.Client.newSocketLock">
-            <summary>
-            TCP 注册服务客户端套接字更新访问锁
+            TCP 客户端套接字初始化处理
             </summary>
         </member>
         <member name="F:AutoCSer.Net.TcpRegister.Client.registerLock">
@@ -23761,6 +23741,66 @@
             获取返回值委托
             </summary>
         </member>
+        <member name="T:AutoCSer.Net.TcpServer.CheckSocketVersion">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.CheckSocketVersion.onClientSocketHandle">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.CheckSocketVersion.onCheckSocketVersion">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.CheckSocketVersion.socket">
+            <summary>
+            当前缓存主服务客户端 TCP 套接字
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.CheckSocketVersion.#ctor(System.Action{AutoCSer.Net.TcpServer.ClientSocketBase})">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+            <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.CheckSocketVersion.onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase)">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+            <param name="socket"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.CheckSocketVersion.DisposeSocket">
+            <summary>
+            释放套接字
+            </summary>
+        </member>
+        <member name="T:AutoCSer.Net.TcpServer.CheckSocketVersion`1">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+            <typeparam name="attributeType">TCP 服务配置类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.Net.TcpServer.CheckSocketVersion`1.client">
+            <summary>
+            TCP 服务客户端
+            </summary>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.CheckSocketVersion`1.#ctor(AutoCSer.Net.TcpServer.ClientBase{`0},System.Action{AutoCSer.Net.TcpServer.ClientSocketBase})">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+            <param name="client">TCP 服务客户端</param>
+            <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.CheckSocketVersion`1.Dispose">
+            <summary>
+            释放资源
+            </summary>
+        </member>
         <member name="T:AutoCSer.Net.TcpServer.Client`1">
             <summary>
             TCP 服务客户端
@@ -23827,6 +23867,11 @@
             创建 TCP 客户端套接字等待锁
             </summary>
         </member>
+        <member name="F:AutoCSer.Net.TcpServer.ClientBase`1.SetSocketLock">
+            <summary>
+            客户端 TCP 套接字更新访问锁
+            </summary>
+        </member>
         <member name="E:AutoCSer.Net.TcpServer.ClientBase`1.onSetSocket">
             <summary>
             设置 TCP 客户端套接字事件
@@ -23883,6 +23928,25 @@
             设置 TCP 客户端套接字事件
             </summary>
             <param name="onSetSocket"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.RemoveOnSetSocket(System.Action{AutoCSer.Net.TcpServer.ClientSocketBase})">
+            <summary>
+            删除 TCP 客户端套接字事件
+            </summary>
+            <param name="onSetSocket"></param>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.CreateCheckSocketVersion(System.Action{AutoCSer.Net.TcpServer.ClientSocketBase})">
+            <summary>
+            TCP 客户端套接字初始化处理
+            </summary>
+            <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
+            <returns>TCP 客户端套接字初始化处理</returns>
+        </member>
+        <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.OnDisposeSocket(AutoCSer.Net.TcpServer.ClientSocketBase)">
+            <summary>
+            移除 TCP 服务客户端套接字
+            </summary>
+            <param name="socket"></param>
         </member>
         <member name="M:AutoCSer.Net.TcpServer.ClientBase`1.GetCallback``2(System.Action{AutoCSer.Net.TcpServer.ReturnValue{``0}})">
             <summary>
@@ -28791,7 +28855,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpServer.ServerBaseAttribute.MinCompressSize">
             <summary>
-            压缩启用最低字节数量，默认为 0 表示不压缩数据；压缩数据需要消耗一定的 CPU 资源降低带宽使用（在简单测试中可能降低 70% 的性能）。
+            压缩启用最低字节数量，默认为 0 表示不压缩数据；压缩数据需要消耗一定的 CPU 资源降低带宽使用。
             </summary>
         </member>
         <member name="P:AutoCSer.Net.TcpServer.ServerBaseAttribute.GetMinCompressSize">
@@ -34225,6 +34289,11 @@
             缓存服务获取数据缓冲区
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.MessageQueueGetBuffer">
+            <summary>
+            消息队列获取数据缓冲区
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -35036,7 +35105,13 @@
             <summary>
             二进制序列化填充空白字符
             </summary>
-            <param name="length">字节数量</param>
+            <param name="fillSize">字节数量</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.SerializeFillWithStartIndex(System.Int32)">
+            <summary>
+            补白对齐 4 字节
+            </summary>
+            <param name="startIndex">起始位置</param>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.GetArray">
             <summary>

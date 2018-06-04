@@ -24,13 +24,9 @@ namespace AutoCSer.Deploy
         internal Server.TcpInternalClient TcpInternalClient;
 #endif
         /// <summary>
-        /// 部署服务客户端 TCP 套接字更新访问锁
+        /// TCP 客户端套接字初始化处理
         /// </summary>
-        private readonly object newSocketLock = new object();
-        /// <summary>
-        /// 当前部署服务客户端 TCP 套接字
-        /// </summary>
-        private AutoCSer.Net.TcpServer.ClientSocketBase socket;
+        private readonly AutoCSer.Net.TcpServer.CheckSocketVersion checkSocketVersion;
         /// <summary>
         /// 部署服务客户端标识
         /// </summary>
@@ -57,7 +53,7 @@ namespace AutoCSer.Deploy
             throw new Exception();
 #else
             TcpInternalClient = new Server.TcpInternalClient(attribute);
-            TcpInternalClient._TcpClient_.OnSetSocket(onClientSocket);
+            checkSocketVersion = TcpInternalClient._TcpClient_.CreateCheckSocketVersion(onClientSocket);
 #endif
         }
         /// <summary>
@@ -66,41 +62,32 @@ namespace AutoCSer.Deploy
         /// <param name="socket"></param>
         private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
         {
-            Monitor.Enter(newSocketLock);
-            try
+            if (socket != null)
             {
-                if (socket.IsSocketVersion(ref this.socket))
+                try
                 {
-                    try
+                    if (logKeepCallback != null)
                     {
-                        if (logKeepCallback != null)
-                        {
-                            logKeepCallback.Dispose();
-                            logKeepCallback = null;
-                        }
+                        logKeepCallback.Dispose();
+                        logKeepCallback = null;
+                    }
 #if NoAutoCSer
                         throw new Exception();
 #else
-                        ClientId = TcpInternalClient.register();
-                        logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
+                    ClientId = TcpInternalClient.register();
+                    logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
 #endif
-                        IsClient = true;
-                        Client.OnClient(name);
-                        return;
-                    }
-                    catch (Exception error)
-                    {
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-#if DotNetStandard
-                        AutoCSer.Net.TcpServer.CommandBase.CloseClient(socket.Socket);
-#else
-                        socket.Socket.Dispose();
-#endif
-                    }
-                    IsClient = false;
+                    IsClient = true;
+                    Client.OnClient(name);
+                    return;
                 }
+                catch (Exception error)
+                {
+                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                    checkSocketVersion.DisposeSocket();
+                }
+                IsClient = false;
             }
-            finally { Monitor.Exit(newSocketLock); }
         }
         /// <summary>
         /// 部署任务状态更新日志回调

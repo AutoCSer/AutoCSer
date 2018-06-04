@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 缓存从服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = SlaveServer.ServerName, Host = "127.0.0.1", Port = (int)AutoCSer.Net.ServerPort.SlaveCacheServer, IsInternalClient = true)]
+    [AutoCSer.Net.TcpInternalServer.Server(Name = SlaveServer.ServerName, Host = "127.0.0.1", Port = (int)AutoCSer.Net.ServerPort.SlaveCacheServer, IsInternalClient = true, IsAutoClient = false)]
     public partial class SlaveServer : Server
     {
         /// <summary>
@@ -31,13 +31,9 @@ namespace AutoCSer.CacheServer
         /// </summary>
         private SlaveServer.TcpInternalClient slaveClient;
         /// <summary>
-        /// 缓存主服务客户端 TCP 套接字更新访问锁
+        /// TCP 客户端套接字初始化处理
         /// </summary>
-        private readonly object newSocketLock = new object();
-        /// <summary>
-        /// 当前缓存主服务客户端 TCP 套接字
-        /// </summary>
-        private AutoCSer.Net.TcpServer.ClientSocketBase socket;
+        private AutoCSer.Net.TcpServer.CheckSocketVersion checkSocketVersion;
         /// <summary>
         /// 加载缓存保持回调
         /// </summary>
@@ -67,8 +63,7 @@ namespace AutoCSer.CacheServer
         public override void SetTcpServer(AutoCSer.Net.TcpInternalServer.Server tcpServer)
         {
             base.SetTcpServer(tcpServer);
-            if (Config.IsMasterCacheServer) masterClient._TcpClient_.OnSetSocket(onClientSocket);
-            else slaveClient._TcpClient_.OnSetSocket(onClientSocket);
+            checkSocketVersion = Config.IsMasterCacheServer ? masterClient._TcpClient_.CreateCheckSocketVersion(onClientSocket) : slaveClient._TcpClient_.CreateCheckSocketVersion(onClientSocket);
         }
         /// <summary>
         /// TCP 客户端套接字初始化处理
@@ -76,28 +71,23 @@ namespace AutoCSer.CacheServer
         /// <param name="socket"></param>
         private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
         {
-            Monitor.Enter(newSocketLock);
-            try
+            if (socket != null)
             {
-                if (socket.IsSocketVersion(ref this.socket))
+                if (loadCacheKeepCallback != null)
                 {
-                    if (loadCacheKeepCallback != null)
-                    {
-                        loadCacheKeepCallback.Dispose();
-                        loadCacheKeepCallback = null;
-                    }
-                    CacheManager cache = new CacheManager(this, server);
-                    if (masterClient != null)
-                    {
-                        if ((loadCacheKeepCallback = masterClient.GetCache(cache.Load)) != null) loadCache = cache;
-                    }
-                    else
-                    {
-                        if ((loadCacheKeepCallback = slaveClient.GetCache(cache.Load)) != null) loadCache = cache;
-                    }
+                    loadCacheKeepCallback.Dispose();
+                    loadCacheKeepCallback = null;
+                }
+                CacheManager cache = new CacheManager(this, server);
+                if (masterClient != null)
+                {
+                    if ((loadCacheKeepCallback = masterClient.GetCache(cache.Load)) != null) loadCache = cache;
+                }
+                else
+                {
+                    if ((loadCacheKeepCallback = slaveClient.GetCache(cache.Load)) != null) loadCache = cache;
                 }
             }
-            finally { Monitor.Exit(newSocketLock); }
         }
 
         /// <summary>

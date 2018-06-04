@@ -160,7 +160,7 @@ namespace AutoCSer.CacheServer.DataStructure
 #if NOJIT
             constructor = (Func<Abstract.Node, SearchTreeDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, SearchTreeDictionary<keyType, nodeType>>), typeof(SearchTreeDictionary<keyType, nodeType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, SearchTreeDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(SearchTreeDictionary<keyType, nodeType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, SearchTreeDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(SearchTreeDictionary<keyType, nodeType>), NodeConstructorParameterTypes);
 #endif
         }
     }

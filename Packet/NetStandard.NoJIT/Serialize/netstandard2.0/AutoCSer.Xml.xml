@@ -5813,6 +5813,11 @@
             缓存服务获取数据缓冲区
             </summary>
         </member>
+        <member name="F:AutoCSer.Threading.ThreadYield.Type.MessageQueueGetBuffer">
+            <summary>
+            消息队列获取数据缓冲区
+            </summary>
+        </member>
         <member name="F:AutoCSer.Threading.ThreadYield.Type.Count">
             <summary>
             冲突统计类型数量
@@ -6244,7 +6249,13 @@
             <summary>
             二进制序列化填充空白字符
             </summary>
-            <param name="length">字节数量</param>
+            <param name="fillSize">字节数量</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.SerializeFillWithStartIndex(System.Int32)">
+            <summary>
+            补白对齐 4 字节
+            </summary>
+            <param name="startIndex">起始位置</param>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.GetArray">
             <summary>

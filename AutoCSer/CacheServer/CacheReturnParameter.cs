@@ -37,7 +37,7 @@ namespace AutoCSer.CacheServer
                 int startIndex = stream.AddSize(sizeof(int));
                 stream.Write(ref Buffer.Array);
                 *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.ByteSize - startIndex;
-                Buffer.Dispose();
+                Buffer.FreeReference();
             }
             else serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
         }

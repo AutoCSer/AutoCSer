@@ -53,18 +53,6 @@ namespace AutoCSer.CacheServer
         /// </summary>
         private byte[] bigBuffer = NullValue<byte>.Array;
         /// <summary>
-        /// 压缩数据
-        /// </summary>
-        private SubArray<byte> compressionData;
-        /// <summary>
-        /// 压缩数据缓冲区
-        /// </summary>
-        private SubBuffer.PoolBufferFull buffer;
-        /// <summary>
-        /// 压缩数据缓冲区
-        /// </summary>
-        private SubBuffer.PoolBufferFull compressionBuffer;
-        /// <summary>
         /// 操作数据链表
         /// </summary>
         internal Buffer.YieldQueue BufferLink = new Buffer.YieldQueue(new Buffer());
@@ -106,6 +94,7 @@ namespace AutoCSer.CacheServer
             FileName = file.FullName;
             IsDisposed = 1;
             FileMode createMode = FileMode.CreateNew;
+            FileBuffers buffer = default(FileBuffers);
             try
             {
                 if (file.Exists)
@@ -114,12 +103,12 @@ namespace AutoCSer.CacheServer
                     else
                     {
                         fileStream = new FileStream(FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, bufferPool.Size, FileOptions.None);
-                        bufferPool.Get(ref buffer);
-                        if (fileStream.Read(buffer.Buffer, buffer.StartIndex, fileHeaderSize) == fileHeaderSize)
+                        bufferPool.Get(ref buffer.Buffer);
+                        if (fileStream.Read(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, fileHeaderSize) == fileHeaderSize)
                         {
-                            fixed (byte* bufferFixed = buffer.Buffer)
+                            fixed (byte* bufferFixed = buffer.Buffer.Buffer)
                             {
-                                byte* bufferStart = bufferFixed + buffer.StartIndex;
+                                byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                                 if (*(int*)bufferStart == FileHeader)
                                 {
                                     Version = *(ulong*)(bufferStart + sizeof(int) * 2);
@@ -127,7 +116,7 @@ namespace AutoCSer.CacheServer
                                     if (switchFile.Exists)
                                     {
                                         FileStream switchFileStream = new FileStream(switchFile.FullName, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, bufferPool.Size, FileOptions.None);
-                                        if (switchFileStream.Read(buffer.Buffer, buffer.StartIndex, fileHeaderSize) == fileHeaderSize && *(int*)bufferStart == FileHeader
+                                        if (switchFileStream.Read(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, fileHeaderSize) == fileHeaderSize && *(int*)bufferStart == FileHeader
                                             && *(ulong*)(bufferStart + sizeof(int) * 2) > Version)
                                         {
                                             fileStream.Dispose();
@@ -140,7 +129,7 @@ namespace AutoCSer.CacheServer
                                     if (Version > 0)
                                     {
                                         LoadData loadData = new LoadData { Buffer = BufferLink.Head };
-                                        int count = fileStream.Read(buffer.Buffer, buffer.StartIndex, buffer.Length), index = 0, compressionDataSize;
+                                        int count = fileStream.Read(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, buffer.Buffer.Length), index = 0, compressionDataSize;
                                         long nextLength = (FileLength = fileStream.Length) - fileHeaderSize - count;
                                         do
                                         {
@@ -151,26 +140,26 @@ namespace AutoCSer.CacheServer
                                                 {
                                                     if (count >= (compressionDataSize = -compressionDataSize) + sizeof(int) * 2)
                                                     {
-                                                        compressionBuffer.StartIndex = *(int*)(read + sizeof(int));
-                                                        AutoCSer.IO.Compression.DeflateDeCompressor.Get(buffer.Buffer, buffer.StartIndex + (index += sizeof(int) * 2), compressionDataSize, ref compressionBuffer);
-                                                        if (compressionBuffer.Buffer != null)
+                                                        buffer.CompressionBuffer.StartIndex = *(int*)(read + sizeof(int));
+                                                        AutoCSer.IO.Compression.DeflateDeCompressor.Get(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + (index += sizeof(int) * 2), compressionDataSize, ref buffer.CompressionBuffer);
+                                                        if (buffer.CompressionBuffer.Buffer != null)
                                                         {
-                                                            fixed (byte* dataFixed = compressionBuffer.Buffer)
+                                                            fixed (byte* dataFixed = buffer.CompressionBuffer.Buffer)
                                                             {
-                                                                loadData.Set(compressionBuffer.Buffer, compressionBuffer.StartIndex, *(int*)(read + sizeof(int)), dataFixed);
+                                                                loadData.Set(buffer.CompressionBuffer.Buffer, buffer.CompressionBuffer.StartIndex, *(int*)(read + sizeof(int)), dataFixed);
                                                                 if (!cache.Load(ref loadData)) throw new InvalidDataException();
                                                             }
                                                             index += compressionDataSize;
                                                             count -= compressionDataSize + sizeof(int) * 2;
-                                                            compressionBuffer.Free();
+                                                            buffer.CompressionBuffer.Free();
                                                         }
                                                         else throw new InvalidDataException();
                                                     }
                                                     else if (count + nextLength >= compressionDataSize + sizeof(int) * 2)
                                                     {
-                                                        if (compressionDataSize + sizeof(int) * 2 <= buffer.StartIndex) break;
+                                                        if (compressionDataSize + sizeof(int) * 2 <= buffer.Buffer.StartIndex) break;
                                                         if (bigBuffer.Length < compressionDataSize) bigBuffer = new byte[Math.Max(compressionDataSize, bigBuffer.Length << 1)];
-                                                        System.Buffer.BlockCopy(buffer.Buffer, buffer.StartIndex + (index + sizeof(int) * 2), bigBuffer, 0, count -= sizeof(int) * 2);
+                                                        System.Buffer.BlockCopy(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + (index + sizeof(int) * 2), bigBuffer, 0, count -= sizeof(int) * 2);
                                                         do
                                                         {
                                                             index = fileStream.Read(bigBuffer, count, compressionDataSize - count);
@@ -178,38 +167,38 @@ namespace AutoCSer.CacheServer
                                                             count += index;
                                                         }
                                                         while (count != compressionDataSize);
-                                                        compressionBuffer.StartIndex = *(int*)(read + sizeof(int));
-                                                        AutoCSer.IO.Compression.DeflateDeCompressor.Get(bigBuffer, 0, compressionDataSize, ref compressionBuffer);
-                                                        if (compressionBuffer.Buffer != null)
+                                                        buffer.CompressionBuffer.StartIndex = *(int*)(read + sizeof(int));
+                                                        AutoCSer.IO.Compression.DeflateDeCompressor.Get(bigBuffer, 0, compressionDataSize, ref buffer.CompressionBuffer);
+                                                        if (buffer.CompressionBuffer.Buffer != null)
                                                         {
-                                                            fixed (byte* dataFixed = compressionBuffer.Buffer)
+                                                            fixed (byte* dataFixed = buffer.CompressionBuffer.Buffer)
                                                             {
-                                                                loadData.Set(compressionBuffer.Buffer, compressionBuffer.StartIndex, *(int*)(read + sizeof(int)), dataFixed);
+                                                                loadData.Set(buffer.CompressionBuffer.Buffer, buffer.CompressionBuffer.StartIndex, *(int*)(read + sizeof(int)), dataFixed);
                                                                 if (!cache.Load(ref loadData)) throw new InvalidDataException();
                                                             }
                                                             index = count = 0;
-                                                            compressionBuffer.Free();
+                                                            buffer.CompressionBuffer.Free();
                                                         }
                                                         else throw new InvalidDataException();
                                                     }
                                                     else
                                                     {
-                                                        endError(nextLength, index, count);
+                                                        endError(ref buffer.Buffer, nextLength, index, count);
                                                         return;
                                                     }
                                                 }
                                                 else if (count >= compressionDataSize + sizeof(int))
                                                 {
-                                                    loadData.Set(buffer.Buffer, buffer.StartIndex + (index += sizeof(int)), compressionDataSize, bufferFixed);
+                                                    loadData.Set(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + (index += sizeof(int)), compressionDataSize, bufferFixed);
                                                     if (!cache.Load(ref loadData)) throw new InvalidDataException();
                                                     index += compressionDataSize;
                                                     count -= compressionDataSize + sizeof(int);
                                                 }
                                                 else if (count + nextLength >= compressionDataSize + sizeof(int))
                                                 {
-                                                    if (compressionDataSize + sizeof(int) <= buffer.StartIndex) break;
+                                                    if (compressionDataSize + sizeof(int) <= buffer.Buffer.StartIndex) break;
                                                     if (bigBuffer.Length < compressionDataSize) bigBuffer = new byte[Math.Max(compressionDataSize, bigBuffer.Length << 1)];
-                                                    System.Buffer.BlockCopy(buffer.Buffer, buffer.StartIndex + (index + sizeof(int)), bigBuffer, 0, count -= sizeof(int));
+                                                    System.Buffer.BlockCopy(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + (index + sizeof(int)), bigBuffer, 0, count -= sizeof(int));
                                                     do
                                                     {
                                                         index = fileStream.Read(bigBuffer, count, compressionDataSize - count);
@@ -226,7 +215,7 @@ namespace AutoCSer.CacheServer
                                                 }
                                                 else
                                                 {
-                                                    endError(nextLength, index, count);
+                                                    endError(ref buffer.Buffer, nextLength, index, count);
                                                     return;
                                                 }
                                             }
@@ -237,11 +226,11 @@ namespace AutoCSer.CacheServer
                                                     fileStream.Seek(0, SeekOrigin.End);
                                                     IsDisposed = 0;
                                                 }
-                                                else endError(nextLength, index, count);
+                                                else endError(ref buffer.Buffer, nextLength, index, count);
                                                 return;
                                             }
-                                            if (count != 0) System.Buffer.BlockCopy(buffer.Buffer, buffer.StartIndex + index, buffer.Buffer, buffer.StartIndex, count);
-                                            index = fileStream.Read(buffer.Buffer, buffer.StartIndex + count, buffer.Length - count);
+                                            if (count != 0) System.Buffer.BlockCopy(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + index, buffer.Buffer.Buffer, buffer.Buffer.StartIndex, count);
+                                            index = fileStream.Read(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + count, buffer.Buffer.Length - count);
                                             nextLength -= index;
                                             count += index;
                                             index = 0;
@@ -257,12 +246,11 @@ namespace AutoCSer.CacheServer
                     }
                 }
                 fileStream = new FileStream(FileName, createMode, FileAccess.Write, FileShare.Read, bufferPool.Size, FileOptions.None);
-                create(Version);
+                create(ref buffer.Buffer, Version);
             }
             finally
             {
                 buffer.Free();
-                compressionBuffer.TryFree();
                 BufferLink.Head.Array.SetNull();
                 if (IsDisposed == 0)
                 {
@@ -286,8 +274,9 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 创建文件流
         /// </summary>
+        /// <param name="buffer"></param>
         /// <param name="version"></param>
-        private void create(ulong version)
+        private void create(ref SubBuffer.PoolBufferFull buffer, ulong version)
         {
             if (buffer.Buffer == null) bufferPool.Get(ref buffer);
             fixed (byte* bufferFixed = buffer.Buffer)
@@ -303,10 +292,11 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 文件尾部错误备份
         /// </summary>
+        /// <param name="buffer"></param>
         /// <param name="nextLength"></param>
         /// <param name="index"></param>
         /// <param name="count"></param>
-        private void endError(long nextLength, int index, int count)
+        private void endError(ref SubBuffer.PoolBufferFull buffer, long nextLength, int index, int count)
         {
             if (!Config.IsIgnoreFileEndError) throw new InvalidDataException();
             FileLength -= nextLength + count;
@@ -357,18 +347,19 @@ namespace AutoCSer.CacheServer
             Buffer data = BufferLink.GetClear();
             if (data != null)
             {
-                bufferPool.Get(ref buffer);
+                FileBuffers buffer = default(FileBuffers);
+                bufferPool.Get(ref buffer.Buffer);
                 long writeLength = 0;
                 try
                 {
-                    fixed (byte* bufferFixed = buffer.Buffer)
+                    fixed (byte* bufferFixed = buffer.Buffer.Buffer)
                     {
-                        byte* bufferStart = bufferFixed + buffer.StartIndex;
+                        byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                         int index = sizeof(int), bigBufferSize;
                         START:
-                        if (data.Array.Length + index <= buffer.Length)
+                        if (data.Array.Length + index <= buffer.Buffer.Length)
                         {
-                            if ((data = data.Copy(ref buffer, ref index) ?? BufferLink.GetClear()) != null) goto START;
+                            if ((data = data.Copy(ref buffer.Buffer, ref index) ?? BufferLink.GetClear()) != null) goto START;
                         }
                         else if (index == sizeof(int))
                         {
@@ -376,17 +367,18 @@ namespace AutoCSer.CacheServer
                             fixed (byte* bigBufferFixed = bigBuffer)
                             {
                                 data = data.Copy(bigBuffer);
-                                if (Config.IsCompressionFile)
+                                if (bigBufferSize > Config.MinCompressSize)
                                 {
-                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(bigBuffer, sizeof(int), bigBufferSize - sizeof(int), ref compressionBuffer, ref compressionData, sizeof(int) * 2, sizeof(int) * 2))
+                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(bigBuffer, sizeof(int), bigBufferSize - sizeof(int), ref buffer.CompressionBuffer, ref buffer.CompressionData, sizeof(int) * 2, sizeof(int) * 2))
                                     {
-                                        writeCompression(bigBufferSize - sizeof(int));
-                                        writeLength += compressionData.Length;
+                                        writeCompression(ref buffer.CompressionData, bigBufferSize - sizeof(int));
+                                        buffer.CompressionBuffer.TryFree();
+                                        writeLength += buffer.CompressionData.Length;
                                         if (data == null && (data = BufferLink.GetClear()) == null) return true;
                                         index = sizeof(int);
                                         goto START;
                                     }
-                                    compressionBuffer.TryFree();
+                                    buffer.CompressionBuffer.TryFree();
                                 }
                                 *(int*)bigBufferFixed = bigBufferSize - sizeof(int);
                             }
@@ -396,20 +388,21 @@ namespace AutoCSer.CacheServer
                             index = sizeof(int);
                             goto START;
                         }
-                        if (Config.IsCompressionFile)
+                        if (index > Config.MinCompressSize)
                         {
-                            if (AutoCSer.IO.Compression.DeflateCompressor.Get(buffer.Buffer, buffer.StartIndex + sizeof(int), index - sizeof(int), ref compressionBuffer, ref compressionData, sizeof(int) * 2, sizeof(int) * 2))
+                            if (AutoCSer.IO.Compression.DeflateCompressor.Get(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + sizeof(int), index - sizeof(int), ref buffer.CompressionBuffer, ref buffer.CompressionData, sizeof(int) * 2, sizeof(int) * 2))
                             {
-                                writeCompression(index - sizeof(int));
-                                writeLength += compressionData.Length;
+                                writeCompression(ref buffer.CompressionData, index - sizeof(int));
+                                buffer.CompressionBuffer.TryFree();
+                                writeLength += buffer.CompressionData.Length;
                                 if (data == null && (data = BufferLink.GetClear()) == null) return true;
                                 index = sizeof(int);
                                 goto START;
                             }
-                            compressionBuffer.TryFree();
+                            buffer.CompressionBuffer.TryFree();
                         }
                         *(int*)bufferStart = index - sizeof(int);
-                        fileStream.Write(buffer.Buffer, buffer.StartIndex, index);
+                        fileStream.Write(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, index);
                         writeLength += index;
                         if (data == null && (data = BufferLink.GetClear()) == null) return true;
                         index = sizeof(int);
@@ -426,7 +419,6 @@ namespace AutoCSer.CacheServer
                 finally
                 {
                     buffer.Free();
-                    compressionBuffer.TryFree();
                     if (writeLength != 0)
                     {
                         fileStream.Flush(true);
@@ -440,8 +432,9 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 写入压缩数据
         /// </summary>
+        /// <param name="compressionData"></param>
         /// <param name="dataSize"></param>
-        private void writeCompression(int dataSize)
+        private void writeCompression(ref SubArray<byte> compressionData, int dataSize)
         {
             int compressionDataSize = -compressionData.Length;
             compressionData.MoveStart(-(sizeof(int) * 2));
@@ -452,7 +445,6 @@ namespace AutoCSer.CacheServer
                 *(int*)(write + sizeof(int)) = dataSize;
             }
             fileStream.Write(compressionData.Array, compressionData.Start, compressionData.Length);
-            compressionBuffer.TryFree();
         }
 
         /// <summary>
@@ -524,6 +516,7 @@ namespace AutoCSer.CacheServer
         internal ReturnType Start(FileStreamWriter cacheFile)
         {
             IsDisposed = 1;
+            SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
             try
             {
                 snapshot = new Snapshot.Cache(cache, true);
@@ -531,7 +524,7 @@ namespace AutoCSer.CacheServer
                 FileName = file.FullName;
                 if (file.Exists) AutoCSer.IO.File.MoveBak(FileName);
                 fileStream = new FileStream(FileName, FileMode.CreateNew, FileAccess.Write, FileShare.Read, bufferPool.Size, FileOptions.None);
-                create(0);
+                create(ref buffer, 0);
                 return ReturnType.Success;
             }
             catch (Exception error)
@@ -560,18 +553,19 @@ namespace AutoCSer.CacheServer
         private void writeCache()
         {
             bool isError = true;
+            FileBuffers buffer = default(FileBuffers);
             try
             {
-                bufferPool.Get(ref buffer);
-                fixed (byte* bufferFixed = buffer.Buffer)
+                bufferPool.Get(ref buffer.Buffer);
+                fixed (byte* bufferFixed = buffer.Buffer.Buffer)
                 {
-                    byte* bufferStart = bufferFixed + buffer.StartIndex;
+                    byte* bufferStart = bufferFixed + buffer.Buffer.StartIndex;
                     int index = sizeof(int), snapshotSize;
                     long writeLength = 0;
                     while ((snapshotSize = snapshot.NextSize()) != 0)
                     {
                         CHECK:
-                        if (snapshotSize + index <= buffer.Length)
+                        if (snapshotSize + index <= buffer.Buffer.Length)
                         {
                             snapshot.CopyTo(bufferStart + index);
                             index += snapshotSize;
@@ -582,16 +576,17 @@ namespace AutoCSer.CacheServer
                             fixed (byte* bigBufferFixed = bigBuffer)
                             {
                                 snapshot.CopyTo(bigBufferFixed + sizeof(int));
-                                if (Config.IsCompressionFile)
+                                if (snapshotSize >= Config.MinCompressSize)
                                 {
-                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(bigBuffer, sizeof(int), snapshotSize, ref compressionBuffer, ref compressionData, sizeof(int) * 2, sizeof(int) * 2))
+                                    if (AutoCSer.IO.Compression.DeflateCompressor.Get(bigBuffer, sizeof(int), snapshotSize, ref buffer.CompressionBuffer, ref buffer.CompressionData, sizeof(int) * 2, sizeof(int) * 2))
                                     {
-                                        writeCompression(snapshotSize);
-                                        writeLength += compressionData.Length;
+                                        writeCompression(ref buffer.CompressionData, snapshotSize);
+                                        buffer.CompressionBuffer.TryFree();
+                                        writeLength += buffer.CompressionData.Length;
                                         index = sizeof(int);
                                         continue;
                                     }
-                                    compressionBuffer.TryFree();
+                                    buffer.CompressionBuffer.TryFree();
                                 }
                                 *(int*)bigBufferFixed = snapshotSize;
                             }
@@ -601,19 +596,20 @@ namespace AutoCSer.CacheServer
                         }
                         else
                         {
-                            if (Config.IsCompressionFile)
+                            if (index > Config.MinCompressSize)
                             {
-                                if (AutoCSer.IO.Compression.DeflateCompressor.Get(buffer.Buffer, buffer.StartIndex + sizeof(int), index - sizeof(int), ref compressionBuffer, ref compressionData, sizeof(int) * 2, sizeof(int) * 2))
+                                if (AutoCSer.IO.Compression.DeflateCompressor.Get(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + sizeof(int), index - sizeof(int), ref buffer.CompressionBuffer, ref buffer.CompressionData, sizeof(int) * 2, sizeof(int) * 2))
                                 {
-                                    writeCompression(index - sizeof(int));
-                                    writeLength += compressionData.Length;
+                                    writeCompression(ref buffer.CompressionData, index - sizeof(int));
+                                    buffer.CompressionBuffer.TryFree();
+                                    writeLength += buffer.CompressionData.Length;
                                     index = sizeof(int);
                                     goto CHECK;
                                 }
-                                compressionBuffer.TryFree();
+                                buffer.CompressionBuffer.TryFree();
                             }
                             *(int*)bufferStart = index - sizeof(int);
-                            fileStream.Write(buffer.Buffer, buffer.StartIndex, index);
+                            fileStream.Write(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, index);
                             writeLength += index;
                             index = sizeof(int);
                             goto CHECK;
@@ -621,18 +617,19 @@ namespace AutoCSer.CacheServer
                     }
                     if (index != sizeof(int))
                     {
-                        if (Config.IsCompressionFile)
+                        if (index > Config.MinCompressSize)
                         {
-                            if (AutoCSer.IO.Compression.DeflateCompressor.Get(buffer.Buffer, buffer.StartIndex + sizeof(int), index - sizeof(int), ref compressionBuffer, ref compressionData, sizeof(int) * 2, sizeof(int) * 2))
+                            if (AutoCSer.IO.Compression.DeflateCompressor.Get(buffer.Buffer.Buffer, buffer.Buffer.StartIndex + sizeof(int), index - sizeof(int), ref buffer.CompressionBuffer, ref buffer.CompressionData, sizeof(int) * 2, sizeof(int) * 2))
                             {
-                                writeCompression(index - sizeof(int));
-                                writeLength += compressionData.Length;
+                                writeCompression(ref buffer.CompressionData, index - sizeof(int));
+                                buffer.CompressionBuffer.TryFree();
+                                writeLength += buffer.CompressionData.Length;
                                 goto FLUSH;
                             }
-                            compressionBuffer.TryFree();
+                            buffer.CompressionBuffer.TryFree();
                         }
                         *(int*)bufferStart = index - sizeof(int);
-                        fileStream.Write(buffer.Buffer, buffer.StartIndex, index);
+                        fileStream.Write(buffer.Buffer.Buffer, buffer.Buffer.StartIndex, index);
                         writeLength += index;
                     }
                     FLUSH:
@@ -644,7 +641,6 @@ namespace AutoCSer.CacheServer
             finally
             {
                 buffer.Free();
-                compressionBuffer.TryFree();
                 snapshot = null;
                 if (isError)
                 {
@@ -671,6 +667,7 @@ namespace AutoCSer.CacheServer
             if (BufferLink.IsEmpty)
             {
                 bool isError = true;
+                SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
                 try
                 {
                     bufferPool.Get(ref buffer);

@@ -16,7 +16,7 @@ namespace AutoCSer.Example.CacheServer
         {
             get
             {
-                return new AutoCSer.CacheServer.MasterServerConfig();
+                return new AutoCSer.CacheServer.MasterServerConfig { FileName = "test", IsIgnoreFileEndError = true };
             }
         }
         /// <summary>

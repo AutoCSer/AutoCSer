@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
 using AutoCSer.CacheServer.DataStructure.Value;
+using AutoCSer.Extension;
 
 namespace AutoCSer.TestCase.CacheClientPerformance
 {
@@ -22,7 +23,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         /// <param name="client">测试客户端</param>
         /// <param name="isFile">服务端是否文件持久化</param>
-        internal Binary(AutoCSer.CacheServer.MasterClient client, bool isFile) : base(client, isFile)
+        internal Binary(AutoCSer.CacheServer.Client client, bool isFile) : base(client, isFile)
         {
             getCallbackReturnParameter = AutoCSer.CacheServer.ReturnParameter.GetCallback<Binary<int>>(getCallback);
             dictionary = client.GetOrCreateDataStructure<ValueDictionary<int, Binary<int>>>("Binary");
@@ -31,7 +32,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// 测试回调
         /// </summary>
         /// <param name="value"></param>
-        private void getCallback(AutoCSer.CacheServer.ReturnValueNode<Binary<int>> value)
+        private void getCallback(AutoCSer.CacheServer.ReturnValue<Binary<int>> value)
         {
             if (value.Get().Type != AutoCSer.CacheServer.ReturnType.Success) ++errorCount;
             getCallback();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.IO;
 
 namespace AutoCSer.Example.CacheServer
 {
@@ -19,12 +20,18 @@ namespace AutoCSer.Example.CacheServer
 #endif
                     Console.WriteLine(@"http://www.AutoCSer.com/CacheServer/Index.html
 ");
+                    checkFileSize("test.amc");
+                    checkFileSize("test.amcs");
+
                     using (AutoCSer.CacheServer.MasterServer.TcpInternalServer server = new AutoCSer.CacheServer.MasterServer.TcpInternalServer())
                     {
                         if (server.IsListen)
                         {
-                            using (AutoCSer.CacheServer.MasterClient client = new AutoCSer.CacheServer.MasterClient())
+                            using (AutoCSer.CacheServer.Client client = new AutoCSer.CacheServer.Client())
                             {
+                                Console.WriteLine(QueueConsumer.TestCase(client));
+                                Console.WriteLine(QueueConsumers.TestCase(client));
+
                                 Console.WriteLine(ValueArray.TestCase(client));
                                 Console.WriteLine(ValueDictionary.TestCase(client));
                                 Console.WriteLine(ValueSearchTreeDictionary.TestCase(client));
@@ -48,6 +55,15 @@ namespace AutoCSer.Example.CacheServer
                 }
             }
 #endif
+        }
+        /// <summary>
+        /// 检测测试历史文件大小
+        /// </summary>
+        /// <param name="fileName"></param>
+        private static void checkFileSize(string fileName)
+        {
+            FileInfo file = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (file.Exists && file.Length >= 1 << 20) file.Delete();
         }
     }
 }

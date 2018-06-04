@@ -44,9 +44,9 @@ namespace AutoCSer.TestCase
                     using (AutoCSer.TestCase.TcpStaticSimpleServer.SimpleSessionServer sessionSimpleServer = new AutoCSer.TestCase.TcpStaticSimpleServer.SimpleSessionServer())
                     {
                         if (
-                            cacheMasterServer.IsListen && cacheSlaveServer.IsListen && fileBlockServer.IsListen
+                            cacheMasterServer.IsListen && cacheSlaveServer.IsListen
                             //&& keyValueStreamMasterServer.IsListen && keyValueStreamSlaveServer.IsListen
-                            && jsonServer.IsListen && memberServer.IsListen && sessionServer.IsListen
+                            && fileBlockServer.IsListen && jsonServer.IsListen && memberServer.IsListen && sessionServer.IsListen
                             && jsonStreamServer.IsListen && memberStreamServer.IsListen && sessionStreamServer.IsListen
                             && jsonSimpleServer.IsListen && memberSimpleServer.IsListen && sessionSimpleServer.IsListen
                             )
@@ -97,7 +97,8 @@ namespace AutoCSer.TestCase
                                 if (!TcpOpenSimpleServer.Member.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Member); break; }
                                 if (!TcpOpenSimpleServer.Json.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Json); break; }
 
-                                if (!CacheServer.TestCase()) { errorType = typeof(CacheServer); break; }
+                                if (!CacheServer.Cache.TestCase()) { errorType = typeof(CacheServer.Cache); break; }
+
                                 //if (!KeyValueStream.TestCase()) { errorType = typeof(KeyValueStream); break; }
                                 if (!DiskBlock.File.TestCase()) { errorType = typeof(DiskBlock.File); break; }
 #endif
@@ -117,6 +118,10 @@ namespace AutoCSer.TestCase
             }
 #endif
         }
+        /// <summary>
+        /// 检测测试历史文件大小
+        /// </summary>
+        /// <param name="fileName"></param>
         private static void checkFileSize(string fileName)
         {
             FileInfo file = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));

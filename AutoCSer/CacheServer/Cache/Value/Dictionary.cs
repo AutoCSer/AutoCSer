@@ -17,6 +17,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// </summary>
         private readonly System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<valueType>();
         /// <summary>
+        /// 字典 数据节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private Dictionary(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -139,26 +144,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建字典 数据节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Dictionary<keyType, valueType> create()
+        private static Dictionary<keyType, valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new Dictionary<keyType, valueType>();
+            return new Dictionary<keyType, valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Dictionary<keyType, valueType>> constructor;
+        private static readonly NodeInfo<Dictionary<keyType, valueType>> nodeInfo;
         static Dictionary()
         {
+            nodeInfo = new NodeInfo<Dictionary<keyType, valueType>>
+            {
 #if NOJIT
-            constructor = (Func<Dictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Func<Dictionary<keyType, valueType>>), typeof(Dictionary<keyType, valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<Dictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Constructor<Dictionary<keyType, valueType>>), typeof(Dictionary<keyType, valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<Dictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.Create(typeof(Dictionary<keyType, valueType>));
+                Constructor = (Constructor<Dictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(Dictionary<keyType, valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

@@ -19,10 +19,6 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 数据结构定义节点查询数据包
         /// </summary>
         internal SubArray<byte> QueryData;
-        ///// <summary>
-        ///// 数据缓冲区
-        ///// </summary>
-        //internal Buffer Buffer;
         /// <summary>
         /// 序列化
         /// </summary>
@@ -45,7 +41,6 @@ namespace AutoCSer.CacheServer.OperationParameter
         [AutoCSer.IOS.Preserve(Conditional = true)]
         private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
         {
-            //Buffer = Serializer.GetOperationData(deSerializer);
             Serializer.GetQueryData(deSerializer, ref QueryData);
         }
     }

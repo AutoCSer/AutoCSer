@@ -2038,7 +2038,7 @@
         </member>
         <member name="F:AutoCSer.Net.TcpInternalSimpleServer.ServerBaseAttribute.SendBufferSize">
             <summary>
-            服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 64KB。
+            服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 128KB。
             </summary>
         </member>
         <member name="P:AutoCSer.Net.TcpInternalSimpleServer.ServerBaseAttribute.GetSendBufferSize">

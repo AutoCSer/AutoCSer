@@ -86,7 +86,10 @@
     <Compile Include="TcpStaticStreamServer\Json.cs" />
     <Compile Include="TcpStaticStreamServer\Member.cs" />
     <Compile Include="TcpStaticStreamServer\Session.cs" />
-    <Compile Include="CacheServer.cs" />
+    <Compile Include="CacheServer\Cache.cs" />
+    <Compile Include="CacheServer\Data.cs" />
+    <Compile Include="CacheServer\QueueConsumer.cs" />
+    <Compile Include="CacheServer\QueueConsumers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\DiskBlock\AutoCSer.DiskBlock.Mono.csproj">

@@ -183,7 +183,7 @@ namespace AutoCSer.Net.TcpStreamServer
             Socket = null;
             if (socket != null)
             {
-                Interlocked.CompareExchange(ref CommandClient.Socket, null, this);
+                CommandClient.OnDisposeSocket(this);
                 AutoCSer.Net.TcpServer.CommandBuffer.CloseClientNotNull(socket);
             }
         }

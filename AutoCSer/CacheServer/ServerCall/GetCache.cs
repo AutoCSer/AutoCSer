@@ -11,11 +11,11 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 缓存管理
         /// </summary>
-        private AutoCSer.CacheServer.CacheManager cache;
+        private readonly AutoCSer.CacheServer.CacheManager cache;
         /// <summary>
         /// 获取缓存数据回调委托
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<CacheReturnParameter>, bool> onCache;
+        private readonly Func<AutoCSer.Net.TcpServer.ReturnValue<CacheReturnParameter>, bool> onCache;
         /// <summary>
         /// 获取缓存数据
         /// </summary>

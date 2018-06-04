@@ -8,10 +8,9 @@ namespace AutoCSer.CacheServer.DataStructure
     /// 字典节点
     /// </summary>
     /// <typeparam name="keyType">关键字类型</typeparam>
-    /// <typeparam name="nodeType">数据节点类型</typeparam>
-    public sealed class ValueDictionary<keyType, nodeType> : Abstract.ValueDictionary<keyType, nodeType>
+    /// <typeparam name="valueType">数据节点类型</typeparam>
+    public sealed class ValueDictionary<keyType, valueType> : Abstract.ValueDictionary<keyType, valueType>
         where keyType : IEquatable<keyType>
-        where nodeType : Abstract.Node, Abstract.IValue
     {
         /// <summary>
         /// 字典节点
@@ -28,6 +27,7 @@ namespace AutoCSer.CacheServer.DataStructure
         internal override void SerializeDataStructure(UnmanagedStream stream)
         {
             stream.Write((byte)Abstract.NodeType.ValueDictionary);
+            stream.Write((byte)ValueData.Data<valueType>.DataType);
             stream.Write((byte)ValueData.Data<keyType>.DataType);
             serializeParentDataStructure(stream);
         }
@@ -40,22 +40,22 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static ValueDictionary<keyType, nodeType> create(Abstract.Node parent)
+        private static ValueDictionary<keyType, valueType> create(Abstract.Node parent)
         {
-            return new ValueDictionary<keyType, nodeType>(parent);
+            return new ValueDictionary<keyType, valueType>(parent);
         }
 #endif
         /// <summary>
         /// 构造函数
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Abstract.Node, ValueDictionary<keyType, nodeType>> constructor;
+        private static readonly Func<Abstract.Node, ValueDictionary<keyType, valueType>> constructor;
         static ValueDictionary()
         {
 #if NOJIT
-            constructor = (Func<Abstract.Node, ValueDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, ValueDictionary<keyType, nodeType>>), typeof(ValueDictionary<keyType, nodeType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
+            constructor = (Func<Abstract.Node, ValueDictionary<keyType, valueType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, ValueDictionary<keyType, valueType>>), typeof(ValueDictionary<keyType, valueType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, ValueDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(ValueDictionary<keyType, nodeType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, ValueDictionary<keyType, valueType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(ValueDictionary<keyType, valueType>), NodeConstructorParameterTypes);
 #endif
         }
     }

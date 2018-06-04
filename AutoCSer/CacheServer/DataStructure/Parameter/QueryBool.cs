@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ReturnValue<bool> Query()
         {
-            return Client.GetBool(ClientDataStructure.Client.Query(this));
+            return Client.GetBool(Parent.ClientDataStructure.Client.Query(this));
         }
         /// <summary>
         /// 查询数据
@@ -31,7 +31,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         public void Query(Action<ReturnValue<bool>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.Query(this, onGet);
+            Parent.ClientDataStructure.Client.Query(this, onGet);
         }
         /// <summary>
         /// 查询数据
@@ -41,7 +41,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         public void QueryStream(Action<ReturnValue<bool>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryStream(this, onGet);
+            Parent.ClientDataStructure.Client.QueryStream(this, onGet);
         }
     }
 }

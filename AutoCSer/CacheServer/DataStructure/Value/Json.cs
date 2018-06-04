@@ -8,7 +8,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
     /// Json 数据节点
     /// </summary>
     /// <typeparam name="valueType">数据类型</typeparam>
-    public sealed partial class Json<valueType> : Abstract.Node, Abstract.IValue
+    public sealed partial class Json<valueType> : Abstract.Node//, Abstract.IValue
     {
         /// <summary>
         /// Json 数据节点
@@ -25,6 +25,14 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         public Json(valueType value)
         {
             Parameter.SetJson(value);
+        }
+        /// <summary>
+        /// Json 数据节点
+        /// </summary>
+        /// <param name="data">数据</param>
+        internal Json(ref ValueData.Data data)
+        {
+            Parameter = data;
         }
         /// <summary>
         /// 数据转换为节点
@@ -51,16 +59,41 @@ namespace AutoCSer.CacheServer.DataStructure.Value
             stream.Write((ushort)((byte)Abstract.NodeType.Value + ((int)(byte)ValueData.DataType.Json << 8)));
             serializeParentDataStructure(stream);
         }
-
         /// <summary>
-        /// 获取返回值数据
+        /// 获取 JSON 反序列化数据
+        /// </summary>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        internal unsafe ReturnValue<valueType> Get(ref ReturnValue<Json<valueType>> returnValue)
+        {
+            if (returnValue.Type == ReturnType.Success)
+            {
+                valueType value = default(valueType);
+                if (Parameter.GetJson(ref value)) return value;
+                return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError, TcpReturnType = returnValue.TcpReturnType };
+            }
+            return new ReturnValue<valueType> { Type = returnValue.TcpReturnType == Net.TcpServer.ReturnType.Success ? returnValue.Type : ReturnType.TcpError, TcpReturnType = returnValue.TcpReturnType };
+        }
+        /// <summary>
+        /// 获取 JSON 反序列化数据
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static AutoCSer.CacheServer.ReturnValue<valueType> Get(ref ReturnValueNode<Json<valueType>> value)
+        public bool TryGet(ref valueType value)
         {
-            return value.Value.GetJson<valueType>();
+            return Parameter.GetJson(ref value);
+        }
+        /// <summary>
+        /// 获取 JSON 反序列化数据
+        /// </summary>
+        /// <param name="errorValue">失败返回值</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public valueType Get(valueType errorValue = default(valueType))
+        {
+            valueType value = default(valueType);
+            return Parameter.GetJson(ref value) ? value : errorValue;
         }
 
         /// <summary>
@@ -68,7 +101,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryReturnValue<Json<valueType>> GetNode()
+        public Parameter.QueryReturnValue<Json<valueType>> GetQueryNode()
         {
             return new Parameter.QueryReturnValue<Json<valueType>>(Parent, ref Parameter, OperationParameter.OperationType.GetValue);
         }
@@ -76,49 +109,59 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// 获取数据
         /// </summary>
         /// <returns></returns>
-        public ReturnValueNode<Json<valueType>> Get()
+        public ReturnValue<Json<valueType>> Query()
         {
-            return new ReturnValueNode<Json<valueType>>(ClientDataStructure.Client.Query(GetNode()));
+            return new ReturnValue<Json<valueType>>(ClientDataStructure.Client.Query(GetQueryNode()));
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="onGet"></param>
-        public void Get(Action<ReturnValueNode<Json<valueType>>> onGet)
+        public void Query(Action<ReturnValue<Json<valueType>>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.Query(GetNode(), onGet);
+            ClientDataStructure.Client.Query(GetQueryNode(), onGet);
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="onGet"></param>
-        public void Get(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
+        public void Query(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.Query(GetNode(), onGet);
+            ClientDataStructure.Client.Query(GetQueryNode(), onGet);
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="onGet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void GetStream(Action<ReturnValueNode<Json<valueType>>> onGet)
+        public void QueryStream(Action<ReturnValue<Json<valueType>>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryStream(GetNode(), onGet);
+            ClientDataStructure.Client.QueryStream(GetQueryNode(), onGet);
         }
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="onGet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void GetStream(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
+        public void QueryStream(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryStream(GetNode(), onGet);
+            ClientDataStructure.Client.QueryStream(GetQueryNode(), onGet);
         }
 
+        /// <summary>
+        /// 获取参数数据委托
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        internal static valueType GetData(ref ValueData.Data parameter)
+        {
+            valueType value = default(valueType);
+            return parameter.GetJson(ref value) ? value : default(valueType);
+        }
 #if NOJIT
         /// <summary>
         /// 创建 Json 数据节点
@@ -142,7 +185,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
 #if NOJIT
             constructor = (Func<Abstract.Node, Json<valueType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, Json<valueType>>), typeof(Json<valueType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, Json<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(Json<valueType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, Json<valueType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(Json<valueType>), NodeConstructorParameterTypes);
 #endif
         }
     }

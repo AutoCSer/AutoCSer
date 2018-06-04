@@ -15,9 +15,9 @@ namespace AutoCSer.CacheServer.Cache
         internal const string CreateMethodName = "create";
 #endif
         /// <summary>
-        /// 构造函数字段名称
+        /// 节点信息字段名称
         /// </summary>
-        internal const string ConstructorFieldName = "constructor";
+        internal const string NodeInfoFieldName = "nodeInfo";
 
         /// <summary>
         /// 操作数据
@@ -77,9 +77,18 @@ namespace AutoCSer.CacheServer.Cache
         internal abstract void QueryEnd(ref OperationParameter.NodeParser parser);
 
         /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        internal abstract void OnRemoved();
+        /// <summary>
         /// 创建缓存快照
         /// </summary>
         /// <returns></returns>
         internal abstract Snapshot.Node CreateSnapshot();
+
+        /// <summary>
+        /// 节点构造函数参数类型集合
+        /// </summary>
+        internal static readonly Type[] NodeConstructorParameterTypes = new Type[] { typeof(OperationParameter.NodeParser).MakeByRefType() };
     }
 }

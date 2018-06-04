@@ -22,6 +22,11 @@ namespace AutoCSer.CacheServer.Cache
         /// 有效数据数量
         /// </summary>
         private int count;
+        /// <summary>
+        /// 256 基分片 字典节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private FragmentDictionary(ref OperationParameter.NodeParser parser) { }
 
         /// <summary>
         /// 获取下一个节点
@@ -65,6 +70,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (count != 0)
                     {
+                        OnRemoved();
                         Array.Clear(dictionarys, 0, 256);
                         count = 0;
                         parser.IsOperation = true;
@@ -87,7 +93,7 @@ namespace AutoCSer.CacheServer.Cache
                 if (dictionary == null) dictionarys[key.HashCode & 0xff] = dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<nodeType>();
                 if (!dictionary.ContainsKey(key))
                 {
-                    dictionary.Add(key, nodeConstructor());
+                    dictionary.Add(key, nodeConstructor(ref parser));
                     ++count;
                     parser.IsOperation = true;
                 }
@@ -104,13 +110,33 @@ namespace AutoCSer.CacheServer.Cache
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
                 System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary != null && dictionary.Remove(key))
+                if (dictionary != null)
                 {
-                    --count;
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
+                    if (!nodeInfo.IsOnRemovedEvent)
+                    {
+                        if (dictionary.Remove(key))
+                        {
+                            --count;
+                            parser.IsOperation = true;
+                            parser.ReturnParameter.Set(true);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        nodeType node;
+                        if (dictionary.TryGetValue(key, out node))
+                        {
+                            dictionary.Remove(key);
+                            --count;
+                            parser.IsOperation = true;
+                            parser.ReturnParameter.Set(true);
+                            node.OnRemoved();
+                            return;
+                        }
+                    }
                 }
-                else parser.ReturnParameter.Set(false);
+                parser.ReturnParameter.Set(false);
             }
         }
         /// <summary>
@@ -144,6 +170,22 @@ namespace AutoCSer.CacheServer.Cache
         }
 
         /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        internal override void OnRemoved()
+        {
+            if (nodeInfo.IsOnRemovedEvent)
+            {
+                foreach (System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary in dictionarys)
+                {
+                    if (dictionary != null)
+                    {
+                        foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, nodeType> node in dictionary) node.Value.OnRemoved();
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// 创建缓存快照
         /// </summary>
         /// <returns></returns>
@@ -164,31 +206,37 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建字典节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentDictionary<keyType, nodeType> create()
+        private static FragmentDictionary<keyType, nodeType> create(ref OperationParameter.NodeParser parser)
         {
-            return new FragmentDictionary<keyType, nodeType>();
+            return new FragmentDictionary<keyType, nodeType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<FragmentDictionary<keyType, nodeType>> constructor;
+        private static readonly NodeInfo<FragmentDictionary<keyType, nodeType>> nodeInfo;
         /// <summary>
         /// 子节点构造函数
         /// </summary>
-        private static readonly Func<nodeType> nodeConstructor;
+        private static readonly Constructor<nodeType> nodeConstructor;
         static FragmentDictionary()
         {
+            NodeInfo<nodeType> nextNodeInfo = (NodeInfo<nodeType>)typeof(nodeType).GetField(NodeInfoFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            nodeInfo = new NodeInfo<FragmentDictionary<keyType, nodeType>>
+            {
+                IsOnRemovedEvent = nextNodeInfo.IsOnRemovedEvent,
 #if NOJIT
-            constructor = (Func<FragmentDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Func<FragmentDictionary<keyType, nodeType>>), typeof(FragmentDictionary<keyType, nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<FragmentDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Constructor<FragmentDictionary<keyType, nodeType>>), typeof(FragmentDictionary<keyType, nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<FragmentDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(FragmentDictionary<keyType, nodeType>));
+                Constructor = (Constructor<FragmentDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(FragmentDictionary<keyType, nodeType>), NodeConstructorParameterTypes)
 #endif
-            nodeConstructor = (Func<nodeType>)typeof(nodeType).GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            };
+            nodeConstructor = nextNodeInfo.Constructor;
         }
     }
 }

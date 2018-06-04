@@ -43,9 +43,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             set { RegisterPort = value; }
         }
         /// <summary>
-        /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 64KB。
+        /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 128KB。
         /// </summary>
-        public SubBuffer.Size SendBufferSize = SubBuffer.Size.Kilobyte64;
+        public SubBuffer.Size SendBufferSize = SubBuffer.Size.Kilobyte128;
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数
         /// </summary>

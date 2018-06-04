@@ -19,6 +19,11 @@ namespace AutoCSer.CacheServer.Cache
         /// </summary>
         private readonly AutoCSer.SearchTree.Dictionary<keyType, nodeType> dictionary = new AutoCSer.SearchTree.Dictionary<keyType, nodeType>();
         /// <summary>
+        /// 搜索树字典节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private SearchTreeDictionary(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -56,6 +61,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (dictionary.Count != 0)
                     {
+                        OnRemoved();
                         dictionary.Clear();
                         parser.IsOperation = true;
                     }
@@ -75,7 +81,7 @@ namespace AutoCSer.CacheServer.Cache
             {
                 if (!dictionary.ContainsKey(key))
                 {
-                    dictionary.Set(key, nodeConstructor());
+                    dictionary.Set(key, nodeConstructor(ref parser));
                     parser.IsOperation = true;
                 }
                 parser.ReturnParameter.Set(true);
@@ -90,10 +96,12 @@ namespace AutoCSer.CacheServer.Cache
             keyType key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                if (dictionary.Remove(key))
+                nodeType node;
+                if (dictionary.Remove(ref key, out node))
                 {
                     parser.IsOperation = true;
                     parser.ReturnParameter.Set(true);
+                    if (nodeInfo.IsOnRemovedEvent) node.OnRemoved();
                 }
                 else parser.ReturnParameter.Set(false);
             }
@@ -125,6 +133,16 @@ namespace AutoCSer.CacheServer.Cache
         }
 
         /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        internal override void OnRemoved()
+        {
+            if (nodeInfo.IsOnRemovedEvent)
+            {
+                foreach (KeyValue<keyType, nodeType> node in dictionary.KeyValues) node.Value.OnRemoved();
+            }
+        }
+        /// <summary>
         /// 创建缓存快照
         /// </summary>
         /// <returns></returns>
@@ -139,31 +157,37 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建字典节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static SearchTreeDictionary<keyType, nodeType> create()
+        private static SearchTreeDictionary<keyType, nodeType> create(ref OperationParameter.NodeParser parser)
         {
-            return new SearchTreeDictionary<keyType, nodeType>();
+            return new SearchTreeDictionary<keyType, nodeType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<SearchTreeDictionary<keyType, nodeType>> constructor;
+        private static readonly NodeInfo<SearchTreeDictionary<keyType, nodeType>> nodeInfo;
         /// <summary>
         /// 子节点构造函数
         /// </summary>
-        private static readonly Func<nodeType> nodeConstructor;
+        private static readonly Constructor<nodeType> nodeConstructor;
         static SearchTreeDictionary()
         {
+            NodeInfo<nodeType> nextNodeInfo = (NodeInfo<nodeType>)typeof(nodeType).GetField(NodeInfoFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            nodeInfo = new NodeInfo<SearchTreeDictionary<keyType, nodeType>>
+            {
+                IsOnRemovedEvent = nextNodeInfo.IsOnRemovedEvent,
 #if NOJIT
-            constructor = (Func<SearchTreeDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Func<SearchTreeDictionary<keyType, nodeType>>), typeof(SearchTreeDictionary<keyType, nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+            Constructor = (Constructor<SearchTreeDictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Constructor<SearchTreeDictionary<keyType, nodeType>>), typeof(SearchTreeDictionary<keyType, nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<SearchTreeDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(SearchTreeDictionary<keyType, nodeType>));
+                Constructor = (Constructor<SearchTreeDictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(SearchTreeDictionary<keyType, nodeType>), NodeConstructorParameterTypes)
 #endif
-            nodeConstructor = (Func<nodeType>)typeof(nodeType).GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            };
+            nodeConstructor = nextNodeInfo.Constructor;
         }
     }
 }

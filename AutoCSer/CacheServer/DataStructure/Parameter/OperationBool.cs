@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ReturnValue<bool> Operation()
         {
-            return Client.GetBool(ClientDataStructure.Client.Operation(this));
+            return Client.GetBool(Parent.ClientDataStructure.Client.Operation(this));
         }
         /// <summary>
         /// 操作数据
@@ -30,7 +30,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Operation(Action<ReturnValue<bool>> onGet)
         {
-            ClientDataStructure.Client.Operation(this, onGet);
+            Parent.ClientDataStructure.Client.Operation(this, onGet);
         }
         /// <summary>
         /// 操作数据
@@ -39,7 +39,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Operation(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
-            ClientDataStructure.Client.OperationReturnParameter(this, onGet);
+            Parent.ClientDataStructure.Client.OperationReturnParameter(this, onGet);
         }
         /// <summary>
         /// 操作数据
@@ -49,7 +49,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         public void OperationStream(Action<ReturnValue<bool>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.OperationStream(this, onGet);
+            Parent.ClientDataStructure.Client.OperationStream(this, onGet);
         }
         /// <summary>
         /// 操作数据
@@ -59,7 +59,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         public void OperationStream(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.OperationStream(this, onGet);
+            Parent.ClientDataStructure.Client.OperationStream(this, onGet);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 HashSet 的哈希表缓存
             HashSet<int> hashSet = client.GetOrCreateDataStructure<HashSet<int>>("HashSet").Value;

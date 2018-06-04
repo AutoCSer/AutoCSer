@@ -22,7 +22,11 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// 有效数据数量
         /// </summary>
         private int count;
-
+        /// <summary>
+        /// 链表 数据节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private Link(ref OperationParameter.NodeParser parser) { }
         /// <summary>
         /// 清除数据
         /// </summary>
@@ -277,26 +281,30 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建链表节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Link<valueType> create()
+        private static Link<valueType> create(ref OperationParameter.NodeParser parser)
         {
-            return new Link<valueType>();
+            return new Link<valueType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Link<valueType>> constructor;
+        private static readonly NodeInfo<Link<valueType>> nodeInfo;
         static Link()
         {
+            nodeInfo = new NodeInfo<Link<valueType>>
+            {
 #if NOJIT
-            constructor = (Func<Link<valueType>>)Delegate.CreateDelegate(typeof(Func<Link<valueType>>), typeof(Link<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<Link<valueType>>)Delegate.CreateDelegate(typeof(Constructor<Link<valueType>>), typeof(Link<valueType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<Link<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(Link<valueType>));
+                Constructor = (Constructor<Link<valueType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(Link<valueType>), NodeConstructorParameterTypes)
 #endif
+            };
         }
     }
 }

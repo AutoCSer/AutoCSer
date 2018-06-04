@@ -7,16 +7,16 @@ namespace AutoCSer.CacheServer.DataStructure
     /// <summary>
     /// 链表节点
     /// </summary>
-    public sealed partial class Link<nodeType>
+    public sealed partial class Link<valueType>
     {
         /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="index">负数表示从尾部向前倒数，-1 表示最后一个</param>
         /// <returns></returns>
-        public async Task<ReturnValueNode<nodeType>> GetTask(int index)
+        public async Task<ReturnValue<valueType>> GetTask(int index)
         {
-            return new ReturnValueNode<nodeType>(await ClientDataStructure.Client.QueryTask(GetNode(index)));
+            return new ReturnValue<valueType>(await ClientDataStructure.Client.QueryTask(GetNode(index)));
         }
         /// <summary>
         /// 删除元素节点
@@ -32,16 +32,16 @@ namespace AutoCSer.CacheServer.DataStructure
         /// </summary>
         /// <param name="index">负数表示从尾部向前倒数，-1 表示最后一个</param>
         /// <returns></returns>
-        public async Task<ReturnValueNode<nodeType>> GetRemoveTask(int index)
+        public async Task<ReturnValue<valueType>> GetRemoveTask(int index)
         {
-            return new ReturnValueNode<nodeType>(await ClientDataStructure.Client.OperationTask(GetGetRemoveNode(index)));
+            return new ReturnValue<valueType>(await ClientDataStructure.Client.OperationTask(GetGetRemoveNode(index)));
         }
         /// <summary>
         /// 弹出最后一个数据
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public async Task<ReturnValueNode<nodeType>> StackPopTask()
+        public async Task<ReturnValue<valueType>> StackPopTask()
         {
             return await GetRemoveTask(-1);
         }
@@ -50,7 +50,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public async Task<ReturnValueNode<nodeType>> DequeueTask()
+        public async Task<ReturnValue<valueType>> DequeueTask()
         {
             return await GetRemoveTask(0);
         }
@@ -58,11 +58,11 @@ namespace AutoCSer.CacheServer.DataStructure
         /// 前置插入数据
         /// </summary>
         /// <param name="index">负数表示从尾部向前倒数，-1 表示最后一个</param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public async Task<ReturnValue<bool>> InsertBeforeTask(int index, nodeType valueNode)
+        public async Task<ReturnValue<bool>> InsertBeforeTask(int index, valueType value)
         {
-            Parameter.OperationBool node = GetInsertBeforeNode(index, valueNode);
+            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
             if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationTask(node));
             return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
@@ -70,23 +70,23 @@ namespace AutoCSer.CacheServer.DataStructure
         /// 后置插入数据
         /// </summary>
         /// <param name="index">负数表示从尾部向前倒数，-1 表示最后一个</param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public async Task<ReturnValue<bool>> InsertAfterTask(int index, nodeType valueNode)
+        public async Task<ReturnValue<bool>> InsertAfterTask(int index, valueType value)
         {
-            Parameter.OperationBool node = GetInsertAfterNode(index, valueNode);
+            Parameter.OperationBool node = GetInsertAfterNode(index, value);
             if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationTask(node));
             return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
         /// <summary>
         /// 追加数据
         /// </summary>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public async Task<ReturnValue<bool>> AppendTask(nodeType valueNode)
+        public async Task<ReturnValue<bool>> AppendTask(valueType value)
         {
-            return await InsertAfterTask(-1, valueNode);
+            return await InsertAfterTask(-1, value);
         }
     }
 }

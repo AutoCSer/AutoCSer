@@ -20,6 +20,11 @@ namespace AutoCSer.CacheServer.Cache
         /// </summary>
         private int count;
         /// <summary>
+        /// 数组节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private Array(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -58,6 +63,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (array.Length != 0)
                     {
+                        OnRemoved();
                         array = NullValue<nodeType>.Array;
                         count = 0;
                         parser.IsOperation = true;
@@ -79,7 +85,7 @@ namespace AutoCSer.CacheServer.Cache
                 if (index >= array.Length) array = array.copyNew(Math.Max(index + 1, array.Length << 1), array.Length);
                 if (array[index] == null)
                 {
-                    array[index] = nodeConstructor();
+                    array[index] = nodeConstructor(ref parser);
                     parser.IsOperation = true;
                     if (index >= count) count = index + 1;
                 }
@@ -96,10 +102,12 @@ namespace AutoCSer.CacheServer.Cache
             int index = parser.GetValueData(-1);
             if ((uint)index < count)
             {
-                if (array[index] != null)
+                nodeType node = array[index];
+                if (node != null)
                 {
                     parser.IsOperation = true;
                     array[index] = null;
+                    if (nodeInfo.IsOnRemovedEvent) node.OnRemoved();
                 }
                 parser.ReturnParameter.Set(true);
             }
@@ -132,6 +140,21 @@ namespace AutoCSer.CacheServer.Cache
         }
 
         /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        internal override void OnRemoved()
+        {
+            if (nodeInfo.IsOnRemovedEvent && this.count != 0)
+            {
+                int count = this.count;
+                foreach (nodeType node in array)
+                {
+                    if (node != null) node.OnRemoved();
+                    if (--count == 0) return;
+                }
+            }
+        }
+        /// <summary>
         /// 创建缓存快照
         /// </summary>
         /// <returns></returns>
@@ -150,31 +173,37 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建数组节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Array<nodeType> create()
+        private static Array<nodeType> create(ref OperationParameter.NodeParser parser)
         {
-            return new Array<nodeType>();
+            return new Array<nodeType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Array<nodeType>> constructor;
+        private static readonly NodeInfo<Array<nodeType>> nodeInfo;
         /// <summary>
         /// 子节点构造函数
         /// </summary>
-        private static readonly Func<nodeType> nodeConstructor;
+        private static readonly Constructor<nodeType> nodeConstructor;
         static Array()
         {
+            NodeInfo<nodeType> nextNodeInfo = (NodeInfo<nodeType>)typeof(nodeType).GetField(NodeInfoFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            nodeInfo = new NodeInfo<Array<nodeType>>
+            {
+                IsOnRemovedEvent = nextNodeInfo.IsOnRemovedEvent,
 #if NOJIT
-            constructor = (Func<Array<nodeType>>)Delegate.CreateDelegate(typeof(Func<Array<nodeType>>), typeof(Array<nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<Array<nodeType>>)Delegate.CreateDelegate(typeof(Constructor<Array<nodeType>>), typeof(Array<nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<Array<nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(Array<nodeType>));
+                Constructor = (Constructor<Array<nodeType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(Array<nodeType>), NodeConstructorParameterTypes)
 #endif
-            nodeConstructor = (Func<nodeType>)typeof(nodeType).GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            };
+            nodeConstructor = nextNodeInfo.Constructor;
         }
     }
 }

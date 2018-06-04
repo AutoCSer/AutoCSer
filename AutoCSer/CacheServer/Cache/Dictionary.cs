@@ -19,6 +19,11 @@ namespace AutoCSer.CacheServer.Cache
         /// </summary>
         private readonly System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<nodeType>();
         /// <summary>
+        /// 字典节点
+        /// </summary>
+        /// <param name="parser"></param>
+        private Dictionary(ref OperationParameter.NodeParser parser) { }
+        /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
@@ -56,6 +61,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (dictionary.Count != 0)
                     {
+                        OnRemoved();
                         dictionary.Clear();
                         parser.IsOperation = true;
                     }
@@ -75,7 +81,7 @@ namespace AutoCSer.CacheServer.Cache
             {
                 if (!dictionary.ContainsKey(key))
                 {
-                    dictionary.Add(key, nodeConstructor());
+                    dictionary.Add(key, nodeConstructor(ref parser));
                     parser.IsOperation = true;
                 }
                 parser.ReturnParameter.Set(true);
@@ -90,12 +96,27 @@ namespace AutoCSer.CacheServer.Cache
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                if (dictionary.Remove(key))
+                if (!nodeInfo.IsOnRemovedEvent)
                 {
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
+                    if (dictionary.Remove(key))
+                    {
+                        parser.IsOperation = true;
+                        parser.ReturnParameter.Set(true);
+                    }
+                    else parser.ReturnParameter.Set(false);
                 }
-                else parser.ReturnParameter.Set(false);
+                else
+                {
+                    nodeType node;
+                    if (dictionary.TryGetValue(key, out node))
+                    {
+                        dictionary.Remove(key);
+                        parser.IsOperation = true;
+                        parser.ReturnParameter.Set(true);
+                        node.OnRemoved();
+                    }
+                    else parser.ReturnParameter.Set(false);
+                }
             }
         }
         /// <summary>
@@ -125,6 +146,16 @@ namespace AutoCSer.CacheServer.Cache
         }
 
         /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        internal override void OnRemoved()
+        {
+            if (nodeInfo.IsOnRemovedEvent)
+            {
+                foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, nodeType> node in dictionary) node.Value.OnRemoved();
+            }
+        }
+        /// <summary>
         /// 创建缓存快照
         /// </summary>
         /// <returns></returns>
@@ -140,31 +171,37 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建字典节点
         /// </summary>
+        /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Dictionary<keyType, nodeType> create()
+        private static Dictionary<keyType, nodeType> create(ref OperationParameter.NodeParser parser)
         {
-            return new Dictionary<keyType, nodeType>();
+            return new Dictionary<keyType, nodeType>(ref parser);
         }
 #endif
         /// <summary>
-        /// 构造函数
+        /// 节点信息
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly Func<Dictionary<keyType, nodeType>> constructor;
+        private static readonly NodeInfo<Dictionary<keyType, nodeType>> nodeInfo;
         /// <summary>
         /// 子节点构造函数
         /// </summary>
-        private static readonly Func<nodeType> nodeConstructor;
+        private static readonly Constructor<nodeType> nodeConstructor;
         static Dictionary()
         {
+            NodeInfo<nodeType> nextNodeInfo = (NodeInfo<nodeType>)typeof(nodeType).GetField(NodeInfoFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            nodeInfo = new NodeInfo<Dictionary<keyType, nodeType>>
+            {
+                IsOnRemovedEvent = nextNodeInfo.IsOnRemovedEvent,
 #if NOJIT
-            constructor = (Func<Dictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Func<Dictionary<keyType, nodeType>>), typeof(Dictionary<keyType, nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NullValue<Type>.Array, null));
+                Constructor = (Constructor<Dictionary<keyType, nodeType>>)Delegate.CreateDelegate(typeof(Constructor<Dictionary<keyType, nodeType>>), typeof(Dictionary<keyType, nodeType>).GetMethod(CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null))
 #else
-            constructor = (Func<Dictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.Create(typeof(Dictionary<keyType, nodeType>));
+                Constructor = (Constructor<Dictionary<keyType, nodeType>>)AutoCSer.Emit.Constructor.CreateCache(typeof(Dictionary<keyType, nodeType>), NodeConstructorParameterTypes)
 #endif
-            nodeConstructor = (Func<nodeType>)typeof(nodeType).GetField(ConstructorFieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetValue(null);
+            };
+            nodeConstructor = nextNodeInfo.Constructor;
         }
     }
 }

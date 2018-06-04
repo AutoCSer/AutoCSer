@@ -14,10 +14,10 @@ namespace AutoCSer.Example.CacheServer
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        internal static bool TestCase(AutoCSer.CacheServer.MasterClient client)
+        internal static bool TestCase(AutoCSer.CacheServer.Client client)
         {
             #region 创建名称为 SearchTreeDictionary 的搜索树字典缓存
-            SearchTreeDictionary<int, ValueArray<Value<int>>> dictionary = client.GetOrCreateDataStructure<SearchTreeDictionary<int, ValueArray<Value<int>>>>("SearchTreeDictionary").Value;
+            SearchTreeDictionary<int, ValueArray<int>> dictionary = client.GetOrCreateDataStructure<SearchTreeDictionary<int, ValueArray<int>>>("SearchTreeDictionary").Value;
             if (dictionary == null)
             {
                 return false;
@@ -25,7 +25,7 @@ namespace AutoCSer.Example.CacheServer
             #endregion
 
             #region 创建或者获取关键字为 1 的子节点
-            ValueArray<Value<int>> array = dictionary.GetOrCreate(1).Value;
+            ValueArray<int> array = dictionary.GetOrCreate(1).Value;
             if (array == null)
             {
                 return false;

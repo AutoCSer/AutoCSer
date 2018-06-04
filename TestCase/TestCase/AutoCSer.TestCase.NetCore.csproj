@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -37,7 +37,10 @@
 
   <ItemGroup>
     <Compile Include="BinarySerialize.cs" />
-    <Compile Include="CacheServer.cs" />
+    <Compile Include="CacheServer\Cache.cs" />
+    <Compile Include="CacheServer\Data.cs" />
+    <Compile Include="CacheServer\QueueConsumer.cs" />
+    <Compile Include="CacheServer\QueueConsumers.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DiskBlock\File.cs" />

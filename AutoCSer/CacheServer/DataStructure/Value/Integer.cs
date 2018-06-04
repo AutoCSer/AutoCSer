@@ -124,7 +124,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
 #if NOJIT
             constructor = (Func<Abstract.Node, Integer<valueType>>)Delegate.CreateDelegate(typeof(Func<Abstract.Node, Integer<valueType>>), typeof(Integer<valueType>).GetMethod(Cache.Node.CreateMethodName, BindingFlags.Static | BindingFlags.NonPublic, null, NodeConstructorParameterTypes, null));
 #else
-            constructor = (Func<Abstract.Node, Integer<valueType>>)AutoCSer.Emit.Constructor.Create(typeof(Integer<valueType>), NodeConstructorParameterTypes);
+            constructor = (Func<Abstract.Node, Integer<valueType>>)AutoCSer.Emit.Constructor.CreateDataStructure(typeof(Integer<valueType>), NodeConstructorParameterTypes);
 #endif
         }
     }
