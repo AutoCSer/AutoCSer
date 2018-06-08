@@ -223,36 +223,37 @@ namespace AutoCSer.CacheServer
             if (Type == ReturnType.Success) return Parameter.String;
             return new ReturnValue<string> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = tcpReturnType };
         }
-        /// <summary>
-        /// 获取数据
-        /// </summary>
-        /// <param name="getValue"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ReturnValue<valueType> Get<valueType>(ValueData.GetData<valueType> getValue)
-        {
-            if (Type == ReturnType.Success) return getValue(ref Parameter);
-            return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
-        }
-        /// <summary>
-        /// 获取 JSON 反序列化数据
-        /// </summary>
-        /// <returns></returns>
-        internal unsafe ReturnValue<valueType> GetJson<valueType>()
-        {
-            if (Type == ReturnType.Success)
-            {
-                valueType value = default(valueType);
-                if (Parameter.GetJson(ref value)) return value;
-                return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError, TcpReturnType = Parameter.TcpReturnType };
-            }
-            return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
-        }
+        ///// <summary>
+        ///// 获取数据
+        ///// </summary>
+        ///// <param name="getValue"></param>
+        ///// <returns></returns>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal ReturnValue<valueType> Get<valueType>(ValueData.GetData<valueType> getValue)
+        //{
+        //    if (Type == ReturnType.Success) return getValue(ref Parameter);
+        //    return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
+        //}
+        ///// <summary>
+        ///// 获取 JSON 反序列化数据
+        ///// </summary>
+        ///// <returns></returns>
+        //internal unsafe ReturnValue<valueType> GetJson<valueType>()
+        //{
+        //    if (Type == ReturnType.Success)
+        //    {
+        //        valueType value = default(valueType);
+        //        if (Parameter.GetJson(ref value)) return value;
+        //        return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError, TcpReturnType = Parameter.TcpReturnType };
+        //    }
+        //    return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
+        //}
         /// <summary>
         /// 获取二进制反序列化数据
         /// </summary>
+        /// <param name="tcpReturnType"></param>
         /// <returns></returns>
-        internal ReturnValue<valueType> GetBinary<valueType>()
+        internal ReturnValue<valueType> GetBinary<valueType>(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
         {
             if (Type == ReturnType.Success)
             {
@@ -260,7 +261,7 @@ namespace AutoCSer.CacheServer
                 if (Parameter.GetBinary(ref value)) return value;
                 return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError };
             }
-            return new ReturnValue<valueType> { Type = Parameter.TcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = Parameter.TcpReturnType };
+            return new ReturnValue<valueType> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? Type : ReturnType.TcpError, TcpReturnType = tcpReturnType };
         }
 
         ///// <summary>
@@ -395,6 +396,16 @@ namespace AutoCSer.CacheServer
         //    Type = ReturnType.Success;
         //    Parameter.SetByteArray(value, startIndex, length);
         //}
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        /// <param name="value">返回值</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetBinary<valueType>(valueType value)
+        {
+            Parameter.SetBinary(value);
+            Type = ReturnType.Success;
+        }
         /// <summary>
         /// 序列化
         /// </summary>

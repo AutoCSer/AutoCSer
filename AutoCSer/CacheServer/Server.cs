@@ -105,5 +105,53 @@ namespace AutoCSer.CacheServer
         {
             Cache.Query(ref parameter.QueryData, onQuery, true);
         }
+
+        /// <summary>
+        /// 表达式节点查询
+        /// </summary>
+        /// <param name="parameter">短路径查询参数</param>
+        /// <returns>返回参数</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
+        internal ReturnParameter Query(OperationParameter.ShortPathQueryNode parameter)
+        {
+            return Cache.ShortPathQuery(ref parameter.QueryData);
+        }
+        /// <summary>
+        /// 表达式节点查询
+        /// </summary>
+        /// <param name="parameter">短路径查询参数</param>
+        /// <returns>返回参数</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
+        internal ReturnParameter QueryStream(OperationParameter.ShortPathQueryNode parameter)
+        {
+            ReturnParameter returnValue = Cache.ShortPathQuery(ref parameter.QueryData);
+            returnValue.IsDeSerializeStream = true;
+            return returnValue;
+        }
+
+        /// <summary>
+        /// 表达式节点查询
+        /// </summary>
+        /// <param name="parameter">短路径查询参数</param>
+        /// <param name="onQuery"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
+        internal void QueryAsynchronous(OperationParameter.ShortPathQueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        {
+            Cache.ShortPathQuery(ref parameter.QueryData, onQuery, false);
+        }
+        /// <summary>
+        /// 表达式节点查询
+        /// </summary>
+        /// <param name="parameter">短路径查询参数</param>
+        /// <param name="onQuery"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
+        internal void QueryAsynchronousStream(OperationParameter.ShortPathQueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        {
+            Cache.ShortPathQuery(ref parameter.QueryData, onQuery, true);
+        }
     }
 }

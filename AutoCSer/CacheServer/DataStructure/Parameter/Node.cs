@@ -12,16 +12,16 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// 查询节点
         /// </summary>
         /// <param name="parent">父节点</param>
+        internal Node(Abstract.Node parent) : base(parent) { }
+        /// <summary>
+        /// 查询节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
         /// <param name="operationType">操作类型</param>
         internal Node(Abstract.Node parent, OperationParameter.OperationType operationType) : base(parent)
         {
             Parameter.OperationType = operationType;
         }
-        /// <summary>
-        /// 查询节点
-        /// </summary>
-        /// <param name="parent">父节点</param>
-        internal Node(Abstract.Node parent) : base(parent) { }
         /// <summary>
         /// 序列化数据结构定义信息
         /// </summary>

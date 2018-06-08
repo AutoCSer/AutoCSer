@@ -48,10 +48,6 @@ namespace AutoCSer.CacheServer
         /// </summary>
         public bool IsIgnoreFileEndError = false;
         /// <summary>
-        /// 默认为 true 表示物理文件数据压缩，可能降低 25% 的吞吐性能
-        /// </summary>
-        public bool IsCompressionFile = true;
-        /// <summary>
         /// 压缩启用最低字节数量，默认为 1KB，小于等于 0 表示不压缩。压缩数据可以减低硬盘负载与冷启动时间，但是需要消耗一定的 CPU 资源。
         /// </summary>
         public int MinCompressSize = 1 << 10;

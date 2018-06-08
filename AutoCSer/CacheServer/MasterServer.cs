@@ -209,6 +209,54 @@ namespace AutoCSer.CacheServer
         }
 
         /// <summary>
+        /// 操作数据并返回参数
+        /// </summary>
+        /// <param name="parameter">短路径查询参数</param>
+        /// <returns>返回参数</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
+        internal ReturnParameter Operation(OperationParameter.ShortPathOperationNode parameter)
+        {
+            return Cache.Operation(ref parameter);
+        }
+        /// <summary>
+        /// 操作数据并返回参数
+        /// </summary>
+        /// <param name="parameter">短路径操作参数</param>
+        /// <returns>返回参数</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
+        internal ReturnParameter OperationStream(OperationParameter.ShortPathOperationNode parameter)
+        {
+            ReturnParameter returnValue = Cache.Operation(ref parameter);
+            returnValue.IsDeSerializeStream = true;
+            return returnValue;
+        }
+
+        /// <summary>
+        /// 异步操作数据
+        /// </summary>
+        /// <param name="parameter">短路径操作参数</param>
+        /// <param name="onOperation"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
+        internal void OperationAsynchronous(OperationParameter.ShortPathOperationNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        {
+            TcpServer.CallQueue.Add(new ServerCall.ShortPathOperationAsynchronous(Cache, ref parameter, onOperation));
+        }
+        /// <summary>
+        /// 异步操作数据
+        /// </summary>
+        /// <param name="parameter">短路径操作参数</param>
+        /// <param name="onOperation"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
+        internal void OperationAsynchronousStream(OperationParameter.ShortPathOperationNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        {
+            TcpServer.CallQueue.Add(new ServerCall.ShortPathOperationAsynchronous(Cache, ref parameter, onOperation));
+        }
+
+        /// <summary>
         /// 异步操作空回调
         /// </summary>
         private static readonly Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> nullCallbackHandle = nullCallback;

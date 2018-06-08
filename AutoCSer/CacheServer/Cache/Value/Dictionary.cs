@@ -19,8 +19,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 字典 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private Dictionary(ref OperationParameter.NodeParser parser) { }
+        private Dictionary(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 获取下一个节点
         /// </summary>
@@ -144,13 +145,14 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建字典 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Dictionary<keyType, valueType> create(ref OperationParameter.NodeParser parser)
+        private static Dictionary<keyType, valueType> create(Cache.Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new Dictionary<keyType, valueType>(ref parser);
+            return new Dictionary<keyType, valueType>(parent, ref parser);
         }
 #endif
         /// <summary>

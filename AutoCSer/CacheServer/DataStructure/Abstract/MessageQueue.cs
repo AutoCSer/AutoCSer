@@ -25,6 +25,39 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         }
 
         /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public ReturnValue<ShortPath.MessageQueue<valueType>> CreateShortPath()
+        {
+            if (Parent != null) return new ShortPath.MessageQueue<valueType>(this).Create();
+            return new ReturnValue<ShortPath.MessageQueue<valueType>> { Type = ReturnType.CanNotCreateShortPath };
+        }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="onCreated"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void CreateShortPath(Action<ReturnValue<ShortPath.MessageQueue<valueType>>> onCreated)
+        {
+            if (onCreated == null) throw new ArgumentNullException();
+            if (Parent != null) new ShortPath.MessageQueue<valueType>(this).Create(onCreated);
+            else onCreated(new ReturnValue<ShortPath.MessageQueue<valueType>> { Type = ReturnType.CanNotCreateShortPath });
+        }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="onCreated">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void CreateShortPathStream(Action<ReturnValue<ShortPath.MessageQueue<valueType>>> onCreated)
+        {
+            if (onCreated == null) throw new ArgumentNullException();
+            if (Parent != null) new ShortPath.MessageQueue<valueType>(this).CreateStream(onCreated);
+            else onCreated(new ReturnValue<ShortPath.MessageQueue<valueType>> { Type = ReturnType.CanNotCreateShortPath });
+        }
+
+        /// <summary>
         /// 追加数据
         /// </summary>
         /// <param name="valueNode"></param>
@@ -57,7 +90,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public ReturnValue<bool> Enqueue(valueType value)
         {
             Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) return Client.GetBool(ClientDataStructure.Client.QueryAsynchronous(valueNode));
+            if (valueNode != null) return Client.GetBool(ClientDataStructure.Client.MasterQueryAsynchronous(valueNode));
             return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
         /// <summary>
@@ -70,7 +103,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         {
             if (onEnqueue == null) throw new ArgumentNullException();
             Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.QueryAsynchronous(valueNode, onEnqueue);
+            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronous(valueNode, onEnqueue);
             else if (onEnqueue != null) onEnqueue(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
         }
         /// <summary>
@@ -83,7 +116,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         {
             if (onEnqueue == null) throw new ArgumentNullException();
             Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.QueryAsynchronous(valueNode, onEnqueue);
+            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronous(valueNode, onEnqueue);
             else if (onEnqueue != null) onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
         }
         /// <summary>
@@ -96,7 +129,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         {
             if (onEnqueue == null) throw new ArgumentNullException();
             Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.QueryAsynchronousStream(valueNode, onEnqueue);
+            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronousStream(valueNode, onEnqueue);
             else onEnqueue(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
         }
         /// <summary>
@@ -109,7 +142,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         {
             if (onEnqueue == null) throw new ArgumentNullException();
             Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.QueryAsynchronousStream(valueNode, onEnqueue);
+            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronousStream(valueNode, onEnqueue);
             else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
         }
 

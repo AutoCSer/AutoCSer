@@ -67,10 +67,10 @@ namespace AutoCSer.CacheServer.ValueData
         /// 操作类型（临时附加数据） [ushort]
         /// </summary>
         internal OperationParameter.OperationType OperationType;
-        /// <summary>
-        /// TCP 返回值类型 [byte]
-        /// </summary>
-        internal AutoCSer.Net.TcpServer.ReturnType TcpReturnType;
+        ///// <summary>
+        ///// TCP 返回值类型 [byte]
+        ///// </summary>
+        //internal AutoCSer.Net.TcpServer.ReturnType TcpReturnType;
 
         /// <summary>
         /// Guid
@@ -1559,9 +1559,32 @@ namespace AutoCSer.CacheServer.ValueData
             {
                 case DataType.Json:
                 case DataType.BinarySerialize:
-                    DataStructure.Abstract.Node node = value as DataStructure.Abstract.Node;
-                    return node.TrySetParent(parent) ? node : null;
-                default: return new DataStructure.Parameter.Value<valueType>(parent, value);
+                    DataStructure.Abstract.Node valueNode = value as DataStructure.Abstract.Node;
+                    return valueNode.TrySetParent(parent) ? valueNode : null;
+                default:
+                    DataStructure.Parameter.Value node = new DataStructure.Parameter.Value(parent);
+                    node.Set(value);
+                    return node;
+            }
+        }
+        /// <summary>
+        /// 转换为短路径查询参数节点
+        /// </summary>
+        /// <param name="node">短路径节点</param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static ShortPath.Parameter.Value ToNode(ShortPath.Node node, valueType value)
+        {
+            switch (DataType)
+            {
+                case DataType.Json:
+                case DataType.BinarySerialize:
+                    return new ShortPath.Parameter.Value(node, value as DataStructure.Abstract.Node);
+                default:
+                    ShortPath.Parameter.Value parameter = new ShortPath.Parameter.Value(node);
+                    parameter.Set(value);
+                    return parameter;
             }
         }
 

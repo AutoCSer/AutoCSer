@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace AutoCSer.CacheServer
@@ -8,46 +9,6 @@ namespace AutoCSer.CacheServer
     /// </summary>
     public sealed partial class Client
     {
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> QueryTask(DataStructure.Abstract.Node node)
-        {
-            if(isMasterClient) return await MasterClient.QueryAwaiter(new OperationParameter.QueryNode { Node = node });
-            return await slaveClient.QueryAwaiter(new OperationParameter.QueryNode { Node = node });
-        }
-        /// <summary>
-        /// 异步查询数据
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> QueryAsynchronousTask(DataStructure.Abstract.Node node)
-        {
-            if (isMasterClient) return await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.QueryNode { Node = node });
-            return await slaveClient.QueryAsynchronousAwaiter(new OperationParameter.QueryNode { Node = node });
-        }
-
-        /// <summary>
-        /// 操作数据
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> OperationTask(DataStructure.Abstract.Node node)
-        {
-            return await MasterClient.OperationAwaiter(new OperationParameter.OperationNode { Node = node });
-        }
-        /// <summary>
-        /// 异步操作数据
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> OperationAsynchronousTask(DataStructure.Abstract.Node node)
-        {
-            return await MasterClient.OperationAsynchronousAwaiter(new OperationParameter.OperationNode { Node = node });
-        }
-
         /// <summary>
         /// 删除数据结构信息
         /// </summary>
@@ -66,9 +27,192 @@ namespace AutoCSer.CacheServer
         /// 数据立即写入文件
         /// </summary>
         /// <returns></returns>
-        public async Task<AutoCSer.Net.TcpServer.ReturnValue> WriteFileTask()
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public AutoCSer.Net.TcpServer.Awaiter WriteFileAwaiter()
         {
-            return await MasterClient.WriteFileAwaiter();
+            return MasterClient.WriteFileAwaiter();
+        }
+
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.AwaiterBox<ReturnParameter> QueryAwaiter(DataStructure.Abstract.Node node)
+        {
+            if (isMasterClient) return MasterClient.QueryAwaiter(new OperationParameter.QueryNode { Node = node });
+            return slaveClient.QueryAwaiter(new OperationParameter.QueryNode { Node = node });
+        }
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.AwaiterBox<ReturnParameter> QueryAsynchronousAwaiter(DataStructure.Abstract.Node node)
+        {
+            if (isMasterClient) return MasterClient.QueryAsynchronousAwaiter(new OperationParameter.QueryNode { Node = node });
+            return slaveClient.QueryAsynchronousAwaiter(new OperationParameter.QueryNode { Node = node });
+        }
+
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.AwaiterBox<ReturnParameter> MasterQueryAsynchronousAwaiter(DataStructure.Abstract.Node node)
+        {
+            return MasterClient.QueryAsynchronousAwaiter(new OperationParameter.QueryNode { Node = node });
+        }
+
+        /// <summary>
+        /// 操作数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.AwaiterBox<ReturnParameter> OperationAwaiter(DataStructure.Abstract.Node node)
+        {
+            return MasterClient.OperationAwaiter(new OperationParameter.OperationNode { Node = node });
+        }
+        /// <summary>
+        /// 异步操作数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.AwaiterBox<ReturnParameter> OperationAsynchronousAwaiter(DataStructure.Abstract.Node node)
+        {
+            return MasterClient.OperationAsynchronousAwaiter(new OperationParameter.OperationNode { Node = node });
+        }
+
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> QueryAwaiter(ShortPath.Parameter.Node node)
+        {
+            ShortPath.Node shortPath = node.ShortPath;
+            ReturnType returnType;
+            if (isMasterClient)
+            {
+                if ((returnType = shortPath.Check(MasterClient)) == ReturnType.Success)
+                {
+                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    {
+                        return await MasterClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                    }
+                    return value;
+                }
+            }
+            else if ((returnType = shortPath.Check(slaveClient)) == ReturnType.Success)
+            {
+                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await slaveClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                {
+                    return await slaveClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                }
+                return value;
+            }
+            return new ReturnParameter { Type = returnType };
+        }
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> QueryAsynchronousAwaiter(ShortPath.Parameter.Node node)
+        {
+            ShortPath.Node shortPath = node.ShortPath;
+            ReturnType returnType;
+            if (isMasterClient)
+            {
+                if ((returnType = shortPath.Check(MasterClient)) == ReturnType.Success)
+                {
+                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    {
+                        return await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                    }
+                    return value;
+                }
+            }
+            else if ((returnType = shortPath.Check(slaveClient)) == ReturnType.Success)
+            {
+                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await slaveClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                {
+                    return await slaveClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                }
+                return value;
+            }
+            return new ReturnParameter { Type = returnType };
+        }
+
+        /// <summary>
+        /// 操作数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> OperationAwaiter(ShortPath.Parameter.Node node)
+        {
+            ShortPath.Node shortPath = node.ShortPath;
+            ReturnType returnType = shortPath.Check(MasterClient);
+            if (returnType == ReturnType.Success)
+            {
+                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.OperationAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                {
+                    return await MasterClient.OperationAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
+                }
+                return value;
+            }
+            return new ReturnParameter { Type = returnType };
+        }
+        /// <summary>
+        /// 异步操作数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> OperationAsynchronousAwaiter(ShortPath.Parameter.Node node)
+        {
+            ShortPath.Node shortPath = node.ShortPath;
+            ReturnType returnType = shortPath.Check(MasterClient);
+            if (returnType == ReturnType.Success)
+            {
+                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.OperationAsynchronousAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                {
+                    return await MasterClient.OperationAsynchronousAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
+                }
+                return value;
+            }
+            return new ReturnParameter { Type = returnType };
+        }
+
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal async Task<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> MasterQueryAsynchronousAwaiter(ShortPath.Parameter.Node node)
+        {
+            ShortPath.Node shortPath = node.ShortPath;
+            ReturnType returnType = shortPath.Check(MasterClient);
+            if (returnType == ReturnType.Success)
+            {
+                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                {
+                    return await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
+                }
+                return value;
+            }
+            return new ReturnParameter { Type = returnType };
         }
     }
 }

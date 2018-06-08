@@ -30,17 +30,26 @@
       },
       "AutoCSer/1.1.0.0": {
         "runtime": {
-          "AutoCSer.dll": {}
+          "AutoCSer.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
         }
       },
       "AutoCSer.Sort/1.1.0.0": {
         "runtime": {
-          "AutoCSer.Sort.dll": {}
+          "AutoCSer.Sort.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
         }
       },
       "AutoCSer.WebView/1.1.0.0": {
         "runtime": {
-          "AutoCSer.WebView.dll": {}
+          "AutoCSer.WebView.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
         }
       }
     }

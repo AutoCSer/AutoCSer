@@ -51,10 +51,21 @@
             <!--Include:Include\GetCode[Example,4,,CacheServer\Link.cs]-->
         </p>
         <p>
+            . 位图 <b>AutoCSer.CacheServer.DataStructure.Bitmap</b>
+            <!--Include:Include\GetCode[Example,5,,CacheServer\Bitmap.cs]-->
+        </p>
+        <p>
+            . 锁 <b>AutoCSer.CacheServer.DataStructure.Lock</b>
+            <!--Include:Include\GetCode[Example,6,,CacheServer\Lock.cs]-->
+        </p>
+        <p>
             . <a href="/CacheServer/MessageQueue.html">消息队列</a> <b>AutoCSer.CacheServer.DataStructure.MessageQueue.QueueConsumer</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.MessageQueue.QueueConsumers</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，前者只允许一个消费者，后者允许最多 65536 个消费者，每个消费者都将顺序处理所有消息。
-            <!--Include:Include\GetCode[Example,5,,CacheServer\QueueConsumer.cs]-->
-            <!--Include:Include\GetCode[Example,6,,CacheServer\QueueConsumers.cs]-->
+            <!--Include:Include\GetCode[Example,7,,CacheServer\QueueConsumer.cs]-->
+            <!--Include:Include\GetCode[Example,8,,CacheServer\QueueConsumers.cs]-->
+        </p>
+        <p>
+            . 某些 <b>数据节点</b> 提供 <b>CreateShortPath()</b> 方法支持短路径操作，用于降低深度嵌套的<b>数据节点</b>服务端解析开销，它的过期重建操作会对客户端异步操作产生同步阻塞，示例代码参考 <b>嵌套节点</b>
         </p>
     </div>
     <div><h1>嵌套节点</h1></div>
@@ -62,17 +73,17 @@
         <p>
             . 数组 <b>AutoCSer.CacheServer.DataStructure.Array</b>&lt;nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentArray</b>&lt;nodeType&gt;
             <br /> <b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <!--Include:Include\GetCode[Example,7,,CacheServer\Array.cs]-->
+            <!--Include:Include\GetCode[Example,9,,CacheServer\Array.cs]-->
         </p>
         <p>
             . 字典 <b>AutoCSer.CacheServer.DataStructure.Dictionary</b>&lt;keyType, nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <!--Include:Include\GetCode[Example,8,,CacheServer\Dictionary.cs]-->
+            <!--Include:Include\GetCode[Example,a,,CacheServer\Dictionary.cs]-->
         </p>
         <p>
             . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.SearchTreeDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <!--Include:Include\GetCode[Example,9,,CacheServer\SearchTreeDictionary.cs]-->
+            <!--Include:Include\GetCode[Example,b,,CacheServer\SearchTreeDictionary.cs]-->
         </p>
     </div>
     <div>

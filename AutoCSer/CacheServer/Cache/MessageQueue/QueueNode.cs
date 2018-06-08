@@ -15,8 +15,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 队列消费节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        protected QueueNode(ref OperationParameter.NodeParser parser) : base(ref parser) { }
+        protected QueueNode(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent, ref parser) { }
         /// <summary>
         /// 初始化
         /// </summary>

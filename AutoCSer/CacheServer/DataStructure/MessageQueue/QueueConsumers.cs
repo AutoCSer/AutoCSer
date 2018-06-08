@@ -49,7 +49,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Parameter.QueryULongAsynchronous getDequeueIdentityNode(int readerIndex, Cache.MessageQueue.Config.QueueReader config)
         {
-            DataStructure.Parameter.QueryULongAsynchronous node = new DataStructure.Parameter.QueryULongAsynchronous(new Parameter.Value<int>(this, readerIndex), OperationParameter.OperationType.MessageQueueGetDequeueIdentity);
+            DataStructure.Parameter.QueryULongAsynchronous node = new DataStructure.Parameter.QueryULongAsynchronous(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueGetDequeueIdentity);
             node.Parameter.SetJson(config);
             return node;
         }
@@ -61,7 +61,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <returns></returns>
         public ReturnValue<ulong> GetDequeueIdentity(int readerIndex, Cache.MessageQueue.Config.QueueReader config)
         {
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return Client.GetULong(ClientDataStructure.Client.QueryAsynchronous(getDequeueIdentityNode(readerIndex, config)));
+            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return Client.GetULong(ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config)));
             return new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange };
         }
         /// <summary>
@@ -74,7 +74,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentity(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.QueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue); 
+            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue); 
             else onEnqueue(new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange });
         }
         /// <summary>
@@ -87,7 +87,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentity(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.QueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue);
+            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue);
             else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Value = new ReturnParameter { Type = ReturnType.MessageQueueReaderIndexOutOfRange } });
         }
         /// <summary>
@@ -100,7 +100,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentityStream(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.QueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
+            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
             else onEnqueue(new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange });
         }
         /// <summary>
@@ -113,7 +113,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentityStream(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.QueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
+            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
             else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Value = new ReturnParameter { Type = ReturnType.MessageQueueReaderIndexOutOfRange } });
         }
 
@@ -208,7 +208,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Parameter.QueryKeepCallbackReturnValue<valueType> getMessageNode(int readerIndex, ulong identity)
         {
-            Parameter.QueryKeepCallbackReturnValue<valueType> node = new Parameter.QueryKeepCallbackReturnValue<valueType>(new Parameter.Value<int>(this, readerIndex), OperationParameter.OperationType.MessageQueueDequeue);
+            Parameter.QueryKeepCallbackReturnValue<valueType> node = new Parameter.QueryKeepCallbackReturnValue<valueType>(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueDequeue);
             node.Parameter.Set(identity);
             return node;
         }
@@ -222,7 +222,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessage(int readerIndex, ulong identity, Action<ReturnValue<valueType>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallback(getMessageNode(readerIndex, identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallback(getMessageNode(readerIndex, identity), onGet);
         }
         /// <summary>
         /// 获取数据
@@ -234,7 +234,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessage(int readerIndex, ulong identity, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallback(getMessageNode(readerIndex, identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallback(getMessageNode(readerIndex, identity), onGet);
         }
         /// <summary>
         /// 获取数据
@@ -246,7 +246,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessageStream(int readerIndex, ulong identity, Action<ReturnValue<valueType>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallbackStream(getMessageNode(readerIndex, identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallbackStream(getMessageNode(readerIndex, identity), onGet);
         }
         /// <summary>
         /// 获取数据
@@ -258,7 +258,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessageStream(int readerIndex, ulong identity, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallbackStream(getMessageNode(readerIndex, identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallbackStream(getMessageNode(readerIndex, identity), onGet);
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Parameter.QueryOnly getSetDequeueIdentityNode(int readerIndex, ulong identity)
         {
-            DataStructure.Parameter.QueryOnly node = new DataStructure.Parameter.QueryOnly(new Parameter.Value<int>(this, readerIndex), OperationParameter.OperationType.MessageQueueSetDequeueIdentity);
+            DataStructure.Parameter.QueryOnly node = new DataStructure.Parameter.QueryOnly(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueSetDequeueIdentity);
             node.Parameter.Set(identity);
             return node;
         }
@@ -352,7 +352,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="identity">确认已完成消息标识</param>
         public void SetDequeueIdentity(int readerIndex, ulong identity)
         {
-            ClientDataStructure.Client.QueryOnly(getSetDequeueIdentityNode(readerIndex, identity));
+            ClientDataStructure.Client.MasterQueryOnly(getSetDequeueIdentityNode(readerIndex, identity));
         }
 
         /// <summary>

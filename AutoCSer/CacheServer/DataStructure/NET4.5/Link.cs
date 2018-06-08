@@ -10,13 +10,21 @@ namespace AutoCSer.CacheServer.DataStructure
     public sealed partial class Link<valueType>
     {
         /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ReturnValue<ShortPath.Link<valueType>>> CreateShortPathTask()
+        {
+            return await new ShortPath.Link<valueType>(this).CreateTask();
+        }
+        /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="index">负数表示从尾部向前倒数，-1 表示最后一个</param>
         /// <returns></returns>
         public async Task<ReturnValue<valueType>> GetTask(int index)
         {
-            return new ReturnValue<valueType>(await ClientDataStructure.Client.QueryTask(GetNode(index)));
+            return new ReturnValue<valueType>(await ClientDataStructure.Client.QueryAwaiter(GetNode(index)));
         }
         /// <summary>
         /// 删除元素节点
@@ -25,7 +33,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public async Task<ReturnValue<bool>> RemoveTask(int index)
         {
-            return Client.GetBool(await ClientDataStructure.Client.OperationTask(GetRemoveNode(index)));
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetRemoveNode(index)));
         }
         /// <summary>
         /// 获取并删除数据
@@ -34,7 +42,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public async Task<ReturnValue<valueType>> GetRemoveTask(int index)
         {
-            return new ReturnValue<valueType>(await ClientDataStructure.Client.OperationTask(GetGetRemoveNode(index)));
+            return new ReturnValue<valueType>(await ClientDataStructure.Client.OperationAwaiter(GetGetRemoveNode(index)));
         }
         /// <summary>
         /// 弹出最后一个数据
@@ -63,7 +71,7 @@ namespace AutoCSer.CacheServer.DataStructure
         public async Task<ReturnValue<bool>> InsertBeforeTask(int index, valueType value)
         {
             Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationTask(node));
+            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(node));
             return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
         /// <summary>
@@ -75,7 +83,7 @@ namespace AutoCSer.CacheServer.DataStructure
         public async Task<ReturnValue<bool>> InsertAfterTask(int index, valueType value)
         {
             Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationTask(node));
+            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(node));
             return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
         /// <summary>

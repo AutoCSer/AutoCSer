@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <returns></returns>
         public async Task<ReturnValue<ulong>> GetDequeueIdentityTask(Cache.MessageQueue.Config.QueueReader config)
         {
-            return Client.GetULong(await ClientDataStructure.Client.OperationAsynchronousTask(GetDequeueIdentityNode(config)));
+            return Client.GetULong(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(GetDequeueIdentityNode(config)));
         }
     }
 }

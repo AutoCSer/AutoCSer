@@ -14,15 +14,15 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<AutoCSer.CacheServer.ReturnValue<int>> GetCountTask()
         {
-            return Client.GetInt(await ClientDataStructure.Client.QueryTask(GetCountNode()));
+            return Client.GetInt(await ClientDataStructure.Client.QueryAwaiter(GetCountNode()));
         }
         /// <summary>
         /// 清除数据
         /// </summary>
         /// <returns></returns>
-        public async Task<AutoCSer.CacheServer.ReturnValue<bool>> RemoveTask()
+        public async Task<AutoCSer.CacheServer.ReturnValue<bool>> ClearTask()
         {
-            return Client.GetBool(await ClientDataStructure.Client.OperationTask(GetClearNode()));
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetClearNode()));
         }
     }
 }

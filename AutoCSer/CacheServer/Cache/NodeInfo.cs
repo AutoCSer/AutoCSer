@@ -39,7 +39,7 @@ namespace AutoCSer.CacheServer.Cache
         /// <returns></returns>
         internal override Node CallConstructor(ref OperationParameter.NodeParser parser)
         {
-            return Constructor(ref parser);
+            return Constructor(null, ref parser);
         }
     }
 }

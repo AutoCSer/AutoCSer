@@ -48,7 +48,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <returns></returns>
         public ReturnValue<ulong> GetDequeueIdentity(Cache.MessageQueue.Config.QueueReader config)
         {
-            return Client.GetULong(ClientDataStructure.Client.QueryAsynchronous(GetDequeueIdentityNode(config)));
+            return Client.GetULong(ClientDataStructure.Client.MasterQueryAsynchronous(GetDequeueIdentityNode(config)));
         }
         /// <summary>
         /// 获取当前读取数据标识
@@ -59,7 +59,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentity(Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryAsynchronous(GetDequeueIdentityNode(config), onEnqueue);
+            ClientDataStructure.Client.MasterQueryAsynchronous(GetDequeueIdentityNode(config), onEnqueue);
         }
         /// <summary>
         /// 获取当前读取数据标识
@@ -70,7 +70,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentity(Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryAsynchronous(GetDequeueIdentityNode(config), onEnqueue);
+            ClientDataStructure.Client.MasterQueryAsynchronous(GetDequeueIdentityNode(config), onEnqueue);
         }
         /// <summary>
         /// 获取当前读取数据标识
@@ -81,7 +81,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentityStream(Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryAsynchronousStream(GetDequeueIdentityNode(config), onEnqueue);
+            ClientDataStructure.Client.MasterQueryAsynchronousStream(GetDequeueIdentityNode(config), onEnqueue);
         }
         /// <summary>
         /// 获取当前读取数据标识
@@ -92,7 +92,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public void GetDequeueIdentityStream(Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            ClientDataStructure.Client.QueryAsynchronousStream(GetDequeueIdentityNode(config), onEnqueue);
+            ClientDataStructure.Client.MasterQueryAsynchronousStream(GetDequeueIdentityNode(config), onEnqueue);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessage(ulong identity, Action<ReturnValue<valueType>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallback(GetMessageNode(identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallback(GetMessageNode(identity), onGet);
         }
         /// <summary>
         /// 获取数据
@@ -127,7 +127,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessage(ulong identity, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallback(GetMessageNode(identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallback(GetMessageNode(identity), onGet);
         }
         /// <summary>
         /// 获取数据
@@ -138,7 +138,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessageStream(ulong identity, Action<ReturnValue<valueType>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallbackStream(GetMessageNode(identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallbackStream(GetMessageNode(identity), onGet);
         }
         /// <summary>
         /// 获取数据
@@ -149,7 +149,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         public AutoCSer.Net.TcpServer.KeepCallback GetMessageStream(ulong identity, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            return ClientDataStructure.Client.QueryKeepCallbackStream(GetMessageNode(identity), onGet);
+            return ClientDataStructure.Client.MasterQueryKeepCallbackStream(GetMessageNode(identity), onGet);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="identity">确认已完成消息标识</param>
         public void SetDequeueIdentity(ulong identity)
         {
-            ClientDataStructure.Client.QueryOnly(GetSetDequeueIdentityNode(identity));
+            ClientDataStructure.Client.MasterQueryOnly(GetSetDequeueIdentityNode(identity));
         }
 
         /// <summary>

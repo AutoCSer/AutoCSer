@@ -45,6 +45,19 @@ namespace AutoCSer.Example.CacheServer
                 return false;
             }
 
+            #region 创建短路径
+            AutoCSer.CacheServer.ShortPath.Dictionary<int, int> shortPathDictionary = dictionary.CreateShortPath().Value;
+            if (shortPathDictionary == null)
+            {
+                return false;
+            }
+            #endregion
+
+            if (!ValueDictionary.TestCase(shortPathDictionary))
+            {
+                return false;
+            }
+
             #region 获取数组已使用长度
             AutoCSer.CacheServer.ReturnValue<int> count = array.Count;
             if (count.Value != 2)

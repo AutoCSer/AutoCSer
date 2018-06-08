@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<ReturnValue<bool>> SetDefaultTask(int index)
         {
-            return Client.GetBool(await ClientDataStructure.Client.OperationTask(GetSetDefaultNode(index)));
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetSetDefaultNode(index)));
         }
     }
     /// <summary>
@@ -30,7 +30,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<ReturnValue<nodeType>> GetOrCreateTask(int index)
         {
-            AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await ClientDataStructure.Client.OperationTask(GetOrCreateNode(index));
+            AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await ClientDataStructure.Client.OperationAwaiter(GetOrCreateNode(index));
             return value.Value.GetBool(value.Type, value.Value.Parameter.Int64.Bool ? this[index] : null);
         }
         /// <summary>
@@ -40,7 +40,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<ReturnValue<bool>> IsNodeTask(int index)
         {
-            return Client.GetBool(await ClientDataStructure.Client.QueryTask(GetIsNode(index)));
+            return Client.GetBool(await ClientDataStructure.Client.QueryAwaiter(GetIsNode(index)));
         }
     }
 }

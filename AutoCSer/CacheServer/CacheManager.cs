@@ -47,6 +47,18 @@ namespace AutoCSer.CacheServer
         /// </summary>
         private readonly Action disposeHandle;
         /// <summary>
+        /// 数据结构定义集合
+        /// </summary>
+        internal readonly Dictionary<HashString, ServerDataStructure> DataStructures = DictionaryCreator<HashString>.Create<ServerDataStructure>();
+        /// <summary>
+        /// 短路径集合
+        /// </summary>
+        private readonly ShortPathItem[] shortPaths;
+        /// <summary>
+        /// 服务启动时间
+        /// </summary>
+        private readonly long startTicks = Date.NowTime.Set().Ticks;
+        /// <summary>
         /// 文件流写入器
         /// </summary>
         internal FileStreamWriter File;
@@ -67,10 +79,6 @@ namespace AutoCSer.CacheServer
         /// </summary>
         private CacheGetter currentGetter;
         /// <summary>
-        /// 数据结构定义集合
-        /// </summary>
-        internal readonly Dictionary<HashString, ServerDataStructure> DataStructures = DictionaryCreator<HashString>.Create<ServerDataStructure>();
-        /// <summary>
         /// 数据结构数组集合
         /// </summary>
         internal DataStructureItem[] Array = NullValue<DataStructureItem>.Array;
@@ -86,6 +94,10 @@ namespace AutoCSer.CacheServer
         /// 创建缓存节点后的回调操作
         /// </summary>
         internal Action<IndexIdentity> OnDataStructureCreated;
+        /// <summary>
+        /// 当前短路径索引位置
+        /// </summary>
+        private int shortPathIndex;
         /// <summary>
         /// 是否允许写操作
         /// </summary>
@@ -116,6 +128,7 @@ namespace AutoCSer.CacheServer
             Config = config;
             TcpServer = tcpServer;
             tcpQueue = tcpServer.CallQueue;
+            shortPaths = new ShortPathItem[config.GetShortPathCount];
             if (config.IsFile)
             {
                 disposeHandle = Dispose;
@@ -135,11 +148,12 @@ namespace AutoCSer.CacheServer
         /// <param name="tcpServer">缓存服务</param>
         internal CacheManager(SlaveServer slaveServer, AutoCSer.Net.TcpInternalServer.Server tcpServer)
         {
+            shortPaths = new ShortPathItem[slaveServer.Config.GetShortPathCount];
+            loadBuffer = new Buffer();
             SlaveServer = slaveServer;
             TcpServer = tcpServer;
             Config = slaveServer.Config;
             CanWrite = false;
-            loadBuffer = new Buffer();
         }
         /// <summary>
         /// 释放资源
@@ -622,6 +636,264 @@ namespace AutoCSer.CacheServer
             finally
             {
                 if (onQuery != null) onQuery(new ReturnParameter { Type = ReturnType.DataStructureIdentityError });
+            }
+        }
+
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="parser"></param>
+        internal void CreateShortPath(Cache.Value.Node node, ref OperationParameter.NodeParser parser)
+        {
+            byte[] packet = parser.CreateReadPacket(OperationParameter.Serializer.HeaderSize);
+            ulong identity = shortPaths[shortPathIndex].Set(node, packet);
+            parser.ReturnParameter.SetBinary(new ShortPathIdentity { Index = shortPathIndex, Identity = identity, Ticks = startTicks, PacketSize = packet.Length });
+            if (++shortPathIndex == shortPaths.Length) shortPathIndex = 0;
+        }
+        /// <summary>
+        /// 操作数据
+        /// </summary>
+        /// <param name="parameter">短路径操作参数</param>
+        /// <returns>返回参数</returns>
+        internal ReturnParameter Operation(ref OperationParameter.ShortPathOperationNode parameter)
+        {
+            if (CanWrite)
+            {
+                if (parameter.Buffer != null)
+                {
+                    if (parameter.Identity.Ticks == startTicks)
+                    {
+                        byte[] packet;
+                        Cache.Value.Node node = shortPaths[parameter.Identity.Index].Get(parameter.Identity.Identity, out packet);
+                        if (packet.Length == parameter.Identity.PacketSize)
+                        {
+                            if (node.IsNode)
+                            {
+                                byte[] bufferData = parameter.Buffer.Array.Array;
+                                System.Buffer.BlockCopy(packet, 0, bufferData, parameter.Buffer.Array.Start + OperationParameter.Serializer.HeaderSize, parameter.Identity.PacketSize);
+                                fixed (byte* bufferFixed = bufferData)
+                                {
+                                    OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, parameter.Buffer, bufferFixed);
+                                    parser.Read += parameter.Identity.PacketSize;
+                                    node.Operation(ref parser);
+                                    if (parser.IsOperation) onOperation(parameter.Buffer);
+                                    else parameter.Buffer.FreeReference();
+                                    return parser.ReturnParameter;
+                                }
+                            }
+                            return new ReturnParameter { Type = ReturnType.NotFoundShortPathNode };
+                        }
+                    }
+                    return new ReturnParameter { Type = ReturnType.NotFoundShortPath };
+                }
+                return new ReturnParameter { Type = ReturnType.ServerDeSerializeError };
+            }
+            return new ReturnParameter { Type = ReturnType.CanNotWrite };
+        }
+        /// <summary>
+        /// 操作数据
+        /// </summary>
+        /// <param name="parameter">短路径操作参数</param>
+        /// <param name="onOperation"></param>
+        internal void Operation(ref OperationParameter.ShortPathOperationNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        {
+            ReturnType returnType = ReturnType.CanNotWrite;
+            try
+            {
+                if (CanWrite)
+                {
+                    if (parameter.Buffer != null)
+                    {
+                        returnType = ReturnType.NotFoundShortPath;
+                        if (parameter.Identity.Ticks == startTicks)
+                        {
+                            byte[] packet;
+                            Cache.Value.Node node = shortPaths[parameter.Identity.Index].Get(parameter.Identity.Identity, out packet);
+                            if (packet.Length == parameter.Identity.PacketSize)
+                            {
+                                if (node.IsNode)
+                                {
+                                    returnType = ReturnType.Unknown;
+                                    byte[] bufferData = parameter.Buffer.Array.Array;
+                                    System.Buffer.BlockCopy(packet, 0, bufferData, parameter.Buffer.Array.Start + OperationParameter.Serializer.HeaderSize, parameter.Identity.PacketSize);
+                                    fixed (byte* bufferFixed = bufferData)
+                                    {
+                                        OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, parameter.Buffer, bufferFixed);
+                                        parser.Read += parameter.Identity.PacketSize;
+                                        parser.OnReturn = onOperation;
+                                        try
+                                        {
+                                            node.Operation(ref parser);
+                                        }
+                                        finally
+                                        {
+                                            if (parser.OnReturn == null) returnType = ReturnType.Success;
+                                        }
+                                        if (parser.IsOperation) this.onOperation(parameter.Buffer);
+                                        else parameter.Buffer.FreeReference();
+                                        return;
+                                    }
+                                }
+                                else returnType = ReturnType.NotFoundShortPathNode;
+                            }
+                        }
+                    }
+                    else returnType = ReturnType.ServerDeSerializeError;
+                }
+                parameter.Buffer.FreeReference();
+            }
+            finally
+            {
+                if (returnType != ReturnType.Success) onOperation(new ReturnParameter { Type = returnType });
+            }
+        }
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="queryData">查询数据</param>
+        /// <returns>返回参数</returns>
+        internal ReturnParameter ShortPathQuery(ref SubArray<byte> queryData)
+        {
+            byte[] data = queryData.Array;
+            ReturnType returnType = ReturnType.NotFoundShortPath;
+            fixed (byte* dataFixed = queryData.Array)
+            {
+                byte* start = dataFixed + queryData.Start;
+                ShortPathIdentity identity = new ShortPathIdentity(start + OperationParameter.Serializer.HeaderSize);
+                if (identity.Ticks == startTicks)
+                {
+                    byte[] packet;
+                    Cache.Value.Node node = shortPaths[identity.Index].Get(identity.Identity, out packet);
+                    if (packet.Length == identity.PacketSize)
+                    {
+                        if (node.IsNode)
+                        {
+                            returnType = ReturnType.Unknown;
+                            if ((*(int*)start = queryData.Length + identity.PacketSize - ShortPathIdentity.SerializeSize) <= queryData.Length)
+                            {
+                                System.Buffer.BlockCopy(packet, 0, data, queryData.Start + OperationParameter.Serializer.HeaderSize, identity.PacketSize);
+                                System.Buffer.BlockCopy(data, queryData.Start + (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize), data, queryData.Start + (OperationParameter.Serializer.HeaderSize + identity.PacketSize), queryData.Length - (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize));
+                                queryData.Length = *(int*)start;
+
+                                queryBuffer.Set(ref queryData);
+                                OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
+                                parser.Read += identity.PacketSize;
+                                node.Query(ref parser);
+                                return parser.ReturnParameter;
+                            }
+                            else
+                            {
+                                Buffer buffer = BufferCount.GetBuffer(*(int*)start);
+                                try
+                                {
+                                    SubArray<byte> bufferSubArray = buffer.Array;
+                                    byte[] bufferData = bufferSubArray.Array;
+                                    fixed (byte* bufferFixed = bufferData)
+                                    {
+                                        *(ulong*)(bufferFixed + bufferSubArray.Start) = *(ulong*)start;
+                                        System.Buffer.BlockCopy(packet, 0, bufferData, bufferSubArray.Start + OperationParameter.Serializer.HeaderSize, identity.PacketSize);
+                                        System.Buffer.BlockCopy(data, queryData.Start + (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize), bufferData, bufferSubArray.Start + (OperationParameter.Serializer.HeaderSize + identity.PacketSize), queryData.Length - (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize));
+
+                                        OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, buffer, bufferFixed);
+                                        parser.Read += identity.PacketSize;
+                                        node.Query(ref parser);
+                                        return parser.ReturnParameter;
+                                    }
+                                }
+                                finally { buffer.Dispose(); }
+                            }
+                        }
+                        else returnType = ReturnType.NotFoundShortPathNode;
+                    }
+                }
+            }
+            return new ReturnParameter { Type = returnType };
+        }
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="queryData">查询数据</param>
+        /// <param name="onQuery"></param>
+        /// <param name="isDeSerializeStream">是否反序列化网络流，否则需要 Copy 数据</param>
+        internal void ShortPathQuery(ref SubArray<byte> queryData, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery, bool isDeSerializeStream)
+        {
+            byte[] data = queryData.Array;
+            ReturnType returnType = ReturnType.ServerDeSerializeError;
+            try
+            {
+                fixed (byte* dataFixed = queryData.Array)
+                {
+                    byte* start = dataFixed + queryData.Start;
+                    ShortPathIdentity identity = new ShortPathIdentity(start + OperationParameter.Serializer.HeaderSize);
+                    returnType = ReturnType.NotFoundShortPath;
+                    if (identity.Ticks == startTicks)
+                    {
+                        byte[] packet;
+                        Cache.Value.Node node = shortPaths[identity.Index].Get(identity.Identity, out packet);
+                        if (packet.Length == identity.PacketSize)
+                        {
+                            if (node.IsNode)
+                            {
+                                returnType = ReturnType.Unknown;
+                                if ((*(int*)start = queryData.Length + identity.PacketSize - ShortPathIdentity.SerializeSize) <= queryData.Length)
+                                {
+                                    System.Buffer.BlockCopy(packet, 0, data, queryData.Start + OperationParameter.Serializer.HeaderSize, identity.PacketSize);
+                                    System.Buffer.BlockCopy(data, queryData.Start + (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize), data, queryData.Start + (OperationParameter.Serializer.HeaderSize + identity.PacketSize), queryData.Length - (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize));
+                                    queryData.Length = *(int*)start;
+
+                                    queryBuffer.Set(ref queryData);
+                                    OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
+                                    parser.Read += identity.PacketSize;
+                                    parser.SetOnReturn(onQuery, isDeSerializeStream);
+                                    onQuery = null;
+                                    try
+                                    {
+                                        node.Query(ref parser);
+                                    }
+                                    finally
+                                    {
+                                        parser.CallOnReturn();
+                                    }
+                                }
+                                else
+                                {
+                                    Buffer buffer = BufferCount.GetBuffer(*(int*)start);
+                                    try
+                                    {
+                                        SubArray<byte> bufferSubArray = buffer.Array;
+                                        byte[] bufferData = bufferSubArray.Array;
+                                        fixed (byte* bufferFixed = bufferData)
+                                        {
+                                            *(ulong*)(bufferFixed + bufferSubArray.Start) = *(ulong*)start;
+                                            System.Buffer.BlockCopy(packet, 0, bufferData, bufferSubArray.Start + OperationParameter.Serializer.HeaderSize, identity.PacketSize);
+                                            System.Buffer.BlockCopy(data, queryData.Start + (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize), bufferData, bufferSubArray.Start + (OperationParameter.Serializer.HeaderSize + identity.PacketSize), queryData.Length - (OperationParameter.Serializer.HeaderSize + ShortPathIdentity.SerializeSize));
+
+                                            OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, buffer, bufferFixed);
+                                            parser.Read += identity.PacketSize;
+                                            parser.SetOnReturn(onQuery, isDeSerializeStream);
+                                            onQuery = null;
+                                            try
+                                            {
+                                                node.Query(ref parser);
+                                            }
+                                            finally
+                                            {
+                                                parser.CallOnReturn();
+                                            }
+                                        }
+                                    }
+                                    finally { buffer.Dispose(); }
+                                }
+                            }
+                            else returnType = ReturnType.NotFoundShortPathNode;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (onQuery != null) onQuery(new ReturnParameter { Type = returnType });
             }
         }
 

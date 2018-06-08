@@ -215,6 +215,16 @@ namespace AutoCSer.CacheServer.OperationParameter
             return packet;
         }
         /// <summary>
+        /// 设置操作类型
+        /// </summary>
+        /// <param name="operationType"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetOperationType(OperationType operationType)
+        {
+            *(uint*)(dataFixed + Buffer.Array.Start + Serializer.OperationTypeOffset) = (ushort)operationType;
+            IsOperation = true;
+        }
+        /// <summary>
         /// 调用返回委托
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

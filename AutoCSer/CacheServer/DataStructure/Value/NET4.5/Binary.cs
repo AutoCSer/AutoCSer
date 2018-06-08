@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.DataStructure.Value
         /// <returns></returns>
         public async Task<ReturnValue<Binary<valueType>>> QueryTask()
         {
-            return new ReturnValue<Binary<valueType>>(await ClientDataStructure.Client.QueryTask(GetQueryNode()));
+            return new ReturnValue<Binary<valueType>>(await ClientDataStructure.Client.QueryAwaiter(GetQueryNode()));
         }
     }
 }

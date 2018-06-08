@@ -20,6 +20,28 @@ namespace AutoCSer.CacheServer.Cache
         internal const string NodeInfoFieldName = "nodeInfo";
 
         /// <summary>
+        /// 父节点
+        /// </summary>
+        private Node parent;
+        /// <summary>
+        /// 节点是否有效（没有被删除）
+        /// </summary>
+        internal bool IsNode
+        {
+            get
+            {
+                return parent != null && (ReferenceEquals(parent, this) || parent.IsNode);
+            }
+        }
+        /// <summary>
+        /// 缓存节点
+        /// </summary>
+        /// <param name="parent"></param>
+        protected Node(Node parent)
+        {
+            this.parent = parent ?? this;
+        }
+        /// <summary>
         /// 操作数据
         /// </summary>
         /// <param name="parser">参数解析</param>
@@ -77,9 +99,21 @@ namespace AutoCSer.CacheServer.Cache
         internal abstract void QueryEnd(ref OperationParameter.NodeParser parser);
 
         /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="parser"></param>
+        internal virtual void CreateShortPath(ref OperationParameter.NodeParser parser)
+        {
+            parser.ReturnParameter.Type = ReturnType.CanNotCreateShortPath;
+        }
+
+        /// <summary>
         /// 删除节点操作
         /// </summary>
-        internal abstract void OnRemoved();
+        internal virtual void OnRemoved()
+        {
+            parent = null;
+        }
         /// <summary>
         /// 创建缓存快照
         /// </summary>
@@ -89,6 +123,6 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 节点构造函数参数类型集合
         /// </summary>
-        internal static readonly Type[] NodeConstructorParameterTypes = new Type[] { typeof(OperationParameter.NodeParser).MakeByRefType() };
+        internal static readonly Type[] NodeConstructorParameterTypes = new Type[] { typeof(Node), typeof(OperationParameter.NodeParser).MakeByRefType() };
     }
 }

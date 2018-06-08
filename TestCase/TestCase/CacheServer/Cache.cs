@@ -96,6 +96,7 @@ namespace AutoCSer.TestCase.CacheServer
                 }
                 if (!QueueConsumer.TestCase(masterClient, !isHashSet.Value)) return false;
                 if (!QueueConsumers.TestCase(masterClient, !isHashSet.Value)) return false;
+                if (!Lock(masterClient)) return false;
                 if (!valueDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueFragmentDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueSearchTreeDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
@@ -103,6 +104,7 @@ namespace AutoCSer.TestCase.CacheServer
                 if (!valueFragmentArray(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!fragmentHashSet(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!link(masterClient, slaveClient, !isHashSet.Value)) return false;
+                if (!bitmap(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!array(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!fragmentArray(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!dictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
@@ -168,6 +170,43 @@ namespace AutoCSer.TestCase.CacheServer
             return true;
         }
 
+        /// <summary>
+        /// 缓存测试
+        /// </summary>
+        /// <param name="masterClient"></param>
+        /// <returns></returns>
+        private static bool Lock(Client masterClient)
+        {
+            string name = "Lock";
+            Lock data = masterClient.GetOrCreateDataStructure<Lock>(name).Value;
+            if (data == null)
+            {
+                return false;
+            }
+
+            ReturnValue<AutoCSer.CacheServer.Lock.Manager> manager = data.GetEnter(5 * 1000);
+            if (manager.Value == null)
+            {
+                return false;
+            }
+            using (manager.Value)
+            {
+                ReturnValue<AutoCSer.CacheServer.Lock.Manager> tryManager = data.GetTryEnter(5 * 1000);
+                if (tryManager.Type != ReturnType.Locked)
+                {
+                    return false;
+                }
+            }
+
+            manager = data.GetTryEnter(5 * 1000);
+            if (manager.Value == null)
+            {
+                return false;
+            }
+            manager.Value.Exit();
+
+            return true;
+        }
         /// <summary>
         /// 缓存测试
         /// </summary>
@@ -1088,6 +1127,140 @@ namespace AutoCSer.TestCase.CacheServer
             if (count.Type != ReturnType.Success || count.Value != (isStart ? 6 : 0))
             {
                 return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 缓存测试
+        /// </summary>
+        /// <param name="masterClient"></param>
+        /// <param name="slaveClient"></param>
+        /// <param name="isStart"></param>
+        /// <returns></returns>
+        private static bool bitmap(Client masterClient, Client slaveClient, bool isStart)
+        {
+            string name = "bitmap";
+            Bitmap data = masterClient.GetOrCreateDataStructure<Bitmap>(name).Value;
+            if (data == null)
+            {
+                return false;
+            }
+            int tryCount = 10;
+            Bitmap slaveData;
+            do
+            {
+                slaveData = slaveClient.GetOrCreateDataStructure<Bitmap>(name).Value;
+                if (slaveData != null) break;
+                if (--tryCount == 0)
+                {
+                    return false;
+                }
+                Thread.Sleep(1);
+            }
+            while (true);
+
+            if (isStart)
+            {
+                ReturnValue<bool> isData = data.Set(3);
+                if (isData.Type != ReturnType.Success || isData.Value)
+                {
+                    return false;
+                }
+                isData = data.SetNegate(5);
+                if (!isData.Value)
+                {
+                    return false;
+                }
+
+                tryCount = 10;
+                do
+                {
+                    isData = slaveData.Get(3);
+                    if (isData.Value) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+                tryCount = 10;
+                do
+                {
+                    isData = slaveData.Get(5);
+                    if (isData.Value) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+            }
+            else
+            {
+                ReturnValue<bool> isData;
+
+                tryCount = 10;
+                do
+                {
+                    isData = slaveData.Get(3);
+                    if (isData.Value) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+                tryCount = 10;
+                do
+                {
+                    isData = slaveData.Get(5);
+                    if (isData.Value) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+
+                isData = data.Clear(5);
+                if (!isData.Value)
+                {
+                    return false;
+                }
+                isData = data.SetNegate(3);
+                if (isData.Type != ReturnType.Success || isData.Value)
+                {
+                    return false;
+                }
+
+                tryCount = 10;
+                do
+                {
+                    isData = slaveData.Get(3);
+                    if (isData.Type == ReturnType.Success && !isData.Value) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+                tryCount = 10;
+                do
+                {
+                    isData = slaveData.Get(5);
+                    if (isData.Type == ReturnType.Success && !isData.Value) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
             }
             return true;
         }

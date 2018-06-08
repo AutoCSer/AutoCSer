@@ -40,14 +40,15 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 32768 基分段 数组节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private FragmentArray(ref OperationParameter.NodeParser parser) { }
+        private FragmentArray(Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
         /// <returns></returns>
-        private Node getNext(ref OperationParameter.NodeParser parser)
+        private nodeType getNext(ref OperationParameter.NodeParser parser)
         {
             int index = parser.GetValueData(-1);
             if ((uint)index < count)
@@ -81,7 +82,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (arrays.Length != 0)
                     {
-                        OnRemoved();
+                        onClear();
                         arrays = NullValue<nodeType[]>.Array;
                         count = 0;
                         parser.IsOperation = true;
@@ -111,7 +112,7 @@ namespace AutoCSer.CacheServer.Cache
                 int index = indexParameter & FragmentArray.ArraySizeAnd;
                 if (array[index] == null)
                 {
-                    array[index] = nodeConstructor(ref parser);
+                    array[index] = nodeConstructor(this, ref parser);
                     parser.IsOperation = true;
                     if (indexParameter >= count) count = indexParameter + 1;
                 }
@@ -134,7 +135,7 @@ namespace AutoCSer.CacheServer.Cache
                 {
                     parser.IsOperation = true;
                     array[index] = null;
-                    if (nodeInfo.IsOnRemovedEvent) node.OnRemoved();
+                    node.OnRemoved();
                 }
                 parser.ReturnParameter.Set(true);
             }
@@ -167,6 +168,10 @@ namespace AutoCSer.CacheServer.Cache
                     }
                     else parser.ReturnParameter.Set(false);
                     return;
+                case OperationParameter.OperationType.CreateShortPath:
+                    nodeType node = getNext(ref parser);
+                    if (node != null) node.CreateShortPath(ref parser);
+                    return;
             }
             parser.ReturnParameter.Type = ReturnType.OperationTypeError;
         }
@@ -175,6 +180,14 @@ namespace AutoCSer.CacheServer.Cache
         /// 删除节点操作
         /// </summary>
         internal override void OnRemoved()
+        {
+            base.OnRemoved();
+            onClear();
+        }
+        /// <summary>
+        /// 清除数据
+        /// </summary>
+        private void onClear()
         {
             if (nodeInfo.IsOnRemovedEvent && count != 0)
             {
@@ -222,13 +235,14 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建数组节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentArray<nodeType> create(ref OperationParameter.NodeParser parser)
+        private static FragmentArray<nodeType> create(Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new FragmentArray<nodeType>(ref parser);
+            return new FragmentArray<nodeType>(parent, ref parser);
         }
 #endif
         /// <summary>

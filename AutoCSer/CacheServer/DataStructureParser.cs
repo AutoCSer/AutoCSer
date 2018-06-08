@@ -33,33 +33,47 @@ namespace AutoCSer.CacheServer
         /// <returns></returns>
         internal Type Parse()
         {
-            Type valueType = getValueType(*(Read + 1));
-            if (valueType != null)
+            Type valueType = getValueType(*(Read + 1)), keyType;
+            byte nodeType = *Read;
+            Read += 2;
+            switch (nodeType)
             {
-                Type keyType;
-                byte nodeType = *Read;
-                Read += 2;
-                switch (nodeType)
-                {
-                    case (byte)DataStructure.Abstract.NodeType.HashSet: return parse(typeof(Cache.Value.HashSet<>).MakeGenericType(valueType));
-                    case (byte)DataStructure.Abstract.NodeType.FragmentHashSet: return parse(typeof(Cache.Value.FragmentHashSet<>).MakeGenericType(valueType));
-                    case (byte)DataStructure.Abstract.NodeType.Link: return parse(typeof(Cache.Value.Link<>).MakeGenericType(valueType));
-                    case (byte)DataStructure.Abstract.NodeType.ValueArray: return parse(typeof(Cache.Value.Array<>).MakeGenericType(valueType));
-                    case (byte)DataStructure.Abstract.NodeType.ValueFragmentArray: return parse(typeof(Cache.Value.FragmentArray<>).MakeGenericType(valueType));
-                    case (byte)DataStructure.Abstract.NodeType.ValueDictionary:
-                        if ((keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.Dictionary<,>).MakeGenericType(keyType, valueType));
-                        break;
-                    case (byte)DataStructure.Abstract.NodeType.ValueFragmentDictionary:
-                        if ((keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.FragmentDictionary<,>).MakeGenericType(keyType, valueType));
-                        break;
-                    case (byte)DataStructure.Abstract.NodeType.ValueSearchTreeDictionary:
-                        if ((keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.SearchTreeDictionary<,>).MakeGenericType(keyType, valueType));
-                        break;
+                case (byte)DataStructure.Abstract.NodeType.HashSet:
+                    if (valueType != null) return parse(typeof(Cache.Value.HashSet<>).MakeGenericType(valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.FragmentHashSet:
+                    if (valueType != null) return parse(typeof(Cache.Value.FragmentHashSet<>).MakeGenericType(valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.Link:
+                    if (valueType != null) return parse(typeof(Cache.Value.Link<>).MakeGenericType(valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.ValueArray:
+                    if (valueType != null) return parse(typeof(Cache.Value.Array<>).MakeGenericType(valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.ValueFragmentArray:
+                    if (valueType != null) return parse(typeof(Cache.Value.FragmentArray<>).MakeGenericType(valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.ValueDictionary:
+                    if (valueType != null && (keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.Dictionary<,>).MakeGenericType(keyType, valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.ValueFragmentDictionary:
+                    if (valueType != null && (keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.FragmentDictionary<,>).MakeGenericType(keyType, valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.ValueSearchTreeDictionary:
+                    if (valueType != null && (keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.SearchTreeDictionary<,>).MakeGenericType(keyType, valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.Bitmap: return parse(typeof(Cache.Value.Bitmap));
+                case (byte)DataStructure.Abstract.NodeType.Lock: return parse(typeof(Cache.Lock.Node));
 
-                    case (byte)DataStructure.Abstract.NodeType.MessageQueueConsumer: return parse(typeof(Cache.MessageQueue.QueueConsumer<>).MakeGenericType(valueType));
-                    case (byte)DataStructure.Abstract.NodeType.MessageQueueConsumers: return parse(typeof(Cache.MessageQueue.QueueConsumers<>).MakeGenericType(valueType));
-                    //case (byte)DataStructure.Abstract.NodeType.Messages: return parse(typeof(Cache.MessageQueue.Messages<>).MakeGenericType(valueType));
-                }
+                case (byte)DataStructure.Abstract.NodeType.MessageQueueConsumer:
+                    if (valueType != null) return parse(typeof(Cache.MessageQueue.QueueConsumer<>).MakeGenericType(valueType));
+                    break;
+                case (byte)DataStructure.Abstract.NodeType.MessageQueueConsumers:
+                    if (valueType != null) return parse(typeof(Cache.MessageQueue.QueueConsumers<>).MakeGenericType(valueType));
+                    break;
+                    //case (byte)DataStructure.Abstract.NodeType.Messages:
+                    //    if (valueType != null) return parse(typeof(Cache.MessageQueue.Messages<>).MakeGenericType(valueType));
+                    //    break;
             }
             return null;
         }

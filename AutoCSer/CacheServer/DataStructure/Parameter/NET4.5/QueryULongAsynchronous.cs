@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <returns></returns>
         public async Task<ReturnValue<ulong>> QueryTask()
         {
-            return Client.GetULong(await Parent.ClientDataStructure.Client.QueryAsynchronousTask(this));
+            return Client.GetULong(await Parent.ClientDataStructure.Client.QueryAsynchronousAwaiter(this));
         }
     }
 }

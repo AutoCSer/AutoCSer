@@ -9,13 +9,21 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
     public abstract partial class ValueDictionary<keyType, valueType>
     {
         /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ReturnValue<ShortPath.Dictionary<keyType, valueType>>> CreateShortPathTask()
+        {
+            return await new ShortPath.Dictionary<keyType, valueType>(this).CreateTask();
+        }
+        /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         public async Task<ReturnValue<valueType>> GetTask(keyType key)
         {
-            return new ReturnValue<valueType>(await ClientDataStructure.Client.QueryTask(GetNode(key)));
+            return new ReturnValue<valueType>(await ClientDataStructure.Client.QueryAwaiter(GetNode(key)));
         }
         /// <summary>
         /// 设置数据
@@ -26,7 +34,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public async Task<ReturnValue<bool>> SetTask(keyType key, valueType valueNode)
         {
             Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationTask(node));
+            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(node));
             return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
         }
     }

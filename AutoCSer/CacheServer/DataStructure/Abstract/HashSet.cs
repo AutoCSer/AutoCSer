@@ -25,6 +25,40 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         {
             return this;
         }
+
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public ReturnValue<ShortPath.HashSet<valueType>> CreateShortPath()
+        {
+            if (Parent != null) return new ShortPath.HashSet<valueType>(this).Create();
+            return new ReturnValue<ShortPath.HashSet<valueType>> { Type = ReturnType.CanNotCreateShortPath };
+        }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="onCreated"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void CreateShortPath(Action<ReturnValue<ShortPath.HashSet<valueType>>> onCreated)
+        {
+            if (onCreated == null) throw new ArgumentNullException();
+            if (Parent != null) new ShortPath.HashSet<valueType>(this).Create(onCreated);
+            else onCreated(new ReturnValue<ShortPath.HashSet<valueType>> { Type = ReturnType.CanNotCreateShortPath });
+        }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="onCreated">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void CreateShortPathStream(Action<ReturnValue<ShortPath.HashSet<valueType>>> onCreated)
+        {
+            if (onCreated == null) throw new ArgumentNullException();
+            if (Parent != null) new ShortPath.HashSet<valueType>(this).CreateStream(onCreated);
+            else onCreated(new ReturnValue<ShortPath.HashSet<valueType>> { Type = ReturnType.CanNotCreateShortPath });
+        }
+
         /// <summary>
         /// 获取查询节点
         /// </summary>
@@ -42,7 +76,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         /// <param name="value">匹配数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public AutoCSer.CacheServer.ReturnValue<bool> Contains(valueType value)
+        public ReturnValue<bool> Contains(valueType value)
         {
             return Client.GetBool(ClientDataStructure.Client.Query(GetContainsKeyNode(value)));
         }
@@ -52,7 +86,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <param name="value">匹配数据</param>
         /// <param name="onReturn"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void Contains(valueType value, Action<AutoCSer.CacheServer.ReturnValue<bool>> onReturn)
+        public void Contains(valueType value, Action<ReturnValue<bool>> onReturn)
         {
             if (onReturn == null) throw new ArgumentNullException();
             ClientDataStructure.Client.Query(GetContainsKeyNode(value), onReturn);
@@ -63,7 +97,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <param name="value">匹配数据</param>
         /// <param name="onReturn">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void ContainsStream(valueType value, Action<AutoCSer.CacheServer.ReturnValue<bool>> onReturn)
+        public void ContainsStream(valueType value, Action<ReturnValue<bool>> onReturn)
         {
             if (onReturn == null) throw new ArgumentNullException();
             ClientDataStructure.Client.QueryStream(GetContainsKeyNode(value), onReturn);
@@ -96,7 +130,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public AutoCSer.CacheServer.ReturnValue<bool> Remove(valueType value)
+        public ReturnValue<bool> Remove(valueType value)
         {
             return Client.GetBool(ClientDataStructure.Client.Operation(GetRemoveNode(value)));
         }
@@ -106,7 +140,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <param name="value"></param>
         /// <param name="onRemove"></param>
         /// <returns></returns>
-        public void Remove(valueType value, Action<AutoCSer.CacheServer.ReturnValue<bool>> onRemove)
+        public void Remove(valueType value, Action<ReturnValue<bool>> onRemove)
         {
             ClientDataStructure.Client.Operation(GetRemoveNode(value), onRemove);
         }
@@ -126,7 +160,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <param name="value"></param>
         /// <param name="onRemove">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void RemoveStream(valueType value, Action<AutoCSer.CacheServer.ReturnValue<bool>> onRemove)
+        public void RemoveStream(valueType value, Action<ReturnValue<bool>> onRemove)
         {
             if (onRemove == null) throw new ArgumentNullException();
             ClientDataStructure.Client.OperationStream(GetRemoveNode(value), onRemove);
@@ -158,7 +192,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public AutoCSer.CacheServer.ReturnValue<bool> Add(valueType value)
+        public ReturnValue<bool> Add(valueType value)
         {
             return Client.GetBool(ClientDataStructure.Client.Operation(GetAddNode(value)));
         }
@@ -168,7 +202,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <param name="value"></param>
         /// <param name="onAdd"></param>
         /// <returns></returns>
-        public void Add(valueType value, Action<AutoCSer.CacheServer.ReturnValue<bool>> onAdd)
+        public void Add(valueType value, Action<ReturnValue<bool>> onAdd)
         {
             ClientDataStructure.Client.Operation(GetAddNode(value), onAdd);
         }
@@ -188,7 +222,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <param name="value"></param>
         /// <param name="onAdd">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void AddStream(valueType value, Action<AutoCSer.CacheServer.ReturnValue<bool>> onAdd)
+        public void AddStream(valueType value, Action<ReturnValue<bool>> onAdd)
         {
             if (onAdd == null) throw new ArgumentNullException();
             ClientDataStructure.Client.OperationStream(GetAddNode(value), onAdd);

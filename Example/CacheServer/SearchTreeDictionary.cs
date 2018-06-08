@@ -37,6 +37,19 @@ namespace AutoCSer.Example.CacheServer
                 return false;
             }
 
+            #region 创建短路径
+            AutoCSer.CacheServer.ShortPath.Array<int> shortPathArray = array.CreateShortPath().Value;
+            if (shortPathArray == null)
+            {
+                return false;
+            }
+            #endregion
+
+            if (!ValueArray.TestCase(shortPathArray))
+            {
+                return false;
+            }
+
             #region 判断关键字 1 是否存在
             AutoCSer.CacheServer.ReturnValue<bool> isKey = dictionary.ContainsKey(1);
             if (!isKey.Value)

@@ -29,5 +29,10 @@ namespace AutoCSer.CacheServer
         /// </summary>
         [FieldOffset(0)]
         public ClientDataStructure ClientDataStructure;
+        /// <summary>
+        /// 短路径节点
+        /// </summary>
+        [FieldOffset(0)]
+        public ShortPath.Node ShortPath;
     }
 }

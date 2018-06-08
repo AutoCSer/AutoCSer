@@ -15,59 +15,27 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// 数据叶子节点
         /// </summary>
         Value,
-        /// <summary>
-        /// 字典节点（嵌套节点）
-        /// </summary>
-        Dictionary,
-        /// <summary>
-        /// 搜索树字典节点（嵌套节点）
-        /// </summary>
-        SearchTreeDictionary,
+
         /// <summary>
         /// 数组节点（嵌套节点）
         /// </summary>
         Array,
         /// <summary>
-        /// 哈希表节点（数据节点）
+        /// 32768 基分段 数组节点（嵌套节点）
         /// </summary>
-        HashSet,
+        FragmentArray,
         /// <summary>
-        /// 链表节点（数据节点）
+        /// 字典节点（嵌套节点）
         /// </summary>
-        Link,
+        Dictionary,
         /// <summary>
         /// 256 基分片 字典节点（嵌套节点）
         /// </summary>
         FragmentDictionary,
         /// <summary>
-        /// 32768 基分段 数组节点（嵌套节点）
+        /// 搜索树字典节点（嵌套节点）
         /// </summary>
-        FragmentArray,
-        /// <summary>
-        /// 256 基分片 哈希表节点（数据节点）
-        /// </summary>
-        FragmentHashSet,
-
-        /// <summary>
-        /// 字典节点（数据节点）
-        /// </summary>
-        ValueDictionary,
-        /// <summary>
-        /// 搜索树字典节点（数据节点）
-        /// </summary>
-        ValueSearchTreeDictionary,
-        /// <summary>
-        /// 数组节点（数据节点）
-        /// </summary>
-        ValueArray,
-        /// <summary>
-        /// 256 基分片 字典节点（数据节点）
-        /// </summary>
-        ValueFragmentDictionary,
-        /// <summary>
-        /// 32768 基分段 数组节点（数据节点）
-        /// </summary>
-        ValueFragmentArray,
+        SearchTreeDictionary,
 
         /// <summary>
         /// 队列消费节点（数据节点）
@@ -81,5 +49,47 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// 消息节点（数据节点）
         /// </summary>
         Messages,
+
+        /// <summary>
+        /// 数组节点（数据节点）
+        /// </summary>
+        ValueArray,
+        /// <summary>
+        /// 32768 基分段 数组节点（数据节点）
+        /// </summary>
+        ValueFragmentArray,
+        /// <summary>
+        /// 字典节点（数据节点）
+        /// </summary>
+        ValueDictionary,
+        /// <summary>
+        /// 256 基分片 字典节点（数据节点）
+        /// </summary>
+        ValueFragmentDictionary,
+        /// <summary>
+        /// 搜索树字典节点（数据节点）
+        /// </summary>
+        ValueSearchTreeDictionary,
+
+        /// <summary>
+        /// 哈希表节点（数据节点）
+        /// </summary>
+        HashSet,
+        /// <summary>
+        /// 256 基分片 哈希表节点（数据节点）
+        /// </summary>
+        FragmentHashSet,
+        /// <summary>
+        /// 链表节点（数据节点）
+        /// </summary>
+        Link,
+        /// <summary>
+        /// 位图节点（数据节点）
+        /// </summary>
+        Bitmap,
+        /// <summary>
+        /// 锁节点（数据节点）
+        /// </summary>
+        Lock,
     }
 }

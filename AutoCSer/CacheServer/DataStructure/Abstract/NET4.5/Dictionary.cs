@@ -16,7 +16,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<AutoCSer.CacheServer.ReturnValue<bool>> ContainsKeyTask(keyType key)
         {
-            return Client.GetBool(await ClientDataStructure.Client.QueryTask(GetContainsKeyNode(key)));
+            return Client.GetBool(await ClientDataStructure.Client.QueryAwaiter(GetContainsKeyNode(key)));
         }
         /// <summary>
         /// 删除节点
@@ -25,7 +25,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<AutoCSer.CacheServer.ReturnValue<bool>> RemoveTask(keyType key)
         {
-            return Client.GetBool(await ClientDataStructure.Client.OperationTask(GetRemoveNode(key)));
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetRemoveNode(key)));
         }
     }
 }

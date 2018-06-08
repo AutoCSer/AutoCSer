@@ -21,14 +21,15 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 字典节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private Dictionary(ref OperationParameter.NodeParser parser) { }
+        private Dictionary(Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 获取下一个节点
         /// </summary>
         /// <param name="parser"></param>
         /// <returns></returns>
-        private Node getNext(ref OperationParameter.NodeParser parser)
+        private nodeType getNext(ref OperationParameter.NodeParser parser)
         {
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
@@ -61,7 +62,7 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.Clear:
                     if (dictionary.Count != 0)
                     {
-                        OnRemoved();
+                        onClear();
                         dictionary.Clear();
                         parser.IsOperation = true;
                     }
@@ -81,7 +82,7 @@ namespace AutoCSer.CacheServer.Cache
             {
                 if (!dictionary.ContainsKey(key))
                 {
-                    dictionary.Add(key, nodeConstructor(ref parser));
+                    dictionary.Add(key, nodeConstructor(this, ref parser));
                     parser.IsOperation = true;
                 }
                 parser.ReturnParameter.Set(true);
@@ -96,27 +97,15 @@ namespace AutoCSer.CacheServer.Cache
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                if (!nodeInfo.IsOnRemovedEvent)
+                nodeType node;
+                if (dictionary.TryGetValue(key, out node))
                 {
-                    if (dictionary.Remove(key))
-                    {
-                        parser.IsOperation = true;
-                        parser.ReturnParameter.Set(true);
-                    }
-                    else parser.ReturnParameter.Set(false);
+                    dictionary.Remove(key);
+                    parser.IsOperation = true;
+                    parser.ReturnParameter.Set(true);
+                    node.OnRemoved();
                 }
-                else
-                {
-                    nodeType node;
-                    if (dictionary.TryGetValue(key, out node))
-                    {
-                        dictionary.Remove(key);
-                        parser.IsOperation = true;
-                        parser.ReturnParameter.Set(true);
-                        node.OnRemoved();
-                    }
-                    else parser.ReturnParameter.Set(false);
-                }
+                else parser.ReturnParameter.Set(false);
             }
         }
         /// <summary>
@@ -141,6 +130,10 @@ namespace AutoCSer.CacheServer.Cache
                     HashCodeKey<keyType> key;
                     if (HashCodeKey<keyType>.Get(ref parser, out key)) parser.ReturnParameter.Set(dictionary.ContainsKey(key));
                     return;
+                case OperationParameter.OperationType.CreateShortPath:
+                    nodeType node = getNext(ref parser);
+                    if (node != null) node.CreateShortPath(ref parser);
+                    return;
             }
             parser.ReturnParameter.Type = ReturnType.OperationTypeError;
         }
@@ -149,6 +142,14 @@ namespace AutoCSer.CacheServer.Cache
         /// 删除节点操作
         /// </summary>
         internal override void OnRemoved()
+        {
+            base.OnRemoved();
+            onClear();
+        }
+        /// <summary>
+        /// 清除数据
+        /// </summary>
+        private void onClear()
         {
             if (nodeInfo.IsOnRemovedEvent)
             {
@@ -171,13 +172,14 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 创建字典节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Dictionary<keyType, nodeType> create(ref OperationParameter.NodeParser parser)
+        private static Dictionary<keyType, nodeType> create(Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new Dictionary<keyType, nodeType>(ref parser);
+            return new Dictionary<keyType, nodeType>(parent, ref parser);
         }
 #endif
         /// <summary>

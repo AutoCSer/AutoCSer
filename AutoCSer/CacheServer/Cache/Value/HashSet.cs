@@ -18,8 +18,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 哈希表节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private HashSet(ref OperationParameter.NodeParser parser) { }
+        private HashSet(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 获取下一个节点
         /// </summary>
@@ -124,13 +125,14 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建哈希表节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static HashSet<valueType> create(ref OperationParameter.NodeParser parser)
+        private static HashSet<valueType> create(Cache.Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new HashSet<valueType>(ref parser);
+            return new HashSet<valueType>(parent, ref parser);
         }
 #endif
         /// <summary>

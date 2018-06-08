@@ -39,6 +39,18 @@ namespace AutoCSer.CacheServer.OperationParameter
             stream.ByteSize += HeaderSize;
         }
         /// <summary>
+        /// 操作数据序列化
+        /// </summary>
+        /// <param name="stream">序列化流</param>
+        /// <param name="identitySize"></param>
+        internal Serializer(UnmanagedStream stream, int identitySize)
+        {
+            Stream = stream;
+            startIndex = stream.ByteSize;
+            stream.PrepLength(HeaderSize + identitySize);
+            stream.ByteSize += HeaderSize;
+        }
+        /// <summary>
         /// 序列化结束处理
         /// </summary>
         /// <param name="type">操作类型</param>

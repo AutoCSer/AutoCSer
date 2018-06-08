@@ -19,8 +19,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 搜索树字典 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private SearchTreeDictionary(ref OperationParameter.NodeParser parser) { }
+        private SearchTreeDictionary(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 获取下一个节点
         /// </summary>
@@ -143,13 +144,14 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建搜索树字典 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static SearchTreeDictionary<keyType, valueType> create(ref OperationParameter.NodeParser parser)
+        private static SearchTreeDictionary<keyType, valueType> create(Cache.Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new SearchTreeDictionary<keyType, valueType>(ref parser);
+            return new SearchTreeDictionary<keyType, valueType>(parent, ref parser);
         }
 #endif
         /// <summary>

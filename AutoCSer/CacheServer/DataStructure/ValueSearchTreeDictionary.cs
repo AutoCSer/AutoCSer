@@ -56,6 +56,39 @@ namespace AutoCSer.CacheServer.DataStructure
         }
 
         /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public ReturnValue<ShortPath.SearchTreeDictionary<keyType, valueType>> CreateShortPath()
+        {
+            if (Parent != null) return new ShortPath.SearchTreeDictionary<keyType, valueType>(this).Create();
+            return new ReturnValue<ShortPath.SearchTreeDictionary<keyType, valueType>> { Type = ReturnType.CanNotCreateShortPath };
+        }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="onCreated"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void CreateShortPath(Action<ReturnValue<ShortPath.SearchTreeDictionary<keyType, valueType>>> onCreated)
+        {
+            if (onCreated == null) throw new ArgumentNullException();
+            if (Parent != null) new ShortPath.SearchTreeDictionary<keyType, valueType>(this).Create(onCreated);
+            else onCreated(new ReturnValue<ShortPath.SearchTreeDictionary<keyType, valueType>> { Type = ReturnType.CanNotCreateShortPath });
+        }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="onCreated">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void CreateShortPathStream(Action<ReturnValue<ShortPath.SearchTreeDictionary<keyType, valueType>>> onCreated)
+        {
+            if (onCreated == null) throw new ArgumentNullException();
+            if (Parent != null) new ShortPath.SearchTreeDictionary<keyType, valueType>(this).CreateStream(onCreated);
+            else onCreated(new ReturnValue<ShortPath.SearchTreeDictionary<keyType, valueType>> { Type = ReturnType.CanNotCreateShortPath });
+        }
+
+        /// <summary>
         /// 获取数据
         /// </summary>
         /// <param name="key"></param>

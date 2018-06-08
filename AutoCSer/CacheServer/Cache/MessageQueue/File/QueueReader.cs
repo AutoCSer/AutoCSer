@@ -121,7 +121,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.File
         /// <summary>
         /// 设置当前读取数据标识
         /// </summary>
-        internal volatile ReaderQueue.SetIdentity SetIdentity;
+        internal volatile QueueTaskThread.SetIdentity SetIdentity;
         /// <summary>
         /// 当前尝试设置已完成消息标识
         /// </summary>
@@ -477,7 +477,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.File
         /// 获取数据
         /// </summary>
         /// <param name="getMessage"></param>
-        internal void Get(ReaderQueue.GetMessage getMessage)
+        internal void Get(QueueTaskThread.GetMessage getMessage)
         {
             ReturnType returnType = ReturnType.MessageQueueNotFoundReader;
             try
@@ -612,7 +612,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.File
                 ulong oldIdentity = (ulong)Interlocked.Exchange(ref currentSetIdentity, (long)identity);
                 if (oldIdentity == 0)
                 {
-                    ReaderQueue.TaskThread.Default.Add(Interlocked.Exchange(ref SetIdentity, null) ?? new ReaderQueue.SetIdentity(this));
+                    QueueTaskThread.Thread.Default.Add(Interlocked.Exchange(ref SetIdentity, null) ?? new QueueTaskThread.SetIdentity(this));
                     return;
                 }
                 if (oldIdentity <= identity) return;

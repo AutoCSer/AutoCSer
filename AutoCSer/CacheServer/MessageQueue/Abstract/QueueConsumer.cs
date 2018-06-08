@@ -170,7 +170,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <returns></returns>
         protected static DataStructure.Abstract.Node getReaderIndexNode(DataStructure.Abstract.Node messageQueue, int readerIndex)
         {
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return new DataStructure.Parameter.Value<int>(messageQueue, readerIndex);
+            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return new DataStructure.Parameter.Value(messageQueue, readerIndex);
             throw new IndexOutOfRangeException();
         }
     }

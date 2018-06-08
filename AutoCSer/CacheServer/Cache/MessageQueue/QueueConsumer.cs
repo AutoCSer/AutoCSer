@@ -17,15 +17,17 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 队列消费节点 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private QueueConsumer(ref OperationParameter.NodeParser parser) : base(ref parser) { }
+        private QueueConsumer(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent, ref parser) { }
         /// <summary>
         /// 删除节点操作
         /// </summary>
         internal override void OnRemoved()
         {
+            base.OnRemoved();
             onRemoved();
-            if (reader != null) ReaderQueue.TaskThread.Default.Add(new ReaderQueue.DisposeQueueReader(reader));
+            if (reader != null) QueueTaskThread.Thread.Default.Add(new QueueTaskThread.DisposeQueueReader(reader));
         }
         /// <summary>
         /// 获取下一个节点
@@ -49,7 +51,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// 获取当前读取数据标识
         /// </summary>
         /// <param name="getReadIdentity"></param>
-        internal override void GetReadIdentity(ReaderQueue.GetIdentity getReadIdentity)
+        internal override void GetReadIdentity(QueueTaskThread.GetIdentity getReadIdentity)
         {
             if (Writer != null)
             {
@@ -77,7 +79,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                     {
                         if (reader == null || reader.IsDisposed)
                         {
-                            ReaderQueue.TaskThread.Default.Add(new ReaderQueue.GetIdentity(this, config, ref parser));
+                            QueueTaskThread.Thread.Default.Add(new QueueTaskThread.GetIdentity(this, config, ref parser));
                             return;
                         }
                         else parser.ReturnParameter.Set(reader.Identity);
@@ -89,7 +91,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                         File.QueueReader reader = this.reader;
                         if (reader != null && !reader.IsDisposed)
                         {
-                            if (parser.OnReturn != null) ReaderQueue.TaskThread.Default.Add(new ReaderQueue.GetMessage(reader, ref parser));
+                            if (parser.OnReturn != null) QueueTaskThread.Thread.Default.Add(new QueueTaskThread.GetMessage(reader, ref parser));
                         }
                         else parser.ReturnParameter.Type = ReturnType.MessageQueueNotFoundReader;
                     }
@@ -104,13 +106,14 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 创建队列消费节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static QueueConsumer<valueType> create(ref OperationParameter.NodeParser parser)
+        private static QueueConsumer<valueType> create(Cache.Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new QueueConsumer<valueType>(ref parser);
+            return new QueueConsumer<valueType>(parent, ref parser);
         }
 #endif
         /// <summary>

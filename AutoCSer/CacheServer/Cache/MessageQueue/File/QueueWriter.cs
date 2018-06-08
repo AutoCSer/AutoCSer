@@ -389,6 +389,12 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.File
                 else
                 {
                     stateFileStream = new FileStream(stateFileName, FileMode.CreateNew, FileAccess.Write, FileShare.Read, stateBufferSize, FileOptions.None);
+                    FileInfo dataFileInfo = new FileInfo(dataFileName);
+                    if (dataFileInfo.Exists)
+                    {
+                        if (dataFileInfo.Length == 0) dataFileInfo.Delete();
+                        else AutoCSer.IO.File.MoveBak(dataFileInfo.FullName);
+                    }
                     dataFileStream = new FileStream(dataFileName, FileMode.CreateNew, FileAccess.Write, FileShare.Read, bufferPool.Size, FileOptions.None);
                 }
                 if (indexs.Array == null) indexs = new LeftArray<PacketIndex>(1 << 10);
@@ -595,7 +601,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.File
                             }
                             while (head != null);
                         }
-                        else ReaderQueue.TaskThread.Default.Add(new ReaderQueue.Append(head));
+                        else QueueTaskThread.Thread.Default.Add(new QueueTaskThread.Append(head));
                         callbackTime = Date.NowTime.Now;
                     }
                     if (this.isNeedDispose != 0)

@@ -22,8 +22,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 32768 基分段 数组 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private FragmentArray(ref OperationParameter.NodeParser parser) { }
+        private FragmentArray(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 获取下一个节点
         /// </summary>
@@ -151,13 +152,14 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建数组节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static FragmentArray<valueType> create(ref OperationParameter.NodeParser parser)
+        private static FragmentArray<valueType> create(Cache.Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new FragmentArray<valueType>(ref parser);
+            return new FragmentArray<valueType>(parent, ref parser);
         }
 #endif
         /// <summary>

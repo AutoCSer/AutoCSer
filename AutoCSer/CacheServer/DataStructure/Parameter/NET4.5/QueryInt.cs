@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <returns></returns>
         public async Task<ReturnValue<int>> QueryTask()
         {
-            return Client.GetInt(await Parent.ClientDataStructure.Client.QueryTask(this));
+            return Client.GetInt(await Parent.ClientDataStructure.Client.QueryAwaiter(this));
         }
     }
 }

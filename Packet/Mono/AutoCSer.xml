@@ -1076,6 +1076,14 @@
             <param name="read"></param>
             <param name="data"></param>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.CopyTo(System.Byte*,AutoCSer.SubArray{System.Byte}@,System.Int32)">
+            <summary>
+            复制数据
+            </summary>
+            <param name="read"></param>
+            <param name="data"></param>
+            <param name="dataStart"></param>
+        </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.SetBuffer(AutoCSer.SubArray{System.Byte}@,System.Byte*)">
             <summary>
             设置数据字节数组

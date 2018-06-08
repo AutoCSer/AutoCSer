@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <returns></returns>
         public async Task<ReturnValue<valueType>> OperationTask()
         {
-            return new ReturnValue<valueType>(await Parent.ClientDataStructure.Client.OperationTask(this));
+            return new ReturnValue<valueType>(await Parent.ClientDataStructure.Client.OperationAwaiter(this));
         }
     }
 }

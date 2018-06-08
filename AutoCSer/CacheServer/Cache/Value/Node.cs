@@ -8,8 +8,17 @@ namespace AutoCSer.CacheServer.Cache.Value
     internal abstract class Node : Cache.Node
     {
         /// <summary>
-        /// 删除节点操作
+        /// 缓存节点
         /// </summary>
-        internal override void OnRemoved() { }
+        /// <param name="parent"></param>
+        protected Node(Cache.Node parent) : base(parent) { }
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        /// <param name="parser"></param>
+        internal override void CreateShortPath(ref OperationParameter.NodeParser parser)
+        {
+            parser.Cache.CreateShortPath(this, ref parser);
+        }
     }
 }

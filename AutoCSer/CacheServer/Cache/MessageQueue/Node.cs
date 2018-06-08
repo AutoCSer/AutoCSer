@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
     /// <summary>
     /// 消息队列节点 数据节点
     /// </summary>
-    internal abstract class Node : Cache.Node
+    internal abstract class Node : Value.Node
     {
         /// <summary>
         /// 缓存管理
@@ -34,8 +34,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 消息节点 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        protected Node(ref OperationParameter.NodeParser parser)
+        protected Node(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent)
         {
             Cache = parser.Cache;
             if (Cache.IsFile)
@@ -107,6 +108,6 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// 获取当前读取数据标识
         /// </summary>
         /// <param name="getReadIdentity"></param>
-        internal abstract void GetReadIdentity(ReaderQueue.GetIdentity getReadIdentity);
+        internal abstract void GetReadIdentity(QueueTaskThread.GetIdentity getReadIdentity);
     }
 }

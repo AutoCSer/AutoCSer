@@ -52,7 +52,15 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 后置插入数据
         /// </summary>
         InsertAfter,
+        /// <summary>
+        /// 数据逻辑取反
+        /// </summary>
+        SetNegate,
 
+        /// <summary>
+        /// 创建短路径
+        /// </summary>
+        CreateShortPath,
         /// <summary>
         /// 获取数据
         /// </summary>

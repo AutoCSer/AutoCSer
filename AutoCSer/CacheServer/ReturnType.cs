@@ -48,6 +48,22 @@ namespace AutoCSer.CacheServer
         /// 数据结构定义冲突
         /// </summary>
         DataStructureNameExists,
+        /// <summary>
+        /// 非数据节点不允许创建短路径
+        /// </summary>
+        CanNotCreateShortPath,
+        /// <summary>
+        /// 没有找到短路径，客户端需重建（已过期）
+        /// </summary>
+        NotFoundShortPath,
+        /// <summary>
+        /// 找不到短路径映射的节点（已删除）
+        /// </summary>
+        NotFoundShortPathNode,
+        /// <summary>
+        /// 服务端反序列化错误
+        /// </summary>
+        ServerDeSerializeError,
 
         /// <summary>
         /// 缓存节点解析失败
@@ -159,5 +175,18 @@ namespace AutoCSer.CacheServer
         /// 消息队列读取委托已经存在
         /// </summary>
         MessageQueueGetMessageExists,
+
+        /// <summary>
+        /// 没有找到锁（已经被释放）
+        /// </summary>
+        NotFoundLock,
+        /// <summary>
+        /// 锁已经被占用
+        /// </summary>
+        Locked,
+        /// <summary>
+        /// 申请锁超时
+        /// </summary>
+        EnterLockTimeout,
     }
 }

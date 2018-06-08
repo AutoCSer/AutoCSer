@@ -38,6 +38,7 @@ namespace AutoCSer.Emit
             DynamicMethod dynamicMethod = new DynamicMethod("CacheConstructor", type, parameterTypes, type, true);
             ILGenerator generator = dynamicMethod.GetILGenerator();
             generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldarg_1);
             generator.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameterTypes, null));
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(AutoCSer.CacheServer.Cache.Constructor<>).MakeGenericType(type));

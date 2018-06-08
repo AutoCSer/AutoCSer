@@ -25,8 +25,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 链表 数据节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
-        private Link(ref OperationParameter.NodeParser parser) { }
+        private Link(Cache.Node parent, ref OperationParameter.NodeParser parser) : base(parent) { }
         /// <summary>
         /// 清除数据
         /// </summary>
@@ -281,13 +282,14 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 创建链表节点
         /// </summary>
+        /// <param name="parent"></param>
         /// <param name="parser"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static Link<valueType> create(ref OperationParameter.NodeParser parser)
+        private static Link<valueType> create(Cache.Node parent, ref OperationParameter.NodeParser parser)
         {
-            return new Link<valueType>(ref parser);
+            return new Link<valueType>(parent, ref parser);
         }
 #endif
         /// <summary>

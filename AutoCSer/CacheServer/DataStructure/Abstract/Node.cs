@@ -94,14 +94,6 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
             Node oldParent = Interlocked.CompareExchange(ref Parent, parent, null);
             return oldParent == null || oldParent == parent;
         }
-        ///// <summary>
-        ///// 序列化参数信息
-        ///// </summary>
-        ///// <param name="stream"></param>
-        //protected virtual void serializeParameter(UnmanagedStream stream)
-        //{
-        //    Parameter.Serialize(stream);
-        //}
 
         /// <summary>
         /// 节点构造函数参数类型集合
