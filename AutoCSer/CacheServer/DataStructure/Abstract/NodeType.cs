@@ -84,6 +84,10 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         Link,
         /// <summary>
+        /// 最小堆（数据节点）
+        /// </summary>
+        ArrayHeap,
+        /// <summary>
         /// 位图节点（数据节点）
         /// </summary>
         Bitmap,

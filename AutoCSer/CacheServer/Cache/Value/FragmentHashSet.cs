@@ -70,8 +70,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 if (hashSet != null && hashSet.Remove(key))
                 {
                     --count;
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
+                    parser.SetOperationReturnParameter();
                 }
                 else parser.ReturnParameter.Set(false);
             }
@@ -92,8 +91,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 if (hashSet.Count != count)
                 {
                     ++this.count;
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
+                    parser.SetOperationReturnParameter();
                 }
                 else parser.ReturnParameter.Set(true);
             }

@@ -100,8 +100,7 @@ namespace AutoCSer.CacheServer.Cache
                 nodeType node;
                 if (dictionary.Remove(ref key, out node))
                 {
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
+                    parser.SetOperationReturnParameter();
                     node.OnRemoved();
                 }
                 else parser.ReturnParameter.Set(false);

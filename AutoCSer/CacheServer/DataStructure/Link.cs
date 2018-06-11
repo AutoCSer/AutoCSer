@@ -324,16 +324,10 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <param name="value"></param>
         /// <param name="operationType"></param>
         /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Parameter.OperationBool getOperation(int index, valueType value, OperationParameter.OperationType operationType)
         {
-            Abstract.Node valueNode = ValueData.Data<valueType>.ToNode(this, value);
-            if (valueNode != null)
-            {
-                Parameter.OperationBool node = new Parameter.OperationBool(valueNode, operationType);
-                node.Parameter.Set(index);
-                return node;
-            }
-            return null;
+            return ValueData.Data<valueType>.GetOperationBool(new Parameter.Value(this, index), value, operationType);
         }
         /// <summary>
         /// 前置插入数据
@@ -354,9 +348,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public ReturnValue<bool> InsertBefore(int index, valueType value)
         {
-            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) return Client.GetBool(ClientDataStructure.Client.Operation(node));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(ClientDataStructure.Client.Operation(GetInsertBeforeNode(index, value)));
         }
         /// <summary>
         /// 前置插入数据
@@ -367,9 +359,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public void InsertBefore(int index, valueType value, Action<ReturnValue<bool>> onInsertBefore)
         {
-            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) ClientDataStructure.Client.Operation(node, onInsertBefore);
-            else if (onInsertBefore != null) onInsertBefore(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.Operation(GetInsertBeforeNode(index, value), onInsertBefore);
         }
         /// <summary>
         /// 前置插入数据
@@ -380,9 +370,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public void InsertBefore(int index, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onInsertBefore)
         {
-            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) ClientDataStructure.Client.OperationReturnParameter(node, onInsertBefore);
-            else if (onInsertBefore != null) onInsertBefore(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.OperationReturnParameter(GetInsertBeforeNode(index, value), onInsertBefore);
         }
         /// <summary>
         /// 前置插入数据
@@ -394,9 +382,7 @@ namespace AutoCSer.CacheServer.DataStructure
         public void InsertBeforeStream(int index, valueType value, Action<ReturnValue<bool>> onInsertBefore)
         {
             if (onInsertBefore == null) throw new ArgumentNullException();
-            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) ClientDataStructure.Client.OperationStream(node, onInsertBefore);
-            else onInsertBefore(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.OperationStream(GetInsertBeforeNode(index, value), onInsertBefore);
         }
         /// <summary>
         /// 前置插入数据
@@ -408,9 +394,7 @@ namespace AutoCSer.CacheServer.DataStructure
         public void InsertBeforeStream(int index, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onInsertBefore)
         {
             if (onInsertBefore == null) throw new ArgumentNullException();
-            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) ClientDataStructure.Client.OperationStream(node, onInsertBefore);
-            else onInsertBefore(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.OperationStream(GetInsertBeforeNode(index, value), onInsertBefore);
         }
 
         /// <summary>
@@ -432,9 +416,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public ReturnValue<bool> InsertAfter(int index, valueType value)
         {
-            Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) return Client.GetBool(ClientDataStructure.Client.Operation(node));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(ClientDataStructure.Client.Operation(GetInsertAfterNode(index, value)));
         }
         /// <summary>
         /// 后置插入数据
@@ -445,9 +427,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public void InsertAfter(int index, valueType value, Action<ReturnValue<bool>> onInsertAfter)
         {
-            Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) ClientDataStructure.Client.Operation(node, onInsertAfter);
-            else if (onInsertAfter != null) onInsertAfter(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.Operation(GetInsertAfterNode(index, value), onInsertAfter);
         }
         /// <summary>
         /// 后置插入数据
@@ -458,9 +438,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public void InsertAfter(int index, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onInsertAfter)
         {
-            Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) ClientDataStructure.Client.OperationReturnParameter(node, onInsertAfter);
-            else if (onInsertAfter != null) onInsertAfter(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.OperationReturnParameter(GetInsertAfterNode(index, value), onInsertAfter);
         }
         /// <summary>
         /// 后置插入数据
@@ -472,9 +450,7 @@ namespace AutoCSer.CacheServer.DataStructure
         public void InsertAfterStream(int index, valueType value, Action<ReturnValue<bool>> onInsertAfter)
         {
             if (onInsertAfter == null) throw new ArgumentNullException();
-            Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) ClientDataStructure.Client.OperationStream(node, onInsertAfter);
-            else onInsertAfter(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.OperationStream(GetInsertAfterNode(index, value), onInsertAfter);
         }
         /// <summary>
         /// 后置插入数据
@@ -486,9 +462,7 @@ namespace AutoCSer.CacheServer.DataStructure
         public void InsertAfterStream(int index, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onInsertAfter)
         {
             if (onInsertAfter == null) throw new ArgumentNullException();
-            Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) ClientDataStructure.Client.OperationStream(node, onInsertAfter);
-            else onInsertAfter(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.OperationStream(GetInsertAfterNode(index, value), onInsertAfter);
         }
 
         /// <summary>

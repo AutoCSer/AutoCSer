@@ -61,11 +61,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<valueType> key;
             if (HashCodeKey<valueType>.Get(ref parser, out key))
             {
-                if (hashSet.Remove(key))
-                {
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
-                }
+                if (hashSet.Remove(key)) parser.SetOperationReturnParameter();
                 else parser.ReturnParameter.Set(false);
             }
         }
@@ -79,8 +75,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             if (HashCodeKey<valueType>.Get(ref parser, out key))
             {
                 hashSet.Add(key);
-                parser.IsOperation = true;
-                parser.ReturnParameter.Set(true);
+                parser.SetOperationReturnParameter();
             }
         }
         /// <summary>

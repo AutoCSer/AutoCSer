@@ -146,95 +146,102 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <param name="operationType"></param>
-        /// <returns></returns>
-        private Parameter.OperationBool getOperation(keyType key, valueType value, OperationParameter.OperationType operationType)
-        {
-            Abstract.Node valueNode = ValueData.Data<valueType>.ToNode(this, value);
-            if (valueNode != null)
-            {
-                Parameter.OperationBool node = new Parameter.OperationBool(valueNode, operationType);
-                ValueData.Data<keyType>.SetData(ref node.Parameter, key);
-                return node;
-            }
-            return null;
-        }
-        /// <summary>
-        /// 设置数据
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="valueNode"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.OperationBool GetSetNode(keyType key, valueType valueNode)
+        public Parameter.OperationBool GetSetNode(keyType key, valueType value)
         {
-            return getOperation(key, valueNode, OperationParameter.OperationType.SetValue);
+            Parameter.Value keyNode = new Parameter.Value(this);
+            ValueData.Data<keyType>.SetData(ref keyNode.Parameter, key);
+            return ValueData.Data<valueType>.GetOperationBool(keyNode, value, OperationParameter.OperationType.SetValue);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public ReturnValue<bool> Set(keyType key, valueType valueNode)
+        public ReturnValue<bool> Set(keyType key, valueType value)
         {
-            Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) return Client.GetBool(ClientDataStructure.Client.Operation(node));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(ClientDataStructure.Client.Operation(GetSetNode(key, value)));
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet"></param>
         /// <returns></returns>
-        public void Set(keyType key, valueType valueNode, Action<ReturnValue<bool>> onSet)
+        public void Set(keyType key, valueType value, Action<ReturnValue<bool>> onSet)
         {
-            Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) ClientDataStructure.Client.Operation(node, onSet);
-            else if (onSet != null) onSet(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.Operation(GetSetNode(key, value), onSet);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet"></param>
         /// <returns></returns>
-        public void Set(keyType key, valueType valueNode, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
+        public void Set(keyType key, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
         {
-            Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) ClientDataStructure.Client.OperationReturnParameter(node, onSet);
-            else if (onSet != null) onSet(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.OperationReturnParameter(GetSetNode(key, value), onSet);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void SetStream(keyType key, valueType valueNode, Action<ReturnValue<bool>> onSet)
+        public void SetStream(keyType key, valueType value, Action<ReturnValue<bool>> onSet)
         {
             if (onSet == null) throw new ArgumentNullException();
-            Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) ClientDataStructure.Client.OperationStream(node, onSet);
-            else onSet(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.OperationStream(GetSetNode(key, value), onSet);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void SetStream(keyType key, valueType valueNode, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
+        public void SetStream(keyType key, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
         {
             if (onSet == null) throw new ArgumentNullException();
-            Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) ClientDataStructure.Client.OperationStream(node, onSet);
-            else onSet(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.OperationStream(GetSetNode(key, value), onSet);
+        }
+
+        /// <summary>
+        /// 获取更新节点
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private Parameter.Value getUpdateNode(keyType key)
+        {
+            Parameter.Value node = new Parameter.Value(this);
+            ValueData.Data<keyType>.SetData(ref node.Parameter, key);
+            return node;
+        }
+        /// <summary>
+        /// 获取数字更新
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal OperationUpdater.Number<valueType> GetNumber(keyType key)
+        {
+            return new OperationUpdater.Number<valueType>(getUpdateNode(key));
+        }
+        /// <summary>
+        /// 获取整数更新
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal OperationUpdater.Integer<valueType> GetInteger(keyType key)
+        {
+            return new OperationUpdater.Integer<valueType>(getUpdateNode(key));
         }
         static ValueDictionary()
         {

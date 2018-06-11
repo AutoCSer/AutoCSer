@@ -34,30 +34,83 @@ namespace AutoCSer.CacheServer.Cache.Value
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.SetValue:
-                    if (parser.ValueData.Type == ValueData.Data<valueType>.DataType)
-                    {
-                        valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
-                        if (parser.LoadValueData() && parser.IsEnd)
-                        {
-                            int index = parser.GetValueData(-1);
-                            if (index >= 0)
-                            {
-                                if (index >= array.Length) array = array.copyNew(Math.Max(index + 1, array.Length << 1), array.Length);
-                                array[index] = value;
-                                parser.IsOperation = true;
-                                if (index >= count) count = index + 1;
-                                parser.ReturnParameter.Set(true);
-                            }
-                            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
-                            return null;
-                        }
-                    }
-                    parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
-                    break;
+                case OperationParameter.OperationType.SetValue: setValue(ref parser); break;
+                case OperationParameter.OperationType.Update: update(ref parser); break;
                 default: parser.ReturnParameter.Type = ReturnType.OperationTypeError; break;
             }
             return null;
+        }
+        /// <summary>
+        /// 设置数据
+        /// </summary>
+        /// <param name="parser"></param>
+        private void setValue(ref OperationParameter.NodeParser parser)
+        {
+            int index = parser.GetValueData(-1);
+            if (index >= 0 && parser.LoadValueData() && parser.IsEnd)
+            {
+                if (parser.ValueData.Type == ValueData.Data<valueType>.DataType)
+                {
+                    valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
+                    if (index >= array.Length) array = array.copyNew(Math.Max(index + 1, array.Length << 1), array.Length);
+                    array[index] = value;
+                    parser.IsOperation = true;
+                    if (index >= count) count = index + 1;
+                    parser.ReturnParameter.Set(true);
+                }
+                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            }
+            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+        }
+        /// <summary>
+        /// 修改数据
+        /// </summary>
+        /// <param name="parser"></param>
+        private unsafe void update(ref OperationParameter.NodeParser parser)
+        {
+            int index = parser.GetValueData(-1);
+            if ((uint)index < count)
+            {
+                byte* read = parser.Read;
+                if (parser.LoadValueData() && !parser.IsEnd)
+                {
+                    valueType updateValue = ValueData.Data<valueType>.GetData(ref parser.ValueData);
+                    if (parser.LoadValueData() && parser.ValueData.Type == ValueData.DataType.UInt)
+                    {
+                        valueType value = array[index];
+                        uint type = parser.ValueData.Int64.UInt;
+                        OperationUpdater.LogicType logicType = (OperationUpdater.LogicType)(byte)(type >> 16);
+                        if (logicType != OperationUpdater.LogicType.None && parser.LoadValueData() && parser.IsEnd)
+                        {
+                            if (OperationUpdater.Data<valueType>.IsLogicData(logicType, value, ValueData.Data<valueType>.GetData(ref parser.ValueData))) logicType = OperationUpdater.LogicType.None;
+                            else
+                            {
+                                parser.ReturnParameter.Type = ReturnType.Success;
+                                ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, value);
+                                return;
+                            }
+                        }
+                        if (logicType == OperationUpdater.LogicType.None && parser.IsEnd)
+                        {
+                            switch (parser.ReturnParameter.Type = OperationUpdater.Data<valueType>.UpdateData((OperationUpdater.OperationType)(ushort)type, ref value, updateValue))
+                            {
+                                case ReturnType.Success:
+                                    array[index] = value;
+                                    parser.UpdateOperation(read, value, OperationParameter.OperationType.SetValue);
+                                    goto SETDATA;
+                                case ReturnType.Unknown:
+                                    parser.ReturnParameter.Type = ReturnType.Success;
+                                    SETDATA:
+                                    ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, value);
+                                    return;
+                            }
+                            return;
+                        }
+                    }
+                }
+                parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            }
+            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
         }
         /// <summary>
         /// 操作数据
@@ -89,12 +142,8 @@ namespace AutoCSer.CacheServer.Cache.Value
             int index = parser.GetValueData(-1);
             if ((uint)index < count)
             {
-                if (array[index] != null)
-                {
-                    parser.IsOperation = true;
-                    array[index] = default(valueType);
-                }
-                parser.ReturnParameter.Set(true);
+                array[index] = default(valueType);
+                parser.SetOperationReturnParameter();
             }
             else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
         }

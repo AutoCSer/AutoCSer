@@ -29,9 +29,9 @@ namespace AutoCSer.CacheServer.Snapshot.Value
         {
             if (index != array.Length)
             {
-                ValueData.Data<valueType>.SetData(ref cache.Parameter, array[index]);
-                cache.SerializeParameterStart();
                 cache.Parameter.Set(-1);
+                cache.SerializeParameterStart();
+                ValueData.Data<valueType>.SetData(ref cache.Parameter, array[index]);
                 cache.SerializeParameterEnd(OperationParameter.OperationType.InsertAfter);
                 ++index;
                 return true;

@@ -107,6 +107,7 @@
     <Content Include="Joke\PhpDictionaryPerformance20170615_t3.png" />
     <Content Include="Joke\PhpDictionaryPerformance20170615_t4.png" />
     <Content Include="Joke\PhpDictionaryPerformance20170615_t5.png" />
+    <Content Include="Log.page.html" />
     <Content Include="OrmCache\Cache.page.html" />
     <Content Include="OrmCache\Column.page.html" />
     <Content Include="OrmCache\Index.page.html" />

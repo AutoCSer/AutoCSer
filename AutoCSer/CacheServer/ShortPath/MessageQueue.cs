@@ -18,23 +18,12 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <summary>
         /// 追加数据
         /// </summary>
-        /// <param name="valueNode"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryBoolValueAsynchronous GetEnqueueNode(valueType valueNode)
-        {
-            return new Parameter.QueryBoolValueAsynchronous(getEnqueueNode(valueNode));
-        }
-        /// <summary>
-        /// 追加数据
-        /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private Parameter.Value getEnqueueNode(valueType value)
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public Parameter.QueryBoolAsynchronous GetEnqueueNode(valueType value)
         {
-            Parameter.Value valueNode = ValueData.Data<valueType>.ToNode(this, value);
-            valueNode.Parameter.OperationType = OperationParameter.OperationType.MessageQueueEnqueue;
-            return valueNode;
+            return ValueData.Data<valueType>.GetQueryBoolAsynchronous(this, value, OperationParameter.OperationType.MessageQueueEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -44,7 +33,7 @@ namespace AutoCSer.CacheServer.ShortPath
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ReturnValue<bool> Enqueue(valueType value)
         {
-            return Client.GetBool(Client.MasterQueryAsynchronous(getEnqueueNode(value)));
+            return Client.GetBool(Client.MasterQueryAsynchronous(GetEnqueueNode(value)));
         }
         /// <summary>
         /// 追加数据
@@ -55,7 +44,7 @@ namespace AutoCSer.CacheServer.ShortPath
         public void Enqueue(valueType value, Action<ReturnValue<bool>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Client.MasterQueryAsynchronous(getEnqueueNode(value), onEnqueue);
+            Client.MasterQueryAsynchronous(GetEnqueueNode(value), onEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -66,7 +55,7 @@ namespace AutoCSer.CacheServer.ShortPath
         public void Enqueue(valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Client.MasterQueryAsynchronous(getEnqueueNode(value), onEnqueue);
+            Client.MasterQueryAsynchronous(GetEnqueueNode(value), onEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -77,7 +66,7 @@ namespace AutoCSer.CacheServer.ShortPath
         public void EnqueueStream(valueType value, Action<ReturnValue<bool>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Client.MasterQueryAsynchronousStream(getEnqueueNode(value), onEnqueue);
+            Client.MasterQueryAsynchronousStream(GetEnqueueNode(value), onEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -88,7 +77,7 @@ namespace AutoCSer.CacheServer.ShortPath
         public void EnqueueStream(valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Client.MasterQueryAsynchronousStream(getEnqueueNode(value), onEnqueue);
+            Client.MasterQueryAsynchronousStream(GetEnqueueNode(value), onEnqueue);
         }
     }
 }

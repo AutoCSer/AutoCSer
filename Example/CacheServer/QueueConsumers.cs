@@ -69,7 +69,7 @@ namespace AutoCSer.Example.CacheServer
             return isSuccess;
         }
         /// <summary>
-        /// 消息状态验证等待时间
+        /// 消息状态验证等待事件
         /// </summary>
         private static readonly AutoResetEvent wait = new AutoResetEvent(false);
         /// <summary>

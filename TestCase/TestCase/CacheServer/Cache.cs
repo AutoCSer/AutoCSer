@@ -91,7 +91,14 @@ namespace AutoCSer.TestCase.CacheServer
                     System.IO.DirectoryInfo messageQueueDirectory = new System.IO.DirectoryInfo("MessageQueue");
                     if (messageQueueDirectory.Exists)
                     {
-                        foreach (System.IO.DirectoryInfo directory in messageQueueDirectory.GetDirectories()) directory.Delete(true);
+                        foreach (System.IO.DirectoryInfo directory in messageQueueDirectory.GetDirectories())
+                        {
+                            try
+                            {
+                                directory.Delete(true);
+                            }
+                            catch { }
+                        }
                     }
                 }
                 if (!QueueConsumer.TestCase(masterClient, !isHashSet.Value)) return false;
@@ -100,6 +107,7 @@ namespace AutoCSer.TestCase.CacheServer
                 if (!valueDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueFragmentDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueSearchTreeDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
+                if (!heap(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueArray(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueFragmentArray(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!fragmentHashSet(masterClient, slaveClient, !isHashSet.Value)) return false;
@@ -556,6 +564,124 @@ namespace AutoCSer.TestCase.CacheServer
             }
             ReturnValue<int> count = data.Count;
             if (count.Type != ReturnType.Success || count.Value != (isStart ? 1 : 0))
+            {
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 缓存测试
+        /// </summary>
+        /// <param name="masterClient"></param>
+        /// <param name="slaveClient"></param>
+        /// <param name="isStart"></param>
+        /// <returns></returns>
+        private static bool heap(Client masterClient, Client slaveClient, bool isStart)
+        {
+            string name = "heap";
+            Heap<int, int> data = masterClient.GetOrCreateDataStructure<Heap<int, int>>(name).Value;
+            if (data == null)
+            {
+                return false;
+            }
+            int tryCount = 10;
+            Heap<int, int> slaveData;
+            do
+            {
+                slaveData = slaveClient.GetOrCreateDataStructure<Heap<int, int>>(name).Value;
+                if (slaveData != null) break;
+                if (--tryCount == 0)
+                {
+                    return false;
+                }
+                Thread.Sleep(1);
+            }
+            while (true);
+
+            ReturnValue<int> count;
+            if (isStart)
+            {
+                ReturnValue<bool> isData = data.Push(6, 9);
+                if (!isData.Value)
+                {
+                    return false;
+                }
+                isData = data.Push(2, 8);
+                if (!isData.Value)
+                {
+                    return false;
+                }
+
+                isData = data.Push(4, 7);
+                if (!isData.Value)
+                {
+                    return false;
+                }
+
+                tryCount = 10;
+                do
+                {
+                    count = slaveData.Count;
+                    if (count.Value == 3) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+            }
+            else
+            {
+                ReturnValue<int> getData = data.GetTopKey();
+                if (getData.Value != 2)
+                {
+                    return false;
+                }
+                tryCount = 10;
+                do
+                {
+                    getData = slaveData.GetTopValue();
+                    if (getData.Value == 8) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+
+                ReturnValue<bool> isData = data.PopTop();
+                if (!isData.Value)
+                {
+                    return false;
+                }
+                getData = data.GetPopTopKey();
+                if (getData.Value != 4)
+                {
+                    return false;
+                }
+                getData = data.GetPopTopValue();
+                if (getData.Value != 9)
+                {
+                    return false;
+                }
+
+                tryCount = 10;
+                do
+                {
+                    count = slaveData.Count;
+                    if (count.Type == AutoCSer.CacheServer.ReturnType.Success && count.Value == 0) break;
+                    if (--tryCount == 0)
+                    {
+                        return false;
+                    }
+                    Thread.Sleep(1);
+                }
+                while (true);
+            }
+            count = data.Count;
+            if (count.Type != ReturnType.Success || count.Value != (isStart ? 3 : 0))
             {
                 return false;
             }

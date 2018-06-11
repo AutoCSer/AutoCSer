@@ -14,7 +14,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <returns></returns>
         public async Task<ReturnValue<bool>> QueryTask()
         {
-            return Client.GetBool(await node.Parent.ClientDataStructure.Client.QueryAsynchronousAwaiter(node));
+            return Client.GetBool(await Node.Parent.ClientDataStructure.Client.QueryAsynchronousAwaiter(Node));
         }
     }
 }

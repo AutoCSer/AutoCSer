@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
-using AutoCSer.CacheServer.DataStructure.Value;
 using AutoCSer.Extension;
 
 namespace AutoCSer.Example.CacheServer
@@ -49,9 +48,53 @@ namespace AutoCSer.Example.CacheServer
             }
             #endregion
 
+            #region 获取关键字为 1 的数字更新
+            AutoCSer.CacheServer.OperationUpdater.Number<int> number1 = dictionary.GetNumberUpdater(1);
+            #endregion
+
+            #region 关键字为 1 的数据 +2
+            value = number1 + 2;
+            if (value.Value != 11)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 关键字为 1 的数据 -5
+            value = number1 - 5;
+            if (value.Value != 6)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取关键字为 1 的数据
+            value = dictionary.Get(1);
+            if (value.Value != 6)
+            {
+                return false;
+            }
+            #endregion
+
+            #region dictionary[3] = 8;
+            isSet = dictionary.Set(3, 8);
+            if (!isSet.Value)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取逆序分页数据
+            AutoCSer.CacheServer.ReturnValue<int[]> page = dictionary.GetPageDesc(1, 10);
+            if (page.Value == null || page.Value.Length != 2 || page.Value[0] != 8 || page.Value[1] != 6)
+            {
+                return false;
+            }
+            #endregion
+
             #region 获取字典数据数量
             AutoCSer.CacheServer.ReturnValue<int> count = dictionary.Count;
-            if (count.Value != 1)
+            if (count.Value != 2)
             {
                 return false;
             }
@@ -63,12 +106,18 @@ namespace AutoCSer.Example.CacheServer
             {
                 return false;
             }
+            #endregion
+
+            isRemove = dictionary.Remove(3);
+            if (!isRemove.Value)
+            {
+                return false;
+            }
             count = dictionary.Count;
             if (count.Type != AutoCSer.CacheServer.ReturnType.Success || count.Value != 0)
             {
                 return false;
             }
-            #endregion
 
             return true;
         }

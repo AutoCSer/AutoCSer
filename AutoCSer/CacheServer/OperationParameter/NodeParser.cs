@@ -247,5 +247,156 @@ namespace AutoCSer.CacheServer.OperationParameter
             OnReturn = onReturn;
             ReturnParameter.IsDeSerializeStream = isReturnStream;
         }
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetOperationReturnParameter()
+        {
+            ReturnParameter.Set(true);
+            IsOperation = true;
+        }
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetOperationReturnParameterFalse()
+        {
+            ReturnParameter.Set(false);
+            IsOperation = true;
+        }
+        /// <summary>
+        /// 修改操作数据
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="read"></param>
+        /// <param name="value"></param>
+        /// <param name="operationType"></param>
+        internal void UpdateOperation<valueType>(byte* read, valueType value, OperationType operationType)
+        {
+            Read = read;
+            AutoCSer.CacheServer.OperationUpdater.Data<valueType>.UpdateOperationData(ref this, value);
+            byte* write = dataFixed + Buffer.Array.Start;
+            Buffer.Array.Length = *(int*)write = (int)(Read - write);
+            *(uint*)(write + Serializer.OperationTypeOffset) = (ushort)operationType;
+            IsOperation = true;
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(ulong value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.ULong;
+            *(ulong*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(ulong);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(long value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Long;
+            *(long*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(ulong);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(uint value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.UInt;
+            *(uint*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(int value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Int;
+            *(int*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(ushort value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.UShort + ((uint)value << 16);
+            Read += sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(short value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Short + ((uint)(ushort)value << 16);
+            Read += sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(byte value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Byte + ((uint)value << 16);
+            Read += sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(sbyte value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.SByte + ((uint)(byte)value << 16);
+            Read += sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(double value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Double;
+            *(double*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(ulong);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(float value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Float;
+            *(float*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(uint);
+        }
+        /// <summary>
+        /// 修改操作数据包
+        /// </summary>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UpdateOperation(decimal value)
+        {
+            *(uint*)Read = (byte)CacheServer.ValueData.DataType.Decimal;
+            *(decimal*)(Read + sizeof(uint)) = value;
+            Read += sizeof(uint) + sizeof(decimal);
+        }
     }
 }

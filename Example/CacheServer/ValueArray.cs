@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
-using AutoCSer.CacheServer.DataStructure.Value;
 using AutoCSer.Extension;
 
 namespace AutoCSer.Example.CacheServer
@@ -45,6 +44,58 @@ namespace AutoCSer.Example.CacheServer
             #region 获取索引为 1 的数据
             AutoCSer.CacheServer.ReturnValue<int> value = array.Get(1);
             if (value.Value != 9)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取索引为 1 的数字更新
+            AutoCSer.CacheServer.OperationUpdater.Number<int> number1 = array.GetNumberUpdater(1);
+            #endregion
+
+            #region 索引为 1 的数据 +2
+            value = number1 + 2;
+            if (value.Value != 11)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 索引为 1 的数据 -5
+            value = number1 - 5;
+            if (value.Value != 6)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取索引为 1 的数据
+            value = array.Get(1);
+            if (value.Value != 6)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 如果索引为 1 的数据小于 10 则 +5
+            value = number1.Add(5, number1 < 10);
+            if (value.Value != 11)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 如果索引为 1 的数据小于 10 则 +5
+            value = number1.Add(5, number1 < 10);
+            if (value.Value != 11)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取索引为 1 的数据
+            value = array.Get(1);
+            if (value.Value != 11)
             {
                 return false;
             }

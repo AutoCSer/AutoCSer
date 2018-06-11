@@ -11,7 +11,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 缓存管理
         /// </summary>
-        private readonly CacheManager cache;
+        internal readonly CacheManager Cache;
         /// <summary>
         /// 获取缓存数据回调委托
         /// </summary>
@@ -51,7 +51,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onCache"></param>
         internal CacheGetter(CacheManager cache, Func<AutoCSer.Net.TcpServer.ReturnValue<CacheReturnParameter>, bool> onCache)
         {
-            this.cache = cache;
+            this.Cache = cache;
             this.onCache = onCache;
             timeoutTicks = cache.Config.GetCacheLoadTimeoutSeconds * Date.SecondTicks;
             timeout = DateTime.MaxValue;
@@ -90,7 +90,7 @@ namespace AutoCSer.CacheServer
             bool isStart = false;
             try
             {
-                snapshot = new Snapshot.Cache(cache, false);
+                snapshot = new Snapshot.Cache(Cache, false);
                 snapshotSize = snapshot.NextSize();
                 timeout = Date.Now.AddTicks(timeoutTicks);
                 if (snapshotSize != 0)
@@ -111,7 +111,7 @@ namespace AutoCSer.CacheServer
                 {
                     error();
                     onCache(default(CacheReturnParameter));
-                    cache.NextGetter();
+                    Cache.NextGetter();
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace AutoCSer.CacheServer
                     }
                     snapshot = null;
                     step = CacheGetStep.TcpQueue;
-                    cache.TcpServer.CallQueue.Add(new ServerCall.CacheGetterGetQueue(this));
+                    Cache.TcpServer.CallQueue.Add(new ServerCall.CacheGetterGetQueue(this));
                     return;
                 case CacheGetStep.TcpQueue:
                     startIndex = stream.AddSize(sizeof(int));
@@ -168,7 +168,7 @@ namespace AutoCSer.CacheServer
                         }
                         return;
                     }
-                    cache.TcpServer.CallQueue.Add(new ServerCall.CacheGetterGetQueue(this));
+                    Cache.TcpServer.CallQueue.Add(new ServerCall.CacheGetterGetQueue(this));
                     return;
                 case CacheGetStep.Loaded: stream.Write(0); return;
                 case CacheGetStep.Error: stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue); return;
@@ -192,7 +192,7 @@ namespace AutoCSer.CacheServer
                 if (onCache(new CacheReturnParameter { Getter = this })) return;
                 error();
             }
-            cache.NextGetter();
+            Cache.NextGetter();
         }
         /// <summary>
         /// 添加数据

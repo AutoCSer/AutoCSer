@@ -11141,6 +11141,12 @@
             </summary>
             <param name="startIndex">起始位置</param>
         </member>
+        <member name="M:AutoCSer.UnmanagedStream.SerializeFillByteSize(System.Int32)">
+            <summary>
+            增加当前数据长度并且补白对齐 4 字节
+            </summary>
+            <param name="size">增加数据长度</param>
+        </member>
         <member name="M:AutoCSer.UnmanagedStream.GetArray">
             <summary>
             转换成字节数组

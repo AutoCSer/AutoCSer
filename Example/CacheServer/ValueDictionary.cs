@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoCSer.CacheServer.DataStructure;
-using AutoCSer.CacheServer.DataStructure.Value;
 using AutoCSer.Extension;
 
 namespace AutoCSer.Example.CacheServer
@@ -53,6 +52,42 @@ namespace AutoCSer.Example.CacheServer
             #region 获取关键字为 1 的数据
             AutoCSer.CacheServer.ReturnValue<int> value = dictionary.Get(1);
             if (value.Value != 9)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取关键字为 1 的数字更新
+            AutoCSer.CacheServer.OperationUpdater.Integer<int> integer = dictionary.GetIntegerUpdater(1);
+            #endregion
+
+            #region 关键字为 1 的数据 ^2
+            value = integer ^ 2;
+            if (value.Value != 11)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 关键字为 1 的数据 &7
+            value = integer & 7;
+            if (value.Value != 3)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 关键字为 1 的数据 +3
+            value = integer.Number + 3;
+            if (value.Value != 6)
+            {
+                return false;
+            }
+            #endregion
+
+            #region 获取关键字为 1 的数据
+            value = dictionary.Get(1);
+            if (value.Value != 6)
             {
                 return false;
             }

@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <returns></returns>
         public async Task<ReturnValue<bool>> EnqueueTask(valueType value)
         {
-            return Client.GetBool(await Client.MasterQueryAsynchronousAwaiter(getEnqueueNode(value)));
+            return Client.GetBool(await Client.MasterQueryAsynchronousAwaiter(GetEnqueueNode(value)));
         }
     }
 }

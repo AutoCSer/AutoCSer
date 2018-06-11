@@ -62,6 +62,9 @@ namespace AutoCSer.CacheServer
                 case (byte)DataStructure.Abstract.NodeType.ValueSearchTreeDictionary:
                     if (valueType != null && (keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.SearchTreeDictionary<,>).MakeGenericType(keyType, valueType));
                     break;
+                case (byte)DataStructure.Abstract.NodeType.ArrayHeap:
+                    if (valueType != null && (keyType = getKeyType(*Read++)) != null) return parse(typeof(Cache.Value.ArrayHeap<,>).MakeGenericType(keyType, valueType));
+                    break;
                 case (byte)DataStructure.Abstract.NodeType.Bitmap: return parse(typeof(Cache.Value.Bitmap));
                 case (byte)DataStructure.Abstract.NodeType.Lock: return parse(typeof(Cache.Lock.Node));
 

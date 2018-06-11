@@ -101,8 +101,7 @@ namespace AutoCSer.CacheServer.Cache
                 if (dictionary.TryGetValue(key, out node))
                 {
                     dictionary.Remove(key);
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
+                    parser.SetOperationReturnParameter();
                     node.OnRemoved();
                 }
                 else parser.ReturnParameter.Set(false);

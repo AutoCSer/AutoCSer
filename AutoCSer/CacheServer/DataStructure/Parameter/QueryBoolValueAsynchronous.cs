@@ -11,21 +11,14 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <summary>
         /// 查询参数节点
         /// </summary>
-        private Abstract.Node node;
-        /// <summary>
-        /// 查询参数节点
-        /// </summary>
-        public Abstract.Node Node
-        {
-            get { return Node; }
-        }
+        public readonly Abstract.Node Node;
         /// <summary>
         /// 查询参数节点
         /// </summary>
         /// <param name="node"></param>
         internal QueryBoolValueAsynchronous(Abstract.Node node)
         {
-            this.node = node;
+            Node = node;
         }
         /// <summary>
         /// 查询数据
@@ -34,7 +27,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ReturnValue<bool> Query()
         {
-            return Client.GetBool(node.Parent.ClientDataStructure.Client.OperationAsynchronous(node));
+            return Client.GetBool(Node.Parent.ClientDataStructure.Client.QueryAsynchronous(Node));
         }
         /// <summary>
         /// 查询数据
@@ -43,7 +36,8 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Query(Action<ReturnValue<bool>> onGet)
         {
-            node.Parent.ClientDataStructure.Client.OperationAsynchronous(node, onGet);
+            if (onGet == null) throw new ArgumentNullException();
+            Node.Parent.ClientDataStructure.Client.QueryAsynchronous(Node, onGet);
         }
         /// <summary>
         /// 查询数据
@@ -52,7 +46,8 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Query(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
-            node.Parent.ClientDataStructure.Client.OperationAsynchronousReturnParameter(node, onGet);
+            if (onGet == null) throw new ArgumentNullException();
+            Node.Parent.ClientDataStructure.Client.QueryAsynchronous(Node, onGet);
         }
         /// <summary>
         /// 查询数据
@@ -62,7 +57,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         public void QueryStream(Action<ReturnValue<bool>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            node.Parent.ClientDataStructure.Client.OperationAsynchronousStream(node, onGet);
+            Node.Parent.ClientDataStructure.Client.QueryAsynchronousStream(Node, onGet);
         }
         /// <summary>
         /// 查询数据
@@ -72,7 +67,7 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         public void QueryStream(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onGet)
         {
             if (onGet == null) throw new ArgumentNullException();
-            node.Parent.ClientDataStructure.Client.OperationAsynchronousStream(node, onGet);
+            Node.Parent.ClientDataStructure.Client.QueryAsynchronousStream(Node, onGet);
         }
     }
 }

@@ -72,15 +72,10 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Abstract.Node getEnqueueNode(valueType value)
         {
-            Abstract.Node valueNode = ValueData.Data<valueType>.ToNode(this, value);
-            if (valueNode != null)
-            {
-                valueNode.Parameter.OperationType = OperationParameter.OperationType.MessageQueueEnqueue;
-                return valueNode;
-            }
-            return null;
+            return ValueData.Data<valueType>.ToNode(this, value, OperationParameter.OperationType.MessageQueueEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -89,9 +84,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public ReturnValue<bool> Enqueue(valueType value)
         {
-            Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) return Client.GetBool(ClientDataStructure.Client.MasterQueryAsynchronous(valueNode));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(ClientDataStructure.Client.MasterQueryAsynchronous(getEnqueueNode(value)));
         }
         /// <summary>
         /// 追加数据
@@ -102,9 +95,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public void Enqueue(valueType value, Action<ReturnValue<bool>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronous(valueNode, onEnqueue);
-            else if (onEnqueue != null) onEnqueue(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.MasterQueryAsynchronous(getEnqueueNode(value), onEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -115,9 +106,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public void Enqueue(valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronous(valueNode, onEnqueue);
-            else if (onEnqueue != null) onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.MasterQueryAsynchronous(getEnqueueNode(value), onEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -128,9 +117,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public void EnqueueStream(valueType value, Action<ReturnValue<bool>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronousStream(valueNode, onEnqueue);
-            else onEnqueue(new ReturnValue<bool> { Type = ReturnType.NodeParentSetError });
+            ClientDataStructure.Client.MasterQueryAsynchronousStream(getEnqueueNode(value), onEnqueue);
         }
         /// <summary>
         /// 追加数据
@@ -141,9 +128,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public void EnqueueStream(valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) ClientDataStructure.Client.MasterQueryAsynchronousStream(valueNode, onEnqueue);
-            else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Type = Net.TcpServer.ReturnType.ClientException, Value = new ReturnParameter { Type = ReturnType.NodeParentSetError } });
+            ClientDataStructure.Client.MasterQueryAsynchronousStream(getEnqueueNode(value), onEnqueue);
         }
 
         static MessageQueue()

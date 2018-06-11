@@ -39,10 +39,6 @@ namespace AutoCSer.CacheServer
         /// 不允许创建数据节点
         /// </summary>
         CanNotCreateValueNode,
-        /// <summary>
-        /// 节点的父节点不匹配
-        /// </summary>
-        NodeParentSetError,
 
         /// <summary>
         /// 数据结构定义冲突
@@ -113,6 +109,22 @@ namespace AutoCSer.CacheServer
         /// 链表索引超出范围
         /// </summary>
         LinkIndexOutOfRange,
+        /// <summary>
+        /// 搜索树索引超出范围
+        /// </summary>
+        SearchTreeDictionaryIndexOutOfRange,
+        /// <summary>
+        /// 堆为空，不可获取数据
+        /// </summary>
+        HeapIsEmpty,
+        /// <summary>
+        /// 不支持的更新操作类型
+        /// </summary>
+        UpdateOperationTypeError,
+        /// <summary>
+        /// 除 0 错误
+        /// </summary>
+        DivideByZero,
 
         /// <summary>
         /// 缓存已经释放

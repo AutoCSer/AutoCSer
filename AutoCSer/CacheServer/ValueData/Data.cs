@@ -67,6 +67,21 @@ namespace AutoCSer.CacheServer.ValueData
         /// 操作类型（临时附加数据） [ushort]
         /// </summary>
         internal OperationParameter.OperationType OperationType;
+        /// <summary>
+        /// 尝试设置操作类型
+        /// </summary>
+        /// <param name="operationType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal bool TrySetOperationType(OperationParameter.OperationType operationType)
+        {
+            if (OperationType == OperationParameter.OperationType.Unknown)
+            {
+                OperationType = operationType;
+                return true;
+            }
+            return OperationType == operationType;
+        }
         ///// <summary>
         ///// TCP 返回值类型 [byte]
         ///// </summary>
@@ -180,11 +195,7 @@ namespace AutoCSer.CacheServer.ValueData
             if (Value != null)
             {
                 byte[] data = Value as byte[];
-                if (data != null)
-                {
-                    return AutoCSer.BinarySerialize.DeSerializer.DeSerialize(new UnionType { Value = Value }.ByteArray, ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success;
-                }
-                return false;
+                return data != null && AutoCSer.BinarySerialize.DeSerializer.DeSerialize(data, ref value).State == AutoCSer.BinarySerialize.DeSerializeState.Success;
             }
             value = default(valueType);
             return true;
@@ -397,6 +408,21 @@ namespace AutoCSer.CacheServer.ValueData
         {
             Value = value;
             Int64.Set(0, value.Length);
+            Type = type;
+            IsBuffer = true;
+        }
+        /// <summary>
+        /// 设置参数数据
+        /// </summary>
+        /// <param name="value">数据</param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <param name="type"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Set(byte[] value, int start, int length, DataType type)
+        {
+            Value = value;
+            Int64.Set(start, length);
             Type = type;
             IsBuffer = true;
         }
@@ -1445,6 +1471,31 @@ namespace AutoCSer.CacheServer.ValueData
             }
         }
         /// <summary>
+        /// 是否支持修改
+        /// </summary>
+        internal static bool IsUpdate
+        {
+            get
+            {
+                switch (DataType)
+                {
+                    case DataType.Int:
+                    case DataType.Long:
+                    case DataType.ULong:
+                    case DataType.UInt:
+                    case DataType.Short:
+                    case DataType.UShort:
+                    case DataType.Byte:
+                    case DataType.SByte:
+                    case DataType.Float:
+                    case DataType.Double:
+                    case DataType.Decimal:
+                        return true;
+                }
+                return false;
+            }
+        }
+        /// <summary>
         /// 是否数字类型
         /// </summary>
         internal static bool IsNumber
@@ -1551,43 +1602,91 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="value"></param>
+        /// <param name="operationType"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static DataStructure.Abstract.Node ToNode(DataStructure.Abstract.Node parent, valueType value)
+        internal static DataStructure.Abstract.Node ToNode(DataStructure.Abstract.Node parent, valueType value, OperationParameter.OperationType operationType)
         {
             switch (DataType)
             {
                 case DataType.Json:
                 case DataType.BinarySerialize:
                     DataStructure.Abstract.Node valueNode = value as DataStructure.Abstract.Node;
-                    return valueNode.TrySetParent(parent) ? valueNode : null;
+                    if (valueNode.TrySetParent(parent) && valueNode.Parameter.TrySetOperationType(operationType)) return valueNode;
+                    break;
+            }
+            DataStructure.Parameter.Value node = new DataStructure.Parameter.Value(parent);
+            SetData(ref node.Parameter, value);
+            node.Parameter.OperationType = operationType;
+            return node;
+        }
+        /// <summary>
+        /// 转换为数据结构定义节点
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="value"></param>
+        /// <param name="operationType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static DataStructure.Parameter.OperationBool GetOperationBool(DataStructure.Abstract.Node parent, valueType value, OperationParameter.OperationType operationType)
+        {
+            switch (DataType)
+            {
+                case DataType.Json:
+                case DataType.BinarySerialize:
+                    return new DataStructure.Parameter.OperationBool(parent, value as DataStructure.Abstract.Node, operationType);
                 default:
-                    DataStructure.Parameter.Value node = new DataStructure.Parameter.Value(parent);
-                    node.Set(value);
+                    DataStructure.Parameter.OperationBool node = new DataStructure.Parameter.OperationBool(parent);
+                    SetData(ref node.Parameter, value);
+                    node.Parameter.OperationType = operationType;
                     return node;
             }
         }
         /// <summary>
         /// 转换为短路径查询参数节点
         /// </summary>
-        /// <param name="node">短路径节点</param>
+        /// <param name="node">短路径查询节点</param>
         /// <param name="value"></param>
+        /// <param name="operationType"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ShortPath.Parameter.Value ToNode(ShortPath.Node node, valueType value)
+        internal static ShortPath.Parameter.OperationBool GetOperationBool(ShortPath.Parameter.Node node, valueType value, OperationParameter.OperationType operationType)
         {
             switch (DataType)
             {
                 case DataType.Json:
                 case DataType.BinarySerialize:
-                    return new ShortPath.Parameter.Value(node, value as DataStructure.Abstract.Node);
+                    return new ShortPath.Parameter.OperationBool(node, value as DataStructure.Abstract.Node, operationType);
                 default:
-                    ShortPath.Parameter.Value parameter = new ShortPath.Parameter.Value(node);
-                    parameter.Set(value);
+                    ShortPath.Parameter.OperationBool parameter = new ShortPath.Parameter.OperationBool(node);
+                    SetData(ref parameter.Parameter, value);
+                    parameter.Parameter.OperationType = operationType;
                     return parameter;
             }
         }
-
+        /// <summary>
+        /// 转换为短路径查询参数节点
+        /// </summary>
+        /// <param name="node">短路径查询节点</param>
+        /// <param name="value"></param>
+        /// <param name="operationType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static ShortPath.Parameter.QueryBoolAsynchronous GetQueryBoolAsynchronous(ShortPath.Node node, valueType value, OperationParameter.OperationType operationType)
+        {
+            switch (DataType)
+            {
+                case DataType.Json:
+                case DataType.BinarySerialize:
+                    return new ShortPath.Parameter.QueryBoolAsynchronous(node, value as DataStructure.Abstract.Node, operationType);
+                default:
+                    ShortPath.Parameter.QueryBoolAsynchronous parameter = new ShortPath.Parameter.QueryBoolAsynchronous(node);
+                    SetData(ref parameter.Parameter, value);
+                    parameter.Parameter.OperationType = operationType;
+                    return parameter;
+            }
+        }
+        
         static Data()
         {
             Type type = typeof(valueType);

@@ -34132,6 +34132,11 @@
             释放资源
             </summary>
         </member>
+        <member name="M:AutoCSer.ArrayHeap`2.Clear">
+            <summary>
+            清除数据
+            </summary>
+        </member>
         <member name="M:AutoCSer.ArrayHeap`2.Push(`0,`1@)">
             <summary>
             添加数据
@@ -34156,6 +34161,12 @@
             <summary>
             删除堆顶数据
             </summary>
+        </member>
+        <member name="M:AutoCSer.ArrayHeap`2.reset(System.Int32*)">
+            <summary>
+            初始化索引
+            </summary>
+            <param name="heapFixed"></param>
         </member>
         <member name="T:AutoCSer.CharStream">
             <summary>
@@ -38517,6 +38528,12 @@
             补白对齐 4 字节
             </summary>
             <param name="startIndex">起始位置</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.SerializeFillByteSize(System.Int32)">
+            <summary>
+            增加当前数据长度并且补白对齐 4 字节
+            </summary>
+            <param name="size">增加数据长度</param>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.GetArray">
             <summary>

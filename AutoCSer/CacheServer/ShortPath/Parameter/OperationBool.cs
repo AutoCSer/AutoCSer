@@ -18,8 +18,24 @@ namespace AutoCSer.CacheServer.ShortPath.Parameter
         /// 操作参数节点
         /// </summary>
         /// <param name="parent">父节点</param>
+        internal OperationBool(Node parent) : base(parent) { }
+        /// <summary>
+        /// 操作参数节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
         /// <param name="operationType">操作类型</param>
         internal OperationBool(Node parent, OperationParameter.OperationType operationType) : base(parent, operationType) { }
+        /// <summary>
+        /// 操作参数节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
+        /// <param name="operationType">操作类型</param>
+        /// <param name="value">数据</param>
+        internal OperationBool(Node parent, DataStructure.Abstract.Node value, OperationParameter.OperationType operationType) : base(parent)
+        {
+            Parameter = value.Parameter;
+            Parameter.OperationType = operationType;
+        }
         /// <summary>
         /// 操作数据
         /// </summary>

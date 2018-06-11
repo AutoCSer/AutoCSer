@@ -31,27 +31,83 @@ namespace AutoCSer.CacheServer.Cache.Value
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.SetValue:
-                    if (parser.ValueData.Type == ValueData.Data<valueType>.DataType)
-                    {
-                        valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
-                        if (parser.LoadValueData() && parser.IsEnd)
-                        {
-                            HashCodeKey<keyType> key;
-                            if (HashCodeKey<keyType>.Get(ref parser, out key))
-                            {
-                                dictionary[key] = value;
-                                parser.IsOperation = true;
-                                parser.ReturnParameter.Set(true);
-                                return null;
-                            }
-                        }
-                    }
-                    parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
-                    break;
+                case OperationParameter.OperationType.SetValue: setValue(ref parser); break;
+                case OperationParameter.OperationType.Update: update(ref parser); break;
                 default: parser.ReturnParameter.Type = ReturnType.OperationTypeError; break;
             }
             return null;
+        }
+        /// <summary>
+        /// 设置数据
+        /// </summary>
+        /// <param name="parser"></param>
+        private void setValue(ref OperationParameter.NodeParser parser)
+        {
+            HashCodeKey<keyType> key;
+            if (HashCodeKey<keyType>.Get(ref parser, out key) && parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType)
+            {
+                valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
+                dictionary[key] = value;
+                parser.SetOperationReturnParameter();
+            }
+            else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+        }
+        /// <summary>
+        /// 修改数据
+        /// </summary>
+        /// <param name="parser"></param>
+        private unsafe void update(ref OperationParameter.NodeParser parser)
+        {
+            HashCodeKey<keyType> key;
+            if (HashCodeKey<keyType>.Get(ref parser, out key))
+            {
+                valueType value;
+                if (dictionary.TryGetValue(key, out value))
+                {
+                    byte* read = parser.Read;
+                    if (parser.LoadValueData() && !parser.IsEnd)
+                    {
+                        valueType updateValue = ValueData.Data<valueType>.GetData(ref parser.ValueData);
+                        if (parser.LoadValueData() && parser.ValueData.Type == ValueData.DataType.UInt)
+                        {
+                            uint type = parser.ValueData.Int64.UInt;
+                            OperationUpdater.LogicType logicType = (OperationUpdater.LogicType)(byte)(type >> 16);
+                            if (logicType != OperationUpdater.LogicType.None && parser.LoadValueData() && parser.IsEnd)
+                            {
+                                if (OperationUpdater.Data<valueType>.IsLogicData(logicType, value, ValueData.Data<valueType>.GetData(ref parser.ValueData))) logicType = OperationUpdater.LogicType.None;
+                                else
+                                {
+                                    parser.ReturnParameter.Type = ReturnType.Success;
+                                    ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, value);
+                                    return;
+                                }
+                            }
+                            if (logicType == OperationUpdater.LogicType.None && parser.IsEnd)
+                            {
+                                switch (parser.ReturnParameter.Type = OperationUpdater.Data<valueType>.UpdateData((OperationUpdater.OperationType)(ushort)type, ref value, updateValue))
+                                {
+                                    case ReturnType.Success:
+                                        dictionary[key] = value;
+                                        parser.UpdateOperation(read, value, OperationParameter.OperationType.SetValue);
+                                        goto SETDATA;
+                                    case ReturnType.Unknown:
+                                        parser.ReturnParameter.Type = ReturnType.Success;
+                                        SETDATA:
+                                        ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, value);
+                                        return;
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    parser.ReturnParameter.Type = ReturnType.NotFoundDictionaryKey;
+                    return;
+                }
+            }
+            parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 操作数据
@@ -82,11 +138,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                if (dictionary.Remove(key))
-                {
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
-                }
+                if (dictionary.Remove(key)) parser.SetOperationReturnParameter();
                 else parser.ReturnParameter.Set(false);
             }
         }

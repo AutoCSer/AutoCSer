@@ -70,9 +70,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public async Task<ReturnValue<bool>> InsertBeforeTask(int index, valueType value)
         {
-            Parameter.OperationBool node = GetInsertBeforeNode(index, value);
-            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(node));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetInsertBeforeNode(index, value)));
         }
         /// <summary>
         /// 后置插入数据
@@ -82,9 +80,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <returns></returns>
         public async Task<ReturnValue<bool>> InsertAfterTask(int index, valueType value)
         {
-            Parameter.OperationBool node = GetInsertAfterNode(index, value);
-            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(node));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetInsertAfterNode(index, value)));
         }
         /// <summary>
         /// 追加数据

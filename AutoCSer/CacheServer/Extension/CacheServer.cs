@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 namespace AutoCSer.Extension
 {
     /// <summary>
-    /// 返回值扩展方法
+    /// 缓存服务扩展方法
     /// </summary>
-    public static class CacheServer
+    public static partial class CacheServer
     {
         /// <summary>
         /// 获取返回值数据
@@ -402,5 +402,6 @@ namespace AutoCSer.Extension
         {
             return new AutoCSer.CacheServer.MessageQueue.QueueConsumerAsynchronous<valueType>(messageQueue, onMessage, config, readerIndex, log);
         }
+
     }
 }

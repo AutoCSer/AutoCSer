@@ -118,8 +118,7 @@ namespace AutoCSer.CacheServer.Cache
                     {
                         dictionary.Remove(key);
                         --count;
-                        parser.IsOperation = true;
-                        parser.ReturnParameter.Set(true);
+                        parser.SetOperationReturnParameter();
                         node.OnRemoved();
                         return;
                     }

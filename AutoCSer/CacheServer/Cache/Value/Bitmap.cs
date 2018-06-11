@@ -75,11 +75,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             BitmapIndex index = new BitmapIndex(Maps, ref parser);
             if (index.Map != null)
             {
-                if (index.IsOperationClear())
-                {
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(true);
-                }
+                if (index.IsOperationClear()) parser.SetOperationReturnParameter();
                 else parser.ReturnParameter.Set(false);
             }
         }
@@ -92,11 +88,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             BitmapIndex index = new BitmapIndex(this, ref parser);
             if (index.Map != null)
             {
-                if (index.IsOperationSet())
-                {
-                    parser.IsOperation = true;
-                    parser.ReturnParameter.Set(false);
-                }
+                if (index.IsOperationSet()) parser.SetOperationReturnParameterFalse();
                 else parser.ReturnParameter.Set(true);
             }
         }

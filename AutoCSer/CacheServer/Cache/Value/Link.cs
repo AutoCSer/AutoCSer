@@ -113,27 +113,25 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <param name="parser"></param>
         private void insertBefore(ref OperationParameter.NodeParser parser)
         {
-            if (parser.ValueData.Type == ValueData.Data<valueType>.DataType)
+            int index = parser.GetValueData(int.MinValue);
+            LinkNode<valueType> node = getNode(index);
+            if (node != null)
             {
-                valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
-                if (parser.LoadValueData() && parser.IsEnd)
+                if (parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType)
                 {
-                    int index = parser.GetValueData(int.MinValue);
-                    LinkNode<valueType> node = getNode(index);
-                    if (node != null)
-                    {
-                        LinkNode<valueType> newNode = new LinkNode<valueType>(node.Previous, node, value);
-                        if (node.InsertBefore(newNode)) head = newNode;
-                        ++count;
-                        parser.IsOperation = true;
-                        parser.ReturnParameter.Set(true);
-                    }
-                    else if ((count | index) == 0) setHeadEnd(ref parser, value);
-                    else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
-                    return;
+                    LinkNode<valueType> newNode = new LinkNode<valueType>(node.Previous, node, ValueData.Data<valueType>.GetData(ref parser.ValueData));
+                    if (node.InsertBefore(newNode)) head = newNode;
+                    ++count;
+                    parser.SetOperationReturnParameter();
                 }
+                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
             }
-            parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            else if ((count | index) == 0)
+            {
+                if (parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType) setHeadEnd(ref parser, ValueData.Data<valueType>.GetData(ref parser.ValueData));
+                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            }
+            else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
         }
         /// <summary>
         /// 后置插入数据
@@ -141,27 +139,25 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <param name="parser"></param>
         private void insertAfter(ref OperationParameter.NodeParser parser)
         {
-            if (parser.ValueData.Type == ValueData.Data<valueType>.DataType)
+            int index = parser.GetValueData(int.MinValue);
+            LinkNode<valueType> node = getNode(index);
+            if (node != null)
             {
-                valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
-                if (parser.LoadValueData() && parser.IsEnd)
+                if (parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType)
                 {
-                    int index = parser.GetValueData(int.MinValue);
-                    LinkNode<valueType> node = getNode(index);
-                    if (node != null)
-                    {
-                        LinkNode<valueType> newNode = new LinkNode<valueType>(node, node.Next, value);
-                        if (node.InsertAfter(newNode)) end = newNode;
-                        ++count;
-                        parser.IsOperation = true;
-                        parser.ReturnParameter.Set(true);
-                    }
-                    else if ((count | (index ^ -1)) == 0) setHeadEnd(ref parser, value);
-                    else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
-                    return;
+                    LinkNode<valueType> newNode = new LinkNode<valueType>(node, node.Next, ValueData.Data<valueType>.GetData(ref parser.ValueData));
+                    if (node.InsertAfter(newNode)) end = newNode;
+                    ++count;
+                    parser.SetOperationReturnParameter();
                 }
+                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
             }
-            parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            else if ((count | (index ^ -1)) == 0)
+            {
+                if (parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType) setHeadEnd(ref parser, ValueData.Data<valueType>.GetData(ref parser.ValueData));
+                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            }
+            else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
         }
         /// <summary>
         /// 添加第一个节点
@@ -172,8 +168,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         {
             head = end = new LinkNode<valueType>(value);
             count = 1;
-            parser.IsOperation = true;
-            parser.ReturnParameter.Set(true);
+            parser.SetOperationReturnParameter();
         }
         /// <summary>
         /// 操作数据
@@ -208,8 +203,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             {
                 node.Remove(this);
                 --count;
-                parser.IsOperation = true;
-                parser.ReturnParameter.Set(true);
+                parser.SetOperationReturnParameter();
             }
             else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
         }

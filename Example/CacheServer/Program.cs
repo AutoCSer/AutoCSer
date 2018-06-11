@@ -35,6 +35,7 @@ namespace AutoCSer.Example.CacheServer
                                 Console.WriteLine(ValueArray.TestCase(client));
                                 Console.WriteLine(ValueDictionary.TestCase(client));
                                 Console.WriteLine(ValueSearchTreeDictionary.TestCase(client));
+                                Console.WriteLine(Heap.TestCase(client));
                                 Console.WriteLine(HashSet.TestCase(client));
                                 Console.WriteLine(Link.TestCase(client));
                                 Console.WriteLine(Bitmap.TestCase(client));

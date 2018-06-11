@@ -44,6 +44,7 @@
     <Compile Include="Cache\Lock\QueueTaskThread\Node.cs" />
     <Compile Include="Cache\Lock\QueueTaskThread\Thread.cs" />
     <Compile Include="Cache\Lock\QueueTaskThread\TryEnter.cs" />
+    <Compile Include="Cache\Value\ArrayHeap.cs" />
     <Compile Include="Cache\Value\Bitmap.cs" />
     <Compile Include="Cache\MessageQueue\Buffer.cs" />
     <Compile Include="Cache\MessageQueue\BufferCount.cs" />
@@ -73,20 +74,28 @@
     <Compile Include="Cache\Constructor.cs" />
     <Compile Include="Cache\Lock\Node.cs" />
     <Compile Include="Cache\Lock\LinkNode.cs" />
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\Client.cs" />
+    <Compile Include="CombinationTemplate\IntegerUpdater.cs" />
+    <Compile Include="CombinationTemplate\NumberUpdater.cs" />
     <Compile Include="DataStructure\Abstract\IValueNode.cs" />
     <Compile Include="DataStructure\Abstract\MessageQueue.cs" />
     <Compile Include="DataStructure\Abstract\NET4.5\MessageQueue.cs" />
     <Compile Include="DataStructure\Bitmap.cs" />
+    <Compile Include="DataStructure\Heap.cs" />
     <Compile Include="DataStructure\Lock.cs" />
     <Compile Include="DataStructure\MessageQueue\NET4.5\QueueConsumer.cs" />
     <Compile Include="DataStructure\MessageQueue\NET4.5\QueueConsumers.cs" />
     <Compile Include="DataStructure\MessageQueue\QueueConsumer.cs" />
     <Compile Include="DataStructure\MessageQueue\QueueConsumers.cs" />
     <Compile Include="DataStructure\NET4.5\Bitmap.cs" />
+    <Compile Include="DataStructure\NET4.5\Heap.cs" />
     <Compile Include="DataStructure\NET4.5\Lock.cs" />
+    <Compile Include="DataStructure\Parameter\NET4.5\QueryAsynchronousReturnArray.cs" />
     <Compile Include="DataStructure\Parameter\NET4.5\QueryBoolValueAsynchronous.cs" />
     <Compile Include="DataStructure\Parameter\NET4.5\QueryBoolAsynchronous.cs" />
     <Compile Include="DataStructure\Parameter\NET4.5\QueryULongAsynchronous.cs" />
+    <Compile Include="DataStructure\Parameter\QueryAsynchronousReturnArray.cs" />
     <Compile Include="DataStructure\Parameter\QueryBoolAsynchronous.cs" />
     <Compile Include="DataStructure\Parameter\QueryBoolValueAsynchronous.cs" />
     <Compile Include="DataStructure\Parameter\QueryKeepCallbackReturnValue.cs" />
@@ -119,9 +128,18 @@
     <Compile Include="MessageQueue\Abstract\QueueConsumerProcessor.cs" />
     <Compile Include="OperationParameter\ShortPathOperationNode.cs" />
     <Compile Include="OperationParameter\ShortPathQueryNode.cs" />
+    <Compile Include="OperationUpdater\Integer.cs" />
+    <Compile Include="OperationUpdater\Logic.cs" />
+    <Compile Include="OperationUpdater\LogicType.cs" />
+    <Compile Include="OperationUpdater\NET4.5\Integer.cs" />
+    <Compile Include="OperationUpdater\OperationType.cs" />
+    <Compile Include="OperationUpdater\NET4.5\Number.cs" />
+    <Compile Include="OperationUpdater\Number.cs" />
+    <Compile Include="ReturnArray.cs" />
     <Compile Include="ServerCall\CacheGetterGetQueue.cs" />
     <Compile Include="ServerCall\GetCache.cs" />
     <Compile Include="ServerCall\OperationAsynchronous.cs" />
+    <Compile Include="ServerCall\SearchTreeDictionaryGetter.cs" />
     <Compile Include="ServerCall\ShortPathOperationAsynchronous.cs" />
     <Compile Include="ShortPathIdentity.cs" />
     <Compile Include="ShortPathItem.cs" />
@@ -131,6 +149,7 @@
     <Compile Include="ShortPath\Dictionary.cs" />
     <Compile Include="ShortPath\DictionaryBase.cs" />
     <Compile Include="ShortPath\HashSet.cs" />
+    <Compile Include="ShortPath\Heap.cs" />
     <Compile Include="ShortPath\Link.cs" />
     <Compile Include="ShortPath\MessageQueue.cs" />
     <Compile Include="ShortPath\NET4.5\Array.cs" />
@@ -139,6 +158,7 @@
     <Compile Include="ShortPath\NET4.5\Dictionary.cs" />
     <Compile Include="ShortPath\NET4.5\DictionaryBase.cs" />
     <Compile Include="ShortPath\NET4.5\HashSet.cs" />
+    <Compile Include="ShortPath\NET4.5\Heap.cs" />
     <Compile Include="ShortPath\NET4.5\Link.cs" />
     <Compile Include="ShortPath\NET4.5\MessageQueue.cs" />
     <Compile Include="ShortPath\NET4.5\Node.cs" />
@@ -146,15 +166,17 @@
     <Compile Include="ShortPath\Node.cs" />
     <Compile Include="ShortPath\Parameter\NET4.5\OperationBool.cs" />
     <Compile Include="ShortPath\Parameter\NET4.5\OperationReturnValue.cs" />
+    <Compile Include="ShortPath\Parameter\NET4.5\QueryAsynchronousReturnArray.cs" />
     <Compile Include="ShortPath\Parameter\NET4.5\QueryBool.cs" />
-    <Compile Include="ShortPath\Parameter\NET4.5\QueryBoolValueAsynchronous.cs" />
+    <Compile Include="ShortPath\Parameter\NET4.5\QueryBoolAsynchronous.cs" />
     <Compile Include="ShortPath\Parameter\NET4.5\QueryInt.cs" />
     <Compile Include="ShortPath\Parameter\NET4.5\QueryReturnValue.cs" />
     <Compile Include="ShortPath\Parameter\Node.cs" />
     <Compile Include="ShortPath\Parameter\OperationBool.cs" />
     <Compile Include="ShortPath\Parameter\OperationReturnValue.cs" />
+    <Compile Include="ShortPath\Parameter\QueryAsynchronousReturnArray.cs" />
     <Compile Include="ShortPath\Parameter\QueryBool.cs" />
-    <Compile Include="ShortPath\Parameter\QueryBoolValueAsynchronous.cs" />
+    <Compile Include="ShortPath\Parameter\QueryBoolAsynchronous.cs" />
     <Compile Include="ShortPath\Parameter\QueryInt.cs" />
     <Compile Include="ShortPath\Parameter\QueryReturnValue.cs" />
     <Compile Include="ShortPath\SearchTreeDictionary.cs" />
@@ -279,7 +301,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueData\SetData.cs" />
     <Compile Include="ValueData\UnionType.cs" />
+    <Compile Include="OperationUpdater\Data.cs" />
+    <Compile Include="OperationUpdater\UpdateData.cs" />
+    <Compile Include="OperationUpdater\UpdateOperationData.cs" />
     <Compile Include="{AutoCSer.CacheServer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.CacheServer}.CombinationTemplate.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,6 +15,16 @@ namespace AutoCSer.CacheServer.ShortPath.Parameter
         /// <param name="operationType">操作类型</param>
         internal QueryReturnValue(ShortPath.Node node, OperationParameter.OperationType operationType) : base(node, operationType) { }
         /// <summary>
+        /// 查询参数节点
+        /// </summary>
+        /// <param name="node">短路径节点</param>
+        /// <param name="operationType">操作类型</param>
+        /// <param name="value"></param>
+        internal QueryReturnValue(ShortPath.Node node, OperationParameter.OperationType operationType, bool value) : base(node, operationType)
+        {
+            Parameter.Set(value);
+        }
+        /// <summary>
         /// 查询数据
         /// </summary>
         /// <returns></returns>

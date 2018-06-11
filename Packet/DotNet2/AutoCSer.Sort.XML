@@ -26737,6 +26737,22 @@
             <param name="fifoPageCount">先进先出缓存数量</param>
             <returns>二叉树分页缓存</returns>
         </member>
+        <member name="M:AutoCSer.SearchTree.Dictionary`2.GetRange(System.Int32,System.Int32)">
+            <summary>
+            获取范围数据集合
+            </summary>
+            <param name="skipCount">跳过记录数</param>
+            <param name="getCount">获取记录数</param>
+            <returns>数据集合</returns>
+        </member>
+        <member name="M:AutoCSer.SearchTree.Dictionary`2.GetRangeDesc(System.Int32,System.Int32)">
+            <summary>
+            获取逆序范围数据集合
+            </summary>
+            <param name="skipCount">跳过记录数</param>
+            <param name="getCount">获取记录数</param>
+            <returns>数据集合</returns>
+        </member>
         <member name="M:AutoCSer.SearchTree.Dictionary`2.GetFind(System.Func{`1,System.Boolean})">
             <summary>
             查找数据

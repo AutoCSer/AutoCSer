@@ -16,6 +16,16 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// <param name="operationType">操作类型</param>
         internal OperationReturnValue(Abstract.Node parent, OperationParameter.OperationType operationType) : base(parent, operationType) { }
         /// <summary>
+        /// 操作参数节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
+        /// <param name="operationType">操作类型</param>
+        /// <param name="value">数据</param>
+        internal OperationReturnValue(Abstract.Node parent, OperationParameter.OperationType operationType, bool value) : base(parent, operationType)
+        {
+            Parameter.Set(value);
+        }
+        /// <summary>
         /// 操作数据
         /// </summary>
         /// <returns></returns>

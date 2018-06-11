@@ -44,6 +44,14 @@ namespace AutoCSer.CacheServer.ShortPath.Parameter
         /// 查询节点
         /// </summary>
         /// <param name="parent">父节点</param>
+        internal Node(Node parent)
+        {
+            this.parent = parent;
+        }
+        /// <summary>
+        /// 查询节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
         /// <param name="operationType">操作类型</param>
         internal Node(Node parent, OperationParameter.OperationType operationType)
         {

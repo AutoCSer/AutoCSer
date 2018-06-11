@@ -33,9 +33,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<ReturnValue<bool>> SetTask(keyType key, valueType valueNode)
         {
-            Parameter.OperationBool node = GetSetNode(key, valueNode);
-            if (node != null) return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(node));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(await ClientDataStructure.Client.OperationAwaiter(GetSetNode(key, valueNode)));
         }
     }
 }

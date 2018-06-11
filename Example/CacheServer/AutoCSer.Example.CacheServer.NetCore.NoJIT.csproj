@@ -39,6 +39,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="Dictionary.cs" />
     <Compile Include="HashSet.cs" />
+    <Compile Include="Heap.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Lock.cs" />
     <Compile Include="Program.cs" />

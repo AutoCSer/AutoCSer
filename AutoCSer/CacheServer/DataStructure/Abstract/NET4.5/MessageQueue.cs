@@ -23,9 +23,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <returns></returns>
         public async Task<ReturnValue<bool>> EnqueueTask(valueType value)
         {
-            Abstract.Node valueNode = getEnqueueNode(value);
-            if (valueNode != null) return Client.GetBool(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(valueNode));
-            return new ReturnValue<bool> { Type = ReturnType.NodeParentSetError };
+            return Client.GetBool(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(getEnqueueNode(value)));
         }
     }
 }

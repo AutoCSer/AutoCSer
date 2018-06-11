@@ -8,6 +8,10 @@ namespace AutoCSer.CacheServer.OperationParameter
     internal enum OperationType : ushort
     {
         /// <summary>
+        /// 未知
+        /// </summary>
+        Unknown,
+        /// <summary>
         /// 重建缓存数组大小
         /// </summary>
         LoadArraySize,
@@ -56,6 +60,10 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 数据逻辑取反
         /// </summary>
         SetNegate,
+        /// <summary>
+        /// 修改数据
+        /// </summary>
+        Update,
 
         /// <summary>
         /// 创建短路径
@@ -73,6 +81,10 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// 判断是否存在关键字
         /// </summary>
         ContainsKey,
+        /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        GetValues,
 
         /// <summary>
         /// 消息队列获取当前读取数据标识

@@ -8,37 +8,48 @@
     <div><h1>基本数据类型</h1></div>
     <div>
         <p>
-            . 基本数据类型 支持 <b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>, <b>byte[]</b>
+            . 整数类型 <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>
         </p>
         <p>
-            . <b>AutoCSer.CacheServer.DataStructure.Value.Json</b>&lt;valueType&gt;
-            <br />JSON 序列化包装类型
+            . 数字类型（包括整数类型）+ <b>float</b>, <b>double</b>, <b>decimal</b>
         </p>
         <p>
-            . <b>AutoCSer.CacheServer.DataStructure.Value.Binary</b>&lt;valueType&gt;
-            <br />二进制序列化包装类型
+            . 可排序类型（包括数字类型）+ <b>char</b>, <b>DateTime</b>, <b>string</b>
         </p>
         <p>
-            . <b>关键字类型</b>必须为 <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>string</b>, <b>Guid</b>
-            <br />其中 <b>Guid</b> 为不可排序类型
+            . 关键字类型（包括可排序类型）+ <b>Guid</b>
+        </p>
+        <p>
+            . 基本数据类型（包括关键字类型）+ <b>bool</b>, <b>byte[]</b>
+        </p>
+        <p>
+            . JSON 序列化包装类型 <b>AutoCSer.CacheServer.DataStructure.Value.Json</b>&lt;valueType&gt;
+        </p>
+        <p>
+            . 二进制序列化包装类型 <b>AutoCSer.CacheServer.DataStructure.Value.Binary</b>&lt;valueType&gt;
         </p>
     </div>
     <div><h1>数据节点</h1></div>
     <div>
         <p>
             . 数组 <b>AutoCSer.CacheServer.DataStructure.ValueArray</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.ValueFragmentArray</b>&lt;valueType&gt;
-            <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>
+            <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
             <!--Include:Include\GetCode[Example,0,,CacheServer\ValueArray.cs]-->
         </p>
         <p>
             . 字典 <b>AutoCSer.CacheServer.DataStructure.ValueDictionary</b>&lt;keyType, valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.ValueFragmentDictionary</b>&lt;keyType, valueType&gt;
-            <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>
+            <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
             <!--Include:Include\GetCode[Example,1,,CacheServer\ValueDictionary.cs]-->
         </p>
         <p>
             . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.ValueSearchTreeDictionary</b>&lt;keyType, valueType&gt;
-            <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>
+            <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
             <!--Include:Include\GetCode[Example,2,,CacheServer\ValueSearchTreeDictionary.cs]-->
+        </p>
+        <p>
+            . 最小堆 <b>AutoCSer.CacheServer.DataStructure.Heap</b>&lt;keyType, valueType&gt;
+            <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>
+            <!--Include:Include\GetCode[Example,b,,CacheServer\Heap.cs]-->
         </p>
         <p>
             . 哈希表 <b>AutoCSer.CacheServer.DataStructure.HashSet</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentHashSet</b>&lt;valueType&gt;
@@ -83,7 +94,7 @@
         <p>
             . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.SearchTreeDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <!--Include:Include\GetCode[Example,b,,CacheServer\SearchTreeDictionary.cs]-->
+            <!--Include:Include\GetCode[Example,c,,CacheServer\SearchTreeDictionary.cs]-->
         </p>
     </div>
     <div>

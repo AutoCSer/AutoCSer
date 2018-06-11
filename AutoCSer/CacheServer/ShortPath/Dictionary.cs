@@ -105,82 +105,71 @@ namespace AutoCSer.CacheServer.ShortPath
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <param name="operationType"></param>
-        /// <returns></returns>
-        private Parameter.OperationBool getOperation(keyType key, valueType value, OperationParameter.OperationType operationType)
-        {
-            Parameter.OperationBool node = new Parameter.OperationBool(ValueData.Data<valueType>.ToNode(this, value), operationType);
-            ValueData.Data<keyType>.SetData(ref node.Parameter, key);
-            return node;
-        }
-        /// <summary>
-        /// 设置数据
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="valueNode"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.OperationBool GetSetNode(keyType key, valueType valueNode)
+        public Parameter.OperationBool GetSetNode(keyType key, valueType value)
         {
-            return getOperation(key, valueNode, OperationParameter.OperationType.SetValue);
+            Parameter.Value keyNode = new Parameter.Value(this);
+            ValueData.Data<keyType>.SetData(ref keyNode.Parameter, key);
+            return ValueData.Data<valueType>.GetOperationBool(keyNode, value, OperationParameter.OperationType.SetValue);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public ReturnValue<bool> Set(keyType key, valueType valueNode)
+        public ReturnValue<bool> Set(keyType key, valueType value)
         {
-            return Client.GetBool(Client.Operation(GetSetNode(key, valueNode)));
+            return Client.GetBool(Client.Operation(GetSetNode(key, value)));
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet"></param>
         /// <returns></returns>
-        public void Set(keyType key, valueType valueNode, Action<ReturnValue<bool>> onSet)
+        public void Set(keyType key, valueType value, Action<ReturnValue<bool>> onSet)
         {
             if (onSet == null) throw new ArgumentNullException();
-            Client.OperationNotNull(GetSetNode(key, valueNode), onSet);
+            Client.OperationNotNull(GetSetNode(key, value), onSet);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet"></param>
         /// <returns></returns>
-        public void Set(keyType key, valueType valueNode, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
+        public void Set(keyType key, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
         {
             if (onSet == null) throw new ArgumentNullException();
-            Client.OperationNotNull(GetSetNode(key, valueNode), onSet);
+            Client.OperationNotNull(GetSetNode(key, value), onSet);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void SetStream(keyType key, valueType valueNode, Action<ReturnValue<bool>> onSet)
+        public void SetStream(keyType key, valueType value, Action<ReturnValue<bool>> onSet)
         {
             if (onSet == null) throw new ArgumentNullException();
-            Client.OperationStream(GetSetNode(key, valueNode), onSet);
+            Client.OperationStream(GetSetNode(key, value), onSet);
         }
         /// <summary>
         /// 设置数据
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="valueNode"></param>
+        /// <param name="value"></param>
         /// <param name="onSet">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void SetStream(keyType key, valueType valueNode, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
+        public void SetStream(keyType key, valueType value, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onSet)
         {
             if (onSet == null) throw new ArgumentNullException();
-            Client.OperationStream(GetSetNode(key, valueNode), onSet);
+            Client.OperationStream(GetSetNode(key, value), onSet);
         }
     }
 }

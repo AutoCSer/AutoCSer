@@ -9,12 +9,12 @@ namespace AutoCSer.CacheServer.ShortPath.Parameter
     internal sealed partial class Value : Node
     {
         /// <summary>
-        /// 操作参数节点
+        /// 数据参数节点
         /// </summary>
         /// <param name="node">短路径节点</param>
         internal Value(ShortPath.Node node) : base(node) { }
         /// <summary>
-        /// 操作参数节点
+        /// 数据参数节点
         /// </summary>
         /// <param name="node">短路径节点</param>
         /// <param name="value">数据</param>
@@ -23,14 +23,29 @@ namespace AutoCSer.CacheServer.ShortPath.Parameter
             Parameter = value.Parameter;
         }
         /// <summary>
-        /// 设置数据
+        /// 数据参数节点
         /// </summary>
-        /// <typeparam name="valueType"></typeparam>
+        /// <param name="parent">短路径节点</param>
         /// <param name="value">数据</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set<valueType>(valueType value)
+        internal Value(ShortPath.Node parent, int value) : base(parent)
         {
-            ValueData.Data<valueType>.SetData(ref Parameter, value);
+            Parameter.Set(value);
         }
+        ///// <summary>
+        ///// 数据参数节点
+        ///// </summary>
+        ///// <param name="parent">父节点</param>
+        ///// <param name="operationType">操作类型</param>
+        //internal Value(Node parent, OperationParameter.OperationType operationType) : base(parent, operationType) { }
+        ///// <summary>
+        ///// 数据参数节点
+        ///// </summary>
+        ///// <param name="parent">父节点</param>
+        ///// <param name="operationType">操作类型</param>
+        ///// <param name="value">数据</param>
+        //internal Value(Node parent, OperationParameter.OperationType operationType, DataStructure.Abstract.Node value) : base(parent, operationType)
+        //{
+        //    Parameter = value.Parameter;
+        //}
     }
 }

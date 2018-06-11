@@ -599,6 +599,26 @@ namespace AutoCSer.CacheServer
         {
             QueryAsynchronousStream(node, value => onReturn(value.Value.GetULong(value.Type)));
         }
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onGet"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void QueryAsynchronous<valueType>(DataStructure.Abstract.Node node, Action<ReturnValue<valueType[]>> onGet)
+        {
+            QueryAsynchronous(node, value => onGet(ReturnArray<valueType>.Get(value)));
+        }
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onGet"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void QueryAsynchronousStream<valueType>(DataStructure.Abstract.Node node, Action<ReturnValue<valueType[]>> onGet)
+        {
+            QueryAsynchronousStream(node, value => onGet(ReturnArray<valueType>.Get(value)));
+        }
 
         /// <summary>
         /// 异步查询数据
@@ -1239,6 +1259,26 @@ namespace AutoCSer.CacheServer
         {
             QueryAsynchronousStream(node, value => onReturn(value.Value.GetULong(value.Type)));
         }
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onGet"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void QueryAsynchronous<valueType>(ShortPath.Parameter.Node node, Action<ReturnValue<valueType[]>> onGet)
+        {
+            QueryAsynchronous(node, value => onGet(ReturnArray<valueType>.Get(value)));
+        }
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onGet"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void QueryAsynchronousStream<valueType>(ShortPath.Parameter.Node node, Action<ReturnValue<valueType[]>> onGet)
+        {
+            QueryAsynchronousStream(node, value => onGet(ReturnArray<valueType>.Get(value)));
+        }
 
         /// <summary>
         /// 异步查询数据
@@ -1323,37 +1363,6 @@ namespace AutoCSer.CacheServer
         internal void MasterQueryAsynchronousStream(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
             MasterQueryAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
-        }
-
-        /// <summary>
-        /// 获取返回值
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ReturnValue<int> GetInt(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
-        {
-            return value.Value.GetInt(value.Type);
-        }
-        /// <summary>
-        /// 获取返回值
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ReturnValue<bool> GetBool(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
-        {
-            return value.Value.GetBool(value.Type);
-        }
-        /// <summary>
-        /// 获取返回值
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ReturnValue<ulong> GetULong(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
-        {
-            return value.Value.GetULong(value.Type);
         }
     }
 }

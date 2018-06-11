@@ -271,11 +271,10 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <param name="value"></param>
         /// <param name="operationType"></param>
         /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private Parameter.OperationBool getOperation(int index, valueType value, OperationParameter.OperationType operationType)
         {
-            Parameter.OperationBool node = new Parameter.OperationBool(ValueData.Data<valueType>.ToNode(this, value), operationType);
-            node.Parameter.Set(index);
-            return node;
+            return ValueData.Data<valueType>.GetOperationBool(new Parameter.Value(this, index), value, operationType);
         }
         /// <summary>
         /// 前置插入数据

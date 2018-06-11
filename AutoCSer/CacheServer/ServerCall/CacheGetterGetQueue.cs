@@ -31,7 +31,7 @@ namespace AutoCSer.CacheServer.ServerCall
             }
             catch (Exception error)
             {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                getter.Cache.TcpServer.AddLog(error);
             }
         }
     }

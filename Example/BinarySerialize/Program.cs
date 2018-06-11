@@ -8,6 +8,7 @@ namespace AutoCSer.Example.BinarySerialize
         {
             Console.WriteLine(@"http://www.AutoCSer.com/Serialize/Binary.html
 ");
+
             Console.WriteLine(Reference.TestCase());
             Console.WriteLine(DisabledReference.TestCase());
             Console.WriteLine(PublicInstanceField.TestCase());
