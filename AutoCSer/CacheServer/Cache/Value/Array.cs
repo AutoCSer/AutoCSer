@@ -36,7 +36,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             {
                 case OperationParameter.OperationType.SetValue: setValue(ref parser); break;
                 case OperationParameter.OperationType.Update: update(ref parser); break;
-                default: parser.ReturnParameter.Type = ReturnType.OperationTypeError; break;
+                default: parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError; break;
             }
             return null;
         }
@@ -56,11 +56,11 @@ namespace AutoCSer.CacheServer.Cache.Value
                     array[index] = value;
                     parser.IsOperation = true;
                     if (index >= count) count = index + 1;
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                 }
-                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
-            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
         }
         /// <summary>
         /// 修改数据
@@ -85,32 +85,32 @@ namespace AutoCSer.CacheServer.Cache.Value
                             if (OperationUpdater.Data<valueType>.IsLogicData(logicType, value, ValueData.Data<valueType>.GetData(ref parser.ValueData))) logicType = OperationUpdater.LogicType.None;
                             else
                             {
-                                parser.ReturnParameter.Type = ReturnType.Success;
-                                ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, value);
+                                parser.ReturnParameter.ReturnType = ReturnType.Success;
+                                ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, value);
                                 return;
                             }
                         }
                         if (logicType == OperationUpdater.LogicType.None && parser.IsEnd)
                         {
-                            switch (parser.ReturnParameter.Type = OperationUpdater.Data<valueType>.UpdateData((OperationUpdater.OperationType)(ushort)type, ref value, updateValue))
+                            switch (parser.ReturnParameter.ReturnType = OperationUpdater.Data<valueType>.UpdateData((OperationUpdater.OperationType)(ushort)type, ref value, updateValue))
                             {
                                 case ReturnType.Success:
                                     array[index] = value;
                                     parser.UpdateOperation(read, value, OperationParameter.OperationType.SetValue);
                                     goto SETDATA;
                                 case ReturnType.Unknown:
-                                    parser.ReturnParameter.Type = ReturnType.Success;
+                                    parser.ReturnParameter.ReturnType = ReturnType.Success;
                                     SETDATA:
-                                    ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, value);
+                                    ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, value);
                                     return;
                             }
                             return;
                         }
                     }
                 }
-                parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
-            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
         }
         /// <summary>
         /// 操作数据
@@ -128,10 +128,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                         count = 0;
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 删除数据
@@ -145,7 +145,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 array[index] = default(valueType);
                 parser.SetOperationReturnParameter();
             }
-            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
         }
         /// <summary>
         /// 获取下一个节点
@@ -154,7 +154,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -165,18 +165,18 @@ namespace AutoCSer.CacheServer.Cache.Value
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(count); return;
                 case OperationParameter.OperationType.GetValue:
                     int index = parser.GetValueData(-1);
                     if ((uint)index < count)
                     {
-                        ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, array[index]);
-                        parser.ReturnParameter.Type = ReturnType.Success;
+                        ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, array[index]);
+                        parser.ReturnParameter.ReturnType = ReturnType.Success;
                     }
-                    else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+                    else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

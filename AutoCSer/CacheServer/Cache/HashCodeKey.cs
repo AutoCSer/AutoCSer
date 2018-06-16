@@ -68,7 +68,7 @@ namespace AutoCSer.CacheServer.Cache
                 key = new HashCodeKey<valueType>(ValueData.Data<valueType>.GetData(ref parser.ValueData));
                 return true;
             }
-            parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             key = default(HashCodeKey<valueType>);
             return false;
         }
@@ -85,7 +85,7 @@ namespace AutoCSer.CacheServer.Cache
                 key = ValueData.Data<valueType>.GetData(ref parser.ValueData);
                 return true;
             }
-            parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             key = default(valueType);
             return false;
         }

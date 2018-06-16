@@ -32,7 +32,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -52,10 +52,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                         count = 0;
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 删除数据
@@ -72,7 +72,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                     --count;
                     parser.SetOperationReturnParameter();
                 }
-                else parser.ReturnParameter.Set(false);
+                else parser.ReturnParameter.ReturnParameterSet(false);
             }
         }
         /// <summary>
@@ -93,7 +93,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                     ++this.count;
                     parser.SetOperationReturnParameter();
                 }
-                else parser.ReturnParameter.Set(true);
+                else parser.ReturnParameter.ReturnParameterSet(true);
             }
         }
         /// <summary>
@@ -103,7 +103,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -115,16 +115,16 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<valueType> key;
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(count); return;
                 case OperationParameter.OperationType.ContainsKey:
                     if (HashCodeKey<valueType>.Get(ref parser, out key))
                     {
                         System.Collections.Generic.HashSet<HashCodeKey<valueType>> hashSet = hashSets[key.HashCode & 0xff];
-                        parser.ReturnParameter.Set(hashSet != null && hashSet.Contains(key));
+                        parser.ReturnParameter.ReturnParameterSet(hashSet != null && hashSet.Contains(key));
                     }
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

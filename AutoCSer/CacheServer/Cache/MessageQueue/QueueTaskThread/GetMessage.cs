@@ -10,7 +10,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 队列数据 读文件
         /// </summary>
-        private readonly File.QueueReader reader;
+        private readonly FileReader reader;
         /// <summary>
         /// 读取消息起始标识
         /// </summary>
@@ -28,10 +28,10 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="parser"></param>
-        internal GetMessage(File.QueueReader reader, ref OperationParameter.NodeParser parser) : base(reader.Node)
+        internal GetMessage(FileReader reader, ref OperationParameter.NodeParser parser) : base(reader.Node)
         {
             OnReturn = parser.OnReturn;
-            IsReturnStream = parser.ReturnParameter.IsDeSerializeStream;
+            IsReturnStream = parser.ReturnParameter.IsReturnDeSerializeStream;
             Identity = parser.ValueData.Int64.ULong;
             this.reader = reader;
             parser.OnReturn = null;

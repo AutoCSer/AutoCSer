@@ -28,6 +28,7 @@ namespace AutoCSer.CacheServer
             {
                 for (FileStreamWriter writer = FileStreamWriter.Writers.End; writer != null; writer = writer.DoubleLinkPrevious) writer.OnTimer();
             }
+            if ((flag & Date.NowTime.OnTimeFlag.CacheDistributionTimeout) != 0) Cache.MessageQueue.DistributionFileReader.OnTimer();
             //if (CacheTimeout.Timeouts.End != null)
             //{
             //    AutoCSer.Net.TcpServer.ServerCallQueue.Default.Add(new CacheManagerServerCall { Type = CacheManagerServerCallType.Timeout });

@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <summary>
         /// 查询参数
         /// </summary>
-        protected readonly DataStructure.Parameter.QueryOnly parameter;
+        internal readonly DataStructure.Parameter.Value Parameter;
         /// <summary>
         /// 重建访问锁
         /// </summary>
@@ -44,9 +44,9 @@ namespace AutoCSer.CacheServer.ShortPath
             {
                 this.node = node;
                 Client = node.ClientDataStructure.Client;
-                parameter = new DataStructure.Parameter.QueryOnly(node.Parent);
-                parameter.Parameter = node.Parameter;
-                parameter.Parameter.OperationType = OperationParameter.OperationType.CreateShortPath;
+                Parameter = new DataStructure.Parameter.Value(node.Parent);
+                Parameter.Parameter = node.Parameter;
+                Parameter.Parameter.OperationType = OperationParameter.OperationType.CreateShortPath;
                 createLock = new object();
             }
         }
@@ -57,7 +57,7 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <returns></returns>
         protected bool isCreate(ref AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            Identity = value.Value.GetBinary<ShortPathIdentity>(value.Type);
+            Identity = value.Value.Parameter.GetBinary<ShortPathIdentity>(value.Type);
             if (Identity.Type == ReturnType.Success)
             {
                 if (Identity.Value.Identity != 0) return true;
@@ -72,7 +72,7 @@ namespace AutoCSer.CacheServer.ShortPath
         protected void create(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onCreated)
         {
             socketIdentity = Client.SocketIdentity;
-            Client.Query(parameter, value =>
+            Client.Query(Parameter, value =>
             {
                 if (socketIdentity == Client.SocketIdentity) onCreated(value);
                 else create(onCreated);
@@ -85,7 +85,7 @@ namespace AutoCSer.CacheServer.ShortPath
         protected void createStream(Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onCreated)
         {
             socketIdentity = Client.SocketIdentity;
-            Client.QueryStream(parameter, value =>
+            Client.QueryStream(Parameter, value =>
             {
                 if (socketIdentity == Client.SocketIdentity) onCreated(value);
                 else createStream(onCreated);
@@ -137,7 +137,7 @@ namespace AutoCSer.CacheServer.ShortPath
                 do
                 {
                     socketIdentity = Client.SocketIdentity;
-                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = client.Query(new OperationParameter.QueryNode { Node = parameter });
+                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = client.Query(new OperationParameter.QueryNode { Node = Parameter });
                     if (socketIdentity == Client.SocketIdentity) return isCreate(ref value);
                 }
                 while (true);
@@ -219,7 +219,7 @@ namespace AutoCSer.CacheServer.ShortPath
                 do
                 {
                     socketIdentity = Client.SocketIdentity;
-                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = client.Query(new OperationParameter.QueryNode { Node = parameter });
+                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = client.Query(new OperationParameter.QueryNode { Node = Parameter });
                     if (socketIdentity == Client.SocketIdentity) return isCreate(ref value);
                 }
                 while (true);
@@ -278,7 +278,7 @@ namespace AutoCSer.CacheServer.ShortPath
             do
             {
                 socketIdentity = Client.SocketIdentity;
-                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = Client.Query(parameter);
+                AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = Client.Query(Parameter);
                 if (socketIdentity == Client.SocketIdentity)
                 {
                     if(isCreate(ref value)) return (nodeType)this;

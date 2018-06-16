@@ -16,7 +16,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue</*Type[0]*/ulong/*Type[0]*/> /*Type[1]*/GetULong/*Type[1]*/(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value./*Type[1]*/GetULong/*Type[1]*/(value.Type);
+            return value.Value.Parameter./*Type[1]*/GetULong/*Type[1]*/(value.Type);
         }
     }
 }

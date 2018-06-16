@@ -28,7 +28,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -47,10 +47,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                         hashSet.Clear();
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 删除数据
@@ -62,7 +62,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             if (HashCodeKey<valueType>.Get(ref parser, out key))
             {
                 if (hashSet.Remove(key)) parser.SetOperationReturnParameter();
-                else parser.ReturnParameter.Set(false);
+                else parser.ReturnParameter.ReturnParameterSet(false);
             }
         }
         /// <summary>
@@ -85,7 +85,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -97,12 +97,12 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<valueType> key;
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(hashSet.Count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(hashSet.Count); return;
                 case OperationParameter.OperationType.ContainsKey:
-                    if (HashCodeKey<valueType>.Get(ref parser, out key)) parser.ReturnParameter.Set(hashSet.Contains(key));
+                    if (HashCodeKey<valueType>.Get(ref parser, out key)) parser.ReturnParameter.ReturnParameterSet(hashSet.Contains(key));
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

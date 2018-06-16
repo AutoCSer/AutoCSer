@@ -55,7 +55,7 @@ namespace AutoCSer.CacheServer.ServerCall
             ReturnParameter returnParameter = default(ReturnParameter);
             try
             {
-                returnParameter.SetBinary(new ReturnArray<valueType>(getCount > 0 ? dictionary.Dictionary.GetRange(skipCount, getCount) : dictionary.Dictionary.GetRangeDesc(skipCount, -getCount)));
+                returnParameter.Parameter.ReturnParameterSetBinary(new ReturnArray<valueType>(getCount > 0 ? dictionary.Dictionary.GetRange(skipCount, getCount) : dictionary.Dictionary.GetRangeDesc(skipCount, -getCount)));
             }
             catch (Exception error)
             {

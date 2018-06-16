@@ -33,6 +33,36 @@ namespace AutoCSer.CacheServer.DataStructure.Parameter
         /// 数据节点
         /// </summary>
         /// <param name="parent">父节点</param>
+        /// <param name="operationType">操作类型</param>
+        /// <param name="value">数据</param>
+        internal Value(Abstract.Node parent, OperationParameter.OperationType operationType, int value) : base(parent, operationType)
+        {
+            Parameter.Set(value);
+        }
+        /// <summary>
+        /// 数据节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
+        /// <param name="operationType">操作类型</param>
+        /// <param name="value">数据</param>
+        internal Value(Abstract.Node parent, OperationParameter.OperationType operationType, long value) : base(parent, operationType)
+        {
+            Parameter.Set(value);
+        }
+        /// <summary>
+        /// 数据节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
+        /// <param name="operationType">操作类型</param>
+        /// <param name="value">数据</param>
+        internal Value(Abstract.Node parent, OperationParameter.OperationType operationType, ulong value) : base(parent, operationType)
+        {
+            Parameter.Set(value);
+        }
+        /// <summary>
+        /// 数据节点
+        /// </summary>
+        /// <param name="parent">父节点</param>
         /// <param name="value">数据</param>
         internal Value(Abstract.Node parent, int value) : base(parent)
         {

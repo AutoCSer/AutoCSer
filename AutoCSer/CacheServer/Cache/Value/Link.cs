@@ -103,7 +103,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             {
                 case OperationParameter.OperationType.InsertBefore: insertBefore(ref parser); break;
                 case OperationParameter.OperationType.InsertAfter: insertAfter(ref parser); break;
-                default: parser.ReturnParameter.Type = ReturnType.OperationTypeError; break;
+                default: parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError; break;
             }
             return null;
         }
@@ -124,14 +124,14 @@ namespace AutoCSer.CacheServer.Cache.Value
                     ++count;
                     parser.SetOperationReturnParameter();
                 }
-                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
             else if ((count | index) == 0)
             {
                 if (parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType) setHeadEnd(ref parser, ValueData.Data<valueType>.GetData(ref parser.ValueData));
-                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
-            else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.LinkIndexOutOfRange;
         }
         /// <summary>
         /// 后置插入数据
@@ -150,14 +150,14 @@ namespace AutoCSer.CacheServer.Cache.Value
                     ++count;
                     parser.SetOperationReturnParameter();
                 }
-                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
             else if ((count | (index ^ -1)) == 0)
             {
                 if (parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType) setHeadEnd(ref parser, ValueData.Data<valueType>.GetData(ref parser.ValueData));
-                else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
-            else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.LinkIndexOutOfRange;
         }
         /// <summary>
         /// 添加第一个节点
@@ -187,10 +187,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                         count = 0;
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 删除数据
@@ -205,7 +205,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 --count;
                 parser.SetOperationReturnParameter();
             }
-            else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.LinkIndexOutOfRange;
         }
         /// <summary>
         /// 获取并删除数据
@@ -219,10 +219,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                 node.Remove(this);
                 --count;
                 parser.IsOperation = true;
-                ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, node.Value);
-                parser.ReturnParameter.Type = ReturnType.Success;
+                ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, node.Value);
+                parser.ReturnParameter.ReturnType = ReturnType.Success;
             }
-            else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.LinkIndexOutOfRange;
         }
         /// <summary>
         /// 获取下一个节点
@@ -231,7 +231,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -242,18 +242,18 @@ namespace AutoCSer.CacheServer.Cache.Value
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(count); return;
                 case OperationParameter.OperationType.GetValue:
                     LinkNode<valueType> node = getNode(parser.GetValueData(int.MinValue));
                     if (node != null)
                     {
-                        ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, node.Value);
-                        parser.ReturnParameter.Type = ReturnType.Success;
+                        ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, node.Value);
+                        parser.ReturnParameter.ReturnType = ReturnType.Success;
                     }
-                    else parser.ReturnParameter.Type = ReturnType.LinkIndexOutOfRange;
+                    else parser.ReturnParameter.ReturnType = ReturnType.LinkIndexOutOfRange;
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
         internal ReturnParameter Query(OperationParameter.QueryNode parameter)
         {
-            return Cache.Query(ref parameter.QueryData);
+            return new ReturnParameter(Cache.Query(ref parameter.QueryData));
         }
         /// <summary>
         /// 表达式节点查询
@@ -44,9 +44,9 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         internal ReturnParameter QueryStream(OperationParameter.QueryNode parameter)
         {
-            ReturnParameter returnValue = Cache.Query(ref parameter.QueryData);
-            returnValue.IsDeSerializeStream = true;
-            return returnValue;
+            ValueData.Data returnValue = Cache.Query(ref parameter.QueryData);
+            returnValue.IsReturnDeSerializeStream = true;
+            return new ReturnParameter(ref returnValue);
         }
         /// <summary>
         /// 表达式节点查询
@@ -115,7 +115,7 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
         internal ReturnParameter Query(OperationParameter.ShortPathQueryNode parameter)
         {
-            return Cache.ShortPathQuery(ref parameter.QueryData);
+            return new ReturnParameter(Cache.ShortPathQuery(ref parameter.QueryData));
         }
         /// <summary>
         /// 表达式节点查询
@@ -126,9 +126,9 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         internal ReturnParameter QueryStream(OperationParameter.ShortPathQueryNode parameter)
         {
-            ReturnParameter returnValue = Cache.ShortPathQuery(ref parameter.QueryData);
-            returnValue.IsDeSerializeStream = true;
-            return returnValue;
+            ValueData.Data returnValue = Cache.ShortPathQuery(ref parameter.QueryData);
+            returnValue.IsReturnDeSerializeStream = true;
+            return new ReturnParameter(ref returnValue);
         }
 
         /// <summary>

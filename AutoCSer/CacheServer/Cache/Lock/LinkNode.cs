@@ -43,7 +43,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         internal bool Enter()
         {
             ReturnParameter returnParameter = new ReturnParameter();
-            returnParameter.Set(++node.RandomNo);
+            returnParameter.Parameter.ReturnParameterSet(++node.RandomNo);
             if (OnReturn(returnParameter))
             {
                 AutoCSer.Threading.TimerTask.Default.Add(onTimeout, Date.NowTime.Set().AddTicks(timeOutTicks));
@@ -65,7 +65,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal LinkNode DisposeLock()
         {
-            OnReturn(new ReturnParameter { Type = ReturnType.Disposed });
+            OnReturn(new ReturnParameter { Parameter = new ValueData.Data { ReturnType = ReturnType.Disposed } });
             return Next;
         }
     }

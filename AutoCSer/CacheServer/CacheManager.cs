@@ -517,7 +517,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="buffer">数据缓冲区</param>
         /// <returns>返回参数</returns>
-        internal ReturnParameter Operation(Buffer buffer)
+        internal ValueData.Data Operation(Buffer buffer)
         {
             if (CanWrite)
             {
@@ -534,10 +534,10 @@ namespace AutoCSer.CacheServer
                     }
                 }
                 buffer.FreeReference();
-                return new ReturnParameter { Type = ReturnType.DataStructureIdentityError };
+                return new ValueData.Data(ReturnType.DataStructureIdentityError);
             }
             buffer.FreeReference();
-            return new ReturnParameter { Type = ReturnType.CanNotWrite };
+            return new ValueData.Data(ReturnType.CanNotWrite);
         }
         /// <summary>
         /// 操作数据
@@ -573,14 +573,14 @@ namespace AutoCSer.CacheServer
                     }
                     buffer.FreeReference();
                     isReturn = 1;
-                    onOperation(new ReturnParameter { Type = ReturnType.DataStructureIdentityError });
+                    onOperation(new ReturnParameter(ReturnType.DataStructureIdentityError));
                     return;
                 }
                 buffer.FreeReference();
             }
             finally
             {
-                if (isReturn == 0) onOperation(new ReturnParameter { Type = ReturnType.CanNotWrite });
+                if (isReturn == 0) onOperation(new ReturnParameter(ReturnType.CanNotWrite));
             }
         }
         /// <summary>
@@ -588,7 +588,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="queryData">查询数据</param>
         /// <returns>返回参数</returns>
-        internal ReturnParameter Query(ref SubArray<byte> queryData)
+        internal ValueData.Data Query(ref SubArray<byte> queryData)
         {
             queryBuffer.Set(ref queryData);
             fixed (byte* dataFixed = queryData.Array)
@@ -601,7 +601,7 @@ namespace AutoCSer.CacheServer
                     return parser.ReturnParameter;
                 }
             }
-            return new ReturnParameter { Type = ReturnType.DataStructureIdentityError };
+            return new ValueData.Data(ReturnType.DataStructureIdentityError);
         }
         /// <summary>
         /// 查询数据
@@ -635,7 +635,42 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (onQuery != null) onQuery(new ReturnParameter { Type = ReturnType.DataStructureIdentityError });
+                if (onQuery != null) onQuery(new ReturnParameter(ReturnType.DataStructureIdentityError));
+            }
+        }
+        /// <summary>
+        /// 查询数据
+        /// </summary>
+        /// <param name="queryData">查询数据</param>
+        /// <param name="onQuery"></param>
+        /// <param name="isDeSerializeStream">是否反序列化网络流，否则需要 Copy 数据</param>
+        internal void Query(ref SubArray<byte> queryData, Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onQuery, bool isDeSerializeStream)
+        {
+            try
+            {
+                queryBuffer.Set(ref queryData);
+                fixed (byte* dataFixed = queryData.Array)
+                {
+                    OperationParameter.NodeParser parser = new OperationParameter.NodeParser(this, queryBuffer, dataFixed);
+                    ServerDataStructure dataStructure = parser.Get(Array);
+                    if (dataStructure != null)
+                    {
+                        parser.SetOnReturn(onQuery, isDeSerializeStream);
+                        onQuery = null;
+                        try
+                        {
+                            dataStructure.Node.Query(ref parser);
+                        }
+                        finally
+                        {
+                            parser.CallOnReturnDistributionMessage();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (onQuery != null) onQuery(new IdentityReturnParameter(ReturnType.DataStructureIdentityError));
             }
         }
 
@@ -648,7 +683,7 @@ namespace AutoCSer.CacheServer
         {
             byte[] packet = parser.CreateReadPacket(OperationParameter.Serializer.HeaderSize);
             ulong identity = shortPaths[shortPathIndex].Set(node, packet);
-            parser.ReturnParameter.SetBinary(new ShortPathIdentity { Index = shortPathIndex, Identity = identity, Ticks = startTicks, PacketSize = packet.Length });
+            parser.ReturnParameter.ReturnParameterSetBinary(new ShortPathIdentity { Index = shortPathIndex, Identity = identity, Ticks = startTicks, PacketSize = packet.Length });
             if (++shortPathIndex == shortPaths.Length) shortPathIndex = 0;
         }
         /// <summary>
@@ -656,7 +691,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="parameter">短路径操作参数</param>
         /// <returns>返回参数</returns>
-        internal ReturnParameter Operation(ref OperationParameter.ShortPathOperationNode parameter)
+        internal ValueData.Data Operation(ref OperationParameter.ShortPathOperationNode parameter)
         {
             if (CanWrite)
             {
@@ -682,14 +717,14 @@ namespace AutoCSer.CacheServer
                                     return parser.ReturnParameter;
                                 }
                             }
-                            return new ReturnParameter { Type = ReturnType.NotFoundShortPathNode };
+                            return new ValueData.Data(ReturnType.NotFoundShortPathNode);
                         }
                     }
-                    return new ReturnParameter { Type = ReturnType.NotFoundShortPath };
+                    return new ValueData.Data(ReturnType.NotFoundShortPath);
                 }
-                return new ReturnParameter { Type = ReturnType.ServerDeSerializeError };
+                return new ValueData.Data(ReturnType.ServerDeSerializeError);
             }
-            return new ReturnParameter { Type = ReturnType.CanNotWrite };
+            return new ValueData.Data(ReturnType.CanNotWrite);
         }
         /// <summary>
         /// 操作数据
@@ -745,7 +780,7 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (returnType != ReturnType.Success) onOperation(new ReturnParameter { Type = returnType });
+                if (returnType != ReturnType.Success) onOperation(new ReturnParameter(returnType));
             }
         }
         /// <summary>
@@ -753,7 +788,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="queryData">查询数据</param>
         /// <returns>返回参数</returns>
-        internal ReturnParameter ShortPathQuery(ref SubArray<byte> queryData)
+        internal ValueData.Data ShortPathQuery(ref SubArray<byte> queryData)
         {
             byte[] data = queryData.Array;
             ReturnType returnType = ReturnType.NotFoundShortPath;
@@ -808,7 +843,7 @@ namespace AutoCSer.CacheServer
                     }
                 }
             }
-            return new ReturnParameter { Type = returnType };
+            return new ValueData.Data(returnType);
         }
         /// <summary>
         /// 查询数据
@@ -893,7 +928,7 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (onQuery != null) onQuery(new ReturnParameter { Type = returnType });
+                if (onQuery != null) onQuery(new ReturnParameter(returnType));
             }
         }
 

@@ -21,9 +21,9 @@ namespace AutoCSer.CacheServer.ShortPath
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryBoolAsynchronous GetEnqueueNode(valueType value)
+        internal Parameter.Value GetEnqueueNode(valueType value)
         {
-            return ValueData.Data<valueType>.GetQueryBoolAsynchronous(this, value, OperationParameter.OperationType.MessageQueueEnqueue);
+            return ValueData.Data<valueType>.ToNode(this, value, OperationParameter.OperationType.MessageQueueEnqueue);
         }
         /// <summary>
         /// 追加数据

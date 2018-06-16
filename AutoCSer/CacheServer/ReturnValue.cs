@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace AutoCSer.CacheServer
@@ -45,7 +46,7 @@ namespace AutoCSer.CacheServer
         /// <param name="value">返回值</param>
         internal ReturnValue(ref AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            Type = value.Value.Type;
+            Type = value.Value.Parameter.ReturnType;
             TcpReturnType = value.Type;
             if (Type == ReturnType.Success) Value = ValueData.Data<returnType>.GetData(ref value.Value.Parameter);
             else Value = default(returnType);
@@ -56,10 +57,31 @@ namespace AutoCSer.CacheServer
         /// <param name="value">返回值</param>
         internal ReturnValue(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            Type = value.Value.Type;
+            Type = value.Value.Parameter.ReturnType;
             TcpReturnType = value.Type;
             if (Type == ReturnType.Success) Value = ValueData.Data<returnType>.GetData(ref value.Value.Parameter);
             else Value = default(returnType);
+        }
+        /// <summary>
+        /// 返回值
+        /// </summary>
+        /// <param name="value">返回值</param>
+        private ReturnValue(ref AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter> value)
+        {
+            Type = value.Value.Parameter.ReturnType;
+            TcpReturnType = value.Type;
+            Value = default(returnType);
+        }
+        /// <summary>
+        /// 获取返回值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static ReturnValue<KeyValue<ulong, returnType>> Get(ref AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter> value)
+        {
+            if (value.Value.Parameter.ReturnType == ReturnType.Success) return new KeyValue<ulong, returnType>(value.Value.Identity, ValueData.Data<returnType>.GetData(ref value.Value.Parameter));
+            return new ReturnValue<KeyValue<ulong, returnType>>(ref value);
         }
     }
 }

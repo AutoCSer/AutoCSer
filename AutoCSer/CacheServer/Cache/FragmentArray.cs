@@ -55,9 +55,9 @@ namespace AutoCSer.CacheServer.Cache
             {
                 nodeType node = arrays[index >> FragmentArray.ArrayShift][index & FragmentArray.ArraySizeAnd];
                 if (node != null) return node;
-                parser.ReturnParameter.Type = ReturnType.NullArrayNode;
+                parser.ReturnParameter.ReturnType = ReturnType.NullArrayNode;
             }
-            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
             return null;
         }
         /// <summary>
@@ -67,6 +67,37 @@ namespace AutoCSer.CacheServer.Cache
         /// <returns></returns>
         internal override Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
+            //if (nodeInfo.IsConstructorParameter && parser.OperationType == OperationParameter.OperationType.GetOrCreateNode)
+            //{
+            //    int indexParameter = parser.GetValueData(-1);
+            //    if (indexParameter >= 0)
+            //    {
+            //        int arrayIndex = indexParameter >> FragmentArray.ArrayShift;
+            //        if (arrayIndex >= arrays.Length)
+            //        {
+            //            nodeType[][] newArrays = arrays.copyNew(arrayIndex + 1, arrays.Length);
+            //            for (int newIndex = arrays.Length; newIndex != newArrays.Length; newArrays[newIndex++] = new nodeType[FragmentArray.ArraySize]) ;
+            //            arrays = newArrays;
+            //        }
+            //        nodeType[] array = arrays[arrayIndex];
+            //        int index = indexParameter & FragmentArray.ArraySizeAnd;
+            //        if (array[index] == null)
+            //        {
+            //            nodeType node = nodeConstructor(this, ref parser);
+            //            if (node.IsNode)
+            //            {
+            //                array[index] = node;
+            //                if (indexParameter >= count) count = indexParameter + 1;
+            //                parser.SetOperationReturnParameter();
+            //            }
+            //            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
+            //        }
+            //        else if (parser.CheckConstructorParameter(new Value.UnionType { Value = array[index] }.Node.ConstructorParameter)) parser.ReturnParameter.ReturnParameterSet(true);
+            //        else parser.ReturnParameter.ReturnType = ReturnType.CheckConstructorParameterError;
+            //    }
+            //    else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
+            //    return null;
+            //}
             return getNext(ref parser);
         }
         /// <summary>
@@ -87,10 +118,10 @@ namespace AutoCSer.CacheServer.Cache
                         count = 0;
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 获取或者创建节点
@@ -116,9 +147,9 @@ namespace AutoCSer.CacheServer.Cache
                     parser.IsOperation = true;
                     if (indexParameter >= count) count = indexParameter + 1;
                 }
-                parser.ReturnParameter.Set(true);
+                parser.ReturnParameter.ReturnParameterSet(true);
             }
-            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
         }
         /// <summary>
         /// 删除节点
@@ -137,9 +168,9 @@ namespace AutoCSer.CacheServer.Cache
                     array[index] = null;
                     node.OnRemoved();
                 }
-                parser.ReturnParameter.Set(true);
+                parser.ReturnParameter.ReturnParameterSet(true);
             }
-            else parser.ReturnParameter.Type = ReturnType.ArrayIndexOutOfRange;
+            else parser.ReturnParameter.ReturnType = ReturnType.ArrayIndexOutOfRange;
         }
         /// <summary>
         /// 获取下一个节点
@@ -158,22 +189,22 @@ namespace AutoCSer.CacheServer.Cache
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(count); return;
                 case OperationParameter.OperationType.ContainsKey:
                     int index = parser.GetValueData(-1);
                     if ((uint)index < count)
                     {
                         nodeType[] array = arrays[index >> FragmentArray.ArrayShift];
-                        parser.ReturnParameter.Set(array[index & FragmentArray.ArraySizeAnd] != null);
+                        parser.ReturnParameter.ReturnParameterSet(array[index & FragmentArray.ArraySizeAnd] != null);
                     }
-                    else parser.ReturnParameter.Set(false);
+                    else parser.ReturnParameter.ReturnParameterSet(false);
                     return;
                 case OperationParameter.OperationType.CreateShortPath:
                     nodeType node = getNext(ref parser);
                     if (node != null) node.CreateShortPath(ref parser);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=0223DBBA"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=022ACEF4"></script>
     <title>TCP 注册服务 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <p>AutoCSer 包含一个 TCP 内部服务注册组件，支持若干<a href="/Config/Index.html?v=223DBBA">全局默认配置</a>，需要引用 <a href="/Index.html?v=223DBBA" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。</p>
+    <p>AutoCSer 包含一个 TCP 内部服务注册组件，支持若干<a href="/Config/Index.html?v=22ACEF4">全局默认配置</a>，需要引用 <a href="/Index.html?v=22ACEF4" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。</p>
     <p>
         为了方便区分服务注册信息的读写权限，该组件由 <b>注册信息读取服务</b>与<b>注册服务</b>两部分组成。
         <br />前者负责实时推送服务的注册更新信息，后者负责<b>服务端口分配</b>与<b>服务注册</b>信息的管理。
@@ -21,13 +21,13 @@
     </p>
     <p>
         TCP 注册服务端需要启动<b>注册信息读取服务</b>与<b>注册服务</b>两个服务，你也可以使用 <b>AutoCSer.Net.TcpRegister.DefaultServer.Create()</b> 创建默认配置 TCP 注册服务包装。
-        <div> 参考示例 <a href="/Index.html?v=223DBBA" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpRegisterServer\Program.cs</a></div>
-        <div>配置 参考示例 <a href="/Index.html?v=223DBBA" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpRegisterServer\Config.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=22ACEF4" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpRegisterServer\Program.cs</a></div>
+        <div>配置 参考示例 <a href="/Index.html?v=22ACEF4" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpRegisterServer\Config.cs</a></div>
     </p>
     <p>
         TCP 服务端（注册服务客户端）建议使用 IP 地址来标识该 TCP 注册服务的配置名称，注册信息读取服务配置名称必须添加后缀 <b>AutoCSer.Net.TcpRegister.ReaderServer.ServerNameSuffix</b>
-        <div>配置 参考示例 <a href="/Index.html?v=223DBBA" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpRegisterClient\Config.cs</a></div>
-        <div> 参考示例 <a href="/Index.html?v=223DBBA" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">TcpRegisterClient\Program.cs</a></div>
+        <div>配置 参考示例 <a href="/Index.html?v=22ACEF4" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpRegisterClient\Config.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=22ACEF4" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">TcpRegisterClient\Program.cs</a></div>
     </p>
 </body>
 </html>

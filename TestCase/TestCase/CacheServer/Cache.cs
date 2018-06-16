@@ -87,6 +87,7 @@ namespace AutoCSer.TestCase.CacheServer
                 {
                     masterClient.RemoveDataStructure("messageQueueConsumer");
                     masterClient.RemoveDataStructure("messageQueueConsumers");
+                    masterClient.RemoveDataStructure("messsageDistributor");
 
                     System.IO.DirectoryInfo messageQueueDirectory = new System.IO.DirectoryInfo("MessageQueue");
                     if (messageQueueDirectory.Exists)
@@ -101,8 +102,9 @@ namespace AutoCSer.TestCase.CacheServer
                         }
                     }
                 }
-                if (!QueueConsumer.TestCase(masterClient, !isHashSet.Value)) return false;
-                if (!QueueConsumers.TestCase(masterClient, !isHashSet.Value)) return false;
+                if (!QueueConsumer.TestCase(masterClient, !isHashSet.Value)) { Console.WriteLine(typeof(QueueConsumer).FullName); return false; }
+                if (!QueueConsumers.TestCase(masterClient, !isHashSet.Value)) { Console.WriteLine(typeof(QueueConsumers).FullName); return false; }
+                if (!MesssageDistributor.TestCase(masterClient, !isHashSet.Value)) { Console.WriteLine(typeof(MesssageDistributor).FullName); return false; }
                 if (!Lock(masterClient)) return false;
                 if (!valueDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;
                 if (!valueFragmentDictionary(masterClient, slaveClient, !isHashSet.Value)) return false;

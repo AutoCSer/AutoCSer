@@ -48,7 +48,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// <summary>
         /// 返回值参数
         /// </summary>
-        internal ReturnParameter ReturnParameter;
+        internal ValueData.Data ReturnParameter;
         /// <summary>
         /// 操作类型
         /// </summary>
@@ -74,7 +74,7 @@ namespace AutoCSer.CacheServer.OperationParameter
             end = Read + buffer.Array.Count;
             OperationType = (OperationType)(*(ushort*)(Read + Serializer.OperationTypeOffset));
             ValueData = default(ValueData.Data);
-            ReturnParameter = default(ReturnParameter);
+            ReturnParameter = default(ValueData.Data);
             IsOperation = false;
             Read += Serializer.HeaderSize;
         }
@@ -93,7 +93,7 @@ namespace AutoCSer.CacheServer.OperationParameter
             OnReturn = null;
             OperationType = default(OperationType);
             ValueData = default(ValueData.Data);
-            ReturnParameter = default(ReturnParameter);
+            ReturnParameter = default(ValueData.Data);
             IsOperation = false;
         }
         /// <summary>
@@ -202,6 +202,27 @@ namespace AutoCSer.CacheServer.OperationParameter
             return value;
         }
         /// <summary>
+        /// 检测构造参数是否相同
+        /// </summary>
+        /// <param name="constructorParameter">构造参数</param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal bool CheckConstructorParameter(byte[] constructorParameter)
+        {
+            return (int)(end - Read) == constructorParameter.Length && AutoCSer.Memory.EqualNotNull(constructorParameter, Read, constructorParameter.Length);
+        }
+        /// <summary>
+        /// 获取构造参数数据包
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        internal byte[] CreateConstructorParameter(byte* start)
+        {
+            byte[] constructorParameter = new byte[(int)(end - start)];
+            System.Buffer.BlockCopy(Buffer.Array.Array, (int)(start - dataFixed), constructorParameter, 0, constructorParameter.Length);
+            return constructorParameter;
+        }
+        /// <summary>
         /// 获取数据包
         /// </summary>
         /// <param name="headerSize"></param>
@@ -232,7 +253,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         {
             if (OnReturn != null)
             {
-                OnReturn(ReturnParameter);
+                OnReturn(new ReturnParameter(ref ReturnParameter));
                 OnReturn = null;
             }
         }
@@ -245,7 +266,31 @@ namespace AutoCSer.CacheServer.OperationParameter
         internal void SetOnReturn(Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn, bool isReturnStream)
         {
             OnReturn = onReturn;
-            ReturnParameter.IsDeSerializeStream = isReturnStream;
+            ReturnParameter.IsReturnDeSerializeStream = isReturnStream;
+        }
+        /// <summary>
+        /// 调用返回委托
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void CallOnReturnDistributionMessage()
+        {
+            Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onReturn = ReturnParameter.Value as Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool>;
+            if (onReturn != null)
+            {
+                onReturn(new IdentityReturnParameter(ref ReturnParameter));
+                ReturnParameter.Value = null;
+            }
+        }
+        /// <summary>
+        /// 设置返回调用委托
+        /// </summary>
+        /// <param name="onReturn"></param>
+        /// <param name="isReturnStream"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetOnReturn(Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onReturn, bool isReturnStream)
+        {
+            ReturnParameter.Value = onReturn;
+            ReturnParameter.IsReturnDeSerializeStream = isReturnStream;
         }
         /// <summary>
         /// 设置返回值
@@ -253,7 +298,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SetOperationReturnParameter()
         {
-            ReturnParameter.Set(true);
+            ReturnParameter.ReturnParameterSet(true);
             IsOperation = true;
         }
         /// <summary>
@@ -262,7 +307,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SetOperationReturnParameterFalse()
         {
-            ReturnParameter.Set(false);
+            ReturnParameter.ReturnParameterSet(false);
             IsOperation = true;
         }
         /// <summary>

@@ -65,7 +65,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public AutoCSer.CacheServer.ReturnValue<nodeType> GetOrCreate(keyType key)
         {
             AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter> value = ClientDataStructure.Client.Operation(GetOrCreateNode(key));
-            return value.Value.GetBool(value.Type, value.Value.Parameter.Int64.Bool ? this[key] : null);
+            return value.Value.Parameter.GetBool(value.Type, value.Value.Parameter.Int64.Bool ? this[key] : null);
         }
         /// <summary>
         /// 获取或者创建元素节点
@@ -78,7 +78,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
             if (onGet != null)
             {
                 ClientDataStructure.Client.Operation(GetOrCreateNode(key),
-                    value => value.Value.GetBool<nodeType>(value.Type, value.Value.Parameter.Int64.Bool ? this[key] : null));
+                    value => value.Value.Parameter.GetBool(value.Type, value.Value.Parameter.Int64.Bool ? this[key] : null));
             }
             else ClientDataStructure.Client.OperationOnly(GetOrCreateNode(key));
         }

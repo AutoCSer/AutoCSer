@@ -99,5 +99,18 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// 消息队列处理消息
         /// </summary>
         MessageQueueDequeue,
+
+        /// <summary>
+        /// 消息分发同时添加与处理消息（生产消费实时并行测试）
+        /// </summary>
+        MessageDistributionMixing,
+        /// <summary>
+        /// 消息分发添加消息
+        /// </summary>
+        MessageDistributionEnqueue,
+        /// <summary>
+        /// 消息分发处理消息
+        /// </summary>
+        MessageDistributionDequeue,
     }
 }

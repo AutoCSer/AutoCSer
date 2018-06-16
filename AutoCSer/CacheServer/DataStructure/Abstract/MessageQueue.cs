@@ -60,16 +60,6 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// <summary>
         /// 追加数据
         /// </summary>
-        /// <param name="valueNode"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryBoolValueAsynchronous GetEnqueueNode(valueType valueNode)
-        {
-            return new Parameter.QueryBoolValueAsynchronous(getEnqueueNode(valueNode));
-        }
-        /// <summary>
-        /// 追加数据
-        /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

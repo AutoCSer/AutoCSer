@@ -19,7 +19,7 @@ namespace AutoCSer.CacheServer.ShortPath
                 do
                 {
                     socketIdentity = Client.SocketIdentity;
-                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await Client.QueryAwaiter(parameter);
+                    AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await Client.QueryAwaiter(Parameter);
                     if (socketIdentity == Client.SocketIdentity)
                     {
                         if (isCreate(ref value)) return (nodeType)this;

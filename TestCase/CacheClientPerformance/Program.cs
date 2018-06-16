@@ -29,6 +29,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
                         do
                         {
                             new MessageQueue(fileClient).Test();
+                            new MesssageDistributor(fileClient).Test();
 
                             new Dictionary(client, false).Test();
                             new Dictionary(fileClient, true).Test();

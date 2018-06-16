@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
     /// <summary>
     /// 锁节点
     /// </summary>
-    internal sealed class Node : Cache.Node
+    internal sealed class Node : Value.Node
     {
         /// <summary>
         /// 缓存管理
@@ -59,7 +59,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         /// <returns></returns>
         internal override Cache.Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -68,7 +68,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         /// <param name="parser">参数解析</param>
         internal override void OperationEnd(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 获取下一个节点
@@ -77,7 +77,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -98,7 +98,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
                             QueueTaskThread.Thread.Default.Add(enter);
                         }
                     }
-                    else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                    else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
                     return;
                 case OperationParameter.OperationType.SetValue:
                     if (parser.ValueData.Type == ValueData.DataType.Long)
@@ -110,17 +110,17 @@ namespace AutoCSer.CacheServer.Cache.Lock
                             QueueTaskThread.Thread.Default.Add(enter);
                         }
                     }
-                    else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                    else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
                     return;
                 case OperationParameter.OperationType.Remove:
                     if (parser.ValueData.Type == ValueData.DataType.ULong)
                     {
                         if (parser.OnReturn != null) QueueTaskThread.Thread.Default.Add(new QueueTaskThread.Exit(this, ref parser));
                     }
-                    else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                    else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 释放锁
@@ -128,12 +128,12 @@ namespace AutoCSer.CacheServer.Cache.Lock
         /// <param name="exit"></param>
         internal void Exit(QueueTaskThread.Exit exit)
         {
-            ReturnParameter returnParameter = new ReturnParameter { Type = ReturnType.NotFoundLock };
+            ReturnParameter returnParameter = new ReturnParameter(ReturnType.NotFoundLock);
             try
             {
                 if (head != null && RandomNo == exit.RandomNo)
                 {
-                    returnParameter.Set(true);
+                    returnParameter.Parameter.ReturnParameterSet(true);
                     do
                     {
                         if ((head = head.Next) == null)
@@ -183,7 +183,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
             {
                 if (node.Enter()) head = end = node;
             }
-            else node.OnReturn(new ReturnParameter { Type = ReturnType.Locked });
+            else node.OnReturn(new ReturnParameter(ReturnType.Locked));
         }
 
         /// <summary>

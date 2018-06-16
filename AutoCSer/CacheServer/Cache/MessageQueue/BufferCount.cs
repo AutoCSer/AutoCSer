@@ -33,9 +33,10 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <param name="buffer">消息队列数据缓冲区</param>
         internal BufferCount(Buffer buffer)
         {
+            data = buffer.Data;
             count = buffer.BufferCount;
             Identity = buffer.Identity;
-            data = buffer.Data;
+            data.ReturnType = ReturnType.Success;
             isBufferCount = 0;
             buffer.BufferCount = null;
         }

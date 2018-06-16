@@ -14,7 +14,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// <summary>
         /// 测试总数
         /// </summary>
-        private const int loopCount = 100 * 10000;
+        protected const int loopCount = 100 * 10000;
 
         /// <summary>
         /// 测试客户端

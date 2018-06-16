@@ -15,31 +15,31 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 队列数据 读取配置
         /// </summary>
-        internal Config.QueueReader Config;
+        internal ReaderConfig Config;
         /// <summary>
         /// 队列数据 读文件索引
         /// </summary>
         internal int ReaderIndex;
         /// <summary>
-        /// 添加数据任务
+        /// 获取当前读取数据标识
         /// </summary>
         /// <param name="messageQueue">消息队列节点</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="parser"></param>
-        internal GetIdentity(MessageQueue.Node messageQueue, Config.QueueReader config, ref OperationParameter.NodeParser parser) : base(messageQueue)
+        internal GetIdentity(MessageQueue.Node messageQueue, ReaderConfig config, ref OperationParameter.NodeParser parser) : base(messageQueue)
         {
             Config = config;
             onReturn = parser.OnReturn;
             parser.OnReturn = null;
         }
         /// <summary>
-        /// 添加数据任务
+        /// 获取当前读取数据标识
         /// </summary>
         /// <param name="messageQueue">消息队列节点</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="parser"></param>
         /// <param name="readerIndex">队列数据 读文件索引</param>
-        internal GetIdentity(MessageQueue.Node messageQueue, Config.QueueReader config, ref OperationParameter.NodeParser parser, int readerIndex) : this(messageQueue, config, ref parser)
+        internal GetIdentity(MessageQueue.Node messageQueue, ReaderConfig config, ref OperationParameter.NodeParser parser, int readerIndex) : this(messageQueue, config, ref parser)
         {
             ReaderIndex = readerIndex;
         }
@@ -55,7 +55,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
             }
             finally
             {
-                if (onReturn != null) onReturn(new ReturnParameter { Type = ReturnType.MessageQueueCreateReaderError });
+                if (onReturn != null) onReturn(new ReturnParameter(ReturnType.MessageQueueCreateReaderError));
             }
             return LinkNext;
         }
@@ -67,7 +67,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         internal void CallOnReturn(ulong identity)
         {
             ReturnParameter returnParameter = default(ReturnParameter);
-            returnParameter.Set(identity);
+            returnParameter.Parameter.ReturnParameterSet(identity);
             onReturn(returnParameter);
             onReturn = null;
         }
@@ -78,7 +78,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CallOnReturn(ReturnType returnType)
         {
-            onReturn(new ReturnParameter { Type = returnType });
+            onReturn(new ReturnParameter(returnType));
             onReturn = null;
         }
     }

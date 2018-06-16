@@ -23,57 +23,62 @@
             . 基本数据类型（包括关键字类型）+ <b>bool</b>, <b>byte[]</b>
         </p>
         <p>
-            . JSON 序列化包装类型 <b>AutoCSer.CacheServer.DataStructure.Value.Json</b>&lt;valueType&gt;
+            . <b>JSON</b> 序列化包装类型 AutoCSer.CacheServer.DataStructure.Value.<b>Json</b>&lt;valueType&gt;
         </p>
         <p>
-            . 二进制序列化包装类型 <b>AutoCSer.CacheServer.DataStructure.Value.Binary</b>&lt;valueType&gt;
+            . <b>二进制序列化</b>包装类型 AutoCSer.CacheServer.DataStructure.Value.<b>Binary</b>&lt;valueType&gt;
         </p>
     </div>
     <div><h1>数据节点</h1></div>
     <div>
         <p>
-            . 数组 <b>AutoCSer.CacheServer.DataStructure.ValueArray</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.ValueFragmentArray</b>&lt;valueType&gt;
+            . <b>数组</b> AutoCSer.CacheServer.DataStructure.<b>ValueArray</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.<b>ValueFragmentArray</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
             <!--Include:Include\GetCode[Example,0,,CacheServer\ValueArray.cs]-->
         </p>
         <p>
-            . 字典 <b>AutoCSer.CacheServer.DataStructure.ValueDictionary</b>&lt;keyType, valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.ValueFragmentDictionary</b>&lt;keyType, valueType&gt;
+            . <b>字典</b> AutoCSer.CacheServer.DataStructure.<b>ValueDictionary</b>&lt;keyType, valueType&gt; / AutoCSer.CacheServer.DataStructure.<b>ValueFragmentDictionary</b>&lt;keyType, valueType&gt;
             <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
             <!--Include:Include\GetCode[Example,1,,CacheServer\ValueDictionary.cs]-->
         </p>
         <p>
-            . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.ValueSearchTreeDictionary</b>&lt;keyType, valueType&gt;
+            . <b>搜索树字典</b> AutoCSer.CacheServer.DataStructure.<b>ValueSearchTreeDictionary</b>&lt;keyType, valueType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>，<b>数字类型</b> 可以通过扩展方法 <b>GetNumberUpdater</b> 获取更新对象，<b>整数类型</b> 可以通过扩展方法 <b>GetIntegerUpdater</b> 获取更新对象
             <!--Include:Include\GetCode[Example,2,,CacheServer\ValueSearchTreeDictionary.cs]-->
         </p>
         <p>
-            . 最小堆 <b>AutoCSer.CacheServer.DataStructure.Heap</b>&lt;keyType, valueType&gt;
+            . <b>最小堆</b> AutoCSer.CacheServer.DataStructure.<b>Heap</b>&lt;keyType, valueType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>valueType</b> 可以为任意 <b>基本数据类型</b>
             <!--Include:Include\GetCode[Example,b,,CacheServer\Heap.cs]-->
         </p>
         <p>
-            . 哈希表 <b>AutoCSer.CacheServer.DataStructure.HashSet</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentHashSet</b>&lt;valueType&gt;
+            . <b>哈希表</b> AutoCSer.CacheServer.DataStructure.<b>HashSet</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.<b>FragmentHashSet</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 为 <b>关键字类型</b>
             <!--Include:Include\GetCode[Example,3,,CacheServer\HashSet.cs]-->
         </p>
         <p>
-            . 链表 <b>AutoCSer.CacheServer.DataStructure.Link</b>&lt;valueType&gt;
+            . <b>链表</b> AutoCSer.CacheServer.DataStructure.<b>Link</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>
             <!--Include:Include\GetCode[Example,4,,CacheServer\Link.cs]-->
         </p>
         <p>
-            . 位图 <b>AutoCSer.CacheServer.DataStructure.Bitmap</b>
+            . <b>位图</b> AutoCSer.CacheServer.DataStructure.<b>Bitmap</b>
             <!--Include:Include\GetCode[Example,5,,CacheServer\Bitmap.cs]-->
         </p>
         <p>
-            . 锁 <b>AutoCSer.CacheServer.DataStructure.Lock</b>
+            . <b>锁</b> AutoCSer.CacheServer.DataStructure.<b>Lock</b>
             <!--Include:Include\GetCode[Example,6,,CacheServer\Lock.cs]-->
         </p>
         <p>
-            . <a href="/CacheServer/MessageQueue.html">消息队列</a> <b>AutoCSer.CacheServer.DataStructure.MessageQueue.QueueConsumer</b>&lt;valueType&gt; / <b>AutoCSer.CacheServer.DataStructure.MessageQueue.QueueConsumers</b>&lt;valueType&gt;
+            . <b><a href="/CacheServer/MessageQueue.html">消息队列</a></b> AutoCSer.CacheServer.DataStructure.MessageQueue.<b>QueueConsumer</b>&lt;valueType&gt; / AutoCSer.CacheServer.DataStructure.MessageQueue.<b>QueueConsumers</b>&lt;valueType&gt;
             <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，前者只允许一个消费者，后者允许最多 65536 个消费者，每个消费者都将顺序处理所有消息。
-            <!--Include:Include\GetCode[Example,7,,CacheServer\QueueConsumer.cs]-->
-            <!--Include:Include\GetCode[Example,8,,CacheServer\QueueConsumers.cs]-->
+            <!--Include:Include\GetCode[Example,7,,CacheServer\MesssageQueueConsumer.cs]-->
+            <!--Include:Include\GetCode[Example,8,,CacheServer\MesssageQueueConsumers.cs]-->
+        </p>
+        <p>
+            . <b>消息分发</b> AutoCSer.CacheServer.DataStructure.MessageQueue.<b>Distributor</b>&lt;valueType&gt;
+            <br /> <b>valueType</b> 可以为任意 <b>基本数据类型</b>，服务端将消息适度轮流的推送到每个客户端消费者，不保证消息的消费顺序。
+            <!--Include:Include\GetCode[Example,c,,CacheServer\MesssageDistributor.cs]-->
         </p>
         <p>
             . 某些 <b>数据节点</b> 提供 <b>CreateShortPath()</b> 方法支持短路径操作，用于降低深度嵌套的<b>数据节点</b>服务端解析开销，它的过期重建操作会对客户端异步操作产生同步阻塞，示例代码参考 <b>嵌套节点</b>
@@ -82,19 +87,19 @@
     <div><h1>嵌套节点</h1></div>
     <div>
         <p>
-            . 数组 <b>AutoCSer.CacheServer.DataStructure.Array</b>&lt;nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentArray</b>&lt;nodeType&gt;
+            . <b>数组</b> AutoCSer.CacheServer.DataStructure.<b>Array</b>&lt;nodeType&gt; / AutoCSer.CacheServer.DataStructure.<b>FragmentArray</b>&lt;nodeType&gt;
             <br /> <b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
             <!--Include:Include\GetCode[Example,9,,CacheServer\Array.cs]-->
         </p>
         <p>
-            . 字典 <b>AutoCSer.CacheServer.DataStructure.Dictionary</b>&lt;keyType, nodeType&gt; / <b>AutoCSer.CacheServer.DataStructure.FragmentDictionary</b>&lt;keyType, nodeType&gt;
+            . <b>字典</b> AutoCSer.CacheServer.DataStructure.<b>Dictionary</b>&lt;keyType, nodeType&gt; / AutoCSer.CacheServer.DataStructure.<b>FragmentDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
             <!--Include:Include\GetCode[Example,a,,CacheServer\Dictionary.cs]-->
         </p>
         <p>
-            . 搜索树字典 <b>AutoCSer.CacheServer.DataStructure.SearchTreeDictionary</b>&lt;keyType, nodeType&gt;
+            . <b>搜索树字典</b> AutoCSer.CacheServer.DataStructure.<b>SearchTreeDictionary</b>&lt;keyType, nodeType&gt;
             <br /> <b>keyType</b> 为 <b>排序关键字类型</b>，<b>nodeType</b> 为 <b>嵌套节点</b> 或者 <b>数据节点</b>
-            <!--Include:Include\GetCode[Example,c,,CacheServer\SearchTreeDictionary.cs]-->
+            <!--Include:Include\GetCode[Example,d,,CacheServer\SearchTreeDictionary.cs]-->
         </p>
     </div>
     <div>

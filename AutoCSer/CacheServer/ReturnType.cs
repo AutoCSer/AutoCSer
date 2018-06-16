@@ -39,6 +39,10 @@ namespace AutoCSer.CacheServer
         /// 不允许创建数据节点
         /// </summary>
         CanNotCreateValueNode,
+        /// <summary>
+        /// 已存在节点的构造函数参数不匹配
+        /// </summary>
+        CheckConstructorParameterError,
 
         /// <summary>
         /// 数据结构定义冲突

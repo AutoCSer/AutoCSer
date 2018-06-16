@@ -36,7 +36,7 @@ namespace AutoCSer.CacheServer.Cache
             {
                 nodeType node;
                 if (dictionary.TryGetValue(key, out node)) return node;
-                parser.ReturnParameter.Type = ReturnType.NotFoundDictionaryKey;
+                parser.ReturnParameter.ReturnType = ReturnType.NotFoundDictionaryKey;
             }
             return null;
         }
@@ -47,6 +47,31 @@ namespace AutoCSer.CacheServer.Cache
         /// <returns></returns>
         internal override Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
+            //if (nodeInfo.IsConstructorParameter && parser.OperationType == OperationParameter.OperationType.GetOrCreateNode)
+            //{
+            //    keyType key;
+            //    if (HashCodeKey<keyType>.Get(ref parser, out key))
+            //    {
+            //        nodeType node;
+            //        if (!dictionary.TryGetValue(key, out node))
+            //        {
+            //            if ((node = nodeConstructor(this, ref parser)).IsNode)
+            //            {
+            //                dictionary.Set(key, node);
+            //                parser.SetOperationReturnParameter();
+            //                return null;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            if (parser.CheckConstructorParameter(new Value.UnionType { Value = node }.Node.ConstructorParameter)) parser.ReturnParameter.ReturnParameterSet(true);
+            //            else parser.ReturnParameter.ReturnType = ReturnType.CheckConstructorParameterError;
+            //            return null;
+            //        }
+            //    }
+            //    parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
+            //    return null;
+            //}
             return getNext(ref parser);
         }
         /// <summary>
@@ -66,10 +91,10 @@ namespace AutoCSer.CacheServer.Cache
                         dictionary.Clear();
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 获取或者创建节点
@@ -85,8 +110,9 @@ namespace AutoCSer.CacheServer.Cache
                     dictionary.Set(key, nodeConstructor(this, ref parser));
                     parser.IsOperation = true;
                 }
-                parser.ReturnParameter.Set(true);
+                parser.ReturnParameter.ReturnParameterSet(true);
             }
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 删除节点
@@ -103,8 +129,9 @@ namespace AutoCSer.CacheServer.Cache
                     parser.SetOperationReturnParameter();
                     node.OnRemoved();
                 }
-                else parser.ReturnParameter.Set(false);
+                else parser.ReturnParameter.ReturnParameterSet(false);
             }
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 获取下一个节点
@@ -123,17 +150,17 @@ namespace AutoCSer.CacheServer.Cache
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(dictionary.Count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(dictionary.Count); return;
                 case OperationParameter.OperationType.ContainsKey:
                     keyType key;
-                    if (HashCodeKey<keyType>.Get(ref parser, out key)) parser.ReturnParameter.Set(dictionary.ContainsKey(key));
+                    if (HashCodeKey<keyType>.Get(ref parser, out key)) parser.ReturnParameter.ReturnParameterSet(dictionary.ContainsKey(key));
                     return;
                 case OperationParameter.OperationType.CreateShortPath:
                     nodeType node = getNext(ref parser);
                     if (node != null) node.CreateShortPath(ref parser);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

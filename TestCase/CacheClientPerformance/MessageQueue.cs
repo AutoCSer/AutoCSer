@@ -40,11 +40,11 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         internal void Test()
         {
-            synchronousStream();
             threadPool();
+            synchronousStream();
 
-            synchronousStreamMixing();
             threadPoolMixing();
+            synchronousStreamMixing();
         }
         /// <summary>
         /// 添加数据到
@@ -64,9 +64,9 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// 获取配置
         /// </summary>
         /// <returns></returns>
-        private CacheServer.MessageQueue.Config.QueueConsumer getConfig()
+        private CacheServer.MessageQueue.ConsumerConfig getConfig()
         {
-            return new CacheServer.MessageQueue.Config.QueueConsumer();
+            return new CacheServer.MessageQueue.ConsumerConfig();
         }
         /// <summary>
         /// 消费者 IO 线程同步实时处理数据
@@ -76,7 +76,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             enqueue();
 
             start(CallbackType.SynchronousStream, TestType.MessageQueueDequeue);
-            using (AutoCSer.CacheServer.MessageQueue.Abstract.QueueConsumer consumer = queue.CreateConsumerStream(onMessage, getConfig()))
+            using (AutoCSer.CacheServer.MessageQueue.Abstract.Consumer consumer = queue.CreateConsumerStream(onMessage, getConfig()))
             {
                 wait();
             }
@@ -90,7 +90,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             enqueue();
 
             start(CallbackType.ThreadPool, TestType.MessageQueueDequeue);
-            using (AutoCSer.CacheServer.MessageQueue.Abstract.QueueConsumer consumer = queue.CreateConsumer(onMessage, getConfig()))
+            using (AutoCSer.CacheServer.MessageQueue.Abstract.Consumer consumer = queue.CreateConsumer(onMessage, getConfig()))
             {
                 wait();
             }
@@ -105,7 +105,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             queue = client.GetOrCreateDataStructure<QueueConsumer<Binary<Message>>>(cacheName);
             messageIndex = errorCount = 0;
             start(CallbackType.SynchronousStream, TestType.MessageQueueMixing, 2);
-            using (AutoCSer.CacheServer.MessageQueue.Abstract.QueueConsumer consumer = queue.CreateConsumerStream(onMessageInterlocked, getConfig()))
+            using (AutoCSer.CacheServer.MessageQueue.Abstract.Consumer consumer = queue.CreateConsumerStream(onMessageInterlocked, getConfig()))
             {
                 for (int index = 0; index != count; ++index) queue.EnqueueStream(new Message { Value = index }, enqueueCallbackInterlockedReturnParameter);
                 wait();
@@ -121,7 +121,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             queue = client.GetOrCreateDataStructure<QueueConsumer<Binary<Message>>>(cacheName);
             messageIndex = errorCount = 0;
             start(CallbackType.ThreadPool, TestType.MessageQueueMixing, 2);
-            using (AutoCSer.CacheServer.MessageQueue.Abstract.QueueConsumer consumer = queue.CreateConsumer(onMessageInterlocked, getConfig()))
+            using (AutoCSer.CacheServer.MessageQueue.Abstract.Consumer consumer = queue.CreateConsumer(onMessageInterlocked, getConfig()))
             {
                 for (int index = 0; index != count; ++index) queue.EnqueueStream(new Message { Value = index }, enqueueCallbackInterlockedReturnParameter);
                 wait();

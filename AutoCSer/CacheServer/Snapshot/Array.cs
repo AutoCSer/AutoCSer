@@ -32,7 +32,7 @@ namespace AutoCSer.CacheServer.Snapshot
                 if (array[--index] != null)
                 {
                     cache.Parameter.Set(index);
-                    cache.PushHistory(array[index], OperationParameter.OperationType.GetOrCreateNode);
+                    cache.CreateNode(array[index]);
                     return true;
                 }
             }

@@ -14,13 +14,13 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// </summary>
         internal readonly CacheManager Cache;
         /// <summary>
+        /// 队列数据 写文件
+        /// </summary>
+        internal FileWriter Writer;
+        /// <summary>
         /// 操作数据包
         /// </summary>
         private readonly byte[] packet;
-        /// <summary>
-        /// 是否已经被移除
-        /// </summary>
-        protected bool isRemoved;
         /// <summary>
         /// 文件保存路径
         /// </summary>
@@ -42,13 +42,20 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             if (Cache.IsFile)
             {
                 packet = parser.CreateReadPacket(OperationParameter.Serializer.HeaderSize);
-                if (Cache.IsLoaded)
-                {
-                    if (packet.Length == IndexIdentity.SerializeSize) Cache.OnDataStructureCreated = onDataStructureCreated;
-                    else start();
-                }
-                else Cache.LoadMessageQueues.Add(this);
+                tryStart();
             }
+        }
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected void tryStart()
+        {
+            if (Cache.IsLoaded)
+            {
+                if (packet.Length == IndexIdentity.SerializeSize) Cache.OnDataStructureCreated = onDataStructureCreated;
+                else start();
+            }
+            else Cache.LoadMessageQueues.Add(this);
         }
         /// <summary>
         /// 创建缓存节点后的回调操作
@@ -65,12 +72,78 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Start()
         {
-            if (!isRemoved) start();
+            if (IsNode) start();
         }
         /// <summary>
         /// 初始化
         /// </summary>
-        protected abstract void start();
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private void start()
+        {
+            AutoCSer.Threading.ThreadPool.Tiny.Start((Writer = new FileWriter(this)).Start);
+        }
+        /// <summary>
+        /// 删除节点操作
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected void onRemoved()
+        {
+            if (Writer != null) Writer.TryDispose();
+        }
+
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <param name="parser"></param>
+        /// <param name="dataType"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected void enqueue(ref OperationParameter.NodeParser parser, AutoCSer.CacheServer.ValueData.DataType dataType)
+        {
+            if (parser.ValueData.Type == dataType)
+            {
+                if (parser.OnReturn != null) Writer.Append(new Buffer(this, ref parser));
+            }
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
+        }
+        /// <summary>
+        /// 消息队列设置当前读取数据标识
+        /// </summary>
+        /// <param name="parser"></param>
+        /// <param name="reader"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected void setDequeueIdentity(ref OperationParameter.NodeParser parser, FileReader reader)
+        {
+            if (reader != null && parser.ValueData.Type == ValueData.DataType.ULong) reader.TrySetIdentity(parser.ValueData.Int64.ULong);
+        }
+        /// <summary>
+        /// 获取队列数据 读取配置
+        /// </summary>
+        /// <param name="parser"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected configType getReaderConfig<configType>(ref OperationParameter.NodeParser parser)
+            where configType : ReaderConfig
+        {
+            if (parser.OnReturn != null)
+            {
+                if (parser.ValueData.Type == ValueData.DataType.Json)
+                {
+                    configType config = null;
+                    if (parser.ValueData.GetJson(ref config) && config != null)
+                    {
+                        if (Writer != null)
+                        {
+                            if (!Writer.IsDisposed) return config;
+                            else parser.ReturnParameter.ReturnType = ReturnType.MessageQueueDisposed;
+                        }
+                        else parser.ReturnParameter.ReturnType = ReturnType.MessageQueueNotFoundWriter;
+                        return null;
+                    }
+                }
+                parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
+            }
+            return null;
+        }
 
         /// <summary>
         /// 获取下一个节点
@@ -79,7 +152,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <returns></returns>
         internal override Cache.Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -88,7 +161,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <param name="parser">参数解析</param>
         internal override void OperationEnd(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 创建缓存快照

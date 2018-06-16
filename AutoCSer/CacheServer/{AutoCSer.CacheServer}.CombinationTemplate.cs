@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<long> GetLong(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetLong(value.Type);
+            return value.Value.Parameter.GetLong(value.Type);
         }
     }
 }
@@ -41,7 +41,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<uint> GetUInt(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetUInt(value.Type);
+            return value.Value.Parameter.GetUInt(value.Type);
         }
     }
 }
@@ -61,7 +61,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<int> GetInt(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetInt(value.Type);
+            return value.Value.Parameter.GetInt(value.Type);
         }
     }
 }
@@ -81,7 +81,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<ushort> GetUShort(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetUShort(value.Type);
+            return value.Value.Parameter.GetUShort(value.Type);
         }
     }
 }
@@ -101,7 +101,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<short> GetShort(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetShort(value.Type);
+            return value.Value.Parameter.GetShort(value.Type);
         }
     }
 }
@@ -121,7 +121,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<byte> GetByte(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetByte(value.Type);
+            return value.Value.Parameter.GetByte(value.Type);
         }
     }
 }
@@ -141,7 +141,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<sbyte> GetSByte(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetSByte(value.Type);
+            return value.Value.Parameter.GetSByte(value.Type);
         }
     }
 }
@@ -161,7 +161,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<double> GetDouble(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetDouble(value.Type);
+            return value.Value.Parameter.GetDouble(value.Type);
         }
     }
 }
@@ -181,7 +181,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<float> GetFloat(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetFloat(value.Type);
+            return value.Value.Parameter.GetFloat(value.Type);
         }
     }
 }
@@ -201,7 +201,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<decimal> GetDecimal(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetDecimal(value.Type);
+            return value.Value.Parameter.GetDecimal(value.Type);
         }
     }
 }
@@ -221,7 +221,7 @@ namespace AutoCSer.CacheServer
         [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static ReturnValue<bool> GetBool(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            return value.Value.GetBool(value.Type);
+            return value.Value.Parameter.GetBool(value.Type);
         }
     }
 }

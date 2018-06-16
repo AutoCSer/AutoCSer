@@ -149,7 +149,7 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
         internal ReturnParameter Operation(OperationParameter.OperationNode parameter)
         {
-            return Cache.Operation(parameter.Buffer);
+            return new ReturnParameter(Cache.Operation(parameter.Buffer));
         }
         /// <summary>
         /// 操作数据并返回参数
@@ -160,9 +160,9 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         internal ReturnParameter OperationStream(OperationParameter.OperationNode parameter)
         {
-            ReturnParameter returnValue = Cache.Operation(parameter.Buffer);
-            returnValue.IsDeSerializeStream = true;
-            return returnValue;
+            ValueData.Data returnValue = Cache.Operation(parameter.Buffer);
+            returnValue.IsReturnDeSerializeStream = true;
+            return new ReturnParameter(ref returnValue);
         }
         /// <summary>
         /// 操作数据
@@ -217,7 +217,7 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
         internal ReturnParameter Operation(OperationParameter.ShortPathOperationNode parameter)
         {
-            return Cache.Operation(ref parameter);
+            return new ReturnParameter(Cache.Operation(ref parameter));
         }
         /// <summary>
         /// 操作数据并返回参数
@@ -228,9 +228,9 @@ namespace AutoCSer.CacheServer
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         internal ReturnParameter OperationStream(OperationParameter.ShortPathOperationNode parameter)
         {
-            ReturnParameter returnValue = Cache.Operation(ref parameter);
-            returnValue.IsDeSerializeStream = true;
-            return returnValue;
+            ValueData.Data returnValue = Cache.Operation(ref parameter);
+            returnValue.IsReturnDeSerializeStream = true;
+            return new ReturnParameter(ref returnValue);
         }
 
         /// <summary>
@@ -257,8 +257,30 @@ namespace AutoCSer.CacheServer
         }
 
         /// <summary>
-        /// 异步操作空回调
+        /// 表达式节点查询
         /// </summary>
+        /// <param name="parameter">数据结构定义节点查询参数</param>
+        /// <param name="onQuery"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        internal void QueryKeepCallback(OperationParameter.QueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onQuery)
+        {
+            Cache.Query(ref parameter.QueryData, onQuery, false);
+        }
+        /// <summary>
+        /// 表达式节点查询
+        /// </summary>
+        /// <param name="parameter">数据结构定义节点查询参数</param>
+        /// <param name="onQuery"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.Net.TcpServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
+        internal void QueryKeepCallbackStream(OperationParameter.QueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onQuery)
+        {
+            Cache.Query(ref parameter.QueryData, onQuery, true);
+        }
+        /// <summary>
+                 /// 异步操作空回调
+                 /// </summary>
         private static readonly Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> nullCallbackHandle = nullCallback;
         /// <summary>
         /// 异步操作空回调

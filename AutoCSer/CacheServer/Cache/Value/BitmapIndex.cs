@@ -40,14 +40,14 @@ namespace AutoCSer.CacheServer.Cache.Value
                     }
                 }
                 Map = null;
-                parser.ReturnParameter.Set(false);
+                parser.ReturnParameter.ReturnParameterSet(false);
             }
             else
             {
                 index = 0;
                 mapIndex = 0;
                 Map = null;
-                parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
         }
         /// <summary>
@@ -110,7 +110,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 index = 0;
                 mapIndex = 0;
                 Map = null;
-                parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
             }
         }
         /// <summary>

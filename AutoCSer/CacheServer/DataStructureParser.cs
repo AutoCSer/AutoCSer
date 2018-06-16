@@ -69,14 +69,14 @@ namespace AutoCSer.CacheServer
                 case (byte)DataStructure.Abstract.NodeType.Lock: return parse(typeof(Cache.Lock.Node));
 
                 case (byte)DataStructure.Abstract.NodeType.MessageQueueConsumer:
-                    if (valueType != null) return parse(typeof(Cache.MessageQueue.QueueConsumer<>).MakeGenericType(valueType));
+                    if (valueType != null) return parse(typeof(Cache.MessageQueue.Consumer<>).MakeGenericType(valueType));
                     break;
                 case (byte)DataStructure.Abstract.NodeType.MessageQueueConsumers:
-                    if (valueType != null) return parse(typeof(Cache.MessageQueue.QueueConsumers<>).MakeGenericType(valueType));
+                    if (valueType != null) return parse(typeof(Cache.MessageQueue.Consumers<>).MakeGenericType(valueType));
                     break;
-                    //case (byte)DataStructure.Abstract.NodeType.Messages:
-                    //    if (valueType != null) return parse(typeof(Cache.MessageQueue.Messages<>).MakeGenericType(valueType));
-                    //    break;
+                case (byte)DataStructure.Abstract.NodeType.MessageDistributor:
+                    if (valueType != null) return parse(typeof(Cache.MessageQueue.Distributor<>).MakeGenericType(valueType));
+                    break;
             }
             return null;
         }

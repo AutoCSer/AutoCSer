@@ -40,7 +40,7 @@ namespace AutoCSer.CacheServer.Lock
                 if (Interlocked.CompareExchange(ref enterLock, 1, 0) == 0)
                 {
                     this.returnParameter = returnParameter;
-                    if (returnParameter.Value.Type == ReturnType.Success)
+                    if (returnParameter.Value.Parameter.ReturnType == ReturnType.Success)
                     {
                         randomNo = returnParameter.Value.Parameter.Int64.ULong;
                         timeout = Date.NowTime.Now.AddTicks(timeoutTicks - Date.SecondTicks);
@@ -52,7 +52,7 @@ namespace AutoCSer.CacheServer.Lock
                         exit();
                     }
                 }
-                else if (returnParameter.Value.Type == ReturnType.Success)
+                else if (returnParameter.Value.Parameter.ReturnType == ReturnType.Success)
                 {
                     randomNo = returnParameter.Value.Parameter.Int64.ULong;
                     timeout = Date.NowTime.Now.AddTicks(timeoutTicks - Date.SecondTicks);
@@ -70,7 +70,7 @@ namespace AutoCSer.CacheServer.Lock
         {
             if (!enterWait.WaitOne(timeoutMilliseconds) && Interlocked.CompareExchange(ref enterLock, 1, 0) == 0) return new ReturnValue<TimeoutManager> { Type = ReturnType.EnterLockTimeout };
             if (Step == Step.Lock) return this;
-            return new ReturnValue<TimeoutManager> { Type = returnParameter.Value.Type, TcpReturnType = returnParameter.Type };
+            return new ReturnValue<TimeoutManager> { Type = returnParameter.Value.Parameter.ReturnType, TcpReturnType = returnParameter.Type };
         }
     }
 }

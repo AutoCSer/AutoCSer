@@ -18,7 +18,7 @@ namespace AutoCSer.TestCase.CacheServer
         /// <summary>
         /// 消息队列 客户端消费者
         /// </summary>
-        private readonly AutoCSer.CacheServer.MessageQueue.QueueConsumer<int> consumer;
+        private readonly AutoCSer.CacheServer.MessageQueue.Consumer<int> consumer;
         /// <summary>
         /// 当前测试阶段
         /// </summary>
@@ -35,7 +35,7 @@ namespace AutoCSer.TestCase.CacheServer
         /// <param name="isFirst"></param>
         private QueueConsumers(QueueConsumers<int> queue, int readerIndex, bool isFirst)
         {
-            consumer = queue.CreateConsumer(readerIndex, isFirst ? (Action<int>)first : check, new AutoCSer.CacheServer.MessageQueue.Config.QueueConsumer { MemoryCacheNodeCount = 0 });
+            consumer = queue.CreateConsumer(readerIndex, isFirst ? (Action<int>)first : check, new AutoCSer.CacheServer.MessageQueue.ConsumerConfig { MemoryCacheNodeCount = 0 });
         }
         /// <summary>
         /// 释放资源

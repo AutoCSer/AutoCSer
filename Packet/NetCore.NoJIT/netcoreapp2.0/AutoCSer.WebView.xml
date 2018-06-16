@@ -10,9 +10,28 @@
             </summary>
         </member>
         <member name="M:AutoCSer.IO.Compression.GzipCompressor.Get(System.Byte[],System.Int32,System.Int32,AutoCSer.SubBuffer.PoolBufferFull@,AutoCSer.SubArray{System.Byte}@,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            数据压缩
+            </summary>
+            <param name="data"></param>
+            <param name="startIndex"></param>
+            <param name="count"></param>
+            <param name="buffer">输出缓冲区</param>
+            <param name="compressData">压缩数据</param>
+            <param name="seek">起始位置</param>
+            <param name="compressHeadSize">压缩多余头部</param>
+            <param name="isFastest"></param>
             <returns>是否压缩成功</returns>
         </member>
         <member name="M:AutoCSer.IO.Compression.GzipCompressor.Get(AutoCSer.SubArray{System.Byte}@,AutoCSer.SubArray{System.Byte}@,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            数据压缩
+            </summary>
+            <param name="data"></param>
+            <param name="compressData">压缩数据</param>
+            <param name="seek">起始位置</param>
+            <param name="compressHeadSize">压缩多余头部</param>
+            <param name="isFastest"></param>
             <returns>是否压缩成功</returns>
         </member>
         <member name="T:AutoCSer.IO.CreateFlieTimeoutCounter">
@@ -8573,6 +8592,9 @@
             </summary>
         </member>
         <member name="M:AutoCSer.Net.Http.Response.Compress(System.Boolean)">
+            <summary>
+            压缩数据
+            </summary>
             <param name="isFastestCompressionLevel"></param>
         </member>
         <member name="M:AutoCSer.Net.Http.Response.CancelPool">
@@ -8649,6 +8671,13 @@
             </summary>
         </member>
         <member name="M:AutoCSer.Net.Http.Response.GetCompress(AutoCSer.SubArray{System.Byte}@,AutoCSer.SubArray{System.Byte}@,System.Int32,System.Boolean)">
+            <summary>
+            压缩处理
+            </summary>
+            <param name="data"></param>
+            <param name="compressData"></param>
+            <param name="seek"></param>
+            <param name="isFastest"></param>
             <returns></returns>
         </member>
         <member name="T:AutoCSer.Net.Http.ResponseContentType">

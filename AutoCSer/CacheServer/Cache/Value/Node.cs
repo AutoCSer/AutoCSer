@@ -8,6 +8,10 @@ namespace AutoCSer.CacheServer.Cache.Value
     internal abstract class Node : Cache.Node
     {
         /// <summary>
+        /// 构造参数
+        /// </summary>
+        internal byte[] ConstructorParameter = NullValue<byte>.Array;
+        /// <summary>
         /// 缓存节点
         /// </summary>
         /// <param name="parent"></param>

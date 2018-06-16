@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.Extension;
 
 namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
 {
@@ -25,6 +26,28 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
             {
                 end.LinkNext = value;
                 end = value;
+                queueLock = 0;
+            }
+        }
+        /// <summary>
+        /// 添加任务
+        /// </summary>
+        /// <param name="head"></param>
+        /// <param name="end"></param>
+        internal void Add(Node head, Node end)
+        {
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            if (this.head == null)
+            {
+                this.end = end;
+                this.head = head;
+                queueLock = 0;
+                waitHandle.Set();
+            }
+            else
+            {
+                this.end.LinkNext = head;
+                this.end = end;
                 queueLock = 0;
             }
         }

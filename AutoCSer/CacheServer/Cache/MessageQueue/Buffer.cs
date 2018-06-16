@@ -10,13 +10,13 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
     internal sealed class Buffer : AutoCSer.Threading.Link<Buffer>, IDisposable
     {
         /// <summary>
-        /// 消息队列节点
-        /// </summary>
-        internal readonly Node Node;
-        /// <summary>
         /// 消息标识
         /// </summary>
         internal ulong Identity;
+        /// <summary>
+        /// 消息队列节点
+        /// </summary>
+        internal readonly Node Node;
         /// <summary>
         /// 数据缓冲区计数
         /// </summary>
@@ -47,12 +47,25 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             parser.OnReturn = null;
         }
         /// <summary>
+        /// 数据缓冲区
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onReturn"></param>
+        /// <param name="message"></param>
+        internal Buffer(Node node, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn, ref DistributionMessageItem message)
+        {
+            Node = node;
+            this.onReturn = onReturn;
+            Data = message.Data;
+            BufferCount = message.OnAppendFile();
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()
         {
             if (BufferCount != null) BufferCount.Free();
-            if (onReturn != null) onReturn(new ReturnParameter { Type = ReturnType.MessageQueueBufferDisposed });
+            if (onReturn != null) onReturn(new ReturnParameter(ReturnType.MessageQueueBufferDisposed));
         }
         /// <summary>
         /// 释放数据缓冲区
@@ -77,7 +90,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             if (onReturn != null)
             {
                 this.onReturn = null;
-                onReturn(new ReturnParameter { Type = returnType });
+                onReturn(new ReturnParameter(returnType));
             }
         }
         /// <summary>
@@ -100,7 +113,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             if (onReturn != null)
             {
                 ReturnParameter returnParameter = new ReturnParameter();
-                returnParameter.Set(true);
+                returnParameter.Parameter.ReturnParameterSet(true);
                 onReturn(returnParameter);
                 onReturn = null;
             }
@@ -114,8 +127,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal Buffer Append()
         {
+            callback();
             Node.Append(this);
-            return callback();
+            return LinkNext;
         }
     }
 }

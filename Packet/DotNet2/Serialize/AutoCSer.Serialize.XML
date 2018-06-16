@@ -11695,6 +11695,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadULong">
+            <summary>
+            读取一个整数
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.createArray``1(``0[]@,System.Int32)">
             <summary>
             创建数组

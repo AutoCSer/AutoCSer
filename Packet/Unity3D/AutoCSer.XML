@@ -1069,6 +1069,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:AutoCSer.Threading.Link`1.Queue.GetClear(`0@)">
+            <summary>
+            获取链表并清除数据
+            </summary>
+            <param name="end"></param>
+            <returns></returns>
+        </member>
         <member name="M:AutoCSer.Threading.Link`1.Queue.SetHeaderNextNull">
             <summary>
             头节点 next 设置为 null
@@ -3379,7 +3386,7 @@
         </member>
         <member name="M:AutoCSer.Threading.QueueTaskThread`1.#ctor(System.Boolean)">
             <summary>
-            TCP 服务器端同步调用任务处理
+            队列任务线程
             </summary>
             <param name="isBackground">是否后台线程</param>
         </member>
@@ -14742,6 +14749,12 @@
             <returns></returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadInt">
+            <summary>
+            读取一个整数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadULong">
             <summary>
             读取一个整数
             </summary>
@@ -28161,6 +28174,11 @@
         <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.CacheFile">
             <summary>
             缓存文件刷新
+            </summary>
+        </member>
+        <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.CacheDistributionTimeout">
+            <summary>
+            缓存消息分发超时处理
             </summary>
         </member>
         <member name="F:AutoCSer.Date.NowTime.OnTimeFlag.CacheTimeout">

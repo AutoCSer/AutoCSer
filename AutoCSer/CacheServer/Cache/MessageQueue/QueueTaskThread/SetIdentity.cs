@@ -10,12 +10,12 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 队列数据 读文件
         /// </summary>
-        private readonly File.QueueReader reader;
+        private readonly FileReader reader;
         /// <summary>
-        /// 添加获取数据任务
+        /// 设置当前读取数据标识
         /// </summary>
         /// <param name="reader"></param>
-        internal SetIdentity(File.QueueReader reader) : base(reader.Node)
+        internal SetIdentity(FileReader reader) : base(reader.Node)
         {
             this.reader = reader;
         }

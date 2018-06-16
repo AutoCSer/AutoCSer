@@ -36,20 +36,9 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryULongAsynchronous GetDequeueIdentityNode(int readerIndex, Cache.MessageQueue.Config.QueueReader config)
+        private Parameter.Value getDequeueIdentityNode(int readerIndex, Cache.MessageQueue.ReaderConfig config)
         {
-            return (uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount ? getDequeueIdentityNode(readerIndex, config) : null;
-        }
-        /// <summary>
-        /// 获取当前读取数据标识
-        /// </summary>
-        /// <param name="readerIndex">消费读取编号（0-65535）</param>
-        /// <param name="config">队列数据 读取配置</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private Parameter.QueryULongAsynchronous getDequeueIdentityNode(int readerIndex, Cache.MessageQueue.Config.QueueReader config)
-        {
-            DataStructure.Parameter.QueryULongAsynchronous node = new DataStructure.Parameter.QueryULongAsynchronous(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueGetDequeueIdentity);
+            Parameter.Value node = new Parameter.Value(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueGetDequeueIdentity);
             node.Parameter.SetJson(config);
             return node;
         }
@@ -59,9 +48,9 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="readerIndex">消费读取编号（0-65535）</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <returns></returns>
-        public ReturnValue<ulong> GetDequeueIdentity(int readerIndex, Cache.MessageQueue.Config.QueueReader config)
+        public ReturnValue<ulong> GetDequeueIdentity(int readerIndex, Cache.MessageQueue.ReaderConfig config)
         {
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return Client.GetULong(ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config)));
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) return Client.GetULong(ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config)));
             return new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange };
         }
         /// <summary>
@@ -71,10 +60,10 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="onEnqueue"></param>
         /// <returns></returns>
-        public void GetDequeueIdentity(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
+        public void GetDequeueIdentity(int readerIndex, Cache.MessageQueue.ReaderConfig config, Action<ReturnValue<ulong>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue); 
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue); 
             else onEnqueue(new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange });
         }
         /// <summary>
@@ -84,11 +73,11 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="onEnqueue"></param>
         /// <returns></returns>
-        public void GetDequeueIdentity(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
+        public void GetDequeueIdentity(int readerIndex, Cache.MessageQueue.ReaderConfig config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue);
-            else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Value = new ReturnParameter { Type = ReturnType.MessageQueueReaderIndexOutOfRange } });
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronous(getDequeueIdentityNode(readerIndex, config), onEnqueue);
+            else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Value = new ReturnParameter(ReturnType.MessageQueueReaderIndexOutOfRange) });
         }
         /// <summary>
         /// 获取当前读取数据标识
@@ -97,10 +86,10 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="onEnqueue">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void GetDequeueIdentityStream(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
+        public void GetDequeueIdentityStream(int readerIndex, Cache.MessageQueue.ReaderConfig config, Action<ReturnValue<ulong>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
             else onEnqueue(new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange });
         }
         /// <summary>
@@ -110,11 +99,11 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <param name="onEnqueue">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
-        public void GetDequeueIdentityStream(int readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
+        public void GetDequeueIdentityStream(int readerIndex, Cache.MessageQueue.ReaderConfig config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             if (onEnqueue == null) throw new ArgumentNullException();
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
-            else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Value = new ReturnParameter { Type = ReturnType.MessageQueueReaderIndexOutOfRange } });
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) ClientDataStructure.Client.MasterQueryAsynchronousStream(getDequeueIdentityNode(readerIndex, config), onEnqueue);
+            else onEnqueue(new AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> { Value = new ReturnParameter(ReturnType.MessageQueueReaderIndexOutOfRange) });
         }
 
         /// <summary>
@@ -124,18 +113,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="config">队列数据 读取配置</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryULongAsynchronous GetDequeueIdentityNode(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config)
-        {
-            return GetDequeueIdentityNode(readerIndex.ToInt32(null), config);
-        }
-        /// <summary>
-        /// 获取当前读取数据标识
-        /// </summary>
-        /// <param name="readerIndex">消费读取编号（0-65535）</param>
-        /// <param name="config">队列数据 读取配置</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public ReturnValue<ulong> GetDequeueIdentity(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config)
+        public ReturnValue<ulong> GetDequeueIdentity(IConvertible readerIndex, Cache.MessageQueue.ReaderConfig config)
         {
             return GetDequeueIdentity(readerIndex.ToInt32(null), config);
         }
@@ -147,7 +125,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="onEnqueue"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void GetDequeueIdentity(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
+        public void GetDequeueIdentity(IConvertible readerIndex, Cache.MessageQueue.ReaderConfig config, Action<ReturnValue<ulong>> onEnqueue)
         {
             GetDequeueIdentity(readerIndex.ToInt32(null), config, onEnqueue);
         }
@@ -159,7 +137,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="onEnqueue"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void GetDequeueIdentity(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
+        public void GetDequeueIdentity(IConvertible readerIndex, Cache.MessageQueue.ReaderConfig config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             GetDequeueIdentity(readerIndex.ToInt32(null), config, onEnqueue);
         }
@@ -171,7 +149,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="onEnqueue">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void GetDequeueIdentityStream(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<ReturnValue<ulong>> onEnqueue)
+        public void GetDequeueIdentityStream(IConvertible readerIndex, Cache.MessageQueue.ReaderConfig config, Action<ReturnValue<ulong>> onEnqueue)
         {
             GetDequeueIdentityStream(readerIndex.ToInt32(null), config, onEnqueue);
         }
@@ -183,11 +161,11 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="onEnqueue">直接在 Socket 接收数据的 IO 线程中处理以避免线程调度，适应于快速结束的非阻塞函数；需要知道的是这种模式下如果产生阻塞会造成 Socket 停止接收数据甚至死锁</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void GetDequeueIdentityStream(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
+        public void GetDequeueIdentityStream(IConvertible readerIndex, Cache.MessageQueue.ReaderConfig config, Action<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>> onEnqueue)
         {
             GetDequeueIdentityStream(readerIndex.ToInt32(null), config, onEnqueue);
         }
-
+        
         /// <summary>
         /// 获取数据
         /// </summary>
@@ -195,22 +173,9 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="identity">读取消息起始标识</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryKeepCallbackReturnValue<valueType> GetMessageNode(int readerIndex, ulong identity)
+        private Parameter.Value getMessageNode(int readerIndex, ulong identity)
         {
-            return (uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount ? getMessageNode(readerIndex, identity) : null;
-        }
-        /// <summary>
-        /// 获取数据
-        /// </summary>
-        /// <param name="readerIndex">消费读取编号（0-65535）</param>
-        /// <param name="identity">读取消息起始标识</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private Parameter.QueryKeepCallbackReturnValue<valueType> getMessageNode(int readerIndex, ulong identity)
-        {
-            Parameter.QueryKeepCallbackReturnValue<valueType> node = new Parameter.QueryKeepCallbackReturnValue<valueType>(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueDequeue);
-            node.Parameter.Set(identity);
-            return node;
+            return new Parameter.Value(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueDequeue, identity);
         }
         /// <summary>
         /// 获取数据
@@ -260,18 +225,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
             if (onGet == null) throw new ArgumentNullException();
             return ClientDataStructure.Client.MasterQueryKeepCallbackStream(getMessageNode(readerIndex, identity), onGet);
         }
-
-        /// <summary>
-        /// 获取数据
-        /// </summary>
-        /// <param name="readerIndex">消费读取编号（0-65535）</param>
-        /// <param name="identity">读取消息起始标识</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryKeepCallbackReturnValue<valueType> GetMessageNode(IConvertible readerIndex, ulong identity)
-        {
-            return GetMessageNode(readerIndex.ToInt32(null), identity);
-        }
+        
         /// <summary>
         /// 获取数据
         /// </summary>
@@ -320,7 +274,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         {
             return GetMessageStream(readerIndex.ToInt32(null), identity, onGet);
         }
-
+        
         /// <summary>
         /// 消息队列设置当前读取数据标识
         /// </summary>
@@ -328,22 +282,9 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="identity">确认已完成消息标识</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryOnly GetSetDequeueIdentityNode(int readerIndex, ulong identity)
+        private Parameter.Value getSetDequeueIdentityNode(int readerIndex, ulong identity)
         {
-            return (uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount ? getSetDequeueIdentityNode(readerIndex, identity) : null;
-        }
-        /// <summary>
-        /// 消息队列设置当前读取数据标识
-        /// </summary>
-        /// <param name="readerIndex">消费读取编号（0-65535）</param>
-        /// <param name="identity">确认已完成消息标识</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private Parameter.QueryOnly getSetDequeueIdentityNode(int readerIndex, ulong identity)
-        {
-            DataStructure.Parameter.QueryOnly node = new DataStructure.Parameter.QueryOnly(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueSetDequeueIdentity);
-            node.Parameter.Set(identity);
-            return node;
+            return new Parameter.Value(new Parameter.Value(this, readerIndex), OperationParameter.OperationType.MessageQueueSetDequeueIdentity, identity);
         }
         /// <summary>
         /// 消息队列设置当前读取数据标识
@@ -354,18 +295,7 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         {
             ClientDataStructure.Client.MasterQueryOnly(getSetDequeueIdentityNode(readerIndex, identity));
         }
-
-        /// <summary>
-        /// 消息队列设置当前读取数据标识
-        /// </summary>
-        /// <param name="readerIndex">消费读取编号（0-65535）</param>
-        /// <param name="identity">确认已完成消息标识</param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryOnly GetSetDequeueIdentityNode(IConvertible readerIndex, ulong identity)
-        {
-            return GetSetDequeueIdentityNode(readerIndex.ToInt32(null), identity);
-        }
+        
         /// <summary>
         /// 消息队列设置当前读取数据标识
         /// </summary>

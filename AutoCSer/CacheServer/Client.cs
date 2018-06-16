@@ -304,7 +304,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Operation(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            if (onReturn != null) Operation(node, value => onReturn(value.Value.GetBool(value.Type)));
+            if (onReturn != null) Operation(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
             else OperationOnly(node);
         }
         /// <summary>
@@ -315,7 +315,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationStream(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            OperationStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            OperationStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 操作数据
@@ -398,7 +398,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationAsynchronous(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            if (onReturn != null) OperationAsynchronous(node, value => onReturn(value.Value.GetBool(value.Type)));
+            if (onReturn != null) OperationAsynchronous(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
             else OperationAsynchronousOnly(node);
         }
         /// <summary>
@@ -409,7 +409,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationAsynchronousStream(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            OperationAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            OperationAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Query(DataStructure.Abstract.Node node, Action<ReturnValue<int>> onGet)
         {
-            Query(node, value => onGet(value.Value.GetInt(value.Type)));
+            Query(node, value => onGet(value.Value.Parameter.GetInt(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -483,7 +483,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryStream(DataStructure.Abstract.Node node, Action<ReturnValue<int>> onGet)
         {
-            QueryStream(node, value => onGet(value.Value.GetInt(value.Type)));
+            QueryStream(node, value => onGet(value.Value.Parameter.GetInt(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -493,7 +493,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Query(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onGet)
         {
-            Query(node, value => onGet(value.Value.GetBool(value.Type)));
+            Query(node, value => onGet(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -503,7 +503,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryStream(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onGet)
         {
-            QueryStream(node, value => onGet(value.Value.GetBool(value.Type)));
+            QueryStream(node, value => onGet(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -567,7 +567,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronous(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            QueryAsynchronous(node, value => onReturn(value.Value.GetBool(value.Type)));
+            QueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -577,7 +577,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronousStream(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            QueryAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            QueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -587,7 +587,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronous(DataStructure.Abstract.Node node, Action<ReturnValue<ulong>> onReturn)
         {
-            QueryAsynchronous(node, value => onReturn(value.Value.GetULong(value.Type)));
+            QueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetULong(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -597,7 +597,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronousStream(DataStructure.Abstract.Node node, Action<ReturnValue<ulong>> onReturn)
         {
-            QueryAsynchronousStream(node, value => onReturn(value.Value.GetULong(value.Type)));
+            QueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetULong(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -658,7 +658,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void MasterQueryAsynchronous(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            MasterQueryAsynchronous(node, value => onReturn(value.Value.GetBool(value.Type)));
+            MasterQueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -668,7 +668,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void MasterQueryAsynchronousStream(DataStructure.Abstract.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -678,7 +678,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void MasterQueryAsynchronous(DataStructure.Abstract.Node node, Action<ReturnValue<ulong>> onReturn)
         {
-            MasterQueryAsynchronous(node, value => onReturn(value.Value.GetULong(value.Type)));
+            MasterQueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetULong(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -688,7 +688,27 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void MasterQueryAsynchronousStream(DataStructure.Abstract.Node node, Action<ReturnValue<ulong>> onReturn)
         {
-            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.GetULong(value.Type)));
+            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetULong(value.Type)));
+        }
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onReturn"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void MasterQueryAsynchronous(DataStructure.Abstract.Node node, Action<ReturnValue<uint>> onReturn)
+        {
+            MasterQueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetUInt(value.Type)));
+        }
+        /// <summary>
+        /// 异步查询数据
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onReturn"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void MasterQueryAsynchronousStream(DataStructure.Abstract.Node node, Action<ReturnValue<uint>> onReturn)
+        {
+            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetUInt(value.Type)));
         }
 
         /// <summary>
@@ -785,6 +805,51 @@ namespace AutoCSer.CacheServer
         }
 
         /// <summary>
+        /// 异步查询数据（保持回调）
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onReturn"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.KeepCallback MasterQueryKeepCallback(DataStructure.Abstract.Node node, Action<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>> onReturn)
+        {
+            return MasterClient.QueryKeepCallback(new OperationParameter.QueryNode { Node = node }, onReturn);
+        }
+        /// <summary>
+        /// 异步查询数据（保持回调）
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onReturn"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.KeepCallback MasterQueryKeepCallbackStream(DataStructure.Abstract.Node node, Action<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>> onReturn)
+        {
+            return MasterClient.QueryKeepCallbackStream(new OperationParameter.QueryNode { Node = node }, onReturn);
+        }
+        /// <summary>
+        /// 异步查询数据（保持回调）
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onGet"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.KeepCallback MasterQueryKeepCallback<valueType>(DataStructure.Abstract.Node node, Action<ReturnValue<KeyValue<ulong, valueType>>> onGet)
+        {
+            return MasterQueryKeepCallback(node, value => onGet(ReturnValue<valueType>.Get(ref value)));
+        }
+        /// <summary>
+        /// 异步查询数据（保持回调）
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="onGet"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal AutoCSer.Net.TcpServer.KeepCallback MasterQueryKeepCallbackStream<valueType>(DataStructure.Abstract.Node node, Action<ReturnValue<KeyValue<ulong, valueType>>> onGet)
+        {
+            return MasterQueryKeepCallbackStream(node, value => onGet(ReturnValue<valueType>.Get(ref value)));
+        }
+
+        /// <summary>
         /// 操作数据
         /// </summary>
         /// <param name="node"></param>
@@ -796,13 +861,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = MasterClient.Operation(new OperationParameter.ShortPathOperationNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                 {
                     return MasterClient.Operation(new OperationParameter.ShortPathOperationNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 操作数据
@@ -817,14 +882,14 @@ namespace AutoCSer.CacheServer
             {
                 MasterClient.Operation(new OperationParameter.ShortPathOperationNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         MasterClient.Operation(new OperationParameter.ShortPathOperationNode { Node = node }, onReturn);
                     }
                     else onReturn(value);
                 });
             }
-            else onReturn(new ReturnParameter { Type = returnType });
+            else onReturn(new ReturnParameter(returnType));
         }
         /// <summary>
         /// 操作数据
@@ -839,14 +904,14 @@ namespace AutoCSer.CacheServer
             {
                 MasterClient.OperationStream(new OperationParameter.ShortPathOperationNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         MasterClient.OperationStream(new OperationParameter.ShortPathOperationNode { Node = node }, onReturn);
                     }
                     else onReturn(value);
                 });
             }
-            else onReturn(new ReturnParameter { Type = returnType });
+            else onReturn(new ReturnParameter(returnType));
         }
         
         /// <summary>
@@ -857,7 +922,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationNotNull(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            OperationNotNull(node, value => onReturn(value.Value.GetBool(value.Type)));
+            OperationNotNull(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 操作数据
@@ -867,7 +932,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationStream(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            OperationStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            OperationStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 操作数据
@@ -903,13 +968,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = MasterClient.OperationAsynchronous(new OperationParameter.ShortPathOperationNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                 {
                     return MasterClient.OperationAsynchronous(new OperationParameter.ShortPathOperationNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 异步操作数据
@@ -924,14 +989,14 @@ namespace AutoCSer.CacheServer
             {
                 MasterClient.OperationAsynchronous(new OperationParameter.ShortPathOperationNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         MasterClient.OperationAsynchronous(new OperationParameter.ShortPathOperationNode { Node = node }, onReturn);
                     }
                     else onReturn(value);
                 });
             }
-            else onReturn(new ReturnParameter { Type = returnType });
+            else onReturn(new ReturnParameter(returnType));
         }
         /// <summary>
         /// 操作数据
@@ -946,14 +1011,14 @@ namespace AutoCSer.CacheServer
             {
                 MasterClient.OperationAsynchronousStream(new OperationParameter.ShortPathOperationNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         MasterClient.OperationAsynchronousStream(new OperationParameter.ShortPathOperationNode { Node = node }, onReturn);
                     }
                     else onReturn(value);
                 });
             }
-            else onReturn(new ReturnParameter { Type = returnType });
+            else onReturn(new ReturnParameter(returnType));
         }
         
         /// <summary>
@@ -964,7 +1029,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationAsynchronousNotNull(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            OperationAsynchronousNotNull(node, value => onReturn(value.Value.GetBool(value.Type)));
+            OperationAsynchronousNotNull(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 操作数据
@@ -974,7 +1039,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OperationAsynchronousStream(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            OperationAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            OperationAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
 
         /// <summary>
@@ -990,7 +1055,7 @@ namespace AutoCSer.CacheServer
                 if ((returnType = shortPath.Check(MasterClient)) == ReturnType.Success)
                 {
                     AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = MasterClient.Query(new OperationParameter.ShortPathQueryNode { Node = node });
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         return MasterClient.Query(new OperationParameter.ShortPathQueryNode { Node = node });
                     }
@@ -1000,13 +1065,13 @@ namespace AutoCSer.CacheServer
             else if ((returnType = shortPath.Check(slaveClient)) == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = slaveClient.Query(new OperationParameter.ShortPathQueryNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                 {
                     return slaveClient.Query(new OperationParameter.ShortPathQueryNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 查询数据
@@ -1023,7 +1088,7 @@ namespace AutoCSer.CacheServer
                 {
                     MasterClient.Query(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                     {
-                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                         {
                             MasterClient.Query(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                         }
@@ -1036,7 +1101,7 @@ namespace AutoCSer.CacheServer
             {
                 slaveClient.Query(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                     {
                         slaveClient.Query(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                     }
@@ -1044,7 +1109,7 @@ namespace AutoCSer.CacheServer
                 });
                 return;
             }
-            onReturn(new ReturnParameter { Type = returnType });
+            onReturn(new ReturnParameter(returnType));
         }
         /// <summary>
         /// 查询数据
@@ -1061,7 +1126,7 @@ namespace AutoCSer.CacheServer
                 {
                     MasterClient.QueryStream(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                     {
-                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                         {
                             MasterClient.QueryStream(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                         }
@@ -1074,7 +1139,7 @@ namespace AutoCSer.CacheServer
             {
                 slaveClient.QueryStream(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                     {
                         slaveClient.QueryStream(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                     }
@@ -1082,7 +1147,7 @@ namespace AutoCSer.CacheServer
                 });
                 return;
             }
-            onReturn(new ReturnParameter { Type = returnType });
+            onReturn(new ReturnParameter(returnType));
         }
 
         /// <summary>
@@ -1093,7 +1158,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Query(ShortPath.Parameter.Node node, Action<ReturnValue<int>> onGet)
         {
-            Query(node, value => onGet(value.Value.GetInt(value.Type)));
+            Query(node, value => onGet(value.Value.Parameter.GetInt(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -1103,7 +1168,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryStream(ShortPath.Parameter.Node node, Action<ReturnValue<int>> onGet)
         {
-            QueryStream(node, value => onGet(value.Value.GetInt(value.Type)));
+            QueryStream(node, value => onGet(value.Value.Parameter.GetInt(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -1113,7 +1178,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Query(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onGet)
         {
-            Query(node, value => onGet(value.Value.GetBool(value.Type)));
+            Query(node, value => onGet(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -1123,7 +1188,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryStream(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onGet)
         {
-            QueryStream(node, value => onGet(value.Value.GetBool(value.Type)));
+            QueryStream(node, value => onGet(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 查询数据
@@ -1158,13 +1223,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = slaveClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                 {
                     return slaveClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 异步查询数据
@@ -1182,14 +1247,14 @@ namespace AutoCSer.CacheServer
                 {
                     slaveClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                     {
-                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                         {
                             slaveClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                         }
                         else onReturn(value);
                     });
                 }
-                else onReturn(new ReturnParameter { Type = returnType });
+                else onReturn(new ReturnParameter(returnType));
             }
         }
         /// <summary>
@@ -1208,14 +1273,14 @@ namespace AutoCSer.CacheServer
                 {
                     slaveClient.QueryAsynchronousStream(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                     {
-                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                        if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                         {
                             slaveClient.QueryAsynchronousStream(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                         }
                         else onReturn(value);
                     });
                 }
-                else onReturn(new ReturnParameter { Type = returnType });
+                else onReturn(new ReturnParameter(returnType));
             }
         }
 
@@ -1227,7 +1292,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronous(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            QueryAsynchronous(node, value => onReturn(value.Value.GetBool(value.Type)));
+            QueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -1237,7 +1302,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronousStream(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            QueryAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            QueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -1247,7 +1312,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronous(ShortPath.Parameter.Node node, Action<ReturnValue<ulong>> onReturn)
         {
-            QueryAsynchronous(node, value => onReturn(value.Value.GetULong(value.Type)));
+            QueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetULong(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -1257,7 +1322,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void QueryAsynchronousStream(ShortPath.Parameter.Node node, Action<ReturnValue<ulong>> onReturn)
         {
-            QueryAsynchronousStream(node, value => onReturn(value.Value.GetULong(value.Type)));
+            QueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetULong(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -1291,13 +1356,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = MasterClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                 {
                     return MasterClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 异步查询数据
@@ -1312,14 +1377,14 @@ namespace AutoCSer.CacheServer
             {
                 MasterClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         MasterClient.QueryAsynchronous(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                     }
                     else onReturn(value);
                 });
             }
-            else onReturn(new ReturnParameter { Type = returnType });
+            else onReturn(new ReturnParameter(returnType));
         }
         /// <summary>
         /// 异步查询数据
@@ -1334,14 +1399,14 @@ namespace AutoCSer.CacheServer
             {
                 MasterClient.QueryAsynchronousStream(new OperationParameter.ShortPathQueryNode { Node = node }, value =>
                 {
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         MasterClient.QueryAsynchronousStream(new OperationParameter.ShortPathQueryNode { Node = node }, onReturn);
                     }
                     else onReturn(value);
                 });
             }
-            else onReturn(new ReturnParameter { Type = returnType });
+            else onReturn(new ReturnParameter(returnType));
         }
 
         /// <summary>
@@ -1352,7 +1417,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void MasterQueryAsynchronous(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            MasterQueryAsynchronous(node, value => onReturn(value.Value.GetBool(value.Type)));
+            MasterQueryAsynchronous(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
         /// <summary>
         /// 异步查询数据
@@ -1362,7 +1427,7 @@ namespace AutoCSer.CacheServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void MasterQueryAsynchronousStream(ShortPath.Parameter.Node node, Action<ReturnValue<bool>> onReturn)
         {
-            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.GetBool(value.Type)));
+            MasterQueryAsynchronousStream(node, value => onReturn(value.Value.Parameter.GetBool(value.Type)));
         }
     }
 }

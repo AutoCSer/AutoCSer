@@ -158,13 +158,12 @@ namespace AutoCSer.CacheServer.Snapshot
         /// 参数数据序列化以后添加缓存快照历史节点
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="operationType"></param>
-        internal void PushHistory(Node node, OperationParameter.OperationType operationType)
+        internal void CreateNode(Node node)
         {
             stream.ByteSize = historyNodes[historyNodes.Length - 1].Value;
             Parameter.Serialize(stream);
             historyNodes.Add(new KeyValue<Node, int>(node, stream.ByteSize));
-            serializeEnd(operationType);
+            serializeEnd(OperationParameter.OperationType.GetOrCreateNode);
         }
         /// <summary>
         /// 参数数据序列化

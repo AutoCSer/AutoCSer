@@ -102,7 +102,7 @@ namespace AutoCSer.CacheServer
                 if ((returnType = shortPath.Check(MasterClient)) == ReturnType.Success)
                 {
                     AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         return await MasterClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
                     }
@@ -112,13 +112,13 @@ namespace AutoCSer.CacheServer
             else if ((returnType = shortPath.Check(slaveClient)) == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await slaveClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                 {
                     return await slaveClient.QueryAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 异步查询数据
@@ -134,7 +134,7 @@ namespace AutoCSer.CacheServer
                 if ((returnType = shortPath.Check(MasterClient)) == ReturnType.Success)
                 {
                     AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
-                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                    if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                     {
                         return await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
                     }
@@ -144,13 +144,13 @@ namespace AutoCSer.CacheServer
             else if ((returnType = shortPath.Check(slaveClient)) == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await slaveClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(slaveClient, ref value.Value.Parameter.ReturnType))
                 {
                     return await slaveClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
 
         /// <summary>
@@ -165,13 +165,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.OperationAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                 {
                     return await MasterClient.OperationAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
         /// <summary>
         /// 异步操作数据
@@ -185,13 +185,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.OperationAsynchronousAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                 {
                     return await MasterClient.OperationAsynchronousAwaiter(new OperationParameter.ShortPathOperationNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
 
         /// <summary>
@@ -206,13 +206,13 @@ namespace AutoCSer.CacheServer
             if (returnType == ReturnType.Success)
             {
                 AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
-                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Type))
+                if (value.Type == Net.TcpServer.ReturnType.Success && shortPath.ReCreate(MasterClient, ref value.Value.Parameter.ReturnType))
                 {
                     return await MasterClient.QueryAsynchronousAwaiter(new OperationParameter.ShortPathQueryNode { Node = node });
                 }
                 return value;
             }
-            return new ReturnParameter { Type = returnType };
+            return new ReturnParameter(returnType);
         }
     }
 }

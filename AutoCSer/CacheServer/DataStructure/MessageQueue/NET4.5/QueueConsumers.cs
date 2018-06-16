@@ -14,9 +14,9 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="readerIndex">消费读取编号（0-65535）</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <returns></returns>
-        public async Task<ReturnValue<ulong>> GetDequeueIdentityTask(int readerIndex, Cache.MessageQueue.Config.QueueReader config)
+        public async Task<ReturnValue<ulong>> GetDequeueIdentityTask(int readerIndex, Cache.MessageQueue.ReaderConfig config)
         {
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return Client.GetULong(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(getDequeueIdentityNode(readerIndex, config)));
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) return Client.GetULong(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(getDequeueIdentityNode(readerIndex, config)));
             return new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange };
         }
         /// <summary>
@@ -25,9 +25,9 @@ namespace AutoCSer.CacheServer.DataStructure.MessageQueue
         /// <param name="readerIndex">消费读取编号（0-65535）</param>
         /// <param name="config">队列数据 读取配置</param>
         /// <returns></returns>
-        public async Task<ReturnValue<ulong>> GetDequeueIdentityTask(IConvertible readerIndex, Cache.MessageQueue.Config.QueueReader config)
+        public async Task<ReturnValue<ulong>> GetDequeueIdentityTask(IConvertible readerIndex, Cache.MessageQueue.ReaderConfig config)
         {
-            if ((uint)readerIndex < Cache.MessageQueue.Config.QueueReader.MaxReaderCount) return Client.GetULong(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(getDequeueIdentityNode(readerIndex.ToInt32(null), config)));
+            if ((uint)readerIndex < Cache.MessageQueue.ReaderConfig.MaxReaderCount) return Client.GetULong(await ClientDataStructure.Client.MasterQueryAsynchronousAwaiter(getDequeueIdentityNode(readerIndex.ToInt32(null), config)));
             return new ReturnValue<ulong> { Type = ReturnType.MessageQueueReaderIndexOutOfRange };
         }
     }

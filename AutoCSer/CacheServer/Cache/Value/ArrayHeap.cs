@@ -40,7 +40,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             switch (parser.OperationType)
             {
                 case OperationParameter.OperationType.SetValue: setValue(ref parser); break;
-                default: parser.ReturnParameter.Type = ReturnType.OperationTypeError; break;
+                default: parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError; break;
             }
             return null;
         }
@@ -57,7 +57,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 heap.Push(key, ref value);
                 parser.SetOperationReturnParameter();
             }
-            else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 操作数据
@@ -75,10 +75,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                         heap.Clear();
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 弹出数据
@@ -91,7 +91,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 heap.RemoveTop();
                 parser.SetOperationReturnParameter();
             }
-            else parser.ReturnParameter.Type = ReturnType.HeapIsEmpty;
+            else parser.ReturnParameter.ReturnType = ReturnType.HeapIsEmpty;
         }
         /// <summary>
         /// 弹出数据并返回
@@ -106,11 +106,11 @@ namespace AutoCSer.CacheServer.Cache.Value
                     setReturnParameter(ref parser);
                     heap.RemoveTop();
                     parser.IsOperation = true;
-                    parser.ReturnParameter.Type = ReturnType.Success;
+                    parser.ReturnParameter.ReturnType = ReturnType.Success;
                 }
-                else parser.ReturnParameter.Type = ReturnType.HeapIsEmpty;
+                else parser.ReturnParameter.ReturnType = ReturnType.HeapIsEmpty;
             }
-            else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 设置返回值
@@ -119,8 +119,8 @@ namespace AutoCSer.CacheServer.Cache.Value
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private unsafe void setReturnParameter(ref OperationParameter.NodeParser parser)
         {
-            if (parser.ValueData.Int64.Bool) ValueData.Data<keyType>.SetData(ref parser.ReturnParameter.Parameter, heap.Array[heap.Heap.Int[1]].Key);
-            else ValueData.Data<valueType>.SetData(ref parser.ReturnParameter.Parameter, heap.Array[heap.Heap.Int[1]].Value);
+            if (parser.ValueData.Int64.Bool) ValueData.Data<keyType>.SetData(ref parser.ReturnParameter, heap.Array[heap.Heap.Int[1]].Key);
+            else ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, heap.Array[heap.Heap.Int[1]].Value);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -141,21 +141,21 @@ namespace AutoCSer.CacheServer.Cache.Value
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.Set(heap.Count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(heap.Count); return;
                 case OperationParameter.OperationType.GetValue:
                     if (parser.ValueData.Type == ValueData.DataType.Bool)
                     {
                         if (heap.Count != 0)
                         {
                             setReturnParameter(ref parser);
-                            parser.ReturnParameter.Type = ReturnType.Success;
+                            parser.ReturnParameter.ReturnType = ReturnType.Success;
                         }
-                        else parser.ReturnParameter.Type = ReturnType.HeapIsEmpty;
+                        else parser.ReturnParameter.ReturnType = ReturnType.HeapIsEmpty;
                     }
-                    else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+                    else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

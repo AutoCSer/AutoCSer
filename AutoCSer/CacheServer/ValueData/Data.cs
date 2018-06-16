@@ -62,6 +62,15 @@ namespace AutoCSer.CacheServer.ValueData
         /// 是否缓冲区数据
         /// </summary>
         internal bool IsBuffer;
+        /// <summary>
+        /// 设置为 null
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetNull()
+        {
+            Value = null;
+            Type = DataType.Null;
+        }
 
         /// <summary>
         /// 操作类型（临时附加数据） [ushort]
@@ -82,6 +91,55 @@ namespace AutoCSer.CacheServer.ValueData
             }
             return OperationType == operationType;
         }
+
+        /// <summary>
+        /// 返回值类型（临时附加数据） [byte]
+        /// </summary>
+        internal ReturnType ReturnType;
+        /// <summary>
+        /// 返回值类型
+        /// </summary>
+        /// <param name="returnType">返回值类型</param>
+        internal Data(ReturnType returnType)
+        {
+            Int64 = default(Bit64);
+            Value = null;
+            Type = DataType.Null;
+            IsBuffer = IsReturnDeSerializeStream = false;
+            OperationType = OperationParameter.OperationType.Unknown;
+
+            ReturnType = returnType;
+        }
+        /// <summary>
+        /// 是否反序列化网络流，否则需要 Copy 数据
+        /// </summary>
+        internal bool IsReturnDeSerializeStream;
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <param name="stream"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SerializeReturnParameter(UnmanagedStream stream)
+        {
+            stream.Write(IsReturnDeSerializeStream ? (uint)(byte)ReturnType + 0x100U : (uint)(byte)ReturnType);
+            if (ReturnType == ReturnType.Success) Serialize(stream);
+        }
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="deSerializer"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void DeSerializeReturnParameter(AutoCSer.BinarySerialize.DeSerializer deSerializer)
+        {
+            uint type = (uint)deSerializer.ReadInt();
+            ReturnType = (ReturnType)(byte)type;
+            if (ReturnType == ReturnType.Success)
+            {
+                if ((IsReturnDeSerializeStream = (type & 0x100U) != 0) ? DeSerializeSynchronous(deSerializer) : DeSerialize(deSerializer)) return;
+                ReturnType = ReturnType.DeSerializeError;
+            }
+        }
+
         ///// <summary>
         ///// TCP 返回值类型 [byte]
         ///// </summary>
@@ -199,6 +257,167 @@ namespace AutoCSer.CacheServer.ValueData
             }
             value = default(valueType);
             return true;
+        }
+
+        /// <summary>
+        /// ulong
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<ulong> GetULong(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.ULong;
+            return new ReturnValue<ulong> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// long
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<long> GetLong(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Long;
+            return new ReturnValue<long> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// uint
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<uint> GetUInt(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.UInt;
+            return new ReturnValue<uint> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// int
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<int> GetInt(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Int;
+            return new ReturnValue<int> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// ushort
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<ushort> GetUShort(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.UShort;
+            return new ReturnValue<ushort> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// short
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<short> GetShort(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Short;
+            return new ReturnValue<short> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// byte
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<byte> GetByte(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Byte;
+            return new ReturnValue<byte> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// sbyte
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<sbyte> GetSByte(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.SByte;
+            return new ReturnValue<sbyte> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// bool
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<bool> GetBool(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Bool;
+            return new ReturnValue<bool> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// float
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<float> GetFloat(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Float;
+            return new ReturnValue<float> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// double
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<double> GetDouble(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Double;
+            return new ReturnValue<double> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// decimal
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<decimal> GetDecimal(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success) return Decimal;
+            return new ReturnValue<decimal> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// 获取二进制反序列化数据
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <returns></returns>
+        internal ReturnValue<valueType> GetBinary<valueType>(AutoCSer.Net.TcpServer.ReturnType tcpReturnType)
+        {
+            if (ReturnType == ReturnType.Success)
+            {
+                valueType value = default(valueType);
+                if (GetBinary(ref value)) return value;
+                return new ReturnValue<valueType> { Type = ReturnType.DeSerializeError };
+            }
+            return new ReturnValue<valueType> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
+        }
+        /// <summary>
+        /// bool
+        /// </summary>
+        /// <param name="tcpReturnType"></param>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ReturnValue<valueType> GetBool<valueType>(AutoCSer.Net.TcpServer.ReturnType tcpReturnType, valueType returnValue)
+            where valueType : class
+        {
+            if (ReturnType == ReturnType.Success) return Int64.Bool ? returnValue : null;
+            return new ReturnValue<valueType> { Type = tcpReturnType == Net.TcpServer.ReturnType.Success ? ReturnType : ReturnType.TcpError, TcpReturnType = tcpReturnType };
         }
 
         /// <summary>
@@ -425,6 +644,57 @@ namespace AutoCSer.CacheServer.ValueData
             Int64.Set(start, length);
             Type = type;
             IsBuffer = true;
+        }
+
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        /// <param name="parameter">返回值</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void ReturnParameterSet(ulong parameter)
+        {
+            Set(parameter);
+            ReturnType = ReturnType.Success;
+        }
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        /// <param name="parameter">返回值</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void ReturnParameterSet(int parameter)
+        {
+            Set(parameter);
+            ReturnType = ReturnType.Success;
+        }
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        /// <param name="parameter">返回值</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void ReturnParameterSet(uint parameter)
+        {
+            Set(parameter);
+            ReturnType = ReturnType.Success;
+        }
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        /// <param name="parameter">返回值</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void ReturnParameterSet(bool parameter)
+        {
+            Set(parameter);
+            ReturnType = ReturnType.Success;
+        }
+        /// <summary>
+        /// 设置返回值
+        /// </summary>
+        /// <param name="value">返回值</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void ReturnParameterSetBinary<valueType>(valueType value)
+        {
+            SetBinary(value);
+            ReturnType = ReturnType.Success;
         }
 
         /// <summary>
@@ -983,7 +1253,7 @@ namespace AutoCSer.CacheServer.ValueData
                 case DataType.String:
                 case DataType.BinarySerialize:
                 case DataType.Json:
-                    System.Buffer.BlockCopy(new UnionType { Value = Value }.ByteArray, Int64.Index, bigBuffer, Cache.MessageQueue.File.QueueWriter.PacketHeaderSize + sizeof(int) * 2, Int64.Length);
+                    System.Buffer.BlockCopy(new UnionType { Value = Value }.ByteArray, Int64.Index, bigBuffer, Cache.MessageQueue.FileWriter.PacketHeaderSize + sizeof(int) * 2, Int64.Length);
                     return;
             }
         }
@@ -996,6 +1266,7 @@ namespace AutoCSer.CacheServer.ValueData
         /// <returns></returns>
         internal int DeSerializeBuffer(byte* read, byte[] buffer, int startIndex)
         {
+            ReturnType = ReturnType.Success;
             uint type = *(uint*)read;
             switch (Type = (DataType)(byte)type)
             {
@@ -1650,15 +1921,15 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="operationType"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ShortPath.Parameter.OperationBool GetOperationBool(ShortPath.Parameter.Node node, valueType value, OperationParameter.OperationType operationType)
+        internal static ShortPath.Parameter.Value ToNode(ShortPath.Node node, valueType value, OperationParameter.OperationType operationType)
         {
             switch (DataType)
             {
                 case DataType.Json:
                 case DataType.BinarySerialize:
-                    return new ShortPath.Parameter.OperationBool(node, value as DataStructure.Abstract.Node, operationType);
+                    return new ShortPath.Parameter.Value(node, value as DataStructure.Abstract.Node, operationType);
                 default:
-                    ShortPath.Parameter.OperationBool parameter = new ShortPath.Parameter.OperationBool(node);
+                    ShortPath.Parameter.Value parameter = new ShortPath.Parameter.Value(node);
                     SetData(ref parameter.Parameter, value);
                     parameter.Parameter.OperationType = operationType;
                     return parameter;
@@ -1672,15 +1943,15 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="operationType"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static ShortPath.Parameter.QueryBoolAsynchronous GetQueryBoolAsynchronous(ShortPath.Node node, valueType value, OperationParameter.OperationType operationType)
+        internal static ShortPath.Parameter.OperationBool GetOperationBool(ShortPath.Parameter.Node node, valueType value, OperationParameter.OperationType operationType)
         {
             switch (DataType)
             {
                 case DataType.Json:
                 case DataType.BinarySerialize:
-                    return new ShortPath.Parameter.QueryBoolAsynchronous(node, value as DataStructure.Abstract.Node, operationType);
+                    return new ShortPath.Parameter.OperationBool(node, value as DataStructure.Abstract.Node, operationType);
                 default:
-                    ShortPath.Parameter.QueryBoolAsynchronous parameter = new ShortPath.Parameter.QueryBoolAsynchronous(node);
+                    ShortPath.Parameter.OperationBool parameter = new ShortPath.Parameter.OperationBool(node);
                     SetData(ref parameter.Parameter, value);
                     parameter.Parameter.OperationType = operationType;
                     return parameter;

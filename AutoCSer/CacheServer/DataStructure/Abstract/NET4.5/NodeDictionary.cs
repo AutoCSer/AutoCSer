@@ -16,7 +16,7 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         public async Task<AutoCSer.CacheServer.ReturnValue<nodeType>> GetOrCreateTask(keyType key)
         {
             AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value = await ClientDataStructure.Client.OperationAwaiter(GetOrCreateNode(key));
-            return value.Value.GetBool(value.Type, value.Value.Parameter.Int64.Bool ? this[key] : null);
+            return value.Value.Parameter.GetBool(value.Type, value.Value.Parameter.Int64.Bool ? this[key] : null);
         }
         ///// <summary>
         ///// 删除元素节点

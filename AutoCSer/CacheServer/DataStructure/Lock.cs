@@ -42,11 +42,9 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <param name="timeoutTicks"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Parameter.QueryULongAsynchronous GetTryEnterNode(long timeoutTicks)
+        internal Parameter.Value GetTryEnterNode(long timeoutTicks)
         {
-            DataStructure.Parameter.QueryULongAsynchronous node = new DataStructure.Parameter.QueryULongAsynchronous(this, OperationParameter.OperationType.InsertBefore);
-            node.Parameter.Set(timeoutTicks);
-            return node;
+            return new Parameter.Value(this, OperationParameter.OperationType.InsertBefore, timeoutTicks);
         }
         /// <summary>
         /// 申请锁序号
@@ -54,7 +52,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <param name="timeoutMilliseconds">锁的超时毫秒数，默认为 60*1000</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryULongAsynchronous GetTryEnterNode(uint timeoutMilliseconds)
+        internal Parameter.Value GetTryEnterNode(uint timeoutMilliseconds)
         {
             return GetTryEnterNode(FotmatTimeoutTicks(timeoutMilliseconds));
         }
@@ -118,11 +116,9 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <param name="timeoutTicks"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Parameter.QueryULongAsynchronous GetEnterNode(long timeoutTicks)
+        internal Parameter.Value GetEnterNode(long timeoutTicks)
         {
-            DataStructure.Parameter.QueryULongAsynchronous node = new DataStructure.Parameter.QueryULongAsynchronous(this, OperationParameter.OperationType.SetValue);
-            node.Parameter.Set(timeoutTicks);
-            return node;
+            return new Parameter.Value(this, OperationParameter.OperationType.SetValue, timeoutTicks);
         }
         /// <summary>
         /// 申请锁序号
@@ -130,7 +126,7 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <param name="timeoutMilliseconds">锁的超时毫秒数，默认为 60*1000</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryULongAsynchronous GetEnterNode(uint timeoutMilliseconds)
+        internal Parameter.Value GetEnterNode(uint timeoutMilliseconds)
         {
             return GetEnterNode(FotmatTimeoutTicks(timeoutMilliseconds));
         }
@@ -194,11 +190,9 @@ namespace AutoCSer.CacheServer.DataStructure
         /// <param name="randomNo">锁序号</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Parameter.QueryBoolAsynchronous GetExitNode(ulong randomNo)
+        internal Parameter.Value GetExitNode(ulong randomNo)
         {
-            Parameter.QueryBoolAsynchronous node = new Parameter.QueryBoolAsynchronous(this, OperationParameter.OperationType.Remove);
-            node.Parameter.Set(randomNo);
-            return node;
+            return new Parameter.Value(this, OperationParameter.OperationType.Remove, randomNo);
         }
         /// <summary>
         /// 释放锁序号

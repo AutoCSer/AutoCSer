@@ -41,7 +41,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetOperationNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -61,10 +61,10 @@ namespace AutoCSer.CacheServer.Cache.Value
                         Maps = NullValue<byte[]>.Array;
                         parser.IsOperation = true;
                     }
-                    parser.ReturnParameter.Set(true);
+                    parser.ReturnParameter.ReturnParameterSet(true);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
         /// <summary>
         /// 清除数据位
@@ -76,7 +76,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             if (index.Map != null)
             {
                 if (index.IsOperationClear()) parser.SetOperationReturnParameter();
-                else parser.ReturnParameter.Set(false);
+                else parser.ReturnParameter.ReturnParameterSet(false);
             }
         }
         /// <summary>
@@ -89,7 +89,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             if (index.Map != null)
             {
                 if (index.IsOperationSet()) parser.SetOperationReturnParameterFalse();
-                else parser.ReturnParameter.Set(true);
+                else parser.ReturnParameter.ReturnParameterSet(true);
             }
         }
         /// <summary>
@@ -102,7 +102,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             if (index.Map != null)
             {
                 bool isBit = index.SetNegate() != 0;
-                parser.ReturnParameter.Set(isBit);
+                parser.ReturnParameter.ReturnParameterSet(isBit);
                 parser.SetOperationType(isBit ? OperationParameter.OperationType.SetValue : OperationParameter.OperationType.Remove);
             }
         }
@@ -113,7 +113,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Cache.Node GetQueryNext(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
             return null;
         }
         /// <summary>
@@ -126,10 +126,10 @@ namespace AutoCSer.CacheServer.Cache.Value
             {
                 case OperationParameter.OperationType.GetValue:
                     BitmapIndex index = new BitmapIndex(Maps, ref parser);
-                    if (index.Map != null) parser.ReturnParameter.Set(index.Get() != 0);
+                    if (index.Map != null) parser.ReturnParameter.ReturnParameterSet(index.Get() != 0);
                     return;
             }
-            parser.ReturnParameter.Type = ReturnType.OperationTypeError;
+            parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
         }
 
         /// <summary>

@@ -88,6 +88,7 @@
     <Compile Include="TcpStaticStreamServer\Session.cs" />
     <Compile Include="CacheServer\Cache.cs" />
     <Compile Include="CacheServer\Data.cs" />
+    <Compile Include="CacheServer\MesssageDistributor.cs" />
     <Compile Include="CacheServer\QueueConsumer.cs" />
     <Compile Include="CacheServer\QueueConsumers.cs" />
   </ItemGroup>

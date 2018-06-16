@@ -56,7 +56,7 @@ namespace AutoCSer.CacheServer.Cache
                     if (node != null) node.Operation(ref parser);
                 }
             }
-            else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 获取下一个节点
@@ -84,7 +84,7 @@ namespace AutoCSer.CacheServer.Cache
                     if (node != null) node.Query(ref parser);
                 }
             }
-            else parser.ReturnParameter.Type = ReturnType.ValueDataLoadError;
+            else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
         }
         /// <summary>
         /// 获取下一个节点
@@ -104,7 +104,7 @@ namespace AutoCSer.CacheServer.Cache
         /// <param name="parser"></param>
         internal virtual void CreateShortPath(ref OperationParameter.NodeParser parser)
         {
-            parser.ReturnParameter.Type = ReturnType.CanNotCreateShortPath;
+            parser.ReturnParameter.ReturnType = ReturnType.CanNotCreateShortPath;
         }
 
         /// <summary>

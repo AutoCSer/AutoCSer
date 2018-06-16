@@ -39,8 +39,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Set(Buffer buffer)
         {
-            BufferCount = buffer.BufferCount;
             Data = buffer.Data;
+            BufferCount = buffer.BufferCount;
+            Data.ReturnType = ReturnType.Success;
             buffer.BufferCount = null;
         }
         /// <summary>
@@ -51,6 +52,15 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         internal void Set(ref BufferCount bufferCount)
         {
             BufferCount = bufferCount.Get(out Data);
+        }
+        /// <summary>
+        /// 消息处理完毕
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void OnMessage()
+        {
+            FreeBuffer();
+            Data.SetNull();
         }
         /// <summary>
         /// 释放数据缓冲区

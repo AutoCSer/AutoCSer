@@ -7,6 +7,10 @@ namespace AutoCSer.CacheServer.Cache
     /// </summary>
     internal abstract class NodeInfo
     {
+        ///// <summary>
+        ///// 是否支持构造参数
+        ///// </summary>
+        //internal bool IsConstructorParameter;
         /// <summary>
         /// 是否需要处理删除事件
         /// </summary>

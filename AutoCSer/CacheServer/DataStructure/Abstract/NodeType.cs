@@ -46,9 +46,9 @@ namespace AutoCSer.CacheServer.DataStructure.Abstract
         /// </summary>
         MessageQueueConsumers,
         /// <summary>
-        /// 消息节点（数据节点）
+        /// 消息分发节点（数据节点）
         /// </summary>
-        Messages,
+        MessageDistributor,
 
         /// <summary>
         /// 数组节点（数据节点）

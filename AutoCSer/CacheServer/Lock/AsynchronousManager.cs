@@ -37,7 +37,7 @@ namespace AutoCSer.CacheServer.Lock
         /// <param name="returnParameter"></param>
         private void enter(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> returnParameter)
         {
-            if (returnParameter.Value.Type == ReturnType.Success)
+            if (returnParameter.Value.Parameter.ReturnType == ReturnType.Success)
             {
                 randomNo = returnParameter.Value.Parameter.Int64.ULong;
                 timeout = Date.NowTime.Now.AddTicks(timeoutTicks - Date.SecondTicks);
@@ -48,7 +48,7 @@ namespace AutoCSer.CacheServer.Lock
                 }
                 else exit();
             }
-            else onEnter(new ReturnValue<AsynchronousManager> { Type = returnParameter.Value.Type, TcpReturnType = returnParameter.Type });
+            else onEnter(new ReturnValue<AsynchronousManager> { Type = returnParameter.Value.Parameter.ReturnType, TcpReturnType = returnParameter.Type });
         }
         /// <summary>
         /// 申请锁

@@ -31,7 +31,7 @@ namespace AutoCSer.CacheServer.Snapshot
             if (index != array.Length)
             {
                 ValueData.Data<keyType>.SetData(ref cache.Parameter, array[index].Key);
-                cache.PushHistory(array[index].Value, OperationParameter.OperationType.GetOrCreateNode);
+                cache.CreateNode(array[index].Value);
                 ++index;
                 return true;
             }

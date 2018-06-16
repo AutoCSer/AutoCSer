@@ -29,8 +29,9 @@ namespace AutoCSer.Example.CacheServer
                         {
                             using (AutoCSer.CacheServer.Client client = new AutoCSer.CacheServer.Client())
                             {
-                                Console.WriteLine(QueueConsumer.TestCase(client));
-                                Console.WriteLine(QueueConsumers.TestCase(client));
+                                Console.WriteLine(MesssageQueueConsumer.TestCase(client));
+                                Console.WriteLine(MesssageQueueConsumers.TestCase(client));
+                                Console.WriteLine(MesssageDistributor.TestCase(client));
 
                                 Console.WriteLine(ValueArray.TestCase(client));
                                 Console.WriteLine(ValueDictionary.TestCase(client));

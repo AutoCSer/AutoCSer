@@ -139,7 +139,7 @@ namespace AutoCSer.CacheServer
         /// <returns></returns>
         internal static ReturnValue<valueType[]> Get(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> value)
         {
-            if (value.Value.Type == ReturnType.Success)
+            if (value.Value.Parameter.ReturnType == ReturnType.Success)
             {
                 if (value.Value.Parameter.Type == ValueData.DataType.BinarySerialize)
                 {
@@ -149,7 +149,7 @@ namespace AutoCSer.CacheServer
                 }
                 return new ReturnValue<valueType[]> { Type = ReturnType.DeSerializeError };
             }
-            return new ReturnValue<valueType[]> { Type = value.Type == Net.TcpServer.ReturnType.Success ? value.Value.Type : ReturnType.TcpError, TcpReturnType = value.Type };
+            return new ReturnValue<valueType[]> { Type = value.Type == Net.TcpServer.ReturnType.Success ? value.Value.Parameter.ReturnType : ReturnType.TcpError, TcpReturnType = value.Type };
         }
         /// <summary>
         /// 反序列化

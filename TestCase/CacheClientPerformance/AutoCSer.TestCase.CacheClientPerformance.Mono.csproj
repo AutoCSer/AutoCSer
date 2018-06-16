@@ -52,6 +52,7 @@
     <Compile Include="Dictionary.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MesssageDistributor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessageQueue.cs" />
