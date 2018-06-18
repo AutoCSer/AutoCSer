@@ -1431,6 +1431,14 @@
             <param name="value">字符串起始位置</param>
             <param name="count">写入字符数</param>
         </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator.initobjShort(System.Reflection.Emit.ILGenerator,System.Type,System.Reflection.Emit.LocalBuilder)">
+            <summary>
+            对象初始化
+            </summary>
+            <param name="generator"></param>
+            <param name="type"></param>
+            <param name="local"></param>
+        </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.initobj(System.Reflection.Emit.ILGenerator,System.Type,System.Reflection.Emit.LocalBuilder)">
             <summary>
             对象初始化
@@ -6206,6 +6214,20 @@
             <param name="value">匹配数据</param>
             <returns>匹配位置,失败为-1</returns>
         </member>
+        <member name="M:AutoCSer.LeftArray`1.indexOf(System.Func{`0,System.Boolean})">
+            <summary>
+            获取获取数组中的匹配位置
+            </summary>
+            <param name="isValue">数据匹配器</param>
+            <returns>数组中的匹配位置,失败为-1</returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.IndexOf(System.Func{`0,System.Boolean})">
+            <summary>
+            获取获取数组中的匹配位置
+            </summary>
+            <param name="isValue">数据匹配器</param>
+            <returns>数组中的匹配位置,失败为-1</returns>
+        </member>
         <member name="M:AutoCSer.LeftArray`1.Remove(`0)">
             <summary>
             移除数据
@@ -6219,6 +6241,20 @@
             </summary>
             <param name="index">数据位置</param>
             <returns>被移除数据</returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.removeAtToEnd(System.Int32)">
+            <summary>
+            最后一个数据移动到被删除数据位置
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.RemoveToEnd(System.Func{`0,System.Boolean})">
+            <summary>
+            移除数据，然后将最后一个数据移动到被删除数据位置
+            </summary>
+            <param name="isValue">数据匹配器</param>
+            <returns>是否存在移除数据</returns>
         </member>
         <member name="M:AutoCSer.LeftArray`1.CopyTo(`0[],System.Int32)">
             <summary>
@@ -9645,6 +9681,12 @@
             补白对齐 4 字节
             </summary>
             <param name="startIndex">起始位置</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.SerializeFillByteSize(System.Int32)">
+            <summary>
+            增加当前数据长度并且补白对齐 4 字节
+            </summary>
+            <param name="size">增加数据长度</param>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.GetArray">
             <summary>

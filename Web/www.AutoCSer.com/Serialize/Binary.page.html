@@ -32,13 +32,17 @@
         <!--Include:Include\GetCode[Example,c,,BinarySerialize\RealType.cs]-->
     </p>
     <p>
-        . 由于二进制序列化对数据结构定义更新不友好，对于非稳定字段数据支持 <a href="/Serialize/Json.html">Json 序列化</a>扩展。
+        . 支持全局版本更新，用于反序列化兼容数据定义的变化，历史版本不支持成员位图。
+        <!--Include:Include\GetCode[Example,d,,BinarySerialize\GlobalVersion.cs]-->
+    </p>
+    <p>
+        . 当全局版本更新无法解决数据定义更新的兼容问题时，可以选择支持 <a href="/Serialize/Json.html">Json 序列化</a>扩展。
         <!--Include:Include\GetCode[Example,9,,BinarySerialize\Json.cs]-->
     </p>
     <p>
         . 支持自定义序列化函数，对于引用类型必须是静态函数，对于值类型必须是成员函数，必须同时定义序列化与反序列化两个函数并自行保证序列化数据的可逆性。
         <!--Include:Include\GetCode[Example,a,引用类型,BinarySerialize\CustomClass.cs]-->
-        <!--Include:Include\GetCode[Example,d,值类型,BinarySerialize\CustomStruct.cs]-->
+        <!--Include:Include\GetCode[Example,e,值类型,BinarySerialize\CustomStruct.cs]-->
     </p>
 </body>
 </html>

@@ -110,6 +110,7 @@
     <Compile Include="CustomStruct.cs" />
     <Compile Include="DisabledMemberMap.cs" />
     <Compile Include="DisabledReference.cs" />
+    <Compile Include="GlobalVersion.cs" />
     <Compile Include="IgnoreMember.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="MemberMap.cs" />

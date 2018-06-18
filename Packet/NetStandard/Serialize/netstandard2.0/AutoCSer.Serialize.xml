@@ -990,6 +990,11 @@
             数据字节长度
             </summary>
         </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializer.GlobalVersion">
+            <summary>
+            全局版本编号
+            </summary>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.DeSerializer.start">
             <summary>
             序列化数据起始位置
@@ -1046,6 +1051,11 @@
             <param name="value"></param>
             <param name="config"></param>
             <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.getGlobalVersion">
+            <summary>
+            获取全局版本编号
+            </summary>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.TypeDeSerialize``1(``0@)">
             <summary>
@@ -1141,6 +1151,12 @@
             <returns></returns>
         </member>
         <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadInt">
+            <summary>
+            读取一个整数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializer.ReadULong">
             <summary>
             读取一个整数
             </summary>
@@ -2246,6 +2262,129 @@
             自定义序列化失败
             </summary>
         </member>
+        <member name="T:AutoCSer.BinarySerialize.DeSerializeVersionField">
+            <summary>
+            二进制数据反序列化版本字段信息
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionField.Field">
+            <summary>
+            字段索引
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionField.Attribute">
+            <summary>
+            二进制数据序列化成员配置
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionField.IsRemove">
+            <summary>
+            是否删除字段
+            </summary>
+        </member>
+        <member name="P:AutoCSer.BinarySerialize.DeSerializeVersionField.GlobalVersion">
+            <summary>
+            全局版本编号
+            </summary>
+        </member>
+        <member name="P:AutoCSer.BinarySerialize.DeSerializeVersionField.SortMemberFilters">
+            <summary>
+            静态成员转换为实例成员
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionField.GlobalVersionSort">
+            <summary>
+            全局版本编号排序比较
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializeVersionField.globalVersionSort(AutoCSer.BinarySerialize.DeSerializeVersionField,AutoCSer.BinarySerialize.DeSerializeVersionField)">
+            <summary>
+            全局版本编号排序比较
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionField.MemberIndexSort">
+            <summary>
+            成员索引排序比较
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializeVersionField.memberIndexSort(AutoCSer.BinarySerialize.DeSerializeVersionField,AutoCSer.BinarySerialize.DeSerializeVersionField)">
+            <summary>
+            成员索引排序比较
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionField.MemberNameSort">
+            <summary>
+            成员名称排序比较
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializeVersionField.memberNameSort(AutoCSer.BinarySerialize.DeSerializeVersionField,AutoCSer.BinarySerialize.DeSerializeVersionField)">
+            <summary>
+            成员名称排序比较
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AutoCSer.BinarySerialize.DeSerializeVersionFields`1">
+            <summary>
+            二进制数据反序列化版本字段信息
+            </summary>
+            <typeparam name="valueType">对象类型</typeparam>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.GlobalVersion">
+            <summary>
+            全局版本编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.removeMemberCount">
+            <summary>
+            被删除成员数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.fields">
+            <summary>
+            字段集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.CreateLock">
+            <summary>
+            二进制数据反序列化访问锁
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.DeSerializer">
+            <summary>
+            二进制数据反序列化
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.#ctor(System.UInt32,AutoCSer.BinarySerialize.DeSerializeVersionField[],System.UInt32)">
+            <summary>
+            二进制数据反序列化版本字段信息
+            </summary>
+            <param name="globalVersion">全局版本编号</param>
+            <param name="fields">字段集合</param>
+            <param name="removeMemberCount">被删除成员数量</param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.Create(System.Boolean)">
+            <summary>
+            创建二进制数据反序列化
+            </summary>
+            <param name="isJson"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.DeSerializeVersionFields`1.CreateOnly(System.Boolean,System.Boolean)">
+            <summary>
+            创建二进制数据反序列化
+            </summary>
+            <param name="isJson"></param>
+            <param name="isMemberMap"></param>
+            <returns></returns>
+        </member>
         <member name="T:AutoCSer.BinarySerialize.Fields`1">
             <summary>
             字段集合信息
@@ -2264,13 +2403,24 @@
         </member>
         <member name="F:AutoCSer.BinarySerialize.Fields`1.JsonFields">
             <summary>
-            JSON混合序列化字段
+            JSON 混合序列化字段
             </summary>
         </member>
         <member name="F:AutoCSer.BinarySerialize.Fields`1.FixedSize">
             <summary>
             固定序列化字段字节数
             </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.Fields`1.#ctor(AutoCSer.LeftArray{`0}@,AutoCSer.LeftArray{`0}@,AutoCSer.LeftArray{AutoCSer.Metadata.FieldIndex}@,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            字段集合信息
+            </summary>
+            <param name="fixedFields">固定序列化字段</param>
+            <param name="fields">非固定序列化字段</param>
+            <param name="jsonFields">JSON 混合序列化字段</param>
+            <param name="fixedSize">固定序列化字段字节数</param>
+            <param name="isJson"></param>
+            <param name="memberCountVerify">序列化成员数量</param>
         </member>
         <member name="T:AutoCSer.BinarySerialize.FieldSize">
             <summary>
@@ -2298,9 +2448,14 @@
             </summary>
             <param name="field"></param>
         </member>
-        <member name="M:AutoCSer.BinarySerialize.FieldSize.FixedSizeSort(AutoCSer.BinarySerialize.FieldSize,AutoCSer.BinarySerialize.FieldSize)">
+        <member name="F:AutoCSer.BinarySerialize.FieldSize.FixedSizeSort">
             <summary>
-            
+            固定分组排序字节数排序比较
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.FieldSize.fixedSizeSort(AutoCSer.BinarySerialize.FieldSize,AutoCSer.BinarySerialize.FieldSize)">
+            <summary>
+            固定分组排序字节数排序比较
             </summary>
             <param name="left"></param>
             <param name="right"></param>
@@ -2450,6 +2605,11 @@
             是否检测引用类型对象的真实类型
             </summary>
         </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeConfig.GlobalVersionValue">
+            <summary>
+            是否检测全局版本编号
+            </summary>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.SerializeConfig.MemberMap">
             <summary>
             成员位图
@@ -2460,15 +2620,50 @@
             是否检测引用类型对象的真实类型
             </summary>
         </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeConfig.GlobalVersion">
+            <summary>
+            全局版本编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeConfig.globalVersion">
+            <summary>
+            全局版本编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeConfig.headerValue">
+            <summary>
+            序列化头部数据
+            </summary>
+        </member>
         <member name="P:AutoCSer.BinarySerialize.SerializeConfig.HeaderValue">
             <summary>
             序列化头部数据
             </summary>
         </member>
-        <member name="F:AutoCSer.BinarySerialize.SerializeConfig.HeaderValueCache">
+        <member name="M:AutoCSer.BinarySerialize.SerializeConfig.createHeaderValue">
             <summary>
-            序列化头部数据缓存
+            初始化序列化头部数据
             </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.SerializeConfig.WriteHeader(AutoCSer.UnmanagedStream)">
+            <summary>
+            写入序列化头部数据
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.SerializeConfig.UnsafeWriteHeader(AutoCSer.UnmanagedStream)">
+            <summary>
+            写入序列化头部数据
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.SerializeConfig.CheckHeaderValue(System.Byte*,System.UInt32@)">
+            <summary>
+            检测序列化头部数据
+            </summary>
+            <param name="start"></param>
+            <param name="globalVersion"></param>
+            <returns></returns>
         </member>
         <member name="T:AutoCSer.BinarySerialize.SerializeCustomAttribute">
             <summary>
@@ -2480,6 +2675,26 @@
             二进制数据序列化成员配置
             </summary>
         </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeMemberAttribute.GlobalVersion">
+            <summary>
+            全局版本编号（添加字段）
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeMemberAttribute.RemoveGlobalVersion">
+            <summary>
+            全局版本编号（删除字段），大于添加字段全局版本编号时有效 ，静态字段不能用 public 修饰
+            </summary>
+        </member>
+        <member name="P:AutoCSer.BinarySerialize.SerializeMemberAttribute.IsRemove">
+            <summary>
+            字段是否已经被删除
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeMemberAttribute.IsRemovePublic">
+            <summary>
+            默认为 true 表示字段删除前用 public 修饰
+            </summary>
+        </member>
         <member name="F:AutoCSer.BinarySerialize.SerializeMemberAttribute.IsJson">
             <summary>
             是否采用 JSON 混合序列化
@@ -2488,6 +2703,11 @@
         <member name="P:AutoCSer.BinarySerialize.SerializeMemberAttribute.GetIsJson">
             <summary>
             是否采用 JSON 混合序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.SerializeMemberAttribute.Null">
+            <summary>
+            默认空配置
             </summary>
         </member>
         <member name="T:AutoCSer.BinarySerialize.SerializeMemberDynamicMethod">
@@ -4640,46 +4860,6 @@
             反序列化委托
             </summary>
         </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fixedMemberDeSerializer">
-            <summary>
-            固定分组成员序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fixedMemberMapDeSerializer">
-            <summary>
-            固定分组成员位图序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.memberDeSerializer">
-            <summary>
-            成员序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.memberMapDeSerializer">
-            <summary>
-            成员位图序列化
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.jsonMemberMap">
-            <summary>
-            JSON混合序列化位图
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.jsonMemberIndexs">
-            <summary>
-            JSON混合序列化成员索引集合
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fixedFillSize">
-            <summary>
-            固定分组填充字节数
-            </summary>
-        </member>
-        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.memberCountVerify">
-            <summary>
-            序列化成员数量
-            </summary>
-        </member>
         <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.isValueType">
             <summary>
             是否值类型
@@ -4712,13 +4892,6 @@
             <param name="value">数据对象</param>
         </member>
         <member name="M:AutoCSer.BinarySerialize.TypeDeSerializer`1.classDeSerialize(AutoCSer.BinarySerialize.DeSerializer,`0@)">
-            <summary>
-            对象序列化
-            </summary>
-            <param name="deSerializer">二进制数据反序列化</param>
-            <param name="value">数据对象</param>
-        </member>
-        <member name="M:AutoCSer.BinarySerialize.TypeDeSerializer`1.MemberDeSerialize(AutoCSer.BinarySerialize.DeSerializer,`0@)">
             <summary>
             对象序列化
             </summary>
@@ -4816,6 +4989,96 @@
             </summary>
             <param name="deSerializer">二进制数据反序列化</param>
             <param name="value">枚举值序列化</param>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fieldDeSerializer">
+            <summary>
+            默认二进制数据反序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fieldDeSerializers">
+            <summary>
+            默认二进制数据反序列化集合
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.TypeDeSerializer`1.GetDeSerializer(System.UInt32)">
+            <summary>
+            获取二进制数据反序列化
+            </summary>
+            <param name="globalVersion"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.TypeDeSerializer`1.getDeSerializer(System.UInt32)">
+            <summary>
+            获取二进制数据反序列化
+            </summary>
+            <param name="globalVersion"></param>
+            <returns></returns>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fixedMemberDeSerializer">
+            <summary>
+            固定分组成员序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fixedMemberMapDeSerializer">
+            <summary>
+            固定分组成员位图序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.memberDeSerializer">
+            <summary>
+            成员序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.memberMapDeSerializer">
+            <summary>
+            成员位图序列化
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.jsonMemberMap">
+            <summary>
+            JSON混合序列化位图
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.jsonMemberIndexs">
+            <summary>
+            JSON混合序列化成员索引集合
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.globalVersion">
+            <summary>
+            全局版本编号
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.fixedFillSize">
+            <summary>
+            固定分组填充字节数
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.memberCountVerify">
+            <summary>
+            序列化成员数量
+            </summary>
+        </member>
+        <member name="F:AutoCSer.BinarySerialize.TypeDeSerializer`1.isMemberMap">
+            <summary>
+            是否处理成员位图
+            </summary>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.TypeDeSerializer`1.#ctor(System.UInt32,AutoCSer.BinarySerialize.Fields{AutoCSer.BinarySerialize.FieldSize}@,System.Int32,System.Boolean)">
+            <summary>
+            二进制数据反序列化
+            </summary>
+            <param name="globalVersion"></param>
+            <param name="fields"></param>
+            <param name="memberCountVerify"></param>
+            <param name="isMemberMap"></param>
+        </member>
+        <member name="M:AutoCSer.BinarySerialize.TypeDeSerializer`1.MemberDeSerialize(AutoCSer.BinarySerialize.DeSerializer,`0@)">
+            <summary>
+            对象序列化
+            </summary>
+            <param name="deSerializer">二进制数据反序列化</param>
+            <param name="value">数据对象</param>
         </member>
         <member name="T:AutoCSer.BinarySerialize.TypeSerializer`1">
             <summary>
@@ -6471,6 +6734,14 @@
             <param name="target"></param>
             <param name="value">字符串起始位置</param>
             <param name="count">写入字符数</param>
+        </member>
+        <member name="M:AutoCSer.Extension.EmitGenerator.initobjShort(System.Reflection.Emit.ILGenerator,System.Type,System.Reflection.Emit.LocalBuilder)">
+            <summary>
+            对象初始化
+            </summary>
+            <param name="generator"></param>
+            <param name="type"></param>
+            <param name="local"></param>
         </member>
         <member name="M:AutoCSer.Extension.EmitGenerator.initobj(System.Reflection.Emit.ILGenerator,System.Type,System.Reflection.Emit.LocalBuilder)">
             <summary>
@@ -11301,6 +11572,20 @@
             <param name="value">匹配数据</param>
             <returns>匹配位置,失败为-1</returns>
         </member>
+        <member name="M:AutoCSer.LeftArray`1.indexOf(System.Func{`0,System.Boolean})">
+            <summary>
+            获取获取数组中的匹配位置
+            </summary>
+            <param name="isValue">数据匹配器</param>
+            <returns>数组中的匹配位置,失败为-1</returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.IndexOf(System.Func{`0,System.Boolean})">
+            <summary>
+            获取获取数组中的匹配位置
+            </summary>
+            <param name="isValue">数据匹配器</param>
+            <returns>数组中的匹配位置,失败为-1</returns>
+        </member>
         <member name="M:AutoCSer.LeftArray`1.Remove(`0)">
             <summary>
             移除数据
@@ -11314,6 +11599,20 @@
             </summary>
             <param name="index">数据位置</param>
             <returns>被移除数据</returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.removeAtToEnd(System.Int32)">
+            <summary>
+            最后一个数据移动到被删除数据位置
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutoCSer.LeftArray`1.RemoveToEnd(System.Func{`0,System.Boolean})">
+            <summary>
+            移除数据，然后将最后一个数据移动到被删除数据位置
+            </summary>
+            <param name="isValue">数据匹配器</param>
+            <returns>是否存在移除数据</returns>
         </member>
         <member name="M:AutoCSer.LeftArray`1.CopyTo(`0[],System.Int32)">
             <summary>
@@ -14740,6 +15039,12 @@
             补白对齐 4 字节
             </summary>
             <param name="startIndex">起始位置</param>
+        </member>
+        <member name="M:AutoCSer.UnmanagedStream.SerializeFillByteSize(System.Int32)">
+            <summary>
+            增加当前数据长度并且补白对齐 4 字节
+            </summary>
+            <param name="size">增加数据长度</param>
         </member>
         <member name="M:AutoCSer.UnmanagedStream.GetArray">
             <summary>

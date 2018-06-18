@@ -163,9 +163,10 @@ namespace AutoCSer.CacheServer
             fixed (byte* dataFixed = dataArray)
             {
                 byte* start = dataFixed + data.Start, end = start + (data.Count - sizeof(int));
-                if (*(int*)start == AutoCSer.BinarySerialize.SerializeConfig.HeaderMapValue && *(int*)end == data.Count - sizeof(int))
+                uint globalVersion = 0;
+                if (AutoCSer.BinarySerialize.SerializeConfig.CheckHeaderValue(start, ref globalVersion) && *(int*)end == data.Count - sizeof(int))
                 {
-                    int length = *(int*)(start += sizeof(int));
+                    int length = *(int*)(start += (globalVersion == 0 ? sizeof(int) : (sizeof(int) + sizeof(uint))));
                     if (length != 0)
                     {
                         int mapLength = ((length + (31 + 32)) >> 5) << 2;
@@ -217,9 +218,10 @@ namespace AutoCSer.CacheServer
             fixed (byte* dataFixed = dataArray)
             {
                 byte* start = dataFixed + data.Start, end = start + (data.Count - sizeof(int));
-                if (*(int*)start == AutoCSer.BinarySerialize.SerializeConfig.HeaderMapValue && *(int*)end == data.Count - sizeof(int))
+                uint globalVersion = 0;
+                if (AutoCSer.BinarySerialize.SerializeConfig.CheckHeaderValue(start, ref globalVersion) && *(int*)end == data.Count - sizeof(int))
                 {
-                    int length = *(int*)(start += sizeof(int));
+                    int length = *(int*)(start += (globalVersion == 0 ? sizeof(int) : (sizeof(int) + sizeof(uint))));
                     if (length != 0)
                     {
                         int mapLength = ((length + (31 + 32)) >> 5) << 2;

@@ -20,6 +20,7 @@ namespace AutoCSer.Example.BinarySerialize
             Console.WriteLine(IgnoreMember.TestCase());
             Console.WriteLine(CustomClass.TestCase());
             Console.WriteLine(CustomStruct.TestCase());
+            Console.WriteLine(GlobalVersion.TestCase());
             Console.WriteLine(Json.TestCase());
             Console.WriteLine(BaseType.TestCase());
             Console.WriteLine(RealType.TestCase());
