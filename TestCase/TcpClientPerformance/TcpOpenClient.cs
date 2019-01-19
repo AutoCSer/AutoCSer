@@ -80,6 +80,7 @@ namespace AutoCSer.TestCase.TcpOpenClientPerformance
                 Console.WriteLine("loop end " + TcpInternalClientPerformance.Client.Time.ElapsedMilliseconds.toString() + "ms");
                 wait();
                 GC.Collect();
+                client.gcCollect();
                 sleep();
 
 #if DOTNET2 || DOTNET4

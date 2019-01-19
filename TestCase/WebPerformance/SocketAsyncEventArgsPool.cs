@@ -37,7 +37,7 @@ namespace AutoCSer.TestCase.WebPerformance
             {
                 if ((value = head) == null)
                 {
-                    popLock = 0;
+                    System.Threading.Interlocked.Exchange(ref popLock, 0);
                     value = new SocketAsyncEventArgs();
                     value.SocketFlags = System.Net.Sockets.SocketFlags.None;
                     value.DisconnectReuseSocket = false;
@@ -45,7 +45,7 @@ namespace AutoCSer.TestCase.WebPerformance
                 }
                 if (Interlocked.CompareExchange(ref head, new UnionType { Value = value.UserToken }.SocketAsyncEventArgs, value) == value)
                 {
-                    popLock = 0;
+                    System.Threading.Interlocked.Exchange(ref popLock, 0);
                     System.Threading.Interlocked.Decrement(ref count);
                     value.UserToken = null;
                     return value;
@@ -63,7 +63,11 @@ namespace AutoCSer.TestCase.WebPerformance
             SocketAsyncEventArgs newValue = Interlocked.Exchange(ref value, null);
             if (newValue != null)
             {
-                if (count >= maxCount) return;
+                if (count >= maxCount)
+                {
+                    newValue.Dispose();
+                    return;
+                }
                 System.Threading.Interlocked.Increment(ref count);
                 newValue.SetBuffer(null, 0, 0);
                 newValue.UserToken = null;

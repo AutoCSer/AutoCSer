@@ -13,9 +13,9 @@ namespace AutoCSer.Extension
         /// 复制 TCP 服务配置成员位图
         /// </summary>
 #if DOTNET2
-        private static readonly MemberMap copyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
+        private static readonly MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute> copyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
 #else
-        private static readonly MemberMap copyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
+        private static readonly MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute> copyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
 #endif
         /// <summary>
         /// 复制 TCP 服务配置
@@ -32,9 +32,9 @@ namespace AutoCSer.Extension
         /// 复制 TCP 服务配置成员位图
         /// </summary>
 #if DOTNET2
-        private static readonly MemberMap simpleCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
+        private static readonly MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute> simpleCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
 #else
-        private static readonly MemberMap simpleCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
+        private static readonly MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute> simpleCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
 #endif
         /// <summary>
         /// 复制 TCP 服务配置
@@ -51,9 +51,9 @@ namespace AutoCSer.Extension
         /// 复制 TCP 服务配置成员位图
         /// </summary>
 #if DOTNET2
-        private static readonly MemberMap streamCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
+        private static readonly MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute> streamCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.NewFull()).Clear("Name").Clear("IsAttribute").Clear("IsBaseTypeAttribute");
 #else
-        private static readonly MemberMap streamCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
+        private static readonly MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute> streamCopyMemberMap = new MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.Builder(MemberMap<AutoCSer.Net.TcpStaticStreamServer.ServerAttribute>.NewFull()).Clear(value => value.Name).Clear(value => value.IsAttribute).Clear(value => value.IsBaseTypeAttribute);
 #endif
         /// <summary>
         /// 复制 TCP 服务配置

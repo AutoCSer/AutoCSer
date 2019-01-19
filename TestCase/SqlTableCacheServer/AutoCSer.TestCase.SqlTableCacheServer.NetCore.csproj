@@ -52,13 +52,4 @@
     <ProjectReference Include="..\SqlMode\AutoCSer.TestCase.SqlModel.NetStandard.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

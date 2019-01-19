@@ -28,7 +28,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet4\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -52,12 +52,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet4\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\SerializePerformance.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Release\DotNet4\SerializePerformance.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
@@ -66,7 +66,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <DocumentationFile>bin\Release\AutoCSer.TestCase.SqlTableWeb.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet4\AutoCSer.TestCase.SqlTableWeb.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
@@ -97,11 +97,11 @@
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.TestCase.SqlTableWeb.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet4\AutoCSer.TestCase.SqlTableWeb.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\SerializePerformance.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Release\DotNet4\SerializePerformance.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
@@ -133,20 +133,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.WebView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4\AutoCSer.WebView.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet4.csproj">
+      <Project>{384CC69B-D0AF-4A82-806F-19C91F852E6C}</Project>
+      <Name>AutoCSer.DotNet4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\Sql\AutoCSer.Sql.DotNet4.csproj">
       <Project>{66846742-7F6E-468E-B6D6-19BC2F51AD61}</Project>
       <Name>AutoCSer.Sql.DotNet4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\WebView\AutoCSer.WebView.DotNet4.csproj">
+      <Project>{19A2CB27-3AAB-4EC7-9AC3-0ED5633E9AFB}</Project>
+      <Name>AutoCSer.WebView.DotNet4</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqlMode\AutoCSer.TestCase.SqlModel.DotNet4.csproj">
       <Project>{5B1920FE-A82E-4B61-AAC4-598445CDCF5C}</Project>
@@ -169,7 +169,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\AutoCSer\CodeGenerator\bin\Release\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\AutoCSer\CodeGenerator\bin\Release\DotNet4\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

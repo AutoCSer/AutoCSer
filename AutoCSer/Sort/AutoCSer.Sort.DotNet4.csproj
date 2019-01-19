@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4841F560-27CD-42D5-8823-08556FC3E16F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.Sort</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Sort</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\DotNet4\</OutputPath>
+    <DefineConstants>TRACE;Sort</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\DotNet4\AutoCSer.Sort.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\AutoCSer.Sort.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\DotNet4\AutoCSer.Sort.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\DotNet4\AutoCSer.Sort.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\DateTimeSortIndex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Algorithm\RadixSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Algorithm\TopologySort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Algorithm\UnionType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BitMap.cs" />
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\FixedArray.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\Array.QuickSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\Array.QuickRangeSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\Array.RadixSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\FixedArraySortGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\Collection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\Enumerable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\LeftArray.Fixed.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\LeftArray.QuickSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\LeftArray.QuickRangeSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\LeftArray.RadixSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\FixedArrayQuickSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\FixedArrayQuickRangeSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\FixedArrayQuickTopSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\SortIndex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\SubArray.Fixed.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\SubArray.QuickSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\SubArray.QuickRangeSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\SubArray.RadixSort.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CombinationTemplate\SubArray.SortGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\IComparable.cs" />
+    <Compile Include="Extension\LeftArray.cs" />
+    <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="PageCount.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchTree\DictionaryPageDescCache.cs" />
+    <Compile Include="SearchTree\PageCacheVersion.cs" />
+    <Compile Include="SearchTree\Dictionary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SearchTree\DictionaryPageCache.cs" />
+    <Compile Include="SearchTree\FindArray.cs" />
+    <Compile Include="SearchTree\Node.cs" />
+    <Compile Include="SearchTree\PageArray.cs" />
+    <Compile Include="SearchTree\Set.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SortOrder.cs" />
+    <Compile Include="{AutoCSer.Sort}.CombinationTemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet4.csproj">
+      <Project>{384CC69B-D0AF-4A82-806F-19C91F852E6C}</Project>
+      <Name>AutoCSer.DotNet4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

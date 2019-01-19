@@ -223,6 +223,8 @@
     <Compile Include="SlaveServerConfig.cs" />
     <Compile Include="Snapshot\Array.cs" />
     <Compile Include="Snapshot\Cache.cs" />
+    <Compile Include="NET4.5\StaticRoute.cs" />
+    <Compile Include="StaticRoute.cs" />
     <Compile Include="Cache\HashCodeKey.cs" />
     <Compile Include="Cache\Value\LinkNode.cs" />
     <Compile Include="Cache\Value\Node.cs" />

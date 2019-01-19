@@ -32,10 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +43,10 @@
     <Compile Include="PropertyData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet4.5.csproj">
+      <Project>{7732520f-99b4-4069-a5a9-db87a0112d9f}</Project>
+      <Name>AutoCSer.DotNet4.5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\RandomObject\AutoCSer.RandomObject.DotNet4.5.csproj">
       <Project>{fcda7d3a-a440-42c4-85c0-da0fe404154b}</Project>
       <Name>AutoCSer.RandomObject.DotNet4.5</Name>

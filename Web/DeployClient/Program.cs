@@ -20,84 +20,117 @@ namespace AutoCSer.Web.DeployClient
                     serverAttribute.Host = AutoCSer.Web.Config.Deploy.ServerIp;
                     DirectoryInfo webReleaseDirectory = new DirectoryInfo(@"..\..\..\www.AutoCSer.com\bin\Release\");
                     string serverWebPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\";
-                    AutoCSer.Deploy.ClientTask[] htmlTasks = new AutoCSer.Deploy.ClientTask[]
+
+                    AutoCSer.Deploy.ClientTask.Task[] htmlTasks = new AutoCSer.Deploy.ClientTask.Task[]
                     {
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.WebFile
                         {
-                            Type = AutoCSer.Deploy.TaskType.WebFile,
                             ClientPath = webReleaseDirectory.Parent.Parent.FullName,
                             ServerPath = serverWebPath,
                         },
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.File
                         {
-                            Type = AutoCSer.Deploy.TaskType.File,
                             ClientPath = webReleaseDirectory.Parent.Parent.FullName,
                             ServerPath = serverWebPath,
-                            FileSearchPatterns = new string[] { "*.png" },
+                            SearchPatterns = new string[] { "*.png" },
                         }
                     };
-                    AutoCSer.Deploy.ClientTask[] webTasks = new AutoCSer.Deploy.ClientTask[]
+                    AutoCSer.Deploy.ClientTask.Task[] webTasks = new AutoCSer.Deploy.ClientTask.Task[]
                     {
                         htmlTasks[0],
                         htmlTasks[1],
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.Run
                         {
-                            Type = AutoCSer.Deploy.TaskType.Run,
                             ClientPath = webReleaseDirectory.FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\bin\Release\",
-                            RunFileName = "AutoCSer.Web.exe",
+                            FileName = "AutoCSer.Web.exe",
                         }
                     };
-                    AutoCSer.Deploy.ClientTask[] httpTasks = new AutoCSer.Deploy.ClientTask[]
+                    AutoCSer.Deploy.ClientTask.Task[] httpTasks = new AutoCSer.Deploy.ClientTask.Task[]
                     {
                         webTasks[0],
                         webTasks[1],
                         webTasks[2],
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.AssemblyFile
                         {
-                            Type = AutoCSer.Deploy.TaskType.AssemblyFile,
                             ClientPath = webReleaseDirectory.FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\bin\Release\"
                         },
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.Run
                         {
-                            Type = AutoCSer.Deploy.TaskType.Run,
                             ClientPath = new DirectoryInfo(@"..\..\..\HttpServer\bin\Release\").FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"HttpServer\bin\Release\",
-                            RunFileName = "AutoCSer.Web.HttpServer.exe",
+                            FileName = "AutoCSer.Web.HttpServer.exe",
                         }
                     };
-                    AutoCSer.Deploy.ClientTask[] searchTasks = new AutoCSer.Deploy.ClientTask[]
+                    AutoCSer.Deploy.ClientTask.Task[] searchTasks = new AutoCSer.Deploy.ClientTask.Task[]
                     {
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.Run
                         {
-                            Type = AutoCSer.Deploy.TaskType.Run,
                             ClientPath = new DirectoryInfo(@"..\..\..\SearchServer\bin\Release\").FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"SearchServer\bin\Release\",
-                            RunFileName = "AutoCSer.Web.SearchServer.exe",
+                            FileName = "AutoCSer.Web.SearchServer.exe",
                         }
                     };
-                    AutoCSer.Deploy.ClientTask[] exampleTasks = new AutoCSer.Deploy.ClientTask[]
+                    AutoCSer.Deploy.ClientTask.Task[] exampleTasks = new AutoCSer.Deploy.ClientTask.Task[]
                     {
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.File
                         {
-                            Type = AutoCSer.Deploy.TaskType.File,
                             ClientPath = new DirectoryInfo(@"..\..\..\www.AutoCSer.com\Download\").FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\Download\",
                         },
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.File
                         {
-                            Type = AutoCSer.Deploy.TaskType.File,
                             ClientPath = new DirectoryInfo(@"..\..\..\..\Example\").FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"Example\",
-                            FileSearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js", "*.css", "*.json" },
+                            SearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js", "*.css", "*.json" },
                         },
-                        new AutoCSer.Deploy.ClientTask
+                        new AutoCSer.Deploy.ClientTask.File
                         {
-                            Type = AutoCSer.Deploy.TaskType.File,
                             ClientPath = new DirectoryInfo(@"..\..\..\..\TestCase\").FullName,
                             ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"TestCase\",
-                            FileSearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js" },
+                            SearchPatterns = new string[] { "*.cs", "*.html", "*.ts", "*.js" },
+                        }
+                    };
+                    AutoCSer.Deploy.ClientTask.Task[] updateDeployServerTasks = new AutoCSer.Deploy.ClientTask.Task[]
+                    {
+                        new AutoCSer.Deploy.ClientTask.File
+                        {
+                            ClientPath = new DirectoryInfo(@"..\..\..\DeployServer\bin\Release\").FullName,
+                            ServerPath = AutoCSer.Web.Config.Deploy.ServerPath +@"DeployServer\bin\Release\" + AutoCSer.Deploy.Server.DefaultUpdateDirectoryName,
+                            SearchPatterns = new string[]{ "*.*" }
+                        },
+                        new AutoCSer.Deploy.ClientTask.Custom
+                        {
+                            CallName = "OnDeployServerUpdated",
+                        }
+                    };
+                    AutoCSer.Deploy.ClientTask.Task[] gameWebTasks = new AutoCSer.Deploy.ClientTask.Task[]
+                    {
+                        new AutoCSer.Deploy.ClientTask.File
+                        {
+                            ClientPath = @"C:\showjim\CardGame\CardGame\WebPage\",
+                            ServerPath = serverWebPath,
+                            SearchPatterns = new string[]{ "*.*" }
+                        }
+                    };
+                    AutoCSer.Deploy.ClientTask.Task[] gameServerTasks = new AutoCSer.Deploy.ClientTask.Task[]
+                    {
+                        new AutoCSer.Deploy.ClientTask.File
+                        {
+                            ClientPath = @"C:\showjim\CardGame\CardGame\Data\",
+                            ServerPath = AutoCSer.Web.Config.GameServer.Path,
+                            SearchPatterns = new string[]{ "*.*" }
+                        },
+                        new AutoCSer.Deploy.ClientTask.File
+                        {
+                            ClientPath = @"C:\showjim\CardGame\GameServer\bin\Release\",
+                            ServerPath = AutoCSer.Web.Config.GameServer.Path + AutoCSer.Deploy.Server.DefaultUpdateDirectoryName,
+                            SearchPatterns = new string[]{ "*.*" }
+                        },
+                        new AutoCSer.Deploy.ClientTask.Custom
+                        {
+                            CallName = "OnGameServerUpdated",
                         }
                     };
                     AutoCSer.Deploy.ClientDeploy[] deploys = new AutoCSer.Deploy.ClientDeploy[]
@@ -131,6 +164,24 @@ namespace AutoCSer.Web.DeployClient
                             Name = "Example",
                             ServerName = AutoCSer.Deploy.Server.ServerName,
                             Tasks = exampleTasks
+                        },
+                        new AutoCSer.Deploy.ClientDeploy
+                        {
+                            Name = "DeployServer",
+                            ServerName = AutoCSer.Deploy.Server.ServerName,
+                            Tasks = updateDeployServerTasks
+                        },
+                        new AutoCSer.Deploy.ClientDeploy
+                        {
+                            Name = "GameWeb",
+                            ServerName = AutoCSer.Deploy.Server.ServerName,
+                            Tasks = gameWebTasks
+                        },
+                        new AutoCSer.Deploy.ClientDeploy
+                        {
+                            Name = "GameServer",
+                            ServerName = AutoCSer.Deploy.Server.ServerName,
+                            Tasks = gameServerTasks
                         }
                     };
                     AutoCSer.Deploy.ClientConfig config = new Deploy.ClientConfig

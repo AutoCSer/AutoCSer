@@ -24,7 +24,8 @@ namespace AutoCSer.TestCase.WebPerformance
             /// <param name="maxClientCount">最大实例数量</param>
             /// <param name="isKeepAlive">保持连接最大次数</param>
             /// <param name="pipeline">客户端批量处理数量</param>
-            public Task(int maxClientCount, int keepAliveCount) : base(maxClientCount, keepAliveCount)
+            public Task(int maxClientCount, int keepAliveCount)
+                : base(maxClientCount, keepAliveCount)
             {
             }
             /// <summary>
@@ -117,20 +118,20 @@ namespace AutoCSer.TestCase.WebPerformance
         /// 请求数据
         /// </summary>
         private static SubArray<byte> requestData;
-//        private static readonly byte[] requestData = Encoding.ASCII.GetBytes(keepRequestString + @"GET /hello.html HTTP/1.1
-//Host: 127.0.0.1
-//
-//");
+        //        private static readonly byte[] requestData = Encoding.ASCII.GetBytes(keepRequestString + @"GET /hello.html HTTP/1.1
+        //Host: 127.0.0.1
+        //
+        //");
         ///// <summary>
         ///// 请求数据字节数
         ///// </summary>
         //private static readonly int requestSize = requestData.Length - keepRequestString.Length;
-//        /// <summary>
-//        /// 正确的接收数据字节数
-//        /// </summary>
-//        private static readonly int receiveSize = @"HTTP/1.1 200 OK
-//Content-Length: 10
-//
+        //        /// <summary>
+        //        /// 正确的接收数据字节数
+        //        /// </summary>
+        //        private static readonly int receiveSize = @"HTTP/1.1 200 OK
+        //Content-Length: 10
+        //
         //HelloWorld".Length;
         /// <summary>
         /// 正确的接收数据字节数
@@ -267,7 +268,20 @@ namespace AutoCSer.TestCase.WebPerformance
                 asyncType = ClientSocketAsyncType.Receive;
                 recieveAsyncEventArgs.SetBuffer(0, bufferSize);
                 pipelineReceiveSize = receiveKeepAliveSize;
-                return socket.ReceiveAsync(recieveAsyncEventArgs) || checkReceive();
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                if (socket.ReceiveAsync(recieveAsyncEventArgs))
+                {
+#if !DotNetStandard
+                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+#endif
+                    return true;
+                }
+#if !DotNetStandard
+                receiveAsyncLock = 0;
+#endif
+                return checkReceive();
             }
             return false;
         }
@@ -312,7 +326,19 @@ namespace AutoCSer.TestCase.WebPerformance
                         else task.Next(this);
                         return true;
                     }
-                    if (socket.ReceiveAsync(recieveAsyncEventArgs)) return true;
+#if !DotNetStandard
+                    while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                    if (socket.ReceiveAsync(recieveAsyncEventArgs))
+                    {
+#if !DotNetStandard
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+#endif
+                        return true;
+                    }
+#if !DotNetStandard
+                    receiveAsyncLock = 0;
+#endif
                     goto CHECK;
                 }
             }

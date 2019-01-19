@@ -57,7 +57,7 @@ namespace AutoCSer.Sql.Threading
                 end.LinkNext = value;
                 end = value;
             }
-            queueLock = 0;
+            System.Threading.Interlocked.Exchange(ref queueLock, 0);
             if (System.Threading.Interlocked.CompareExchange(ref isThread, 1, 0) == 0)
             {
                 try
@@ -84,14 +84,14 @@ namespace AutoCSer.Sql.Threading
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
                 LinkQueueTaskNode value = head;
                 head = end = null;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 if (value == null)
                 {
                     System.Threading.Thread.Sleep(0);
                     while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLinkQueueTaskPop);
                     value = head;
                     head = end = null;
-                    queueLock = 0;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
                     if (value == null)
                     {
                         client.FreeConnection(ref connection);

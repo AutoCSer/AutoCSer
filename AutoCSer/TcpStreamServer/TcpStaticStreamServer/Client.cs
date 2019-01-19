@@ -17,9 +17,10 @@ namespace AutoCSer.Net.TcpStaticStreamServer
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="log">日志接口</param>
+        /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(TcpInternalStreamServer.ServerAttribute attribute, ILog log, Func<TcpInternalStreamServer.ClientSocketSender, bool> verifyMethod)
-            : base(attribute, log)
+        public Client(TcpInternalStreamServer.ServerAttribute attribute, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, Func<TcpInternalStreamServer.ClientSocketSender, bool> verifyMethod = null)
+            : base(attribute, log, clientRoute)
         {
             this.verifyMethod = verifyMethod;
         }

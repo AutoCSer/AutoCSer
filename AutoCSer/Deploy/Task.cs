@@ -23,6 +23,10 @@ namespace AutoCSer.Deploy
         /// </summary>
         internal int TaskIndex;
         /// <summary>
+        /// 运行文件名称 / 自定义调用名称
+        /// </summary>
+        internal string RunFileName;
+        /// <summary>
         /// 运行前休眠
         /// </summary>
         internal int RunSleep;
@@ -38,6 +42,14 @@ namespace AutoCSer.Deploy
         /// 是否执行other目录文件
         /// </summary>
         internal bool IsRunOther;
+        /// <summary>
+        /// 是否等待运行程序结束
+        /// </summary>
+        internal bool IsWaitRun;
+        /// <summary>
+        /// 自定义参数数据
+        /// </summary>
+        internal byte[] CustomData;
         /// <summary>
         /// 运行任务
         /// </summary>
@@ -57,6 +69,7 @@ namespace AutoCSer.Deploy
                     break;
                 case TaskType.AssemblyFile: assemblyFile(timer); break;
                 case TaskType.WaitRunSwitch: wait(timer); break;
+                case TaskType.Custom: timer.Server.CustomTask.Call(timer.Server, this); break;
             }
         }
         /// <summary>
@@ -85,17 +98,18 @@ namespace AutoCSer.Deploy
         private void run(Timer timer)
         {
             if (!ServerDirectory.Exists) ServerDirectory.Create();
-            string serverDirectoryName = ServerDirectory.fullName(), runFileName = serverDirectoryName + FileIndexs[0].Key;
+            string serverDirectoryName = ServerDirectory.fullName(), runFileName = serverDirectoryName + (RunFileName ?? FileIndexs[0].Key);
             DirectoryInfo otherServerDirectory = new DirectoryInfo(serverDirectoryName + "other");
             if (otherServerDirectory.Exists && !canWrite(runFileName))
             {
                 ServerDirectory = otherServerDirectory;
-                runFileName = otherServerDirectory.fullName() + FileIndexs[0].Key;
+                runFileName = otherServerDirectory.fullName() + (RunFileName ?? FileIndexs[0].Key);
                 IsRunOther = true;
             }
             assemblyFile(timer);
             Thread.Sleep(RunSleep);
-            new FileInfo(runFileName).StartProcessDirectory();
+            if (IsWaitRun) new FileInfo(runFileName).WaitProcessDirectory();
+            else new FileInfo(runFileName).StartProcessDirectory();
         }
         /// <summary>
         /// 写文件

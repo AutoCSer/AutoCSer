@@ -28,5 +28,9 @@ namespace AutoCSer.Deploy
         /// </summary>
         WaitRunSwitch,
         
+        /// <summary>
+        /// 自定义任务处理
+        /// </summary>
+        Custom = 0xff,
     }
 }

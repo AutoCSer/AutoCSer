@@ -552,15 +552,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Asynchronous", typeof(AutoCSer.Example.TcpInternalServer.Asynchronous));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -830,15 +831,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalServer.ClientAsynchronous));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1108,15 +1110,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalServer.ClientTaskAsync));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1482,15 +1485,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Field", typeof(AutoCSer.Example.TcpInternalServer.Field));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1718,15 +1722,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.KeepCallback", typeof(AutoCSer.Example.TcpInternalServer.KeepCallback));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1938,15 +1943,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalServer.NoAttribute));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -2390,15 +2396,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Property", typeof(AutoCSer.Example.TcpInternalServer.Property));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -2721,15 +2728,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.RefOut", typeof(AutoCSer.Example.TcpInternalServer.RefOut));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -2908,15 +2916,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.SendOnly", typeof(AutoCSer.Example.TcpInternalServer.SendOnly));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -3107,15 +3116,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Static", typeof(AutoCSer.Example.TcpInternalServer.Static));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 

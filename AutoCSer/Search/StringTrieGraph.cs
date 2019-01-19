@@ -65,6 +65,13 @@ namespace AutoCSer.Search
         /// <param name="log">日志处理</param>
         public StringTrieGraph(string[] words, int threadCount = 0, AutoCSer.Log.ILog log = null) : this(new LeftArray<string>(words), threadCount, log) { }
         /// <summary>
+        ///  析构释放资源
+        /// </summary>
+        ~StringTrieGraph()
+        {
+            if (CharTypeData.Data != DefaultCharTypeData.Data) Unmanaged.Free(ref CharTypeData);
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()

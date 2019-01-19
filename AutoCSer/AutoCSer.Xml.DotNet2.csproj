@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F3674EC-43A6-4092-A47C-CA2A92C5973C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.Xml</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Xml;DOTNET2;Serialize</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\DotNet2\Serialize\</OutputPath>
+    <DefineConstants>TRACE;Xml;DOTNET2;Serialize</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\DotNet2\Serialize\AutoCSer.Xml.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\QuickSort.cs" />
+    <Compile Include="CharStream.cs" />
+    <Compile Include="Config\Loader.cs" />
+    <Compile Include="Config\MemberAttribute.cs" />
+    <Compile Include="Config\Pub.cs" />
+    <Compile Include="Config\TypeAttribute.cs" />
+    <Compile Include="Config\UnionLoader.cs" />
+    <Compile Include="Config\UnionType.cs" />
+    <Compile Include="Date.cs" />
+    <Compile Include="DictionaryCreator.cs" />
+    <Compile Include="DynamicArray.cs" />
+    <Compile Include="Emit\ArrayConstructor.cs" />
+    <Compile Include="Emit\CollectionConstructor.cs" />
+    <Compile Include="Emit\Constructor.cs" />
+    <Compile Include="Emit\DictionaryConstructor.cs" />
+    <Compile Include="Emit\EnumCast.cs" />
+    <Compile Include="Emit\EnumerableConstructor.cs" />
+    <Compile Include="Emit\EnumParser.cs" />
+    <Compile Include="Emit\ListConstructor.cs" />
+    <Compile Include="Emit\NamePool.cs" />
+    <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Enumerator.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\Collection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="Extension\Enumerable.cs" />
+    <Compile Include="Extension\MemberCopy.cs" />
+    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extension\String.cs" />
+    <Compile Include="Extension\Type.cs" />
+    <Compile Include="Extension\XmlSerialize.cs" />
+    <Compile Include="FormatRange.cs" />
+    <Compile Include="GuidCreator.cs" />
+    <Compile Include="HashSetCreator.cs" />
+    <Compile Include="HashString.cs" />
+    <Compile Include="IOS\Preserve.cs" />
+    <Compile Include="KeyValue.cs" />
+    <Compile Include="LeftArray.cs" />
+    <Compile Include="MemberCopy\Copyer.cs" />
+    <Compile Include="MemberCopy\CustomAttribute.cs" />
+    <Compile Include="MemberCopy\MemberDynamicMethod.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="MemoryMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Metadata\AttributeMethod.cs" />
+    <Compile Include="Metadata\BoxSerializeAttribute.cs" />
+    <Compile Include="Metadata\FieldIndex.cs" />
+    <Compile Include="Metadata\IgnoreAttribute.cs" />
+    <Compile Include="Metadata\IgnoreMemberAttribute.cs" />
+    <Compile Include="Metadata\MemberFilterAttribute.cs" />
+    <Compile Include="Metadata\MemberFilters.cs" />
+    <Compile Include="Metadata\MemberIndexGroup.cs" />
+    <Compile Include="Metadata\MemberIndexInfo.cs" />
+    <Compile Include="Metadata\MemberMap.cs" />
+    <Compile Include="Metadata\PropertyIndex.cs" />
+    <Compile Include="Metadata\TypeAttribute.cs" />
+    <Compile Include="NET2.0\Action.cs" />
+    <Compile Include="NET2.0\ExtensionAttribute.cs" />
+    <Compile Include="NET2.0\Func.cs" />
+    <Compile Include="NET2.0\HashSet.cs" />
+    <Compile Include="NET2.0\MethodImpl.cs" />
+    <Compile Include="NullableBool.cs" />
+    <Compile Include="NullValue.cs" />
+    <Compile Include="Pointer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pub.cs" />
+    <Compile Include="Random.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="RangeLength.cs" />
+    <Compile Include="StateSearcher\AsciiBuilder.cs" />
+    <Compile Include="StateSearcher\AsciiSearcher.cs" />
+    <Compile Include="StateSearcher\CharBuilder.cs" />
+    <Compile Include="StateSearcher\CharSearcher.cs" />
+    <Compile Include="SubString.cs" />
+    <Compile Include="Threading\Link.cs" />
+    <Compile Include="Threading\LockDictionary.cs" />
+    <Compile Include="Threading\ThreadYield.cs" />
+    <Compile Include="Unmanaged.cs" />
+    <Compile Include="UnmanagedPool.cs" />
+    <Compile Include="UnmanagedStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UnmanagedStreamBase.cs" />
+    <Compile Include="Win32\Kernel32.cs" />
+    <Compile Include="Xml\ConfigLoader.cs" />
+    <Compile Include="Xml\IgnoreMemberAttribute.cs" />
+    <Compile Include="Xml\Node.cs" />
+    <Compile Include="Xml\NodeType.cs" />
+    <Compile Include="Xml\ParseConfig.cs" />
+    <Compile Include="Xml\ParseMethod.cs" />
+    <Compile Include="Xml\ParseMethodCache.cs" />
+    <Compile Include="Xml\Parser.cs" />
+    <Compile Include="Xml\ParseResult.cs" />
+    <Compile Include="Xml\ParseState.cs" />
+    <Compile Include="Xml\PropertyMethod.cs" />
+    <Compile Include="Xml\SerializeAttribute.cs" />
+    <Compile Include="Xml\CustomAttribute.cs" />
+    <Compile Include="Xml\MemberAttribute.cs" />
+    <Compile Include="Xml\SerializeConfig.cs" />
+    <Compile Include="Xml\SerializeMemberDynamicMethod.cs" />
+    <Compile Include="Xml\SerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="Xml\SerializeMethod.cs" />
+    <Compile Include="Xml\SerializeMethodCache.cs" />
+    <Compile Include="Xml\Serializer.cs" />
+    <Compile Include="Xml\SerializeResult.cs" />
+    <Compile Include="Xml\SerializeWarning.cs" />
+    <Compile Include="Xml\TypeSerializer.cs" />
+    <Compile Include="Xml\UnionType.cs" />
+    <Compile Include="Xml\UnknownNameAttribute.cs" />
+    <Compile Include="Xml\StateSearcher.cs" />
+    <Compile Include="Xml\TypeParser.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

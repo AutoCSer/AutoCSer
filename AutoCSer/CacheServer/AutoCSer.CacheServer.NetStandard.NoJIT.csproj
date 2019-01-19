@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;NOJIT;CacheServer;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.CacheServer.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard.NoJIT\</OutputPath>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -296,6 +296,8 @@
     <Compile Include="Snapshot\Value\Dictionary.cs" />
     <Compile Include="Snapshot\Value\HashSet.cs" />
     <Compile Include="Snapshot\Value\Link.cs" />
+    <Compile Include="NET4.5\StaticRoute.cs" />
+    <Compile Include="StaticRoute.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="ValueData\BinarySerializer.cs" />
     <Compile Include="ValueData\Decimal.cs" />
@@ -327,12 +329,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.Sort.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
 </Project>

@@ -89,27 +89,27 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 }
                 currentBuffer = null;
             }
-            bufferLock = 0;
+            System.Threading.Interlocked.Exchange(ref bufferLock, 0);
             if (buffer == null)
             {
                 AutoCSer.Threading.Interlocked.CompareExchangeYield(ref freeBufferLock);
                 if (freeBuffer == null)
                 {
-                    freeBufferLock = 0;
+                    System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
                     buffer = new ServerCustomSerializeBuffer();
                 }
                 else
                 {
                     buffer = freeBuffer;
                     freeBuffer = freeBuffer.LinkNext;
-                    freeBufferLock = 0;
+                    System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
                     buffer.LinkNext = null;
                 }
             }
             buffer.Copy(ref value.Buffer);
             AutoCSer.Threading.Interlocked.CompareExchangeYield(ref bufferLock);
             currentBuffer = buffer;
-            bufferLock = 0;
+            System.Threading.Interlocked.Exchange(ref bufferLock, 0);
         }
         /// <summary>
         /// 序列化操作
@@ -128,7 +128,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 {
                     buffer = currentBuffer;
                     currentBuffer = null;
-                    bufferLock = 0;
+                    System.Threading.Interlocked.Exchange(ref bufferLock, 0);
                     if (buffer == null)
                     {
                         Interlocked.Exchange(ref isOutput, 0);
@@ -146,11 +146,11 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     if ((headBuffer = headBuffer.LinkNext) == null)
                     {
                         headBuffer = endBuffer = null;
-                        bufferLock = 0;
+                        System.Threading.Interlocked.Exchange(ref bufferLock, 0);
                     }
                     else
                     {
-                        bufferLock = 0;
+                        System.Threading.Interlocked.Exchange(ref bufferLock, 0);
                         buffer.LinkNext = null;
                     }
                 }
@@ -163,7 +163,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     if (headBuffer == null) endBuffer = buffer;
                     else buffer.LinkNext = headBuffer;
                     headBuffer = buffer;
-                    bufferLock = 0;
+                    System.Threading.Interlocked.Exchange(ref bufferLock, 0);
                     stream.MoveSize(*(int*)start = ((outputCount + freeCount) * (sizeof(int) * 3)) + sizeof(int));
                     return;
                 }
@@ -171,7 +171,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 AutoCSer.Threading.Interlocked.CompareExchangeYield(ref freeBufferLock);
                 buffer.LinkNext = freeBuffer;
                 freeBuffer = buffer;
-                freeBufferLock = 0;
+                System.Threading.Interlocked.Exchange(ref freeBufferLock, 0);
                 outputCount += bufferCount;
                 if ((freeCount -= bufferCount) == 0)
                 {

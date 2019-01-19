@@ -54,16 +54,17 @@ namespace AutoCSer.Net.TcpOpenStreamServer.Emit
         /// </summary>
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="verifyMethod">TCP 验证方法</param>
+        /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 客户端</returns>
-        public static interfaceType Create(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Log.ILog log = null)
+        public static interfaceType Create(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
         {
             if (errorString != null) throw new Exception(errorString);
             if (clientType == null) throw new InvalidCastException();
             MethodClient client = (MethodClient)Activator.CreateInstance(clientType);
             interfaceType interfaceClient = (interfaceType)(object)client;
             if (attribute == null) attribute = defaultServerAttribute;
-            client._TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<interfaceType>(interfaceClient, attribute, log, verifyMethod);
+            client._TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<interfaceType>(interfaceClient, attribute, log, clientRoute, verifyMethod);
             if (attribute.IsAutoClient) client._TcpClient_.TryCreateSocket();
             return interfaceClient;
         }

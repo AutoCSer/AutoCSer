@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Sql.Cache.Counter
 {
@@ -211,7 +212,7 @@ namespace AutoCSer.Sql.Cache.Counter
             ListArray<valueType> list = get(node);
             if (list == null)
             {
-                list = new ListArray<valueType>(sqlTable.Select(ref connection, getWhere(key)));
+                list = new ListArray<valueType>(sqlTable.SelectQueue(ref connection, getWhere(key)));
                 appendNode(node, list);
             }
             return new LeftArray<valueType>(list);

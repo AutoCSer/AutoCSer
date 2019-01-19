@@ -47,10 +47,4 @@
     <ProjectReference Include="..\TcpSimpleServerPerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance.NetCore.NoJIT.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

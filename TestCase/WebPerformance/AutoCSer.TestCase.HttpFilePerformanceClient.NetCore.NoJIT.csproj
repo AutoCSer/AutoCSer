@@ -44,9 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
 </Project>

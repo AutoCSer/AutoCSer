@@ -103,7 +103,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         {
             if (IsProcessor(processor))
             {
-                object setSocketLock = client._TcpClient_.SetSocketLock;
+                object setSocketLock = client._TcpClient_.OnSocketLock;
                 Monitor.Enter(setSocketLock);
                 try
                 {
@@ -126,7 +126,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// </summary>
         /// <param name="onClientSocket"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void setCheckSocketVersion(Action<AutoCSer.Net.TcpServer.ClientSocketBase> onClientSocket)
+        protected void setCheckSocketVersion(Action<AutoCSer.Net.TcpServer.ClientSocketEventParameter> onClientSocket)
         {
             checkSocketVersion = client._TcpClient_.CreateCheckSocketVersion(onClientSocket);
         }
@@ -207,12 +207,15 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
             ConsumerStreamProcessor oldProcesser = Processor;
-            if (socket != null) createProcessor();
-            else Processor = null;
+            switch (parameter.Type)
+            {
+                case AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket: createProcessor(); break;
+                default: Processor = null; break;
+            }
             if (oldProcesser != null) oldProcesser.Free();
         }
         /// <summary>
@@ -287,12 +290,15 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
             ConsumerStreamProcessor oldProcesser = Processor;
-            if (socket != null) createProcessor();
-            else Processor = null;
+            switch (parameter.Type)
+            {
+                case AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket: createProcessor(); break;
+                default: Processor = null; break;
+            }
             if (oldProcesser != null) oldProcesser.Free();
         }
         /// <summary>

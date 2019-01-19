@@ -98,6 +98,7 @@ namespace AutoCSer.Sql.MySql
                 DbType = sqlType,
                 Size = size,
                 IsNull = memberAttribute.IsDefaultMember && memberType != typeof(string) ? type.isNull() : memberAttribute.IsNull,
+                Remark = memberAttribute.Remark,
                 DefaultValue = memberAttribute.DefaultValue,
                 UpdateValue = memberAttribute.UpdateValue
             };
@@ -465,7 +466,8 @@ update `");
             {
                 sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
                 sqlStream.WriteNotNull("select ");
-                DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+                else sqlStream.Write('*');
                 sqlStream.WriteNotNull(" from `");
                 sqlStream.WriteNotNull(sqlTool.TableName);
                 sqlStream.Write('`');
@@ -509,7 +511,7 @@ update `");
             try
             {
                 sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                getByIdentity(sqlStream, sqlTool.TableName, value, memberMap);
+                getByIdentity(sqlStream, sqlTool.TableName, value, query.MemberMap);
                 query.Sql = sqlStream.ToString();
             }
             finally
@@ -560,7 +562,7 @@ update `");
             try
             {
                 sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
-                getByPrimaryKey(sqlStream, sqlTool.TableName, value, memberMap);
+                getByPrimaryKey(sqlStream, sqlTool.TableName, value, query.MemberMap);
                 query.Sql = sqlStream.ToString();
             }
             finally
@@ -611,9 +613,12 @@ update `");
                 sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
                 if (DataModel.Model<modelType>.Identity != null)
                 {
-                    getByIdentity(sqlStream, sqlTool.TableName, value, query.MemberMap);
-                    query.Sql = sqlStream.ToString();
-                    sqlStream.ByteSize = 0;
+                    if (!query.NotQuery)
+                    {
+                        getByIdentity(sqlStream, sqlTool.TableName, value, query.MemberMap);
+                        query.Sql = sqlStream.ToString();
+                        sqlStream.ByteSize = 0;
+                    }
                     sqlStream.SimpleWriteNotNull(" update `");
                     sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                     sqlStream.SimpleWriteNotNull("` set ");
@@ -628,9 +633,12 @@ update `");
                 }
                 if (DataModel.Model<modelType>.PrimaryKeys.Length != 0)
                 {
-                    getByPrimaryKey(sqlStream, sqlTool.TableName, value, query.MemberMap);
-                    query.Sql = sqlStream.ToString();
-                    sqlStream.ByteSize = 0;
+                    if (!query.NotQuery)
+                    {
+                        getByPrimaryKey(sqlStream, sqlTool.TableName, value, query.MemberMap);
+                        query.Sql = sqlStream.ToString();
+                        sqlStream.ByteSize = 0;
+                    }
                     sqlStream.WriteNotNull(" update `");
                     sqlStream.WriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("` set ");
@@ -664,15 +672,48 @@ update `");
         internal override bool Update<valueType, modelType>
             (Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
         {
-            GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = query.MemberMap, Sql = query.Sql };
-            valueType oldValue = AutoCSer.Emit.Constructor<valueType>.New();
-            if (Get(sqlTool, ref connection, oldValue, ref getQuery) && executeNonQuery(connection, query.UpdateSql) > 0 && Get(sqlTool, ref connection, value, ref getQuery))
+            if (query.NotQuery)
             {
-                sqlTool.CallOnUpdated(value, oldValue, memberMap);
+                if (executeNonQuery(ref connection, query.UpdateSql) > 0)
+                {
+                    sqlTool.CallOnUpdated(value, null, memberMap);
+                    return true;
+                }
+            }
+            else
+            {
+                GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = query.MemberMap, Sql = query.Sql };
+                valueType oldValue = AutoCSer.Emit.Constructor<valueType>.New();
+                if (Get(sqlTool, ref connection, oldValue, ref getQuery) && executeNonQuery(connection, query.UpdateSql) > 0 && Get(sqlTool, ref connection, value, ref getQuery))
+                {
+                    sqlTool.CallOnUpdated(value, oldValue, memberMap);
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">匹配成员值</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <param name="query">查询信息</param>
+        /// <returns>更新是否成功</returns>
+        internal override bool Update<valueType, modelType>
+            (Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
+        {
+            if (sqlTool.CallOnUpdate(value, memberMap) && executeNonQuery(transaction, query.UpdateSql) > 0)
+            {
+                sqlTool.CallOnUpdated(transaction, value, memberMap);
                 return true;
             }
             return false;
         }
+
         /// <summary>
         /// 获取添加数据 SQL 语句
         /// </summary>
@@ -703,9 +744,12 @@ update `");
                     DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
                     sqlStream.WriteNotNull(");");
                     query.InsertSql = sqlStream.ToString();
-                    sqlStream.ByteSize = 0;
-                    getByIdentity(sqlStream, sqlTool.TableName, value, memberMap);
-                    query.Sql = sqlStream.ToString();
+                    if (!query.NotQuery)
+                    {
+                        sqlStream.ByteSize = 0;
+                        getByIdentity(sqlStream, sqlTool.TableName, value, memberMap);
+                        query.Sql = sqlStream.ToString();
+                    }
                 }
                 else
                 {
@@ -717,7 +761,7 @@ update `");
                     DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
                     sqlStream.WriteNotNull(");");
                     query.InsertSql = sqlStream.ToString();
-                    if (DataModel.Model<modelType>.PrimaryKeys.Length != 0)
+                    if (!query.NotQuery && DataModel.Model<modelType>.PrimaryKeys.Length != 0)
                     {
                         sqlStream.ByteSize = 0;
                         getByPrimaryKey(sqlStream, sqlTool.TableName, value, memberMap);
@@ -746,7 +790,7 @@ update `");
         {
             if (executeNonQuery(ref connection, query.InsertSql) > 0)
             {
-                if (DataModel.Model<modelType>.Identity != null || DataModel.Model<modelType>.PrimaryKeys.Length != 0)
+                if ((DataModel.Model<modelType>.Identity != null || DataModel.Model<modelType>.PrimaryKeys.Length != 0) && !query.NotQuery)
                 {
                     GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = DataModel.Model<modelType>.MemberMap, Sql = query.Sql };
                     if (!Get(sqlTool, ref connection, value, ref getQuery)) return false;
@@ -756,6 +800,73 @@ update `");
             }
             return false;
         }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">添加数据</param>
+        /// <param name="query">添加数据查询信息</param>
+        /// <returns></returns>
+        internal override bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        {
+            if (sqlTool.CallOnInsert(value) && executeNonQuery(transaction, query.InsertSql) > 0)
+            {
+                sqlTool.CallOnInserted(transaction, value);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection">SQL连接</param>
+        /// <param name="array">数据数组</param>
+        /// <returns></returns>
+        internal override SubArray<valueType> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
+        {
+            MemberMap<modelType> memberMap = MemberMap<modelType>.Default;
+            InsertQuery query = new InsertQuery();
+            LeftArray<valueType> newArray = new LeftArray<valueType>(array.Length);
+            foreach (valueType value in array)
+            {
+                insert(sqlTool, value, memberMap, ref query);
+                if (Insert(sqlTool, ref connection, value, ref query)) newArray.UnsafeAdd(value);
+            }
+            return new SubArray<valueType>(ref newArray);
+        }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="array">数据数组</param>
+        /// <returns></returns>
+        internal override SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
+        {
+            if (sqlTool.CallOnInsert(ref array))
+            {
+                MemberMap<modelType> memberMap = MemberMap<modelType>.Default;
+                InsertQuery query = new InsertQuery();
+                foreach (valueType value in array)
+                {
+                    insert(sqlTool, value, memberMap, ref query);
+                    if (executeNonQuery(transaction, query.InsertSql) <= 0) return default(SubArray<valueType>);
+                }
+                sqlTool.CallOnInserted(transaction, array);
+                return array;
+            }
+            return default(SubArray<valueType>);
+        }
+
         /// <summary>
         /// 获取删除数据 SQL 语句
         /// </summary>
@@ -783,9 +894,12 @@ update `");
                     AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
                     sqlStream.Write(';');
                     query.InsertSql = sqlStream.ToString();
-                    sqlStream.ByteSize = 0;
-                    getByIdentity(sqlStream, sqlTool.TableName, value, sqlTool.SelectMemberMap);
-                    query.Sql = sqlStream.ToString();
+                    if (!query.NotQuery)
+                    {
+                        sqlStream.ByteSize = 0;
+                        getByIdentity(sqlStream, sqlTool.TableName, value, sqlTool.SelectMemberMap);
+                        query.Sql = sqlStream.ToString();
+                    }
                     return true;
                 }
                 else if (DataModel.Model<modelType>.PrimaryKeys.Length != 0)
@@ -796,9 +910,12 @@ update `");
                     DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, ConstantConverter.Default);
                     sqlStream.Write(';');
                     query.InsertSql = sqlStream.ToString();
-                    sqlStream.ByteSize = 0;
-                    getByPrimaryKey(sqlStream, sqlTool.TableName, value, sqlTool.SelectMemberMap);
-                    query.Sql = sqlStream.ToString();
+                    if (!query.NotQuery)
+                    {
+                        sqlStream.ByteSize = 0;
+                        getByPrimaryKey(sqlStream, sqlTool.TableName, value, sqlTool.SelectMemberMap);
+                        query.Sql = sqlStream.ToString();
+                    }
                     return true;
                 }
             }
@@ -822,10 +939,40 @@ update `");
         /// <returns></returns>
         internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
         {
-            GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = sqlTool.SelectMemberMap, Sql = query.Sql };
-            if (Get(sqlTool, ref connection, value, ref getQuery) && executeNonQuery(connection, query.InsertSql) > 0)
+            if (query.NotQuery)
             {
-                sqlTool.CallOnDeleted(value);
+                if (executeNonQuery(ref connection, query.InsertSql) > 0)
+                {
+                    sqlTool.CallOnDeleted(value);
+                    return true;
+                }
+            }
+            else
+            {
+                GetQuery<modelType> getQuery = new GetQuery<modelType> { MemberMap = sqlTool.SelectMemberMap, Sql = query.Sql };
+                if (Get(sqlTool, ref connection, value, ref getQuery) && executeNonQuery(connection, query.InsertSql) > 0)
+                {
+                    sqlTool.CallOnDeleted(value);
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">添加数据</param>
+        /// <param name="query">添加数据查询信息</param>
+        /// <returns></returns>
+        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        {
+            if (sqlTool.CallOnDelete(value) && executeNonQuery(transaction, query.InsertSql) > 0)
+            {
+                sqlTool.CallOnDeleted(transaction, value);
                 return true;
             }
             return false;

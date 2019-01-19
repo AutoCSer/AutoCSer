@@ -74,11 +74,11 @@ namespace AutoCSer.OpenAPI.Weixin
             {
                 value = token;
                 timeout = this.timeout;
-                tokenLock = 0;
+                System.Threading.Interlocked.Exchange(ref tokenLock, 0);
             }
             else
             {
-                tokenLock = 0;
+                System.Threading.Interlocked.Exchange(ref tokenLock, 0);
                 value = null;
             }
             return value;
@@ -100,14 +100,14 @@ namespace AutoCSer.OpenAPI.Weixin
                     value.access_token = tokenTime.Key;
                     this.timeout = tokenTime.Value;
                     this.token = value;
-                    tokenLock = 0;
+                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
                 }
                 else
                 {
                     while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                     value.access_token = tokenTime.Key;
                     this.timeout = tokenTime.Value;
-                    tokenLock = 0;
+                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
                 }
                 return value;
             }
@@ -130,7 +130,7 @@ namespace AutoCSer.OpenAPI.Weixin
                     while (Interlocked.CompareExchange(ref tokenLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield();
                     token = value;
                     this.timeout = timeout;
-                    tokenLock = 0;
+                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
                     return value;
                 }
             }
@@ -174,12 +174,12 @@ namespace AutoCSer.OpenAPI.Weixin
                 {
                     token = this.token.access_token;
                     timeout = this.timeout;
-                    tokenLock = 0;
+                    System.Threading.Interlocked.Exchange(ref tokenLock, 0);
                     return token;
                 }
                 this.timeout = DateTime.MinValue;
             }
-            tokenLock = 0;
+            System.Threading.Interlocked.Exchange(ref tokenLock, 0);
             return null;
         }
         /// <summary>

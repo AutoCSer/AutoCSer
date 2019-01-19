@@ -16,12 +16,17 @@ namespace AutoCSer.Example.OrmTable
         {
             get
             {
+                //return new AutoCSer.Sql.Config
+                //{
+                //    CheckConnectionName = AutoCSer.Example.OrmConfig.Pub.ConnectionName,
+                //    TableNameDepth = 3
+                //};
                 return new AutoCSer.Sql.Config
                 {
-                    CheckConnectionName = AutoCSer.Example.OrmConfig.Pub.ConnectionName,
+                    CheckConnectionNames = new string[] { "Weixin", AutoCSer.Example.OrmConfig.Pub.ConnectionName},
                     TableNameDepth = 3
                 };
-            }
+           }
         }
         /// <summary>
         /// 数据库连接信息配置
@@ -46,6 +51,21 @@ namespace AutoCSer.Example.OrmTable
                 //create database AutoCSerExample;
                 //grant all privileges on AutoCSerExample.* to Example@127.0.0.1 identified by 'Example';
                 //flush privileges;
+            }
+        }
+        /// <summary>
+        /// 数据库连接信息配置
+        /// </summary>
+        [AutoCSer.Config.Member(Name = "Weixin")]
+        public static AutoCSer.Sql.Connection WeixinSqlConnection
+        {
+            get
+            {
+                return new AutoCSer.Sql.Connection
+                {
+                    Type = Sql.ClientKind.Sql2008,
+                    ConnectionString = "server=122.49.32.118;database=yh_marketing;User Id=yhAzure.Alpha;password=x1FlqqnI59BaHWrca8-SBq_w5c2xSfQJ"
+                };
             }
         }
     }

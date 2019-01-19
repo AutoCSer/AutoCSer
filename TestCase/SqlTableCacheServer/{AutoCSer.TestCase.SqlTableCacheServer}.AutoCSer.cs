@@ -1994,6 +1994,10 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod = verify;
@@ -2014,7 +2018,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataReader", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 DataReader 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p1), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p3), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p5), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p4), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p9), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8), typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p10), null }
@@ -2661,6 +2665,10 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod = verify;
@@ -2681,7 +2689,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataLog", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 DataLog 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p13), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p17), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p16), null }

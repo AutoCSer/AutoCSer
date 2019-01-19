@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Packet\DotNet2\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE;CodeGeneratorX86;DOTNET2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>2</WarningLevel>
@@ -43,10 +43,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +51,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet2.csproj">
+      <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
+      <Name>AutoCSer.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="AutoCSer.CodeGenerator.DotNet2.csproj">
       <Project>{9C257405-20F3-41DF-80D4-74976AAA6C6B}</Project>
       <Name>AutoCSer.CodeGenerator.DotNet2</Name>

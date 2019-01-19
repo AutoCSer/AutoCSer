@@ -40,14 +40,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.WebView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.WebView.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -63,9 +55,17 @@
     <Compile Include="{AutoCSer.TestCase.SqlTableWeb}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet4.5.csproj">
+      <Project>{7732520f-99b4-4069-a5a9-db87a0112d9f}</Project>
+      <Name>AutoCSer.DotNet4.5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\Sql\AutoCSer.Sql.DotNet4.5.csproj">
       <Project>{6d9b5bd4-a71b-4b21-8a33-761f948eed55}</Project>
       <Name>AutoCSer.Sql.DotNet4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\WebView\AutoCSer.WebView.DotNet4.5.csproj">
+      <Project>{408f9930-7c6f-4335-8a5b-fdcb4dce261f}</Project>
+      <Name>AutoCSer.WebView.DotNet4.5</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqlMode\AutoCSer.TestCase.SqlModel.DotNet4.5.csproj">
       <Project>{90a715ef-99f9-47a9-b7bd-49fab2c3e7d2}</Project>
@@ -90,7 +90,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\AutoCser\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>if exist "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" "$(PROGRAMFILES)\Microsoft SDKs\TypeScript\1.8\tsc.exe" @(TypeScriptCompile ->'"%(fullpath)"', ' ')</PreBuildEvent>

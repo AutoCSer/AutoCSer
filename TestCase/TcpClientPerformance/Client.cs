@@ -154,6 +154,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
             {
                 ++ErrorCount;
             }
+            //if (System.Threading.Interlocked.Decrement(ref waitCount) == 0)
             if (--waitCount == 0)
             {
                 Time.Stop();
@@ -172,6 +173,7 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
             {
                 ++ErrorCount;
             }
+            //if (System.Threading.Interlocked.Decrement(ref waitCount) == 0)
             if (--waitCount == 0)
             {
                 Time.Stop();

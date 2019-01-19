@@ -16,7 +16,7 @@ namespace AutoCSer.Example.OrmTable
         internal static void Append(NowTime value)
         {
             //value.AppendTime = NowTimes.AppendTime.Next;
-            sqlTable.Insert(value);
+            sqlTable.InsertQueue(value);
         }
 
 
@@ -26,10 +26,10 @@ namespace AutoCSer.Example.OrmTable
         internal static void Test()
         {
             Append(new NowTime());
-            foreach (NowTime value in sqlTable.Select())
+            foreach (NowTime value in sqlTable.SelectQueue())
             {
                 Console.WriteLine(value.toJson());
-                sqlTable.Delete(value.Id);
+                sqlTable.DeleteQueue(value.Id);
             }
         }
     }

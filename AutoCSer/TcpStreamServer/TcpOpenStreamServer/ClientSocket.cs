@@ -15,12 +15,12 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <summary>
         /// TCP 调用客户端套接字
         /// </summary>
-        /// <param name="commandClient">TCP 调用客户端</param>
+        /// <param name="clientCreator">TCP 服务客户端创建器</param>
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
         /// <param name="createVersion"></param>
-        internal ClientSocket(TcpStreamServer.Client<ServerAttribute> commandClient, IPAddress ipAddress, int port, int createVersion)
-            : base(commandClient, ipAddress, port, createVersion, commandClient.Attribute.MaxInputSize)
+        internal ClientSocket(TcpServer.ClientSocketCreator<ServerAttribute> clientCreator, IPAddress ipAddress, int port, int createVersion)
+            : base(clientCreator, ipAddress, port, createVersion, clientCreator.Attribute.MaxInputSize)
         {
         }
         /// <summary>
@@ -36,12 +36,12 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// </summary>
         internal override void CreateNew()
         {
-            if (CommandClient.IsDisposed == 0)
+            if (ClientCreator.CommandClient.IsDisposed == 0)
             {
-                CommandClient.SocketWait.Reset();
+                ClientCreator.CommandClient.SocketWait.Reset();
                 ClientSocket socket = new ClientSocket(this);
-                CommandClient.CreateSocket = socket;
-                if (CommandClient.IsDisposed != 0) socket.DisposeSocket();
+                ClientCreator.CreateSocket = socket;
+                if (ClientCreator.CommandClient.IsDisposed != 0) socket.DisposeSocket();
             }
         }
         /// <summary>
@@ -66,7 +66,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             }
             catch (Exception error)
             {
-                CommandClient.AddLog(error);
+                ClientCreator.CommandClient.AddLog(error);
             }
             CloseFree();
         }
@@ -77,7 +77,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int checkCreate()
         {
-            if ((CommandClient.IsDisposed | (CreateVersion ^ CommandClient.CreateVersion)) == 0) return 1;
+            if ((ClientCreator.CommandClient.IsDisposed | (CreateVersion ^ ClientCreator.CreateVersion)) == 0) return 1;
             close();
             return 0;
         }
@@ -94,15 +94,15 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 if (isSleep)
                 {
                     isSleep = false;
-                    Thread.Sleep(CommandClient.TryCreateSleep);
+                    Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
                     if (checkCreate() == 0) return;
                 }
                 try
                 {
                     Socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 #if !MONO
-                    Socket.ReceiveBufferSize = CommandClient.ReceiveBufferPool.Size;
-                    Socket.SendBufferSize = CommandClient.SendBufferPool.Size;
+                    Socket.ReceiveBufferSize = ClientCreator.CommandClient.ReceiveBufferPool.Size;
+                    Socket.SendBufferSize = ClientCreator.CommandClient.SendBufferPool.Size;
 #endif
                     Socket.Connect(ipAddress, port);
                     if (checkCreate() == 0) return;
@@ -115,7 +115,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         receiveAsyncEventArgs.Completed += onReceive;
                     }
 #endif
-                    if (ReceiveBuffer.Buffer == null) CommandClient.ReceiveBufferPool.Get(ref ReceiveBuffer);
+                    if (ReceiveBuffer.Buffer == null) ClientCreator.CommandClient.ReceiveBufferPool.Get(ref ReceiveBuffer);
                     if (Sender == null) SetSender(new ClientSocketSender(this));
                     receiveBufferSize = ReceiveBuffer.PoolBuffer.Pool.Size;
                     receiveCount = receiveIndex = 0;
@@ -124,18 +124,24 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                     Socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, Socket);
                     if (socketError == SocketError.Success)
 #else
+#if !DotNetStandard
+                    receiveAsyncLock = 1;
+#endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
                     if (Socket.ReceiveAsync(receiveAsyncEventArgs))
 #endif
                     {
+#if !DOTNET2 && !DotNetStandard
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
+#endif
                         isReceiveAsync = true;
-                        if (verifyMethod(CommandClient))
+                        if (verifyMethod(ClientCreator.CommandClient))
                         {
-                            if (CommandClient.SetSocket(this))
+                            if (ClientCreator.OnSocketVerifyMethod(this))
                             {
                                 if (isErrorLog)
                                 {
-                                    CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, CommandClient.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
+                                    ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接成功 " + ipAddress.ToString() + ":" + port.toString());
                                 }
                                 return;
                             }
@@ -157,7 +163,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                     if (!isErrorLog)
                     {
                         isErrorLog = true;
-                        CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, CommandClient.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
+                        ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
                     }
                 }
                 if (isReceiveAsync) return;

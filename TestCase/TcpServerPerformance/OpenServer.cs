@@ -104,6 +104,15 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
             return new Add(left, right);
         }
 
+        /// <summary>
+        /// GC 垃圾回收
+        /// </summary>
+        [AutoCSer.Net.TcpOpenServer.Method(IsClientAwaiter = false)]
+        private void gcCollect()
+        {
+            GC.Collect();
+        }
+
         static void Main(string[] args)
         {
 #if DotNetStandard

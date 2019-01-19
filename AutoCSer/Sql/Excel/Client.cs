@@ -80,6 +80,7 @@ namespace AutoCSer.Sql.Excel
                 DbType = sqlType,
                 Size = size,
                 IsNull = memberAttribute.IsDefaultMember && memberType != typeof(string) ? type.isNull() : memberAttribute.IsNull,
+                Remark = memberAttribute.Remark,
                 DefaultValue = memberAttribute.DefaultValue,
                 UpdateValue = memberAttribute.UpdateValue
             };
@@ -228,13 +229,163 @@ namespace AutoCSer.Sql.Excel
         /// <typeparam name="valueType">对象类型</typeparam>
         /// <typeparam name="modelType">模型类型</typeparam>
         /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="createQuery"></param>
+        /// <param name="query">查询信息</param>
+        /// <returns>对象集合</returns>
+        internal override void GetSelectQuery<valueType, modelType>
+            (Sql.Table<valueType, modelType> sqlTool, ref CreateSelectQuery<modelType> createQuery, ref SelectQuery<modelType> query)
+        {
+            CharStream sqlStream = Interlocked.Exchange(ref this.sqlStream, null);
+            if (sqlStream == null) sqlStream = new CharStream(null, 0);
+            byte* buffer = null;
+            try
+            {
+                sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
+                sqlStream.SimpleWriteNotNull("select ");
+                int count = query.SkipCount + createQuery.GetCount;
+                if (count != 0)
+                {
+                    sqlStream.SimpleWriteNotNull("top ");
+                    AutoCSer.Extension.Number.ToString(count, sqlStream);
+                    sqlStream.Write(' ');
+                }
+                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+                else sqlStream.Write('*');
+                sqlStream.SimpleWriteNotNull(" from [");
+                sqlStream.SimpleWriteNotNull(sqlTool.TableName);
+                sqlStream.SimpleWriteNotNull("]");
+                createQuery.WriteWhere(sqlTool, sqlStream, ref query);
+                createQuery.WriteOrder(sqlTool, sqlStream, ref query);
+                query.Sql = sqlStream.ToString();
+            }
+            finally
+            {
+                if (buffer != null) AutoCSer.UnmanagedPool.Default.Push(buffer);
+                sqlStream.Dispose();
+                Interlocked.Exchange(ref this.sqlStream, sqlStream);
+            }
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <typeparam name="valueType">对象类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
         /// <param name="connection"></param>
         /// <param name="query">查询信息</param>
         /// <returns>对象集合</returns>
         internal override LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            query.Free();
-            throw new InvalidOperationException();
+            try
+            {
+                if (query.Sql != null)
+                {
+                    if (connection == null) connection = GetConnection();
+                    if (connection != null)
+                    {
+                        using (DbCommand command = getCommand(connection, query.Sql))
+                        {
+                            DbDataReader reader = null;
+                            try
+                            {
+                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
+                            }
+                            catch (Exception error)
+                            {
+                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                            }
+                            if (reader != null)
+                            {
+                                using (reader)
+                                {
+                                    int skipCount = query.SkipCount;
+                                    while (skipCount != 0 && reader.Read()) --skipCount;
+                                    if (skipCount == 0)
+                                    {
+                                        LeftArray<valueType> array = new LeftArray<valueType>();
+                                        while (reader.Read())
+                                        {
+                                            valueType value = AutoCSer.Emit.Constructor<valueType>.New();
+                                            try
+                                            {
+                                                DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine(query.Sql);
+                                                for (int index = reader.FieldCount; index != 0; )
+                                                {
+                                                    --index;
+                                                    Console.WriteLine(reader[index].GetType().fullName() + " + " + reader[index].ToString());
+                                                }
+                                            }
+                                            array.Add(value);
+                                        }
+                                        return array;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally { query.Free(); }
+            return default(LeftArray<valueType>);
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <typeparam name="valueType">对象类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection"></param>
+        /// <param name="query">查询信息</param>
+        /// <param name="readValue"></param>
+        /// <returns>对象集合</returns>
+        internal override LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query, Func<DbDataReader, valueType> readValue)
+        {
+            try
+            {
+                if (query.Sql != null)
+                {
+                    if (connection == null) connection = GetConnection();
+                    if (connection != null)
+                    {
+                        using (DbCommand command = getCommand(connection, query.Sql))
+                        {
+                            DbDataReader reader = null;
+                            try
+                            {
+                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
+                            }
+                            catch (Exception error)
+                            {
+                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                            }
+                            if (reader != null)
+                            {
+                                using (reader)
+                                {
+                                    int skipCount = query.SkipCount;
+                                    while (skipCount != 0 && reader.Read()) --skipCount;
+                                    if (skipCount == 0)
+                                    {
+                                        LeftArray<valueType> array = new LeftArray<valueType>();
+                                        while (reader.Read())
+                                        {
+                                            valueType value = readValue(reader);
+                                            if (value != null) array.Add(value);
+                                        }
+                                        return array;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally { query.Free(); }
+            return default(LeftArray<valueType>);
         }
         /// <summary>
         /// 查询对象
@@ -296,6 +447,22 @@ namespace AutoCSer.Sql.Excel
             throw new InvalidOperationException();
         }
         /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">匹配成员值</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <param name="query">查询信息</param>
+        /// <returns>更新是否成功</returns>
+        internal override bool Update<valueType, modelType>
+            (Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
+        {
+            throw new InvalidOperationException();
+        }
+        /// <summary>
         /// 获取添加数据 SQL 语句
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
@@ -323,6 +490,46 @@ namespace AutoCSer.Sql.Excel
             throw new InvalidOperationException();
         }
         /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">添加数据</param>
+        /// <param name="query">添加数据查询信息</param>
+        /// <returns></returns>
+        internal override bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+        {
+            throw new InvalidOperationException();
+        }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection">SQL连接</param>
+        /// <param name="array">数据数组</param>
+        /// <returns></returns>
+        internal override SubArray<valueType> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="array">数据数组</param>
+        /// <returns></returns>
+        internal override SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
+        {
+            throw new InvalidOperationException();
+        }
+        /// <summary>
         /// 获取删除数据 SQL 语句
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
@@ -346,6 +553,20 @@ namespace AutoCSer.Sql.Excel
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
         internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+        {
+            throw new InvalidOperationException();
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">添加数据</param>
+        /// <param name="query">添加数据查询信息</param>
+        /// <returns></returns>
+        internal override bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
         {
             throw new InvalidOperationException();
         }

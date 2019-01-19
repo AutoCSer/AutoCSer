@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A2C43CF5-53D6-492F-A04A-F350B02C2D0A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.BinarySerialize</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;BinarySerialize;Serialize</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\DotNet4\Serialize\</OutputPath>
+    <DefineConstants>TRACE;BinarySerialize;Serialize</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\DotNet4\Serialize\AutoCSer.BinarySerialize.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Serialize</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\AutoCSer.BinarySerialize.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;Serialize</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\DotNet4\Serialize\AutoCSer.BinarySerialize.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\DotNet4\Serialize\AutoCSer.BinarySerialize.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\QuickSort.cs" />
+    <Compile Include="BinarySerialize\ConfigLoader.cs" />
+    <Compile Include="BinarySerialize\DeSerializeArrayMap.cs" />
+    <Compile Include="BinarySerialize\DeSerializeConfig.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMemberDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMemberMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMethodCache.cs" />
+    <Compile Include="BinarySerialize\DeSerializer.cs" />
+    <Compile Include="BinarySerialize\DeSerializeResult.cs" />
+    <Compile Include="BinarySerialize\DeSerializeState.cs" />
+    <Compile Include="BinarySerialize\DeSerializeVersionField.cs" />
+    <Compile Include="BinarySerialize\DeSerializeVersionFields.cs" />
+    <Compile Include="BinarySerialize\Fields.cs" />
+    <Compile Include="BinarySerialize\FieldSize.cs" />
+    <Compile Include="BinarySerialize\IgnoreMemberAttribute.cs" />
+    <Compile Include="BinarySerialize\JsonMemberAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeArrayMap.cs" />
+    <Compile Include="BinarySerialize\SerializeAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeConfig.cs" />
+    <Compile Include="BinarySerialize\SerializeCustomAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberMap.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMethodCache.cs" />
+    <Compile Include="BinarySerialize\Serializer.cs" />
+    <Compile Include="BinarySerialize\SerializeResult.cs" />
+    <Compile Include="BinarySerialize\SerializeWarning.cs" />
+    <Compile Include="BinarySerialize\TypeDeSerializer.cs" />
+    <Compile Include="BinarySerialize\TypeSerializer.cs" />
+    <Compile Include="BinarySerialize\UnionType.cs" />
+    <Compile Include="CharStream.cs" />
+    <Compile Include="CharStream.Json.cs" />
+    <Compile Include="Config\Loader.cs" />
+    <Compile Include="Config\MemberAttribute.cs" />
+    <Compile Include="Config\Pub.cs" />
+    <Compile Include="Config\TypeAttribute.cs" />
+    <Compile Include="Config\UnionLoader.cs" />
+    <Compile Include="Config\UnionType.cs" />
+    <Compile Include="Date.cs" />
+    <Compile Include="DictionaryCreator.cs" />
+    <Compile Include="DynamicArray.cs" />
+    <Compile Include="Emit\ArrayConstructor.cs" />
+    <Compile Include="Emit\CollectionConstructor.cs" />
+    <Compile Include="Emit\Constructor.cs" />
+    <Compile Include="Emit\DictionaryConstructor.cs" />
+    <Compile Include="Emit\EnumCast.cs" />
+    <Compile Include="Emit\EnumerableConstructor.cs" />
+    <Compile Include="Emit\EnumParser.cs" />
+    <Compile Include="Emit\ListConstructor.cs" />
+    <Compile Include="Emit\NamePool.cs" />
+    <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Enumerator.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\BinarySerialize.cs" />
+    <Compile Include="Extension\Collection.cs" />
+    <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="Extension\Enumerable.cs" />
+    <Compile Include="Extension\JsonSerialize.cs" />
+    <Compile Include="Extension\MemberCopy.cs" />
+    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extension\String.cs" />
+    <Compile Include="Extension\Type.cs" />
+    <Compile Include="FormatRange.cs" />
+    <Compile Include="GuidCreator.cs" />
+    <Compile Include="HashSetCreator.cs" />
+    <Compile Include="HashString.cs" />
+    <Compile Include="IOS\Preserve.cs" />
+    <Compile Include="Json\ConfigLoader.cs" />
+    <Compile Include="Json\IgnoreMemberAttribute.cs" />
+    <Compile Include="Json\Node.cs" />
+    <Compile Include="Json\NodeType.cs" />
+    <Compile Include="Json\NumberType.cs" />
+    <Compile Include="Json\ParseAttribute.cs" />
+    <Compile Include="Json\ParseConfig.cs" />
+    <Compile Include="Json\ParseCustomAttribute.cs" />
+    <Compile Include="Json\ParseDynamicMethod.cs" />
+    <Compile Include="Json\ParseMemberAttribute.cs" />
+    <Compile Include="Json\ParseMethod.cs" />
+    <Compile Include="Json\ParseMethodCache.cs" />
+    <Compile Include="Json\Parser.cs" />
+    <Compile Include="Json\ParseResult.cs" />
+    <Compile Include="Json\ParseState.cs" />
+    <Compile Include="Json\ParseUnknownNameAttriubte.cs" />
+    <Compile Include="Json\SerializeAttribute.cs" />
+    <Compile Include="Json\SerializeConfig.cs" />
+    <Compile Include="Json\SerializeCustomAttribute.cs" />
+    <Compile Include="Json\SerializeMemberAttribute.cs" />
+    <Compile Include="Json\SerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="Json\SerializeMethod.cs" />
+    <Compile Include="Json\SerializeMethodCache.cs" />
+    <Compile Include="Json\Serializer.cs" />
+    <Compile Include="Json\SerializeMemberDynamicMethod.cs" />
+    <Compile Include="Json\SerializeResult.cs" />
+    <Compile Include="Json\SerializeWarning.cs" />
+    <Compile Include="Json\StateSearcher.cs" />
+    <Compile Include="Json\TypeParser.cs" />
+    <Compile Include="Json\TypeSerializer.cs" />
+    <Compile Include="Json\UnionType.cs" />
+    <Compile Include="KeyValue.cs" />
+    <Compile Include="LeftArray.cs" />
+    <Compile Include="MemberCopy\Copyer.cs" />
+    <Compile Include="MemberCopy\CustomAttribute.cs" />
+    <Compile Include="MemberCopy\MemberDynamicMethod.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="MemoryMap.cs" />
+    <Compile Include="Metadata\AttributeMethod.cs" />
+    <Compile Include="Metadata\BoxSerializeAttribute.cs" />
+    <Compile Include="Metadata\FieldIndex.cs" />
+    <Compile Include="Metadata\IgnoreAttribute.cs" />
+    <Compile Include="Metadata\IgnoreMemberAttribute.cs" />
+    <Compile Include="Metadata\MemberFilterAttribute.cs" />
+    <Compile Include="Metadata\MemberFilters.cs" />
+    <Compile Include="Metadata\MemberIndexGroup.cs" />
+    <Compile Include="Metadata\MemberIndexInfo.cs" />
+    <Compile Include="Metadata\MemberMap.cs" />
+    <Compile Include="Metadata\PropertyIndex.cs" />
+    <Compile Include="Metadata\TypeAttribute.cs" />
+    <Compile Include="NET2.0\MethodImpl.cs" />
+    <Compile Include="NullableBool.cs" />
+    <Compile Include="NullValue.cs" />
+    <Compile Include="ObjectReference.cs" />
+    <Compile Include="Pointer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pub.cs" />
+    <Compile Include="Random.cs" />
+    <Compile Include="RangeLength.cs" />
+    <Compile Include="Reflection\Assembly.cs" />
+    <Compile Include="RemoteType.cs" />
+    <Compile Include="StateSearcher\CharBuilder.cs" />
+    <Compile Include="StateSearcher\CharSearcher.cs" />
+    <Compile Include="SubString.cs" />
+    <Compile Include="Threading\Link.cs" />
+    <Compile Include="Threading\LockDictionary.cs" />
+    <Compile Include="Threading\ThreadYield.cs" />
+    <Compile Include="Unmanaged.cs" />
+    <Compile Include="UnmanagedPool.cs" />
+    <Compile Include="UnmanagedStream.cs" />
+    <Compile Include="UnmanagedStreamBase.cs" />
+    <Compile Include="Win32\Kernel32.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

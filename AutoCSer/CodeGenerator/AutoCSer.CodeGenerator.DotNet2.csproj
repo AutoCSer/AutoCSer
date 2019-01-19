@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Packet\DotNet2\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE;CodeGenerator;DOTNET2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>2</WarningLevel>
@@ -38,18 +38,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.Sort.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.WebView, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.WebView.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +175,14 @@
     <Content Include="Js\verifyImage.ts" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet2.csproj">
+      <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
+      <Name>AutoCSer.DotNet2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.DotNet2.csproj">
+      <Project>{FB4A10B3-AF0B-4EE0-8C09-9389446F6057}</Project>
+      <Name>AutoCSer.Sort.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet2.csproj">
       <Project>{68DB0E7A-B4EA-49FA-977D-83164AFFF51D}</Project>
       <Name>AutoCSer.TcpSimpleServer.DotNet2</Name>
@@ -194,6 +190,10 @@
     <ProjectReference Include="..\TcpStreamServer\AutoCSer.TcpStreamServer.DotNet2.csproj">
       <Project>{031EF696-7231-4229-B006-BFC123D3116A}</Project>
       <Name>AutoCSer.TcpStreamServer.DotNet2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebView\AutoCSer.WebView.DotNet2.csproj">
+      <Project>{66F24F55-C44F-4A75-AA5A-19A7B8BE14FA}</Project>
+      <Name>AutoCSer.WebView.DotNet2</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

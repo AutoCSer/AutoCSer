@@ -27,7 +27,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,14 +43,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE;DOTNET2</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>bin\Release\AutoCSer.Example.TcpStaticSimpleServer.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet2\AutoCSer.Example.TcpStaticSimpleServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -59,10 +59,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +76,10 @@
     <Compile Include="{AutoCSer.Example.TcpStaticSimpleServer}.TcpStaticSimpleServer.Example1.Client.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet2.csproj">
+      <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
+      <Name>AutoCSer.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet2.csproj">
       <Project>{68DB0E7A-B4EA-49FA-977D-83164AFFF51D}</Project>
       <Name>AutoCSer.TcpSimpleServer.DotNet2</Name>
@@ -87,7 +87,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\AutoCSer\CodeGenerator\bin\Release\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\AutoCSer\CodeGenerator\bin\Release\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -380,7 +380,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <returns>数据分组</returns>
                 protected static AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, long> createIdentityCounterQueue(int group = 1, int maxCount = 0)
                 {
-                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, long>(@CreateIdentityCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity64<tableType, @Type.FullName>(sqlTable, group), sqlTable.Get, maxCount);
+                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, long>(@CreateIdentityCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity64<tableType, @Type.FullName>(sqlTable, group), sqlTable.GetQueue, maxCount);
                 }
                 #endregion IF IsIdentity64
                 #region NOT IsIdentity64
@@ -393,7 +393,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <returns>数据分组</returns>
                 protected static AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, int> @CreateIdentityCounterQueueMethodName(int group = 1, int maxCount = 0)
                 {
-                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, int>(@CreateIdentityCounter32QueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity<tableType, @Type.FullName>(sqlTable, group), sqlTable.Get, maxCount);
+                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, int>(@CreateIdentityCounter32QueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.Identity<tableType, @Type.FullName>(sqlTable, group), sqlTable.GetQueue, maxCount);
                 }
                 #endregion NOT IsIdentity64
                 #endregion IF CounterCacheType=CreateIdentityCounterQueue
@@ -443,7 +443,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <returns>数据分组</returns>
                 protected static AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, @PrimaryKeyType> createPrimaryKeyCounterQueue(int group = 1, int maxCount = 0)
                 {
-                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, @PrimaryKeyType>(@CreatePrimaryKeyCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.PrimaryKey<tableType, @Type.FullName, @PrimaryKeyType>(sqlTable, group), sqlTable.GetByPrimaryKey, maxCount);
+                    return new AutoCSer.Sql.Cache.Counter.Queue<tableType, @Type.FullName, @PrimaryKeyType>(@CreatePrimaryKeyCounterQueueCacheName = new AutoCSer.Sql.Cache.Counter.Event.PrimaryKey<tableType, @Type.FullName, @PrimaryKeyType>(sqlTable, group), sqlTable.GetByPrimaryKeyQueue, maxCount);
                 }
                 #endregion IF CounterCacheType=CreatePrimaryKeyCounterQueue
                 #region IF CounterCacheType=CreatePrimaryKeyCounterQueueList
@@ -601,7 +601,7 @@ namespace AutoCSer.CodeGenerator.Template
                         base.update(sqlTable, isIgnoreTransaction);
                         #endregion IF Attribute.IsUpdateMemberMapClassType
                         #region NOT Attribute.IsUpdateMemberMapClassType
-                        return memberMap != null && sqlTable.Update(value, memberMap, isIgnoreTransaction);
+                        return memberMap != null && sqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                     }
                     /// <summary>
@@ -617,7 +617,7 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion IF Attribute.IsUpdateMemberMapClassType
                         #region NOT Attribute.IsUpdateMemberMapClassType
                         if (memberMap == null) onUpdated(null);
-                        sqlTable.Update(value, memberMap, onUpdated, isIgnoreTransaction);
+                        sqlTable.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);
                         #endregion NOT Attribute.IsUpdateMemberMapClassType
                     }
                 }

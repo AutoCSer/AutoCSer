@@ -17,9 +17,9 @@ namespace AutoCSer.TestCase.ChatClient
         /// </summary>
         private ChatServer.TcpClient.Server.TcpOpenClient client;
         /// <summary>
-        /// 当前客户端 TCP 套接字
+        /// TCP 客户端套接字初始化处理
         /// </summary>
-        private AutoCSer.Net.TcpServer.ClientSocketBase socket;
+        private readonly AutoCSer.Net.TcpServer.CheckSocketVersion checkSocketVersion;
         /// <summary>
         /// 获取用户信息 回调保持
         /// </summary>
@@ -49,20 +49,20 @@ namespace AutoCSer.TestCase.ChatClient
                 Console.WriteLine("Login Error : " + userName);
                 return false;
             });
-            this.client._TcpClient_.OnSetSocket((socket) =>
+            checkSocketVersion = this.client._TcpClient_.CreateCheckSocketVersion(parameter =>
             {
-                if (socket != null && socket.IsSocketVersion(ref this.socket))
+                if (parameter.Type == AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket)
                 {
                     getUserKeepCallback = client.getUser((user) =>
                     {
-                        if (user.Type == Net.TcpServer.ReturnType.Success)
+                        if (user.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                         {
                             Console.WriteLine(user.Value.Type.ToString() + " + " + user.Value.Name);
                         }
                     });
                     getMessageKeepCallback = client.getMessage((message) =>
                     {
-                        if (message.Type == Net.TcpServer.ReturnType.Success)
+                        if (message.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                         {
                             Console.WriteLine(message.Value.Time.toString() + " " + message.Value.User + " : " + message.Value.Content);
                         }

@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using AutoCSer.Log;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
+using System.Net;
 
 namespace AutoCSer.Net.TcpSimpleServer
 {
@@ -28,6 +29,18 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// 序列化参数编号
         /// </summary>
         protected int serializeParameterIndex;
+        /// <summary>
+        /// 服务主机名称
+        /// </summary>
+        internal string Host;
+        /// <summary>
+        /// 服务 IP 地址
+        /// </summary>
+        internal IPAddress IpAddress;
+        /// <summary>
+        /// 服务端口
+        /// </summary>
+        internal int Port;
 
         /// <summary>
         /// 接收数据缓冲区
@@ -95,10 +108,34 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="minCompressSize">压缩启用最低字节数量</param>
         /// <param name="log">日志接口</param>
         /// <param name="maxInputSize">最大输入数据字节数</param>
-        internal Client(string host, int port, string serviceName, int sendBufferMaxSize, int minCompressSize, ILog log, int maxInputSize) : base(host, port, serviceName, sendBufferMaxSize, minCompressSize, log)
+        internal Client(string host, int port, string serviceName, int sendBufferMaxSize, int minCompressSize, ILog log, int maxInputSize) : base(serviceName, sendBufferMaxSize, minCompressSize, log)
         {
+            this.Host = host;
+            this.Port = port;
+            IpAddress = HostPort.HostToIPAddress(this.Host, Log);
+
             this.maxInputSize = maxInputSize <= 0 ? int.MaxValue : maxInputSize;
             outputStream = (outputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
+        }
+        /// <summary>
+        /// 检测主机名称是否可用
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        protected bool check(IPAddress ipAddress, int port)
+        {
+            if (ipAddress == null)
+            {
+                Log.Add(AutoCSer.Log.LogType.Error, Host + " IP 解析失败");
+                return false;
+            }
+            if (port == 0)
+            {
+                Log.Add(AutoCSer.Log.LogType.Error, ServerName + " 端口号不能为 0");
+                return false;
+            }
+            return true;
         }
         /// <summary>
         /// 心跳检测
@@ -239,9 +276,9 @@ namespace AutoCSer.Net.TcpSimpleServer
                 Socket.Connect(IpAddress, Port);
                 if (isVerifyMethod = CallVerifyMethod())
                 {
-                    if (Attribute.CheckSeconds > 0 && CheckTimer == null)
+                    if (Attribute.GetCheckSeconds > 0 && CheckTimer == null)
                     {
-                        CheckTimer = ClientCheckTimer.Get(Attribute.CheckSeconds);
+                        CheckTimer = ClientCheckTimer.Get(Attribute.GetCheckSeconds);
                         if (IsDisposed == 0) CheckTimer.Push(this);
                         else
                         {

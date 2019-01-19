@@ -219,7 +219,7 @@ namespace AutoCSer.CodeGenerator.Template
 
                             #region NOT MemberIndex
                             /*IF:MethodIsReturn*/
-                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*//*IF:MethodIsReturn*//*PUSH:Method*/serverValue.@MethodName/*PUSH:Method*/(/*IF:ClientParameterName*/Sender/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*IF:MethodParameter.IsOut*//*PUSH:InputParameter*/value.Value.@ParameterName/*PUSH:InputParameter*//*NOTE*/,/*NOTE*//*IF:MethodParameter.IsOut*//*NOT:MethodParameter.IsOut*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*NOT:MethodParameter.IsOut*//*AT:Parameter.ParameterJoin*//*LOOP:InputParameters*/);
+                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*//*IF:MethodIsReturn*//*PUSH:Method*/serverValue.@MethodName/*PUSH:Method*/(/*IF:ClientParameterName*/Sender/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*IF:MethodParameter.IsOut*//*PUSH:InputParameter*/value.Value.@ParameterName/*PUSH:InputParameter*//*NOTE*/,/*NOTE*//*IF:MethodParameter.IsOut*//*NOT:MethodParameter.IsOut*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*NOT:MethodParameter.IsOut*//*AT:MethodParameter.ParameterJoin*//*LOOP:InputParameters*/);
                             #endregion NOT MemberIndex
 
                             #region IF OutputParameterIndex
@@ -367,8 +367,9 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsVerifyMethod
                 /// <param name="verifyMethod">TCP验证方法</param>
                 #endregion IF IsVerifyMethod
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null/*IF:IsVerifyMethod*/, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null/*IF:IsVerifyMethod*/, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
@@ -376,13 +377,22 @@ namespace AutoCSer.CodeGenerator.Template
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName));
                         #endregion IF IsServerCode
                         #region NOT IsServerCode
-                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>("@ServerRegisterName") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>(@"@AttributeJson");
+                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>("@ServerRegisterName") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = "@ServerRegisterName";
                         #endregion NOT IsServerCode
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log/*IF:IsVerifyMethod*/, verifyMethod/*IF:IsTimeVerify*/ ?? (Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool>)_timerVerify_/*IF:IsTimeVerify*//*IF:IsVerifyMethod*/);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute/*IF:OpenStreamClientRouteType*/ ?? new @OpenStreamClientRouteType()/*IF:OpenStreamClientRouteType*//*IF:IsVerifyMethod*/, verifyMethod/*IF:IsTimeVerify*/ ?? (Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool>)_timerVerify_/*IF:IsTimeVerify*//*IF:IsVerifyMethod*/);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
+                #region NOT IsServerCode
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpOpenStreamServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>(@"@AttributeJson"); }
+                }
+                #endregion NOT IsServerCode
 
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
@@ -907,6 +917,12 @@ namespace AutoCSer.CodeGenerator.Template
             /// </summary>
             /// <param name="tcpServer">TCP服务端</param>
             public void SetTcpServer(AutoCSer.Net.TcpOpenStreamServer.Server tcpServer) { }
+        }
+        /// <summary>
+        /// TCP 客户端路由
+        /// </summary>
+        public sealed class OpenStreamClientRouteType : ClientRouteType<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender>
+        {
         }
     }
     #endregion NOTE

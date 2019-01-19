@@ -93,7 +93,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             AutoCSer.CacheServer.BufferCount buffer;
             while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.MessageQueueGetBuffer);
             buffer = bufferCount.Get(ref data);
-            bufferCountLock = 0;
+            System.Threading.Interlocked.Exchange(ref bufferCountLock, 0);
 
             if (buffer == null)
             {
@@ -103,7 +103,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 {
                     while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.MessageQueueGetBuffer);
                     buffer = oldBufferCount.Get(ref data);
-                    bufferCountLock = 0;
+                    System.Threading.Interlocked.Exchange(ref bufferCountLock, 0);
                     if (buffer == null)
                     {
                         AutoCSer.CacheServer.BufferCount newBufferCount = new AutoCSer.CacheServer.BufferCount();

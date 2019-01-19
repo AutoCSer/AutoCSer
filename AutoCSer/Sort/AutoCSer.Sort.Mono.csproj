@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F71355A6-87A6-44C2-A7F0-BAD9DE939758}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.Sort</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Packet\Mono</OutputPath>
+    <DefineConstants>Sort;MONO;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Packet\Mono</OutputPath>
+    <DefineConstants>Sort;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Packet\Mono\AutoCSer.Sort.xml</DocumentationFile>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Algorithm\DateTimeSortIndex.cs" />
+    <Compile Include="Algorithm\RadixSort.cs" />
+    <Compile Include="Algorithm\TopologySort.cs" />
+    <Compile Include="Algorithm\UnionType.cs" />
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\Array.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\Array.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\Array.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\Collection.cs" />
+    <Compile Include="CombinationTemplate\Enumerable.cs" />
+    <Compile Include="CombinationTemplate\FixedArray.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickTopSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArraySortGroup.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.Fixed.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\SortIndex.cs" />
+    <Compile Include="CombinationTemplate\SubArray.Fixed.cs" />
+    <Compile Include="CombinationTemplate\SubArray.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.SortGroup.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\IComparable.cs" />
+    <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="SearchTree\Dictionary.cs" />
+    <Compile Include="SearchTree\DictionaryPageDescCache.cs" />
+    <Compile Include="SearchTree\DictionaryPageCache.cs" />
+    <Compile Include="SearchTree\FindArray.cs" />
+    <Compile Include="SearchTree\Node.cs" />
+    <Compile Include="SearchTree\PageArray.cs" />
+    <Compile Include="SearchTree\PageCacheVersion.cs" />
+    <Compile Include="SearchTree\Set.cs" />
+    <Compile Include="{AutoCSer.Sort}.CombinationTemplate.cs" />
+    <Compile Include="PageCount.cs" />
+    <Compile Include="BitMap.cs" />
+    <Compile Include="SortOrder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCser.Mono.csproj">
+      <Project>{8F2C11B3-5F14-4696-A3CB-F00A1B0B1837}</Project>
+      <Name>AutoCser.Mono</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

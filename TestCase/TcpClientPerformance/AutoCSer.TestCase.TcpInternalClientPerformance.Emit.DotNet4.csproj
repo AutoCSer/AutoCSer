@@ -42,7 +42,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet4\</OutputPath>
     <DefineConstants>TRACE;Emit</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -76,7 +76,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\AutoCSer.TestCase.TcpInternalClientPerformance.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Release\DotNet4\AutoCSer.TestCase.TcpInternalClientPerformance.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
@@ -96,10 +96,6 @@
     <Compile Include="TestType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +121,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet4.csproj">
+      <Project>{384CC69B-D0AF-4A82-806F-19C91F852E6C}</Project>
+      <Name>AutoCSer.DotNet4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TcpServerPerformance\AutoCSer.TestCase.TcpInternalServerPerformance.Emit.DotNet4.csproj">
       <Project>{520A827D-73EC-4E16-8BB8-EBEEBBE3775E}</Project>
       <Name>AutoCSer.TestCase.TcpInternalServerPerformance.Emit.DotNet4</Name>

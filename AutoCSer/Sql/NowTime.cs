@@ -38,7 +38,7 @@ namespace AutoCSer.Sql
                 while (System.Threading.Interlocked.CompareExchange(ref timeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlNowTimeSet);
                 if (now < minTime) now = minTime;
                 minTime = now.AddTicks(ticks);
-                timeLock = 0;
+                System.Threading.Interlocked.Exchange(ref timeLock, 0);
                 return now;
             }
         }
@@ -59,7 +59,7 @@ namespace AutoCSer.Sql
         {
             while (System.Threading.Interlocked.CompareExchange(ref timeLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlNowTimeSet);
             minTime = time.AddTicks(ticks);
-            timeLock = 0;
+            System.Threading.Interlocked.Exchange(ref timeLock, 0);
         }
         /// <summary>
         /// 在初始化循环中设置最大时间

@@ -52,10 +52,4 @@
     <ProjectReference Include="..\..\AutoCSer\CacheServer\AutoCSer.CacheServer.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

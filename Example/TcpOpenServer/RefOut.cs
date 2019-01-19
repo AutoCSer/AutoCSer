@@ -1,4 +1,6 @@
 ﻿using System;
+using AutoCSer.Net.TcpOpenServer;
+using AutoCSer.Net.TcpServer;
 
 namespace AutoCSer.Example.TcpOpenServer
 {
@@ -48,7 +50,64 @@ namespace AutoCSer.Example.TcpOpenServer
                     }
                 }
             }
+            //AutoCSer.Net.TcpOpenServer.ServerAttribute attribute1 = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpOpenServer.RefOut", typeof(AutoCSer.Example.TcpOpenServer.RefOut));
+            //AutoCSer.Net.TcpOpenServer.ServerAttribute attribute2 = AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpOpenServer.ServerAttribute>.MemberwiseClone(attribute1);
+            //++attribute2.Port;
+            //using (AutoCSer.Example.TcpOpenServer.RefOut.TcpOpenServer server1 = new AutoCSer.Example.TcpOpenServer.RefOut.TcpOpenServer(attribute1))
+            //using (AutoCSer.Example.TcpOpenServer.RefOut.TcpOpenServer server2 = new AutoCSer.Example.TcpOpenServer.RefOut.TcpOpenServer(attribute2))
+            //{
+            //    if (server1.IsListen && server2.IsListen)
+            //    {
+            //        using (AutoCSer.Example.TcpOpenServer.TcpClient.RefOut.TcpOpenClient client = new AutoCSer.Example.TcpOpenServer.TcpClient.RefOut.TcpOpenClient(null, new ClientLoadRoute(attribute1, attribute2)))
+            //        {
+            //            client._TcpClient_.Sender;
+
+            //        }
+            //    }
+            //}
             return false;
         }
+
+        //internal sealed class ClientLoadRoute : AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender>
+        //{
+        //    private AutoCSer.Net.TcpOpenServer.ServerAttribute attribute1;
+        //    private AutoCSer.Net.TcpOpenServer.ServerAttribute attribute2;
+        //    internal ClientLoadRoute(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute1, AutoCSer.Net.TcpOpenServer.ServerAttribute attribute2)
+        //    {
+        //        this.attribute1 = attribute1;
+        //        this.attribute2 = attribute2;
+
+        //    }
+        //    public override Net.TcpOpenServer.ClientSocketSender Sender
+        //    {
+        //        get
+        //        {
+        //            throw new NotImplementedException();
+        //        }
+        //    }
+
+        //    public override ClientSocketBase Socket
+        //    {
+        //        get
+        //        {
+        //            throw new NotImplementedException();
+        //        }
+        //    }
+
+        //    public override void OnDisposeSocket(ClientSocketBase socket)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    public override void OnSetSocket()
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    public override bool OnSocketVerifyMethod(ClientSocketBase socket)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }

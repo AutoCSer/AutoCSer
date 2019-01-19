@@ -230,6 +230,10 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> VerifyMethod;
@@ -245,7 +249,7 @@ namespace AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient
                 {
                     config.ServerAttribute = AutoCSer.Net.TcpStaticStreamServer.ServerAttribute.GetConfig("StreamExample1", typeof(AutoCSer.Example.TcpStaticStreamServer.RefOut), false);
                 }
-                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient/**/.StreamExample1/**/._p1), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient/**/.StreamExample1/**/._p3), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient/**/.StreamExample1/**/._p5), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient/**/.StreamExample1/**/._p2), typeof(AutoCSer.Example.TcpStaticStreamServer.TcpStaticStreamClient/**/.StreamExample1/**/._p4), null }
                     , new System.Type[] { null }

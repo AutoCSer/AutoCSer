@@ -700,6 +700,10 @@ namespace AutoCSer.Web.SearchServer.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod = verify;
@@ -720,7 +724,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SearchServer", typeof(AutoCSer.Web.SearchServer.Server));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SearchServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p1), typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p7), null }
                     , new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p4), typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p6), null }
                     , new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p3), typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p5), null }

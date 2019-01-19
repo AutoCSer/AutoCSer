@@ -34,18 +34,23 @@ namespace AutoCSer.Deploy
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.Run:
-                            case TaskType.AssemblyFile: appendSource(fileSources, ref Tasks[taskIndex], ref tasks[taskIndex]); break;
+                                appendSource(fileSources, (ClientTask.Run)Tasks[taskIndex], ref tasks[taskIndex]);
+                                break;
+                            case TaskType.AssemblyFile:
+                                appendSource(fileSources, (ClientTask.WebFile)Tasks[taskIndex], ref tasks[taskIndex]);
+                                break;
                             case TaskType.File:
-                                //appendFileSource(fileSources, ref Tasks[taskIndex], ref tasks[taskIndex]);
-                                DirectoryInfo clientDirectory = new DirectoryInfo(Tasks[taskIndex].ClientPath);
-                                Directory directory = Directory.Create(clientDirectory, client.Config.FileLastWriteTime, Tasks[taskIndex].FileSearchPatterns);
-                                tasks[taskIndex].Directory = await TcpClient.TcpInternalClient.getFileDifferentAwaiter(directory, Tasks[taskIndex].ServerPath);
+                                ClientTask.File file = (ClientTask.File)Tasks[taskIndex];
+                                DirectoryInfo clientDirectory = new DirectoryInfo(file.ClientPath);
+                                Directory directory = Directory.Create(clientDirectory, client.Config.FileLastWriteTime, file.SearchPatterns);
+                                tasks[taskIndex].Directory = await TcpClient.TcpInternalClient.getFileDifferentAwaiter(directory, file.ServerPath);
                                 tasks[taskIndex].Directory.Load(clientDirectory);
                                 break;
                             case TaskType.WebFile:
-                                DirectoryInfo webClientDirectory = new DirectoryInfo(Tasks[taskIndex].ClientPath);
+                                ClientTask.WebFile webFile = (ClientTask.WebFile)Tasks[taskIndex];
+                                DirectoryInfo webClientDirectory = new DirectoryInfo(webFile.ClientPath);
                                 Directory webDirectory = Directory.CreateWeb(webClientDirectory, client.Config.FileLastWriteTime);
-                                tasks[taskIndex].Directory = await TcpClient.TcpInternalClient.getFileDifferentAwaiter(webDirectory, Tasks[taskIndex].ServerPath);
+                                tasks[taskIndex].Directory = await TcpClient.TcpInternalClient.getFileDifferentAwaiter(webDirectory, webFile.ServerPath);
                                 tasks[taskIndex].Directory.Load(webClientDirectory);
                                 break;
                         }
@@ -60,28 +65,34 @@ namespace AutoCSer.Deploy
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.Run:
-                                if ((tasks[taskIndex].TaskIndex = await TcpClient.TcpInternalClient.addRunAwaiter(identity, tasks[taskIndex].FileIndexs.ToArray(), Tasks[taskIndex].ServerPath, Tasks[taskIndex].RunSleep)) == -1)
+                                if ((tasks[taskIndex].TaskIndex = await TcpClient.TcpInternalClient.addRunAwaiter(identity, tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.Run)Tasks[taskIndex])) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddRunError };
                                 }
                                 break;
                             case TaskType.WebFile:
                             case TaskType.File:
-                                if (await TcpClient.TcpInternalClient.addFilesAwaiter(identity, tasks[taskIndex].Directory, Tasks[taskIndex].ServerPath, Tasks[taskIndex].Type) == -1)
+                                if (await TcpClient.TcpInternalClient.addFilesAwaiter(identity, tasks[taskIndex].Directory, (ClientTask.WebFile)Tasks[taskIndex], Tasks[taskIndex].Type) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddFileError };
                                 }
                                 break;
                             case TaskType.AssemblyFile:
-                                if (await TcpClient.TcpInternalClient.addAssemblyFilesAwaiter(identity, tasks[taskIndex].FileIndexs.ToArray(), Tasks[taskIndex].ServerPath) == -1)
+                                if (await TcpClient.TcpInternalClient.addAssemblyFilesAwaiter(identity, tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.AssemblyFile)Tasks[taskIndex]) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddAssemblyFileError };
                                 }
                                 break;
                             case TaskType.WaitRunSwitch:
-                                if (await TcpClient.TcpInternalClient.addWaitRunSwitchAwaiter(identity, tasks[Tasks[taskIndex].TaskIndex].TaskIndex) == -1)
+                                if (await TcpClient.TcpInternalClient.addWaitRunSwitchAwaiter(identity, tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddWaitRunSwitchError };
+                                }
+                                break;
+                            case TaskType.Custom:
+                                if (await TcpClient.TcpInternalClient.addCustomAwaiter(identity, (ClientTask.Custom)Tasks[taskIndex]) == -1)
+                                {
+                                    return new DeployResult { Index = -1, State = DeployState.AddCustomError };
                                 }
                                 break;
                         }

@@ -34,7 +34,8 @@ namespace AutoCSer.Sql.MsSql
             where modelType : class
         {
             sqlStream.SimpleWriteNotNull("select ");
-            DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            else sqlStream.Write('*');
             sqlStream.SimpleWriteNotNull(" from[");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
             sqlStream.WriteNotNull("]with(nolock)where ");
@@ -80,7 +81,8 @@ namespace AutoCSer.Sql.MsSql
             where modelType : class
         {
             sqlStream.WriteNotNull("select * from(select ");
-            DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            else sqlStream.Write('*');
             sqlStream.WriteNotNull(",row_number()over(");
             createQuery.WriteOrder(sqlTool, sqlStream, ref query);
             string fieldName, fieldSqlName;
@@ -121,7 +123,8 @@ namespace AutoCSer.Sql.MsSql
                 AutoCSer.Extension.Number.ToString(count, sqlStream);
                 sqlStream.Write(' ');
             }
-            DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            else sqlStream.Write('*');
             sqlStream.SimpleWriteNotNull(" from [");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
             sqlStream.SimpleWriteNotNull("]with(nolock)");

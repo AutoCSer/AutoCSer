@@ -24,6 +24,12 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// 套接字异步事件对象
         /// </summary>
         protected SocketAsyncEventArgs asyncEventArgs;
+#if !DotNetStandard
+        /// <summary>
+        /// .NET 底层线程安全 BUG 处理锁
+        /// </summary>
+        protected volatile int asyncLock;
+#endif
 #endif
         /// <summary>
         /// 变换数据

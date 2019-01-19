@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Example.OrmTable
 {

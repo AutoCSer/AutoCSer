@@ -25,20 +25,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet4.5\</OutputPath>
     <DefineConstants>TRACE;HtmlNode</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.HtmlNode.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet4.5\AutoCSer.HtmlNode.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
@@ -59,6 +56,12 @@
     <Compile Include="SafeFormat.cs" />
     <Compile Include="SafeStyleAttributeName.cs" />
     <Compile Include="UriAttributeName.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet4.5.csproj">
+      <Project>{7732520f-99b4-4069-a5a9-db87a0112d9f}</Project>
+      <Name>AutoCSer.DotNet4.5</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

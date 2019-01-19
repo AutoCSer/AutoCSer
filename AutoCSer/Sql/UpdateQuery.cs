@@ -24,6 +24,10 @@ namespace AutoCSer.Sql
         /// </summary>
         internal string UpdateSql;
         /// <summary>
+        /// 仅更新不查询
+        /// </summary>
+        internal bool NotQuery;
+        /// <summary>
         /// 清空数据
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;OpenAPI_Weibo;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.OpenAPI.Weibo.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard\AutoCSer.OpenAPI.Weibo.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,13 +47,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer.NetStandard.csproj" />
     <ProjectReference Include="..\AutoCSer.OpenAPI.NetStandard.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

@@ -48,12 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.Sort.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\AutoCSer\Sort\AutoCSer.Sort.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
 </Project>

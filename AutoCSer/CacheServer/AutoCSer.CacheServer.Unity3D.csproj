@@ -27,22 +27,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\Unity3D\</OutputPath>
     <DefineConstants>TRACE;CacheServer;MONO;UNITY3D</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.CacheServer.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Unity3D\AutoCSer.CacheServer.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\Unity3D\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\Unity3D\AutoCSer.Sort.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
@@ -265,6 +257,7 @@
     <Compile Include="Snapshot\Value\Dictionary.cs" />
     <Compile Include="Snapshot\Value\HashSet.cs" />
     <Compile Include="Snapshot\Value\Link.cs" />
+    <Compile Include="StaticRoute.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="ValueData\BinarySerializer.cs" />
     <Compile Include="ValueData\Decimal.cs" />
@@ -293,6 +286,16 @@
     <Compile Include="OperationUpdater\UpdateOperationData.cs" />
     <Compile Include="{AutoCSer.CacheServer}.AutoCSer.cs" />
     <Compile Include="{AutoCSer.CacheServer}.CombinationTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.Unity3D.csproj">
+      <Project>{4B532055-F2AA-402D-B49E-E705FBD392D1}</Project>
+      <Name>AutoCSer.Unity3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.Unity3D.csproj">
+      <Project>{A64ED966-0F60-40FF-86AF-ADDEB4D441A8}</Project>
+      <Name>AutoCSer.Sort.Unity3D</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

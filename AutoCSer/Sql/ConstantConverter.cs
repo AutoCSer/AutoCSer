@@ -644,6 +644,76 @@ namespace AutoCSer.Sql
         {
             convertConstant(sqlStream, (string)value);
         }
+        ///// <summary>
+        ///// SQL语句字符串格式化(单引号变两个)
+        ///// </summary>
+        ///// <param name="sqlStream">SQL字符流</param>
+        ///// <param name="value">常量</param>
+        //protected virtual unsafe void convertString(CharStream sqlStream, string value)
+        //{
+        //    fixed (char* valueFixed = value)
+        //    {
+        //        int length = 0;
+        //        for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
+        //        {
+        //            if (*start == '\'') ++length;
+        //            else if (*start == '\\')
+        //            {
+        //                if ((*(start + 1) == '\r' || *(start + 1) == '\n') && (int)(end - start) >= 2)
+        //                {
+        //                    length += 2;
+        //                    ++start;
+        //                }
+        //            }
+        //        }
+        //        if (length == 0)
+        //        {
+        //            sqlStream.PrepLength(value.Length + 2);
+        //            sqlStream.UnsafeWrite('\'');
+        //            sqlStream.WriteNotNull(value);
+        //            sqlStream.UnsafeWrite('\'');
+        //            return;
+        //        }
+        //        sqlStream.PrepLength((length += value.Length) + 2);
+        //        sqlStream.UnsafeWrite('\'');
+        //        byte* write = (byte*)sqlStream.CurrentChar;
+        //        for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
+        //        {
+        //            if (*start != '\'')
+        //            {
+        //                if (*start == '\\')
+        //                {
+        //                    if (*(start + 1) == '\n')
+        //                    {
+        //                        if ((int)(end - start) >= 2)
+        //                        {
+        //                            *(long*)write = '\\' + ('\\' << 16) + ((long)'\n' << 32) + ((long)'\n' << 48);
+        //                            ++start;
+        //                            write += sizeof(long);
+        //                            continue;
+        //                        }
+        //                    }
+        //                    else if (*(start + 1) == '\r' && (int)(end - start) >= 2)
+        //                    {
+        //                        *(long*)write = '\\' + ('\\' << 16) + ((long)'\n' << 32) + ((long)'\r' << 48);
+        //                        ++start;
+        //                        write += sizeof(long);
+        //                        continue;
+        //                    }
+        //                }
+        //                *(char*)write = *start;
+        //                write += sizeof(char);
+        //            }
+        //            else
+        //            {
+        //                *(int*)write = ('\'' << 16) + '\'';
+        //                write += sizeof(int);
+        //            }
+        //        }
+        //        sqlStream.ByteSize += length * sizeof(char);
+        //        sqlStream.UnsafeWrite('\'');
+        //    }
+        //}
         /// <summary>
         /// SQL语句字符串格式化(单引号变两个)
         /// </summary>
@@ -657,14 +727,6 @@ namespace AutoCSer.Sql
                 for (char* start = valueFixed, end = valueFixed + value.Length; start != end; ++start)
                 {
                     if (*start == '\'') ++length;
-                    else if (*start == '\\')
-                    {
-                        if ((*(start + 1) == '\r' || *(start + 1) == '\n') && (int)(end - start) >= 2)
-                        {
-                            length += 2;
-                            ++start;
-                        }
-                    }
                 }
                 if (length == 0)
                 {
@@ -681,26 +743,6 @@ namespace AutoCSer.Sql
                 {
                     if (*start != '\'')
                     {
-                        if (*start == '\\')
-                        {
-                            if (*(start + 1) == '\n')
-                            {
-                                if ((int)(end - start) >= 2)
-                                {
-                                    *(long*)write = '\\' + ('\\' << 16) + ((long)'\n' << 32) + ((long)'\n' << 48);
-                                    ++start;
-                                    write += sizeof(long);
-                                    continue;
-                                }
-                            }
-                            else if (*(start + 1) == '\r' && (int)(end - start) >= 2)
-                            {
-                                *(long*)write = '\\' + ('\\' << 16) + ((long)'\n' << 32) + ((long)'\r' << 48);
-                                ++start;
-                                write += sizeof(long);
-                                continue;
-                            }
-                        }
                         *(char*)write = *start;
                         write += sizeof(char);
                     }

@@ -47,12 +47,6 @@
     <ProjectReference Include="..\..\AutoCSer\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if exist &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; dotnet &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; &quot;$(ProjectName)&quot; &quot;$(ProjectDir) &quot; &quot;$(TargetPath) &quot; &quot;$(TargetName)&quot;" />
   </Target>

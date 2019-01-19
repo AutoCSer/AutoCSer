@@ -146,7 +146,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// <param name="student"></param>
         internal static void InitializeInsert(Student student)
         {
-            sqlTable.Insert(student, null);
+            sqlTable.InsertQueue(student, null);
         }
     }
 }

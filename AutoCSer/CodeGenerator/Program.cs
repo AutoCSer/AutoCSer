@@ -20,9 +20,10 @@ namespace AutoCSer.CodeGenerator
         {
             try
             {
+                AutoCSer.Log.Pub.Log.Wait(Log.LogType.Info, string.Join(@""", @""", args));
                 //args = new string[] { @"AutoCSer.TestCase.SqlTableCacheServer", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\ ", @"C:\AutoCSerNew\TestCase\SqlTableCacheServer\bin\Release\AutoCSer.TestCase.SqlTableCacheServer.dll ", @"AutoCSer.TestCase.SqlTableCacheServer" };
                 //                AutoCSer.Log.Pub.Log.Wait(AutoCSer.Log.LogType.All, "args.Length[" + args.Length.ToString() + @"]
-                //args = new string[] { @""" + string.Join(@""", @""", args) + @""" }; ", null, null, Log.CacheType.None);
+                //args = new string[] { @"AutoCSer.CodeGenerator.DotNet4.5", @"C:\AutoCSer\AutoCSer\CodeGenerator\ ", @"C:\AutoCSer\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe ", @"AutoCSer.CodeGenerator" };
                 if (args.Length >= 4)
                 {
                     AutoCSer.CodeGenerator.ProjectParameter parameter = new AutoCSer.CodeGenerator.ProjectParameter(args[0].TrimEnd(' '), args[1].TrimEnd(' '), args[2].TrimEnd(' '), args[3].TrimEnd(' '), args.Length > 4);

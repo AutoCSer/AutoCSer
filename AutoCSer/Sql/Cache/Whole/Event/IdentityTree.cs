@@ -41,6 +41,13 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             reset(null);
         }
         /// <summary>
+        ///  析构释放资源
+        /// </summary>
+        ~IdentityTree()
+        {
+            Unmanaged.Free(ref counts);
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         public override void Dispose()
@@ -56,7 +63,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            LeftArray<valueType> array = SqlTable.Select(ref connection, ref query);
+            LeftArray<valueType> array = SqlTable.SelectQueue(ref connection, ref query);
             int maxIdentity = array.maxKey(value => GetKey(value), 0);
             if (memberGroup == 0) SqlTable.Identity64 = maxIdentity + baseIdentity;
             int length = maxIdentity >= IdentityArray.ArraySize ? 1 << ((uint)maxIdentity).bits() : IdentityArray.ArraySize;

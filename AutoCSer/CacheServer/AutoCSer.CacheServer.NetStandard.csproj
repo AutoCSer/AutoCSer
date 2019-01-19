@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;CacheServer;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.CacheServer.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard\AutoCSer.CacheServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -296,6 +296,8 @@
     <Compile Include="Snapshot\Value\Dictionary.cs" />
     <Compile Include="Snapshot\Value\HashSet.cs" />
     <Compile Include="Snapshot\Value\Link.cs" />
+    <Compile Include="NET4.5\StaticRoute.cs" />
+    <Compile Include="StaticRoute.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="ValueData\BinarySerializer.cs" />
     <Compile Include="ValueData\Decimal.cs" />
@@ -328,14 +330,9 @@
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
-
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AutoCSer.NetStandard.csproj" />
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.NetStandard.csproj" />
   </ItemGroup>
 
 </Project>

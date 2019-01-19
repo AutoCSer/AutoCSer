@@ -152,6 +152,13 @@ namespace AutoCSer.HtmlNode
             }
         }
         /// <summary>
+        ///  析构释放资源
+        /// </summary>
+        ~Filter()
+        {
+            Unmanaged.Free(ref valueData);
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()

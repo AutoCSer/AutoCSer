@@ -230,11 +230,25 @@ namespace AutoCSer.Sql.DataModel
             /// 字段集合
             /// </summary>
             private static readonly sqlModel.verifyField[] fields;
+            /// <summary>
+            /// 是否存在验证数据
+            /// </summary>
+            internal static bool IsVerifyer
+            {
+                get { return fields != null; }
+            }
 #else
             /// <summary>
             /// 数据验证
             /// </summary>
             private static readonly Func<modelType, MemberMap, Table, bool> verifyer;
+            /// <summary>
+            /// 是否存在验证数据
+            /// </summary>
+            internal static bool IsVerifyer
+            {
+                get { return verifyer != null; }
+            }
 #endif
 
             static Verifyer()

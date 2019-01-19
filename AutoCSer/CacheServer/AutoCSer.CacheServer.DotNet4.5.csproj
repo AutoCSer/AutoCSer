@@ -25,25 +25,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet4.5\</OutputPath>
     <DefineConstants>TRACE;CacheServer</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.CacheServer.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet4.5\AutoCSer.CacheServer.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.Sort.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +153,7 @@
     <Compile Include="MessageQueue\ConsumerProcessor.cs" />
     <Compile Include="MessageQueue\ConsumerProcessorAsynchronous.cs" />
     <Compile Include="MessageQueue\Abstract\ConsumerProcessor.cs" />
+    <Compile Include="NET4.5\StaticRoute.cs" />
     <Compile Include="OperationParameter\ShortPathOperationNode.cs" />
     <Compile Include="OperationParameter\ShortPathQueryNode.cs" />
     <Compile Include="OperationUpdater\Integer.cs" />
@@ -311,6 +304,7 @@
     <Compile Include="Snapshot\Value\Dictionary.cs" />
     <Compile Include="Snapshot\Value\HashSet.cs" />
     <Compile Include="Snapshot\Value\Link.cs" />
+    <Compile Include="StaticRoute.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="ValueData\BinarySerializer.cs" />
     <Compile Include="ValueData\Decimal.cs" />
@@ -340,10 +334,19 @@
     <Compile Include="{AutoCSer.CacheServer}.AutoCSer.cs" />
     <Compile Include="{AutoCSer.CacheServer}.CombinationTemplate.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet4.5.csproj">
+      <Project>{7732520f-99b4-4069-a5a9-db87a0112d9f}</Project>
+      <Name>AutoCSer.DotNet4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.DotNet4.5.csproj">
+      <Project>{f71355a6-87a6-44c2-a7f0-bad9de939758}</Project>
+      <Name>AutoCSer.Sort.DotNet4.5</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

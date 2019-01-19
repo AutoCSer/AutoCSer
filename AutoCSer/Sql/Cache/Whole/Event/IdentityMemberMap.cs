@@ -79,7 +79,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         public bool Update(valueType value, MemberMap<modelType> memberMap, bool isIgnoreTransaction = false)
         {
             valueType cacheLock = this[AutoCSer.Sql.DataModel.Model<modelType>.GetIdentity32(value)];
-            return cacheLock != null && SqlTable.Update(value, memberMap, isIgnoreTransaction);
+            return cacheLock != null && SqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);
         }
         /// <summary>
         /// 修改数据库记录
@@ -93,7 +93,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         public void Update(valueType value, MemberMap<modelType> memberMap, Action<valueType> onUpdated, bool isIgnoreTransaction = false)
         {
             valueType cacheLock = this[AutoCSer.Sql.DataModel.Model<modelType>.GetIdentity32(value)];
-            if (cacheLock != null) SqlTable.Update(value, memberMap, onUpdated, isIgnoreTransaction);
+            if (cacheLock != null) SqlTable.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);
             else if (onUpdated != null) onUpdated(null);
         }
         /// <summary>
@@ -106,7 +106,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         public bool Delete(int identity, bool isIgnoreTransaction = false)
         {
             valueType value = this[identity];
-            return value != null && SqlTable.Delete(value, isIgnoreTransaction);
+            return value != null && SqlTable.DeleteQueue(value, isIgnoreTransaction);
         }
         /// <summary>
         /// 删除数据库记录
@@ -119,7 +119,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         public void Delete(int identity, Action<valueType> onDeleted, bool isIgnoreTransaction = false)
         {
             valueType value = this[identity];
-            if (value != null) SqlTable.Delete(value, onDeleted, isIgnoreTransaction);
+            if (value != null) SqlTable.DeleteQueue(value, onDeleted, isIgnoreTransaction);
             else if (onDeleted != null) onDeleted(null);
         }
     }

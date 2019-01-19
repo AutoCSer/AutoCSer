@@ -243,14 +243,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("TcpInternalStreamQueueServerPerformance", typeof(AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamQueueServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -574,14 +575,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("TcpInternalStreamServerPerformance", typeof(AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -949,14 +951,15 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("TcpInternalStreamTcpQueueServerPerformance", typeof(AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamTcpQueueServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 

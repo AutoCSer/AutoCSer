@@ -21,7 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;FieldEquals;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\NetStandard\</OutputPath>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
@@ -43,9 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AutoCSer.NetStandard.csproj" />
   </ItemGroup>
 
 </Project>

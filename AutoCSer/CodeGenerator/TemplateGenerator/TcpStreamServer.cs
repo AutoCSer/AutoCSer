@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoCSer.CodeGenerator.Metadata;
+using AutoCSer.Extension;
 
 namespace AutoCSer.CodeGenerator.TemplateGenerator
 {
@@ -114,6 +115,44 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get
                 {
                     return getJsonDeSerializeMethods(MethodIndexs);
+                }
+            }
+            /// <summary>
+            /// TCP 客户端路由类型
+            /// </summary>
+            public string StreamClientRouteType
+            {
+                get
+                {
+                    Type type = Attribute.ClientRouteType;
+                    if (type != null)
+                    {
+                        if (typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender>).IsAssignableFrom(type))
+                        {
+                            return type.fullName();
+                        }
+                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender>).fullName());
+                    }
+                    return null;
+                }
+            }
+            /// <summary>
+            /// TCP 客户端路由类型
+            /// </summary>
+            public string OpenStreamClientRouteType
+            {
+                get
+                {
+                    Type type = Attribute.ClientRouteType;
+                    if (type != null)
+                    {
+                        if (typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender>).IsAssignableFrom(type))
+                        {
+                            return type.fullName();
+                        }
+                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender>).fullName());
+                    }
+                    return null;
                 }
             }
         }

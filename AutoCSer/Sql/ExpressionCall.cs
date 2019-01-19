@@ -36,13 +36,24 @@ namespace AutoCSer.Sql
             return AutoCSer.Date.NowTime.Now;
         }
         /// <summary>
-        /// IN表达式
+        /// IN 表达式
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
-        /// <param name="value">数值</param>
+        /// <param name="value">数据</param>
         /// <param name="values">数值集合</param>
-        /// <returns>是否包含数值</returns>
+        /// <returns>是否包含数据</returns>
         public static bool In<valueType>(valueType value, params valueType[] values)
+        {
+            return false;
+        }
+        /// <summary>
+        /// NOT IN 表达式
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="value">数据</param>
+        /// <param name="values">数值集合</param>
+        /// <returns>是否不包含数据</returns>
+        public static bool NotIn<valueType>(valueType value, params valueType[] values)
         {
             return false;
         }

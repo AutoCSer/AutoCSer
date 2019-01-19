@@ -64,7 +64,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
         public MemberQueue<valueType, modelType, memberCacheType, int> CreateMemberQueue(Expression<Func<memberCacheType, valueType>> valueMember
             , Expression<Func<memberCacheType, memberCacheType>> previousMember, Expression<Func<memberCacheType, memberCacheType>> nextMember, int maxCount = 0)
         {
-            return new MemberQueue<valueType, modelType, memberCacheType, int>(this, SqlTable.Get, valueMember, previousMember, nextMember, maxCount);
+            return new MemberQueue<valueType, modelType, memberCacheType, int>(this, SqlTable.GetQueue, valueMember, previousMember, nextMember, maxCount);
         }
     }
 }

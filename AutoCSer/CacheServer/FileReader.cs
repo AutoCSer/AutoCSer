@@ -111,7 +111,7 @@ namespace AutoCSer.CacheServer
                 }
                 else
                 {
-                    isReading = 0;
+                    Interlocked.Exchange(ref isReading, 0);
                     isFree = false;
                 }
             }
@@ -127,7 +127,7 @@ namespace AutoCSer.CacheServer
         internal void Next()
         {
             if (index < file.FileLength) AutoCSer.Threading.ThreadPool.TinyBackground.Start(readHandle);
-            else isReading = 0;
+            else Interlocked.Exchange(ref isReading, 0);
         }
         /// <summary>
         /// 尝试读取数据

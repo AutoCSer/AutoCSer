@@ -45,6 +45,45 @@ namespace AutoCSer.Emit
             return Equals((CastType)obj);
         }
 
+        #region Excel 导入数据特殊处理
+        /// <summary>
+        /// 类型转换
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
+        private static int DoubleToInt(double Value)
+        {
+            return (int)Value;
+        }
+        /// <summary>
+        /// 类型转换
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
+        private static uint DoubleToUInt(double Value)
+        {
+            return (uint)Value;
+        }
+        /// <summary>
+        /// 类型转换
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
+        private static long DoubleToLong(double Value)
+        {
+            return (long)Value;
+        }
+        /// <summary>
+        /// 类型转换
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
+        private static ulong DoubleToULong(double Value)
+        {
+            return (ulong)Value;
+        }
+        #endregion
+
         /// <summary>
         /// 类型转换函数集合
         /// </summary>
@@ -76,6 +115,16 @@ namespace AutoCSer.Emit
                 if (toType == typeof(ushort)) return null;
             }
 #endif
+            else if (fromType == typeof(double))
+            {
+                #region Excel 导入数据特殊处理
+                if (toType == typeof(int)) return ((Func<double, int>)DoubleToInt).Method;
+                else if (toType == typeof(long)) return ((Func<double, long>)DoubleToLong).Method;
+                else if (toType == typeof(uint)) return ((Func<double, uint>)DoubleToUInt).Method;
+                else if (toType == typeof(ulong)) return ((Func<double, ulong>)DoubleToULong).Method;
+                #endregion
+            }
+
             CastType castType = new CastType { FromType = fromType, ToType = toType };
             MethodInfo method;
             if (methods.TryGetValue(castType, out method)) return method;

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BF4E2999-4E7D-40C9-952B-8801A6FF6714}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.Sort</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Sort;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Packet\Android\</OutputPath>
+    <DefineConstants>TRACE;Sort;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Packet\Android\AutoCSer.Sort.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\DateTimeSortIndex.cs" />
+    <Compile Include="Algorithm\RadixSort.cs" />
+    <Compile Include="Algorithm\TopologySort.cs" />
+    <Compile Include="Algorithm\UnionType.cs" />
+    <Compile Include="BitMap.cs" />
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\Array.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\Array.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\Array.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\Collection.cs" />
+    <Compile Include="CombinationTemplate\Enumerable.cs" />
+    <Compile Include="CombinationTemplate\FixedArray.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickTopSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArraySortGroup.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.Fixed.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\SortIndex.cs" />
+    <Compile Include="CombinationTemplate\SubArray.Fixed.cs" />
+    <Compile Include="CombinationTemplate\SubArray.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.SortGroup.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\IComparable.cs" />
+    <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="PageCount.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchTree\Dictionary.cs" />
+    <Compile Include="SearchTree\DictionaryPageDescCache.cs" />
+    <Compile Include="SearchTree\DictionaryPageCache.cs" />
+    <Compile Include="SearchTree\FindArray.cs" />
+    <Compile Include="SearchTree\Node.cs" />
+    <Compile Include="SearchTree\PageArray.cs" />
+    <Compile Include="SearchTree\PageCacheVersion.cs" />
+    <Compile Include="SearchTree\Set.cs" />
+    <Compile Include="SortOrder.cs" />
+    <Compile Include="{AutoCSer.Sort}.CombinationTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.Android.csproj">
+      <Project>{f25b043c-b41b-444d-9ec2-82de911f6cda}</Project>
+      <Name>AutoCSer.Android</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

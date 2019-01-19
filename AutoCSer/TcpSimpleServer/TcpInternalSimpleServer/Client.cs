@@ -91,9 +91,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     Socket = socket;
                     socket = null;
 
-                    if ((isVerifyMethod = CallVerifyMethod()) && Attribute.CheckSeconds > 0 && CheckTimer == null)
+                    if ((isVerifyMethod = CallVerifyMethod()) && Attribute.GetCheckSeconds > 0 && CheckTimer == null)
                     {
-                        CheckTimer = TcpSimpleServer.ClientCheckTimer.Get(Attribute.CheckSeconds);
+                        CheckTimer = TcpSimpleServer.ClientCheckTimer.Get(Attribute.GetCheckSeconds);
                         if (IsDisposed == 0) CheckTimer.Push(this);
                         else
                         {

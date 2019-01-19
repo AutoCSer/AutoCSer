@@ -550,7 +550,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                     }
                 }
             }
-            finally { isTimer = 0; }
+            finally { Interlocked.Exchange(ref isTimer, 0); }
         }
     }
 }

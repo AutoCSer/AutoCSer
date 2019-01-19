@@ -661,15 +661,16 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalServer.Json", typeof(AutoCSer.TestCase.TcpInternalServer.Json));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1619,15 +1620,16 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalServer.Member", typeof(AutoCSer.TestCase.TcpInternalServer.Member));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -2081,15 +2083,16 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verifyMethod">TCP 验证方法</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalServer.Session", typeof(AutoCSer.TestCase.TcpInternalServer.Session));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, verifyMethod);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute, verifyMethod);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -4219,14 +4222,15 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalStreamServer.Json", typeof(AutoCSer.TestCase.TcpInternalStreamServer.Json));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -5190,14 +5194,15 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalStreamServer.Member", typeof(AutoCSer.TestCase.TcpInternalStreamServer.Member));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -5651,14 +5656,15 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verifyMethod">TCP 验证方法</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<TcpInternalStreamClient, AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null, Func<TcpInternalStreamClient, AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalStreamServer.Session", typeof(AutoCSer.TestCase.TcpInternalStreamServer.Session));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, verifyMethod);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute, verifyMethod);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -6452,15 +6458,16 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServer.Json", typeof(AutoCSer.TestCase.TcpOpenServer.Json));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -7371,15 +7378,16 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServer.Member", typeof(AutoCSer.TestCase.TcpOpenServer.Member));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -7827,15 +7835,16 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="verifyMethod">TCP验证方法</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<TcpOpenClient, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<TcpOpenClient, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServer.Session", typeof(AutoCSer.TestCase.TcpOpenServer.Session));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, verifyMethod);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute, verifyMethod);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -9972,14 +9981,15 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenStreamServer.Json", typeof(AutoCSer.TestCase.TcpOpenStreamServer.Json));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -10905,14 +10915,15 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenStreamServer.Member", typeof(AutoCSer.TestCase.TcpOpenStreamServer.Member));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -11361,14 +11372,15 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="verifyMethod">TCP验证方法</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenStreamServer.Session", typeof(AutoCSer.TestCase.TcpOpenStreamServer.Session));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, verifyMethod);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute, verifyMethod);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -11867,6 +11879,10 @@ namespace AutoCSer.TestCase.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod;
@@ -11883,7 +11899,7 @@ namespace AutoCSer.TestCase.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SessionServer", typeof(AutoCSer.TestCase.TcpStaticServer.Session));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SessionServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p2), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p1), typeof(AutoCSer.TestCase.TcpStaticServer/**/.SessionServer/**/._p3), null }
                     , new System.Type[] { null }
@@ -13109,6 +13125,10 @@ namespace AutoCSer.TestCase.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod;
@@ -13125,7 +13145,7 @@ namespace AutoCSer.TestCase.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("JsonServer", typeof(AutoCSer.TestCase.TcpStaticServer.JsonOut));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 JsonServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { null }
                     , new System.Type[] { null }
                     , new System.Type[] { null }
@@ -13705,6 +13725,10 @@ namespace AutoCSer.TestCase.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod;
@@ -13721,7 +13745,7 @@ namespace AutoCSer.TestCase.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("MemberServer", typeof(AutoCSer.TestCase.TcpStaticServer.Member));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 MemberServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticServer/**/.MemberServer/**/._p9), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticServer/**/.MemberServer/**/._p8), null }
                     , new System.Type[] { null }
@@ -15524,6 +15548,10 @@ namespace AutoCSer.TestCase.TcpStaticStreamClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> VerifyMethod;
@@ -15540,7 +15568,7 @@ namespace AutoCSer.TestCase.TcpStaticStreamClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticStreamServer.ServerAttribute.GetConfig("StreamSessionServer", typeof(AutoCSer.TestCase.TcpStaticStreamServer.Session));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 StreamSessionServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticStreamServer/**/.StreamSessionServer/**/._p2), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticStreamServer/**/.StreamSessionServer/**/._p1), typeof(AutoCSer.TestCase.TcpStaticStreamServer/**/.StreamSessionServer/**/._p3), null }
                     , new System.Type[] { null }
@@ -16779,6 +16807,10 @@ namespace AutoCSer.TestCase.TcpStaticStreamClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> VerifyMethod;
@@ -16795,7 +16827,7 @@ namespace AutoCSer.TestCase.TcpStaticStreamClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticStreamServer.ServerAttribute.GetConfig("StreamJsonServer", typeof(AutoCSer.TestCase.TcpStaticStreamServer.JsonOut));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 StreamJsonServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { null }
                     , new System.Type[] { null }
                     , new System.Type[] { null }
@@ -17380,6 +17412,10 @@ namespace AutoCSer.TestCase.TcpStaticStreamClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> VerifyMethod;
@@ -17396,7 +17432,7 @@ namespace AutoCSer.TestCase.TcpStaticStreamClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticStreamServer.ServerAttribute.GetConfig("StreamMemberServer", typeof(AutoCSer.TestCase.TcpStaticStreamServer.Member));
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 StreamMemberServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticStreamServer/**/.StreamMemberServer/**/._p9), null }
                     , new System.Type[] { typeof(AutoCSer.TestCase.TcpStaticStreamServer/**/.StreamMemberServer/**/._p8), null }
                     , new System.Type[] { null }

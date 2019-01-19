@@ -413,7 +413,7 @@ namespace AutoCSer.CodeGenerator
                         else return value;
                     }
                 }
-                string message = viewType.fullName() + " 未找到属性 " + currentMembers.UnsafeLast.FullPath + " . " + memberName.ToString() + @"
+                string message = viewType.fullName() + " 未找到属性 " + currentMembers.UnsafeLast.FullPath + " . " + memberName.ToString() + " [" + memberName.String + @"]
 " + new System.Diagnostics.StackTrace().ToString();
                 if (checkErrorMemberName(ref memberName))
                 {

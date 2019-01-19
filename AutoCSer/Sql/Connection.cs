@@ -60,6 +60,10 @@ namespace AutoCSer.Sql
         /// SQL 客户端类型
         /// </summary>
         public ClientKind Type;
+        /// <summary>
+        /// 是否启用连接池
+        /// </summary>
+        public bool IsPool = true;
 
         /// <summary>
         /// 连接集合

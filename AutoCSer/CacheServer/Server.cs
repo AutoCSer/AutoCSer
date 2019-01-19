@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer
@@ -152,6 +153,19 @@ namespace AutoCSer.CacheServer
         internal void QueryAsynchronousStream(OperationParameter.ShortPathQueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
         {
             Cache.ShortPathQuery(ref parameter.QueryData, onQuery, true);
+        }
+
+        /// <summary>
+        /// 创建缓存静态路由集群节点 TCP 内部服务配置
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute CreateStaticRouteAttribute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute)
+        {
+            (attribute = AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(attribute)).Name += "_" + index.toString();
+            return attribute;
         }
     }
 }

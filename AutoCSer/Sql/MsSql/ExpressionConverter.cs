@@ -157,7 +157,7 @@ namespace AutoCSer.Sql.MsSql
         {
             Expression left = binaryExpression.Left, right = binaryExpression.Right;
             SqlStream.Write('(');
-            if (left.IsSimple())
+            if (left.IsSimpleNotLogic())
             {
                 Convert(left);
                 SqlStream.Write('=');
@@ -167,7 +167,7 @@ namespace AutoCSer.Sql.MsSql
             SqlStream.Write(')');
             SqlStream.SimpleWriteNotNull(type);
             SqlStream.Write('(');
-            if (right.IsSimple())
+            if (right.IsSimpleNotLogic())
             {
                 Convert(right);
                 SqlStream.Write('=');
@@ -182,7 +182,7 @@ namespace AutoCSer.Sql.MsSql
         /// <param name="expression"></param>
         private void convertMemberAccess(MemberExpression expression)
         {
-            if (expression.Expression.GetType() == typeof(ParameterExpression))
+            if (typeof(ParameterExpression).IsAssignableFrom(expression.Expression.GetType()))
             {
                 string name = expression.Member.Name, sqlName = Field.ToSqlName(name);
                 if (FirstMemberName == null)
@@ -191,6 +191,12 @@ namespace AutoCSer.Sql.MsSql
                     FirstMemberSqlName = sqlName;
                 }
                 SqlStream.SimpleWriteNotNull(sqlName);
+                return;
+            }
+            object value = null;
+            if (expression.TryGetConstant(ref value))
+            {
+                convertConstant(value);
                 return;
             }
             throw new InvalidCastException("未知成员表达式类型 " + expression.Expression.GetType().Name);
@@ -279,11 +285,16 @@ namespace AutoCSer.Sql.MsSql
         /// <param name="expression">表达式</param>
         private void convertConvert(UnaryExpression expression)
         {
-            SqlStream.SimpleWriteNotNull("cast(");
-            Convert(expression.Operand);
-            SqlStream.SimpleWriteNotNull(" as ");
-            SqlStream.SimpleWriteNotNull(expression.Type.formCSharpType().ToString());
-            SqlStream.Write(')');
+            object value = null;
+            if (expression.TryGetConstantConvert(ref value)) convertConstant(value);
+            else
+            {
+                SqlStream.SimpleWriteNotNull("cast(");
+                Convert(expression.Operand);
+                SqlStream.SimpleWriteNotNull(" as ");
+                SqlStream.SimpleWriteNotNull(expression.Type.formCSharpType().ToString());
+                SqlStream.Write(')');
+            }
         }
         /// <summary>
         /// 转换表达式
@@ -293,7 +304,7 @@ namespace AutoCSer.Sql.MsSql
         {
             Expression test = expression.Test, ifTrue = expression.IfTrue, ifFalse = expression.IfFalse;
             SqlStream.SimpleWriteNotNull("case when ");
-            if (test.IsSimple())
+            if (test.IsSimpleNotLogic())
             {
                 Convert(test);
                 SqlStream.Write('=');
@@ -338,85 +349,92 @@ namespace AutoCSer.Sql.MsSql
             MethodInfo method = expression.Method;
             if (method.ReflectedType == typeof(ExpressionCall))
             {
-                if (method.Name == "In")
+                switch (method.Name)
                 {
-                    System.Collections.ObjectModel.ReadOnlyCollection<Expression> arguments = expression.Arguments;
-                    System.Collections.IEnumerable values = (System.Collections.IEnumerable)(((ConstantExpression)arguments[1]).Value);
-                    if (values != null)
-                    {
-                        LeftArray<object> array = new LeftArray<object>();
-                        foreach (object value in values) array.Add(value);
-                        switch (array.Length)
+                    case "In": convertCall(expression, true); break;
+                    case "NotIn": convertCall(expression, false); break;
+                    default:
+                        SqlStream.SimpleWriteNotNull(method.Name);
+                        SqlStream.Write('(');
+                        if (expression.Arguments != null)
                         {
-                            case 0: break;
-                            case 1:
-                                Expression leftExpression = arguments[0];
-                                if (array[0] == null)
-                                {
-                                    convertIsSimple(leftExpression);
-                                    SqlStream.SimpleWriteNotNull(" is null");
-                                }
-                                else
-                                {
-                                    convertIsSimple(leftExpression);
-                                    SqlStream.Write('=');
-                                    convertConstant(array[0]);
-                                }
-                                return;
-                            default:
-                                Convert(arguments[0]);
-                                SqlStream.SimpleWriteNotNull(" In(");
-                                Action<CharStream, object> toString = ConstantConverter.Default[array[0].GetType()];
-                                int index = 0;
-                                if (toString == null)
-                                {
-                                    foreach (object value in array)
-                                    {
-                                        if (index == 0) index = 1;
-                                        else SqlStream.Write(',');
-                                        ConstantConverter.Default.Convert(SqlStream, value.ToString());
-                                    }
-                                }
-                                else
-                                {
-                                    foreach (object value in array)
-                                    {
-                                        if (index == 0) index = 1;
-                                        else SqlStream.Write(',');
-                                        toString(SqlStream, value);
-                                    }
-                                }
-                                SqlStream.Write(')');
-                                return;
+                            bool isNext = false;
+                            foreach (Expression argumentExpression in expression.Arguments)
+                            {
+                                if (isNext) SqlStream.Write(',');
+                                Convert(argumentExpression);
+                                isNext = true;
+                            }
                         }
-                    }
-                    SqlStream.SimpleWriteNotNull("(1=0)");
-                }
-                else
-                {
-                    SqlStream.SimpleWriteNotNull(method.Name);
-                    SqlStream.Write('(');
-                    if (expression.Arguments != null)
-                    {
-                        bool isNext = false;
-                        foreach (Expression argumentExpression in expression.Arguments)
-                        {
-                            if (isNext) SqlStream.Write(',');
-                            Convert(argumentExpression);
-                            isNext = true;
-                        }
-                    }
-                    SqlStream.Write(')');
+                        SqlStream.Write(')');
+                        break;
                 }
             }
-            else
+            else convertConstant(expression.GetConstant());
+        }
+        /// <summary>
+        /// 转换表达式
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        /// <param name="isIn"></param>
+        private void convertCall(MethodCallExpression expression, bool isIn)
+        {
+            System.Collections.ObjectModel.ReadOnlyCollection<Expression> arguments = expression.Arguments;
+            System.Collections.IEnumerable values = (System.Collections.IEnumerable)arguments[1].GetConstant();
+            if (values != null)
             {
-                Expression instance = expression.Object;
-                object value = method.Invoke(instance == null ? null : ((ConstantExpression)instance).Value
-                    , expression.Arguments.getArray(argumentExpression => ((ConstantExpression)argumentExpression).Value));
-                if (value == null) SqlStream.WriteJsonNull();
-                else ConstantConverter.Default.Convert(SqlStream, value.ToString());
+                LeftArray<object> array = new LeftArray<object>();
+                foreach (object value in values) array.Add(value);
+                switch (array.Length)
+                {
+                    case 0: break;
+                    case 1:
+                        Expression leftExpression = arguments[0];
+                        if (array[0] == null)
+                        {
+                            convertIsSimple(leftExpression);
+                            SqlStream.SimpleWriteNotNull(isIn ? " is null" : " is not null");
+                        }
+                        else
+                        {
+                            convertIsSimple(leftExpression);
+                            if (isIn) SqlStream.Write('=');
+                            else
+                            {
+                                SqlStream.Write('<');
+                                SqlStream.Write('>');
+                            }
+                            convertConstant(array[0]);
+                        }
+                        return;
+                    default:
+                        Convert(arguments[0]);
+                        SqlStream.SimpleWriteNotNull(isIn ? " In(" : " Not In(");
+                        Action<CharStream, object> toString = ConstantConverter.Default[array[0].GetType()];
+                        int index = 0;
+                        if (toString == null)
+                        {
+                            foreach (object value in array)
+                            {
+                                if (index == 0) index = 1;
+                                else SqlStream.Write(',');
+                                ConstantConverter.Default.Convert(SqlStream, value.ToString());
+                            }
+                        }
+                        else
+                        {
+                            foreach (object value in array)
+                            {
+                                if (index == 0) index = 1;
+                                else SqlStream.Write(',');
+                                toString(SqlStream, value);
+                            }
+                        }
+                        SqlStream.Write(')');
+                        return;
+                }
             }
+            SqlStream.SimpleWriteNotNull(isIn ? "(1=0)" : "(1=1)");
         }
     }
 }

@@ -91,17 +91,17 @@ namespace AutoCSer.Sql.LogStream
             if ((uint)memberIndex < waitMap.Length << 3)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref waitMapLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLogStreamLoadMember);
-                if ((waitMap[memberIndex >> 3] & (1 << (int)(memberIndex & 7))) == 0) waitMapLock = 0;
+                if ((waitMap[memberIndex >> 3] & (1 << (int)(memberIndex & 7))) == 0) System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
                 else
                 {
                     waitMap[memberIndex >> 3] ^= (byte)(1 << (int)(memberIndex & 7));
                     if (--waitCount == 0)
                     {
-                        waitMapLock = 0;
+                        System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
                         loaded();
                         waitMap = null;
                     }
-                    else waitMapLock = 0;
+                    else System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
                 }
             }
         }
@@ -123,10 +123,10 @@ namespace AutoCSer.Sql.LogStream
             while (System.Threading.Interlocked.CompareExchange(ref waitMapLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlLogStreamLoadMember);
             if (--waitCount == 0)
             {
-                waitMapLock = 0;
+                System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
                 loaded();
             }
-            else waitMapLock = 0;
+            else System.Threading.Interlocked.Exchange(ref waitMapLock, 0);
         }
         /// <summary>
         /// 开始处理日志

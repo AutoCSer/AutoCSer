@@ -53,9 +53,9 @@ namespace AutoCSer.Net.TcpStreamServer
         where attributeType : ServerAttribute
     {
         /// <summary>
-        /// TCP 服务客户端
+        /// TCP 服务客户端创建器
         /// </summary>
-        private readonly Client<attributeType> commandClient;
+        private readonly TcpServer.ClientSocketCreator<attributeType> clientCreator;
         /// <summary>
         /// 远程表达式客户端检测服务端映射标识
         /// </summary>
@@ -67,8 +67,8 @@ namespace AutoCSer.Net.TcpStreamServer
         internal ClientSocketSender(ClientSocket<attributeType> socket)
             : base(socket)
         {
-            commandClient = socket.CommandClient;
-            if (commandClient.Attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Sender = this };
+            clientCreator = socket.ClientCreator;
+            if (clientCreator.Attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Sender = this };
         }
         /// <summary>
         /// 心跳检测
@@ -88,12 +88,12 @@ namespace AutoCSer.Net.TcpStreamServer
                             CommandEnd.LinkNext = command;
                             isNewCommand = 1;
                             CommandEnd = command;
-                            commandQueueLock = 0;
+                            System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
                             OutputWaitHandle.Set();
                         }
                         else
                         {
-                            commandQueueLock = 0;
+                            System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
                             AutoCSer.Threading.RingPool<ClientCommand.CheckCommand>.Default.PushNotNull(command);
                         }
                     }
@@ -114,7 +114,7 @@ namespace AutoCSer.Net.TcpStreamServer
             CommandEnd.LinkNext = command;
             this.isNewCommand = 1;
             CommandEnd = command;
-            commandQueueLock = 0;
+            System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
             if (isNewCommand == 0) OutputWaitHandle.Set();
             ClientSocket.ResetCheck();
         }
@@ -728,12 +728,12 @@ namespace AutoCSer.Net.TcpStreamServer
         {
             TcpServer.ClientCommand.CommandBase head = ClientSocket.CommandQueue, currentCommand;
             SubBuffer.PoolBufferFull Buffer = default(SubBuffer.PoolBufferFull), CopyBuffer = default(SubBuffer.PoolBufferFull), CompressBuffer = default(SubBuffer.PoolBufferFull);
-            TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = commandClient.SendBufferPool.Size, IsClientAwaiter = commandClient.Attribute.IsClientAwaiter };
+            TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = clientCreator.CommandClient.SendBufferPool.Size, IsClientAwaiter = clientCreator.Attribute.IsClientAwaiter };
             try
             {
-                commandClient.SendBufferPool.Get(ref Buffer);
+                clientCreator.CommandClient.SendBufferPool.Get(ref Buffer);
                 SubArray<byte> sendData = default(SubArray<byte>);
-                int bufferLength = Buffer.Length, outputSleep = commandClient.OutputSleep, currentOutputSleep, minCompressSize = commandClient.MinCompressSize, isNewCommand;
+                int bufferLength = Buffer.Length, outputSleep = clientCreator.CommandClient.OutputSleep, currentOutputSleep, minCompressSize = clientCreator.CommandClient.MinCompressSize, isNewCommand;
                 SocketError socketError;
                 using (UnmanagedStream outputStream = (ClientSocket.OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer())
                 {
@@ -754,7 +754,7 @@ namespace AutoCSer.Net.TcpStreamServer
                             while (System.Threading.Interlocked.CompareExchange(ref commandQueueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
                             isNewCommand = this.isNewCommand;
                             this.isNewCommand = 0;
-                            commandQueueLock = 0;
+                            System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
                             if (isNewCommand == 0) return;
                             LOOP:
                             while ((currentCommand = head.LinkNext) != null)
@@ -799,7 +799,7 @@ namespace AutoCSer.Net.TcpStreamServer
                             {
                                 outputStream.GetSubBuffer(ref CopyBuffer);
                                 sendData.Set(CopyBuffer.Buffer, CopyBuffer.StartIndex, outputLength);
-                                if (CopyBuffer.Length <= commandClient.SendBufferMaxSize)
+                                if (CopyBuffer.Length <= clientCreator.CommandClient.SendBufferMaxSize)
                                 {
                                     Buffer.Free();
                                     CopyBuffer.CopyToClear(ref Buffer);
@@ -846,7 +846,7 @@ namespace AutoCSer.Net.TcpStreamServer
                                         while (System.Threading.Interlocked.CompareExchange(ref commandQueueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
                                         isNewCommand = this.isNewCommand;
                                         this.isNewCommand = 1;
-                                        commandQueueLock = 0;
+                                        System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
                                         if (isNewCommand == 0) OutputWaitHandle.Set();
                                     }
                                     goto FIXEDEND;
@@ -863,7 +863,7 @@ namespace AutoCSer.Net.TcpStreamServer
             }
             catch (Exception error)
             {
-                commandClient.Log.Add(AutoCSer.Log.LogType.Error, error);
+                clientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Error, error);
                 buildInfo.IsError = true;
             }
             finally

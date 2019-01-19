@@ -120,7 +120,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else
                             {
                                 string name = attribute.MethodName ?? (MemberIndex == null ? Method.MethodName : MemberIndex.Member.Name);
-                                callName = "/" + (name.Length != 0 ? TypeCallName.replaceNotNull('.', '/') + "/" + name : TypeCallName.replaceNotNull('.', '/'));
+                                callName = "/" + (name.Length != 0 ? TypeCallName.Replace('.', '/') + "/" + name : TypeCallName.Replace('.', '/'));
                                 if (IgnoreCase) callName = callName.toLowerNotEmpty();
                             }
                         }

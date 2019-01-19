@@ -238,8 +238,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
         /// </summary>
         internal static void Initialize()
         {
-            sqlTable.Insert(new Class { Name = "软件 1 班", Discipline = SqlModel.Member.Discipline.软件工程, DateRange = new SqlModel.Member.DateRange { Start = new AutoCSer.Sql.Member.IntDate(2012, 9, 1), End = new AutoCSer.Sql.Member.IntDate(2015, 7, 1) } }, onInitializeInserted);
-            sqlTable.Insert(new Class { Name = "软件 2 班", Discipline = SqlModel.Member.Discipline.软件工程, DateRange = new SqlModel.Member.DateRange { Start = new AutoCSer.Sql.Member.IntDate(2013, 9, 1), End = new AutoCSer.Sql.Member.IntDate(2016, 7, 1) } }, onInitializeInserted);
+            sqlTable.InsertQueue(new Class { Name = "软件 1 班", Discipline = SqlModel.Member.Discipline.软件工程, DateRange = new SqlModel.Member.DateRange { Start = new AutoCSer.Sql.Member.IntDate(2012, 9, 1), End = new AutoCSer.Sql.Member.IntDate(2015, 7, 1) } }, onInitializeInserted);
+            sqlTable.InsertQueue(new Class { Name = "软件 2 班", Discipline = SqlModel.Member.Discipline.软件工程, DateRange = new SqlModel.Member.DateRange { Start = new AutoCSer.Sql.Member.IntDate(2013, 9, 1), End = new AutoCSer.Sql.Member.IntDate(2016, 7, 1) } }, onInitializeInserted);
         }
         /// <summary>
         /// 初始化测试数据

@@ -43,12 +43,6 @@
     <ProjectReference Include="..\CustomCodeGenerator\AutoCSer.CodeGenerator.Custom.NetCore.NoJIT.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if exist &quot;$(ProjectDir)..\CustomCodeGenerator\bin\Release\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; dotnet &quot;$(ProjectDir)..\CustomCodeGenerator\bin\Release\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; &quot;$(ProjectName)&quot; &quot;$(ProjectDir) &quot; &quot;$(TargetPath) &quot; &quot;$(TargetName)&quot;" />
   </Target>

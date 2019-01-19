@@ -371,6 +371,9 @@ namespace AutoCSer.Web
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebViewQuery
             {
+                /// <summary>
+                /// 搜索关键字
+                /// </summary>
                 public string Key;
             }
             /// <summary>

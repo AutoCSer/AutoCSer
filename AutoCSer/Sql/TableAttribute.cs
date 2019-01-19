@@ -105,5 +105,13 @@ namespace AutoCSer.Sql
         /// 默认为 true 表示数据库表格初始化时自动从数据库获取当前最大的自增标识，如果指定了全表缓存可以设置为 false 在缓存初始化的时候处理
         /// </summary>
         public bool IsLoadIdentity = true;
+        /// <summary>
+        /// 默认为 true 表示仅允许队列操作
+        /// </summary>
+        public bool IsOnlyQueue = true;
+        /// <summary>
+        /// 初始化时是否检测匹配表格信息
+        /// </summary>
+        public bool IsCheckTable = true;
     }
 }

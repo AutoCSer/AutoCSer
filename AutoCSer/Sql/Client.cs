@@ -40,7 +40,7 @@ namespace AutoCSer.Sql
         protected Client(Connection connection)
         {
             Connection = connection;
-            ConnectionPool = ConnectionPool.Get(connection.Attribute.ClientType, connection.ConnectionString);
+            ConnectionPool = ConnectionPool.Get(connection.Attribute.ClientType, connection.ConnectionString, connection.IsPool);
         }
         /// <summary>
         /// 获取 SQL 连接
@@ -101,6 +101,15 @@ namespace AutoCSer.Sql
             }
         }
         /// <summary>
+        /// 创建一个事务处理对象
+        /// </summary>
+        /// <param name="isolationLevel">默认为 RepeatableRead</param>
+        /// <returns></returns>
+        public Transaction CreateTransaction(IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
+        {
+            return new Transaction(this, isolationLevel);
+        }
+        /// <summary>
         /// 获取SQL命令
         /// </summary>
         /// <param name="connection"></param>
@@ -132,6 +141,20 @@ namespace AutoCSer.Sql
         protected int executeNonQuery(DbConnection connection, string sql)
         {
             using (DbCommand command = getCommand(connection, sql)) return command.ExecuteNonQuery();
+        }
+        /// <summary>
+        /// 执行SQL语句
+        /// </summary>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="sql">SQL语句</param>
+        /// <returns>受影响的行数</returns>
+        protected int executeNonQuery(Transaction transaction, string sql)
+        {
+            using (DbCommand command = getCommand(transaction.Connection, sql))
+            {
+                command.Transaction = transaction.DbTransaction;
+                return command.ExecuteNonQuery();
+            }
         }
         /// <summary>
         /// 获取数据集并关闭SQL命令
@@ -392,6 +415,147 @@ namespace AutoCSer.Sql
             return default(LeftArray<valueType>);
         }
         /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <typeparam name="valueType">对象类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection"></param>
+        /// <param name="query">查询信息</param>
+        /// <param name="readValue"></param>
+        /// <returns>对象集合</returns>
+        internal virtual LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SelectQuery<modelType> query, Func<DbDataReader, valueType> readValue)
+            where valueType : class, modelType
+            where modelType : class
+        {
+            try
+            {
+                if (query.Sql != null)
+                {
+                    if (connection == null) connection = GetConnection();
+                    if (connection != null)
+                    {
+                        if (query.IndexFieldName != null)
+                        {
+                            sqlTool.CreateIndex(connection, query.IndexFieldName, false);
+                            query.IndexFieldName = null;
+                        }
+                        using (DbCommand command = getCommand(connection, query.Sql))
+                        {
+                            DbDataReader reader = null;
+                            try
+                            {
+                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
+                            }
+                            catch (Exception error)
+                            {
+                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                            }
+                            if (reader != null)
+                            {
+                                using (reader)
+                                {
+                                    int skipCount = query.SkipCount;
+                                    while (skipCount != 0 && reader.Read()) --skipCount;
+                                    if (skipCount == 0)
+                                    {
+                                        LeftArray<valueType> array = new LeftArray<valueType>();
+                                        while (reader.Read())
+                                        {
+                                            valueType value = readValue(reader);
+                                            if (value != null) array.Add(value);
+                                        }
+                                        return array;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally { query.Free(); }
+            return default(LeftArray<valueType>);
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <typeparam name="valueType">对象类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection"></param>
+        /// <param name="sql"></param>
+        /// <param name="readValue"></param>
+        /// <returns>对象集合</returns>
+        internal virtual LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, string sql, Func<DbDataReader, valueType> readValue)
+            where valueType : class, modelType
+            where modelType : class
+        {
+            if (connection == null) connection = GetConnection();
+            if (connection != null)
+            {
+                using (DbCommand command = getCommand(connection, sql))
+                {
+                    DbDataReader reader = null;
+                    try
+                    {
+                        reader = command.ExecuteReader(CommandBehavior.SingleResult);
+                    }
+                    catch (Exception error)
+                    {
+                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, sql);
+                    }
+                    if (reader != null)
+                    {
+                        using (reader)
+                        {
+                            LeftArray<valueType> array = new LeftArray<valueType>();
+                            while (reader.Read())
+                            {
+                                valueType value = readValue(reader);
+                                if (value != null) array.Add(value);
+                            }
+                            return array;
+                        }
+                    }
+                }
+            }
+            return default(LeftArray<valueType>);
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection"></param>
+        /// <param name="sql"></param>
+        /// <param name="readValue"></param>
+        /// <returns>对象集合</returns>
+        internal virtual void CustomReader(Sql.Table sqlTool, ref DbConnection connection, string sql, Action<DbDataReader> readValue)
+        {
+            if (connection == null) connection = GetConnection();
+            if (connection != null)
+            {
+                using (DbCommand command = getCommand(connection, sql))
+                {
+                    DbDataReader reader = null;
+                    try
+                    {
+                        reader = command.ExecuteReader(CommandBehavior.SingleResult);
+                    }
+                    catch (Exception error)
+                    {
+                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, sql);
+                    }
+                    if (reader != null)
+                    {
+                        using (reader)
+                        {
+                            while (reader.Read()) readValue(reader);
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// 查询对象
         /// </summary>
         /// <typeparam name="valueType">对象类型</typeparam>
@@ -517,6 +681,22 @@ namespace AutoCSer.Sql
             where valueType : class, modelType
             where modelType : class;
         /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">匹配成员值</param>
+        /// <param name="memberMap">成员位图</param>
+        /// <param name="query">查询信息</param>
+        /// <returns>更新是否成功</returns>
+        internal abstract bool Update<valueType, modelType>
+            (Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, MemberMap<modelType> memberMap, ref UpdateQuery<modelType> query)
+            where valueType : class, modelType
+            where modelType : class;
+
+        /// <summary>
         /// 获取添加数据 SQL 语句
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
@@ -594,6 +774,107 @@ namespace AutoCSer.Sql
             where valueType : class, modelType
             where modelType : class;
         /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">添加数据</param>
+        /// <param name="query">添加数据查询信息</param>
+        /// <returns></returns>
+        internal abstract bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
+            where valueType : class, modelType
+            where modelType : class;
+
+        /// <summary>
+        /// 验证数据与初始化
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="array">添加数据数组</param>
+        /// <returns></returns>
+        internal bool Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref SubArray<valueType> array)
+            where valueType : class, modelType
+            where modelType : class
+        {
+            if (DataModel.Model<modelType>.Verifyer.IsVerifyer)
+            {
+                MemberMap<modelType> memberMap = MemberMap<modelType>.Default;
+                foreach(valueType value in array)
+                {
+                    if (!DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, sqlTool))
+                    {
+                        //Console.WriteLine(value.toJson());
+                        return false;
+                    }
+                }
+            }
+            if (DataModel.Model<modelType>.Identity != null)
+            {
+                foreach (valueType value in array)
+                {
+                    if (sqlTool.Attribute.IsSetIdentity) DataModel.Model<modelType>.SetIdentity(value, sqlTool.NextIdentity);
+                    else sqlTool.Identity64 = DataModel.Model<modelType>.GetIdentity(value);
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection">SQL连接</param>
+        /// <param name="array">数据数组</param>
+        /// <param name="isIgnoreTransaction">是否忽略应用程序事务</param>
+        /// <returns></returns>
+        internal SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array, bool isIgnoreTransaction)
+            where valueType : class, modelType
+            where modelType : class
+        {
+            if (sqlTool.CallOnInsert(ref array))
+            {
+                if (isIgnoreTransaction) return Insert(sqlTool, ref connection, ref array);
+                if (AutoCSer.DomainUnload.Unloader.TransactionStart(false))
+                {
+                    try
+                    {
+                        return Insert(sqlTool, ref connection, ref array);
+                    }
+                    finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
+                }
+            }
+            return default(SubArray<valueType>);
+        }
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="connection">SQL连接</param>
+        /// <param name="array">数据数组</param>
+        /// <returns>成功添加的数据</returns>
+        internal abstract SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
+            where valueType : class, modelType
+            where modelType : class;
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="array">数据数组</param>
+        /// <returns>成功添加的数据</returns>
+        internal abstract SubArray<valueType> Insert<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, ref SubArray<valueType> array)
+            where valueType : class, modelType
+            where modelType : class;
+
+        /// <summary>
         /// 获取删除数据 SQL 语句
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
@@ -645,6 +926,19 @@ namespace AutoCSer.Sql
         /// <param name="query">添加数据查询信息</param>
         /// <returns></returns>
         internal abstract bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, valueType value, ref InsertQuery query)
+            where valueType : class, modelType
+            where modelType : class;
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <typeparam name="modelType">模型类型</typeparam>
+        /// <param name="sqlTool">SQL操作工具</param>
+        /// <param name="transaction">事务操作</param>
+        /// <param name="value">添加数据</param>
+        /// <param name="query">添加数据查询信息</param>
+        /// <returns></returns>
+        internal abstract bool Delete<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, Transaction transaction, valueType value, ref InsertQuery query)
             where valueType : class, modelType
             where modelType : class;
     }

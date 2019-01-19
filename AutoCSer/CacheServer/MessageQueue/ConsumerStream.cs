@@ -52,12 +52,15 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
             Abstract.ConsumerStreamProcessor oldProcesser = Processor;
-            if (socket != null) createProcessor();
-            else Processor = null;
+            switch (parameter.Type)
+            {
+                case AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket: createProcessor(); break;
+                default: Processor = null; break;
+            }
             if (oldProcesser != null) oldProcesser.Free();
         }
         /// <summary>
@@ -138,12 +141,15 @@ namespace AutoCSer.CacheServer.MessageQueue
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
             Abstract.ConsumerStreamProcessor oldProcesser = Processor;
-            if (socket != null) createProcessor();
-            else Processor = null;
+            switch (parameter.Type)
+            {
+                case AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket: createProcessor(); break;
+                default: Processor = null; break;
+            }
             if (oldProcesser != null) oldProcesser.Free();
         }
         /// <summary>

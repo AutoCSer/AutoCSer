@@ -38,4 +38,8 @@
     <Compile Include="Pub.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.NetStandard.csproj" />
+  </ItemGroup>
+
 </Project>

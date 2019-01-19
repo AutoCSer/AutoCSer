@@ -64,17 +64,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\Sql\AutoCSer.Sql.NetStandard.csproj" />
+    <ProjectReference Include="..\..\AutoCSer\WebView\AutoCSer.WebView.NetStandard.csproj" />
     <ProjectReference Include="..\SqlMode\AutoCSer.TestCase.SqlModel.NetStandard.csproj" />
     <ProjectReference Include="..\SqlTableCacheServer\AutoCSer.TestCase.SqlTableCacheServer.NetCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.WebView">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.WebView.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

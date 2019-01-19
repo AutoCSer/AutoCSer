@@ -25,25 +25,27 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet4.5\</OutputPath>
     <DefineConstants>TRACE;Expand</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.Expand.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet4.5\AutoCSer.Expand.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet4.5\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvFile\Index.cs" />
+    <Compile Include="CsvFile\ObjectReader.cs" />
+    <Compile Include="CsvFile\Reader.cs" />
+    <Compile Include="CsvFile\ReaderItem.cs" />
+    <Compile Include="CsvFile\ReaderStep.cs" />
+    <Compile Include="Diagnostics\ProcessEventWaitHandle.cs" />
     <Compile Include="Drawing\ThumbnailBuilder.cs" />
     <Compile Include="DynamicDomain.cs" />
     <Compile Include="Email\Content.cs" />
@@ -52,7 +54,11 @@
     <Compile Include="Email\Smtp.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="HostsFile.cs" />
     <Compile Include="JsonFile.cs" />
+    <Compile Include="MessagePack\DataType.cs" />
+    <Compile Include="MessagePack\PointerNode.cs" />
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />
@@ -60,6 +66,13 @@
     <Compile Include="SimpleMapping32.cs" />
     <Compile Include="Drawing\Thumbnail.cs" />
     <Compile Include="StateSearcher\ByteSearcher.cs" />
+    <Compile Include="StatusChanged.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet4.5.csproj">
+      <Project>{7732520f-99b4-4069-a5a9-db87a0112d9f}</Project>
+      <Name>AutoCSer.DotNet4.5</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

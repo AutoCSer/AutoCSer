@@ -53,7 +53,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 try
                 {
                     CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
-                    (this.cache = cache).SqlTable.GetSelectQuery(cache.MemberMap, ref createQuery, ref Query);
+                    (this.cache = cache).SqlTable.GetSelect(cache.MemberMap, ref createQuery, ref Query);
                     isQuery = 1;
                     wait.Set(0);
                 }
@@ -124,6 +124,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="group">数据分组</param>
         protected Cache(Sql.Table<valueType, modelType> table, int group) : base(table, group)
         {
+            table.IsOnlyQueue = true;
             if (group == 0)
             {
 #if NOJIT

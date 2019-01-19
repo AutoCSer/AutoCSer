@@ -177,5 +177,14 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 for (byte* read = bufferFixed + value.Buffer.StartIndex, end = read + value.Buffer.Count; read != end; read += sizeof(int) * 2) onAdd(new Add(*(int*)read, *(int*)(read + sizeof(int))));
             }
         }
+
+        /// <summary>
+        /// GC 垃圾回收
+        /// </summary>
+        [AutoCSer.Net.TcpServer.Method(IsClientAwaiter = false)]
+        private void gcCollect()
+        {
+            GC.Collect();
+        }
     }
 }

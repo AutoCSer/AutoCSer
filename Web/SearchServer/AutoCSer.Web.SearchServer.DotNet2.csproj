@@ -26,12 +26,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE;DOTNET2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>2</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.Web.SearchServer.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet2\AutoCSer.Web.SearchServer.XML</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
@@ -41,14 +41,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.Sort.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +59,10 @@
     <Compile Include="{AutoCSer.Web.SearchServer}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AutoCSer\AutoCSer.DotNet2.csproj">
+      <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
+      <Name>AutoCSer.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\HtmlNode\AutoCSer.HtmlNode.DotNet2.csproj">
       <Project>{11E95589-2410-44E3-AC1C-8589E708D98B}</Project>
       <Name>AutoCSer.HtmlNode.DotNet2</Name>
@@ -75,6 +71,10 @@
       <Project>{870C5304-58DD-4701-A648-3C2380D827E8}</Project>
       <Name>AutoCSer.Search.DotNet2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\Sort\AutoCSer.Sort.DotNet2.csproj">
+      <Project>{FB4A10B3-AF0B-4EE0-8C09-9389446F6057}</Project>
+      <Name>AutoCSer.Sort.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Config\AutoCSer.Web.Config.DotNet2.csproj">
       <Project>{F8ED4A63-5C04-4EBE-8840-B14E1C82BFA9}</Project>
       <Name>AutoCSer.Web.Config.DotNet2</Name>
@@ -82,7 +82,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)..\..\Packet\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\Packet\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\AutoCSer\CodeGenerator\bin\Release\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\..\AutoCSer\CodeGenerator\bin\Release\DotNet2\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

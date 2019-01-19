@@ -1064,6 +1064,44 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     return getJsonDeSerializeMethods(MethodIndexs);
                 }
             }
+            /// <summary>
+            /// TCP 客户端路由类型
+            /// </summary>
+            public string ClientRouteType
+            {
+                get
+                {
+                    Type type = Attribute.ClientRouteType;
+                    if (type != null)
+                    {
+                        if (typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender>).IsAssignableFrom(type))
+                        {
+                            return type.fullName();
+                        }
+                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender>).fullName());
+                    }
+                    return null;
+                }
+            }
+            /// <summary>
+            /// TCP 客户端路由类型
+            /// </summary>
+            public string OpenClientRouteType
+            {
+                get
+                {
+                    Type type = Attribute.ClientRouteType;
+                    if (type != null)
+                    {
+                        if (typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender>).IsAssignableFrom(type))
+                        {
+                            return type.fullName();
+                        }
+                        throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender>).fullName());
+                    }
+                    return null;
+                }
+            }
         }
     }
 }

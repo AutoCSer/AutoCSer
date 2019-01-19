@@ -252,14 +252,15 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamQueueServer", typeof(AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamQueueServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -588,14 +589,15 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamServer", typeof(AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -968,14 +970,15 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenStreamServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamTcpQueueServer", typeof(AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamTcpQueueServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 

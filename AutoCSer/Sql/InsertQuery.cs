@@ -18,6 +18,10 @@ namespace AutoCSer.Sql
         /// </summary>
         internal string InsertSql;
         /// <summary>
+        /// 仅添加不查询
+        /// </summary>
+        internal bool NotQuery;
+        /// <summary>
         /// 清空数据
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

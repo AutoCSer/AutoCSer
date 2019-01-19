@@ -68,12 +68,12 @@ namespace AutoCSer.Metadata
             {
                 if ((headValue = head) == null)
                 {
-                    popLock = 0;
+                    System.Threading.Interlocked.Exchange(ref popLock, 0);
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref head, headValue.LinkNext, headValue) == headValue)
                 {
-                    popLock = 0;
+                    System.Threading.Interlocked.Exchange(ref popLock, 0);
                     System.Threading.Interlocked.Decrement(ref count);
                     headValue.LinkNext = null;
                     return headValue;

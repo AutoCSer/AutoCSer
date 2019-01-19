@@ -129,6 +129,12 @@ namespace AutoCSer.TestCase.WebPerformance
         /// 保持连接最大次数
         /// </summary>
         protected int keepAliveCount;
+#if !DotNetStandard
+        /// <summary>
+        /// .NET 底层线程安全 BUG 处理锁
+        /// </summary>
+        protected volatile int receiveAsyncLock;
+#endif
         /// <summary>
         /// 异步操作类型
         /// </summary>

@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;NOJIT;HtmlTitle;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.HtmlTitle.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard.NoJIT\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard.NoJIT\AutoCSer.HtmlTitle.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,12 +49,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebClient\AutoCSer.WebClient.NetStandard.NoJIT.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

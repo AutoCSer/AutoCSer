@@ -40,6 +40,10 @@ namespace AutoCSer.Sql
         /// </summary>
         public string UpdateValue;
         /// <summary>
+        /// 备注说明
+        /// </summary>
+        public string Remark;
+        /// <summary>
         /// 字符串是否ASCII
         /// </summary>
         public bool IsAscii;

@@ -16,7 +16,7 @@ namespace AutoCSer.Example.OrmTable
         internal static bool Insert(NowTime value)
         {
             //value.AppendTime = NowTimes.AppendTime.Next;
-            return sqlTable.Insert(value);
+            return sqlTable.InsertQueue(value);
         }
         /// <summary>
         /// 异步添加数据
@@ -26,7 +26,7 @@ namespace AutoCSer.Example.OrmTable
         internal static void Insert(NowTime value, Action<NowTime> onInserted)
         {
             //value.AppendTime = NowTimes.AppendTime.Next;
-            sqlTable.Insert(value, onInserted);
+            sqlTable.InsertQueue(value, onInserted);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace AutoCSer.Example.OrmTable
         internal static bool UpdateAppendTime(int id)
         {
             //return sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap);
-            return sqlTable.Update(new NowTime { Id = id }, updateAppendTimeMemberMap);
+            return sqlTable.UpdateQueue(new NowTime { Id = id }, updateAppendTimeMemberMap);
         }
         /// <summary>
         /// 异步更新数据
@@ -50,7 +50,7 @@ namespace AutoCSer.Example.OrmTable
         /// <param name="onUpdated">更新数据回调</param>
         internal static void UpdateAppendTime(int id, Action<NowTime> onUpdated)
         {
-            sqlTable.Update(new NowTime { Id = id }, updateAppendTimeMemberMap, onUpdated);
+            sqlTable.UpdateQueue(new NowTime { Id = id }, updateAppendTimeMemberMap, onUpdated);
             //sqlTable.Update(new NowTime { Id = id, AppendTime = NowTimes.AppendTime.Next }, updateAppendTimeMemberMap, onUpdated);
         }
 
@@ -61,7 +61,7 @@ namespace AutoCSer.Example.OrmTable
         /// <returns>是否删除成功</returns>
         internal static bool Delete(NowTime value)
         {
-            return sqlTable.Delete(value);
+            return sqlTable.DeleteQueue(value);
         }
         /// <summary>
         /// 异步删除数据
@@ -70,7 +70,7 @@ namespace AutoCSer.Example.OrmTable
         /// <param name="onDeleted">删除数据回调</param>
         internal static void Delete(NowTime value, Action<NowTime> onDeleted)
         {
-            sqlTable.Delete(value, onDeleted);
+            sqlTable.DeleteQueue(value, onDeleted);
         }
         /// <summary>
         /// 同步删除数据
@@ -79,7 +79,7 @@ namespace AutoCSer.Example.OrmTable
         /// <returns>是否删除成功</returns>
         internal static bool Delete(int id)
         {
-            return sqlTable.Delete(id);
+            return sqlTable.DeleteQueue(id);
         }
         /// <summary>
         /// 异步删除数据
@@ -88,7 +88,7 @@ namespace AutoCSer.Example.OrmTable
         /// <param name="onDeleted">删除数据回调</param>
         internal static void Delete(int id, Action<NowTime> onDeleted)
         {
-            sqlTable.Delete(id, onDeleted);
+            sqlTable.DeleteQueue(id, onDeleted);
         }
     }
 }

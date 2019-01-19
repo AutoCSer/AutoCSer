@@ -252,7 +252,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             saveIdentity = identity;
             if (System.Threading.Interlocked.CompareExchange(ref saveStateLock, 1, 0) == 0)
             {
-                if (saveIdentity == savedIdentity) saveStateLock = 0;
+                if (saveIdentity == savedIdentity) System.Threading.Interlocked.Exchange(ref saveStateLock, 0);
                 else AutoCSer.Threading.ThreadPool.Tiny.Start(saveStateHandle);
             }
         }
@@ -293,7 +293,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                         return;
                     }
                 }
-                finally { saveStateLock = 0; }
+                finally { System.Threading.Interlocked.Exchange(ref saveStateLock, 0); }
             }
             while (saveIdentity != savedIdentity && System.Threading.Interlocked.CompareExchange(ref saveStateLock, 1, 0) == 0);
         }

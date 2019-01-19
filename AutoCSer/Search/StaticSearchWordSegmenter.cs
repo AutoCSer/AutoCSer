@@ -53,6 +53,13 @@ namespace AutoCSer.Search
                 charTypeData = searcher.trieGraph.CharTypeData.Byte;
             }
             /// <summary>
+            ///  析构释放资源
+            /// </summary>
+            ~WordSegmenterBase()
+            {
+                Unmanaged.Free(ref matchMapData);
+            }
+            /// <summary>
             /// 释放资源
             /// </summary>
             public void Dispose()

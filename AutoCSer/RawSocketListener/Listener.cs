@@ -40,6 +40,12 @@ namespace AutoCSer.Net.RawSocketListener
         /// 异步套接字操作
         /// </summary>
         private SocketAsyncEventArgs async;
+#if !DotNetStandard
+        /// <summary>
+        /// .NET 底层线程安全 BUG 处理锁
+        /// </summary>
+        private volatile int receiveAsyncLock;
+#endif
 #endif
         /// <summary>
         /// 日志处理
@@ -206,11 +212,37 @@ namespace AutoCSer.Net.RawSocketListener
             if (buffer == null)
             {
                 buffer = new BufferCount();
-                async.SetBuffer(buffer.Buffer.Buffer, bufferIndex = buffer.Buffer.StartIndex, BufferPool.Size);
+                bufferIndex = buffer.Buffer.StartIndex;
                 bufferEndIndex = bufferIndex + BufferPool.Size;
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                async.SetBuffer(buffer.Buffer.Buffer, bufferIndex, BufferPool.Size);
+                if (socket.ReceiveAsync(async))
+                {
+#if !DotNetStandard
+                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+#endif
+                    return true;
+                }
             }
-            else async.SetBuffer(bufferIndex, bufferEndIndex - bufferIndex);
-            if (socket.ReceiveAsync(async)) return true;
+            else
+            {
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                async.SetBuffer(bufferIndex, bufferEndIndex - bufferIndex);
+                if (socket.ReceiveAsync(async))
+                {
+#if !DotNetStandard
+                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+#endif
+                    return true;
+                }
+            }
+#if !DotNetStandard
+            receiveAsyncLock = 0;
+#endif
             if (async.SocketError == SocketError.Success)
             {
                 onReceive(async.BytesTransferred);

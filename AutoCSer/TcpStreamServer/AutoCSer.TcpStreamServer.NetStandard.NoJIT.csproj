@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;NOJIT;TcpStreamServer;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>..\..\Packet\NetStandard.NoJIT\</OutputPath>
-    <DocumentationFile>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.TcpStreamServer.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard.NoJIT\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard.NoJIT\AutoCSer.TcpStreamServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -94,9 +94,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AutoCSer.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
 </Project>

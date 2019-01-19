@@ -24,9 +24,13 @@ namespace AutoCSer.Net.TcpStreamServer
             if (IsDisposed == 0)
             {
                 base.Dispose();
-                if (CreateSocket != null) (CreateSocket as ClientSocket<attributeType>).DisposeSocket();
+                DisposeSocket();
                 SocketWait.Set();
             }
         }
+        /// <summary>
+        /// 释放套接字
+        /// </summary>
+        internal abstract void DisposeSocket();
     }
 }

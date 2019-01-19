@@ -43,14 +43,14 @@ namespace AutoCSer.Net.TcpSimpleServer
             if (End == null)
             {
                 End = Head = value;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
             else
             {
                 End.CheckNext = value;
                 value.CheckPrevious = End;
                 End = value;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
         }
         /// <summary>
@@ -65,13 +65,13 @@ namespace AutoCSer.Net.TcpSimpleServer
                 if ((Head = value.CheckNext) == null)
                 {
                     End = null;
-                    queueLock = 0;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 }
                 else
                 {
                     value.CheckNext = null;
                     Head.CheckPrevious = null;
-                    queueLock = 0;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 }
             }
             else if (value == End)
@@ -79,12 +79,12 @@ namespace AutoCSer.Net.TcpSimpleServer
                 End = value.CheckPrevious;
                 value.CheckPrevious = null;
                 End.CheckNext = null;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
             else
             {
                 if (value.CheckNext != null) value.FreeCheck();
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
         }
         /// <summary>
@@ -98,13 +98,13 @@ namespace AutoCSer.Net.TcpSimpleServer
             while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimerLinkQueuePop);
             if (Head == null || Head.CheckTimeoutSeconds > currentSecond)
             {
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 return null;
             }
             Client value = Head;
             if ((Head = Head.CheckNext) == null) End = null;
             else value.CheckNext = Head.CheckPrevious = null;
-            queueLock = 0;
+            System.Threading.Interlocked.Exchange(ref queueLock, 0);
             return value;
         }
         /// <summary>
@@ -142,7 +142,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                     }
                     End = value;
                 }
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0); 
             }
         }
         /// <summary>
@@ -159,7 +159,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 {
                     if ((head = pop(currentSeconds)) == null)
                     {
-                        isTimer = 0;
+                        System.Threading.Interlocked.Exchange(ref isTimer, 0);
                         return;
                     }
                     head.Check();
@@ -176,7 +176,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <returns></returns>
         internal static ClientCheckTimer Get(int seconds)
         {
-            ++seconds;
+            if (seconds <= 0) seconds = 1;
             Monitor.Enter(timeoutLock);
             ClientCheckTimer timeout = TimeoutEnd;
             while (timeout != null)

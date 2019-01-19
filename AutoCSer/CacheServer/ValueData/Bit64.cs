@@ -86,13 +86,13 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         [FieldOffset(sizeof(int))]
         internal int Length;
-        /// <summary>
-        /// 哈希值
-        /// </summary>
-        internal int HashCode
-        {
-            get { return Index ^ Length; }
-        }
+        ///// <summary>
+        ///// 哈希值
+        ///// </summary>
+        //internal int HashCode
+        //{
+        //    get { return Index ^ Length; }
+        //}
         /// <summary>
         /// 设置数据起始位置与长度
         /// </summary>
@@ -104,25 +104,25 @@ namespace AutoCSer.CacheServer.ValueData
             Index = index;
             Length = length;
         }
-        /// <summary>
-        /// 设置数据起始位置
-        /// </summary>
-        /// <param name="index">起始位置</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetIndex(int index)
-        {
-            Index = index;
-            Length = 0;
-        }
-        /// <summary>
-        /// 设置数据长度
-        /// </summary>
-        /// <param name="length">数据长度</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetLength(int length)
-        {
-            Index = 0;
-            Length = length;
-        }
+        ///// <summary>
+        ///// 设置数据起始位置
+        ///// </summary>
+        ///// <param name="index">起始位置</param>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal void SetIndex(int index)
+        //{
+        //    Index = index;
+        //    Length = 0;
+        //}
+        ///// <summary>
+        ///// 设置数据长度
+        ///// </summary>
+        ///// <param name="length">数据长度</param>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal void SetLength(int length)
+        //{
+        //    Index = 0;
+        //    Length = length;
+        //}
     }
 }

@@ -14,7 +14,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
             /// </summary>
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
-                KeyValue<string, int>[] names = new KeyValue<string, int>[7];
+                KeyValue<string, int>[] names = new KeyValue<string, int>[8];
                 names[0].Set(@"(int,int)add", 0);
                 names[1].Set(@"(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>,bool>)addAsynchronous", 1);
                 names[2].Set(@"(int,int)addQueue", 2);
@@ -22,6 +22,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                 names[4].Set(@"(int,int)addTcpTask", 4);
                 names[5].Set(@"(int,int)addThreadPool", 5);
                 names[6].Set(@"(int,int)addTimeoutTask", 6);
+                names[7].Set(@"()gcCollect", 7);
                 return names;
             }
             /// <summary>
@@ -41,7 +42,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer", typeof(AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer))), verify, onCustomData, log, false)
                 {
                     Value = value ?? new AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer();
-                    setCommandData(7);
+                    setCommandData(8);
                     setCommand(0);
                     setCommand(1);
                     setCommand(2);
@@ -49,6 +50,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     setCommand(4);
                     setCommand(5);
                     setCommand(6);
+                    setCommand(7);
                     if (attribute.IsAutoServer) Start();
                 }
                 /// <summary>
@@ -209,6 +211,22 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             }
                             sender.Push(returnType);
                             return;
+                        case 7:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    (_s7/**/.Pop() ?? new _s7()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
+                                    return;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
                         default: return;
                     }
                 }
@@ -347,6 +365,36 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                sealed class _s7 : AutoCSer.Net.TcpOpenServer.ServerCall<_s7, AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.gcCollect();
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void Call()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, value.Type);
+                        }
+                        push(this);
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
                 static TcpOpenServer()
                 {
                     CompileSerialize(new System.Type[] { null }
@@ -437,15 +485,16 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer", typeof(AutoCSer.TestCase.TcpOpenServerPerformance.OpenServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
 
@@ -735,6 +784,29 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c7 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 7 + 128, InputParameterIndex = 0 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+
+                /// <summary>
+                /// GC 垃圾回收
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ReturnValue gcCollect()
+                {
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                    try
+                    {
+                        AutoCSer.Net.TcpOpenServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_.WaitCall(_c7, ref _wait_) };
+                        }
+                    }
+                    finally
+                    {
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
                 static TcpOpenClient()

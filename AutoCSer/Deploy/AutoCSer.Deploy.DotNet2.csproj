@@ -26,21 +26,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE;Deploy;DOTNET2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>2</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.Deploy.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet2\AutoCSer.Deploy.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -48,9 +44,18 @@
     <Compile Include="ClientConfig.cs" />
     <Compile Include="ClientDeploy.cs" />
     <Compile Include="ClientIdentity.cs" />
-    <Compile Include="ClientTask.cs" />
     <Compile Include="ClientTaskInfo.cs" />
+    <Compile Include="ClientTask\AssemblyFile.cs" />
+    <Compile Include="ClientTask\Custom.cs" />
+    <Compile Include="ClientTask\File.cs" />
+    <Compile Include="ClientTask\Run.cs" />
+    <Compile Include="ClientTask\Task.cs" />
+    <Compile Include="ClientTask\WaitRunSwitch.cs" />
+    <Compile Include="ClientTask\WebFile.cs" />
     <Compile Include="ConfigLoader.cs" />
+    <Compile Include="CustomAttribute.cs" />
+    <Compile Include="CustomPushResult.cs" />
+    <Compile Include="CustomPushServerCall.cs" />
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
     <Compile Include="DeployState.cs" />
@@ -59,7 +64,10 @@
     <Compile Include="FileTime.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogType.cs" />
+    <Compile Include="OnClientParameter.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerCustomTask.cs" />
+    <Compile Include="SwitchWait.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="TaskType.cs" />
     <Compile Include="TcpClient.cs" />
@@ -67,6 +75,12 @@
     <Compile Include="UnionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="{AutoCSer.Deploy}.AutoCSer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet2.csproj">
+      <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
+      <Name>AutoCSer.DotNet2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

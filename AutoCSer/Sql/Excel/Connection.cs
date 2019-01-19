@@ -31,8 +31,9 @@ namespace AutoCSer.Sql.Excel
         /// <summary>
         /// 获取数据库连接信息
         /// </summary>
+        /// <param name="isPool">是否启用数据库连接池</param>
         /// <returns>数据库连接信息</returns>
-        public unsafe Sql.Connection Get()
+        public unsafe Sql.Connection Get(bool isPool = false)
         {
             ProviderAttribute provider = EnumAttribute<Provider, ProviderAttribute>.Array((byte)Provider);
             byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
@@ -54,7 +55,7 @@ namespace AutoCSer.Sql.Excel
                     connectionStream.WriteNotNull(IsTitleColumn ? ";HDR=YES;IMEX=" : ";HDR=NO;IMEX=");
                     AutoCSer.Extension.Number.ToString((byte)Intermixed, connectionStream);
                     connectionStream.Write('\'');
-                    return new Sql.Connection { Type = ClientKind.Excel, ConnectionString = connectionStream.ToString() };
+                    return new Sql.Connection { Type = ClientKind.Excel, ConnectionString = connectionStream.ToString(), IsPool = isPool };
                 }
             }
             finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }

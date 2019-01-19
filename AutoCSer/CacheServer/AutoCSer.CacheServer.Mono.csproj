@@ -308,6 +308,8 @@
     <Compile Include="Snapshot\Value\Dictionary.cs" />
     <Compile Include="Snapshot\Value\HashSet.cs" />
     <Compile Include="Snapshot\Value\Link.cs" />
+    <Compile Include="NET4.5\StaticRoute.cs" />
+    <Compile Include="StaticRoute.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="ValueData\BinarySerializer.cs" />
     <Compile Include="ValueData\Decimal.cs" />

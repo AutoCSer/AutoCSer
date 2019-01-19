@@ -25,6 +25,13 @@ namespace AutoCSer.Search
             CharTypeData = new Pointer.Size { Data = StringTrieGraph.DefaultCharTypeData.Data };
         }
         /// <summary>
+        ///  析构释放资源
+        /// </summary>
+        ~StaticStringTrieGraph()
+        {
+            if (CharTypeData.Data != StringTrieGraph.DefaultCharTypeData.Data) Unmanaged.Free(ref CharTypeData);
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         public override void Dispose()

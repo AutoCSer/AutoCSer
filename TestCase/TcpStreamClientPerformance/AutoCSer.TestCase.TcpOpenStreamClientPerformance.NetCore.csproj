@@ -49,10 +49,4 @@
     <ProjectReference Include="..\TcpStreamServerPerformance\AutoCSer.TestCase.TcpOpenStreamServerPerformance.NetCore.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

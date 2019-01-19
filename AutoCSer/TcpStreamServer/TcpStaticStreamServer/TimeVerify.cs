@@ -39,7 +39,7 @@ namespace AutoCSer.Net.TcpStaticStreamServer
                     {
                         while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
                         sender.TimeVerifyTicks = ++lastVerifyTicks;
-                        lastVerifyTickLock = 0;
+                        System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                     }
                     ticks = sender.TimeVerifyTicks;
                     return false;
@@ -50,7 +50,7 @@ namespace AutoCSer.Net.TcpStaticStreamServer
                     {
                         while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
                         if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
-                        lastVerifyTickLock = 0;
+                        System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                     }
                     if (!attribute.IsMarkData || sender.SetMarkData(attribute.VerifyHashCode ^ randomPrefix)) return true;
                 }

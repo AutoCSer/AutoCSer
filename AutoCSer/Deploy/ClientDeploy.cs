@@ -22,7 +22,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 任务信息
         /// </summary>
-        public ClientTask[] Tasks;
+        public ClientTask.Task[] Tasks;
         /// <summary>
         /// 部署服务客户端
         /// </summary>
@@ -30,8 +30,9 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 启动部署
         /// </summary>
+        /// <param name="startTime">部署任务启动时间</param>
         /// <returns>部署结果</returns>
-        internal DeployResult Deploy()
+        internal DeployResult Deploy(DateTime startTime = default(DateTime))
         {
 #if NoAutoCSer
             throw new Exception();
@@ -50,18 +51,23 @@ namespace AutoCSer.Deploy
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.Run:
-                            case TaskType.AssemblyFile: appendSource(fileSources, ref Tasks[taskIndex], ref tasks[taskIndex]); break;
+                                appendSource(fileSources, (ClientTask.Run)Tasks[taskIndex], ref tasks[taskIndex]);
+                                break;
+                            case TaskType.AssemblyFile:
+                                appendSource(fileSources, (ClientTask.WebFile)Tasks[taskIndex], ref tasks[taskIndex]);
+                                break;
                             case TaskType.File:
-                                //appendFileSource(fileSources, ref Tasks[taskIndex], ref tasks[taskIndex]);
-                                DirectoryInfo clientDirectory = new DirectoryInfo(Tasks[taskIndex].ClientPath);
-                                Directory directory = Directory.Create(clientDirectory, client.Config.FileLastWriteTime, Tasks[taskIndex].FileSearchPatterns);
-                                tasks[taskIndex].Directory = TcpClient.TcpInternalClient.getFileDifferent(directory, Tasks[taskIndex].ServerPath);
+                                ClientTask.File file = (ClientTask.File)Tasks[taskIndex];
+                                DirectoryInfo clientDirectory = new DirectoryInfo(file.ClientPath);
+                                Directory directory = Directory.Create(clientDirectory, client.Config.FileLastWriteTime, file.SearchPatterns);
+                                tasks[taskIndex].Directory = TcpClient.TcpInternalClient.getFileDifferent(directory, file.ServerPath);
                                 tasks[taskIndex].Directory.Load(clientDirectory);
                                 break;
                             case TaskType.WebFile:
-                                DirectoryInfo webClientDirectory = new DirectoryInfo(Tasks[taskIndex].ClientPath);
+                                ClientTask.WebFile webFile = (ClientTask.WebFile)Tasks[taskIndex];
+                                DirectoryInfo webClientDirectory = new DirectoryInfo(webFile.ClientPath);
                                 Directory webDirectory = Directory.CreateWeb(webClientDirectory, client.Config.FileLastWriteTime);
-                                tasks[taskIndex].Directory = TcpClient.TcpInternalClient.getFileDifferent(webDirectory, Tasks[taskIndex].ServerPath);
+                                tasks[taskIndex].Directory = TcpClient.TcpInternalClient.getFileDifferent(webDirectory, webFile.ServerPath);
                                 tasks[taskIndex].Directory.Load(webClientDirectory);
                                 break;
                         }
@@ -76,33 +82,39 @@ namespace AutoCSer.Deploy
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.Run:
-                                if ((tasks[taskIndex].TaskIndex = TcpClient.TcpInternalClient.addRun(identity, tasks[taskIndex].FileIndexs.ToArray(), Tasks[taskIndex].ServerPath, Tasks[taskIndex].RunSleep)) == -1)
+                                if ((tasks[taskIndex].TaskIndex = TcpClient.TcpInternalClient.addRun(identity, tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.Run)Tasks[taskIndex])) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddRunError };
                                 }
                                 break;
                             case TaskType.WebFile:
                             case TaskType.File:
-                                if (TcpClient.TcpInternalClient.addFiles(identity, tasks[taskIndex].Directory, Tasks[taskIndex].ServerPath, Tasks[taskIndex].Type) == -1)
+                                if (TcpClient.TcpInternalClient.addFiles(identity, tasks[taskIndex].Directory, (ClientTask.WebFile)Tasks[taskIndex], Tasks[taskIndex].Type) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddFileError };
                                 }
                                 break;
                             case TaskType.AssemblyFile:
-                                if (TcpClient.TcpInternalClient.addAssemblyFiles(identity, tasks[taskIndex].FileIndexs.ToArray(), Tasks[taskIndex].ServerPath) == -1)
+                                if (TcpClient.TcpInternalClient.addAssemblyFiles(identity, tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.AssemblyFile)Tasks[taskIndex]) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddAssemblyFileError };
                                 }
                                 break;
                             case TaskType.WaitRunSwitch:
-                                if (TcpClient.TcpInternalClient.addWaitRunSwitch(identity, tasks[Tasks[taskIndex].TaskIndex].TaskIndex) == -1)
+                                if (TcpClient.TcpInternalClient.addWaitRunSwitch(identity, tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex) == -1)
                                 {
                                     return new DeployResult { Index = -1, State = DeployState.AddWaitRunSwitchError };
                                 }
                                 break;
+                            case TaskType.Custom:
+                                if (TcpClient.TcpInternalClient.addCustom(identity, (ClientTask.Custom)Tasks[taskIndex]) == -1)
+                                {
+                                    return new DeployResult { Index = -1, State = DeployState.AddCustomError };
+                                }
+                                break;
                         }
                     }
-                    if (TcpClient.TcpInternalClient.start(identity, DateTime.MinValue))
+                    if (TcpClient.TcpInternalClient.start(identity, startTime))
                     {
                         isStart = 1;
                         return new DeployResult { Index = identity.Index, State = DeployState.Success };
@@ -121,34 +133,48 @@ namespace AutoCSer.Deploy
         /// 添加文件数据源
         /// </summary>
         /// <param name="fileSources"></param>
-        /// <param name="task"></param>
+        /// <param name="run"></param>
         /// <param name="serverTask"></param>
-        private void appendSource(Dictionary<HashString, FileSource> fileSources, ref ClientTask task, ref ClientTaskInfo serverTask)
+        private void appendSource(Dictionary<HashString, FileSource> fileSources, ClientTask.Run run, ref ClientTaskInfo serverTask)
+        {
+            appendSource(fileSources, run, ref serverTask, run.FileName);
+        }
+        /// <summary>
+        /// 添加文件数据源
+        /// </summary>
+        /// <param name="fileSources"></param>
+        /// <param name="webFile"></param>
+        /// <param name="serverTask"></param>
+        /// <param name="runFileName"></param>
+        private void appendSource(Dictionary<HashString, FileSource> fileSources, ClientTask.WebFile webFile, ref ClientTaskInfo serverTask, string runFileName = null)
         {
             Client client = TcpClient.Client;
-            DirectoryInfo directory = new DirectoryInfo(task.ClientPath);
-            string directoryName = directory.fullName();
-            if (task.RunFileName != null) appendSource(fileSources, directoryName, task.RunFileName, ref serverTask);
-            foreach (FileInfo file in directory.GetFiles("*.exe"))
+            if (webFile.ClientPath != null)
             {
-                if (file.LastWriteTimeUtc > client.Config.FileLastWriteTime && file.Name != task.RunFileName && !client.IgnoreFileNames.Contains(file.Name)
-                    && !file.Name.EndsWith(".vshost.exe", StringComparison.Ordinal))
+                DirectoryInfo directory = new DirectoryInfo(webFile.ClientPath);
+                string directoryName = directory.fullName();
+                if (runFileName != null) appendSource(fileSources, directoryName, runFileName, ref serverTask);
+                foreach (FileInfo file in directory.GetFiles("*.exe"))
                 {
-                    appendSource(fileSources, directoryName, file.Name, ref serverTask);
+                    if (file.LastWriteTimeUtc > client.Config.FileLastWriteTime && file.Name != runFileName && !client.IgnoreFileNames.Contains(file.Name)
+                        && !file.Name.EndsWith(".vshost.exe", StringComparison.Ordinal))
+                    {
+                        appendSource(fileSources, directoryName, file.Name, ref serverTask);
+                    }
                 }
-            }
-            foreach (FileInfo file in directory.GetFiles("*.dll"))
-            {
-                if (file.LastWriteTimeUtc > client.Config.FileLastWriteTime && !client.IgnoreFileNames.Contains(file.Name))
+                foreach (FileInfo file in directory.GetFiles("*.dll"))
                 {
-                    appendSource(fileSources, directoryName, file.Name, ref serverTask);
+                    if (file.LastWriteTimeUtc > client.Config.FileLastWriteTime && !client.IgnoreFileNames.Contains(file.Name))
+                    {
+                        appendSource(fileSources, directoryName, file.Name, ref serverTask);
+                    }
                 }
-            }
-            foreach (FileInfo file in directory.GetFiles("*.pdb"))
-            {
-                if (file.LastWriteTimeUtc > client.Config.FileLastWriteTime && !client.IgnoreFileNames.Contains(file.Name))
+                foreach (FileInfo file in directory.GetFiles("*.pdb"))
                 {
-                    appendSource(fileSources, directoryName, file.Name, ref serverTask);
+                    if (file.LastWriteTimeUtc > client.Config.FileLastWriteTime && !client.IgnoreFileNames.Contains(file.Name))
+                    {
+                        appendSource(fileSources, directoryName, file.Name, ref serverTask);
+                    }
                 }
             }
         }

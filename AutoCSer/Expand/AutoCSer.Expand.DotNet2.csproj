@@ -26,31 +26,37 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DotNet2\</OutputPath>
     <DefineConstants>TRACE;Expand;DOTNET2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>2</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\AutoCSer.Expand.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNet2\AutoCSer.Expand.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoCSer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Packet\DotNet2\AutoCSer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvFile\Index.cs" />
+    <Compile Include="CsvFile\ObjectReader.cs" />
+    <Compile Include="CsvFile\Reader.cs" />
+    <Compile Include="CsvFile\ReaderItem.cs" />
+    <Compile Include="CsvFile\ReaderStep.cs" />
+    <Compile Include="Diagnostics\ProcessEventWaitHandle.cs" />
     <Compile Include="DynamicDomain.cs" />
     <Compile Include="Email\Content.cs" />
     <Compile Include="Email\EventSender.cs" />
     <Compile Include="Email\Sender.cs" />
     <Compile Include="Email\Smtp.cs" />
+    <Compile Include="Extension\Memory.cs" />
+    <Compile Include="HostsFile.cs" />
     <Compile Include="JsonFile.cs" />
+    <Compile Include="MessagePack\DataType.cs" />
+    <Compile Include="MessagePack\PointerNode.cs" />
     <Compile Include="NET2.0\Action.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleMapping32.cs" />
@@ -62,6 +68,13 @@
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />
+    <Compile Include="StatusChanged.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.DotNet2.csproj">
+      <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
+      <Name>AutoCSer.DotNet2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

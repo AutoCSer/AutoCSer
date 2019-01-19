@@ -39,5 +39,10 @@ namespace AutoCSer.Deploy
         /// 添加等待运行 WaitRunSwitch 任务失败
         /// </summary>
         AddWaitRunSwitchError,
+
+        /// <summary>
+        /// 添加自定义任务失败
+        /// </summary>
+        AddCustomError,
     }
 }

@@ -291,5 +291,27 @@ namespace AutoCSer.CacheServer
         {
             return true;
         }
+
+        /// <summary>
+        /// 创建缓存服务静态路由集群节点
+        /// </summary>
+        /// <param name="index">节点编号</param>
+        /// <param name="attribute">TCP 调用服务器端配置信息</param>
+        /// <param name="log">日志接口</param>
+        public TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+        {
+            return CreateStaticRoute(index, attribute, this, log);
+        }
+        /// <summary>
+        /// 创建缓存服务静态路由集群节点
+        /// </summary>
+        /// <param name="index">节点编号</param>
+        /// <param name="attribute">TCP 调用服务器端配置信息</param>
+        /// <param name="value">TCP 服务目标对象</param>
+        /// <param name="log">日志接口</param>
+        public static TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, MasterServer value = null, AutoCSer.Log.ILog log = null)
+        {
+            return new TcpInternalServer(CreateStaticRouteAttribute(index, attribute ?? AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(ServerName, typeof(MasterServer))), null, value, null, log);
+        }
     }
 }

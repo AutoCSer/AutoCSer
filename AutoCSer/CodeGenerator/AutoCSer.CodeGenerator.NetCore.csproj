@@ -19,8 +19,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;CodeGenerator;DotNetStandard;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0;RELEASE;NETCOREAPP2_0</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.xml</DocumentationFile>
-    <OutputPath>..\..\Packet\NetCore\</OutputPath>
+    <DocumentationFile>bin\Release\NetCore\AutoCSer.CodeGenerator.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetCore\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -156,21 +156,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.NetStandard.csproj" />
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.NetStandard.csproj" />
     <ProjectReference Include="..\Sql\AutoCSer.Sql.NetStandard.csproj" />
     <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.NetStandard.csproj" />
     <ProjectReference Include="..\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.WebView">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.WebView.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\WebView\AutoCSer.WebView.NetStandard.csproj" />
   </ItemGroup>
 
 </Project>

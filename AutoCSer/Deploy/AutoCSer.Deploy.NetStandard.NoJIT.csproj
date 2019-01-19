@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;NOJIT;Deploy;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.Deploy.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard.NoJIT\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard.NoJIT\AutoCSer.Deploy.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,9 +36,18 @@
     <Compile Include="ClientConfig.cs" />
     <Compile Include="ClientDeploy.cs" />
     <Compile Include="ClientIdentity.cs" />
-    <Compile Include="ClientTask.cs" />
     <Compile Include="ClientTaskInfo.cs" />
+    <Compile Include="ClientTask\AssemblyFile.cs" />
+    <Compile Include="ClientTask\Custom.cs" />
+    <Compile Include="ClientTask\File.cs" />
+    <Compile Include="ClientTask\Run.cs" />
+    <Compile Include="ClientTask\Task.cs" />
+    <Compile Include="ClientTask\WaitRunSwitch.cs" />
+    <Compile Include="ClientTask\WebFile.cs" />
     <Compile Include="ConfigLoader.cs" />
+    <Compile Include="CustomAttribute.cs" />
+    <Compile Include="CustomPushResult.cs" />
+    <Compile Include="CustomPushServerCall.cs" />
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
     <Compile Include="DeployState.cs" />
@@ -48,7 +57,10 @@
     <Compile Include="Log.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="NET4.5\ClientDeploy.cs" />
+    <Compile Include="OnClientParameter.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerCustomTask.cs" />
+    <Compile Include="SwitchWait.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="TaskType.cs" />
     <Compile Include="TcpClient.cs" />
@@ -59,9 +71,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard.NoJIT\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AutoCSer.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
 </Project>

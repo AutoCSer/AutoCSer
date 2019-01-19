@@ -89,7 +89,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            foreach (valueType value in SqlTable.Select(ref connection, ref query))
+            foreach (valueType value in SqlTable.SelectQueue(ref connection, ref query))
             {
                 setMemberCacheAndValue(value);
                 dictionary[GetKey(value)] = value;

@@ -59,7 +59,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="query">查询信息</param>
         internal override void Reset(ref DbConnection connection, ref SelectQuery<modelType> query)
         {
-            reset(SqlTable.Select(ref connection, ref query));
+            reset(SqlTable.SelectQueue(ref connection, ref query));
         }
         /// <summary>
         /// 增加数据

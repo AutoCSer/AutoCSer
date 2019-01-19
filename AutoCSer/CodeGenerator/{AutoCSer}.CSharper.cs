@@ -7528,7 +7528,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@">(sqlTable, group), sqlTable.Get, maxCount);
+            _code_.Add(@">(sqlTable, group), sqlTable.GetQueue, maxCount);
                 }");
             }
             _if_ = false;
@@ -7586,7 +7586,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@">(sqlTable, group), sqlTable.Get, maxCount);
+            _code_.Add(@">(sqlTable, group), sqlTable.GetQueue, maxCount);
                 }");
             }
             }
@@ -7814,7 +7814,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@", ");
             _code_.Add(PrimaryKeyType);
-            _code_.Add(@">(sqlTable, group), sqlTable.GetByPrimaryKey, maxCount);
+            _code_.Add(@">(sqlTable, group), sqlTable.GetByPrimaryKeyQueue, maxCount);
                 }");
             }
             _if_ = false;
@@ -8520,7 +8520,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        return memberMap != null && sqlTable.Update(value, memberMap, isIgnoreTransaction);");
+                        return memberMap != null && sqlTable.UpdateQueue(value, memberMap, isIgnoreTransaction);");
             }
             _code_.Add(@"
                     }
@@ -8563,7 +8563,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
                         if (memberMap == null) onUpdated(null);
-                        sqlTable.Update(value, memberMap, onUpdated, isIgnoreTransaction);");
+                        sqlTable.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);");
             }
             _code_.Add(@"
                     }
@@ -12775,7 +12775,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -13392,6 +13392,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <param name=""verifyMethod"">TCP 验证方法</param>");
             }
             _code_.Add(@"
+                /// <param name=""clientRoute"">TCP 客户端路由</param>
                 /// <param name=""onCustomData"">自定义数据包处理</param>
                 /// <param name=""log"">日志接口</param>
                 public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null");
@@ -13404,7 +13405,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null");
             }
-            _code_.Add(@", Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+            _code_.Add(@", AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {");
@@ -13438,16 +13439,25 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpInternalServer.ServerAttribute>(""");
             _code_.Add(ServerRegisterName);
-            _code_.Add(@""") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalServer.ServerAttribute>(@""");
-            _code_.Add(AttributeJson);
-            _code_.Add(@""");
+            _code_.Add(@""") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = """);
             _code_.Add(ServerRegisterName);
             _code_.Add(@""";");
             }
             _code_.Add(@"
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log");
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute");
+            _if_ = false;
+                    if (ClientRouteType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" ?? new ");
+            _code_.Add(ClientRouteType);
+            _code_.Add(@"()");
+            }
             _if_ = false;
                     if (IsVerifyMethod)
                     {
@@ -13468,7 +13478,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@");
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                }");
+            _if_ = false;
+                if (!(bool)IsServerCode)
+                {
+                    _if_ = true;
                 }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpInternalServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalServer.ServerAttribute>(@""");
+            _code_.Add(AttributeJson);
+            _code_.Add(@"""); }
+                }");
+            }
+            _code_.Add(@"
 ");
                 {
                     AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.TcpMethod[] _value1_;
@@ -19633,7 +19662,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -20227,9 +20256,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(""");
             _code_.Add(ServerRegisterName);
-            _code_.Add(@""") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(@""");
-            _code_.Add(AttributeJson);
-            _code_.Add(@""");
+            _code_.Add(@""") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = """);
             _code_.Add(ServerRegisterName);
             _code_.Add(@""";");
@@ -20257,7 +20284,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@");
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                }");
+            _if_ = false;
+                if (!(bool)IsServerCode)
+                {
+                    _if_ = true;
                 }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>(@""");
+            _code_.Add(AttributeJson);
+            _code_.Add(@"""); }
+                }");
+            }
+            _code_.Add(@"
 ");
                 {
                     AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute,AutoCSer.Net.TcpSimpleServer.MethodAttribute,AutoCSer.Net.TcpInternalSimpleServer.ServerSocket>.TcpMethod[] _value1_;
@@ -23567,7 +23613,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -24158,6 +24204,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <param name=""verifyMethod"">TCP 验证方法</param>");
             }
             _code_.Add(@"
+                /// <param name=""clientRoute"">TCP 客户端路由</param>
                 /// <param name=""log"">日志接口</param>
                 public TcpInternalStreamClient(AutoCSer.Net.TcpInternalStreamServer.ServerAttribute attribute = null");
             _if_ = false;
@@ -24169,7 +24216,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", Func<TcpInternalStreamClient, AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> verifyMethod = null");
             }
-            _code_.Add(@", AutoCSer.Log.ILog log = null)
+            _code_.Add(@", AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {");
@@ -24203,16 +24250,25 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute>(""");
             _code_.Add(ServerRegisterName);
-            _code_.Add(@""") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute>(@""");
-            _code_.Add(AttributeJson);
-            _code_.Add(@""");
+            _code_.Add(@""") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = """);
             _code_.Add(ServerRegisterName);
             _code_.Add(@""";");
             }
             _code_.Add(@"
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log");
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalStreamServer.Client<TcpInternalStreamClient>(this, attribute, log, clientRoute");
+            _if_ = false;
+                    if (StreamClientRouteType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" ?? new ");
+            _code_.Add(StreamClientRouteType);
+            _code_.Add(@"()");
+            }
             _if_ = false;
                     if (IsVerifyMethod)
                     {
@@ -24233,7 +24289,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@");
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                }");
+            _if_ = false;
+                if (!(bool)IsServerCode)
+                {
+                    _if_ = true;
                 }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpInternalStreamServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute>(@""");
+            _code_.Add(AttributeJson);
+            _code_.Add(@"""); }
+                }");
+            }
+            _code_.Add(@"
 ");
                 {
                     AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpInternalStreamServer.ServerAttribute,AutoCSer.Net.TcpStreamServer.MethodAttribute,AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
@@ -30280,7 +30355,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -30895,6 +30970,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <param name=""verifyMethod"">TCP验证方法</param>");
             }
             _code_.Add(@"
+                /// <param name=""clientRoute"">TCP 客户端路由</param>
                 /// <param name=""onCustomData"">自定义数据包处理</param>
                 /// <param name=""log"">日志接口</param>
                 public TcpOpenClient(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null");
@@ -30907,7 +30983,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", Func<TcpOpenClient, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null");
             }
-            _code_.Add(@", Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+            _code_.Add(@", AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {");
@@ -30941,16 +31017,25 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>(""");
             _code_.Add(ServerRegisterName);
-            _code_.Add(@""") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@""");
-            _code_.Add(AttributeJson);
-            _code_.Add(@""");
+            _code_.Add(@""") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = """);
             _code_.Add(ServerRegisterName);
             _code_.Add(@""";");
             }
             _code_.Add(@"
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log");
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute");
+            _if_ = false;
+                    if (OpenClientRouteType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" ?? new ");
+            _code_.Add(OpenClientRouteType);
+            _code_.Add(@"()");
+            }
             _if_ = false;
                     if (IsVerifyMethod)
                     {
@@ -30971,7 +31056,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@");
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
+                }");
+            _if_ = false;
+                if (!(bool)IsServerCode)
+                {
+                    _if_ = true;
                 }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpOpenServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@""");
+            _code_.Add(AttributeJson);
+            _code_.Add(@"""); }
+                }");
+            }
+            _code_.Add(@"
 ");
                 {
                     AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.TcpMethod[] _value1_;
@@ -37112,7 +37216,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -37705,9 +37809,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>(""");
             _code_.Add(ServerRegisterName);
-            _code_.Add(@""") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>(@""");
-            _code_.Add(AttributeJson);
-            _code_.Add(@""");
+            _code_.Add(@""") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = """);
             _code_.Add(ServerRegisterName);
             _code_.Add(@""";");
@@ -37735,7 +37837,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@");
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
+                }");
+            _if_ = false;
+                if (!(bool)IsServerCode)
+                {
+                    _if_ = true;
                 }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>(@""");
+            _code_.Add(AttributeJson);
+            _code_.Add(@"""); }
+                }");
+            }
+            _code_.Add(@"
 ");
                 {
                     AutoCSer.CodeGenerator.TemplateGenerator.TcpSimpleServer.Generator<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute,AutoCSer.Net.TcpOpenSimpleServer.MethodAttribute,AutoCSer.Net.TcpOpenSimpleServer.ServerSocket>.TcpMethod[] _value1_;
@@ -41021,7 +41142,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -41611,6 +41732,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <param name=""verifyMethod"">TCP验证方法</param>");
             }
             _code_.Add(@"
+                /// <param name=""clientRoute"">TCP 客户端路由</param>
                 /// <param name=""log"">日志接口</param>
                 public TcpOpenStreamClient(AutoCSer.Net.TcpOpenStreamServer.ServerAttribute attribute = null");
             _if_ = false;
@@ -41622,7 +41744,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", Func<TcpOpenStreamClient, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender, bool> verifyMethod = null");
             }
-            _code_.Add(@", AutoCSer.Log.ILog log = null)
+            _code_.Add(@", AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender> clientRoute = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {");
@@ -41656,16 +41778,25 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>(""");
             _code_.Add(ServerRegisterName);
-            _code_.Add(@""") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>(@""");
-            _code_.Add(AttributeJson);
-            _code_.Add(@""");
+            _code_.Add(@""") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = """);
             _code_.Add(ServerRegisterName);
             _code_.Add(@""";");
             }
             _code_.Add(@"
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log");
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenStreamServer.Client<TcpOpenStreamClient>(this, attribute, log, clientRoute");
+            _if_ = false;
+                    if (OpenStreamClientRouteType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" ?? new ");
+            _code_.Add(OpenStreamClientRouteType);
+            _code_.Add(@"()");
+            }
             _if_ = false;
                     if (IsVerifyMethod)
                     {
@@ -41686,7 +41817,26 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@");
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
+                }");
+            _if_ = false;
+                if (!(bool)IsServerCode)
+                {
+                    _if_ = true;
                 }
+            if (_if_)
+            {
+            _code_.Add(@"
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpOpenStreamServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>(@""");
+            _code_.Add(AttributeJson);
+            _code_.Add(@"""); }
+                }");
+            }
+            _code_.Add(@"
 ");
                 {
                     AutoCSer.CodeGenerator.TemplateGenerator.TcpStreamServer.Generator<AutoCSer.Net.TcpOpenStreamServer.ServerAttribute,AutoCSer.Net.TcpOpenStreamServer.MethodAttribute,AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender>.TcpMethod[] _value1_;
@@ -52123,7 +52273,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -52900,6 +53050,22 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute");
+            _if_ = false;
+                    if (ClientRouteType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" = new ");
+            _code_.Add(ClientRouteType);
+            _code_.Add(@"()");
+            }
+            _code_.Add(@";
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod");
@@ -53030,7 +53196,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@" 服务器端是否本地调用"", AutoCSer.Log.CacheType.None);");
             }
             _code_.Add(@"
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);");
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);");
             _if_ = false;
                 {
                     AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = Attribute;
@@ -60168,7 +60334,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -67022,7 +67188,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.Parameter;
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
                     if (_value5_ != null)
                     {
             _code_.Add(_value5_.ParameterJoin);
@@ -67771,6 +67937,22 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender> ClientRoute");
+            _if_ = false;
+                    if (StreamClientRouteType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@" = new ");
+            _code_.Add(StreamClientRouteType);
+            _code_.Add(@"()");
+            }
+            _code_.Add(@";
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender, bool> VerifyMethod");
@@ -67901,7 +68083,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@" 服务器端是否本地调用"", AutoCSer.Log.CacheType.None);");
             }
             _code_.Add(@"
-                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);");
+                TcpClient = new AutoCSer.Net.TcpStaticStreamServer.Client(config.ServerAttribute, config.Log, config.ClientRoute, config.VerifyMethod);");
             _if_ = false;
                 {
                     AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = Attribute;

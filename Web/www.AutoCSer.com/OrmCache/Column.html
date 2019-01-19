@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=022D199A"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=03415510"></script>
     <title>数据列 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -12,58 +12,58 @@
 <body>
     <p>
         . 支持成员选择配置，默认选择所有公共字段成员。
-        <div>选择所有字段成员 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">OrmModel\InstanceField.cs</a></div>
-        <div>忽略成员 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">OrmModel\IgnoreMember.cs</a></div>
+        <div>选择所有字段成员 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">OrmModel\InstanceField.cs</a></div>
+        <div>忽略成员 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">OrmModel\IgnoreMember.cs</a></div>
     </p>
     <p>
         . 支持默认自增标识，数据列名称必须为 <b>Id</b>，否则需要使用 <b>[AutoCSer.Sql.Member(IsIdentity = true)]</b> 申明为自增标识。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">OrmModel\IdentityMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">OrmModel\IdentityMember.cs</a></div>
     </p>
     <p>
-        . 支持多关键字，关键字<a href="/OrmCache/Column.html?v=22D199A">数据列</a>必须使用 <b>[AutoCSer.Sql.Member(PrimaryKeyIndex = ?)]</b> 申明，同时必须保证实现 <b>IEquatable&lt;T&gt;</b> 接口用于 Hash 应用。
+        . 支持多关键字，关键字<a href="/OrmCache/Column.html?v=3415510">数据列</a>必须使用 <b>[AutoCSer.Sql.Member(PrimaryKeyIndex = ?)]</b> 申明，同时必须保证实现 <b>IEquatable&lt;T&gt;</b> 接口用于 Hash 应用。
         <br />多关键字表格模型会在<b>表格数据模型</b>中生成一个名称为 <b>DataPrimaryKey</b> 的关键字组合 struct 的嵌套类型，默认实现接口 <b>IEquatable&lt;DataPrimaryKey&gt;</b> 用于 Hash 应用。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">OrmModel\ManyPrimaryKey.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">OrmModel\ManyPrimaryKey.cs</a></div>
         <br />对于存在排序需求的多关键字表格模型，需要添加申明配置 <b>[AutoCSer.Data.PrimaryKey(IsComparable = true)]</b> 并且保证每个关键字数据列都实现 <b>IComparable&lt;T&gt;</b> 接口。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">OrmModel\ComparablePrimaryKey.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">OrmModel\ComparablePrimaryKey.cs</a></div>
     </p>
     <p>
         . 数据列默认不允许空值 null，可以通过 <b>[AutoCSer.Sql.Member(IsNull = true)]</b> 申明允许空值 null
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">OrmModel\NullMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">OrmModel\NullMember.cs</a></div>
     </p>
     <p>
         . 对于最终映射为字符串的数据列，应该设置最大长度避免被用户输入数据攻击。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">OrmModel\NullMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">OrmModel\NullMember.cs</a></div>
         <br />字符串的物理存储默认采用宽字符（一个字符占用两个字节），对于支持字节字符（一个字符只占用一字节）的物理存储在特殊需求下可以使用字节字符减少存储空间。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">OrmModel\AsciiMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode7" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','7');">OrmModel\AsciiMember.cs</a></div>
     </p>
     <p>
         . 支持枚举类型，自动映射为数据库支持的整数类型。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','8');">OrmModel\EnumMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode8" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','8');">OrmModel\EnumMember.cs</a></div>
     </p>
     <p>
         . 支持基于强制类型转换的自定义数据类型，必须保证直接映射为当前数据库支持的数据类型。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">OrmModel\Member\Ipv4.cs</a></div>
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','a');">OrmModel\CastMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode9" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','9');">OrmModel\Member\Ipv4.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodea" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','a');">OrmModel\CastMember.cs</a></div>
     </p>
     <p>
         . 对于存在强关联需求的多个数据列，可以使用自定义组合列处理，为了防止循环嵌套问题只支持 struct
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','b');">OrmModel\Member\Range.cs</a></div>
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','c');">OrmModel\CombinationMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeb" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','b');">OrmModel\Member\Range.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodec" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','c');">OrmModel\CombinationMember.cs</a></div>
         <br />自定义组合列最终将展开映射成多个表格数据列，比如这个 IndexRange 字段将映射为 IndexRange_Start 与 IndexRange_End 两个数据列，每个层级名称之间使用下划线（_）连接，对于自定义组合列数据的更新只能进行整体操作。
     </p>
     <p>
         . 对于不能识别映射类型的数据列将自动进行 JSON 序列化处理并映射为 string 类型。
-        <div> 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','d');">OrmModel\JsonMember.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCoded" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','d');">OrmModel\JsonMember.cs</a></div>
     </p>
     <p>
         . 由于数据库时间类型数据可能存在精度问题（比如 SQL Server 两个不同的时间差有 3ms+），而应用中可能要求每条记录的时间不重复（当然同时也会限制添加数据操作的吞吐，比如 SQL Server 吞吐只能到 200+/s），这时候就不能直接使用 <b>DateTime.Now</b>
-        <div>表格数据模型 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodee" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','e');">OrmModel\NowTime.cs</a></div>
-        <div>数据表格 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodef" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','f');">OrmTable\NowTime.cs</a></div>
+        <div>表格数据模型 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodee" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','e');">OrmModel\NowTime.cs</a></div>
+        <div>数据表格 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodef" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','f');">OrmTable\NowTime.cs</a></div>
     </p>
     <p>
         . 对于存在成员位图需求的数据列，可以生成成员索引。
-        <div>表格数据模型 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeg" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','g');">OrmModel\MemberIndex.cs</a></div>
-        <div>数据表格 参考示例 <a href="/Index.html?v=22D199A" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeh" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','h');">OrmTable\MemberIndex.cs</a></div>
+        <div>表格数据模型 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeg" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','g');">OrmModel\MemberIndex.cs</a></div>
+        <div>数据表格 参考示例 <a href="/Index.html?v=3415510" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCodeh" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','h');">OrmTable\MemberIndex.cs</a></div>
     </p>
 </body>
 </html>

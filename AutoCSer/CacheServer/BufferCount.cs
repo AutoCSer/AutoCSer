@@ -115,7 +115,7 @@ namespace AutoCSer.CacheServer
             {
                 buffer = bufferCount.get(size);
             }
-            finally { bufferCountLock = 0; }
+            finally { System.Threading.Interlocked.Exchange(ref bufferCountLock, 0); }
 
             if (buffer == null)
             {
@@ -128,7 +128,7 @@ namespace AutoCSer.CacheServer
                     while (System.Threading.Interlocked.CompareExchange(ref bufferCountLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.CacheServerGetBuffer);
                     step = 0;
                     buffer = oldBufferCount.get(size);
-                    bufferCountLock = 0;
+                    System.Threading.Interlocked.Exchange(ref bufferCountLock, 0);
                     step = 0xff;
 
                     if (buffer == null)
@@ -148,7 +148,7 @@ namespace AutoCSer.CacheServer
                 {
                     switch (step)
                     {
-                        case 0: bufferCountLock = 0; break;
+                        case 0: System.Threading.Interlocked.Exchange(ref bufferCountLock, 0); break;
                         case 1: newBufferCount.Free(); break;
                     }
                     Monitor.Exit(newBufferCountLock);

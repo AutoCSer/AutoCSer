@@ -99,15 +99,20 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 控制台命令处理
         /// </summary>
-        public static void ConsoleCommand()
+        /// <param name="OnQuit"></param>
+        public static void ConsoleCommand(Action OnQuit = null)
         {
             do
             {
                 Console.WriteLine("clear cache / quit");
+                //Console.WriteLine("threads / clear cache / quit");
                 switch (Console.ReadLine())
                 {
-                    case "quit": return;
+                    case "quit":
+                        if (OnQuit != null) OnQuit();
+                        return;
                     case "clear cache": AutoCSer.Pub.ClearCache(); break;
+                    //case "threads": AutoCSer.Deploy.Server.CheckThreadLog(); break;
                 }
             }
             while (true);

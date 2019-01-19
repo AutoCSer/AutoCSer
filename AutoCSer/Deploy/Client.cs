@@ -46,7 +46,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 部署服务客户端就绪
         /// </summary>
-        private Action<string> onClientReady;
+        private Action<OnClientParameter> onClient;
         /// <summary>
         /// 部署任务状态更新日志回调处理
         /// </summary>
@@ -55,11 +55,11 @@ namespace AutoCSer.Deploy
         /// 部署服务客户端
         /// </summary>
         /// <param name="config">部署服务客户端配置</param>
-        /// <param name="onClientReady">部署服务客户端就绪</param>
-        public Client(ClientConfig config = null, Action<string> onClientReady = null)
+        /// <param name="onClient">部署服务客户端就绪</param>
+        public Client(ClientConfig config = null, Action<OnClientParameter> onClient = null)
         {
             this.Config = config ?? ConfigLoader.GetUnion(typeof(ClientConfig)).ClientConfig;
-            this.onClientReady = onClientReady;
+            this.onClient = onClient;
             if ((deploys = config.Deploys).Length == 0) throw new ArgumentNullException();
             IgnoreFileNames = config.IgnoreFileNames.getHash(value => value) ?? HashSetCreator.CreateOnly<string>();
 
@@ -95,11 +95,12 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="serverName"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnClient(string serverName)
+        internal void OnClient(AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType type, string serverName)
         {
-            if (onClientReady != null) onClientReady(serverName);
+            if (onClient != null) onClient(new OnClientParameter { Type = type, ServerName = serverName });
         }
         /// <summary>
         /// 部署任务状态更新日志回调
@@ -120,6 +121,72 @@ namespace AutoCSer.Deploy
         public DeployResult Deploy(int index)
         {
             return deploys[index].Deploy();
+        }
+        /// <summary>
+        /// 获取指定名称的客户端部署信息
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public IEnumerable<int> GetDeployIndex(string Name)
+        {
+            int index = 0;
+            foreach (ClientDeploy deploy in deploys)
+            {
+                if (deploy.Name == Name) yield return index;
+                ++index;
+            }
+        }
+        /// <summary>
+        /// 发布动态服务
+        /// </summary>
+        /// <param name="deploy"></param>
+        /// <returns></returns>
+        public DeployResult Deploy(ref ClientDeploy deploy)
+        {
+            if (deploy.Tasks.length() == 0) throw new ArgumentNullException("Tasks");
+            TcpClient tcpClient;
+            HashString serverName = deploy.ServerName ?? string.Empty;
+            if (!clients.TryGetValue(serverName, out tcpClient)) throw new ArgumentNullException("缺少服务命名 " + serverName);
+            deploy.TcpClient = tcpClient;
+            return deploy.Deploy();
+        }
+        /// <summary>
+        /// 获取服务端推送信息
+        /// </summary>
+        /// <param name="serverName"></param>
+        /// <param name="onPush"></param>
+        /// <returns></returns>
+        public AutoCSer.Net.TcpServer.KeepCallback GetCustomPush(string serverName, Action<AutoCSer.Net.TcpServer.ReturnValue<byte[]>> onPush)
+        {
+            TcpClient tcpClient;
+            if (!clients.TryGetValue(serverName, out tcpClient)) throw new ArgumentNullException("缺少服务命名 " + serverName);
+            return tcpClient.TcpInternalClient.customPush(onPush);
+        }
+        /// <summary>
+        /// 获取服务端推送信息
+        /// </summary>
+        /// <param name="serverName"></param>
+        /// <param name="onPush"></param>
+        /// <returns></returns>
+        public AutoCSer.Net.TcpServer.KeepCallback GetCustomPush(string serverName, Action<CustomPushResult> onPush)
+        {
+            TcpClient tcpClient;
+            if (!clients.TryGetValue(serverName, out tcpClient)) throw new ArgumentNullException("缺少服务命名 " + serverName);
+            return tcpClient.TcpInternalClient.customPush(customData => onPush(new CustomPushResult { ServerName = serverName, Data = customData }));
+        }
+        /// <summary>
+        /// 获取服务端推送信息
+        /// </summary>
+        /// <param name="onPush"></param>
+        /// <returns></returns>
+        public AutoCSer.Net.TcpServer.KeepCallback[] GetCustomPush(Action<CustomPushResult> onPush)
+        {
+            LeftArray<AutoCSer.Net.TcpServer.KeepCallback> keepCallbacks = new LeftArray<AutoCSer.Net.TcpServer.KeepCallback>(clients.Count);
+            foreach (KeyValuePair<HashString, TcpClient> tcpClient in clients)
+            {
+                keepCallbacks.Add(tcpClient.Value.TcpInternalClient.customPush(customData => onPush(new CustomPushResult { ServerName = tcpClient.Key.String, Data = customData })));
+            }
+            return keepCallbacks.ToArray();
         }
     }
 }

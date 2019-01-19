@@ -23,11 +23,16 @@ namespace AutoCSer.Sql
         /// </summary>
         private volatile int arrayLock;
         /// <summary>
+        /// 是否启用连接池
+        /// </summary>
+        private bool isPool;
+        /// <summary>
         /// 连接池
         /// </summary>
-        private ConnectionPool()
+        /// <param name="isPool">是否启用连接池</param>
+        private ConnectionPool(bool isPool)
         {
-            array = new DbConnection[ConfigLoader.Config.ConnectionPoolSize];
+            if (this.isPool = isPool) array = new DbConnection[ConfigLoader.Config.ConnectionPoolSize];
         }
         /// <summary>
         /// 获取连接
@@ -40,10 +45,10 @@ namespace AutoCSer.Sql
             if (index != 0)
             {
                 DbConnection value = array[--index];
-                arrayLock = 0;
+                System.Threading.Interlocked.Exchange(ref arrayLock, 0);
                 return value;
             }
-            arrayLock = 0;
+            System.Threading.Interlocked.Exchange(ref arrayLock, 0);
             return null;
         }
         /// <summary>
@@ -55,17 +60,21 @@ namespace AutoCSer.Sql
         {
             if (connection != null)
             {
-                while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPush);
-                if (index != array.Length)
+                if (isPool)
                 {
-                    array[index++] = connection;
-                    arrayLock = 0;
+                    while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPush);
+                    if (index != array.Length)
+                    {
+                        array[index++] = connection;
+                        System.Threading.Interlocked.Exchange(ref arrayLock, 0);
+                    }
+                    else
+                    {
+                        System.Threading.Interlocked.Exchange(ref arrayLock, 0);
+                        connection.Dispose();
+                    }
                 }
-                else
-                {
-                    arrayLock = 0;
-                    connection.Dispose();
-                }
+                else connection.Dispose();
                 connection = null;
             }
         }
@@ -147,18 +156,23 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="type">SQL 客户端处理类型</param>
         /// <param name="connection">连接字符串</param>
+        /// <param name="isPool">是否启用连接池</param>
         /// <returns></returns>
-        internal static ConnectionPool Get(Type type, string connection)
+        internal static ConnectionPool Get(Type type, string connection, bool isPool)
         {
-            ConnectionPool pool;
-            Key key = new Key(type, connection);
-            if (poolLock.TryGetValueEnter(ref key, out pool)) return pool;
-            try
+            if (isPool)
             {
-                poolLock.SetOnly(ref key, pool = new ConnectionPool());
+                ConnectionPool pool;
+                Key key = new Key(type, connection);
+                if (poolLock.TryGetValueEnter(ref key, out pool)) return pool;
+                try
+                {
+                    poolLock.SetOnly(ref key, pool = new ConnectionPool(true));
+                }
+                finally { Monitor.Exit(poolLock.Lock); }
+                return pool;
             }
-            finally { Monitor.Exit(poolLock.Lock); }
-            return pool;
+            else return new ConnectionPool(false);
         }
         /// <summary>
         /// 清除缓存数据

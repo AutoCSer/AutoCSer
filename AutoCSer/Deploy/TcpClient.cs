@@ -59,34 +59,40 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
-            if (socket != null)
+            try
             {
-                try
+                if (parameter.Type == AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket)
                 {
-                    if (logKeepCallback != null)
+                    try
                     {
-                        logKeepCallback.Dispose();
-                        logKeepCallback = null;
-                    }
+                        if (logKeepCallback != null)
+                        {
+                            logKeepCallback.Dispose();
+                            logKeepCallback = null;
+                        }
 #if NoAutoCSer
                         throw new Exception();
 #else
-                    ClientId = TcpInternalClient.register();
-                    logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
+                        ClientId = TcpInternalClient.register();
+                        logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
 #endif
-                    IsClient = true;
-                    Client.OnClient(name);
-                    return;
+                        IsClient = true;
+                        return;
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                        checkSocketVersion.DisposeSocket();
+                    }
+                    IsClient = false;
                 }
-                catch (Exception error)
-                {
-                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-                    checkSocketVersion.DisposeSocket();
-                }
-                IsClient = false;
+            }
+            finally
+            {
+                Client.OnClient(parameter.Type, name);
             }
         }
         /// <summary>

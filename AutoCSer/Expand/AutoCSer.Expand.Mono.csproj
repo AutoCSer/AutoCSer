@@ -42,6 +42,12 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvFile\Index.cs" />
+    <Compile Include="CsvFile\ObjectReader.cs" />
+    <Compile Include="CsvFile\Reader.cs" />
+    <Compile Include="CsvFile\ReaderItem.cs" />
+    <Compile Include="CsvFile\ReaderStep.cs" />
+    <Compile Include="Diagnostics\ProcessEventWaitHandle.cs" />
     <Compile Include="DynamicDomain.cs" />
     <Compile Include="Email\Content.cs" />
     <Compile Include="Email\EventSender.cs" />
@@ -58,6 +64,8 @@
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />
+    <Compile Include="HostsFile.cs" />
+    <Compile Include="StatusChanged.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A64ED966-0F60-40FF-86AF-ADDEB4D441A8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <AssemblyName>AutoCSer.Sort</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Sort;MONO;NOJIT;UNITY3D</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Unity3D.NoJIT\</OutputPath>
+    <DefineConstants>TRACE;Sort;MONO;NOJIT;UNITY3D</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\Unity3D.NoJIT\AutoCSer.Sort.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\DateTimeSortIndex.cs" />
+    <Compile Include="Algorithm\RadixSort.cs" />
+    <Compile Include="Algorithm\TopologySort.cs" />
+    <Compile Include="Algorithm\UnionType.cs" />
+    <Compile Include="BitMap.cs" />
+    <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\Array.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\Array.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\Array.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\Collection.cs" />
+    <Compile Include="CombinationTemplate\Enumerable.cs" />
+    <Compile Include="CombinationTemplate\FixedArray.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArrayQuickTopSort.cs" />
+    <Compile Include="CombinationTemplate\FixedArraySortGroup.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.Fixed.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\LeftArray.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\SortIndex.cs" />
+    <Compile Include="CombinationTemplate\SubArray.Fixed.cs" />
+    <Compile Include="CombinationTemplate\SubArray.QuickRangeSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.QuickSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.RadixSort.cs" />
+    <Compile Include="CombinationTemplate\SubArray.SortGroup.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\IComparable.cs" />
+    <Compile Include="Extension\LeftArray.cs" />
+    <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="PageCount.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchTree\Dictionary.cs" />
+    <Compile Include="SearchTree\DictionaryPageCache.cs" />
+    <Compile Include="SearchTree\DictionaryPageDescCache.cs" />
+    <Compile Include="SearchTree\FindArray.cs" />
+    <Compile Include="SearchTree\Node.cs" />
+    <Compile Include="SearchTree\PageArray.cs" />
+    <Compile Include="SearchTree\PageCacheVersion.cs" />
+    <Compile Include="SearchTree\Set.cs" />
+    <Compile Include="SortOrder.cs" />
+    <Compile Include="{AutoCSer.Sort}.CombinationTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCSer.Unity3D.NoJIT.csproj">
+      <Project>{4B532055-F2AA-402D-B49E-E705FBD392D1}</Project>
+      <Name>AutoCSer.Unity3D.NoJIT</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

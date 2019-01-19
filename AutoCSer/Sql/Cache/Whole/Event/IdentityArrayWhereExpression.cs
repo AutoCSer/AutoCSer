@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Sql.Cache.Whole.Event
 {
@@ -56,7 +57,6 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// <param name="value">更新后的数据</param>
         /// <param name="oldValue">更新前的数据</param>
         /// <param name="memberMap">更新成员位图</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private new void onUpdated(valueType value, valueType oldValue, MemberMap<modelType> memberMap)
         {
             if (isValue(value)) base.onUpdated(value, oldValue, memberMap);

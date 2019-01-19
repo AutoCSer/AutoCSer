@@ -21,6 +21,12 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// 发送数据异步事件
         /// </summary>
         private SocketAsyncEventArgs sendAsyncEventArgs;
+#if !DotNetStandard
+        /// <summary>
+        /// .NET 底层线程安全 BUG 处理锁
+        /// </summary>
+        private volatile int sendAsyncLock;
+#endif
 #endif
         /// <summary>
         /// 发送数据量过低次数
@@ -251,11 +257,23 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                     sendAsyncEventArgs = SocketAsyncEventArgsPool.Get();
                     sendAsyncEventArgs.Completed += onSend;
                 }
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref sendAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                 sendAsyncEventArgs.SetBuffer(sendData.Array, sendData.Start, sendData.Length);
-                if (Socket.SendAsync(sendAsyncEventArgs)) return TcpOpenServer.SendState.Asynchronous;
+                if (Socket.SendAsync(sendAsyncEventArgs))
+                {
+#if !DotNetStandard
+                    Interlocked.Exchange(ref sendAsyncLock, 0);
+#endif
+                    return TcpOpenServer.SendState.Asynchronous;
+                }
                 if (sendAsyncEventArgs.SocketError == SocketError.Success)
                 {
                     sendData.MoveStart(sendAsyncEventArgs.BytesTransferred);
+#if !DotNetStandard
+                    sendAsyncLock = 0;
+#endif
                     if (sendData.Length == 0)
                     {
                         freeCopyBuffer();

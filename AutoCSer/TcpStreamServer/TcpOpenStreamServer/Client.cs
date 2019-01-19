@@ -13,13 +13,23 @@ namespace AutoCSer.Net.TcpOpenStreamServer
     public abstract class Client : TcpStreamServer.Client<ServerAttribute>
     {
         /// <summary>
+        /// TCP 客户端路由
+        /// </summary>
+        private readonly AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute;
+        /// <summary>
+        /// 注册当前服务的 TCP 注册服务名称
+        /// </summary>
+        internal override string TcpRegisterName { get { return null; } }
+        /// <summary>
         /// TCP 开放服务客户端
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="log">日志接口</param>
-        public Client(ServerAttribute attribute, ILog log)
+        /// <param name="clientRoute">TCP 客户端路由</param>
+        internal Client(ServerAttribute attribute, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
             : base(attribute, log)
         {
+            this.clientRoute = clientRoute;
         }
         /// <summary>
         /// TCP 服务客户端套接字数据发送
@@ -29,32 +39,70 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         {
             get
             {
-                TcpServer.ClientSocketBase socket = this.Socket ?? waitSocket();
-                return socket == null ? null : new UnionType { Value = socket.Sender }.ClientSocketSender;
+                if (clientRoute == null)
+                {
+                    TcpServer.ClientSocketBase socket = clientCreator.WaitSocket();
+                    return socket == null ? null : new UnionType { Value = socket.Sender }.ClientSocketSender;
+                }
+                return clientRoute.Sender;
             }
         }
         /// <summary>
-        /// 等待套接字
+        /// 套接字发送数据次数
         /// </summary>
-        /// <returns></returns>
-        private TcpServer.ClientSocketBase waitSocket()
+        public override int SendCount
         {
-            TryCreateSocket();
-            SocketWait.Wait();
-            return Socket;
+            get
+            {
+                ClientSocketSender sender = Sender;
+                return sender != null ? sender.SendCount : 0;
+            }
+        }
+        /// <summary>
+        /// 套接字接收数据次数
+        /// </summary>
+        public override int ReceiveCount
+        {
+            get
+            {
+                TcpServer.ClientSocketBase socket = clientRoute == null ? clientCreator.Socket : clientRoute.Socket;
+                return socket != null ? socket.ReceiveCount : 0;
+            }
+        }
+        /// <summary>
+        /// 释放套接字
+        /// </summary>
+        internal override void DisposeSocket()
+        {
+            if (clientRoute == null) clientCreator.DisposeSocket();
+            else clientRoute.DisposeSocket();
         }
         /// <summary>
         /// 尝试创建第一个套接字
         /// </summary>
         public void TryCreateSocket()
         {
-            if (Interlocked.CompareExchange(ref CreateVersion, 1, 0) == 0)
-            {
-                IPAddress ipAddress = IpAddress;
-                int port = Port;
-                if (check(ipAddress, port)) CreateSocket = new ClientSocket(this, ipAddress, port, 1);
-                else SocketWait.Set();
-            }
+            if (clientRoute == null) clientCreator.TryCreateSocket();
+            else clientRoute.TryCreateSocket();
+        }
+        /// <summary>
+        /// 创建套接字
+        /// </summary>
+        /// <param name="clientCreator"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="port"></param>
+        /// <param name="createVersion"></param>
+        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator<ServerAttribute> clientCreator, IPAddress ipAddress, int port, int createVersion)
+        {
+            return new ClientSocket(clientCreator, ipAddress, port, createVersion);
+        }
+        /// <summary>
+        /// 设置 TCP 客户端套接字事件
+        /// </summary>
+        internal override void OnSetSocket()
+        {
+            if (clientRoute == null) clientCreator.OnSetSocket();
+            else clientRoute.OnSetSocket();
         }
         /// <summary>
         /// 获取客户端远程表达式节点
@@ -160,9 +208,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <param name="client">TCP 服务客户端对象</param>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="log">日志接口</param>
+        /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(clientType client, ServerAttribute attribute, ILog log, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
-            : base(attribute, log)
+        public Client(clientType client, ServerAttribute attribute, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
+            : base(attribute, log, clientRoute)
         {
             this.client = client;
             this.verifyMethod = verifyMethod;

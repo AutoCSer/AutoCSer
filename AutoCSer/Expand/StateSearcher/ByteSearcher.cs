@@ -154,6 +154,14 @@ namespace AutoCSer.StateSearcher
             return index >= 0 ? Array[index] : nullValue;
         }
         /// <summary>
+        ///  析构释放资源
+        /// </summary>
+        ~ByteSearcher()
+        {
+            if (isStaticUnmanaged) Unmanaged.Free(ref data, isStaticUnmanaged);
+            else Unmanaged.Free(ref data);
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         public unsafe void Dispose()

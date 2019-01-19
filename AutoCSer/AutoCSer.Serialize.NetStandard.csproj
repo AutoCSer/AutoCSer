@@ -1,0 +1,216 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Serialize</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.Serialize.NetStandard</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.Serialize 是一个高性能的序列化组件，包括二进制 / JSON / XML 数据序列化。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;Serialize;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;Serialize;DotNetStandard;RELEASE;NETSTANDARD2_0;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\NetStandard\Serialize\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard\Serialize\AutoCSer.Serialize.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Algorithm\QuickSort.cs" />
+    <Compile Include="BinarySerialize\ConfigLoader.cs" />
+    <Compile Include="BinarySerialize\DeSerializeArrayMap.cs" />
+    <Compile Include="BinarySerialize\DeSerializeConfig.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMemberDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMemberMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMethod.cs" />
+    <Compile Include="BinarySerialize\DeSerializeMethodCache.cs" />
+    <Compile Include="BinarySerialize\DeSerializer.cs" />
+    <Compile Include="BinarySerialize\DeSerializeResult.cs" />
+    <Compile Include="BinarySerialize\DeSerializeState.cs" />
+    <Compile Include="BinarySerialize\DeSerializeVersionField.cs" />
+    <Compile Include="BinarySerialize\DeSerializeVersionFields.cs" />
+    <Compile Include="BinarySerialize\Fields.cs" />
+    <Compile Include="BinarySerialize\FieldSize.cs" />
+    <Compile Include="BinarySerialize\IgnoreMemberAttribute.cs" />
+    <Compile Include="BinarySerialize\JsonMemberAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeArrayMap.cs" />
+    <Compile Include="BinarySerialize\SerializeAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeConfig.cs" />
+    <Compile Include="BinarySerialize\SerializeCustomAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberAttribute.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberMap.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMemberMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMethod.cs" />
+    <Compile Include="BinarySerialize\SerializeMethodCache.cs" />
+    <Compile Include="BinarySerialize\Serializer.cs" />
+    <Compile Include="BinarySerialize\SerializeResult.cs" />
+    <Compile Include="BinarySerialize\SerializeWarning.cs" />
+    <Compile Include="BinarySerialize\TypeDeSerializer.cs" />
+    <Compile Include="BinarySerialize\TypeSerializer.cs" />
+    <Compile Include="BinarySerialize\UnionType.cs" />
+    <Compile Include="CharStream.cs" />
+    <Compile Include="CharStream.Json.cs" />
+    <Compile Include="Config\Loader.cs" />
+    <Compile Include="Config\MemberAttribute.cs" />
+    <Compile Include="Config\Pub.cs" />
+    <Compile Include="Config\TypeAttribute.cs" />
+    <Compile Include="Config\UnionLoader.cs" />
+    <Compile Include="Config\UnionType.cs" />
+    <Compile Include="Date.cs" />
+    <Compile Include="DictionaryCreator.cs" />
+    <Compile Include="DynamicArray.cs" />
+    <Compile Include="Emit\ArrayConstructor.cs" />
+    <Compile Include="Emit\CollectionConstructor.cs" />
+    <Compile Include="Emit\Constructor.cs" />
+    <Compile Include="Emit\DictionaryConstructor.cs" />
+    <Compile Include="Emit\EnumCast.cs" />
+    <Compile Include="Emit\EnumerableConstructor.cs" />
+    <Compile Include="Emit\EnumParser.cs" />
+    <Compile Include="Emit\ListConstructor.cs" />
+    <Compile Include="Emit\NamePool.cs" />
+    <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Enumerator.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\BinarySerialize.cs" />
+    <Compile Include="Extension\Collection.cs" />
+    <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="Extension\Enumerable.cs" />
+    <Compile Include="Extension\JsonSerialize.cs" />
+    <Compile Include="Extension\MemberCopy.cs" />
+    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extension\String.cs" />
+    <Compile Include="Extension\Type.cs" />
+    <Compile Include="Extension\XmlSerialize.cs" />
+    <Compile Include="FormatRange.cs" />
+    <Compile Include="GuidCreator.cs" />
+    <Compile Include="HashSetCreator.cs" />
+    <Compile Include="HashString.cs" />
+    <Compile Include="IOS\Preserve.cs" />
+    <Compile Include="Json\ConfigLoader.cs" />
+    <Compile Include="Json\IgnoreMemberAttribute.cs" />
+    <Compile Include="Json\Node.cs" />
+    <Compile Include="Json\NodeType.cs" />
+    <Compile Include="Json\NumberType.cs" />
+    <Compile Include="Json\ParseAttribute.cs" />
+    <Compile Include="Json\ParseConfig.cs" />
+    <Compile Include="Json\ParseCustomAttribute.cs" />
+    <Compile Include="Json\ParseDynamicMethod.cs" />
+    <Compile Include="Json\ParseMemberAttribute.cs" />
+    <Compile Include="Json\ParseMethod.cs" />
+    <Compile Include="Json\ParseMethodCache.cs" />
+    <Compile Include="Json\Parser.cs" />
+    <Compile Include="Json\ParseResult.cs" />
+    <Compile Include="Json\ParseState.cs" />
+    <Compile Include="Json\ParseUnknownNameAttriubte.cs" />
+    <Compile Include="Json\SerializeAttribute.cs" />
+    <Compile Include="Json\SerializeConfig.cs" />
+    <Compile Include="Json\SerializeCustomAttribute.cs" />
+    <Compile Include="Json\SerializeMemberAttribute.cs" />
+    <Compile Include="Json\SerializeMemberDynamicMethod.cs" />
+    <Compile Include="Json\SerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="Json\SerializeMethod.cs" />
+    <Compile Include="Json\SerializeMethodCache.cs" />
+    <Compile Include="Json\Serializer.cs" />
+    <Compile Include="Json\SerializeResult.cs" />
+    <Compile Include="Json\SerializeWarning.cs" />
+    <Compile Include="Json\StateSearcher.cs" />
+    <Compile Include="Json\TypeParser.cs" />
+    <Compile Include="Json\TypeSerializer.cs" />
+    <Compile Include="Json\UnionType.cs" />
+    <Compile Include="KeyValue.cs" />
+    <Compile Include="LeftArray.cs" />
+    <Compile Include="MemberCopy\Copyer.cs" />
+    <Compile Include="MemberCopy\CustomAttribute.cs" />
+    <Compile Include="MemberCopy\MemberDynamicMethod.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="MemoryMap.cs" />
+    <Compile Include="Metadata\AttributeMethod.cs" />
+    <Compile Include="Metadata\BoxSerializeAttribute.cs" />
+    <Compile Include="Metadata\FieldIndex.cs" />
+    <Compile Include="Metadata\IgnoreAttribute.cs" />
+    <Compile Include="Metadata\IgnoreMemberAttribute.cs" />
+    <Compile Include="Metadata\MemberFilterAttribute.cs" />
+    <Compile Include="Metadata\MemberFilters.cs" />
+    <Compile Include="Metadata\MemberIndexGroup.cs" />
+    <Compile Include="Metadata\MemberIndexInfo.cs" />
+    <Compile Include="Metadata\MemberMap.cs" />
+    <Compile Include="Metadata\PropertyIndex.cs" />
+    <Compile Include="Metadata\TypeAttribute.cs" />
+    <Compile Include="NET2.0\MethodImpl.Inline.cs" />
+    <Compile Include="NullableBool.cs" />
+    <Compile Include="NullValue.cs" />
+    <Compile Include="ObjectReference.cs" />
+    <Compile Include="Pointer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pub.cs" />
+    <Compile Include="Random.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="RangeLength.cs" />
+    <Compile Include="Reflection\Assembly.cs" />
+    <Compile Include="RemoteType.cs" />
+    <Compile Include="StateSearcher\AsciiBuilder.cs" />
+    <Compile Include="StateSearcher\AsciiSearcher.cs" />
+    <Compile Include="StateSearcher\CharBuilder.cs" />
+    <Compile Include="StateSearcher\CharSearcher.cs" />
+    <Compile Include="SubArray.cs" />
+    <Compile Include="SubString.cs" />
+    <Compile Include="Threading\Link.cs" />
+    <Compile Include="Threading\LockDictionary.cs" />
+    <Compile Include="Threading\ThreadYield.cs" />
+    <Compile Include="Unmanaged.cs" />
+    <Compile Include="UnmanagedPool.cs" />
+    <Compile Include="UnmanagedStream.cs" />
+    <Compile Include="UnmanagedStreamBase.cs" />
+    <Compile Include="Xml\ConfigLoader.cs" />
+    <Compile Include="Xml\CustomAttribute.cs" />
+    <Compile Include="Xml\IgnoreMemberAttribute.cs" />
+    <Compile Include="Xml\MemberAttribute.cs" />
+    <Compile Include="Xml\Node.cs" />
+    <Compile Include="Xml\NodeType.cs" />
+    <Compile Include="Xml\ParseConfig.cs" />
+    <Compile Include="Xml\ParseMethod.cs" />
+    <Compile Include="Xml\ParseMethodCache.cs" />
+    <Compile Include="Xml\Parser.cs" />
+    <Compile Include="Xml\ParseResult.cs" />
+    <Compile Include="Xml\ParseState.cs" />
+    <Compile Include="Xml\PropertyMethod.cs" />
+    <Compile Include="Xml\SerializeAttribute.cs" />
+    <Compile Include="Xml\SerializeConfig.cs" />
+    <Compile Include="Xml\SerializeMemberDynamicMethod.cs" />
+    <Compile Include="Xml\SerializeMemberMapDynamicMethod.cs" />
+    <Compile Include="Xml\SerializeMethod.cs" />
+    <Compile Include="Xml\SerializeMethodCache.cs" />
+    <Compile Include="Xml\Serializer.cs" />
+    <Compile Include="Xml\SerializeResult.cs" />
+    <Compile Include="Xml\SerializeWarning.cs" />
+    <Compile Include="Xml\StateSearcher.cs" />
+    <Compile Include="Xml\TypeParser.cs" />
+    <Compile Include="Xml\TypeSerializer.cs" />
+    <Compile Include="Xml\UnionType.cs" />
+    <Compile Include="Xml\UnknownNameAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

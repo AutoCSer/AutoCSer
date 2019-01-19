@@ -1,4 +1,7 @@
 ﻿using System;
+using AutoCSer.Net.TcpInternalServer;
+using AutoCSer.Net.TcpRegister;
+using AutoCSer.Net.TcpServer;
 #pragma warning disable 649
 #pragma warning disable 162
 
@@ -239,7 +242,7 @@ namespace AutoCSer.CodeGenerator.Template
 
                             #region NOT MemberIndex
                             /*IF:MethodIsReturn*/
-                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*//*IF:MethodIsReturn*//*PUSH:Method*/serverValue.@MethodName/*PUSH:Method*/(/*IF:ClientParameterName*/Sender/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*IF:MethodParameter.IsOut*//*PUSH:InputParameter*/value.Value.@ParameterName/*PUSH:InputParameter*//*NOTE*/,/*NOTE*//*IF:MethodParameter.IsOut*//*NOT:MethodParameter.IsOut*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*NOT:MethodParameter.IsOut*//*AT:Parameter.ParameterJoin*//*LOOP:InputParameters*/);
+                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*//*IF:MethodIsReturn*//*PUSH:Method*/serverValue.@MethodName/*PUSH:Method*/(/*IF:ClientParameterName*/Sender/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*IF:MethodParameter.IsOut*//*PUSH:InputParameter*/value.Value.@ParameterName/*PUSH:InputParameter*//*NOTE*/,/*NOTE*//*IF:MethodParameter.IsOut*//*NOT:MethodParameter.IsOut*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*NOT:MethodParameter.IsOut*//*AT:MethodParameter.ParameterJoin*//*LOOP:InputParameters*/);
                             #endregion NOT MemberIndex
 
                             #region IF OutputParameterIndex
@@ -391,9 +394,10 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsVerifyMethod
                 /// <param name="verifyMethod">TCP 验证方法</param>
                 #endregion IF IsVerifyMethod
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null/*IF:IsVerifyMethod*/, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null/*IF:IsVerifyMethod*/, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
@@ -401,13 +405,22 @@ namespace AutoCSer.CodeGenerator.Template
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName));
                         #endregion IF IsServerCode
                         #region NOT IsServerCode
-                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpInternalServer.ServerAttribute>("@ServerRegisterName") ?? AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalServer.ServerAttribute>(@"@AttributeJson");
+                        attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpInternalServer.ServerAttribute>("@ServerRegisterName") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = "@ServerRegisterName";
                         #endregion NOT IsServerCode
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log/*IF:IsVerifyMethod*/, verifyMethod/*IF:IsTimeVerify*/ ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_/*IF:IsTimeVerify*//*IF:IsVerifyMethod*/);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute/*IF:ClientRouteType*/ ?? new @ClientRouteType()/*IF:ClientRouteType*//*IF:IsVerifyMethod*/, verifyMethod/*IF:IsTimeVerify*/ ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_/*IF:IsTimeVerify*//*IF:IsVerifyMethod*/);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
+                #region NOT IsServerCode
+                /// <summary>
+                /// 默认 TCP 调用服务器端配置信息
+                /// </summary>
+                public static AutoCSer.Net.TcpInternalServer.ServerAttribute _DefaultServerAttribute_
+                {
+                    get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpInternalServer.ServerAttribute>(@"@AttributeJson"); }
+                }
+                #endregion NOT IsServerCode
 
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
@@ -962,6 +975,60 @@ namespace AutoCSer.CodeGenerator.Template
             /// </summary>
             /// <param name="tcpServer">TCP服务端</param>
             public void SetTcpServer(AutoCSer.Net.TcpInternalServer.Server tcpServer) { }
+        }
+        /// <summary>
+        /// TCP 客户端路由
+        /// </summary>
+        /// <typeparam name="ClientSocketSenderType"></typeparam>
+        public abstract class ClientRouteType<ClientSocketSenderType> : AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSenderType>
+            where ClientSocketSenderType : AutoCSer.Net.TcpServer.ClientSocketSenderBase
+        {
+            public override ClientSocketSenderType Sender
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public override ClientSocketBase Socket
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public override void DisposeSocket()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void OnDisposeSocket(ClientSocketBase socket)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void OnServerChange(ServerSet serverSet)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void OnSetSocket()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void TryCreateSocket()
+            {
+                throw new NotImplementedException();
+            }
+        }
+        /// <summary>
+        /// TCP 客户端路由
+        /// </summary>
+        public sealed class ClientRouteType : ClientRouteType<AutoCSer.Net.TcpInternalServer.ClientSocketSender>
+        {
         }
     }
     #endregion NOTE

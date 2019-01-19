@@ -1,0 +1,157 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>AutoCSer.Xml</AssemblyName>
+    <RootNamespace>AutoCSer</RootNamespace>
+    <Version>1.1.0</Version>
+    <PackageId>AutoCSer.Xml.NetStandard.NoJIT</PackageId>
+    <Authors>肖进</Authors>
+    <Company />
+    <Description>AutoCSer.Xml 是一个高性能的 Xml 序列化组件。</Description>
+    <Copyright>Copyright © 肖进 2017</Copyright>
+    <PackageProjectUrl>http://www.autocser.com/Serialize/Xml.html</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;MONO;NOJIT;Xml;Serialize;DotNetStandard;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;MONO;NOJIT;Xml;Serialize;DotNetStandard;RELEASE;NETSTANDARD2_0;RELEASE;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Release\NetStandard.NoJIT\Serialize\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard.NoJIT\Serialize\AutoCSer.Xml.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**" />
+    <EmbeddedResource Remove="**" />
+    <None Remove="**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Algorithm\QuickSort.cs" />
+    <Compile Include="CharStream.cs" />
+    <Compile Include="Config\Loader.cs" />
+    <Compile Include="Config\MemberAttribute.cs" />
+    <Compile Include="Config\Pub.cs" />
+    <Compile Include="Config\TypeAttribute.cs" />
+    <Compile Include="Config\UnionLoader.cs" />
+    <Compile Include="Config\UnionType.cs" />
+    <Compile Include="Date.cs" />
+    <Compile Include="DictionaryCreator.cs" />
+    <Compile Include="DynamicArray.cs" />
+    <Compile Include="Emit\ArrayConstructor.cs" />
+    <Compile Include="Emit\CollectionConstructor.cs" />
+    <Compile Include="Emit\Constructor.cs" />
+    <Compile Include="Emit\DictionaryConstructor.cs" />
+    <Compile Include="Emit\EnumCast.cs" />
+    <Compile Include="Emit\EnumerableConstructor.cs" />
+    <Compile Include="Emit\EnumParser.cs" />
+    <Compile Include="Emit\ListConstructor.cs" />
+    <Compile Include="Emit\Pub.cs" />
+    <Compile Include="HashSetCreator.cs" />
+    <Compile Include="MemberCopy\FieldCopyer.cs" />
+    <Compile Include="MemberCopy\MemberMapFieldCopyer.cs" />
+    <Compile Include="NET2.0\MethodImpl.Inline.cs" />
+    <Compile Include="Emit\NamePool.cs" />
+    <Compile Include="Enumerator.cs" />
+    <Compile Include="Extension\Array.cs" />
+    <Compile Include="Extension\Collection.cs" />
+    <Compile Include="Extension\Enumerable.cs" />
+    <Compile Include="Extension\MemberCopy.cs" />
+    <Compile Include="Extension\Number.cs" />
+    <Compile Include="Extension\String.cs" />
+    <Compile Include="Extension\Type.cs" />
+    <Compile Include="Extension\XmlSerialize.cs" />
+    <Compile Include="FormatRange.cs" />
+    <Compile Include="GuidCreator.cs" />
+    <Compile Include="HashString.cs" />
+    <Compile Include="IOS\Preserve.cs" />
+    <Compile Include="KeyValue.cs" />
+    <Compile Include="LeftArray.cs" />
+    <Compile Include="MemberCopy\Copyer.cs" />
+    <Compile Include="MemberCopy\CustomAttribute.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="MemoryMap.cs" />
+    <Compile Include="Metadata\AttributeMethod.cs" />
+    <Compile Include="Metadata\BoxSerializeAttribute.cs" />
+    <Compile Include="Metadata\FieldIndex.cs" />
+    <Compile Include="Metadata\IgnoreAttribute.cs" />
+    <Compile Include="Metadata\IgnoreMemberAttribute.cs" />
+    <Compile Include="Metadata\MemberFilterAttribute.cs" />
+    <Compile Include="Metadata\MemberFilters.cs" />
+    <Compile Include="Metadata\MemberIndexGroup.cs" />
+    <Compile Include="Metadata\MemberIndexInfo.cs" />
+    <Compile Include="Metadata\MemberMap.cs" />
+    <Compile Include="Metadata\PropertyIndex.cs" />
+    <Compile Include="Metadata\TypeAttribute.cs" />
+    <Compile Include="NullableBool.cs" />
+    <Compile Include="NullValue.cs" />
+    <Compile Include="Pointer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pub.cs" />
+    <Compile Include="Random.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="RangeLength.cs" />
+    <Compile Include="Reflection\CustomFieldParser.cs" />
+    <Compile Include="Reflection\CustomPropertyParser.cs" />
+    <Compile Include="Reflection\FieldParser.cs" />
+    <Compile Include="Reflection\InvokeMethod.cs" />
+    <Compile Include="Reflection\InvokeMethodRef1.cs" />
+    <Compile Include="Reflection\InvokeMethodRef13.cs" />
+    <Compile Include="Reflection\InvokeMethodRef2.cs" />
+    <Compile Include="Reflection\InvokeMethodRefReturn.cs" />
+    <Compile Include="Reflection\InvokeMethodReturn.cs" />
+    <Compile Include="Reflection\PropertyParser.cs" />
+    <Compile Include="StateSearcher\AsciiBuilder.cs" />
+    <Compile Include="StateSearcher\AsciiSearcher.cs" />
+    <Compile Include="StateSearcher\CharBuilder.cs" />
+    <Compile Include="StateSearcher\CharSearcher.cs" />
+    <Compile Include="SubArray.cs" />
+    <Compile Include="SubString.cs" />
+    <Compile Include="Threading\Link.cs" />
+    <Compile Include="Threading\LockDictionary.cs" />
+    <Compile Include="Threading\LockLastDictionary.cs" />
+    <Compile Include="Threading\ThreadYield.cs" />
+    <Compile Include="Unmanaged.cs" />
+    <Compile Include="UnmanagedPool.cs" />
+    <Compile Include="UnmanagedStream.cs" />
+    <Compile Include="UnmanagedStreamBase.cs" />
+    <Compile Include="Xml\ConfigLoader.cs" />
+    <Compile Include="Xml\CustomAttribute.cs" />
+    <Compile Include="Xml\CustomParser.cs" />
+    <Compile Include="Xml\CustomSerializer.cs" />
+    <Compile Include="Xml\FieldParser.cs" />
+    <Compile Include="Xml\FieldPropertySerializer.cs" />
+    <Compile Include="Xml\IgnoreMemberAttribute.cs" />
+    <Compile Include="Xml\MemberAttribute.cs" />
+    <Compile Include="Xml\MemberMapSerializer.cs" />
+    <Compile Include="Xml\Node.cs" />
+    <Compile Include="Xml\NodeType.cs" />
+    <Compile Include="Xml\ParseConfig.cs" />
+    <Compile Include="Xml\ParseMethod.cs" />
+    <Compile Include="Xml\ParseMethodCache.cs" />
+    <Compile Include="Xml\Parser.cs" />
+    <Compile Include="Xml\ParseResult.cs" />
+    <Compile Include="Xml\ParseState.cs" />
+    <Compile Include="Xml\PropertyMethod.cs" />
+    <Compile Include="Xml\PropertyParser.cs" />
+    <Compile Include="Xml\SerializeAttribute.cs" />
+    <Compile Include="Xml\SerializeConfig.cs" />
+    <Compile Include="Xml\SerializeMethod.cs" />
+    <Compile Include="Xml\SerializeMethodCache.cs" />
+    <Compile Include="Xml\Serializer.cs" />
+    <Compile Include="Xml\SerializeResult.cs" />
+    <Compile Include="Xml\SerializeWarning.cs" />
+    <Compile Include="Xml\StateSearcher.cs" />
+    <Compile Include="Xml\TypeParser.cs" />
+    <Compile Include="Xml\TypeSerializer.cs" />
+    <Compile Include="Xml\UnionType.cs" />
+    <Compile Include="Xml\UnknownNameAttribute.cs" />
+    <Compile Include="Xml\UnknownParser.cs" />
+  </ItemGroup>
+
+</Project>

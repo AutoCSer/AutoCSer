@@ -69,6 +69,7 @@ namespace AutoCSer.Sql.Cache.Counter.Event
             GetKey = getKey;
             dictionary = DictionaryCreator<RandomKey<keyType>>.Create<KeyValue<valueType, int>>();
 
+            sqlTool.IsOnlyQueue = true;
             sqlTool.OnUpdated += onUpdated;
             sqlTool.OnDeleted += onDeleted;
         }

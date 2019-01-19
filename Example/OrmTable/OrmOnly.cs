@@ -7,7 +7,7 @@ namespace AutoCSer.Example.OrmTable
     /// <summary>
     /// 简单 ORM 映射
     /// </summary>
-    [AutoCSer.Sql.Table(ConnectionName = AutoCSer.Example.OrmConfig.Pub.ConnectionName)]
+    [AutoCSer.Sql.Table(ConnectionName = AutoCSer.Example.OrmConfig.Pub.ConnectionName, IsOnlyQueue = false)]
     public sealed class OrmOnly
     {
         /// <summary>
@@ -27,11 +27,11 @@ namespace AutoCSer.Example.OrmTable
             using (AutoCSer.Sql.ModelTable<OrmOnly> sqlTable = AutoCSer.Sql.ModelTable<OrmOnly>.Get())
             {
                 AutoCSer.Metadata.MemberMap<OrmOnly> updateMemberMap = sqlTable.CreateMemberMap().Set(value => value.Value);
-                sqlTable.Insert(new OrmOnly { Value = 1 });
-                foreach (OrmOnly value in sqlTable.Select())
+                sqlTable.InsertQueue(new OrmOnly { Value = 1 });
+                foreach (OrmOnly value in sqlTable.SelectQueue())
                 {
                     Console.WriteLine(value.toJson());
-                    sqlTable.Update(new OrmOnly { Id = value.Id, Value = value.Value + 1 }, updateMemberMap);
+                    sqlTable.UpdateQueue(new OrmOnly { Id = value.Id, Value = value.Value + 1 }, updateMemberMap);
                 }
                 //foreach (OrmOnly value in sqlTable.Select())
                 //{
@@ -41,11 +41,11 @@ namespace AutoCSer.Example.OrmTable
                 using (deleteWait = new AutoResetEvent(false))
                 {
                     deleteCount = 1;
-                    foreach (OrmOnly value in sqlTable.Select())
+                    foreach (OrmOnly value in sqlTable.SelectQueue())
                     {
                         Console.WriteLine(value.toJson());
                         Interlocked.Increment(ref deleteCount);
-                        sqlTable.Delete(value.Id, onDeleted);
+                        sqlTable.DeleteQueue(value.Id, onDeleted);
                     }
                     onDeleted();
                     deleteWait.WaitOne();

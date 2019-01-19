@@ -50,7 +50,7 @@ namespace AutoCSer.Sql
 
         protected bool update(Table<tableType, modelType> table, bool isIgnoreTransaction)
         {
-            return memberMap != null && table.Update(value, memberMap, isIgnoreTransaction);
+            return memberMap != null && table.UpdateQueue(value, memberMap, isIgnoreTransaction);
         }
         /// <summary>
         /// 更新数据
@@ -62,7 +62,7 @@ namespace AutoCSer.Sql
         protected void update(Table<tableType, modelType> table, Action<tableType> onUpdated, bool isIgnoreTransaction)
         {
             if (memberMap == null) onUpdated(null);
-            table.Update(value, memberMap, onUpdated, isIgnoreTransaction);
+            table.UpdateQueue(value, memberMap, onUpdated, isIgnoreTransaction);
         }
     }
 }

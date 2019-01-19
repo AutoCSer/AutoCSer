@@ -143,7 +143,7 @@ namespace AutoCSer.Sql.Cache.Counter
             if (values == null)
             {
                 values = DictionaryCreator<RandomKey<dictionaryKeyType>>.Create<valueType>();
-                foreach (valueType value in counter.SqlTable.Select(ref connection, getWhere(key), counter.MemberMap))
+                foreach (valueType value in counter.SqlTable.SelectQueue(ref connection, getWhere(key), counter.MemberMap))
                 {
                     values.Add(getDictionaryKey(value), counter.Add(value));
                 }

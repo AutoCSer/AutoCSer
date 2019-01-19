@@ -105,19 +105,19 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
-            if (slaveClient != null) isMasterSocket = socket != null;
+            if (slaveClient != null) isMasterSocket = parameter.Type == AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket;
             ++SocketIdentity;
         }
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onSlaveClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onSlaveClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
-            if(!isMasterSocket) ++SocketIdentity;
+            if (!isMasterSocket) ++SocketIdentity;
         }
 
         /// <summary>

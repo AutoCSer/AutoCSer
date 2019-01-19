@@ -15,6 +15,10 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         private readonly static int maxCount = AutoCSer.Config.Pub.Default.GetYieldPoolCount(typeof(valueType));
         /// <summary>
+        /// 是否需要释放资源
+        /// </summary>
+        private readonly static bool isDisponse = typeof(IDisposable).IsAssignableFrom(typeof(valueType));
+        /// <summary>
         /// 链表头部
         /// </summary>
         private static valueType head;
@@ -33,7 +37,11 @@ namespace AutoCSer.Sql.LogStream
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void PushNotNull(valueType value)
         {
-            if (count >= maxCount) return;
+            if (count >= maxCount)
+            {
+                if (isDisponse) ((IDisposable)value).Dispose();
+                return;
+            }
             System.Threading.Interlocked.Increment(ref count);
             valueType headValue;
             do
@@ -65,12 +73,12 @@ namespace AutoCSer.Sql.LogStream
             {
                 if ((headValue = head) == null)
                 {
-                    popLock = 0;
+                    System.Threading.Interlocked.Exchange(ref popLock, 0);
                     return null;
                 }
                 if (System.Threading.Interlocked.CompareExchange(ref head, headValue.MemberMapValueLink, headValue) == headValue)
                 {
-                    popLock = 0;
+                    System.Threading.Interlocked.Exchange(ref popLock, 0); 
                     System.Threading.Interlocked.Decrement(ref count);
                     headValue.MemberMapValueLink = null;
                     return headValue;
@@ -107,6 +115,18 @@ namespace AutoCSer.Sql.LogStream
             while (true);
         }
         /// <summary>
+        /// 释放列表
+        /// </summary>
+        /// <param name="value"></param>
+        private static void disposeLink(valueType value)
+        {
+            do
+            {
+                ((IDisposable)value).Dispose();
+            }
+            while ((value = value.MemberMapValueLink) != null);
+        }
+        /// <summary>
         /// 清除缓存数据
         /// </summary>
         /// <param name="saveCount">保留缓存数据数量</param>
@@ -114,21 +134,30 @@ namespace AutoCSer.Sql.LogStream
         {
             valueType headValue = System.Threading.Interlocked.Exchange(ref head, null);
             count = 0;
-            if (headValue != null && saveCount != 0)
+            if (headValue != null)
             {
-                int pushCount = saveCount;
-                valueType end = headValue;
-                while (--saveCount != 0)
+                if (saveCount == 0)
                 {
-                    if (end.MemberMapValueLink == null)
-                    {
-                        pushLink(headValue, end, pushCount - saveCount);
-                        return;
-                    }
-                    end = end.MemberMapValueLink;
+                    if (isDisponse) disposeLink(headValue);
                 }
-                end.MemberMapValueLink = null;
-                pushLink(headValue, end, pushCount);
+                else
+                {
+                    int pushCount = saveCount;
+                    valueType end = headValue;
+                    while (--saveCount != 0)
+                    {
+                        if (end.MemberMapValueLink == null)
+                        {
+                            pushLink(headValue, end, pushCount - saveCount);
+                            return;
+                        }
+                        end = end.MemberMapValueLink;
+                    }
+                    valueType next = end.MemberMapValueLink;
+                    end.MemberMapValueLink = null;
+                    pushLink(headValue, end, pushCount);
+                    if (isDisponse && next != null) disposeLink(next);
+                }
             }
         }
         static MemberMapValueLinkPool()

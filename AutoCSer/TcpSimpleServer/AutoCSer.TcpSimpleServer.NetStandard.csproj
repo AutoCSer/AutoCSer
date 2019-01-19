@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;TcpSimpleServer;DotNetStandard;RELEASE;NETSTANDARD2_0;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>..\..\Packet\NetStandard\</OutputPath>
-    <DocumentationFile>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.TcpSimpleServer.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard\AutoCSer.TcpSimpleServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -102,9 +102,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AutoCSer.NetStandard.csproj" />
   </ItemGroup>
 
 </Project>

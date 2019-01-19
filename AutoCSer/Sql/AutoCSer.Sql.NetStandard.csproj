@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;MONO;Sql;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\AutoCSer.Sql.xml</DocumentationFile>
+    <OutputPath>bin\Release\NetStandard\</OutputPath>
+    <DocumentationFile>bin\Release\NetStandard\AutoCSer.Sql.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -64,6 +64,7 @@
     <Compile Include="Extension\Expression.cs" />
     <Compile Include="Extension\SqlTable.cs" />
     <Compile Include="Extension\Type.Sql.cs" />
+    <Compile Include="Lock.cs" />
     <Compile Include="LogStream\NET4.5\IdentityClient.cs" />
     <Compile Include="LogStream\NET4.5\QueueClient.cs" />
     <Compile Include="LogStream\QueueClient.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Metadata\MemberMapValue.cs" />
     <Compile Include="Metadata\MemberMapValueJsonSerializeConfig.cs" />
     <Compile Include="NET4.5\LogAttribute.cs" />
+    <Compile Include="PrimaryKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AnyCancel.cs" />
     <Compile Include="Cache\Copy.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Threading\SearchTreeDictionaryFindTask.cs" />
     <Compile Include="Threading\SearchTreeDictionaryPageTask.cs" />
     <Compile Include="Threading\TaskQueue.cs" />
+    <Compile Include="Transaction.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />
@@ -220,12 +223,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AutoCSer">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoCSer.Sort">
-      <HintPath>..\..\Packet\NetStandard\netstandard2.0\AutoCSer.Sort.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AutoCSer.NetStandard.csproj" />
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.NetStandard.csproj" />
   </ItemGroup>
 
 </Project>

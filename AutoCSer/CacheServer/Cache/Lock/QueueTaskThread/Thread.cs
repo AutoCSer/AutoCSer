@@ -18,14 +18,14 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
             {
                 end = value;
                 head = value;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 waitHandle.Set();
             }
             else
             {
                 end.LinkNext = value;
                 end = value;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
         }
         /// <summary>
@@ -40,7 +40,7 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
                 Node value = head;
                 end = null;
                 head = null;
-                queueLock = 0;
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 do
                 {
                     try

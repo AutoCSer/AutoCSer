@@ -7,6 +7,7 @@ using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
+using System.Threading;
 
 namespace AutoCSer.Net.HtmlTitle
 {
@@ -73,6 +74,12 @@ Host: ").getBytes();
         /// 异步套接字操作
         /// </summary>
         private SocketAsyncEventArgs socketAsync;
+#if !DotNetStandard
+        /// <summary>
+        /// .NET 底层线程安全 BUG 处理锁
+        /// </summary>
+        private volatile int asyncLock;
+#endif
 #endif
         /// <summary>
         /// Uri 与回调函数信息
@@ -497,13 +504,22 @@ Host: ").getBytes();
 #else
                             if (async.BytesTransferred == 0)
                             {
-                                socketAsync.SetBuffer(buffer.StartIndex, bufferIndex - buffer.StartIndex);
                                 socketAsyncType = SocketAsyncType.Send;
+#if !DotNetStandard
+                                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                                socketAsync.SetBuffer(buffer.StartIndex, bufferIndex - buffer.StartIndex);
                                 if (socket.SendAsync(socketAsync))
                                 {
                                     task.PushTimeout(this, socket);
+#if !DotNetStandard
+                                    Interlocked.Exchange(ref asyncLock, 0);
+#endif
                                     return;
                                 }
+#if !DotNetStandard
+                                asyncLock = 0;
+#endif
                                 if (socketAsync.SocketError != SocketError.Success) break;
                             }
                             goto ONSEND;
@@ -526,14 +542,27 @@ Host: ").getBytes();
                             if (async.BytesTransferred == bufferIndex - buffer.StartIndex)
                             {
                                 isHeader = false;
-                                socketAsync.SetBuffer(bufferIndex = currentIndex = buffer.StartIndex, bufferSize);
                                 socketAsyncType = SocketAsyncType.Recieve;
+                                bufferIndex = currentIndex = buffer.StartIndex;
+#if !DotNetStandard
+                                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                                socketAsync.SetBuffer(bufferIndex, bufferSize);
                                 if (socket.ReceiveAsync(socketAsync))
                                 {
                                     task.PushTimeout(this, socket);
+#if !DotNetStandard
+                                    Interlocked.Exchange(ref asyncLock, 0);
+#endif
                                     return;
                                 }
-                                if (socketAsync.SocketError == SocketError.Success) goto ONRECEIVE;
+                                if (socketAsync.SocketError == SocketError.Success)
+                                {
+#if !DotNetStandard
+                                    asyncLock = 0;
+#endif
+                                    goto ONRECEIVE;
+                                }
                             }
 #endif
                             break;
@@ -746,14 +775,23 @@ Host: ").getBytes();
                         }
                     }
 #else
+#if !DotNetStandard
+                    while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                     socketAsync.SetBuffer(bufferIndex, count);
                     if (socket.ReceiveAsync(socketAsync))
                     {
                         task.PushTimeout(this, socket);
+#if !DotNetStandard
+                        Interlocked.Exchange(ref asyncLock, 0);
+#endif
                         return true;
                     }
                     if (socketAsync.SocketError == SocketError.Success)
                     {
+#if !DotNetStandard
+                        asyncLock = 0;
+#endif
                         count = socketAsync.BytesTransferred;
                         goto START;
                     }

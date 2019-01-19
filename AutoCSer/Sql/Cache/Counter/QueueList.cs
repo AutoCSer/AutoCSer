@@ -106,7 +106,7 @@ namespace AutoCSer.Sql.Cache.Counter
         /// <returns>数据列表</returns>
         private ListArray<valueType> createList(ref DbConnection connection, keyType key)
         {
-            ListArray<valueType> list = new ListArray<valueType>(counter.SqlTable.Select(ref connection, getWhere(key), counter.MemberMap));
+            ListArray<valueType> list = new ListArray<valueType>(counter.SqlTable.SelectQueue(ref connection, getWhere(key), counter.MemberMap));
             if (list != null)
             {
                 if (list.Length != 0)

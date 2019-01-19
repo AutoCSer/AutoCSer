@@ -61,6 +61,15 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         [AutoCSer.Metadata.Ignore]
         internal override int GetServerSendBufferMaxSize { get { return ServerSendBufferMaxSize; } }
         /// <summary>
+        /// 客户端保持连接心跳包间隔时间默认为 1 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
+        /// </summary>
+        public int CheckSeconds = 1;
+        /// <summary>
+        /// 客户端保持连接心跳包间隔时间
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetCheckSeconds { get { return CheckSeconds; } }
+        /// <summary>
         /// 客户端接收命令超时为 4 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
         public int ReceiveVerifyCommandSeconds = TcpInternalServer.ServerBaseAttribute.DefaultReceiveVerifyCommandSeconds;

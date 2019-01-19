@@ -281,7 +281,20 @@ namespace AutoCSer.TestCase.WebPerformance
             {
                 asyncType = ClientSocketAsyncType.Receive;
                 recieveAsyncEventArgs.SetBuffer(0, bufferSize);
-                return socket.ReceiveAsync(recieveAsyncEventArgs) || next();
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref receiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
+                if (socket.ReceiveAsync(recieveAsyncEventArgs))
+                {
+#if !DotNetStandard
+                    Interlocked.Exchange(ref receiveAsyncLock, 0);
+#endif
+                    return true;
+                }
+#if !DotNetStandard
+                receiveAsyncLock = 0;
+#endif
+                return next();
             }
             return false;
         }

@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using AutoCSer.Extension;
+using System.Threading;
 
 namespace AutoCSer.Net.TcpInternalSimpleServer
 {
@@ -157,12 +158,21 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     return true;
                 }
 #else
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, bufferSize);
                 if (socket.ReceiveAsync(asyncEventArgs))
                 {
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
+#if !DotNetStandard
+                    Interlocked.Exchange(ref asyncLock, 0);
+#endif
                     return true;
                 }
+#if !DotNetStandard
+                asyncLock = 0;
+#endif
                 return isVerifyCommand();
 #endif
             }
@@ -290,12 +300,21 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     return true;
                 }
 #else
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, bufferSize - receiveCount);
                 if (socket.ReceiveAsync(asyncEventArgs))
                 {
                     Server.PushReceiveVerifyCommandTimeout(this, socket);
+#if !DotNetStandard
+                    Interlocked.Exchange(ref asyncLock, 0);
+#endif
                     return true;
                 }
+#if !DotNetStandard
+                asyncLock = 0;
+#endif
                 return isVerifyData();
 #endif
             }
@@ -400,8 +419,21 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex, bufferSize, SocketFlags.None, out socketError, asyncCallback, socket);
                 if (socketError == SocketError.Success) return true;
 #else
+#if !DotNetStandard
+                while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                 asyncEventArgs.SetBuffer(Buffer.StartIndex, bufferSize);
-                return socket.ReceiveAsync(asyncEventArgs) || isCommand();
+                if (socket.ReceiveAsync(asyncEventArgs))
+                {
+#if !DotNetStandard
+                    Interlocked.Exchange(ref asyncLock, 0);
+#endif
+                    return true;
+                }
+#if !DotNetStandard
+                asyncLock = 0;
+#endif
+                return isCommand();
 #endif
             }
             return false;
@@ -517,10 +549,22 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     socket.BeginReceive(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount, SocketFlags.None, out socketError, asyncCallback, socket);
                     if (socketError == SocketError.Success) return true;
 #else
+#if !DotNetStandard
+                            while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                             asyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, compressionDataSize - receiveBigBufferCount);
-                            if (socket.ReceiveAsync(asyncEventArgs)) return true;
+                            if (socket.ReceiveAsync(asyncEventArgs))
+                            {
+#if !DotNetStandard
+                                Interlocked.Exchange(ref asyncLock, 0);
+#endif
+                                return true;
+                            }
                             if (asyncEventArgs.SocketError == SocketError.Success)
                             {
+#if !DotNetStandard
+                                asyncLock = 0;
+#endif
                                 if (compressionDataSize == (receiveBigBufferCount += asyncEventArgs.BytesTransferred)) return isDoCommandBig();
                                 goto BIGRECEIVE;
                             }
@@ -554,10 +598,22 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex + receiveCount, nextSize, SocketFlags.None, out socketError, asyncCallback, socket);
                     if (socketError == SocketError.Success) return true;
 #else
+#if !DotNetStandard
+                        while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                         asyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, nextSize);
-                        if (socket.ReceiveAsync(asyncEventArgs)) return true;
+                        if (socket.ReceiveAsync(asyncEventArgs))
+                        {
+#if !DotNetStandard
+                            Interlocked.Exchange(ref asyncLock, 0);
+#endif
+                            return true;
+                        }
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
+#if !DotNetStandard
+                            asyncLock = 0;
+#endif
                             receiveCount += (receiveSize = asyncEventArgs.BytesTransferred);
                             if ((nextSize -= receiveSize) == 0) return isDoCommand();
                             goto RECEIVE;
@@ -606,8 +662,20 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                         Socket socket = Socket;
                         if (socket != null)
                         {
+#if !DotNetStandard
+                            while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                             asyncEventArgs.SetBuffer(Buffer.StartIndex + receiveCount, nextSize);
-                            if (socket.ReceiveAsync(asyncEventArgs)) return;
+                            if (socket.ReceiveAsync(asyncEventArgs))
+                            {
+#if !DotNetStandard
+                                Interlocked.Exchange(ref asyncLock, 0);
+#endif
+                                return;
+                            }
+#if !DotNetStandard
+                            asyncLock = 0;
+#endif
                             goto CHECK;
 
                         }
@@ -664,8 +732,20 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                         Socket socket = Socket;
                         if (socket != null)
                         {
+#if !DotNetStandard
+                            while (Interlocked.CompareExchange(ref asyncLock, 1, 0) != 0) Thread.Sleep(0);
+#endif
                             asyncEventArgs.SetBuffer(ReceiveBigBuffer.Buffer, ReceiveBigBuffer.StartIndex + receiveBigBufferCount, nextSize);
-                            if (socket.ReceiveAsync(asyncEventArgs)) return;
+                            if (socket.ReceiveAsync(asyncEventArgs))
+                            {
+#if !DotNetStandard
+                                Interlocked.Exchange(ref asyncLock, 0);
+#endif
+                                return;
+                            }
+#if !DotNetStandard
+                            asyncLock = 0;
+#endif
                             goto CHECK;
                         }
 #endif

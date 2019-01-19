@@ -27,7 +27,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("TcpInternalServerPerformance", typeof(AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer))), verify, onCustomData, log, false)
                 {
                     Value = value ?? new AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer();
-                    setCommandData(12);
+                    setCommandData(13);
                     setCommand(0);
                     setCommand(1);
                     setCommand(2);
@@ -40,6 +40,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     setCommand(9);
                     setCommand(10);
                     setCommand(11);
+                    setCommand(12);
                     if (attribute.IsAutoServer) Start();
                 }
                 /// <summary>
@@ -282,6 +283,22 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             }
                             sender.Push(returnType);
                             return;
+                        case 12:
+                            returnType = AutoCSer.Net.TcpServer.ReturnType.Unknown;
+                            try
+                            {
+                                {
+                                    (_s12/**/.Pop() ?? new _s12()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout);
+                                    return;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                returnType = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                                sender.AddLog(error);
+                            }
+                            sender.Push(returnType);
+                            return;
                         default: return;
                     }
                 }
@@ -425,6 +442,36 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
+                sealed class _s12 : AutoCSer.Net.TcpInternalServer.ServerCall<_s12, AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.gcCollect();
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void Call()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, value.Type);
+                        }
+                        push(this);
+                    }
+                }
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c12 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
                 static TcpInternalServer()
                 {
                     CompileSerialize(new System.Type[] { typeof(_p1), typeof(_p3), null }
@@ -550,15 +597,16 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// TCP调用客户端
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
+                /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("TcpInternalServerPerformance", typeof(AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -960,6 +1008,30 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             _onOutput_.Call(ref _outputParameter_);
                         }
                     }
+                }
+
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c12 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 12 + 128, InputParameterIndex = 0, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+
+                /// <summary>
+                /// GC 垃圾回收
+                /// </summary>
+                public 
+                AutoCSer.Net.TcpServer.ReturnValue gcCollect()
+                {
+                    AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
+                    try
+                    {
+                        AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                        if (_socket_ != null)
+                        {
+                            return new AutoCSer.Net.TcpServer.ReturnValue { Type = _socket_.WaitCall(_c12, ref _wait_) };
+                        }
+                    }
+                    finally
+                    {
+                        if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue.PushNotNull(_wait_);
+                    }
+                    return new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
                 static TcpInternalClient()

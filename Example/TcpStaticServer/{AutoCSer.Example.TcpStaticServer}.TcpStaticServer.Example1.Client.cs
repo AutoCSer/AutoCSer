@@ -432,6 +432,10 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
                 /// </summary>
                 public AutoCSer.Log.ILog Log;
                 /// <summary>
+                /// TCP 客户端路由
+                /// </summary>
+                public AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> ClientRoute;
+                /// <summary>
                 /// 验证委托
                 /// </summary>
                 public Func<AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> VerifyMethod;
@@ -447,7 +451,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
                 {
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), false);
                 }
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p1), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p6), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p7), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p9), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p4), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p5), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p8), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p10), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p11), null }

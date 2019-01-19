@@ -107,7 +107,7 @@ namespace AutoCSer.Net.HtmlTitle
                     this.clientIndex = 0;
                     uri = uris.GetClear();
                 }
-                clientLock = 0;
+                System.Threading.Interlocked.Exchange(ref clientLock, 0);
 
                 if (clientIndex != 0)
                 {
@@ -187,12 +187,12 @@ namespace AutoCSer.Net.HtmlTitle
                     if (clientCount == clients.Length)
                     {
                         uris.Push(uri);
-                        clientLock = 0;
+                        System.Threading.Interlocked.Exchange(ref clientLock, 0);
                         isOnGet = true;
                         return;
                     }
                     ++clientCount;
-                    clientLock = 0;
+                    System.Threading.Interlocked.Exchange(ref clientLock, 0);
                     try
                     {
                         client = new HttpClient(this);
@@ -208,11 +208,11 @@ namespace AutoCSer.Net.HtmlTitle
                         {
                             uris.Push(uri);
                             --clientCount;
-                            clientLock = 0;
+                            System.Threading.Interlocked.Exchange(ref clientLock, 0);
                             isOnGet = true;
                             return;
                         }
-                        clientLock = 0;
+                        System.Threading.Interlocked.Exchange(ref clientLock, 0);
                         isOnGet = true;
                         uri.Cancel();
                         return;
@@ -221,13 +221,13 @@ namespace AutoCSer.Net.HtmlTitle
                 else
                 {
                     client = clients[--clientIndex];
-                    clientLock = 0;
+                    System.Threading.Interlocked.Exchange(ref clientLock, 0);
                 }
                 isOnGet = client.Get(uri);
             }
             else
             {
-                clientLock = 0;
+                System.Threading.Interlocked.Exchange(ref clientLock, 0);
                 isOnGet = true;
                 uri.Cancel();
             }
@@ -244,7 +244,7 @@ namespace AutoCSer.Net.HtmlTitle
             if (!uris.IsEmpty)
             {
                 Uri uri = uris.UnsafePopOnly();
-                clientLock = 0;
+                System.Threading.Interlocked.Exchange(ref clientLock, 0);
                 try
                 {
                     if (client.Get(uri)) return 0;
@@ -266,11 +266,11 @@ namespace AutoCSer.Net.HtmlTitle
             if (isDisposed == 0)
             {
                 clients[clientIndex++] = client;
-                clientLock = 0;
+                System.Threading.Interlocked.Exchange(ref clientLock, 0);
                 return 0;
             }
             --clientCount;
-            clientLock = 0;
+            System.Threading.Interlocked.Exchange(ref clientLock, 0);
             return 1;
         }
         /// <summary>

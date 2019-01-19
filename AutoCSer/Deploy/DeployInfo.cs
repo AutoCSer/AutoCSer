@@ -115,7 +115,8 @@ namespace AutoCSer.Deploy
             if (Identity == identity && Tasks.Length != 0 && Timer == null)
             {
                 (Timer = timer).DeployInfo = this;
-                AutoCSer.Threading.TimerTask.Default.Add(timer.Start, time);
+                if (time == default(DateTime)) timer.Start();
+                else AutoCSer.Threading.TimerTask.Default.Add(timer.Start, time);
                 return true;
             }
             return false;

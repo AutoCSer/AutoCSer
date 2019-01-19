@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 缓存从服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = SlaveServer.ServerName, Host = "127.0.0.1", Port = (int)AutoCSer.Net.ServerPort.SlaveCacheServer, IsInternalClient = true, IsAutoClient = false)]
+    [AutoCSer.Net.TcpInternalServer.Server(Name = SlaveServer.ServerName, Host = "127.0.0.1", Port = (int)AutoCSer.Net.ServerPort.SlaveCacheServer, IsInternalClient = true, IsAutoClient = false, CheckSeconds = 1)]
     public partial class SlaveServer : Server
     {
         /// <summary>
@@ -68,10 +68,10 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        /// <param name="socket"></param>
-        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketBase socket)
+        /// <param name="parameter"></param>
+        private void onClientSocket(AutoCSer.Net.TcpServer.ClientSocketEventParameter parameter)
         {
-            if (socket != null)
+            if (parameter.Type == AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket)
             {
                 if (loadCacheKeepCallback != null)
                 {
@@ -115,6 +115,28 @@ namespace AutoCSer.CacheServer
             CacheManager cache = Cache;
             if (cache != null) return cache.GetDataStructure(parameter.Buffer);
             return new IndexIdentity { ReturnType = ReturnType.NotFoundSlaveCache };
+        }
+
+        /// <summary>
+        /// 创建缓存服务静态路由集群节点
+        /// </summary>
+        /// <param name="index">节点编号</param>
+        /// <param name="attribute">TCP 调用服务器端配置信息</param>
+        /// <param name="log">日志接口</param>
+        public TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, AutoCSer.Log.ILog log = null)
+        {
+            return CreateStaticRoute(index, attribute, this, log);
+        }
+        /// <summary>
+        /// 创建缓存服务静态路由集群节点
+        /// </summary>
+        /// <param name="index">节点编号</param>
+        /// <param name="attribute">TCP 调用服务器端配置信息</param>
+        /// <param name="value">TCP 服务目标对象</param>
+        /// <param name="log">日志接口</param>
+        public static TcpInternalServer CreateStaticRoute(int index, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, SlaveServer value = null, AutoCSer.Log.ILog log = null)
+        {
+            return new TcpInternalServer(CreateStaticRouteAttribute(index, attribute ?? AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(ServerName, typeof(SlaveServer))), null, value, null, log);
         }
     }
 }
