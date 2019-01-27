@@ -23,6 +23,17 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         private ClientSocketBase socket;
         /// <summary>
+        /// 是否连接状态
+        /// </summary>
+        public bool IsConnected
+        {
+            get
+            {
+                ClientSocketBase socket = this.socket;
+                return socket != null && !socket.IsClose;
+            }
+        }
+        /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
@@ -38,7 +49,10 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="parameter">TCP 客户端套接字事件参数</param>
         private void onClientSocket(ClientSocketEventParameter parameter)
         {
-            if (socket == null || socket.IsSocketVersion(ref this.socket)) onCheckSocketVersion(parameter);
+            if (parameter.Type != ClientSocketEventParameter.EventType.SetSocket || parameter.Socket.IsSocketVersion(ref socket))
+            {
+                onCheckSocketVersion(parameter);
+            }
         }
         /// <summary>
         /// 释放套接字

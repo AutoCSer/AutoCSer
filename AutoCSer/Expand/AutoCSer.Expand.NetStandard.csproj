@@ -43,6 +43,8 @@
     <Compile Include="Email\Smtp.cs" />
     <Compile Include="Extension\Memory.cs" />
     <Compile Include="JsonFile.cs" />
+    <Compile Include="IO\Compression\Deflate.cs" />
+    <Compile Include="IO\FileInfo.cs" />
     <Compile Include="MessagePack\DataType.cs" />
     <Compile Include="MessagePack\PointerNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -37,19 +37,19 @@ namespace AutoCSer.Sql
         /// <summary>
         /// SQL 客户端
         /// </summary>
-        public Client Client;
+        private Client client;
         /// <summary>
         /// SQL 客户端
         /// </summary>
-        internal Client SqlClient
+        public Client Client
         {
             get
             {
-                if (Client == null)
+                if (client == null)
                 {
-                    Client = (Client)ClientAttribute.ClientType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(Connection) }, null).Invoke(new object[] { this });
+                    client = (Client)ClientAttribute.ClientType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(Connection) }, null).Invoke(new object[] { this });
                 }
-                return Client;
+                return client;
             }
         }
         /// <summary>

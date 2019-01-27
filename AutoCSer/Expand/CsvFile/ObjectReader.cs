@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Extension;
 
 namespace AutoCSer.CsvFile
 {
@@ -113,7 +114,7 @@ namespace AutoCSer.CsvFile
         public bool GetValue(string Name, out string Value, ref string Message)
         {
             if (TryGetValue(Name, out Value)) return true;
-            Message = $"第 {Row.ToString()} 行没有找到 {Name}";
+            Message = "第 "+Row.toString()+" 行没有找到 {Name}";
             return false;
         }
         /// <summary>
@@ -127,7 +128,7 @@ namespace AutoCSer.CsvFile
         public bool GetValue(string Name, string OtherName, out string Value, ref string Message)
         {
             if (TryGetValue(Name, out Value) || TryGetValue(OtherName, out Value)) return true;
-            Message = $"第 {Row.ToString()} 行没有找到 {Name} / {OtherName}";
+            Message = "第 " + Row.toString() + " 行没有找到 " + Name + " / " + OtherName;
             return false;
         }
     }

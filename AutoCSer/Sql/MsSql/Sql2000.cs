@@ -846,6 +846,7 @@ end");
                 }
                 else
                 {
+                    bool isFinally = false;
                     using (DbCommand command = getCommand(connection, query.Sql))
                     {
                         try
@@ -860,14 +861,15 @@ end");
                                     {
                                         DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
                                         sqlTool.CallOnUpdated(value, oldValue, memberMap);
-                                        return true;
+                                        return isFinally = true;
                                     }
                                 }
                             }
+                            isFinally = true;
                         }
-                        catch (Exception error)
+                        finally
                         {
-                            sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
+                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
                         }
                     }
                 }

@@ -261,7 +261,7 @@ namespace AutoCSer.Web.DeployClient
                             }
                             else if (index == deploys.Length + 1)
                             {
-                                openProcess(@"..\..\..\..\Web\ExamplePack\bin\Release\AutoCSer.Web.ExamplePack.exe");
+                                openProcess(@"..\..\..\..\Web\Pack\bin\Release\AutoCSer.Web.Pack.exe");
                             }
                             else index = -1;
                         }

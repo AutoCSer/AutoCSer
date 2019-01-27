@@ -253,7 +253,7 @@ namespace AutoCSer.Sql.Excel
                 else sqlStream.Write('*');
                 sqlStream.SimpleWriteNotNull(" from [");
                 sqlStream.SimpleWriteNotNull(sqlTool.TableName);
-                sqlStream.SimpleWriteNotNull("]");
+                sqlStream.Write(']');
                 createQuery.WriteWhere(sqlTool, sqlStream, ref query);
                 createQuery.WriteOrder(sqlTool, sqlStream, ref query);
                 query.Sql = sqlStream.ToString();
@@ -283,48 +283,32 @@ namespace AutoCSer.Sql.Excel
                     if (connection == null) connection = GetConnection();
                     if (connection != null)
                     {
-                        using (DbCommand command = getCommand(connection, query.Sql))
+                        bool isFinally = false;
+                        try
                         {
-                            DbDataReader reader = null;
-                            try
+                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
-                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
-                            }
-                            catch (Exception error)
-                            {
-                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
-                            }
-                            if (reader != null)
-                            {
-                                using (reader)
+                                int skipCount = query.SkipCount;
+                                while (skipCount != 0 && reader.Read()) --skipCount;
+                                if (skipCount == 0)
                                 {
-                                    int skipCount = query.SkipCount;
-                                    while (skipCount != 0 && reader.Read()) --skipCount;
-                                    if (skipCount == 0)
+                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    while (reader.Read())
                                     {
-                                        LeftArray<valueType> array = new LeftArray<valueType>();
-                                        while (reader.Read())
-                                        {
-                                            valueType value = AutoCSer.Emit.Constructor<valueType>.New();
-                                            try
-                                            {
-                                                DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
-                                            }
-                                            catch
-                                            {
-                                                Console.WriteLine(query.Sql);
-                                                for (int index = reader.FieldCount; index != 0; )
-                                                {
-                                                    --index;
-                                                    Console.WriteLine(reader[index].GetType().fullName() + " + " + reader[index].ToString());
-                                                }
-                                            }
-                                            array.Add(value);
-                                        }
-                                        return array;
+                                        valueType value = AutoCSer.Emit.Constructor<valueType>.New();
+                                        DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
+                                        array.Add(value);
                                     }
+                                    isFinally = true;
+                                    return array.NotNull();
                                 }
                             }
+                            isFinally = true;
+                        }
+                        finally
+                        {
+                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
                         }
                     }
                 }
@@ -351,35 +335,31 @@ namespace AutoCSer.Sql.Excel
                     if (connection == null) connection = GetConnection();
                     if (connection != null)
                     {
-                        using (DbCommand command = getCommand(connection, query.Sql))
+                        bool isFinally = false;
+                        try
                         {
-                            DbDataReader reader = null;
-                            try
+                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
-                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
-                            }
-                            catch (Exception error)
-                            {
-                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
-                            }
-                            if (reader != null)
-                            {
-                                using (reader)
+                                int skipCount = query.SkipCount;
+                                while (skipCount != 0 && reader.Read()) --skipCount;
+                                if (skipCount == 0)
                                 {
-                                    int skipCount = query.SkipCount;
-                                    while (skipCount != 0 && reader.Read()) --skipCount;
-                                    if (skipCount == 0)
+                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    while (reader.Read())
                                     {
-                                        LeftArray<valueType> array = new LeftArray<valueType>();
-                                        while (reader.Read())
-                                        {
-                                            valueType value = readValue(reader);
-                                            if (value != null) array.Add(value);
-                                        }
-                                        return array;
+                                        valueType value = readValue(reader);
+                                        if (value != null) array.Add(value);
                                     }
+                                    isFinally = true;
+                                    return array.NotNull();
                                 }
                             }
+                            isFinally = true;
+                        }
+                        finally
+                        {
+                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
                         }
                     }
                 }

@@ -41,6 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.TcpServer.Emit")]
 [assembly: InternalsVisibleTo("AutoCSer.CodeGenerator")]
 [assembly: InternalsVisibleTo("AutoCSer.MySql")]
+[assembly: InternalsVisibleTo("AutoCSer.Oracle")]
 
 [assembly: InternalsVisibleTo("AutoCSer.CodeGenerator.Custom")]//用户自定义代码生成预留程序集名称
 [assembly: InternalsVisibleTo("AutoCSer.Custom")]//预留程序集名称，开发者可以自建项目暴露 AutoCSer 的 internal 访问权限

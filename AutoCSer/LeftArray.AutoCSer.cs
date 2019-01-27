@@ -12,6 +12,13 @@ namespace AutoCSer
     public partial struct LeftArray<valueType>
     {
         /// <summary>
+        /// 原数组是否为 null
+        /// </summary>
+        public bool IsNull
+        {
+            get { return Array == null; }
+        }
+        /// <summary>
         /// 数组子串
         /// </summary>
         /// <param name="values">数据集合</param>
@@ -73,6 +80,15 @@ namespace AutoCSer
         {
             Array = value;
             Length = length;
+        }
+        /// <summary>
+        /// 返回非 null 数组  
+        /// </summary>
+        /// <returns></returns>
+        internal LeftArray<valueType> NotNull()
+        {
+            if (Array == null) return new LeftArray<valueType>(NullValue<valueType>.Array);
+            return this;
         }
         /// <summary>
         /// 获取最后一个值

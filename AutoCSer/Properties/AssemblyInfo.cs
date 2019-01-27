@@ -65,6 +65,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.RandomObject")]
 [assembly: InternalsVisibleTo("AutoCSer.FieldEquals")]
 [assembly: InternalsVisibleTo("AutoCSer.MySql")]
+[assembly: InternalsVisibleTo("AutoCSer.Oracle")]
 [assembly: InternalsVisibleTo("AutoCSer.Search")]
 [assembly: InternalsVisibleTo("AutoCSer.HtmlNode")]
 [assembly: InternalsVisibleTo("AutoCSer.HtmlTitle")]

@@ -143,7 +143,7 @@ namespace AutoCSer.Sql
             Attribute = attribute;
             IsOnlyQueue = attribute.IsOnlyQueue;
             if (attribute.OnLogStreamCount <= 0) attribute.OnLogStreamCount = TableAttribute.DefaultOnLogStreamCount;
-            Client = connection.SqlClient;
+            Client = connection.Client;
             Log = connection.Log ?? AutoCSer.Log.Pub.Log;
             ignoreCase = connection.ClientAttribute.IgnoreCase;
             TableName = tableName;
@@ -270,30 +270,10 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="sql">SQL 语句</param>
         /// <param name="reader">读取数据委托</param>
-        public void CustomReader(string sql, Action<DbDataReader> reader)
+        /// <returns>是否成功</returns>
+        public bool CustomReader(string sql, Action<DbDataReader> reader)
         {
-            if (IsOnlyQueue)
-            {
-                CustomReaderQueue(sql, reader);
-                return;
-            }
-            DbConnection connection = null;
-            bool IsFreeConnection = false;
-            try
-            {
-                CustomReaderQueue(ref connection, sql, reader);
-                Client.FreeConnection(ref connection);
-                IsFreeConnection = true;
-            }
-            //catch (Exception error)
-            //{
-            //    Client.CloseErrorConnection(ref connection);
-            //    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-            //}
-            finally
-            {
-                if (!IsFreeConnection) Client.CloseErrorConnection(ref connection);
-            }
+            return IsOnlyQueue ? CustomReaderQueue(sql, reader) : Client.CustomReader(sql, reader, Log);
         }
         /// <summary>
         /// 同步执行 SQL 语句
@@ -350,8 +330,7 @@ namespace AutoCSer.Sql
                 LinkNext = null;
                 try
                 {
-                    table.CustomReaderQueue(ref connection, sql, reader);
-                    isSuccess = true;
+                    isSuccess = table.CustomReaderQueue(ref connection, sql, reader);
                 }
                 finally { wait.Set(); }
                 return next;
@@ -401,10 +380,11 @@ namespace AutoCSer.Sql
         /// <param name="connection"></param>
         /// <param name="sql"></param>
         /// <param name="reader"></param>
+        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void CustomReaderQueue(ref DbConnection connection, string sql, Action<DbDataReader> reader)
+        internal bool CustomReaderQueue(ref DbConnection connection, string sql, Action<DbDataReader> reader)
         {
-            Client.CustomReader(this, ref connection, sql, reader);
+            return Client.CustomReader(ref connection, sql, reader, Log);
         }
 
         /// <summary>
@@ -1248,20 +1228,7 @@ namespace AutoCSer.Sql
         /// <returns>数据库记录集合</returns>
         public LeftArray<tableType> Select(string sql, Func<DbDataReader, tableType> readValue)
         {
-            if (IsOnlyQueue) return SelectQueue(sql, readValue);
-            DbConnection connection = null;
-            try
-            {
-                LeftArray<tableType> array = SelectQueue(ref connection, sql, readValue);
-                Client.FreeConnection(ref connection);
-                return array;
-            }
-            catch (Exception error)
-            {
-                Client.CloseErrorConnection(ref connection);
-                AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-            }
-            return default(LeftArray<tableType>);
+            return IsOnlyQueue ? SelectQueue(sql, readValue) : Client.Select(sql, readValue, Log);
         }
         /// <summary>
         /// 同步获取数据
@@ -1372,7 +1339,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal LeftArray<tableType> SelectQueue(ref DbConnection connection, string sql, Func<DbDataReader, tableType> readValue)
         {
-            return Client.Select(this, ref connection, sql, readValue);
+            return Client.Select(ref connection, sql, readValue, Log);
         }
 
         /// <summary>

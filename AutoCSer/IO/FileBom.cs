@@ -13,11 +13,11 @@ namespace AutoCSer.IO
         /// <summary>
         /// BOM
         /// </summary>
-        public uint Bom;
+        internal uint Bom;
         /// <summary>
         /// BOM长度
         /// </summary>
-        public int Length;
+        internal int Length;
 
         /// <summary>
         /// 文件编码BOM唯一哈希
@@ -73,7 +73,7 @@ namespace AutoCSer.IO
         /// <param name="encoding">文件编码</param>
         /// <param name="bom">文件编码 BOM</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void Get(Encoding encoding, ref FileBom bom)
+        internal static void Get(Encoding encoding, ref FileBom bom)
         {
             boms.Get(encoding, ref bom);
         }
@@ -83,7 +83,7 @@ namespace AutoCSer.IO
         /// <param name="encoding">文件编码</param>
         /// <returns>文件编码 BOM</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static FileBom Get(Encoding encoding)
+        internal static FileBom Get(Encoding encoding)
         {
             FileBom bom = default(FileBom);
             boms.Get(encoding, ref bom);

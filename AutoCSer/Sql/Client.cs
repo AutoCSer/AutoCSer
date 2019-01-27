@@ -6,6 +6,7 @@ using System.Data.Common;
 using AutoCSer.Extension;
 using System.Data;
 using System.Runtime.CompilerServices;
+using AutoCSer.Log;
 
 namespace AutoCSer.Sql
 {
@@ -377,36 +378,32 @@ namespace AutoCSer.Sql
                             sqlTool.CreateIndex(connection, query.IndexFieldName, false);
                             query.IndexFieldName = null;
                         }
-                        using (DbCommand command = getCommand(connection, query.Sql))
+                        bool isFinally = false;
+                        try
                         {
-                            DbDataReader reader = null;
-                            try
+                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
-                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
-                            }
-                            catch (Exception error)
-                            {
-                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
-                            }
-                            if (reader != null)
-                            {
-                                using (reader)
+                                int skipCount = query.SkipCount;
+                                while (skipCount != 0 && reader.Read()) --skipCount;
+                                if (skipCount == 0)
                                 {
-                                    int skipCount = query.SkipCount;
-                                    while (skipCount != 0 && reader.Read()) --skipCount;
-                                    if (skipCount == 0)
+                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    while (reader.Read())
                                     {
-                                        LeftArray<valueType> array = new LeftArray<valueType>();
-                                        while (reader.Read())
-                                        {
-                                            valueType value = AutoCSer.Emit.Constructor<valueType>.New();
-                                            DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
-                                            array.Add(value);
-                                        }
-                                        return array;
+                                        valueType value = AutoCSer.Emit.Constructor<valueType>.New();
+                                        DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
+                                        array.Add(value);
                                     }
+                                    isFinally = true;
+                                    return array.NotNull();
                                 }
                             }
+                            isFinally = true;
+                        }
+                        finally
+                        {
+                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
                         }
                     }
                 }
@@ -440,35 +437,31 @@ namespace AutoCSer.Sql
                             sqlTool.CreateIndex(connection, query.IndexFieldName, false);
                             query.IndexFieldName = null;
                         }
-                        using (DbCommand command = getCommand(connection, query.Sql))
+                        bool isFinally = false;
+                        try
                         {
-                            DbDataReader reader = null;
-                            try
+                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
-                                reader = command.ExecuteReader(CommandBehavior.SingleResult);
-                            }
-                            catch (Exception error)
-                            {
-                                sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
-                            }
-                            if (reader != null)
-                            {
-                                using (reader)
+                                int skipCount = query.SkipCount;
+                                while (skipCount != 0 && reader.Read()) --skipCount;
+                                if (skipCount == 0)
                                 {
-                                    int skipCount = query.SkipCount;
-                                    while (skipCount != 0 && reader.Read()) --skipCount;
-                                    if (skipCount == 0)
+                                    LeftArray<valueType> array = new LeftArray<valueType>();
+                                    while (reader.Read())
                                     {
-                                        LeftArray<valueType> array = new LeftArray<valueType>();
-                                        while (reader.Read())
-                                        {
-                                            valueType value = readValue(reader);
-                                            if (value != null) array.Add(value);
-                                        }
-                                        return array;
+                                        valueType value = readValue(reader);
+                                        if (value != null) array.Add(value);
                                     }
+                                    isFinally = true;
+                                    return array.NotNull();
                                 }
                             }
+                            isFinally = true;
+                        }
+                        finally
+                        {
+                            if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
                         }
                     }
                 }
@@ -476,84 +469,126 @@ namespace AutoCSer.Sql
             finally { query.Free(); }
             return default(LeftArray<valueType>);
         }
+
         /// <summary>
-        /// 获取查询信息
+        /// 获取数据库记录集合
         /// </summary>
         /// <typeparam name="valueType">对象类型</typeparam>
-        /// <typeparam name="modelType">模型类型</typeparam>
-        /// <param name="sqlTool">SQL操作工具</param>
-        /// <param name="connection"></param>
-        /// <param name="sql"></param>
-        /// <param name="readValue"></param>
-        /// <returns>对象集合</returns>
-        internal virtual LeftArray<valueType> Select<valueType, modelType>(Sql.Table<valueType, modelType> sqlTool, ref DbConnection connection, string sql, Func<DbDataReader, valueType> readValue)
-            where valueType : class, modelType
-            where modelType : class
+        /// <param name="sql">SQL 语句</param>
+        /// <param name="readValue">读取数据委托</param>
+        /// <param name="log">日志处理</param>
+        /// <returns>数据库记录集合</returns>
+        public LeftArray<valueType> Select<valueType>(string sql, Func<DbDataReader, valueType> readValue, ILog log = null)
+            where valueType : class
         {
-            if (connection == null) connection = GetConnection();
-            if (connection != null)
+            DbConnection connection = null;
+            try
             {
-                using (DbCommand command = getCommand(connection, sql))
-                {
-                    DbDataReader reader = null;
-                    try
-                    {
-                        reader = command.ExecuteReader(CommandBehavior.SingleResult);
-                    }
-                    catch (Exception error)
-                    {
-                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, sql);
-                    }
-                    if (reader != null)
-                    {
-                        using (reader)
-                        {
-                            LeftArray<valueType> array = new LeftArray<valueType>();
-                            while (reader.Read())
-                            {
-                                valueType value = readValue(reader);
-                                if (value != null) array.Add(value);
-                            }
-                            return array;
-                        }
-                    }
-                }
+                LeftArray<valueType> array = Select(ref connection, sql, readValue, log ?? Connection.Log);
+                FreeConnection(ref connection);
+                return array;
+            }
+            catch (Exception error)
+            {
+                CloseErrorConnection(ref connection);
+                (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, error);
             }
             return default(LeftArray<valueType>);
         }
         /// <summary>
         /// 获取查询信息
         /// </summary>
-        /// <param name="sqlTool">SQL操作工具</param>
+        /// <typeparam name="valueType">对象类型</typeparam>
         /// <param name="connection"></param>
         /// <param name="sql"></param>
         /// <param name="readValue"></param>
+        /// <param name="log"></param>
         /// <returns>对象集合</returns>
-        internal virtual void CustomReader(Sql.Table sqlTool, ref DbConnection connection, string sql, Action<DbDataReader> readValue)
+        internal virtual LeftArray<valueType> Select<valueType>(ref DbConnection connection, string sql, Func<DbDataReader, valueType> readValue, ILog log)
+            where valueType : class
         {
             if (connection == null) connection = GetConnection();
             if (connection != null)
             {
-                using (DbCommand command = getCommand(connection, sql))
+                bool isFinally = false;
+                try
                 {
-                    DbDataReader reader = null;
-                    try
+                    using (DbCommand command = getCommand(connection, sql))
+                    using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
-                        reader = command.ExecuteReader(CommandBehavior.SingleResult);
+                        LeftArray<valueType> array = new LeftArray<valueType>();
+                        while (reader.Read())
+                        {
+                            valueType value = readValue(reader);
+                            if (value != null) array.Add(value);
+                        }
+                        isFinally = true;
+                        return array.NotNull();
                     }
-                    catch (Exception error)
-                    {
-                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, sql);
-                    }
-                    if (reader != null)
+                }
+                finally
+                {
+                    if (!isFinally) (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, sql);
+                }
+            }
+            return default(LeftArray<valueType>);
+        }
+
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <param name="sql">SQL 语句</param>
+        /// <param name="reader">读取数据委托</param>
+        /// <param name="log">日志处理</param>
+        /// <returns>是否成功</returns>
+        public bool CustomReader(string sql, Action<DbDataReader> reader, ILog log = null)
+        {
+            DbConnection connection = null;
+            bool IsFreeConnection = false, IsCustomReader;
+            try
+            {
+                IsCustomReader = CustomReader(ref connection, sql, reader, log ?? Connection.Log);
+                FreeConnection(ref connection);
+                IsFreeConnection = true;
+            }
+            finally
+            {
+                if (!IsFreeConnection) CloseErrorConnection(ref connection);
+            }
+            return IsCustomReader;
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="sql"></param>
+        /// <param name="readValue"></param>
+        /// <param name="log"></param>
+        /// <returns>是否成功</returns>
+        internal virtual bool CustomReader(ref DbConnection connection, string sql, Action<DbDataReader> readValue, ILog log)
+        {
+            if (connection == null) connection = GetConnection();
+            if (connection != null)
+            {
+                bool isFinally = false;
+                try
+                {
+                    using (DbCommand command = getCommand(connection, sql))
+                    using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
                         using (reader)
                         {
                             while (reader.Read()) readValue(reader);
                         }
+                        return isFinally = true;
                     }
                 }
+                finally
+                {
+                    if (!isFinally) (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, sql);
+                }
             }
+            return false;
         }
         /// <summary>
         /// 查询对象
@@ -599,23 +634,23 @@ namespace AutoCSer.Sql
             if (connection == null) connection = GetConnection();
             if (connection != null)
             {
-                using (DbCommand command = getCommand(connection, query.Sql))
+                bool isFinally = false;
+                try
                 {
-                    try
+                    using (DbCommand command = getCommand(connection, query.Sql))
+                    using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
-                        using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
+                        if (reader.Read())
                         {
-                            if (reader.Read())
-                            {
-                                DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
-                                return true;
-                            }
+                            DataModel.Model<modelType>.Setter.Set(reader, value, query.MemberMap);
+                            return isFinally = true;
                         }
                     }
-                    catch (Exception error)
-                    {
-                        sqlTool.Log.Add(AutoCSer.Log.LogType.Error, error, query.Sql);
-                    }
+                    isFinally = true;
+                }
+                finally
+                {
+                    if (!isFinally) sqlTool.Log.Add(AutoCSer.Log.LogType.Error, query.Sql);
                 }
             }
             return false;
@@ -806,7 +841,6 @@ namespace AutoCSer.Sql
                 {
                     if (!DataModel.Model<modelType>.Verifyer.Verify(value, memberMap, sqlTool))
                     {
-                        //Console.WriteLine(value.toJson());
                         return false;
                     }
                 }

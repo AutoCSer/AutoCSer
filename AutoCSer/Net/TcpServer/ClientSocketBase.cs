@@ -156,6 +156,13 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected bool isClose;
         /// <summary>
+        /// 是否已经释放资源
+        /// </summary>
+        internal bool IsClose
+        {
+            get { return isClose; }
+        }
+        /// <summary>
         /// 重建连接是否休眠
         /// </summary>
         protected bool isSleep;

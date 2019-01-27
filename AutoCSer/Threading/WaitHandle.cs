@@ -19,6 +19,10 @@ namespace AutoCSer.Threading
         /// </summary>
         private int isSet;
         /// <summary>
+        /// 等待数量
+        /// </summary>
+        private int waitCount;
+        /// <summary>
         /// 初始化同步等待锁
         /// </summary>
         /// <param name="isSet">是否等待中</param>
@@ -46,7 +50,12 @@ namespace AutoCSer.Threading
             if (isSet == 0)
             {
                 Monitor.Enter(waitLock);
-                while (isSet == 0) Monitor.Wait(waitLock);
+                if (isSet == 0)
+                {
+                    ++waitCount;
+                    do { Monitor.Wait(waitLock); } while (isSet == 0);
+                    --waitCount;
+                }
                 Monitor.Pulse(waitLock);
                 Monitor.Exit(waitLock);
             }
@@ -68,11 +77,12 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 结束等待并重置
         /// </summary>
+        /// <param name="millisecondsTimeout"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void PulseReset()
+        internal void PulseReset(int millisecondsTimeout = 1)
         {
             Set();
-            System.Threading.Thread.Sleep(0);
+            while (waitCount != 0) System.Threading.Thread.Sleep(millisecondsTimeout);
             Reset();
         }
     }
