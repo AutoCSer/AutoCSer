@@ -384,7 +384,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool CustomReaderQueue(ref DbConnection connection, string sql, Action<DbDataReader> reader)
         {
-            return Client.CustomReader(ref connection, sql, reader, Log);
+            return Client.CustomReader(ref connection, sql, reader, Log, 0);
         }
 
         /// <summary>
@@ -513,6 +513,7 @@ namespace AutoCSer.Sql
             value.Or(memberMap);
             return value;
         }
+
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -577,29 +578,29 @@ namespace AutoCSer.Sql
                         if (modelAttribute != null && modelAttribute.DeleteColumnNames.length() != 0)
                         {
                             HashSet<string> deleteNames = modelAttribute.DeleteColumnNames.getHash(value => ignoreCase ? value.toLower() : value);
-                            Column[] deleteColumns = table.Columns.Columns.getFindArray(value => deleteNames.Contains(ignoreCase ? value.SqlName.ToLower() : value.SqlName));
+                            Column[] deleteColumns = table.Columns.Columns.getFindArray(value => deleteNames.Contains(ignoreCase ? value.Name.ToLower() : value.Name));
                             if (deleteColumns.Length != 0)
                             {
-                                table.Columns.Columns = table.Columns.Columns.getFindArray(value => !deleteNames.Contains(ignoreCase ? value.SqlName.ToLower() : value.SqlName));
+                                table.Columns.Columns = table.Columns.Columns.getFindArray(value => !deleteNames.Contains(ignoreCase ? value.Name.ToLower() : value.Name));
                                 Client.DeleteFields(dbConnection, new ColumnCollection { Name = memberTable.Columns.Name, Columns = deleteColumns });
                             }
                         }
-                        using (AutoCSer.StateSearcher.AsciiSearcher<Column> sqlColumnNames = new AutoCSer.StateSearcher.AsciiSearcher<Column>(ignoreCase ? table.Columns.Columns.getArray(value => value.SqlName.ToLower()) : table.Columns.Columns.getArray(value => value.SqlName), table.Columns.Columns, false))
+                        using (AutoCSer.StateSearcher.AsciiSearcher<Column> sqlColumnNames = new AutoCSer.StateSearcher.AsciiSearcher<Column>(ignoreCase ? table.Columns.Columns.getArray(value => value.Name.ToLower()) : table.Columns.Columns.getArray(value => value.Name), table.Columns.Columns, false))
                         {
                             LeftArray<Column> newColumns;
-                            if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.Searcher.SearchLower(value.SqlName) < 0);
-                            else newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.Searcher.Search(value.SqlName) < 0);
+                            if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.Searcher.SearchLower(value.Name) < 0);
+                            else newColumns = memberTable.Columns.Columns.getFind(value => sqlColumnNames.Searcher.Search(value.Name) < 0);
                             if (newColumns.Length != 0 && Client.IsAddField)
                             {
                                 Client.AddFields(dbConnection, new ColumnCollection { Name = memberTable.Columns.Name, Columns = newColumns.ToArray() });
                                 newColumns.Add(table.Columns.Columns);
                                 table.Columns.Columns = newColumns.ToArray();
                             }
-                            if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.SqlName.ToLower()), ignoreCase));
-                            else newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.SqlName), ignoreCase));
+                            if (ignoreCase) newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.Name.ToLower()), ignoreCase));
+                            else newColumns = memberTable.Columns.Columns.getFind(value => !value.IsMatch(sqlColumnNames.Get(value.Name), ignoreCase));
                             if (newColumns.count() != 0)
                             {
-                                Log.Add(AutoCSer.Log.LogType.Error, "表格 " + memberTable.Columns.Name + " 字段类型不匹配 : " + newColumns.JoinString(",", value => value.SqlName));
+                                Log.Add(AutoCSer.Log.LogType.Error, "表格 " + memberTable.Columns.Name + " 字段类型不匹配 : " + newColumns.JoinString(",", value => value.Name));
                             }
                         }
                     }

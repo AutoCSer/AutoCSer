@@ -27,10 +27,6 @@ namespace AutoCSer.Sql.DataModel
         /// </summary>
         internal static readonly Field Identity;
         /// <summary>
-        /// 自增字段名称
-        /// </summary>
-        internal static readonly string IdentitySqlName;
-        /// <summary>
         /// 关键字字段集合
         /// </summary>
         internal static readonly Field[] PrimaryKeys;
@@ -184,7 +180,8 @@ namespace AutoCSer.Sql.DataModel
         /// </summary>
         /// <param name="sqlStream"></param>
         /// <param name="memberMap"></param>
-        internal static void GetNames(CharStream sqlStream, MemberMap<modelType> memberMap)
+        /// <param name="constantConverter"></param>
+        internal static void GetNames(CharStream sqlStream, MemberMap<modelType> memberMap, ConstantConverter constantConverter)
         {
             int isNext = 0;
             foreach (Field field in Fields)
@@ -194,7 +191,7 @@ namespace AutoCSer.Sql.DataModel
                     if (isNext == 0) isNext = 1;
                     else sqlStream.Write(',');
                     if (field.IsSqlColumn) sqlStream.SimpleWriteNotNull(field.GetSqlColumnName());
-                    else sqlStream.SimpleWriteNotNull(field.SqlFieldName);
+                    else constantConverter.ConvertNameToSqlStream(sqlStream, field.FieldInfo.Name);
                 }
             }
         }
@@ -239,7 +236,6 @@ namespace AutoCSer.Sql.DataModel
             foreach (Field field in Fields) MemberMap.SetMember(field.MemberMapIndex);
             if (Identity != null)
             {
-                IdentitySqlName = Identity.SqlFieldName;
 #if NOJIT
                 new identity(Identity.Field).Get(out GetIdentity, out SetIdentity);
                 Action<valueType, int> setter32;

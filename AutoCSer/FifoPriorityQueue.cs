@@ -38,6 +38,16 @@ namespace AutoCSer
         /// </summary>
         private Dictionary<keyType, Node> dictionary;
         /// <summary>
+        /// 获取所有数据
+        /// </summary>
+        public IEnumerable<KeyValue<keyType, valueType>> KeyValues
+        {
+            get
+            {
+                foreach (KeyValuePair<keyType, Node> KeyValue in dictionary) yield return new KeyValue<keyType, valueType>(KeyValue.Key, KeyValue.Value.Value);
+            }
+        }
+        /// <summary>
         /// 数据数量
         /// </summary>
         public int Count

@@ -464,17 +464,16 @@ Connection: Keep-Alive
             int keepAliveCount = isKeepAlive ? ((count <<= 2) + (maxSocketCount - 1)) / maxSocketCount : 1;
             using (Task task = new Task(maxSocketCount, keepAliveCount))
             {
-                Stopwatch time = new Stopwatch();
                 do
                 {
                     Console.WriteLine("Start request " + maxSocketCount.toString() + " / " + count.toString() + (isKeepAlive ? " +KeppAlive" : null));
                     task.ErrorCount = task.RefusedCount = 0;
-                    time.Restart();
+                    long time = AutoCSer.Pub.StopwatchTicks;
                     task.Add(count);
                     task.Wait();
-                    time.Stop();
+                    time = AutoCSer.Pub.GetStopwatchTicks(time);
                     task.CloseClient();
-                    long milliseconds = time.ElapsedMilliseconds;
+                    long milliseconds = (long)new TimeSpan(time).TotalMilliseconds;
                     Console.WriteLine(@"Finally[" + count.toString() + "] Error[" + task.ErrorCount.toString() + "] Refused[" + task.RefusedCount.toString() + "] " + milliseconds.toString() + "ms" + (milliseconds == 0 ? null : ("[" + ((count - task.RefusedCount) / milliseconds).toString() + "/ms]")) + " " + loopTestType.ToString());
                     Console.WriteLine(@"Sleep 3000ms
 ");

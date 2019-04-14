@@ -38,11 +38,12 @@ namespace AutoCSer.Sql.MySql
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="sql">SQL语句</param>
+        /// <param name="commandType"></param>
         /// <returns>SQL命令</returns>
-        protected override DbCommand getCommand(DbConnection connection, string sql)
+        protected override DbCommand getCommand(DbConnection connection, string sql, CommandType commandType)
         {
             DbCommand command = new MySqlCommand(sql, new UnionType { Value = connection }.MySqlConnection);
-            command.CommandType = CommandType.Text;
+            command.CommandType = commandType;
             return command;
         }
         /// <summary>
@@ -53,6 +54,21 @@ namespace AutoCSer.Sql.MySql
         protected override DbDataAdapter getAdapter(DbCommand command)
         {
             return new MySqlDataAdapter(new UnionType { Value = command }.MySqlCommand);
+        }
+        /// <summary>
+        /// 获取表格名称集合
+        /// </summary>
+        /// <returns></returns>
+        public override LeftArray<string> GetTableNames()
+        {
+            LeftArray<string> names = new LeftArray<string>();
+            using (DbConnection dbConnection = GetConnection())
+            using (DbCommand command = getCommand(dbConnection, "show tables;", CommandType.Text))
+            using (DbDataReader reader = command.ExecuteReader(CommandBehavior.Default))
+            {
+                while (reader.Read()) names.Add((string)reader[0]);
+            }
+            return names;
         }
         /// <summary>
         /// 最大字符串长度(最大65532字节)
@@ -152,7 +168,7 @@ create index`");
         /// <returns>表格是否存在</returns>
         private bool isTable(DbConnection connection, string tableName)
         {
-            using (DbCommand command = getCommand(connection, "show tables;"))
+            using (DbCommand command = getCommand(connection, "show tables;", CommandType.Text))
             using (DbDataReader reader = command.ExecuteReader(CommandBehavior.Default))
             {
                 while (reader.Read())
@@ -173,7 +189,7 @@ create index`");
             if (isTable(connection, tableName))
             {
                 using (DbCommand command = getCommand(connection, @"describe `" + tableName + @"`;
-show index from `" + tableName + @"`;"))
+show index from `" + tableName + @"`;", CommandType.Text))
                 using (DbDataReader reader = command.ExecuteReader(CommandBehavior.Default))
                 {
                     Column identity = null;
@@ -315,7 +331,7 @@ index ");
         /// </summary>
         /// <param name="sqlStream">SQL语句流</param>
         /// <param name="column">列信息</param>
-        private static void appendColumn(CharStream sqlStream, Column column)
+        private void appendColumn(CharStream sqlStream, Column column)
         {
             sqlStream.Write('`');
             sqlStream.WriteNotNull(column.Name);
@@ -350,7 +366,7 @@ index ");
             if (!string.IsNullOrEmpty(column.Remark))
             {
                 sqlStream.WriteNotNull(" comment '");
-                ConstantConverter.Default.Convert(sqlStream, column.Remark);
+                constantConverter.Convert(sqlStream, column.Remark);
                 sqlStream.Write('\'');
             }
         }
@@ -466,14 +482,14 @@ update `");
             {
                 sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
                 sqlStream.WriteNotNull("select ");
-                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
                 else sqlStream.Write('*');
                 sqlStream.WriteNotNull(" from `");
                 sqlStream.WriteNotNull(sqlTool.TableName);
                 sqlStream.Write('`');
                 sqlStream.Write(' ');
                 createQuery.WriteWhere(sqlTool, sqlStream, ref query);
-                createQuery.WriteOrder(sqlTool, sqlStream, ref query);
+                createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
                 if ((createQuery.GetCount | query.SkipCount) != 0)
                 {
                     sqlStream.WriteNotNull(" limit ");
@@ -533,11 +549,11 @@ update `");
             where modelType : class
         {
             sqlStream.WriteNotNull("select ");
-            DataModel.Model<modelType>.GetNames(sqlStream, memberMap);
+            DataModel.Model<modelType>.GetNames(sqlStream, memberMap, constantConverter);
             sqlStream.WriteNotNull(" from `");
             sqlStream.WriteNotNull(tableName);
             sqlStream.WriteNotNull("` where ");
-            sqlStream.WriteNotNull(DataModel.Model<modelType>.IdentitySqlName);
+            constantConverter.ConvertNameToSqlStream(sqlStream, DataModel.Model<modelType>.Identity.FieldInfo.Name);
             sqlStream.Write('=');
             AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
             sqlStream.WriteNotNull(" limit 0,1;");
@@ -584,11 +600,11 @@ update `");
             where modelType : class
         {
             sqlStream.WriteNotNull("select ");
-            DataModel.Model<modelType>.GetNames(sqlStream, memberMap);
+            DataModel.Model<modelType>.GetNames(sqlStream, memberMap, constantConverter);
             sqlStream.WriteNotNull(" from `");
             sqlStream.WriteNotNull(tableName);
             sqlStream.WriteNotNull("` where ");
-            DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, ConstantConverter.Default);
+            DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, constantConverter);
             sqlStream.WriteNotNull(" limit 0,1;");
         }
         /// <summary>
@@ -622,9 +638,9 @@ update `");
                     sqlStream.SimpleWriteNotNull(" update `");
                     sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                     sqlStream.SimpleWriteNotNull("` set ");
-                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
+                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, constantConverter, sqlTool);
                     sqlStream.SimpleWriteNotNull(" where ");
-                    sqlStream.SimpleWriteNotNull(DataModel.Model<modelType>.IdentitySqlName);
+                    constantConverter.ConvertNameToSqlStream(sqlStream, DataModel.Model<modelType>.Identity.FieldInfo.Name);
                     sqlStream.Write('=');
                     AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
                     sqlStream.Write(';');
@@ -642,9 +658,9 @@ update `");
                     sqlStream.WriteNotNull(" update `");
                     sqlStream.WriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("` set ");
-                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
+                    DataModel.Model<modelType>.Updater.Update(sqlStream, memberMap, value, constantConverter, sqlTool);
                     sqlStream.WriteNotNull(" where ");
-                    DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, ConstantConverter.Default);
+                    DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, constantConverter);
                     sqlStream.Write(';');
                     query.UpdateSql = sqlStream.ToString();
                     return true;
@@ -739,9 +755,9 @@ update `");
                     sqlStream.WriteNotNull("insert into`");
                     sqlStream.WriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("`(");
-                    DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap);
+                    DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap, constantConverter);
                     sqlStream.WriteNotNull(")values(");
-                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
+                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, constantConverter, sqlTool);
                     sqlStream.WriteNotNull(");");
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery)
@@ -756,9 +772,9 @@ update `");
                     sqlStream.WriteNotNull("insert into`");
                     sqlStream.WriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("`(");
-                    DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap);
+                    DataModel.Model<modelType>.Inserter.GetColumnNames(sqlStream, memberMap, constantConverter);
                     sqlStream.WriteNotNull(")values(");
-                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, ConstantConverter.Default, sqlTool);
+                    DataModel.Model<modelType>.Inserter.Insert(sqlStream, memberMap, value, constantConverter, sqlTool);
                     sqlStream.WriteNotNull(");");
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery && DataModel.Model<modelType>.PrimaryKeys.Length != 0)
@@ -832,7 +848,7 @@ update `");
         internal override SubArray<valueType> Insert<valueType, modelType>(Table<valueType, modelType> sqlTool, ref DbConnection connection, ref SubArray<valueType> array)
         {
             MemberMap<modelType> memberMap = MemberMap<modelType>.Default;
-            InsertQuery query = new InsertQuery();
+            InsertQuery query = new InsertQuery { NotQuery = true };
             LeftArray<valueType> newArray = new LeftArray<valueType>(array.Length);
             foreach (valueType value in array)
             {
@@ -889,7 +905,7 @@ update `");
                     sqlStream.WriteNotNull("delete from `");
                     sqlStream.WriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("` where ");
-                    sqlStream.WriteNotNull(DataModel.Model<modelType>.IdentitySqlName);
+                    constantConverter.ConvertNameToSqlStream(sqlStream, DataModel.Model<modelType>.Identity.FieldInfo.Name);
                     sqlStream.Write('=');
                     AutoCSer.Extension.Number.ToString(DataModel.Model<modelType>.GetIdentity(value), sqlStream);
                     sqlStream.Write(';');
@@ -907,7 +923,7 @@ update `");
                     sqlStream.WriteNotNull("delete from `");
                     sqlStream.WriteNotNull(sqlTool.TableName);
                     sqlStream.WriteNotNull("` where ");
-                    DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, ConstantConverter.Default);
+                    DataModel.Model<modelType>.PrimaryKeyWhere.Write(sqlStream, value, constantConverter);
                     sqlStream.Write(';');
                     query.InsertSql = sqlStream.ToString();
                     if (!query.NotQuery)

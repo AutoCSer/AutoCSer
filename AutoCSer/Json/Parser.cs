@@ -811,7 +811,7 @@ namespace AutoCSer.Json
                                     millisecond *= 10;
                                     millisecond += code;
                                 }
-                                value = JavascriptLocalMinTime.AddTicks((isSign ? -millisecond : millisecond) * Date.MillisecondTicks);
+                                value = JavascriptLocalMinTime.AddTicks((isSign ? -millisecond : millisecond) * TimeSpan.TicksPerMillisecond);
                                 return true;
                             }
                         }

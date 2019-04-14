@@ -53,7 +53,7 @@ namespace AutoCSer.CacheServer
         {
             this.Cache = cache;
             this.onCache = onCache;
-            timeoutTicks = cache.Config.GetCacheLoadTimeoutSeconds * Date.SecondTicks;
+            timeoutTicks = cache.Config.GetCacheLoadTimeoutSeconds * TimeSpan.TicksPerSecond;
             timeout = DateTime.MaxValue;
             cache.AppendWait(this);
         }

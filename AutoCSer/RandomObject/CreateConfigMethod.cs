@@ -171,7 +171,7 @@ namespace AutoCSer.RandomObject
         {
             if (config.IsSecondDateTime)
             {
-                return new DateTime((long)(AutoCSer.Random.Default.NextULong() % (ulong)DateTime.MaxValue.Ticks) / Date.SecondTicks * Date.SecondTicks);
+                return new DateTime((long)(AutoCSer.Random.Default.NextULong() % (ulong)DateTime.MaxValue.Ticks) / TimeSpan.TicksPerSecond * TimeSpan.TicksPerSecond);
             }
             switch (AutoCSer.Random.Default.NextByte())
             {

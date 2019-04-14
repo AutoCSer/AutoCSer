@@ -20,7 +20,7 @@ namespace AutoCSer.OpenAPI.Weixin
             partnerid = config.partnerid;
             prepayid = prePayId;
             this.noncestr = noncestr;
-            timestamp = (((Date.NowTime.Set().Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / Date.SecondTicks).toString();
+            timestamp = (((Date.NowTime.Set().Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerSecond).toString();
             Sign<AppPrePayIdOrder>.Set(this, config.key);
         }
         /// <summary>

@@ -7,6 +7,7 @@ using AutoCSer.Extension;
 using System.Data;
 using System.Runtime.CompilerServices;
 using AutoCSer.Log;
+using System.Data.SqlClient;
 
 namespace AutoCSer.Sql
 {
@@ -35,11 +36,16 @@ namespace AutoCSer.Sql
             get { return MsSql.Sql2000.DefaultNowTimeMilliseconds; }
         }
         /// <summary>
+        /// 常量转换
+        /// </summary>
+        protected ConstantConverter constantConverter;
+        /// <summary>
         /// SQL客户端操作
         /// </summary>
         /// <param name="connection">SQL连接信息</param>
         protected Client(Connection connection)
         {
+            constantConverter = ConstantConverter.Default;
             Connection = connection;
             ConnectionPool = ConnectionPool.Get(connection.Attribute.ClientType, connection.ConnectionString, connection.IsPool);
         }
@@ -115,22 +121,39 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="sql">SQL语句</param>
+        /// <param name="commandType"></param>
         /// <returns>SQL命令</returns>
-        protected abstract DbCommand getCommand(DbConnection connection, string sql);
+        protected abstract DbCommand getCommand(DbConnection connection, string sql, CommandType commandType);
+        /// <summary>
+        /// 获取SQL命令
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="sql">SQL语句</param>
+        /// <param name="timeoutSeconds"></param>
+        /// <param name="commandType"></param>
+        /// <returns>SQL命令</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected DbCommand getCommand(DbConnection connection, string sql, CommandType commandType, int timeoutSeconds)
+        {
+            DbCommand command = getCommand(connection, sql, commandType);
+            if (timeoutSeconds > 0) command.CommandTimeout = timeoutSeconds;
+            return command;
+        }
         /// <summary>
         /// 执行SQL语句
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="sql">SQL语句</param>
+        /// <param name="timeoutSeconds"></param>
         /// <returns>受影响的行数</returns>
-        protected int executeNonQuery(ref DbConnection connection, string sql)
+        protected int executeNonQuery(ref DbConnection connection, string sql, int timeoutSeconds = 0)
         {
             if (connection == null)
             {
                 connection = GetConnection();
                 if (connection == null) return int.MinValue;
             }
-            using (DbCommand command = getCommand(connection, sql)) return command.ExecuteNonQuery();
+            using (DbCommand command = getCommand(connection, sql, CommandType.Text, timeoutSeconds)) return command.ExecuteNonQuery();
         }
         /// <summary>
         /// 执行SQL语句
@@ -141,7 +164,7 @@ namespace AutoCSer.Sql
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected int executeNonQuery(DbConnection connection, string sql)
         {
-            using (DbCommand command = getCommand(connection, sql)) return command.ExecuteNonQuery();
+            using (DbCommand command = getCommand(connection, sql, CommandType.Text)) return command.ExecuteNonQuery();
         }
         /// <summary>
         /// 执行SQL语句
@@ -151,11 +174,34 @@ namespace AutoCSer.Sql
         /// <returns>受影响的行数</returns>
         protected int executeNonQuery(Transaction transaction, string sql)
         {
-            using (DbCommand command = getCommand(transaction.Connection, sql))
+            using (DbCommand command = getCommand(transaction.Connection, sql, CommandType.Text))
             {
                 command.Transaction = transaction.DbTransaction;
                 return command.ExecuteNonQuery();
             }
+        }
+        /// <summary>
+        /// 执行SQL语句
+        /// </summary>
+        /// <param name="sql">SQL 语句</param>
+        /// <param name="timeoutSeconds">命令超时时间秒数，0 表示默认不设置</param>
+        /// <returns>是否成功</returns>
+        public int ExecuteNonQuery(string sql, int timeoutSeconds = 0)
+        {
+            DbConnection connection = null;
+            bool isFreeConnection = false;
+            int result;
+            try
+            {
+                result = executeNonQuery(ref connection, sql, timeoutSeconds);
+                FreeConnection(ref connection);
+                isFreeConnection = true;
+            }
+            finally
+            {
+                if (!isFreeConnection) CloseErrorConnection(ref connection);
+            }
+            return result;
         }
         /// <summary>
         /// 获取数据集并关闭SQL命令
@@ -179,6 +225,24 @@ namespace AutoCSer.Sql
         /// <param name="command">SQL命令</param>
         /// <returns>数据适配器</returns>
         protected abstract DbDataAdapter getAdapter(DbCommand command);
+        /// <summary>
+        /// 获取表格名称集合
+        /// </summary>
+        /// <returns></returns>
+        public abstract LeftArray<string> GetTableNames();
+        /// <summary>
+        /// 判断表格是否存在
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public bool IsTable(string tableName)
+        {
+            foreach (string name in GetTableNames())
+            {
+                if (name == tableName) return true;
+            }
+            return false;
+        }
         /// <summary>
         /// 成员信息转换为数据列
         /// </summary>
@@ -232,7 +296,7 @@ namespace AutoCSer.Sql
         /// <returns></returns>
         internal virtual object GetValue(DbConnection connection, string sql)
         {
-            using (DbCommand command = getCommand(connection, sql))
+            using (DbCommand command = getCommand(connection, sql, CommandType.Text))
             {
                 object value = command.ExecuteScalar();
                 if (value != null && value != DBNull.Value) return value;
@@ -314,7 +378,7 @@ namespace AutoCSer.Sql
         internal virtual void GetSql<modelType>(LambdaExpression expression, CharStream sqlStream, ref SelectQuery<modelType> query)
             where modelType : class
         {
-            AutoCSer.Sql.MsSql.ExpressionConverter expressionConverter = new AutoCSer.Sql.MsSql.ExpressionConverter { SqlStream = sqlStream };
+            AutoCSer.Sql.MsSql.ExpressionConverter expressionConverter = new AutoCSer.Sql.MsSql.ExpressionConverter { SqlStream = sqlStream, ConstantConverter = constantConverter };
             expressionConverter.Convert(expression.Body);
             if (query.IndexFieldName == null) query.SetIndex(expressionConverter.FirstMemberName, expressionConverter.FirstMemberSqlName);
         }
@@ -381,7 +445,7 @@ namespace AutoCSer.Sql
                         bool isFinally = false;
                         try
                         {
-                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
                             using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
                                 int skipCount = query.SkipCount;
@@ -440,7 +504,7 @@ namespace AutoCSer.Sql
                         bool isFinally = false;
                         try
                         {
-                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
                             using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
                                 int skipCount = query.SkipCount;
@@ -513,7 +577,7 @@ namespace AutoCSer.Sql
                 bool isFinally = false;
                 try
                 {
-                    using (DbCommand command = getCommand(connection, sql))
+                    using (DbCommand command = getCommand(connection, sql, CommandType.Text))
                     using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
                         LeftArray<valueType> array = new LeftArray<valueType>();
@@ -535,27 +599,79 @@ namespace AutoCSer.Sql
         }
 
         /// <summary>
-        /// 获取查询信息
+        /// 获取数据表格
         /// </summary>
-        /// <param name="sql">SQL 语句</param>
-        /// <param name="reader">读取数据委托</param>
-        /// <param name="log">日志处理</param>
-        /// <returns>是否成功</returns>
-        public bool CustomReader(string sql, Action<DbDataReader> reader, ILog log = null)
+        /// <param name="sql"></param>
+        /// <param name="log"></param>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        public DataTable GetDataTable(string sql, ILog log = null, int timeoutSeconds = 0)
         {
             DbConnection connection = null;
-            bool IsFreeConnection = false, IsCustomReader;
+            bool IsFreeConnection = false;
             try
             {
-                IsCustomReader = CustomReader(ref connection, sql, reader, log ?? Connection.Log);
+                DataTable table = GetDataTable(ref connection, sql, log ?? Connection.Log, timeoutSeconds);
                 FreeConnection(ref connection);
                 IsFreeConnection = true;
+                return table;
             }
             finally
             {
                 if (!IsFreeConnection) CloseErrorConnection(ref connection);
             }
-            return IsCustomReader;
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="sql"></param>
+        /// <param name="log"></param>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        internal DataTable GetDataTable(ref DbConnection connection, string sql, ILog log, int timeoutSeconds)
+        {
+            if (connection == null) connection = GetConnection();
+            if (connection != null)
+            {
+                bool isFinally = false;
+                try
+                {
+                    DataTable table = new DataTable();
+                    using (DbCommand command = getCommand(connection, sql, CommandType.Text, timeoutSeconds))
+                    using (DbDataAdapter adapter = getAdapter(command)) adapter.Fill(table);
+                    return table;
+                }
+                finally
+                {
+                    if (!isFinally) (log ?? AutoCSer.Log.Pub.Log).Add(AutoCSer.Log.LogType.Error, sql);
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// 获取查询信息
+        /// </summary>
+        /// <param name="sql">SQL 语句</param>
+        /// <param name="reader">读取数据委托</param>
+        /// <param name="log">日志处理</param>
+        /// <param name="timeoutSeconds">命令超时时间秒数，0 表示默认不设置</param>
+        /// <returns>是否成功</returns>
+        public bool CustomReader(string sql, Action<DbDataReader> reader, ILog log = null, int timeoutSeconds = 0)
+        {
+            DbConnection connection = null;
+            bool isFreeConnection = false, isCustomReader;
+            try
+            {
+                isCustomReader = CustomReader(ref connection, sql, reader, log ?? Connection.Log, timeoutSeconds);
+                FreeConnection(ref connection);
+                isFreeConnection = true;
+            }
+            finally
+            {
+                if (!isFreeConnection) CloseErrorConnection(ref connection);
+            }
+            return isCustomReader;
         }
         /// <summary>
         /// 获取查询信息
@@ -564,8 +680,9 @@ namespace AutoCSer.Sql
         /// <param name="sql"></param>
         /// <param name="readValue"></param>
         /// <param name="log"></param>
+        /// <param name="timeoutSeconds"></param>
         /// <returns>是否成功</returns>
-        internal virtual bool CustomReader(ref DbConnection connection, string sql, Action<DbDataReader> readValue, ILog log)
+        internal bool CustomReader(ref DbConnection connection, string sql, Action<DbDataReader> readValue, ILog log, int timeoutSeconds)
         {
             if (connection == null) connection = GetConnection();
             if (connection != null)
@@ -573,7 +690,7 @@ namespace AutoCSer.Sql
                 bool isFinally = false;
                 try
                 {
-                    using (DbCommand command = getCommand(connection, sql))
+                    using (DbCommand command = getCommand(connection, sql, CommandType.Text, timeoutSeconds))
                     using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
                         using (reader)
@@ -589,6 +706,85 @@ namespace AutoCSer.Sql
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 创建参数
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="dbType"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public virtual DbParameter CreateParameter(string name, object value, System.Data.DbType dbType, ParameterDirection direction = ParameterDirection.Input)
+        {
+            SqlParameter parameter = new SqlParameter(name, value);
+            parameter.DbType = dbType;
+            parameter.Direction = direction;
+            return parameter;
+        }
+        /// <summary>
+        /// 创建参数
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="dbType"></param>
+        /// <param name="size"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public virtual DbParameter CreateParameter(string name, object value, System.Data.DbType dbType, int size, ParameterDirection direction = ParameterDirection.Output)
+        {
+            SqlParameter parameter = new SqlParameter(name, value);
+            parameter.DbType = dbType;
+            parameter.Direction = direction;
+            parameter.Size = size;
+            return parameter;
+        }
+        /// <summary>
+        /// 执行储存过程
+        /// </summary>
+        /// <param name="storedProcedureName"></param>
+        /// <param name="parameters"></param>
+        /// <param name="log"></param>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        public int ExecuteStoredProcedure(string storedProcedureName, DbParameter[] parameters, ILog log = null, int timeoutSeconds = 0)
+        {
+            DbConnection connection = null;
+            bool isFreeConnection = false;
+            int isExecute;
+            try
+            {
+                isExecute = ExecuteStoredProcedure(ref connection, storedProcedureName, parameters, log ?? Connection.Log, timeoutSeconds);
+                FreeConnection(ref connection);
+                isFreeConnection = true;
+            }
+            finally
+            {
+                if (!isFreeConnection) CloseErrorConnection(ref connection);
+            }
+            return isExecute;
+        }
+        /// <summary>
+        /// 执行储存过程
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="storedProcedureName"></param>
+        /// <param name="parameters"></param>
+        /// <param name="log"></param>
+        /// <param name="timeoutSeconds"></param>
+        /// <returns></returns>
+        internal int ExecuteStoredProcedure(ref DbConnection connection, string storedProcedureName, DbParameter[] parameters, ILog log, int timeoutSeconds)
+        {
+            if (connection == null) connection = GetConnection();
+            if (connection != null)
+            {
+                using (DbCommand command = getCommand(connection, storedProcedureName, CommandType.StoredProcedure, timeoutSeconds))
+                {
+                    command.Parameters.AddRange(parameters);
+                    return command.ExecuteNonQuery();
+                }
+            }
+            return int.MinValue;
         }
         /// <summary>
         /// 查询对象
@@ -637,7 +833,7 @@ namespace AutoCSer.Sql
                 bool isFinally = false;
                 try
                 {
-                    using (DbCommand command = getCommand(connection, query.Sql))
+                    using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
                     using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                     {
                         if (reader.Read())

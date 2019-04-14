@@ -17,6 +17,10 @@ namespace AutoCSer.Sql.MsSql
         /// </summary>
         internal CharStream SqlStream;
         /// <summary>
+        /// 常量转换
+        /// </summary>
+        internal ConstantConverter ConstantConverter;
+        /// <summary>
         /// 第一个参数成员名称
         /// </summary>
         internal string FirstMemberName;
@@ -184,7 +188,7 @@ namespace AutoCSer.Sql.MsSql
         {
             if (typeof(ParameterExpression).IsAssignableFrom(expression.Expression.GetType()))
             {
-                string name = expression.Member.Name, sqlName = Field.ToSqlName(name);
+                string name = expression.Member.Name, sqlName = ConstantConverter.ConvertName(name);
                 if (FirstMemberName == null)
                 {
                     FirstMemberName = name;
@@ -334,9 +338,9 @@ namespace AutoCSer.Sql.MsSql
         {
             if (value != null)
             {
-                Action<CharStream, object> toString = ConstantConverter.Default[value.GetType()];
+                Action<CharStream, object> toString = ConstantConverter[value.GetType()];
                 if (toString != null) toString(SqlStream, value);
-                else ConstantConverter.Default.Convert(SqlStream, value.ToString());
+                else ConstantConverter.Convert(SqlStream, value.ToString());
             }
             else SqlStream.WriteJsonNull();
         }
@@ -410,7 +414,7 @@ namespace AutoCSer.Sql.MsSql
                     default:
                         Convert(arguments[0]);
                         SqlStream.SimpleWriteNotNull(isIn ? " In(" : " Not In(");
-                        Action<CharStream, object> toString = ConstantConverter.Default[array[0].GetType()];
+                        Action<CharStream, object> toString = ConstantConverter[array[0].GetType()];
                         int index = 0;
                         if (toString == null)
                         {
@@ -418,7 +422,7 @@ namespace AutoCSer.Sql.MsSql
                             {
                                 if (index == 0) index = 1;
                                 else SqlStream.Write(',');
-                                ConstantConverter.Default.Convert(SqlStream, value.ToString());
+                                ConstantConverter.Convert(SqlStream, value.ToString());
                             }
                         }
                         else

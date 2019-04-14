@@ -51,7 +51,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         internal DistributionFileReader(Distributor node, DistributionConfig config) : base(node.Writer, config ?? defaultConfig)
         {
             Node = node;
-            timeoutTicks = Math.Max((config ?? defaultConfig).TimeoutSeconds, 1) * -Date.SecondTicks;
+            timeoutTicks = Math.Max((config ?? defaultConfig).TimeoutSeconds, 1) * -TimeSpan.TicksPerSecond;
             readerIndex = -1;
 
             int isReader = 0;

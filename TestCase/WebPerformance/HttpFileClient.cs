@@ -422,7 +422,6 @@ Date: Mon, 15 May 2017 12:16:35 GMT
             int cpuCount = AutoCSer.Threading.Pub.CpuCount, maxSocketCount = Math.Min(cpuCount * clientCountPerCpu, maxClientCount);
             using (Task task = new Task(maxSocketCount, 1))
             {
-                Stopwatch time = new Stopwatch();
                 do
                 {
                     for (int pipeline = 16; pipeline != 0; pipeline >>= 1)
@@ -436,12 +435,12 @@ Date: Mon, 15 May 2017 12:16:35 GMT
                             task.ErrorCount = task.RefusedCount = 0;
                             requestData = new SubArray<byte>(requestDatas[(byte)loopTestType], 0, requestDatas[(byte)loopTestType].Length / 16 * pipeline);
                             receiveKeepAliveSize = responseSizes[(byte)loopTestType] * pipeline;
-                            time.Restart();
+                            long time = AutoCSer.Pub.StopwatchTicks;
                             task.Add(count / pipeline);
                             task.Wait();
-                            time.Stop();
+                            time = AutoCSer.Pub.GetStopwatchTicks(time);
                             task.CloseClient();
-                            long milliseconds = time.ElapsedMilliseconds;
+                            long milliseconds = (long)new TimeSpan(time).TotalMilliseconds;
                             Console.WriteLine(@"Finally[" + count.toString() + "] Error[" + (task.ErrorCount * pipeline).toString() + "] Refused[" + task.RefusedCount.toString() + "] " + milliseconds.toString() + "ms" + (milliseconds == 0 ? null : ("[" + ((count - task.RefusedCount) / milliseconds).toString() + "/ms]")) + " " + loopTestType.ToString());
                             Console.WriteLine(@"Sleep 3000ms
 ");

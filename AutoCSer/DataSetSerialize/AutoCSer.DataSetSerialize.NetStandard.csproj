@@ -36,6 +36,7 @@
     <Compile Include="DataSet.cs" />
     <Compile Include="DataSource.cs" />
     <Compile Include="DataTable.cs" />
+    <Compile Include="IDataTableReader.cs" />
     <Compile Include="DataWriter.cs" />
     <Compile Include="Extension\DateTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

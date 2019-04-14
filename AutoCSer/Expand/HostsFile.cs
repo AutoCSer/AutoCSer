@@ -189,7 +189,7 @@ namespace AutoCSer
                     foreach (string domain in domains)
                     {
                         if (ip == null) ip = domain;
-                        else return domains.joinString(' ') + note;
+                        else if(!string.IsNullOrEmpty(domain)) return domains.joinString(' ') + note;
                     }
                 }
                 return note ?? string.Empty;

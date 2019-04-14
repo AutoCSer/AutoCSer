@@ -43,7 +43,7 @@ namespace AutoCSer.Example.OrmTable
                 };
                 //return new AutoCSer.Sql.Connection
                 //{
-                //    Attribute = new AutoCSer.Sql.ClientTypeAttribute { ClientType = typeof(AutoCSer.Sql.MySql.Client) },
+                //    Attribute = new AutoCSer.Sql.ClientKindAttribute { ClientType = typeof(AutoCSer.Sql.MySql.Client) },
                 //    ConnectionString = "Host=127.0.0.1;DataBase=AutoCSerExample;User id=Example;Password=Example"
                 //};
                 //grant usage on *.* to Example@127.0.0.1 identified by 'Example' with grant option;

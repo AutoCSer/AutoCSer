@@ -59,5 +59,9 @@ namespace AutoCSer.Extension
         /// 获取当前时间函数信息
         /// </summary>
         public static readonly System.Reflection.MethodInfo TableGetNowTimeMethod = typeof(AutoCSer.Sql.Table).GetMethod("GetNowTime", BindingFlags.Instance | BindingFlags.NonPublic);
+        /// <summary>
+        /// SQL名称关键字处理函数信息
+        /// </summary>
+        public static readonly System.Reflection.MethodInfo ConstantConverterConvertNameToSqlStreamMethod = ((Action<CharStream, string>)AutoCSer.Sql.ConstantConverter.Default.ConvertNameToSqlStream).Method;
     }
 }

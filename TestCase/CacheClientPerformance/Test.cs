@@ -27,7 +27,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// <summary>
         /// 计时器
         /// </summary>
-        protected readonly Stopwatch time = new Stopwatch();
+        protected long time;
         /// <summary>
         /// 测试回调
         /// </summary>
@@ -82,7 +82,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             errorCount = 0;
             Console.WriteLine("start " + count.toString() + " " + callbackType.ToString() + " " + type.ToString() + (isFile ? " + File" : null));
             waitEvent.Reset();
-            time.Restart();
+            time = AutoCSer.Pub.StopwatchTicks;
         }
         /// <summary>
         /// 测试回调
@@ -145,10 +145,9 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         protected void wait()
         {
-            Console.WriteLine("loop end " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine("loop end " + ((long)new TimeSpan(AutoCSer.Pub.StopwatchTicks - time).TotalMilliseconds).toString() + "ms");
             waitEvent.WaitOne();
-            time.Stop();
-            long milliseconds = Math.Max(time.ElapsedMilliseconds, 1);
+            long milliseconds = Math.Max((long)new TimeSpan(AutoCSer.Pub.StopwatchTicks - time).TotalMilliseconds, 1);
             Console.WriteLine(count.toString() + " / " + milliseconds.toString() + "ms = " + (count / milliseconds) + "/ms " + (errorCount == 0 ? null : (" ERROR[" + errorCount.toString() + "]")));
             Console.WriteLine(@"Sleep 3000ms
 ");

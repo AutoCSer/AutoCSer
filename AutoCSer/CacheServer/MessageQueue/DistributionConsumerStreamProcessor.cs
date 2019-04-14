@@ -69,7 +69,7 @@ namespace AutoCSer.CacheServer.MessageQueue
             }
             finally
             {
-                if (isSendCount == 0 && consumer.IsProcessor(this)) AutoCSer.Threading.TimerTask.Default.Add(Start, Date.NowTime.Now.AddTicks(Date.SecondTicks));
+                if (isSendCount == 0 && consumer.IsProcessor(this)) AutoCSer.Threading.TimerTask.Default.Add(Start, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
             }
         }
         /// <summary>
@@ -115,7 +115,7 @@ namespace AutoCSer.CacheServer.MessageQueue
                 if (isMessage == 0 && consumer.IsProcessor(this))
                 {
                     //FreeMessageKeepCallback();
-                    AutoCSer.Threading.TimerTask.Default.Add(reStart, Date.NowTime.Now.AddTicks(Date.SecondTicks));
+                    AutoCSer.Threading.TimerTask.Default.Add(reStart, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
                 }
             }
         }

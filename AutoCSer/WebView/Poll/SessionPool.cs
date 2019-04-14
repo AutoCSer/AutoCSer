@@ -18,7 +18,7 @@ namespace AutoCSer.WebView.Poll
         /// <param name="timeoutSeconds"></param>
         public SessionPool(int timeoutSeconds = 3600)
         {
-            long timeoutTicks = AutoCSer.Date.SecondTicks * Math.Max(timeoutSeconds, 60);
+            long timeoutTicks = TimeSpan.TicksPerSecond * Math.Max(timeoutSeconds, 60);
             sessions = new Session[256];
             for (int index = sessions.Length; index != 0; sessions[--index] = new Session(timeoutTicks)) ;
         }

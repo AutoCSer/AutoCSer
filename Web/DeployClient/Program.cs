@@ -202,7 +202,7 @@ namespace AutoCSer.Web.DeployClient
                         Console.ForegroundColor = (index & 1) == 0 ? ConsoleColor.Red : ConsoleColor.White;
                         Console.WriteLine((index++).toString() + " -> create Open Example");
                         Console.ForegroundColor = (index & 1) == 0 ? ConsoleColor.Red : ConsoleColor.White;
-                        Console.WriteLine((index++).toString() + " -> create AutoCSer.Example.zip");
+                        Console.WriteLine((index++).toString() + " -> create AutoCSer.zip");
 
                         Console.ResetColor();
                         Console.WriteLine("press quit to exit.");

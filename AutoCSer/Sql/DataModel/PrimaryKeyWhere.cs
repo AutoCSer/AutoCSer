@@ -60,7 +60,12 @@ namespace AutoCSer.Sql.DataModel
             }
             else
             {
-                generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_0, AutoCSer.Emit.Pub.GetNameAssignmentPool(field.SqlFieldName), field.SqlFieldName.Length + 1);
+                generator.Emit(OpCodes.Ldarg_2);
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldstr, field.FieldInfo.Name);
+                generator.call(AutoCSer.Extension.EmitGenerator_Sql.ConstantConverterConvertNameToSqlStreamMethod);
+                generator.charStreamWriteChar(OpCodes.Ldarg_0, '=');
+                //generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_0, AutoCSer.Emit.Pub.GetNameAssignmentPool(field.SqlFieldName), field.SqlFieldName.Length + 1);
                 generator.Emit(OpCodes.Ldarg_2);
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldarg_1);

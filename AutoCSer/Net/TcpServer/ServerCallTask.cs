@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="value"></param>
         internal void Add(ServerCallBase value)
         {
-            value.TaskTicks = TaskConfig.Default.Stopwatch.ElapsedTicks;
+            value.TaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
             ServerCallBase headValue;
             do
             {

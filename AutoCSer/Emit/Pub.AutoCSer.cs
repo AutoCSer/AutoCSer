@@ -12,24 +12,24 @@ namespace AutoCSer.Emit
     /// </summary>
     internal static partial class Pub
     {
-        /// <summary>
-        /// 名称赋值数据信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<string, Pointer> nameAssignmentPools = new AutoCSer.Threading.LockDictionary<string, Pointer>();
-        /// <summary>
-        /// 获取名称赋值数据
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        internal static unsafe char* GetNameAssignmentPool(string name)
-        {
-            Pointer pointer;
-            if (nameAssignmentPools.TryGetValue(name, out pointer)) return pointer.Char;
-            char* value = NamePool.Get(name, 0, 1);
-            *(value + name.Length) = '=';
-            nameAssignmentPools.Set(name, new Pointer { Data = value });
-            return value;
-        }
+        ///// <summary>
+        ///// 名称赋值数据信息集合
+        ///// </summary>
+        //private static readonly AutoCSer.Threading.LockDictionary<string, Pointer> nameAssignmentPools = new AutoCSer.Threading.LockDictionary<string, Pointer>();
+        ///// <summary>
+        ///// 获取名称赋值数据
+        ///// </summary>
+        ///// <param name="name"></param>
+        ///// <returns></returns>
+        //internal static unsafe char* GetNameAssignmentPool(string name)
+        //{
+        //    Pointer pointer;
+        //    if (nameAssignmentPools.TryGetValue(name, out pointer)) return pointer.Char;
+        //    char* value = NamePool.Get(name, 0, 1);
+        //    *(value + name.Length) = '=';
+        //    nameAssignmentPools.Set(name, new Pointer { Data = value });
+        //    return value;
+        //}
 
         /// <summary>
         /// 可空类型是否为空判断函数信息集合

@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.Lock
         /// <param name="randomNo">锁序号</param>
         internal Manager(DataStructure.Lock node, uint timeoutMilliseconds, ref ReturnValue<ulong> randomNo) : base(node, timeoutMilliseconds)
         {
-            timeout = Date.NowTime.Now.AddTicks(timeoutTicks - Date.SecondTicks);
+            timeout = Date.NowTime.Now.AddTicks(timeoutTicks - TimeSpan.TicksPerSecond);
             Step = Step.Lock;
             this.randomNo = randomNo.Value;
             randomNo.Type = ReturnType.Unknown;

@@ -361,8 +361,8 @@ namespace AutoCSer.Xml
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(DateTime value)
         {
-            CharStream.PrepLength(AutoCSer.Date.SqlMillisecondSize);
-            Date.ToSqlMillisecond(value, CharStream);
+            CharStream.PrepLength(AutoCSer.Date.MillisecondStringSize);
+            Date.ToMillisecondString(value, CharStream);
         }
         /// <summary>
         /// 时间转换

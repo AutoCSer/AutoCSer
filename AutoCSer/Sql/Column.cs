@@ -14,16 +14,6 @@ namespace AutoCSer.Sql
         /// </summary>
         public string Name;
         /// <summary>
-        /// SQL名称
-        /// </summary>
-        public string SqlName
-        {
-            get
-            {
-                return Field.ToSqlName(Name);
-            }
-        }
-        /// <summary>
         /// 表格列类型
         /// </summary>
         public Type SqlColumnType;

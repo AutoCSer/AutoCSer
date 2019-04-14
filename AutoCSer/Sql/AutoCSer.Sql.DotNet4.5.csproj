@@ -59,6 +59,7 @@
     <Compile Include="Cache\Whole\NET4.5\SearchTreeDictionary.cs" />
     <Compile Include="Cache\Whole\Timer.cs" />
     <Compile Include="Cache\Whole\TimerWhere.cs" />
+    <Compile Include="DataReaderJsonSerialize.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
     <Compile Include="Excel\Client.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="ConstantConverter.cs" />
     <Compile Include="CountAttribute.cs" />
     <Compile Include="CreateSelectQuery.cs" />
+    <Compile Include="Data\PrimaryKey.cs" />
     <Compile Include="DataModel\Inserter.cs" />
     <Compile Include="DataModel\Model.cs" />
     <Compile Include="DataModel\PrimaryKeyWhere.cs" />

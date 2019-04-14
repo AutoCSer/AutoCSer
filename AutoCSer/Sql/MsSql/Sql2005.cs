@@ -19,6 +19,16 @@ namespace AutoCSer.Sql.MsSql
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal Sql2005(Connection connection) : base(connection) { }
         /// <summary>
+        /// 获取表格名称的SQL语句
+        /// </summary>
+        protected override string getTableNameSql
+        {
+            get
+            {
+                return "select name from sysobjects where objectproperty(id,'IsUserTable')=1";
+            }
+        }
+        /// <summary>
         /// 查询对象集合
         /// </summary>
         /// <typeparam name="valueType">对象类型</typeparam>
@@ -34,7 +44,7 @@ namespace AutoCSer.Sql.MsSql
             where modelType : class
         {
             sqlStream.SimpleWriteNotNull("select ");
-            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
             else sqlStream.Write('*');
             sqlStream.SimpleWriteNotNull(" from[");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
@@ -46,7 +56,7 @@ namespace AutoCSer.Sql.MsSql
             sqlStream.SimpleWriteNotNull(keyName);
             sqlStream.WriteNotNull(",row_number()over(");
             int startIndex = sqlStream.Length;
-            createQuery.WriteOrder(sqlTool, sqlStream, ref query);
+            createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
             string fieldName, fieldSqlName;
             query.GetIndex(out fieldName, out fieldSqlName);
             int count = sqlStream.Length - startIndex;
@@ -81,10 +91,10 @@ namespace AutoCSer.Sql.MsSql
             where modelType : class
         {
             sqlStream.WriteNotNull("select * from(select ");
-            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
             else sqlStream.Write('*');
             sqlStream.WriteNotNull(",row_number()over(");
-            createQuery.WriteOrder(sqlTool, sqlStream, ref query);
+            createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
             string fieldName, fieldSqlName;
             query.GetIndex(out fieldName, out fieldSqlName);
             sqlStream.SimpleWriteNotNull(")as ");
@@ -123,13 +133,13 @@ namespace AutoCSer.Sql.MsSql
                 AutoCSer.Extension.Number.ToString(count, sqlStream);
                 sqlStream.Write(' ');
             }
-            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+            if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
             else sqlStream.Write('*');
             sqlStream.SimpleWriteNotNull(" from [");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
             sqlStream.SimpleWriteNotNull("]with(nolock)");
             createQuery.WriteWhere(sqlTool, sqlStream, ref query);
-            createQuery.WriteOrder(sqlTool, sqlStream, ref query);
+            createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
         }
         /// <summary>
         /// 获取查询信息
@@ -151,8 +161,8 @@ namespace AutoCSer.Sql.MsSql
                 sqlStream.Reset(buffer = AutoCSer.UnmanagedPool.Default.Get(), AutoCSer.UnmanagedPool.DefaultSize);
                 if (query.SkipCount != 0 && createQuery.IsOrder)
                 {
-                    if (DataModel.Model<modelType>.PrimaryKeys.Length == 1) selectKeys(sqlTool, ref createQuery, ref query, DataModel.Model<modelType>.PrimaryKeys[0].SqlFieldName, sqlStream);
-                    else if (DataModel.Model<modelType>.Identity != null) selectKeys(sqlTool, ref createQuery, ref query, DataModel.Model<modelType>.IdentitySqlName, sqlStream);
+                    if (DataModel.Model<modelType>.PrimaryKeys.Length == 1) selectKeys(sqlTool, ref createQuery, ref query, constantConverter.ConvertName(DataModel.Model<modelType>.PrimaryKeys[0].FieldInfo.Name), sqlStream);
+                    else if (DataModel.Model<modelType>.Identity != null) selectKeys(sqlTool, ref createQuery, ref query, constantConverter.ConvertName(DataModel.Model<modelType>.Identity.FieldInfo.Name), sqlStream);
                     else selectRows(sqlTool, ref createQuery, ref query, sqlStream);
                 }
                 else selectNoOrder(sqlTool, ref createQuery, ref query, sqlStream);

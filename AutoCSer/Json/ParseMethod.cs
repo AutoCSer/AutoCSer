@@ -2621,7 +2621,7 @@ namespace AutoCSer.Json
                         }
                         if (*Current == ')')
                         {
-                            value = JavascriptLocalMinTime.AddTicks(millisecond * Date.MillisecondTicks);
+                            value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
                             ++Current;
                             return;
                         }
@@ -2699,7 +2699,7 @@ namespace AutoCSer.Json
                         }
                         if (*Current == ')')
                         {
-                            value = JavascriptLocalMinTime.AddTicks(millisecond * Date.MillisecondTicks);
+                            value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
                             ++Current;
                             return;
                         }
@@ -3061,7 +3061,7 @@ namespace AutoCSer.Json
                             }
                             if (*Current == ')')
                             {
-                                value.Int64 = JavascriptLocalMinTimeTicks + millisecond * Date.MillisecondTicks;
+                                value.Int64 = JavascriptLocalMinTimeTicks + millisecond * TimeSpan.TicksPerMillisecond;
                                 value.Type = NodeType.DateTimeTick;
                                 ++Current;
                                 goto CHECKNODE;

@@ -34,11 +34,12 @@ namespace AutoCSer.Sql.Excel
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="sql">SQL语句</param>
+        /// <param name="commandType"></param>
         /// <returns>SQL命令</returns>
-        protected override DbCommand getCommand(DbConnection connection, string sql)
+        protected override DbCommand getCommand(DbConnection connection, string sql, CommandType commandType)
         {
             DbCommand command = new OleDbCommand(sql, new UnionType { Value = connection }.OleDbConnection);
-            command.CommandType = CommandType.Text;
+            command.CommandType = commandType;
             return command;
         }
         /// <summary>
@@ -49,6 +50,25 @@ namespace AutoCSer.Sql.Excel
         protected override DbDataAdapter getAdapter(DbCommand command)
         {
             return new OleDbDataAdapter(new UnionType { Value = command }.OleDbCommand);
+        }
+        /// <summary>
+        /// 表格名称
+        /// </summary>
+        private const string schemaTableName = "Table_Name";
+        /// <summary>
+        /// 获取表格名称集合
+        /// </summary>
+        /// <returns></returns>
+        public override LeftArray<string> GetTableNames()
+        {
+            using (DbConnection dbConnection = GetConnection())
+            using (DataTable table = ((OleDbConnection)dbConnection).GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null))
+            {
+                DataRowCollection rows = table.Rows;
+                LeftArray<string> names = new LeftArray<string>(rows.Count);
+                foreach (DataRow row in rows) names.UnsafeAdd(row[schemaTableName].ToString());
+                return names;
+            }
         }
         /// <summary>
         /// 成员信息转换为数据列
@@ -103,7 +123,7 @@ namespace AutoCSer.Sql.Excel
         /// <returns>表格信息</returns>
         internal override TableColumnCollection GetTable(DbConnection connection, string tableName)
         {
-            using (DbCommand command = getCommand(connection, "select top 1 * from [" + tableName + "]"))
+            using (DbCommand command = getCommand(connection, "select top 1 * from [" + tableName + "]", CommandType.Text))
             using (DataSet dataSet = getDataSet(command))
             {
                 DataTable table = dataSet.Tables[0];
@@ -155,7 +175,7 @@ namespace AutoCSer.Sql.Excel
                 foreach (Column column in table.Columns.Columns)
                 {
                     if (isNext) sqlStream.Write(',');
-                    sqlStream.SimpleWriteNotNull(column.SqlName);
+                    constantConverter.ConvertNameToSqlStream(sqlStream, column.Name);
                     sqlStream.Write(' ');
                     sqlStream.Write(column.DbType.getSqlTypeName());
                     isNext = true;
@@ -249,13 +269,13 @@ namespace AutoCSer.Sql.Excel
                     AutoCSer.Extension.Number.ToString(count, sqlStream);
                     sqlStream.Write(' ');
                 }
-                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap);
+                if (query.MemberMap != null) DataModel.Model<modelType>.GetNames(sqlStream, query.MemberMap, constantConverter);
                 else sqlStream.Write('*');
                 sqlStream.SimpleWriteNotNull(" from [");
                 sqlStream.SimpleWriteNotNull(sqlTool.TableName);
                 sqlStream.Write(']');
                 createQuery.WriteWhere(sqlTool, sqlStream, ref query);
-                createQuery.WriteOrder(sqlTool, sqlStream, ref query);
+                createQuery.WriteOrder(sqlTool, sqlStream, constantConverter, ref query);
                 query.Sql = sqlStream.ToString();
             }
             finally
@@ -286,7 +306,7 @@ namespace AutoCSer.Sql.Excel
                         bool isFinally = false;
                         try
                         {
-                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
                             using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
                                 int skipCount = query.SkipCount;
@@ -338,7 +358,7 @@ namespace AutoCSer.Sql.Excel
                         bool isFinally = false;
                         try
                         {
-                            using (DbCommand command = getCommand(connection, query.Sql))
+                            using (DbCommand command = getCommand(connection, query.Sql, CommandType.Text))
                             using (DbDataReader reader = command.ExecuteReader(CommandBehavior.SingleResult))
                             {
                                 int skipCount = query.SkipCount;

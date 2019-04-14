@@ -150,6 +150,7 @@
     <Compile Include="ConstantConverter.cs" />
     <Compile Include="CountAttribute.cs" />
     <Compile Include="CreateSelectQuery.cs" />
+    <Compile Include="Data\PrimaryKey.cs" />
     <Compile Include="DataModel\Inserter.cs" />
     <Compile Include="DataModel\Model.cs" />
     <Compile Include="DataModel\PrimaryKeyWhere.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="DataModel\Updater.cs" />
     <Compile Include="DataModel\Verifyer.cs" />
     <Compile Include="DataReader.cs" />
+    <Compile Include="DataReaderJsonSerialize.cs" />
     <Compile Include="DbType.cs" />
     <Compile Include="ExpressionCall.cs" />
     <Compile Include="Field.cs" />

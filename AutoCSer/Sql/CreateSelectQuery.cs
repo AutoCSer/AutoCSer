@@ -86,8 +86,9 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="sqlTable">数据库表格操作工具</param>
         /// <param name="sqlStream">SQL表达式流</param>
+        /// <param name="constantConverter"></param>
         /// <param name="query"></param>
-        internal void WriteOrder(Table sqlTable, CharStream sqlStream, ref SelectQuery<modelType> query)
+        internal void WriteOrder(Table sqlTable, CharStream sqlStream, ConstantConverter constantConverter, ref SelectQuery<modelType> query)
         {
             if (Orders != null)
             {
@@ -110,11 +111,11 @@ namespace AutoCSer.Sql
                 {
                     if (isNext == 0)
                     {
-                        if (query.IndexFieldName == null) query.IndexFieldSqlName = Field.ToSqlName(query.IndexFieldName = order.Key.SqlFieldName);
+                        if (query.IndexFieldName == null) query.IndexFieldSqlName = constantConverter.ConvertName(query.IndexFieldName = order.Key.FieldInfo.Name);
                         isNext = 1;
                     }
                     else sqlStream.Write(',');
-                    sqlStream.SimpleWriteNotNull(order.Key.SqlFieldName);
+                    constantConverter.ConvertNameToSqlStream(sqlStream, order.Key.FieldInfo.Name);
                     if (order.Value) sqlStream.SimpleWriteNotNull(" desc");
                 }
             }

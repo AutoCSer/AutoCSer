@@ -469,7 +469,7 @@ namespace AutoCSer
             PrepLength(AutoCSer.Json.Serializer.OtherDateStart.Length + (19 + 1 + 4));
             UnsafeWrite('"');
             UnsafeSimpleWrite(AutoCSer.Json.Serializer.OtherDateStart);
-            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / Date.MillisecondTicks));
+            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond));
             *(long*)CurrentChar = AutoCSer.Json.Serializer.DateEnd + ('/' << 16) + ((long)'"' << 32);
             ByteSize += 3 * sizeof(char);
         }
@@ -479,9 +479,9 @@ namespace AutoCSer
         /// <param name="time">时间</param>
         internal void WriteJsonString(DateTime time)
         {
-            PrepLength(AutoCSer.Date.SqlMillisecondSize + 2);
+            PrepLength(AutoCSer.Date.MillisecondStringSize + 2);
             UnsafeWrite('"');
-            AutoCSer.Date.ToSqlMillisecond(time, this);
+            AutoCSer.Date.ToMillisecondString(time, this);
             UnsafeWrite('"');
         }
         /// <summary>
@@ -492,7 +492,7 @@ namespace AutoCSer
         {
             PrepLength(AutoCSer.Json.Serializer.DateStart.Length + (19 + 1));
             UnsafeSimpleWrite(AutoCSer.Json.Serializer.DateStart);
-            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / Date.MillisecondTicks));
+            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond));
             UnsafeWrite(AutoCSer.Json.Serializer.DateEnd);
         }
         /// <summary>

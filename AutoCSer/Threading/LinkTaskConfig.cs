@@ -15,10 +15,6 @@ namespace AutoCSer.Threading
         /// </summary>
         private Timer timer;
         /// <summary>
-        /// 线程切换检测计时器
-        /// </summary>
-        internal Stopwatch Stopwatch;
-        /// <summary>
         /// 线程切换超时时钟周期
         /// </summary>
         internal long TaskTicks;
@@ -38,13 +34,11 @@ namespace AutoCSer.Threading
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void set(int threadCount, int newThreadMilliseconds)
         {
-            Stopwatch = new Stopwatch();
             if (threadCount != 1)
             {
-                Stopwatch.Start();
                 onCheck += nullCheck;
                 int milliseconds = Math.Max(newThreadMilliseconds, 1);
-                TaskTicks = milliseconds * Date.MillisecondTicks;
+                TaskTicks = milliseconds * TimeSpan.TicksPerMillisecond;
                 timer = new Timer(check, null, milliseconds, milliseconds);
             }
         }
@@ -76,7 +70,7 @@ namespace AutoCSer.Threading
         /// <returns></returns>
         internal bool IsCheck(long currentTaskTicks)
         {
-            return currentTaskTicks + TaskTicks <= Stopwatch.ElapsedTicks;
+            return currentTaskTicks + TaskTicks <= AutoCSer.Pub.Stopwatch.ElapsedTicks;
         }
         /// <summary>
         /// 线程切换检测

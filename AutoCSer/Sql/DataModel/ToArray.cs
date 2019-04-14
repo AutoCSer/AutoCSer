@@ -132,7 +132,7 @@ namespace AutoCSer.Sql.DataModel
                         foreach (Field field in Fields)
                         {
                             if (field.IsSqlColumn) columns.Add(ColumnGroup.ToArray.GetDataColumns(field.DataType)(field.FieldInfo.Name));
-                            else columns.Add(new KeyValue<string, Type>(field.SqlFieldName, field.DataType));
+                            else columns.Add(new KeyValue<string, Type>(field.FieldInfo.Name, field.DataType));
                         }
                         dataColumns = columns.ToArray();
                     }

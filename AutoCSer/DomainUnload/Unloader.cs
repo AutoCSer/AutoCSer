@@ -200,7 +200,7 @@ namespace AutoCSer.DomainUnload
                         if (Date.NowTime.Now > logTime)
                         {
                             AutoCSer.Log.Pub.Log.Wait(Log.LogType.Debug, "事务未结束 " + transactionCount.toString());
-                            logTime = Date.NowTime.Now.AddTicks(Date.MinutesTicks);
+                            logTime = Date.NowTime.Now.AddTicks(TimeSpan.TicksPerMinute);
                         }
                     }
                     Monitor.Enter(unloaderLock);

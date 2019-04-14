@@ -445,7 +445,7 @@ namespace AutoCSer.CacheServer.DataStructure
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static long FotmatTimeoutTicks(uint timeoutMilliseconds)
         {
-            return timeoutMilliseconds > 0 ? (long)(ulong)timeoutMilliseconds * Date.MillisecondTicks : Date.MinutesTicks;
+            return timeoutMilliseconds > 0 ? (long)(ulong)timeoutMilliseconds * TimeSpan.TicksPerMillisecond : TimeSpan.TicksPerMinute;
         }
         /// <summary>
         /// 构造函数

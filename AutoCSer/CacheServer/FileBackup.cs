@@ -63,7 +63,7 @@ namespace AutoCSer.CacheServer
         public FileBackup(string fileName, int trySeconds = 4, MasterServer.TcpInternalClient masterClient = null, AutoCSer.Log.ILog log = null)
         {
             this.fileName = fileName;
-            tryTicks = Math.Max(trySeconds, 1) * Date.SecondTicks;
+            tryTicks = Math.Max(trySeconds, 1) * TimeSpan.TicksPerSecond;
             this.masterClient = masterClient ?? new MasterServer.TcpInternalClient();
             this.log = log ?? AutoCSer.Log.Pub.Log;
             onReadHandle = onRead;

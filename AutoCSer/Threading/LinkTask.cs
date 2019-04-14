@@ -47,7 +47,7 @@ namespace AutoCSer.Threading
         /// <param name="value"></param>
         internal void Add(ILinkTask value)
         {
-            value.LinkTaskTicks = LinkTaskConfig.Default.Stopwatch.ElapsedTicks;
+            value.LinkTaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
             ILinkTask headValue;
             do
             {
@@ -81,7 +81,7 @@ namespace AutoCSer.Threading
         private int addNullHead(ILinkTask value)
         {
             if (head != null) System.Threading.Thread.Sleep(0);
-            value.LinkTaskTicks = LinkTaskConfig.Default.Stopwatch.ElapsedTicks;
+            value.LinkTaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
             ILinkTask headValue;
             do
             {

@@ -51,7 +51,9 @@ namespace AutoCSer.Extension
                         switch (method.Name)
                         {
                             case "In":
-                            case "NotIn": return false;
+                            case "NotIn":
+                            //case "Like":
+                                return false;
                         }
                     }
                     return true;

@@ -65,7 +65,7 @@ namespace AutoCSer.CacheServer.Lock
         /// <param name="returnParameter"></param>
         private void onExit(AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter> returnParameter)
         {
-            if (returnParameter.Type != Net.TcpServer.ReturnType.Success && Date.NowTime.Now.Ticks < timeoutTicks) AutoCSer.Threading.TimerTask.Default.Add(exit, Date.NowTime.Now.AddTicks(Date.SecondTicks));
+            if (returnParameter.Type != Net.TcpServer.ReturnType.Success && Date.NowTime.Now.Ticks < timeoutTicks) AutoCSer.Threading.TimerTask.Default.Add(exit, Date.NowTime.Now.AddTicks(TimeSpan.TicksPerSecond));
         }
         /// <summary>
         /// 释放资源

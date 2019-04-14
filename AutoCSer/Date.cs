@@ -10,22 +10,22 @@ namespace AutoCSer
     /// </summary>
     public unsafe static partial class Date
     {
-        /// <summary>
-        /// 每毫秒计时周期数
-        /// </summary>
-        public static readonly long MillisecondTicks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
-        /// <summary>
-        /// 每秒计时周期数
-        /// </summary>
-        public static readonly long SecondTicks = MillisecondTicks * 1000;
-        /// <summary>
-        /// 每分钟计时周期数
-        /// </summary>
-        public static readonly long MinutesTicks = SecondTicks * 60;
-        /// <summary>
-        /// 一天的计时周期数
-        /// </summary>
-        public static readonly long DayTiks = 24L * 60L * 60L * SecondTicks;
+        ///// <summary>
+        ///// 每毫秒计时周期数
+        ///// </summary>
+        //public static readonly long MillisecondTicks = new TimeSpan(0, 0, 0, 0, 1).Ticks;
+        ///// <summary>
+        ///// 每秒计时周期数
+        ///// </summary>
+        //public static readonly long SecondTicks = TimeSpan.TicksPerMillisecond * 1000;
+        ///// <summary>
+        ///// 每分钟计时周期数
+        ///// </summary>
+        //public static readonly long MinutesTicks = TimeSpan.TicksPerSecond * 60;
+        ///// <summary>
+        ///// 一天的计时周期数
+        ///// </summary>
+        //public static readonly long DayTiks = 24L * 60L * 60L * TimeSpan.TicksPerSecond;
         /// <summary>
         /// 本地时钟周期
         /// </summary>
@@ -173,7 +173,7 @@ namespace AutoCSer
                 long nextSecondTicks = NextSecondTicks;
                 if (nextSecondTicks <= Now.Ticks)
                 {
-                    if (Interlocked.CompareExchange(ref NextSecondTicks, nextSecondTicks + SecondTicks, nextSecondTicks) == nextSecondTicks)
+                    if (Interlocked.CompareExchange(ref NextSecondTicks, nextSecondTicks + TimeSpan.TicksPerSecond, nextSecondTicks) == nextSecondTicks)
                     {
                         Interlocked.Increment(ref CurrentSeconds);
                         try
@@ -218,7 +218,7 @@ namespace AutoCSer
             {
                 UtcNow = (Now = DateTime.Now).localToUniversalTime();
 #if !Serialize
-                NextSecondTicks = (Now.Ticks / SecondTicks) * SecondTicks + SecondTicks;
+                NextSecondTicks = (Now.Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond + TimeSpan.TicksPerSecond;
 #endif
                 timer = new Timer(refreshTime, null, TimerInterval = 1000L - Now.Millisecond, -1);
             }
@@ -254,27 +254,31 @@ namespace AutoCSer
         /// <summary>
         /// 时间转换字符串字节长度
         /// </summary>
-        public const int SqlMillisecondSize = 23;
+        public const int MillisecondStringSize = 23;
+        /// <summary>
+        /// 默认日期分隔符
+        /// </summary>
+        internal const char DateSplitChar = '/';
         /// <summary>
         /// 时间转换成字符串(精确到毫秒)
         /// </summary>
         /// <param name="time">时间</param>
         /// <param name="charStream">字符流</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal unsafe static void ToSqlMillisecond(DateTime time, CharStream charStream)
+        internal unsafe static void ToMillisecondString(DateTime time, CharStream charStream)
         {
-            toSqlMillisecond(time, charStream.CurrentChar);
-            charStream.ByteSize += SqlMillisecondSize * sizeof(char);
+            toMillisecondString(time, charStream.CurrentChar);
+            charStream.ByteSize += MillisecondStringSize * sizeof(char);
         }
         /// <summary>
         /// 时间转换成字符串(精确到毫秒)
         /// </summary>
         /// <param name="time">时间</param>
         /// <param name="chars">时间字符串</param>
-        private unsafe static void toSqlMillisecond(DateTime time, char* chars)
+        private unsafe static void toMillisecondString(DateTime time, char* chars)
         {
-            long dayTiks = time.Ticks % DayTiks;
-            toString(time, chars, '/');
+            long dayTiks = time.Ticks % TimeSpan.TicksPerDay;
+            toString(time, chars, DateSplitChar);
             long seconds = dayTiks / (1000 * 10000);
             *(chars + 19) = '.';
             *(chars + 10) = ' ';
@@ -353,14 +357,14 @@ namespace AutoCSer
         /// <param name="dateSplit">日期分隔符</param>
         /// <returns>时间字符串</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public unsafe static string toString(this DateTime time, char dateSplit = '/')
+        public unsafe static string toString(this DateTime time, char dateSplit = DateSplitChar)
         {
             string timeString = AutoCSer.Extension.StringExtension.FastAllocateString(19);
             fixed (char* timeFixed = timeString)
             {
                 toString(time, timeFixed, dateSplit);
                 *(timeFixed + 10) = ' ';
-                toString((int)((time.Ticks % DayTiks) / (1000 * 10000)), timeFixed + 11);
+                toString((int)((time.Ticks % TimeSpan.TicksPerDay) / (1000 * 10000)), timeFixed + 11);
             }
             return timeString;
         }
@@ -371,12 +375,12 @@ namespace AutoCSer
         /// <param name="charStream">字符流</param>
         /// <param name="dateSplit">日期分隔符</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal unsafe static void ToString(this DateTime time, CharStream charStream, char dateSplit = '/')
+        internal unsafe static void ToString(this DateTime time, CharStream charStream, char dateSplit = DateSplitChar)
         {
             char* timeFixed = charStream.GetPrepSizeCurrent(19);
             toString(time, timeFixed, dateSplit);
             *(timeFixed + 10) = ' ';
-            toString((int)((time.Ticks % DayTiks) / (1000 * 10000)), timeFixed + 11);
+            toString((int)((time.Ticks % TimeSpan.TicksPerDay) / (1000 * 10000)), timeFixed + 11);
             charStream.ByteSize += 19 * sizeof(char);
         }
         /// <summary>

@@ -48,7 +48,7 @@ namespace AutoCSer.Sql
         /// <param name="milliseconds">间隔毫秒数</param>
         public NowTime(int milliseconds = MsSql.Sql2000.DefaultNowTimeMilliseconds)
         {
-            ticks = Date.MillisecondTicks * Math.Max(milliseconds, MsSql.Sql2000.DefaultNowTimeMilliseconds);
+            ticks = TimeSpan.TicksPerMillisecond * Math.Max(milliseconds, MsSql.Sql2000.DefaultNowTimeMilliseconds);
         }
         /// <summary>
         /// 设置时间

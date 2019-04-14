@@ -91,6 +91,8 @@
     <Compile Include="Cache\Whole\Timer.cs" />
     <Compile Include="Cache\Whole\TimerWhere.cs" />
     <Compile Include="ClientKind.cs" />
+    <Compile Include="DataReaderJsonSerialize.cs" />
+    <Compile Include="Data\PrimaryKey.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
     <Compile Include="Excel\Client.cs" />

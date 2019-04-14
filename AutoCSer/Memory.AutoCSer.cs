@@ -73,7 +73,7 @@ namespace AutoCSer
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>是否相等</returns>
-        public static bool equal(this SubArray<byte> left, ref SubArray<byte> right)
+        internal static bool equal(this SubArray<byte> left, ref SubArray<byte> right)
         {
             if (left.Length == 0) return right.Length == 0 && !((left.Array == null) ^ (right.Array == null));
             if (right.Length == left.Length)

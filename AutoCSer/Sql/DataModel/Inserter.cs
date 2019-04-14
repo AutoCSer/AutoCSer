@@ -108,7 +108,8 @@ namespace AutoCSer.Sql.DataModel
             /// </summary>
             /// <param name="sqlStream"></param>
             /// <param name="memberMap"></param>
-            public static void GetColumnNames(CharStream sqlStream, MemberMap memberMap)
+            /// <param name="constantConverter"></param>
+            public static void GetColumnNames(CharStream sqlStream, MemberMap memberMap, ConstantConverter constantConverter)
             {
                 int isNext = 0;
                 foreach (Field member in Fields)
@@ -118,7 +119,7 @@ namespace AutoCSer.Sql.DataModel
                         if (isNext == 0) isNext = 1;
                         else sqlStream.Write(',');
                         if (member.IsSqlColumn) sqlStream.SimpleWriteNotNull(ColumnGroup.Inserter.GetColumnNames(member.FieldInfo.FieldType)(member.FieldInfo.Name));
-                        else sqlStream.SimpleWriteNotNull(member.SqlFieldName);
+                        else constantConverter.ConvertNameToSqlStream(sqlStream, member.FieldInfo.Name);
                     }
                 }
             }

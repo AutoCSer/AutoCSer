@@ -64,7 +64,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal DateTime GetTimeout(int size)
         {
-            return Date.NowTime.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * Date.SecondTicks);
+            return Date.NowTime.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * TimeSpan.TicksPerSecond);
         }
         /// <summary>
         /// 获取套接字操作超时时间
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal DateTime GetTimeout(long size)
         {
-            return size <= int.MaxValue ? GetTimeout((int)size) : Date.NowTime.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * Date.SecondTicks);
+            return size <= int.MaxValue ? GetTimeout((int)size) : Date.NowTime.Now.AddTicks(Math.Max(size / SocketSizePerSecond + 1, 2) * TimeSpan.TicksPerSecond);
         }
         /// <summary>
         /// 获取套接字操作超时时间
@@ -87,7 +87,7 @@ namespace AutoCSer.Net.Http
         {
             int seconds = Math.Max(size / SocketSizePerSecond + 1, 2);
             count = seconds <= ReceiveHeadSeconds ? (ushort)0 : (ushort)Math.Min(seconds / ReceiveHeadSeconds, ushort.MaxValue);
-            return Date.NowTime.Now.AddTicks(seconds * Date.SecondTicks);
+            return Date.NowTime.Now.AddTicks(seconds * TimeSpan.TicksPerSecond);
         }
         /// <summary>
         /// Session 超时分钟数
