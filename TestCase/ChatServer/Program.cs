@@ -27,41 +27,7 @@ namespace AutoCSer.TestCase.ChatServer
                     {
                         if (server.IsListen)
                         {
-#if DotNetStandard
-#if DEBUG
-                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\ChatClient\bin\Debug\netcoreapp2.0\AutoCSer.TestCase.ChatClient.dll".pathSeparator()));
-#else
-                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\..\ChatClient\bin\Release\netcoreapp2.0\AutoCSer.TestCase.ChatClient.dll".pathSeparator()));
-#endif
-                        if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.ChatClient.dll"));
-                        if (clientFile.Exists)
-                        {
-                            ProcessStartInfo process = new ProcessStartInfo("dotnet", clientFile.FullName + " user1");
-                            process.UseShellExecute = true;
-                            Process.Start(process);
-                            process.Arguments = clientFile.FullName + " user2";
-                            Process.Start(process);
-                            process.Arguments = clientFile.FullName + " user3";
-                            Process.Start(process);
-                            process.Arguments = clientFile.FullName + " user4";
-                            Process.Start(process);
-                        }
-#else
-#if DEBUG
-                        FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\ChatClient\bin\Debug\AutoCSer.TestCase.ChatClient.exe".pathSeparator()));
-#else
-                            FileInfo clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"..\..\..\ChatClient\bin\Release\AutoCSer.TestCase.ChatClient.exe".pathSeparator()));
-#endif
-                            if (!clientFile.Exists) clientFile = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, @"AutoCSer.TestCase.ChatClient.exe"));
-                            if (clientFile.Exists)
-                            {
-                                Process.Start(clientFile.FullName, "user1");
-                                Process.Start(clientFile.FullName, "user2");
-                                Process.Start(clientFile.FullName, "user3");
-                                Process.Start(clientFile.FullName, "user4");
-                            }
-#endif
-                            else Console.WriteLine("未找到 群聊 客户端程序");
+                            if (!startProcess("ChatClient", "AutoCSer.TestCase.ChatClient")) Console.WriteLine("未找到 群聊 客户端程序");
                             Console.WriteLine("Press quit to exit.");
                             while (Console.ReadLine() != "quit") ;
                         }
@@ -76,6 +42,64 @@ namespace AutoCSer.TestCase.ChatServer
                 }
             }
 #endif
+        }
+        private static bool startProcess(string directoryName, string fileName)
+        {
+            fileName +=
+#if DotNetStandard
+ ".dll";
+#else
+ ".exe";
+#endif
+            FileInfo fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, (
+#if !DOTNET45
+@"..\" +
+#endif
+
+ @"..\..\..\" + directoryName + @"\bin\" +
+
+#if DEBUG
+ "Debug"
+#else
+ "Release"
+#endif
+
+#if DotNetStandard
+ + @"\netcoreapp2.0"
+#elif DOTNET2
+ + @"\DotNet2"
+#endif
+
+ + @"\" + fileName
+            ).pathSeparator()));
+#if DotNetStandard
+            Console.WriteLine(fileInfo.FullName);
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (fileInfo.Exists)
+            {
+                ProcessStartInfo process = new ProcessStartInfo("dotnet", fileInfo.FullName + " user1");
+                process.UseShellExecute = true;
+                Process.Start(process);
+                process.Arguments = fileInfo.FullName + " user2";
+                Process.Start(process);
+                process.Arguments = fileInfo.FullName + " user3";
+                Process.Start(process);
+                process.Arguments = fileInfo.FullName + " user4";
+                Process.Start(process);
+                return true;
+            }
+#else
+            if (!fileInfo.Exists) fileInfo = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, fileName));
+            if (fileInfo.Exists)
+            {
+                Process.Start(fileInfo.FullName, "user1");
+                Process.Start(fileInfo.FullName, "user2");
+                Process.Start(fileInfo.FullName, "user3");
+                Process.Start(fileInfo.FullName, "user4");
+                return true;
+            }
+#endif
+            return false;
         }
     }
 }

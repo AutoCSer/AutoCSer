@@ -43,6 +43,8 @@
     <Compile Include="IO\CreateFlieTimeoutWatcher.cs" />
     <Compile Include="IO\Compression\GzipCompressor.cs" />
     <Compile Include="Extension\Number.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="Poll\Session.cs" />
     <Compile Include="Poll\SessionPool.cs" />
     <Compile Include="Poll\SessionTimeout.cs" />

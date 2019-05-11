@@ -5,7 +5,7 @@ namespace AutoCSer.WebView
     /// <summary>
     /// WEB Path 成员配置
     /// </summary>
-    public sealed class PathMemberAttribute : Metadata.IgnoreMemberAttribute
+    public sealed class PathMemberAttribute : AutoCSer.Metadata.IgnoreMemberAttribute
     {
     }
 }

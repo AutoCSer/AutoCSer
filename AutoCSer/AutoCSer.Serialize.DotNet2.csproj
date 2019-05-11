@@ -258,6 +258,30 @@
     <Compile Include="MemberCopy\MemberDynamicMethod.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Metadata\GenericType\ClassGenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\ClassGenericType.cs" />
+    <Compile Include="Metadata\GenericType\CollectionGenericType2.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\CollectionGenericType2.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.Json.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.Xml.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.Json.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.Xml.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.Xml.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.Xml.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.Json.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.Xml.cs" />
+    <Compile Include="Metadata\GenericType\UnionType.BinarySerialize.cs" />
     <Compile Include="Metadata\MemberMap.cs" />
     <Compile Include="Memory.cs">
       <SubType>Code</SubType>
@@ -274,6 +298,7 @@
     <Compile Include="MemoryMap.cs" />
     <Compile Include="Metadata\PropertyIndex.cs" />
     <Compile Include="Metadata\TypeAttribute.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="NET2.0\Action.cs" />
     <Compile Include="NET2.0\ExtensionAttribute.cs">
       <SubType>Code</SubType>
@@ -325,6 +350,8 @@
     <Compile Include="Threading\LockDictionary.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Threading\LockEquatableLastDictionary.cs" />
+    <Compile Include="Threading\LockLastDictionary.cs" />
     <Compile Include="Threading\ThreadYield.cs" />
     <Compile Include="Unmanaged.cs">
       <SubType>Code</SubType>

@@ -461,7 +461,8 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     methodGenerator.call(Metadata.ServerSocketSenderGetCallbackReturnMethod.MakeGenericMethod(method.OutputParameterType.Type, method.ReturnType));
                                     if (method.ReturnValueType == null)
                                     {
-                                        methodGenerator.call(typeof(ServerCallback<>).MakeGenericType(method.ReturnType).GetMethod("Get", BindingFlags.Static | BindingFlags.Public));
+                                        //methodGenerator.call(typeof(ServerCallback<>).MakeGenericType(method.ReturnType).GetMethod("Get", BindingFlags.Static | BindingFlags.Public));
+                                        methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
                                     }
                                 }
                                 methodGenerator.call(method.MethodInfo);

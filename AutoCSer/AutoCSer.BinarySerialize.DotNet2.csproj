@@ -264,6 +264,25 @@
     <Compile Include="Metadata\AttributeMethod.cs" />
     <Compile Include="Metadata\BoxSerializeAttribute.cs" />
     <Compile Include="Metadata\FieldIndex.cs" />
+    <Compile Include="Metadata\GenericType\ClassGenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\ClassGenericType.cs" />
+    <Compile Include="Metadata\GenericType\CollectionGenericType2.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\CollectionGenericType2.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.Json.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.Json.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.Json.cs" />
+    <Compile Include="Metadata\GenericType\UnionType.BinarySerialize.cs" />
     <Compile Include="Metadata\IgnoreAttribute.cs" />
     <Compile Include="Metadata\IgnoreMemberAttribute.cs" />
     <Compile Include="Metadata\MemberFilterAttribute.cs" />
@@ -273,6 +292,7 @@
     <Compile Include="Metadata\MemberMap.cs" />
     <Compile Include="Metadata\PropertyIndex.cs" />
     <Compile Include="Metadata\TypeAttribute.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="NET2.0\Action.cs" />
     <Compile Include="NET2.0\ExtensionAttribute.cs">
       <SubType>Code</SubType>
@@ -322,6 +342,8 @@
     <Compile Include="Threading\LockDictionary.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Threading\LockEquatableLastDictionary.cs" />
+    <Compile Include="Threading\LockLastDictionary.cs" />
     <Compile Include="Threading\ThreadYield.cs" />
     <Compile Include="Unmanaged.cs">
       <SubType>Code</SubType>

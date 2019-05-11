@@ -144,9 +144,11 @@ namespace AutoCSer.BinarySerialize
                 {
                     if (value == null || type.IsValueType)
                     {
-                        value = (valueType)DeSerializeMethodCache.GetRealDeSerializer(type)(deSerializer, value);
+                        //value = (valueType)DeSerializeMethodCache.GetRealDeSerializer(type)(deSerializer, value);
+                        value = (valueType)GenericType.Get(type).BinaryDeSerializeRealTypeObjectDelegate(deSerializer, value);
                     }
-                    else DeSerializeMethodCache.GetRealDeSerializer(type)(deSerializer, value);
+                    //else DeSerializeMethodCache.GetRealDeSerializer(type)(deSerializer, value);
+                    else GenericType.Get(type).BinaryDeSerializeRealTypeObjectDelegate(deSerializer, value);
                 }
                 else deSerializer.State = DeSerializeState.RemoteTypeError;
             }
@@ -281,30 +283,33 @@ namespace AutoCSer.BinarySerialize
                             if (elementType.IsEnum)
                             {
                                 Type enumType = System.Enum.GetUnderlyingType(elementType);
-                                if (enumType == typeof(uint)) methodInfo = DeSerializeMethodCache.EnumUIntArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(byte)) methodInfo = DeSerializeMethodCache.EnumByteArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(ulong)) methodInfo = DeSerializeMethodCache.EnumULongArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(ushort)) methodInfo = DeSerializeMethodCache.EnumUShortArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(long)) methodInfo = DeSerializeMethodCache.EnumLongArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(short)) methodInfo = DeSerializeMethodCache.EnumShortArrayMethod.MakeGenericMethod(elementType);
-                                else if (enumType == typeof(sbyte)) methodInfo = DeSerializeMethodCache.EnumSByteArrayMethod.MakeGenericMethod(elementType);
-                                else methodInfo = DeSerializeMethodCache.EnumIntArrayMethod.MakeGenericMethod(elementType);
+                                if (enumType == typeof(uint)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumUIntArrayMethod;// DeSerializeMethodCache.EnumUIntArrayMethod.MakeGenericMethod(elementType);
+                                else if (enumType == typeof(byte)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumByteArrayMethod;// DeSerializeMethodCache.EnumByteArrayMethod.MakeGenericMethod(elementType);
+                                else if (enumType == typeof(ulong)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumULongArrayMethod;// DeSerializeMethodCache.EnumULongArrayMethod.MakeGenericMethod(elementType);
+                                else if (enumType == typeof(ushort)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumUShortArrayMethod;// DeSerializeMethodCache.EnumUShortArrayMethod.MakeGenericMethod(elementType);
+                                else if (enumType == typeof(long)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumLongArrayMethod;// DeSerializeMethodCache.EnumLongArrayMethod.MakeGenericMethod(elementType);
+                                else if (enumType == typeof(short)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumShortArrayMethod;// DeSerializeMethodCache.EnumShortArrayMethod.MakeGenericMethod(elementType);
+                                else if (enumType == typeof(sbyte)) methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumSByteArrayMethod;// DeSerializeMethodCache.EnumSByteArrayMethod.MakeGenericMethod(elementType);
+                                else methodInfo = GenericType.Get(elementType).BinaryDeSerializeEnumIntArrayMethod;// DeSerializeMethodCache.EnumIntArrayMethod.MakeGenericMethod(elementType);
                                 IsReferenceMember = false;
                             }
                             else if (elementType.IsGenericType && elementType.GetGenericTypeDefinition() == typeof(Nullable<>))
                             {
-                                methodInfo = DeSerializeMethodCache.NullableArrayMethod.MakeGenericMethod(elementType = elementType.GetGenericArguments()[0]);
+                                //methodInfo = DeSerializeMethodCache.NullableArrayMethod.MakeGenericMethod(elementType = elementType.GetGenericArguments()[0]);
+                                methodInfo = StructGenericType.Get(elementType = elementType.GetGenericArguments()[0]).BinaryDeSerializeNullableArrayMethod;
                                 IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                             }
                             else
                             {
-                                methodInfo = DeSerializeMethodCache.StructArrayMethod.MakeGenericMethod(elementType);
+                                //methodInfo = DeSerializeMethodCache.StructArrayMethod.MakeGenericMethod(elementType);
+                                methodInfo = GenericType.Get(elementType).BinaryDeSerializeStructArrayMethod;
                                 IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                             }
                         }
                         else
                         {
-                            methodInfo = DeSerializeMethodCache.ArrayMethod.MakeGenericMethod(elementType);
+                            //methodInfo = DeSerializeMethodCache.ArrayMethod.MakeGenericMethod(elementType);
+                            methodInfo = ClassGenericType.Get(elementType).BinaryDeSerializeArrayMethod;
                             IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                         }
                         DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), methodInfo);
@@ -343,7 +348,8 @@ namespace AutoCSer.BinarySerialize
                 Type[] parameterTypes = type.GetGenericArguments();
                 if (genericType == typeof(LeftArray<>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.LeftArrayDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.LeftArrayDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeLeftArrayMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
@@ -351,7 +357,8 @@ namespace AutoCSer.BinarySerialize
 #if !Serialize
                 if (genericType == typeof(SubArray<>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SubArrayDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SubArrayDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeSubArrayMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
@@ -359,35 +366,40 @@ namespace AutoCSer.BinarySerialize
 #endif
                 if (genericType == typeof(Dictionary<,>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.DictionaryDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.DictionaryDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeDictionaryMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(Nullable<>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.NullableDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.NullableDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), StructGenericType.Get(type.GetGenericArguments()[0]).BinaryDeSerializeNullableMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.KeyValuePairDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.KeyValuePairDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeKeyValuePairMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(SortedDictionary<,>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SortedDictionaryDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SortedDictionaryDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeSortedDictionaryMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(SortedList<,>))
                 {
-                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SortedListDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), DeSerializeMethodCache.SortedListDeSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    DefaultDeSerializer = (deSerialize)Delegate.CreateDelegate(typeof(deSerialize), GenericType2.Get(type.GetGenericArguments()).BinaryDeSerializeSortedListMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
@@ -434,28 +446,36 @@ namespace AutoCSer.BinarySerialize
                         ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                         parameters[0] = typeof(IList<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                         parameters[0] = typeof(ICollection<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                         parameters[0] = typeof(IEnumerable<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructCollectionMethod : DeSerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(type, argumentType);
+                            if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeStructCollectionMethod;
+                            else methodInfo = CollectionGenericType2.Get(type, argumentType).BinaryDeSerializeClassCollectionMethod;
                             break;
                         }
                     }
@@ -465,7 +485,9 @@ namespace AutoCSer.BinarySerialize
                         if (constructorInfo != null)
                         {
                             Type[] parameters = interfaceType.GetGenericArguments();
-                            methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructDictionaryDeSerializeMethod : DeSerializeMethodCache.ClassDictionaryDeSerializeMethod).MakeGenericMethod(type, parameters[0], parameters[1]);
+                            //methodInfo = (type.IsValueType ? DeSerializeMethodCache.StructDictionaryDeSerializeMethod : DeSerializeMethodCache.ClassDictionaryDeSerializeMethod).MakeGenericMethod(type, parameters[0], parameters[1]);
+                            if (type.IsValueType) methodInfo = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinaryDeSerializeStructDictionaryMethod;
+                            else methodInfo = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinaryDeSerializeClassDictionaryMethod;
                             break;
                         }
                     }

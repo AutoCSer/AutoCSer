@@ -117,8 +117,6 @@
     <Compile Include="BinarySerialize\UnionType.cs" />
     <Compile Include="BinarySerialize\Serializer.AutoCSer.cs" />
     <Compile Include="BinarySerialize\DeSerializer.AutoCSer.cs" />
-    <Compile Include="BinarySerialize\SerializeMethodCache.AutoCSer.cs" />
-    <Compile Include="BinarySerialize\DeSerializeMethodCache.AutoCSer.cs" />
     <Compile Include="BinarySerialize\TypeSerializer.AutoCSer.cs" />
     <Compile Include="CharStream.cs" />
     <Compile Include="CharStream.Json.cs" />
@@ -266,6 +264,33 @@
     <Compile Include="Metadata\AttributeMethod.cs" />
     <Compile Include="Metadata\BoxSerializeAttribute.cs" />
     <Compile Include="Metadata\FieldIndex.cs" />
+    <Compile Include="Metadata\GenericType\ClassGenericType.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\ClassGenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.AutoCSer.cs" />
+    <Compile Include="Metadata\GenericType\CollectionGenericType2.cs" />
+    <Compile Include="Metadata\GenericType\CollectionGenericType2.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.AutoCSer.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.Json.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.Json.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.Json.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.Xml.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.Xml.cs" />
+    <Compile Include="Metadata\GenericType\GenericType2.Xml.cs" />
+    <Compile Include="Metadata\GenericType\DictionaryGenericType3.Xml.cs" />
+    <Compile Include="Metadata\GenericType\EnumerableGenericType2.Xml.cs" />
+    <Compile Include="Metadata\GenericType\StructGenericType.cs" />
+    <Compile Include="Metadata\GenericType\UnionType.BinarySerialize.cs" />
+    <Compile Include="Metadata\GenericType\GenericType.Emit.cs" />
     <Compile Include="Metadata\IgnoreAttribute.cs" />
     <Compile Include="Metadata\IgnoreMemberAttribute.cs" />
     <Compile Include="Metadata\MemberFilterAttribute.cs" />
@@ -279,6 +304,7 @@
     <Compile Include="Metadata\TypeAttribute.cs" />
     <Compile Include="Metadata\MemberMap.AutoCSer.cs" />
     <Compile Include="Metadata\MemberIndexInfo.AutoCSer.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="NET2.0\MethodImpl.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -64,14 +64,14 @@ namespace AutoCSer.Xml
         /// 未知类型转换调用函数信息集合
         /// </summary>
         private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> typeMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo classSerializeMethod = typeof(Serializer).GetMethod("classSerialize", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo structSerializeMethod = typeof(Serializer).GetMethod("structSerialize", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo classSerializeMethod = typeof(Serializer).GetMethod("classSerialize", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo structSerializeMethod = typeof(Serializer).GetMethod("structSerialize", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 未知类型枚举转换委托调用函数信息
         /// </summary>
@@ -86,34 +86,37 @@ namespace AutoCSer.Xml
                 if (type.IsGenericType)
                 {
                     Type genericType = type.GetGenericTypeDefinition();
-                    if (genericType == typeof(Nullable<>)) method = nullableSerializeMethod.MakeGenericMethod(type.GetGenericArguments());
+                    //if (genericType == typeof(Nullable<>)) method = nullableSerializeMethod.MakeGenericMethod(type.GetGenericArguments());
+                    if (genericType == typeof(Nullable<>)) method = StructGenericType.Get(type.GetGenericArguments()[0]).XmlSerializeNullableMethod;
                 }
-                if (method == null) method = structSerializeMethod.MakeGenericMethod(type);
+                //if (method == null) method = structSerializeMethod.MakeGenericMethod(type);
+                if (method == null) method = GenericType.Get(type).XmlSerializeStructMethod;
             }
-            else method = classSerializeMethod.MakeGenericMethod(type);
+            //else method = classSerializeMethod.MakeGenericMethod(type);
+            else method = method = GenericType.Get(type).XmlSerializeClassMethod;
             typeMethods.Set(type, method);
             return method;
         }
-        /// <summary>
-        /// 枚举转换调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo enumToStringMethod = typeof(Serializer).GetMethod("enumToString", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 获取枚举转换委托调用函数信息
-        /// </summary>
-        /// <param name="type">数组类型</param>
-        /// <returns>枚举转换委托调用函数信息</returns>
-        public static MethodInfo GetEnum(Type type)
-        {
-            MethodInfo method;
-            if (enumMethods.TryGetValue(type, out method)) return method;
-            enumMethods.Set(type, method = enumToStringMethod.MakeGenericMethod(type));
-            return method;
-        }
+        ///// <summary>
+        ///// 枚举转换调用函数信息集合
+        ///// </summary>
+        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo enumToStringMethod = typeof(Serializer).GetMethod("enumToString", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 获取枚举转换委托调用函数信息
+        ///// </summary>
+        ///// <param name="type">数组类型</param>
+        ///// <returns>枚举转换委托调用函数信息</returns>
+        //public static MethodInfo GetEnum(Type type)
+        //{
+        //    MethodInfo method;
+        //    if (enumMethods.TryGetValue(type, out method)) return method;
+        //    enumMethods.Set(type, method = enumToStringMethod.MakeGenericMethod(type));
+        //    return method;
+        //}
         /// <summary>
         /// 获取成员转换函数信息
         /// </summary>
@@ -125,7 +128,8 @@ namespace AutoCSer.Xml
             MethodInfo methodInfo = Serializer.GetSerializeMethod(type);
             if (methodInfo != null) return methodInfo;
             if (type.IsArray) return GetArray(type.GetElementType());
-            if (type.IsEnum) return GetEnum(type);
+            //if (type.IsEnum) return GetEnum(type);
+            if (type.IsEnum) return GenericType.Get(type).XmlSerializeEnumToStringMethod;
             if ((methodInfo = GetCustom(type)) != null)
             {
                 isCustom = type.IsValueType;
@@ -136,15 +140,15 @@ namespace AutoCSer.Xml
         /// <summary>
         /// 是否输出字符串函数信息
         /// </summary>
-        private static readonly MethodInfo isOutputSubStringMethod = typeof(Serializer).GetMethod("isOutputSubString", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo isOutputSubStringMethod = ((Func<SubString, bool>)GenericType.XmlSerializer.isOutputSubString).Method;// typeof(Serializer).GetMethod("isOutputSubString", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 是否输出字符串函数信息
         /// </summary>
-        private static readonly MethodInfo isOutputStringMethod = typeof(Serializer).GetMethod("isOutputString", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo isOutputStringMethod = ((Func<string, bool>)GenericType.XmlSerializer.isOutputString).Method;// typeof(Serializer).GetMethod("isOutputString", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 是否输出对象函数信息
         /// </summary>
-        private static readonly MethodInfo isOutputMethod = typeof(Serializer).GetMethod("isOutput", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly MethodInfo isOutputMethod = ((Func<object, bool>)GenericType.XmlSerializer.isOutput).Method;// typeof(Serializer).GetMethod("isOutput", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 获取是否输出对象函数信息
         /// </summary>
@@ -155,14 +159,14 @@ namespace AutoCSer.Xml
             if (type.IsValueType) return type == typeof(SubString) ? isOutputSubStringMethod : GetIsOutputNullable(type);
             return type == typeof(string) ? isOutputStringMethod : isOutputMethod;
         }
-        /// <summary>
-        /// 是否输出可空对象函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> isOutputNullableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 是否输出可空对象函数信息
-        /// </summary>
-        private static readonly MethodInfo isOutputNullableMethod = typeof(Serializer).GetMethod("isOutputNullable", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 是否输出可空对象函数信息集合
+        ///// </summary>
+        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> isOutputNullableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        ///// <summary>
+        ///// 是否输出可空对象函数信息
+        ///// </summary>
+        //private static readonly MethodInfo isOutputNullableMethod = typeof(Serializer).GetMethod("isOutputNullable", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 获取是否输出可空对象函数信息
         /// </summary>
@@ -172,10 +176,12 @@ namespace AutoCSer.Xml
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                MethodInfo method;
-                if (isOutputNullableMethods.TryGetValue(type, out method)) return method;
-                isOutputNullableMethods.Set(type, method = isOutputNullableMethod.MakeGenericMethod(type.GetGenericArguments()));
-                return method;
+                return StructGenericType.Get(type.GetGenericArguments()[0]).XmlSerializeIsOutputNullableMethod;
+                //StructGenericType
+                //MethodInfo method;
+                //if (isOutputNullableMethods.TryGetValue(type, out method)) return method;
+                //isOutputNullableMethods.Set(type, method = isOutputNullableMethod.MakeGenericMethod(type.GetGenericArguments()));
+                //return method;
             }
             return null;
         }
@@ -183,18 +189,18 @@ namespace AutoCSer.Xml
         /// 基类转换函数信息
         /// </summary>
         internal static readonly MethodInfo BaseSerializeMethod = typeof(Serializer).GetMethod("baseSerialize", BindingFlags.Static | BindingFlags.NonPublic);
-        /// <summary>
-        /// 数组转换调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> arrayMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo structArrayMethod = typeof(Serializer).GetMethod("structArray", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo arrayMethod = typeof(Serializer).GetMethod("array", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 数组转换调用函数信息集合
+        ///// </summary>
+        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> arrayMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo structArrayMethod = typeof(Serializer).GetMethod("structArray", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo arrayMethod = typeof(Serializer).GetMethod("array", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 获取数组转换委托调用函数信息
         /// </summary>
@@ -202,51 +208,53 @@ namespace AutoCSer.Xml
         /// <returns>数组转换委托调用函数信息</returns>
         public static MethodInfo GetArray(Type type)
         {
-            MethodInfo method;
-            if (arrayMethods.TryGetValue(type, out method)) return method;
-            arrayMethods.Set(type, method = (type.IsValueType ? structArrayMethod : arrayMethod).MakeGenericMethod(type));
-            return method;
+            if (type.IsValueType) return GenericType.Get(type).XmlSerializeStructArrayMethod;
+            return GenericType.Get(type).XmlSerializeArrayMethod;
+            //MethodInfo method;
+            //if (arrayMethods.TryGetValue(type, out method)) return method;
+            //arrayMethods.Set(type, method = (type.IsValueType ? structArrayMethod : arrayMethod).MakeGenericMethod(type));
+            //return method;
         }
-        /// <summary>
-        /// 可空类型转换调用函数信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 可空类型转换函数信息
-        /// </summary>
-        private static readonly MethodInfo nullableSerializeMethod = typeof(Serializer).GetMethod("nullableSerialize", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 获取可空类型转换委托调用函数信息
-        /// </summary>
-        /// <param name="type">数组类型</param>
-        /// <returns>可空类型转换委托调用函数信息</returns>
-        public static MethodInfo GetNullable(Type type)
-        {
-            MethodInfo method;
-            if (nullableMethods.TryGetValue(type, out method)) return method;
-            nullableMethods.Set(type, method = nullableSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
-            return method;
-        }
+        ///// <summary>
+        ///// 可空类型转换调用函数信息集合
+        ///// </summary>
+        //private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> nullableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
+        ///// <summary>
+        ///// 可空类型转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo nullableSerializeMethod = typeof(Serializer).GetMethod("nullableSerialize", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 获取可空类型转换委托调用函数信息
+        ///// </summary>
+        ///// <param name="type">数组类型</param>
+        ///// <returns>可空类型转换委托调用函数信息</returns>
+        //public static MethodInfo GetNullable(Type type)
+        //{
+        //    MethodInfo method;
+        //    if (nullableMethods.TryGetValue(type, out method)) return method;
+        //    nullableMethods.Set(type, method = nullableSerializeMethod.MakeGenericMethod(type.GetGenericArguments()));
+        //    return method;
+        //}
         /// <summary>
         /// 枚举集合转换调用函数信息集合
         /// </summary>
         private static readonly AutoCSer.Threading.LockDictionary<Type, MethodInfo> enumerableMethods = new AutoCSer.Threading.LockDictionary<Type, MethodInfo>();
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo structStructEnumerableMethod = typeof(Serializer).GetMethod("structStructEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo structClassEnumerableMethod = typeof(Serializer).GetMethod("structClassEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo classStructEnumerableMethod = typeof(Serializer).GetMethod("classStructEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
-        /// <summary>
-        /// 字典转换函数信息
-        /// </summary>
-        private static readonly MethodInfo classClassEnumerableMethod = typeof(Serializer).GetMethod("classClassEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo structStructEnumerableMethod = typeof(Serializer).GetMethod("structStructEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo structClassEnumerableMethod = typeof(Serializer).GetMethod("structClassEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo classStructEnumerableMethod = typeof(Serializer).GetMethod("classStructEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 字典转换函数信息
+        ///// </summary>
+        //private static readonly MethodInfo classClassEnumerableMethod = typeof(Serializer).GetMethod("classClassEnumerable", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 获取枚举集合转换委托调用函数信息
         /// </summary>
@@ -269,28 +277,36 @@ namespace AutoCSer.Xml
                         ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            //method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            EnumerableGenericType2 EnumerableGenericType2 = EnumerableGenericType2.Get(type, argumentType);
+                            method = type.IsValueType ? (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeStructStructEnumerableMethod : EnumerableGenericType2.XmlSerializeStructClassEnumerableMethod) : (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeClassStructEnumerableMethod : EnumerableGenericType2.XmlSerializeClassClassEnumerableMethod);
                             break;
                         }
                         parameters[0] = typeof(ICollection<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            //method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            EnumerableGenericType2 EnumerableGenericType2 = EnumerableGenericType2.Get(type, argumentType);
+                            method = type.IsValueType ? (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeStructStructEnumerableMethod : EnumerableGenericType2.XmlSerializeStructClassEnumerableMethod) : (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeClassStructEnumerableMethod : EnumerableGenericType2.XmlSerializeClassClassEnumerableMethod);
                             break;
                         }
                         parameters[0] = typeof(IEnumerable<>).MakeGenericType(argumentType);
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            //method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            EnumerableGenericType2 EnumerableGenericType2 = EnumerableGenericType2.Get(type, argumentType);
+                            method = type.IsValueType ? (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeStructStructEnumerableMethod : EnumerableGenericType2.XmlSerializeStructClassEnumerableMethod) : (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeClassStructEnumerableMethod : EnumerableGenericType2.XmlSerializeClassClassEnumerableMethod);
                             break;
                         }
                         parameters[0] = argumentType.MakeArrayType();
                         constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null);
                         if (constructorInfo != null)
                         {
-                            method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            //method = (type.IsValueType ? (argumentType.IsValueType ? structStructEnumerableMethod : structClassEnumerableMethod) : (argumentType.IsValueType ? classStructEnumerableMethod : classClassEnumerableMethod)).MakeGenericMethod(type, argumentType);
+                            EnumerableGenericType2 EnumerableGenericType2 = EnumerableGenericType2.Get(type, argumentType);
+                            method = type.IsValueType ? (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeStructStructEnumerableMethod : EnumerableGenericType2.XmlSerializeStructClassEnumerableMethod) : (argumentType.IsValueType ? EnumerableGenericType2.XmlSerializeClassStructEnumerableMethod : EnumerableGenericType2.XmlSerializeClassClassEnumerableMethod);
                             break;
                         }
                     }
@@ -299,7 +315,9 @@ namespace AutoCSer.Xml
                         ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { interfaceType }, null);
                         if (constructorInfo != null)
                         {
-                            method = (type.IsValueType ? structStructEnumerableMethod : classStructEnumerableMethod).MakeGenericMethod(type, typeof(KeyValuePair<,>).MakeGenericType(interfaceType.GetGenericArguments()));
+                            //method = (type.IsValueType ? structStructEnumerableMethod : classStructEnumerableMethod).MakeGenericMethod(type, typeof(KeyValuePair<,>).MakeGenericType(interfaceType.GetGenericArguments()));
+                            EnumerableGenericType2 EnumerableGenericType2 = EnumerableGenericType2.Get(type, typeof(KeyValuePair<,>).MakeGenericType(interfaceType.GetGenericArguments()));
+                            method = type.IsValueType ? EnumerableGenericType2.XmlSerializeStructStructEnumerableMethod : EnumerableGenericType2.XmlSerializeClassStructEnumerableMethod;
                             break;
                         }
                     }
@@ -406,10 +424,10 @@ namespace AutoCSer.Xml
         private static void clearCache(int count)
         {
             typeMethods.Clear();
-            enumMethods.Clear();
-            isOutputNullableMethods.Clear();
-            arrayMethods.Clear();
-            nullableMethods.Clear();
+            //enumMethods.Clear();
+            //isOutputNullableMethods.Clear();
+            //arrayMethods.Clear();
+            //nullableMethods.Clear();
             enumerableMethods.Clear();
             customMethods.Clear();
         }

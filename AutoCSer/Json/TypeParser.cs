@@ -1079,7 +1079,8 @@ namespace AutoCSer.Json
             }
             if (type.IsArray)
             {
-                if (type.GetArrayRank() == 1) DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetArray(type.GetElementType()));
+                //if (type.GetArrayRank() == 1) DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetArray(type.GetElementType()));
+                if (type.GetArrayRank() == 1) DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), GenericType.Get(type.GetElementType()).JsonParseArrayMethod);
                 else DefaultParser = arrayManyRank;
                 return;
             }
@@ -1120,7 +1121,8 @@ namespace AutoCSer.Json
                 Type genericType = type.GetGenericTypeDefinition();
                 if (genericType == typeof(Dictionary<,>))
                 {
-                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetDictionary(type));
+                    //DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetDictionary(type));
+                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), GenericType2.Get(type.GetGenericArguments()).JsonParseDictionaryMethod);
                     return;
                 }
                 if (genericType == typeof(Nullable<>))
@@ -1130,7 +1132,8 @@ namespace AutoCSer.Json
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetKeyValuePair(type));
+                    //DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetKeyValuePair(type));
+                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), GenericType2.Get(type.GetGenericArguments()).JsonParseKeyValuePairMethod);
                     isValueType = true;
                     return;
                 }

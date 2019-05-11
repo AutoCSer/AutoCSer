@@ -93,8 +93,10 @@ namespace AutoCSer.NumberToCharStream
                     MethodInfo method = JoinMethod.GetToStringMethod(parameterTypes[0]);
                     if (method == null)
                     {
-                        otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), JoinMethod.NullableJoinCharMethod.MakeGenericMethod(parameterTypes));
-                        subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)Delegate.CreateDelegate(typeof(Func<SubArray<valueType>, char, string, string>), JoinMethod.NullableSubArrayJoinCharMethod.MakeGenericMethod(parameterTypes));
+                        //otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), JoinMethod.NullableJoinCharMethod.MakeGenericMethod(parameterTypes));
+                        otherJoinChar = (Func<valueType[], char, string, string>)AutoCSer.Expand.Metadata.StructGenericType.Get(parameterTypes[0]).NumberToCharStreamNullableJoinCharDelegate;
+                        //subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)Delegate.CreateDelegate(typeof(Func<SubArray<valueType>, char, string, string>), JoinMethod.NullableSubArrayJoinCharMethod.MakeGenericMethod(parameterTypes));
+                        subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)AutoCSer.Expand.Metadata.StructGenericType.Get(parameterTypes[0]).NumberToCharStreamNullableSubArrayJoinCharDelegate; 
                     }
                     else
                     {
@@ -112,8 +114,10 @@ namespace AutoCSer.NumberToCharStream
                     MethodInfo method = JoinMethod.GetToStringMethod(type);
                     if (method == null)
                     {
-                        otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), JoinMethod.StructJoinCharMethod.MakeGenericMethod(type));
-                        subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)Delegate.CreateDelegate(typeof(Func<SubArray<valueType>, char, string, string>), JoinMethod.StructSubArrayJoinCharMethod.MakeGenericMethod(type));
+                        //otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), JoinMethod.StructJoinCharMethod.MakeGenericMethod(type));
+                        otherJoinChar = (Func<valueType[], char, string, string>)AutoCSer.Expand.Metadata.StructGenericType.Get(type).NumberToCharStreamStructJoinCharDelegate;
+                        //subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)Delegate.CreateDelegate(typeof(Func<SubArray<valueType>, char, string, string>), JoinMethod.StructSubArrayJoinCharMethod.MakeGenericMethod(type));
+                        subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)AutoCSer.Expand.Metadata.StructGenericType.Get(type).NumberToCharStreamStructSubArrayJoinCharDelegate;
                     }
                     else
                     {
@@ -129,19 +133,23 @@ namespace AutoCSer.NumberToCharStream
             }
             else
             {
-                MethodInfo method, subArrayMethod;
+                //MethodInfo method, subArrayMethod;
                 if (type == typeof(string))
                 {
-                    method = JoinMethod.StringJoinCharMethod;
-                    subArrayMethod = JoinMethod.StringSubArrayJoinCharMethod;
+                    //method = JoinMethod.StringJoinCharMethod;
+                    //subArrayMethod = JoinMethod.StringSubArrayJoinCharMethod;
+                    otherJoinChar = (Func<valueType[], char, string, string>)(object)(Func<string[], char, string, string>)JoinMethod.stringJoinChar;
+                    subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)(object)(Func<SubArray<string>, char, string, string>)JoinMethod.stringSubArrayJoinChar;
                 }
                 else
                 {
-                    method = JoinMethod.ClassJoinCharMethod.MakeGenericMethod(type);
-                    subArrayMethod = JoinMethod.ClassSubArrayJoinCharMethod.MakeGenericMethod(type);
+                    //method = JoinMethod.ClassJoinCharMethod.MakeGenericMethod(type);
+                    //subArrayMethod = JoinMethod.ClassSubArrayJoinCharMethod.MakeGenericMethod(type);
+                    otherJoinChar = (Func<valueType[], char, string, string>)AutoCSer.Expand.Metadata.ClassGenericType.Get(type).NumberToCharStreamClassJoinCharDelegate;
+                    subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)AutoCSer.Expand.Metadata.ClassGenericType.Get(type).NumberToCharStreamClassSubArrayJoinCharDelegate;
                 }
-                otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), method);
-                subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)Delegate.CreateDelegate(typeof(Func<SubArray<valueType>, char, string, string>), subArrayMethod);
+                //otherJoinChar = (Func<valueType[], char, string, string>)Delegate.CreateDelegate(typeof(Func<valueType[], char, string, string>), method);
+                //subArrayJoinChar = (Func<SubArray<valueType>, char, string, string>)Delegate.CreateDelegate(typeof(Func<SubArray<valueType>, char, string, string>), subArrayMethod);
             }
         }
 #if NOJIT

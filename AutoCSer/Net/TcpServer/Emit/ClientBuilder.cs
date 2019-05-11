@@ -305,7 +305,8 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     methodGenerator.Emit(OpCodes.Ldarg_0);
                                     methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
                                     methodGenerator.ldarg(parameters.Length);
-                                    if (!method.IsClientAsynchronousCallback) methodGenerator.call(typeof(ClientCallback<>).MakeGenericType(method.ReturnType).GetMethod(ClientMetadata.ClientCallbackGetMethod.Name, BindingFlags.Public | BindingFlags.Static));
+                                    //if (!method.IsClientAsynchronousCallback) methodGenerator.call(typeof(ClientCallback<>).MakeGenericType(method.ReturnType).GetMethod(ClientMetadata.ClientCallbackGetMethod.Name, BindingFlags.Public | BindingFlags.Static));
+                                    if (!method.IsClientAsynchronousCallback) methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpClientCallbackGetMethod);
                                     methodGenerator.call(Metadata.ClientGetCallbackMethod.MakeGenericMethod(method.ReturnType, method.OutputParameterType.Type));
                                     methodGenerator.Emit(OpCodes.Stloc_S, onOuputLocalBuilder);
                                     #endregion
@@ -446,10 +447,24 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     returnValueLable = default(Label);
                                 }
                                 #region AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer.@OutputParameterTypeName> _wait_ = _TcpClient_.GetAutoWait<TcpInternalServer.@OutputParameterTypeName>();
-                                Type waitType = method.OutputParameterType == null ? typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue) : typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
-                                LocalBuilder waitLocalBuilder = methodGenerator.DeclareLocal(waitType);
-                                methodGenerator.call(method.OutputParameterType == null ? ClientMetadata.AutoWaitReturnValuePopMethod : waitType.GetMethod("Pop", BindingFlags.Static | BindingFlags.Public));
-                                methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
+                                //Type waitType = method.OutputParameterType == null ? typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue) : typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
+                                //LocalBuilder waitLocalBuilder = methodGenerator.DeclareLocal(waitType);
+                                //methodGenerator.call(method.OutputParameterType == null ? ClientMetadata.AutoWaitReturnValuePopMethod : waitType.GetMethod("Pop", BindingFlags.Static | BindingFlags.Public));
+                                //methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
+                                LocalBuilder waitLocalBuilder;
+                                if (method.OutputParameterType == null)
+                                {
+                                    waitLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.AutoWaitReturnValue));
+                                    methodGenerator.call(ClientMetadata.AutoWaitReturnValuePopMethod);
+                                    methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
+                                }
+                                else
+                                {
+                                    AutoCSer.Metadata.GenericType GenericType = AutoCSer.Metadata.GenericType.Get(method.OutputParameterType.Type);
+                                    waitLocalBuilder = methodGenerator.DeclareLocal(GenericType.TcpAutoWaitReturnValueType);
+                                    methodGenerator.call(GenericType.TcpAutoWaitReturnValuePopMethod);
+                                    methodGenerator.Emit(OpCodes.Stloc_S, waitLocalBuilder);
+                                }
                                 #endregion
                                 #region try
                                 methodGenerator.BeginExceptionBlock();

@@ -1016,8 +1016,8 @@ namespace AutoCSer.BinarySerialize
         /// <param name="objectValue"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static object realTypeObject<valueType>(DeSerializer deSerializer, object objectValue)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static object realTypeObject<valueType>(DeSerializer deSerializer, object objectValue)
         {
             valueType value = (valueType)objectValue;
             TypeDeSerializer<valueType>.RealType(deSerializer, ref value);
@@ -1068,7 +1068,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void EnumInt<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, int>.FromInt(*(int*)Read);
@@ -1079,7 +1079,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void EnumUInt<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, uint>.FromInt(*(uint*)Read);
@@ -1090,7 +1090,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void EnumLong<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, long>.FromInt(*(long*)Read);
@@ -1101,7 +1101,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void EnumULong<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, ulong>.FromInt(*(ulong*)Read);
@@ -1112,8 +1112,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void leftArrayDeSerialize<valueType>(ref LeftArray<valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void leftArrayDeSerialize<valueType>(ref LeftArray<valueType> value)
         {
             valueType[] array = null;
             isReferenceArray = false;
@@ -1125,8 +1125,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void dictionaryDeSerialize<keyType, valueType>(ref Dictionary<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void dictionaryDeSerialize<keyType, valueType>(ref Dictionary<keyType, valueType> value)
         {
             dictionaryArrayDeSerialize(value = DictionaryCreator.CreateAny<keyType, valueType>());
         }
@@ -1157,8 +1157,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableDeSerialize<valueType>(ref Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableDeSerialize<valueType>(ref Nullable<valueType> value) where valueType : struct
         {
             if (*(int*)Read == Serializer.NullableHasValue)
             {
@@ -1174,8 +1174,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void keyValuePairDeSerialize<keyType, valueType>(ref KeyValuePair<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void keyValuePairDeSerialize<keyType, valueType>(ref KeyValuePair<keyType, valueType> value)
         {
             KeyValue<keyType, valueType> keyValue = default(KeyValue<keyType, valueType>);
             TypeDeSerializer<KeyValue<keyType, valueType>>.GetDeSerializer(GlobalVersion).MemberDeSerialize(this, ref keyValue);
@@ -1186,8 +1186,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void sortedDictionaryDeSerialize<keyType, valueType>(ref SortedDictionary<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void sortedDictionaryDeSerialize<keyType, valueType>(ref SortedDictionary<keyType, valueType> value)
         {
             dictionaryArrayDeSerialize(value = new SortedDictionary<keyType, valueType>());
         }
@@ -1196,8 +1196,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void sortedListDeSerialize<keyType, valueType>(ref SortedList<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void sortedListDeSerialize<keyType, valueType>(ref SortedList<keyType, valueType> value)
         {
             dictionaryArrayDeSerialize(value = new SortedList<keyType, valueType>());
         }
@@ -1220,8 +1220,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structCollection<valueType, argumentType>(ref valueType value) where valueType : ICollection<argumentType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structCollection<valueType, argumentType>(ref valueType value) where valueType : ICollection<argumentType>
         {
             value = AutoCSer.Emit.Constructor<valueType>.New();
             collection<valueType, argumentType>(ref value);
@@ -1230,8 +1230,8 @@ namespace AutoCSer.BinarySerialize
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classCollection<valueType, argumentType>(ref valueType value) where valueType : ICollection<argumentType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classCollection<valueType, argumentType>(ref valueType value) where valueType : ICollection<argumentType>
         {
             if (CheckPoint(ref value))
             {
@@ -1266,8 +1266,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structDictionaryDeSerialize<dictionaryType, keyType, valueType>(ref dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structDictionaryDeSerialize<dictionaryType, keyType, valueType>(ref dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
         {
             value = AutoCSer.Emit.Constructor<dictionaryType>.New();
             dictionaryConstructorDeSerialize<dictionaryType, keyType, valueType>(ref value);
@@ -1276,8 +1276,8 @@ namespace AutoCSer.BinarySerialize
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classDictionaryDeSerialize<dictionaryType, keyType, valueType>(ref dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classDictionaryDeSerialize<dictionaryType, keyType, valueType>(ref dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
         {
             if (CheckPoint(ref value))
             {
@@ -1292,8 +1292,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structDeSerialize<valueType>(ref valueType value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structDeSerialize<valueType>(ref valueType value) where valueType : struct
         {
             TypeDeSerializer<valueType>.StructDeSerialize(this, ref value);
         }
@@ -1302,8 +1302,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void memberClassDeSerialize<valueType>(ref valueType value) where valueType : class
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void memberClassDeSerialize<valueType>(ref valueType value) where valueType : class
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1317,8 +1317,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumByteMember<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumByteMember<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, byte>.FromInt(*Read++);
         }
@@ -1327,8 +1327,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumSByteMember<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumSByteMember<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, sbyte>.FromInt(*(sbyte*)Read++);
         }
@@ -1337,8 +1337,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumShortMember<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumShortMember<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, short>.FromInt(*(short*)Read);
             Read += sizeof(short);
@@ -1348,8 +1348,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUShortMember<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUShortMember<valueType>(ref valueType value)
         {
             value = Emit.EnumCast<valueType, ushort>.FromInt(*(ushort*)Read);
             Read += sizeof(ushort);
@@ -1359,8 +1359,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void dictionaryMember<keyType, valueType>(ref Dictionary<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void dictionaryMember<keyType, valueType>(ref Dictionary<keyType, valueType> value)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1374,8 +1374,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableMemberDeSerialize<valueType>(ref Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableMemberDeSerialize<valueType>(ref Nullable<valueType> value) where valueType : struct
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1389,8 +1389,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void sortedDictionaryMember<keyType, valueType>(ref SortedDictionary<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void sortedDictionaryMember<keyType, valueType>(ref SortedDictionary<keyType, valueType> value)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1404,8 +1404,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void sortedListMember<keyType, valueType>(ref SortedList<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void sortedListMember<keyType, valueType>(ref SortedList<keyType, valueType> value)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1419,8 +1419,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumByteArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumByteArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1440,8 +1440,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumSByteArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumSByteArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1461,8 +1461,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumShortArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumShortArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1482,8 +1482,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUShortArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUShortArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1503,8 +1503,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumIntArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumIntArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1522,8 +1522,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUIntArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUIntArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1541,8 +1541,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumLongArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumLongArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1560,8 +1560,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumULongArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumULongArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1579,8 +1579,8 @@ namespace AutoCSer.BinarySerialize
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableArray<valueType>(ref Nullable<valueType>[] array) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableArray<valueType>(ref Nullable<valueType>[] array) where valueType : struct
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1610,8 +1610,8 @@ namespace AutoCSer.BinarySerialize
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structArray<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structArray<valueType>(ref valueType[] array)
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1633,8 +1633,8 @@ namespace AutoCSer.BinarySerialize
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void array<valueType>(ref valueType[] array) where valueType : class
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void array<valueType>(ref valueType[] array) where valueType : class
         {
             int length = deSerializeArray(ref array);
             if (length != 0)
@@ -1664,8 +1664,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">数组对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableArrayMember<valueType>(ref Nullable<valueType>[] array) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableArrayMember<valueType>(ref Nullable<valueType>[] array) where valueType : struct
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1679,8 +1679,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">数组对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1694,8 +1694,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">数组对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void arrayMember<valueType>(ref valueType[] array) where valueType : class
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void arrayMember<valueType>(ref valueType[] array) where valueType : class
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1709,8 +1709,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumByteArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumByteArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1724,8 +1724,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumSByteArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumSByteArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1739,8 +1739,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumShortArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumShortArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1754,8 +1754,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUShortArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUShortArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1769,8 +1769,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumIntArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumIntArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1784,8 +1784,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUIntArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUIntArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1799,8 +1799,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumLongArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumLongArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {
@@ -1814,8 +1814,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumULongArrayMember<valueType>(ref valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumULongArrayMember<valueType>(ref valueType[] array)
         {
             if (*(int*)Read == Serializer.NullValue)
             {

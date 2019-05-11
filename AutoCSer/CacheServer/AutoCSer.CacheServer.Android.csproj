@@ -166,6 +166,8 @@
     <Compile Include="MessageQueue\ConsumerProcessor.cs" />
     <Compile Include="MessageQueue\ConsumerProcessorAsynchronous.cs" />
     <Compile Include="MessageQueue\Abstract\ConsumerProcessor.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="OperationParameter\ShortPathOperationNode.cs" />
     <Compile Include="OperationParameter\ShortPathQueryNode.cs" />
     <Compile Include="OperationUpdater\Integer.cs" />

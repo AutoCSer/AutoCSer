@@ -598,21 +598,36 @@ namespace AutoCSer.Deploy
         }
 #endif
         /// <summary>
+        /// 获取申请进程排他锁名称
+        /// </summary>
+        /// <returns></returns>
+        private static string GetProcessEventWaitHandleName()
+        {
+            Assembly Assembly = Assembly.GetEntryAssembly();
+            if (Assembly == null) throw new ArgumentNullException("Name is null");
+            return Assembly.FullName;
+        }
+        /// <summary>
         /// 尝试申请进程排他锁
         /// </summary>
         /// <param name="Name"></param>
         /// <returns></returns>
         public static EventWaitHandle TryCreateProcessEventWaitHandle(string Name = null)
         {
-            if (Name == null)
-            {
-                Assembly Assembly = Assembly.GetEntryAssembly();
-                if (Assembly == null) throw new ArgumentNullException("Name is null");
-                Name = Assembly.FullName;
-            }
             bool createdProcessWait;
-            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, Name, out createdProcessWait);
+            EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, Name ?? GetProcessEventWaitHandleName(), out createdProcessWait);
             return createdProcessWait ? processWait : null;
+        }
+        /// <summary>
+        /// 设置申请进程排他锁
+        /// </summary>
+        /// <param name="Name"></param>
+        public static void SetProcessEventWaitHandle(string Name = null)
+        {
+            using (EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, Name ?? GetProcessEventWaitHandleName()))
+            {
+                processWait.Set();
+            }
         }
     }
 }

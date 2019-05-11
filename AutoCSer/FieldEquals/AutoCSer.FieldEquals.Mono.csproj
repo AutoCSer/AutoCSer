@@ -43,6 +43,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Comparor.cs" />
     <Compile Include="MemberDynamicMethod.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
     <Compile Include="MethodCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -83,6 +83,8 @@
     <Compile Include="IO\CreateFlieTimeoutType.cs" />
     <Compile Include="IO\CreateFlieTimeoutWatcher.cs" />
     <Compile Include="Extension\Number.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="Net\Http\ServerNameIndication\HandshakeType.cs" />
     <Compile Include="Net\Http\ServerNameIndication\HelloStream.cs" />
     <Compile Include="Net\Http\ServerNameIndication\MessageType.cs" />

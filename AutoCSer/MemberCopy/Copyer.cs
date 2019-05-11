@@ -12,6 +12,16 @@ namespace AutoCSer.MemberCopy
     /// <summary>
     /// 成员复制
     /// </summary>
+    internal sealed class Copyer
+    {
+        /// <summary>
+        /// 浅复制函数信息
+        /// </summary>
+        internal static readonly MethodInfo MemberwiseCloneMethod = ((Func<object>)new Copyer().MemberwiseClone).Method;
+    }
+    /// <summary>
+    /// 成员复制
+    /// </summary>
     /// <typeparam name="valueType">对象类型</typeparam>
     public static partial class Copyer<valueType>
     {
@@ -47,14 +57,14 @@ namespace AutoCSer.MemberCopy
         /// </summary>
         /// <param name="value"></param>
         /// <param name="copyValue"></param>
-        private delegate void copyer(ref valueType value, valueType copyValue);
+        internal delegate void copyer(ref valueType value, valueType copyValue);
         /// <summary>
         /// 成员复制委托
         /// </summary>
         /// <param name="value"></param>
         /// <param name="copyValue"></param>
         /// <param name="memberMap">成员位图</param>
-        private delegate void memberMapCopyer(ref valueType value, valueType copyValue, MemberMap memberMap);
+        internal delegate void memberMapCopyer(ref valueType value, valueType copyValue, MemberMap memberMap);
         /// <summary>
         /// 是否采用值类型复制模式
         /// </summary>
@@ -72,8 +82,8 @@ namespace AutoCSer.MemberCopy
         /// </summary>
         /// <param name="value"></param>
         /// <param name="readValue"></param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void copyArray(ref valueType[] value, valueType[] readValue)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static void copyArray(ref valueType[] value, valueType[] readValue)
         {
             if (readValue != null)
             {
@@ -93,8 +103,8 @@ namespace AutoCSer.MemberCopy
         /// <param name="readValue"></param>
         /// <param name="memberMap"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void copyArray(ref valueType[] value, valueType[] readValue, MemberMap memberMap)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static void copyArray(ref valueType[] value, valueType[] readValue, MemberMap memberMap)
         {
             copyArray(ref value, readValue);
         }
@@ -142,14 +152,18 @@ namespace AutoCSer.MemberCopy
         static Copyer()
         {
             Type type = typeof(valueType), refType = type.MakeByRefType();
-            if (!type.IsValueType) memberwiseClone = (Func<valueType, object>)Delegate.CreateDelegate(typeof(Func<valueType, object>), typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
+            //if (!type.IsValueType) memberwiseClone = (Func<valueType, object>)Delegate.CreateDelegate(typeof(Func<valueType, object>), typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
+            if (!type.IsValueType) memberwiseClone = (Func<valueType, object>)Delegate.CreateDelegate(typeof(Func<valueType, object>), Copyer.MemberwiseCloneMethod);
             if (type.IsArray)
             {
                 if (type.GetArrayRank() == 1)
                 {
-                    Type copyerType = typeof(Copyer<>).MakeGenericType(type.GetElementType());
-                    defaultCopyer = (copyer)Delegate.CreateDelegate(typeof(copyer), copyerType.GetMethod("copyArray", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { refType, type }, null));
-                    defaultMemberCopyer = (memberMapCopyer)Delegate.CreateDelegate(typeof(memberMapCopyer), copyerType.GetMethod("copyArray", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { refType, type, typeof(MemberMap) }, null));
+                    //Type copyerType = typeof(Copyer<>).MakeGenericType(type.GetElementType());
+                    //defaultCopyer = (copyer)Delegate.CreateDelegate(typeof(copyer), copyerType.GetMethod("copyArray", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { refType, type }, null));
+                    //defaultMemberCopyer = (memberMapCopyer)Delegate.CreateDelegate(typeof(memberMapCopyer), copyerType.GetMethod("copyArray", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { refType, type, typeof(MemberMap) }, null));
+                    AutoCSer.Metadata.GenericType GenericType = AutoCSer.Metadata.GenericType.Get(type.GetElementType());
+                    defaultCopyer = (copyer)GenericType.MemberCopyArrayDelegate;
+                    defaultMemberCopyer = (memberMapCopyer)GenericType.MemberMapCopyArrayDelegate;
                     return;
                 }
                 defaultCopyer = noCopy;

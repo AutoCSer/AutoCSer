@@ -55,6 +55,9 @@
     <Compile Include="MemberAttribute.cs" />
     <Compile Include="MemberDynamicMethod.cs" />
     <Compile Include="MethodCache.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
+    <Compile Include="Metadata\GenericType2.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

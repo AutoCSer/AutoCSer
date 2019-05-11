@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using AutoCSer.Metadata;
 
 namespace AutoCSer.Net.SimpleSerialize
@@ -53,6 +54,11 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         internal static readonly SimpleDeSerializer DeSerialize;
 #endif
+        /// <summary>
+        /// 预编译
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Compile() { }
 
         static TypeDeSerializer()
         {

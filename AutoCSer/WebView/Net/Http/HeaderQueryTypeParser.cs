@@ -2,6 +2,7 @@
 using AutoCSer.Metadata;
 using System.Reflection;
 using AutoCSer.Extension;
+using System.Runtime.CompilerServices;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -32,17 +33,17 @@ namespace AutoCSer.Net.Http
         /// 默认顺序成员名称数据
         /// </summary>
         private static Pointer memberNames;
-        internal static int x(HeaderQueryParser parser, ref valueType value, byte* names)
-        {
-            int index = 0;
-            while ((names = parser.IsName(names, ref index)) != null)
-            {
-                if (index == -1) return -1;
-                memberParsers[index](parser, ref value);
-                ++index;
-            }
-            return index;
-        }
+        //internal static int x(HeaderQueryParser parser, ref valueType value, byte* names)
+        //{
+        //    int index = 0;
+        //    while ((names = parser.IsName(names, ref index)) != null)
+        //    {
+        //        if (index == -1) return -1;
+        //        memberParsers[index](parser, ref value);
+        //        ++index;
+        //    }
+        //    return index;
+        //}
         /// <summary>
         /// 对象解析
         /// </summary>
@@ -64,6 +65,11 @@ namespace AutoCSer.Net.Http
             }
             while (parser.IsQuery());
         }
+        /// <summary>
+        /// 预编译
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Compile() { }
 
         static HeaderQueryTypeParser()
         {

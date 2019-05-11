@@ -80,15 +80,15 @@ namespace AutoCSer.RandomObject
         /// <param name="config"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static valueType create<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static valueType create<valueType>(Config config)
         {
             return Creator<valueType>.CreateNull(config);
         }
-        /// <summary>
-        /// 创建随机对象函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateMethod = typeof(MethodCache).GetMethod("create", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机对象函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateMethod = typeof(MethodCache).GetMethod("create", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机成员对象
         /// </summary>
@@ -96,15 +96,15 @@ namespace AutoCSer.RandomObject
         /// <param name="value"></param>
         /// <param name="config"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void createMember<valueType>(ref valueType value, Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static void createMember<valueType>(ref valueType value, Config config)
         {
             Creator<valueType>.MemberCreator(ref value, config);
         }
-        /// <summary>
-        /// 创建随机对象函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateMemberMethod = typeof(MethodCache).GetMethod("createMember", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机对象函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateMemberMethod = typeof(MethodCache).GetMethod("createMember", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 创建随机数组
@@ -112,8 +112,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static valueType[] createArray<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static valueType[] createArray<valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(valueType[]));
             if (historyValue != null) return (valueType[])historyValue;
@@ -126,18 +126,18 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateArrayMethod = typeof(MethodCache).GetMethod("createArray", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateArrayMethod = typeof(MethodCache).GetMethod("createArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static valueType[] createArrayNull<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static valueType[] createArrayNull<valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(valueType[]));
             if (historyValue != null) return (valueType[])historyValue;
@@ -146,10 +146,10 @@ namespace AutoCSer.RandomObject
             while (length != 0) value[--length] = Creator<valueType>.CreateNull(config);
             return value;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateArrayNullMethod = typeof(MethodCache).GetMethod("createArrayNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateArrayNullMethod = typeof(MethodCache).GetMethod("createArrayNull", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 创建可空随机对象
@@ -175,23 +175,23 @@ namespace AutoCSer.RandomObject
         /// <param name="config"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static LeftArray<valueType> createLeftArray<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static LeftArray<valueType> createLeftArray<valueType>(Config config)
         {
             return new LeftArray<valueType>(createArray<valueType>(config));
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateLeftArrayMethod = typeof(MethodCache).GetMethod("createLeftArray", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateLeftArrayMethod = typeof(MethodCache).GetMethod("createLeftArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static ListArray<valueType> createListArray<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static ListArray<valueType> createListArray<valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(ListArray<valueType>));
             if (historyValue != null) return (ListArray<valueType>)historyValue;
@@ -199,36 +199,36 @@ namespace AutoCSer.RandomObject
             value.Add(createArray<valueType>(config));
             return value;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateListArrayMethod = typeof(MethodCache).GetMethod("createListArray", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateListArrayMethod = typeof(MethodCache).GetMethod("createListArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static ListArray<valueType> createListArrayNull<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static ListArray<valueType> createListArrayNull<valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(ListArray<valueType>));
             if (historyValue != null) return (ListArray<valueType>)historyValue;
             valueType[] array = createArrayNull<valueType>(config);
             return array == null ? null : config.SaveHistory(new ListArray<valueType>(array, true));
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateListArrayNullMethod = typeof(MethodCache).GetMethod("createListArrayNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateListArrayNullMethod = typeof(MethodCache).GetMethod("createListArrayNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static System.Collections.Generic.List<valueType> createList<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static System.Collections.Generic.List<valueType> createList<valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(System.Collections.Generic.List<valueType>));
             if (historyValue != null) return (System.Collections.Generic.List<valueType>)historyValue;
@@ -236,28 +236,28 @@ namespace AutoCSer.RandomObject
             value.AddRange(createArray<valueType>(config));
             return value;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateListMethod = typeof(MethodCache).GetMethod("createList", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateListMethod = typeof(MethodCache).GetMethod("createList", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static System.Collections.Generic.List<valueType> createListNull<valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static System.Collections.Generic.List<valueType> createListNull<valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(System.Collections.Generic.List<valueType>));
             if (historyValue != null) return (System.Collections.Generic.List<valueType>)historyValue;
             valueType[] array = createArrayNull<valueType>(config);
             return array == null ? null : config.SaveHistory(new System.Collections.Generic.List<valueType>(array));
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateListNullMethod = typeof(MethodCache).GetMethod("createListNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateListNullMethod = typeof(MethodCache).GetMethod("createListNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -265,17 +265,17 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="argumentType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static valueType createEnumerableConstructor<valueType, argumentType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static valueType createEnumerableConstructor<valueType, argumentType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(valueType));
             if (historyValue != null) return (valueType)historyValue;
             return config.SaveHistory(Emit.EnumerableConstructor<valueType, argumentType>.Constructor(createArray<argumentType>(config)));
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateEnumerableConstructorMethod = typeof(MethodCache).GetMethod("createEnumerableConstructor", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateEnumerableConstructorMethod = typeof(MethodCache).GetMethod("createEnumerableConstructor", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -283,18 +283,18 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="argumentType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static valueType createEnumerableConstructorNull<valueType, argumentType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static valueType createEnumerableConstructorNull<valueType, argumentType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(valueType));
             if (historyValue != null) return (valueType)historyValue;
             valueType[] array = createArrayNull<valueType>(config);
             return array == null ? default(valueType) : config.SaveHistory(Emit.EnumerableConstructor<valueType, argumentType>.Constructor(createArray<argumentType>(config)));
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateEnumerableConstructorNullMethod = typeof(MethodCache).GetMethod("createEnumerableConstructorNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateEnumerableConstructorNullMethod = typeof(MethodCache).GetMethod("createEnumerableConstructorNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -302,8 +302,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static Dictionary<keyType, valueType> createDictionary<keyType, valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static Dictionary<keyType, valueType> createDictionary<keyType, valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(Dictionary<keyType, valueType>));
             if (historyValue != null) return (Dictionary<keyType, valueType>)historyValue;
@@ -317,10 +317,10 @@ namespace AutoCSer.RandomObject
             }
             return values;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateDictionaryMethod = typeof(MethodCache).GetMethod("createDictionary", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateDictionaryMethod = typeof(MethodCache).GetMethod("createDictionary", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -328,8 +328,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static Dictionary<keyType, valueType> createDictionaryNull<keyType, valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static Dictionary<keyType, valueType> createDictionaryNull<keyType, valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(Dictionary<keyType, valueType>));
             if (historyValue != null) return (Dictionary<keyType, valueType>)historyValue;
@@ -347,10 +347,10 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateDictionaryNullMethod = typeof(MethodCache).GetMethod("createDictionaryNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateDictionaryNullMethod = typeof(MethodCache).GetMethod("createDictionaryNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -358,8 +358,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static SortedDictionary<keyType, valueType> createSortedDictionary<keyType, valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static SortedDictionary<keyType, valueType> createSortedDictionary<keyType, valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(Dictionary<keyType, valueType>));
             if (historyValue != null) return (SortedDictionary<keyType, valueType>)historyValue;
@@ -373,10 +373,10 @@ namespace AutoCSer.RandomObject
             }
             return values;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateSortedDictionaryMethod = typeof(MethodCache).GetMethod("createSortedDictionary", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateSortedDictionaryMethod = typeof(MethodCache).GetMethod("createSortedDictionary", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -384,8 +384,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static SortedDictionary<keyType, valueType> createSortedDictionaryNull<keyType, valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static SortedDictionary<keyType, valueType> createSortedDictionaryNull<keyType, valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(Dictionary<keyType, valueType>));
             if (historyValue != null) return (SortedDictionary<keyType, valueType>)historyValue;
@@ -403,10 +403,10 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateSortedDictionaryNullMethod = typeof(MethodCache).GetMethod("createSortedDictionaryNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateSortedDictionaryNullMethod = typeof(MethodCache).GetMethod("createSortedDictionaryNull", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -414,8 +414,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static SortedList<keyType, valueType> createSortedList<keyType, valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static SortedList<keyType, valueType> createSortedList<keyType, valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(Dictionary<keyType, valueType>));
             if (historyValue != null) return (SortedList<keyType, valueType>)historyValue;
@@ -429,10 +429,10 @@ namespace AutoCSer.RandomObject
             }
             return values;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateSortedListMethod = typeof(MethodCache).GetMethod("createSortedList", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateSortedListMethod = typeof(MethodCache).GetMethod("createSortedList", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 创建随机数组
         /// </summary>
@@ -440,8 +440,8 @@ namespace AutoCSer.RandomObject
         /// <typeparam name="valueType"></typeparam>
         /// <param name="config"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static SortedList<keyType, valueType> createSortedListNull<keyType, valueType>(Config config)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static SortedList<keyType, valueType> createSortedListNull<keyType, valueType>(Config config)
         {
             object historyValue = config.TryGetValue(typeof(Dictionary<keyType, valueType>));
             if (historyValue != null) return (SortedList<keyType, valueType>)historyValue;
@@ -459,10 +459,10 @@ namespace AutoCSer.RandomObject
             }
             return null;
         }
-        /// <summary>
-        /// 创建随机数组函数信息
-        /// </summary>
-        internal static readonly MethodInfo CreateSortedListNullMethod = typeof(MethodCache).GetMethod("createSortedListNull", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 创建随机数组函数信息
+        ///// </summary>
+        //internal static readonly MethodInfo CreateSortedListNullMethod = typeof(MethodCache).GetMethod("createSortedListNull", BindingFlags.Static | BindingFlags.NonPublic);
 
         static MethodCache()
         {

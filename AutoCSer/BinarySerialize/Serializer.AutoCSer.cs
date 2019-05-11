@@ -47,8 +47,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void subArraySerialize<valueType>(SubArray<valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void subArraySerialize<valueType>(SubArray<valueType> value)
         {
             valueType[] array = value.ToArray();
             isReferenceArray = false;
@@ -221,7 +221,7 @@ namespace AutoCSer.BinarySerialize
         {
             foreach (Type type in types)
             {
-                if (type != null) RuntimeHelpers.RunClassConstructor(typeof(TypeSerializer<>).MakeGenericType(type).TypeHandle);
+                if (type != null) GenericType.Get(type).BinarySerializeCompile();
             }
         }
     }

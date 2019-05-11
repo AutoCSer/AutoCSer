@@ -62,6 +62,11 @@
     <Compile Include="JsonFile.cs" />
     <Compile Include="IO\Compression\Deflate.cs" />
     <Compile Include="IO\FileInfo.cs" />
+    <Compile Include="MessagePack\DataType.cs" />
+    <Compile Include="MessagePack\PointerNode.cs" />
+    <Compile Include="Metadata\ClassGenericType.cs" />
+    <Compile Include="Metadata\StructGenericType.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleMapping32.cs" />
     <Compile Include="Extension\Array.cs" />

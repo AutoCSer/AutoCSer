@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using AutoCSer.Metadata;
 using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Json
@@ -415,7 +416,8 @@ namespace AutoCSer.Json
             {
                 Type type = value.GetType();
                 if (type == typeof(object)) CharStream.WriteJsonObject();
-                else SerializeMethodCache.GetObject(type)(this, value);
+                //else SerializeMethodCache.GetObject(type)(this, value);
+                else GenericType.Get(type).JsonSerializeObjectDelegate(this, value);
             }
             else CharStream.WriteJsonObject();
         }

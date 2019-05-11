@@ -44,6 +44,9 @@
     <Compile Include="MemberAttribute.cs" />
     <Compile Include="MemberDynamicMethod.cs" />
     <Compile Include="MethodCache.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
+    <Compile Include="Metadata\GenericType2.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.DotNet4.5.csproj">

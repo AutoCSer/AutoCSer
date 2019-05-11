@@ -35,5 +35,10 @@ namespace AutoCSer.BinarySerialize
             }
             else deSerializer.State = DeSerializeState.MemberMap;
         }
+        /// <summary>
+        /// 预编译
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Compile() { }
     }
 }

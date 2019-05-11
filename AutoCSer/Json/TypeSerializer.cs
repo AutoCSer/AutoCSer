@@ -362,7 +362,8 @@ namespace AutoCSer.Json
             }
             if (type.IsArray)
             {
-                if (type.GetArrayRank() == 1) defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetArray(type.GetElementType()));
+                //if (type.GetArrayRank() == 1) defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetArray(type.GetElementType()));
+                if (type.GetArrayRank() == 1) defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType.Get(type.GetElementType()).JsonSerializeArrayMethod);
                 else defaultSerializer = arrayManyRank;
                 isValueType = true;
                 return;
@@ -390,13 +391,15 @@ namespace AutoCSer.Json
                 }
                 if (genericType == typeof(Nullable<>))
                 {
-                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetNullable(type));
+                    //defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetNullable(type));
+                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), StructGenericType.Get(type.GetGenericArguments()[0]).JsonSerializeNullableMethod);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetKeyValuePair(type));
+                    //defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetKeyValuePair(type));
+                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType2.Get(type.GetGenericArguments()).JsonSerializeKeyValuePairMethod);
                     isValueType = true;
                     return;
                 }

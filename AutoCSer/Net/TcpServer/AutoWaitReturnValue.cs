@@ -108,7 +108,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static void PushNotNull(AutoWaitReturnValue value)
         {
             if (poolCount >= poolMaxCount) return;
@@ -135,7 +135,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static AutoWaitReturnValue Pop()
         {
             while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);
@@ -346,7 +346,7 @@ namespace AutoCSer.Net.TcpServer
         /// 弹出节点
         /// </summary>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static AutoWaitReturnValue<outputParameterType> Pop()
         {
             while (System.Threading.Interlocked.CompareExchange(ref popLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkPop);

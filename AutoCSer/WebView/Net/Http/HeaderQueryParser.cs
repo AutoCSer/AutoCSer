@@ -986,8 +986,8 @@ namespace AutoCSer.Net.Http
         /// 枚举类型解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void parseEnum<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void parseEnum<valueType>(ref valueType value)
         {
             BufferIndex* indexs = queryIndex + 1;
             if (indexs->Length == 0) value = default(valueType);
@@ -1005,25 +1005,25 @@ namespace AutoCSer.Net.Http
                 if ((parser = Interlocked.Exchange(ref enumJsonParser, parser)) != null) parser.Free();
             }
         }
-        /// <summary>
-        /// 未知类型解析函数信息
-        /// </summary>
-        private static readonly MethodInfo parseEnumMethod = typeof(HeaderQueryParser).GetMethod("parseEnum", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 未知类型解析函数信息
+        ///// </summary>
+        //private static readonly MethodInfo parseEnumMethod = typeof(HeaderQueryParser).GetMethod("parseEnum", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// 未知类型解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void unknown<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void unknown<valueType>(ref valueType value)
         {
             BufferIndex* indexs = queryIndex + 1;
             if (indexs->Length == 0) value = default(valueType);
             else if (!AutoCSer.Json.Parser.ParseNotEmpty(header.UnescapeUtf8(bufferStart, indexs->StartIndex, indexs->Length), ref value)) state = HeaderQueryParseState.Unknown;
         }
-        /// <summary>
-        /// 未知类型解析函数信息
-        /// </summary>
-        private static readonly MethodInfo unknownMethod = typeof(HeaderQueryParser).GetMethod("unknown", BindingFlags.Instance | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 未知类型解析函数信息
+        ///// </summary>
+        //private static readonly MethodInfo unknownMethod = typeof(HeaderQueryParser).GetMethod("unknown", BindingFlags.Instance | BindingFlags.NonPublic);
 
         /// <summary>
         /// 查询解析
@@ -1051,7 +1051,8 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static MethodInfo GetParseMemberMethod(Type memberType)
         {
-            return getParseMethod(memberType) ?? ((memberType.IsEnum ? parseEnumMethod : unknownMethod).MakeGenericMethod(memberType));
+            //return getParseMethod(memberType) ?? ((memberType.IsEnum ? parseEnumMethod : unknownMethod).MakeGenericMethod(memberType));
+            return getParseMethod(memberType) ?? (memberType.IsEnum ? AutoCSer.WebView.Metadata.GenericType.Get(memberType).HttpHeaderQueryParseEnumMethod : AutoCSer.WebView.Metadata.GenericType.Get(memberType).HttpHeaderQueryParseUnknownMethod);
         }
 #if !NOJIT
         /// <summary>

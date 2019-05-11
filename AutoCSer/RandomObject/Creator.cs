@@ -209,9 +209,12 @@ namespace AutoCSer.RandomObject
             {
                 if (type.GetArrayRank() == 1)
                 {
-                    Type elementType = type.GetElementType();
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateArrayNullMethod.MakeGenericMethod(elementType));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateArrayMethod.MakeGenericMethod(elementType));
+                    //Type elementType = type.GetElementType();
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateArrayNullMethod.MakeGenericMethod(elementType));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateArrayMethod.MakeGenericMethod(elementType));
+                    AutoCSer.RandomObject.Metadata.GenericType GenericType = AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetElementType());
+                    configNullCreator = (Func<Config, valueType>)GenericType.CreateArrayNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType.CreateArrayDelegate;
                 }
                 return;
             }
@@ -238,21 +241,28 @@ namespace AutoCSer.RandomObject
                 }
                 if (genericType == typeof(LeftArray<>))
                 {
-                    configNullCreator = configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateLeftArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //configNullCreator = configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateLeftArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    configNullCreator = configCreator = (Func<Config, valueType>)AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]).CreateLeftArrayDelegate;
                     return;
                 }
                 if (genericType == typeof(ListArray<>))
                 {
-                    Type[] parameterTypes = type.GetGenericArguments();
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListArrayNullMethod.MakeGenericMethod(parameterTypes));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListArrayMethod.MakeGenericMethod(parameterTypes));
+                    //Type[] parameterTypes = type.GetGenericArguments();
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListArrayNullMethod.MakeGenericMethod(parameterTypes));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListArrayMethod.MakeGenericMethod(parameterTypes));
+                    AutoCSer.RandomObject.Metadata.GenericType GenericType = AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]);
+                    configNullCreator = (Func<Config, valueType>)GenericType.CreateListArrayNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType.CreateListArrayDelegate;
                     return;
                 }
                 if (genericType == typeof(List<>))
                 {
-                    Type[] parameterTypes = type.GetGenericArguments();
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListNullMethod.MakeGenericMethod(parameterTypes));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListMethod.MakeGenericMethod(parameterTypes));
+                    //Type[] parameterTypes = type.GetGenericArguments();
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListNullMethod.MakeGenericMethod(parameterTypes));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateListMethod.MakeGenericMethod(parameterTypes));
+                    AutoCSer.RandomObject.Metadata.GenericType GenericType = AutoCSer.RandomObject.Metadata.GenericType.Get(type.GetGenericArguments()[0]);
+                    configNullCreator = (Func<Config, valueType>)GenericType.CreateListNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType.CreateListDelegate;
                     return;
                 }
 #if DOTNET2
@@ -261,30 +271,42 @@ namespace AutoCSer.RandomObject
                 if (genericType == typeof(HashSet<>) || genericType == typeof(Queue<>) || genericType == typeof(Stack<>) || genericType == typeof(SortedSet<>) || genericType == typeof(LinkedList<>))
 #endif
                 {
-                    Type[] parameterTypes = new Type[] { type, type.GetGenericArguments()[0] };
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateEnumerableConstructorNullMethod.MakeGenericMethod(parameterTypes));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateEnumerableConstructorMethod.MakeGenericMethod(parameterTypes));
+                    //Type[] parameterTypes = new Type[] { type, type.GetGenericArguments()[0] };
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateEnumerableConstructorNullMethod.MakeGenericMethod(parameterTypes));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateEnumerableConstructorMethod.MakeGenericMethod(parameterTypes));
+                    AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(new Type[] { type, type.GetGenericArguments()[0] });
+                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateEnumerableConstructorNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType2.CreateEnumerableConstructorDelegate;
                     return;
                 }
                 if (genericType == typeof(Dictionary<,>))
                 {
-                    Type[] parameterTypes = type.GetGenericArguments();
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateDictionaryNullMethod.MakeGenericMethod(parameterTypes));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateDictionaryMethod.MakeGenericMethod(parameterTypes));
+                    //Type[] parameterTypes = type.GetGenericArguments();
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateDictionaryNullMethod.MakeGenericMethod(parameterTypes));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateDictionaryMethod.MakeGenericMethod(parameterTypes));
+                    AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(type.GetGenericArguments());
+                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateDictionaryNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType2.CreateDictionaryDelegate;
                     return;
                 }
                 if (genericType == typeof(SortedDictionary<,>))
                 {
-                    Type[] parameterTypes = type.GetGenericArguments();
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedDictionaryNullMethod.MakeGenericMethod(parameterTypes));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedDictionaryMethod.MakeGenericMethod(parameterTypes));
+                    //Type[] parameterTypes = type.GetGenericArguments();
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedDictionaryNullMethod.MakeGenericMethod(parameterTypes));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedDictionaryMethod.MakeGenericMethod(parameterTypes));
+                    AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(type.GetGenericArguments());
+                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateSortedDictionaryNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType2.CreateSortedDictionaryDelegate;
                     return;
                 }
                 if (genericType == typeof(SortedList<,>))
                 {
-                    Type[] parameterTypes = type.GetGenericArguments();
-                    configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedListNullMethod.MakeGenericMethod(parameterTypes));
-                    configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedListMethod.MakeGenericMethod(parameterTypes));
+                    //Type[] parameterTypes = type.GetGenericArguments();
+                    //configNullCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedListNullMethod.MakeGenericMethod(parameterTypes));
+                    //configCreator = (Func<Config, valueType>)Delegate.CreateDelegate(typeof(Func<Config, valueType>), MethodCache.CreateSortedListMethod.MakeGenericMethod(parameterTypes));
+                    AutoCSer.RandomObject.Metadata.GenericType2 GenericType2 = AutoCSer.RandomObject.Metadata.GenericType2.Get(type.GetGenericArguments());
+                    configNullCreator = (Func<Config, valueType>)GenericType2.CreateSortedListNullDelegate;
+                    configCreator = (Func<Config, valueType>)GenericType2.CreateSortedListDelegate;
                     return;
                 }
             }

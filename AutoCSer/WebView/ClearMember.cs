@@ -66,7 +66,7 @@ namespace AutoCSer.WebView
             public void Base(Type type)
             {
                 generator.Emit(OpCodes.Ldarg_0);
-                generator.Emit(OpCodes.Call, clearMethod.MakeGenericMethod(type));
+                generator.Emit(OpCodes.Call, AutoCSer.WebView.Metadata.GenericType.Get(type).WebViewClearMemberMethod);
             }
             /// <summary>
             /// 创建成员转换委托
@@ -78,17 +78,17 @@ namespace AutoCSer.WebView
                 return dynamicMethod.CreateDelegate(typeof(delegateType));
             }
         }
-        /// <summary>
-        /// WEB视图成员清理函数信息
-        /// </summary>
-        private static readonly MethodInfo clearMethod = typeof(ClearMember).GetMethod("clear", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// WEB视图成员清理函数信息
+        ///// </summary>
+        //private static readonly MethodInfo clearMethod = typeof(ClearMember).GetMethod("clear", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// WEB视图成员清理
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void clear<valueType>(valueType value)
+        internal static void clear<valueType>(valueType value)
         {
             ClearMember<valueType>.Cleaner(value);
         }

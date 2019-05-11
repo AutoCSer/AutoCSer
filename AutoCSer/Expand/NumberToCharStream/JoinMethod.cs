@@ -49,7 +49,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string structJoinChar<valueType>(valueType[] array, char join, string nullString) where valueType : struct
+        internal static string structJoinChar<valueType>(valueType[] array, char join, string nullString) where valueType : struct
         {
             if (array.Length == 1)
             {
@@ -60,10 +60,10 @@ namespace AutoCSer.NumberToCharStream
             foreach (valueType value in array) stringArray[index++] = value.ToString();
             return joinNullString(stringArray, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo StructJoinCharMethod = typeof(JoinMethod).GetMethod("structJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo StructJoinCharMethod = typeof(JoinMethod).GetMethod("structJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -72,7 +72,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string structSubArrayJoinChar<valueType>(SubArray<valueType> subArray, char join, string nullString) where valueType : struct
+        internal static string structSubArrayJoinChar<valueType>(SubArray<valueType> subArray, char join, string nullString) where valueType : struct
         {
             valueType[] array = subArray.Array;
             if (subArray.Length == 1) return array[subArray.Start].ToString();
@@ -85,10 +85,10 @@ namespace AutoCSer.NumberToCharStream
             while (startIndex != endIndex);
             return joinNullString(stringArray, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo StructSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("structSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo StructSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("structSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -97,7 +97,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string nullableJoinChar<valueType>(Nullable<valueType>[] array, char join, string nullString) where valueType : struct
+        internal static string nullableJoinChar<valueType>(Nullable<valueType>[] array, char join, string nullString) where valueType : struct
         {
             if (array.Length == 1)
             {
@@ -108,10 +108,10 @@ namespace AutoCSer.NumberToCharStream
             foreach (Nullable<valueType> value in array) stringArray[index++] = value.HasValue ? value.Value.ToString() : nullString;
             return joinNullString(stringArray, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo NullableJoinCharMethod = typeof(JoinMethod).GetMethod("nullableJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo NullableJoinCharMethod = typeof(JoinMethod).GetMethod("nullableJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -120,7 +120,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string nullableSubArrayJoinChar<valueType>(SubArray<Nullable<valueType>> subArray, char join, string nullString) where valueType : struct
+        internal static string nullableSubArrayJoinChar<valueType>(SubArray<Nullable<valueType>> subArray, char join, string nullString) where valueType : struct
         {
             Nullable<valueType>[] array = subArray.Array;
             if (subArray.Length == 1)
@@ -138,10 +138,10 @@ namespace AutoCSer.NumberToCharStream
             while (startIndex != endIndex);
             return joinNullString(stringArray, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo NullableSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("nullableSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo NullableSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("nullableSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -150,7 +150,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string classJoinChar<valueType>(valueType[] array, char join, string nullString) where valueType : class
+        internal static string classJoinChar<valueType>(valueType[] array, char join, string nullString) where valueType : class
         {
             if (array.Length == 1)
             {
@@ -161,10 +161,10 @@ namespace AutoCSer.NumberToCharStream
             foreach (valueType value in array) stringArray[index++] = value == null ? nullString : value.ToString();
             return joinNullString(stringArray, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo ClassJoinCharMethod = typeof(JoinMethod).GetMethod("classJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo ClassJoinCharMethod = typeof(JoinMethod).GetMethod("classJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -173,7 +173,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string classSubArrayJoinChar<valueType>(SubArray<valueType> subArray, char join, string nullString) where valueType : class
+        internal static string classSubArrayJoinChar<valueType>(SubArray<valueType> subArray, char join, string nullString) where valueType : class
         {
             valueType[] array = subArray.Array;
             if (subArray.Length == 1)
@@ -191,10 +191,10 @@ namespace AutoCSer.NumberToCharStream
             while (startIndex != endIndex);
             return joinNullString(stringArray, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo ClassSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("classSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo ClassSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("classSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -202,7 +202,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private static string stringJoinChar(string[] array, char join, string nullString)
+        internal static string stringJoinChar(string[] array, char join, string nullString)
         {
             if (array.Length == 1)
             {
@@ -210,10 +210,10 @@ namespace AutoCSer.NumberToCharStream
             }
             return joinNullString(array, join, nullString);
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo StringJoinCharMethod = typeof(JoinMethod).GetMethod("stringJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo StringJoinCharMethod = typeof(JoinMethod).GetMethod("stringJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 连接字符串集合
         /// </summary>
@@ -221,7 +221,7 @@ namespace AutoCSer.NumberToCharStream
         /// <param name="join"></param>
         /// <param name="nullString"></param>
         /// <returns></returns>
-        private unsafe static string stringSubArrayJoinChar(SubArray<string> subArray, char join, string nullString)
+        internal unsafe static string stringSubArrayJoinChar(SubArray<string> subArray, char join, string nullString)
         {
             string[] array = subArray.Array;
             if (subArray.Length == 1)
@@ -281,10 +281,10 @@ namespace AutoCSer.NumberToCharStream
                 return value;
             }
         }
-        /// <summary>
-        /// 连接字符串集合函数信息
-        /// </summary>
-        public static readonly MethodInfo StringSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("stringSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 连接字符串集合函数信息
+        ///// </summary>
+        //public static readonly MethodInfo StringSubArrayJoinCharMethod = typeof(JoinMethod).GetMethod("stringSubArrayJoinChar", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 数值转换调用函数信息集合

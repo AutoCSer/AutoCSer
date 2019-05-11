@@ -400,8 +400,8 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classSerialize<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classSerialize<valueType>(valueType value)
         {
             if (value == null) CharStream.WriteJsonNull();
             else TypeSerializer<valueType>.ClassSerialize(this, value);
@@ -411,8 +411,8 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structSerialize<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structSerialize<valueType>(valueType value)
         {
             TypeSerializer<valueType>.StructSerialize(this, value);
         }
@@ -433,8 +433,8 @@ namespace AutoCSer.Json
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void serializeObject<valueType>(Serializer jsonSerializer, object value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static void serializeObject<valueType>(Serializer jsonSerializer, object value)
         {
             TypeSerializer<valueType>.Serialize(jsonSerializer, (valueType)value);
         }
@@ -442,8 +442,8 @@ namespace AutoCSer.Json
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void array<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void array<valueType>(valueType[] array)
         {
             if (array == null) CharStream.WriteJsonNull();
             else if (Push(array))
@@ -456,7 +456,7 @@ namespace AutoCSer.Json
         /// 字符串转换
         /// </summary>
         /// <param name="value">数据对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void EnumToString<valueType>(valueType value)
         {
             string stringValue = value.ToString();
@@ -474,8 +474,8 @@ namespace AutoCSer.Json
         /// 字典转换
         /// </summary>
         /// <param name="dictionary">数据对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void dictionary<valueType, dictionaryValueType>(Dictionary<valueType, dictionaryValueType> dictionary)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void dictionary<valueType, dictionaryValueType>(Dictionary<valueType, dictionaryValueType> dictionary)
         {
             if (dictionary == null) CharStream.WriteJsonNull();
             else if (Push(dictionary))
@@ -488,8 +488,8 @@ namespace AutoCSer.Json
         /// 字典转换
         /// </summary>
         /// <param name="dictionary">字典</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void stringDictionary<valueType>(Dictionary<string, valueType> dictionary)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void stringDictionary<valueType>(Dictionary<string, valueType> dictionary)
         {
             if (dictionary == null) CharStream.WriteJsonNull();
             else if (Push(dictionary))
@@ -504,8 +504,8 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableSerialize<valueType>(Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableSerialize<valueType>(Nullable<valueType> value) where valueType : struct
         {
             if (value.HasValue) TypeSerializer<valueType>.StructSerialize(this, value.Value);
             else CharStream.WriteJsonNull();
@@ -515,8 +515,8 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void keyValuePairSerialize<keyValue, valueType>(KeyValuePair<keyValue, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void keyValuePairSerialize<keyValue, valueType>(KeyValuePair<keyValue, valueType> value)
         {
             TypeSerializer<keyValue>.KeyValuePair(this, value);
         }
@@ -525,8 +525,8 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structEnumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structEnumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
         {
             TypeSerializer<elementType>.Enumerable(this, value);
         }
@@ -534,8 +534,8 @@ namespace AutoCSer.Json
         /// 枚举集合转换
         /// </summary>
         /// <param name="value">枚举集合</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
         {
             if (value == null) CharStream.WriteJsonNull();
             else if (pushArray(value))

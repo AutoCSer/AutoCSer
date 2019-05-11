@@ -35,6 +35,8 @@
     <Compile Include="Comparor.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
     <Compile Include="MemberDynamicMethod.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
     <Compile Include="MethodCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

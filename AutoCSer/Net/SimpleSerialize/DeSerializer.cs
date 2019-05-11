@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using AutoCSer.Metadata;
 
 namespace AutoCSer.Net.SimpleSerialize
 {
@@ -1128,7 +1129,7 @@ namespace AutoCSer.Net.SimpleSerialize
         {
             foreach (Type type in types)
             {
-                if (type != null) RuntimeHelpers.RunClassConstructor(typeof(TypeDeSerializer<>).MakeGenericType(type).TypeHandle);
+                if (type != null) StructGenericType.Get(type).SimpleDeSerializeCompile();
             }
         }
         /// <summary>

@@ -42,5 +42,15 @@ namespace AutoCSer.Deploy
             WaitHandle.WaitOne();
             Exit();
         }
+        /// <summary>
+        /// 设置切换进程等待关闭处理
+        /// </summary>
+        public static void Set()
+        {
+            using (EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, Assembly.GetEntryAssembly().FullName))
+            {
+                waitHandle.Set();
+            }
+        }
     }
 }

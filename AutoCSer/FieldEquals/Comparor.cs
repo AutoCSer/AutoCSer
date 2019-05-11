@@ -119,12 +119,14 @@ namespace AutoCSer.FieldEquals
             {
                 if (type == typeof(float))
                 {
-                    Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.FloatMethod);
+                    //Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.FloatMethod);
+                    Equals = (Func<valueType, valueType, bool>)(object)(Func<float, float, bool>)MethodCache.floatEquals;
                     return;
                 }
                 if (type == typeof(double))
                 {
-                    Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.DoubleMethod);
+                    //Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.DoubleMethod);
+                    Equals = (Func<valueType, valueType, bool>)(object)(Func<double, double, bool>)MethodCache.doubleEquals;
                     return;
                 }
                 Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), (type.IsValueType ? MethodCache.StructIEquatableMethod : MethodCache.ClassIEquatableMethod).MakeGenericMethod(type));
@@ -134,7 +136,8 @@ namespace AutoCSer.FieldEquals
             {
                 if (type.GetArrayRank() == 1)
                 {
-                    Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.ArrayMethod.MakeGenericMethod(type.GetElementType()));
+                    //Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.ArrayMethod.MakeGenericMethod(type.GetElementType()));
+                    Equals = (Func<valueType, valueType, bool>)AutoCSer.FieldEquals.Metadata.GenericType.Get(type.GetElementType()).ArrayDelegate;
                 }
                 else Equals = unknown;
                 return;
@@ -162,19 +165,21 @@ namespace AutoCSer.FieldEquals
                 }
                 if (genericType == typeof(LeftArray<>))
                 {
-                    Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.LeftArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.LeftArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    Equals = (Func<valueType, valueType, bool>)AutoCSer.FieldEquals.Metadata.GenericType.Get(type.GetGenericArguments()[0]).LeftArrayDelegate;
                     return;
                 }
                 if (genericType == typeof(ListArray<>))
                 {
-                    Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.ListArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    //Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.ListArrayMethod.MakeGenericMethod(type.GetGenericArguments()));
+                    Equals = (Func<valueType, valueType, bool>)AutoCSer.FieldEquals.Metadata.GenericType.Get(type.GetGenericArguments()[0]).ListArrayDelegate;
                     return;
                 }
-#if DOTNET2
-                if (genericType == typeof(List<>) || genericType == typeof(Queue<>) || genericType == typeof(Stack<>) || genericType == typeof(LinkedList<>))
-#else
-                if (genericType == typeof(List<>) || genericType == typeof(HashSet<>) || genericType == typeof(Queue<>) || genericType == typeof(Stack<>) || genericType == typeof(SortedSet<>) || genericType == typeof(LinkedList<>))
+                if (genericType == typeof(List<>) || genericType == typeof(Queue<>) || genericType == typeof(Stack<>) || genericType == typeof(LinkedList<>)
+#if !DOTNET2
+                    || genericType == typeof(HashSet<>) || genericType == typeof(SortedSet<>)
 #endif
+                )
                 {
                     Equals = (Func<valueType, valueType, bool>)Delegate.CreateDelegate(typeof(Func<valueType, valueType, bool>), MethodCache.CollectionMethod.MakeGenericMethod(type, type.GetGenericArguments()[0]));
                     return;

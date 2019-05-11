@@ -90,6 +90,6 @@ namespace AutoCSer.Net.WebClient.Emit
         /// <summary>
         /// 添加表单函数信息
         /// </summary>
-        internal static readonly MethodInfo NameValueCollectionAddMethod = typeof(NameValueCollection).GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(string), typeof(string) }, null);
+        internal static readonly MethodInfo NameValueCollectionAddMethod = ((Action<string, string>)new NameValueCollection().Add).Method;// typeof(NameValueCollection).GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(string), typeof(string) }, null);
     }
 }

@@ -137,7 +137,8 @@ namespace AutoCSer.BinarySerialize
                             if (serializer.CheckPoint(value))
                             {
                                 serializer.Stream.Write(Serializer.RealTypeValue);
-                                SerializeMethodCache.GetRealSerializer(type)(serializer, value);
+                                //SerializeMethodCache.GetRealSerializer(type)(serializer, value);
+                                GenericType.Get(type).BinarySerializeRealTypeObjectDelegate(serializer, value);
                             }
                             return;
                         }
@@ -330,7 +331,8 @@ namespace AutoCSer.BinarySerialize
                 {
                     Type type = value.GetType();
                     if (type == typeof(valueType)) serializer.Stream.Write(Serializer.NullValue);
-                    else SerializeMethodCache.GetRealSerializer(type)(serializer, value);
+                    //else SerializeMethodCache.GetRealSerializer(type)(serializer, value);
+                    else GenericType.Get(type).BinarySerializeRealTypeObjectDelegate(serializer, value);
                 }
                 else serializer.Stream.Write(Serializer.NullValue);
             }
@@ -361,31 +363,34 @@ namespace AutoCSer.BinarySerialize
                             if (elementType.IsEnum)
                             {
                                 Type enumType = System.Enum.GetUnderlyingType(elementType);
-                                if (enumType == typeof(uint)) methodInfo = SerializeMethodCache.EnumUIntArrayMethod;
-                                else if (enumType == typeof(byte)) methodInfo = SerializeMethodCache.EnumByteArrayMethod;
-                                else if (enumType == typeof(ulong)) methodInfo = SerializeMethodCache.EnumULongArrayMethod;
-                                else if (enumType == typeof(ushort)) methodInfo = SerializeMethodCache.EnumUShortArrayMethod;
-                                else if (enumType == typeof(long)) methodInfo = SerializeMethodCache.EnumLongArrayMethod;
-                                else if (enumType == typeof(short)) methodInfo = SerializeMethodCache.EnumShortArrayMethod;
-                                else if (enumType == typeof(sbyte)) methodInfo = SerializeMethodCache.EnumSByteArrayMethod;
-                                else methodInfo = SerializeMethodCache.EnumIntArrayMethod;
-                                methodInfo = methodInfo.MakeGenericMethod(elementType);
+                                if (enumType == typeof(uint)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumUIntArrayMethod;// SerializeMethodCache.EnumUIntArrayMethod;
+                                else if (enumType == typeof(byte)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumByteArrayMethod;//SerializeMethodCache.EnumByteArrayMethod;
+                                else if (enumType == typeof(ulong)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumULongArrayMethod;//SerializeMethodCache.EnumULongArrayMethod;
+                                else if (enumType == typeof(ushort)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumUShortArrayMethod;//SerializeMethodCache.EnumUShortArrayMethod;
+                                else if (enumType == typeof(long)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumLongArrayMethod;//SerializeMethodCache.EnumLongArrayMethod;
+                                else if (enumType == typeof(short)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumShortArrayMethod;//SerializeMethodCache.EnumShortArrayMethod;
+                                else if (enumType == typeof(sbyte)) methodInfo = GenericType.Get(elementType).BinarySerializeEnumSByteArrayMethod;//SerializeMethodCache.EnumSByteArrayMethod;
+                                else methodInfo = GenericType.Get(elementType).BinarySerializeEnumIntArrayMethod;//SerializeMethodCache.EnumIntArrayMethod;
+                                //methodInfo = methodInfo.MakeGenericMethod(elementType);
                                 IsReferenceMember = false;
                             }
                             else if (elementType.IsGenericType && elementType.GetGenericTypeDefinition() == typeof(Nullable<>))
                             {
-                                methodInfo = SerializeMethodCache.NullableArrayMethod.MakeGenericMethod(elementType = elementType.GetGenericArguments()[0]);
+                                //methodInfo = SerializeMethodCache.NullableArrayMethod.MakeGenericMethod(elementType = elementType.GetGenericArguments()[0]);
+                                methodInfo = StructGenericType.Get(elementType = elementType.GetGenericArguments()[0]).BinarySerializeNullableArrayMethod;
                                 IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                             }
                             else
                             {
-                                methodInfo = SerializeMethodCache.StructArrayMethod.MakeGenericMethod(elementType);
+                                //methodInfo = SerializeMethodCache.StructArrayMethod.MakeGenericMethod(elementType);
+                                methodInfo = GenericType.Get(elementType).BinarySerializeStructArrayMethod;
                                 IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                             }
                         }
                         else
                         {
-                            methodInfo = SerializeMethodCache.ArrayMethod.MakeGenericMethod(elementType);
+                            //methodInfo = SerializeMethodCache.ArrayMethod.MakeGenericMethod(elementType);
+                            methodInfo = ClassGenericType.Get(elementType).BinarySerializeArrayMethod;
                             IsReferenceMember = SerializeMethodCache.IsReferenceMember(elementType);
                         }
                         DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
@@ -425,7 +430,8 @@ namespace AutoCSer.BinarySerialize
                 Type[] parameterTypes = type.GetGenericArguments();
                 if (genericType == typeof(LeftArray<>))
                 {
-                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.LeftArraySerializeMethod.MakeGenericMethod(parameterTypes));
+                    //DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.LeftArraySerializeMethod.MakeGenericMethod(parameterTypes));
+                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType.Get(parameterTypes[0]).BinarySerializeLeftArrayMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
@@ -433,7 +439,8 @@ namespace AutoCSer.BinarySerialize
 #if !Serialize
                 if (genericType == typeof(SubArray<>))
                 {
-                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.SubArraySerializeMethod.MakeGenericMethod(parameterTypes));
+                    //DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.SubArraySerializeMethod.MakeGenericMethod(parameterTypes));
+                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType.Get(parameterTypes[0]).BinarySerializeSubArrayMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
@@ -441,21 +448,24 @@ namespace AutoCSer.BinarySerialize
 #endif
                 if (genericType == typeof(Dictionary<,>) || genericType == typeof(SortedDictionary<,>) || genericType == typeof(SortedList<,>))
                 {
-                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.DictionarySerializeMethod.MakeGenericMethod(type, parameterTypes[0], parameterTypes[1]));
+                    //DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.DictionarySerializeMethod.MakeGenericMethod(type, parameterTypes[0], parameterTypes[1]));
+                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), DictionaryGenericType3.Get(type, parameterTypes[0], parameterTypes[1]).BinarySerializeDictionaryMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(Nullable<>))
                 {
-                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.NullableSerializeMethod.MakeGenericMethod(parameterTypes));
+                    //DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.NullableSerializeMethod.MakeGenericMethod(parameterTypes));
+                    DefaultSerializer = (Action<Serializer, valueType>)StructGenericType.Get(parameterTypes[0]).BinarySerializeNullableDelegate;
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]);
                     isValueType = true;
                     return;
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.KeyValuePairSerializeMethod.MakeGenericMethod(parameterTypes));
+                    //DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.KeyValuePairSerializeMethod.MakeGenericMethod(parameterTypes));
+                    DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType2.Get(parameterTypes).BinarySerializeKeyValuePairMethod);
                     IsReferenceMember = SerializeMethodCache.IsReferenceMember(parameterTypes[0]) || SerializeMethodCache.IsReferenceMember(parameterTypes[1]);
                     isValueType = true;
                     return;
@@ -519,7 +529,9 @@ namespace AutoCSer.BinarySerialize
                         if (constructorInfo != null)
                         {
                             Type[] parameters = interfaceType.GetGenericArguments();
-                            methodInfo = (type.IsValueType ? SerializeMethodCache.StructDictionaryMethod : SerializeMethodCache.ClassDictionaryMethod).MakeGenericMethod(type, parameters[0], parameters[1]);
+                            //methodInfo = (type.IsValueType ? SerializeMethodCache.StructDictionaryMethod : SerializeMethodCache.ClassDictionaryMethod).MakeGenericMethod(type, parameters[0], parameters[1]);
+                            if (type.IsValueType) methodInfo = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinarySerializeStructDictionaryMethod;
+                            else methodInfo = DictionaryGenericType3.Get(type, parameters[0], parameters[1]).BinarySerializeClassDictionaryMethod;
                             DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
                             return;
                         }
@@ -531,17 +543,30 @@ namespace AutoCSer.BinarySerialize
                 if (argumentType.IsValueType && argumentType.IsEnum)
                 {
                     Type enumType = System.Enum.GetUnderlyingType(argumentType);
-                    if (enumType == typeof(uint)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumUIntCollectionMethod : SerializeMethodCache.ClassEnumUIntCollectionMethod;
-                    else if (enumType == typeof(byte)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumByteCollectionMethod : SerializeMethodCache.ClassEnumByteCollectionMethod;
-                    else if (enumType == typeof(ulong)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumULongCollectionMethod : SerializeMethodCache.ClassEnumULongCollectionMethod;
-                    else if (enumType == typeof(ushort)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumUShortCollectionMethod : SerializeMethodCache.ClassEnumUShortCollectionMethod;
-                    else if (enumType == typeof(long)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumLongCollectionMethod : SerializeMethodCache.ClassEnumLongCollectionMethod;
-                    else if (enumType == typeof(short)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumShortCollectionMethod : SerializeMethodCache.ClassEnumShortCollectionMethod;
-                    else if (enumType == typeof(sbyte)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumSByteCollectionMethod : SerializeMethodCache.ClassEnumSByteCollectionMethod;
-                    else methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumIntCollectionMethod : SerializeMethodCache.ClassEnumIntCollectionMethod;
-                    methodInfo = methodInfo.MakeGenericMethod(argumentType, type);
+                    //if (enumType == typeof(uint)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumUIntCollectionMethod : SerializeMethodCache.ClassEnumUIntCollectionMethod;
+                    //else if (enumType == typeof(byte)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumByteCollectionMethod : SerializeMethodCache.ClassEnumByteCollectionMethod;
+                    //else if (enumType == typeof(ulong)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumULongCollectionMethod : SerializeMethodCache.ClassEnumULongCollectionMethod;
+                    //else if (enumType == typeof(ushort)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumUShortCollectionMethod : SerializeMethodCache.ClassEnumUShortCollectionMethod;
+                    //else if (enumType == typeof(long)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumLongCollectionMethod : SerializeMethodCache.ClassEnumLongCollectionMethod;
+                    //else if (enumType == typeof(short)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumShortCollectionMethod : SerializeMethodCache.ClassEnumShortCollectionMethod;
+                    //else if (enumType == typeof(sbyte)) methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumSByteCollectionMethod : SerializeMethodCache.ClassEnumSByteCollectionMethod;
+                    //else methodInfo = type.IsValueType ? SerializeMethodCache.StructEnumIntCollectionMethod : SerializeMethodCache.ClassEnumIntCollectionMethod;
+                    //methodInfo = methodInfo.MakeGenericMethod(argumentType, type);
+                    if (enumType == typeof(uint)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumUIntCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumUIntCollectionMethod;
+                    else if (enumType == typeof(byte)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumByteCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumByteCollectionMethod;
+                    else if (enumType == typeof(ulong)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumULongCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumULongCollectionMethod;
+                    else if (enumType == typeof(ushort)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumUShortCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumUShortCollectionMethod;
+                    else if (enumType == typeof(long)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumLongCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumLongCollectionMethod;
+                    else if (enumType == typeof(short)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumShortCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumShortCollectionMethod;
+                    else if (enumType == typeof(sbyte)) methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumSByteCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumSByteCollectionMethod;
+                    else methodInfo = type.IsValueType ? CollectionGenericType2.Get(type, argumentType).BinarySerializeStructEnumIntCollectionMethod : CollectionGenericType2.Get(type, argumentType).BinarySerializeClassEnumIntCollectionMethod;
                 }
-                else methodInfo = (type.IsValueType ? SerializeMethodCache.StructCollectionMethod : SerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(argumentType, type);
+                //else methodInfo = (type.IsValueType ? SerializeMethodCache.StructCollectionMethod : SerializeMethodCache.ClassCollectionMethod).MakeGenericMethod(argumentType, type);
+                else
+                {
+                    if (type.IsValueType) methodInfo = CollectionGenericType2.Get(type, argumentType).BinarySerializeStructCollectionMethod;
+                    else methodInfo = CollectionGenericType2.Get(type, argumentType).BinarySerializeClassCollectionMethod;
+                }
                 DefaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), methodInfo);
                 return;
             }

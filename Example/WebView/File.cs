@@ -21,7 +21,7 @@ namespace AutoCSer.Example.WebView
         /// 测试文件名称
         /// </summary>
 #if DotNetStandard
-        private const string fileName = @"File.cs";
+        private const string fileName = @"..\..\..\File.cs";
 #else
         private const string fileName = @"..\..\File.cs";
 #endif

@@ -47,7 +47,8 @@ namespace AutoCSer.RandomObject
             generator.Emit(OpCodes.Ldarg_0);
             if (!isValueType) generator.Emit(OpCodes.Ldind_Ref);
             generator.Emit(OpCodes.Ldarg_1);
-            generator.Emit(OpCodes.Call, MethodCache.CreateMethod.MakeGenericMethod(field.FieldType));
+            //generator.Emit(OpCodes.Call, MethodCache.CreateMethod.MakeGenericMethod(field.FieldType));
+            generator.Emit(OpCodes.Call, AutoCSer.RandomObject.Metadata.GenericType.Get(field.FieldType).CreateMethod);
             generator.Emit(OpCodes.Stfld, field);
         }
         /// <summary>
@@ -59,7 +60,8 @@ namespace AutoCSer.RandomObject
             {
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldarg_1);
-                generator.Emit(OpCodes.Call, MethodCache.CreateMemberMethod.MakeGenericMethod(type));
+                //generator.Emit(OpCodes.Call, MethodCache.CreateMemberMethod.MakeGenericMethod(type));
+                generator.Emit(OpCodes.Call, AutoCSer.RandomObject.Metadata.GenericType.Get(type).CreateMemberMethod);
             }
         }
         /// <summary>

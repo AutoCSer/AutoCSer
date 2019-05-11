@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extension\Number.cs" />
+    <Compile Include="Metadata\GenericType.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="IO\Compression\GzipCompressor.cs" />
     <Compile Include="IO\CreateFlieTimeoutCounter.cs" />
     <Compile Include="IO\CreateFlieTimeoutType.cs" />

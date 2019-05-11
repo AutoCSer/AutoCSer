@@ -976,8 +976,8 @@ namespace AutoCSer.BinarySerialize
         /// <param name="serializer"></param>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void realTypeObject<valueType>(Serializer serializer, object value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static void realTypeObject<valueType>(Serializer serializer, object value)
         {
             TypeSerializer<valueType>.RealTypeObject(serializer, value);
         }
@@ -996,8 +996,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumByteArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumByteArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1016,8 +1016,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumSByteArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumSByteArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1036,8 +1036,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumShortArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumShortArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1060,8 +1060,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumUShortArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumUShortArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1084,8 +1084,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumIntArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumIntArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1102,8 +1102,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumUIntArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumUIntArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1120,8 +1120,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumLongArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumLongArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1143,8 +1143,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举数组序列化
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumULongArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumULongArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1166,8 +1166,8 @@ namespace AutoCSer.BinarySerialize
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableArray<valueType>(Nullable<valueType>[] array) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableArray<valueType>(Nullable<valueType>[] array) where valueType : struct
         {
             if (checkPoint(array))
             {
@@ -1185,8 +1185,8 @@ namespace AutoCSer.BinarySerialize
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structArray<valueType>(valueType[] array)
         {
             if (checkPoint(array))
             {
@@ -1198,8 +1198,8 @@ namespace AutoCSer.BinarySerialize
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void array<valueType>(valueType[] array) where valueType : class
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void array<valueType>(valueType[] array) where valueType : class
         {
             if (checkPoint(array))
             {
@@ -1218,8 +1218,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void leftArraySerialize<valueType>(LeftArray<valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void leftArraySerialize<valueType>(LeftArray<valueType> value)
         {
             valueType[] array = value.ToArray();
             isReferenceArray = false;
@@ -1229,8 +1229,8 @@ namespace AutoCSer.BinarySerialize
         /// 字典序列化
         /// </summary>
         /// <param name="value">数据对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void dictionarySerialize<dictionaryType, keyType, valueType>(dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void dictionarySerialize<dictionaryType, keyType, valueType>(dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
         {
             if (CheckPoint(value))
             {
@@ -1254,8 +1254,8 @@ namespace AutoCSer.BinarySerialize
         /// <param name="serializer">二进制数据序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static void nullableSerialize<valueType>(Serializer serializer, Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static void nullableSerialize<valueType>(Serializer serializer, Nullable<valueType> value) where valueType : struct
         {
             TypeSerializer<valueType>.StructSerialize(serializer, value.Value);
         }
@@ -1264,8 +1264,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void keyValuePairSerialize<keyType, valueType>(KeyValuePair<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void keyValuePairSerialize<keyType, valueType>(KeyValuePair<keyType, valueType> value)
         {
             TypeSerializer<KeyValue<keyType, valueType>>.MemberSerialize(this, new KeyValue<keyType, valueType>(value.Key, value.Value));
         }
@@ -1273,8 +1273,8 @@ namespace AutoCSer.BinarySerialize
         /// 集合转换
         /// </summary>
         /// <param name="dictionary">对象集合</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structDictionary<dictionaryType, keyType, valueType>(dictionaryType dictionary) where dictionaryType : IDictionary<keyType, valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structDictionary<dictionaryType, keyType, valueType>(dictionaryType dictionary) where dictionaryType : IDictionary<keyType, valueType>
         {
             keyType[] keys = new keyType[dictionary.Count];
             valueType[] values = new valueType[keys.Length];
@@ -1294,8 +1294,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="dictionary">对象集合</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classDictionary<dictionaryType, keyType, valueType>(dictionaryType dictionary) where dictionaryType : IDictionary<keyType, valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classDictionary<dictionaryType, keyType, valueType>(dictionaryType dictionary) where dictionaryType : IDictionary<keyType, valueType>
         {
             if (CheckPoint(dictionary)) structDictionary<dictionaryType, keyType, valueType>(dictionary);
         }
@@ -1303,8 +1303,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength(count + 8);
@@ -1324,8 +1324,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumByteCollection<valueType, collectionType>(collection);
         }
@@ -1333,8 +1333,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumSByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumSByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength(count + 8);
@@ -1354,8 +1354,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumSByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumSByteCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumSByteCollection<valueType, collectionType>(collection);
         }
@@ -1363,8 +1363,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength(((count * sizeof(short)) + 7) & (int.MaxValue - 3));
@@ -1389,8 +1389,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumShortCollection<valueType, collectionType>(collection);
         }
@@ -1398,8 +1398,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumUShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumUShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength(((count * sizeof(ushort)) + 7) & (int.MaxValue - 3));
@@ -1424,8 +1424,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumUShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumUShortCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumUShortCollection<valueType, collectionType>(collection);
         }
@@ -1433,8 +1433,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength((count + 1) * sizeof(int));
@@ -1454,8 +1454,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumIntCollection<valueType, collectionType>(collection);
         }
@@ -1463,8 +1463,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumUIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumUIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength((count + 1) * sizeof(uint));
@@ -1484,8 +1484,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumUIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumUIntCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumUIntCollection<valueType, collectionType>(collection);
         }
@@ -1493,8 +1493,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumLongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumLongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength(count * sizeof(long) + sizeof(int));
@@ -1514,8 +1514,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumLongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumLongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumLongCollection<valueType, collectionType>(collection);
         }
@@ -1523,8 +1523,8 @@ namespace AutoCSer.BinarySerialize
         /// 枚举集合序列化
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void structEnumULongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void structEnumULongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             int count = collection.Count, writeCount = count;
             Stream.PrepLength(count * sizeof(ulong) + sizeof(int));
@@ -1544,8 +1544,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">枚举集合序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void classEnumULongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void classEnumULongCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structEnumULongCollection<valueType, collectionType>(collection);
         }
@@ -1554,8 +1554,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">对象集合</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             isReferenceArray = false;
             TypeSerializer<valueType[]>.DefaultSerializer(this, collection.getArray());
@@ -1565,8 +1565,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="collection">对象集合</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classCollection<valueType, collectionType>(collectionType collection) where collectionType : ICollection<valueType>
         {
             if (CheckPoint(collection)) structCollection<valueType, collectionType>(collection);
         }
@@ -1576,8 +1576,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structSerialize<valueType>(valueType value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structSerialize<valueType>(valueType value) where valueType : struct
         {
             TypeSerializer<valueType>.StructSerialize(this, value);
         }
@@ -1587,7 +1587,7 @@ namespace AutoCSer.BinarySerialize
         /// <typeparam name="valueType"></typeparam>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void MemberClassSerialize<valueType>(valueType value) where valueType : class
         {
             if (value == null) Stream.Write(NullValue);
@@ -1598,8 +1598,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumByteMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumByteMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, byte>.ToInt(value));
         }
@@ -1608,8 +1608,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumSByteMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumSByteMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, sbyte>.ToInt(value));
         }
@@ -1618,8 +1618,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumShortMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumShortMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, short>.ToInt(value));
         }
@@ -1628,8 +1628,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUShortMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUShortMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, ushort>.ToInt(value));
         }
@@ -1638,8 +1638,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumIntMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumIntMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, int>.ToInt(value));
         }
@@ -1648,8 +1648,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUIntMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUIntMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, uint>.ToInt(value));
         }
@@ -1658,8 +1658,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumLongMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumLongMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, long>.ToInt(value));
         }
@@ -1668,8 +1668,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">枚举值序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumULongMember<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumULongMember<valueType>(valueType value)
         {
             Stream.UnsafeWrite(Emit.EnumCast<valueType, ulong>.ToInt(value));
         }
@@ -1678,8 +1678,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void dictionaryMember<dictionaryType, keyType, valueType>(dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void dictionaryMember<dictionaryType, keyType, valueType>(dictionaryType value) where dictionaryType : IDictionary<keyType, valueType>
         {
             if (value == null) Stream.Write(NullValue);
             else dictionarySerialize<dictionaryType, keyType, valueType>(value);
@@ -1689,8 +1689,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableMemberSerialize<valueType>(Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableMemberSerialize<valueType>(Nullable<valueType> value) where valueType : struct
         {
             if (value.HasValue)
             {
@@ -1704,8 +1704,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumByteArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumByteArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumByteArray(array);
@@ -1715,8 +1715,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumSByteArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumSByteArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumSByteArray(array);
@@ -1726,8 +1726,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumShortArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumShortArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumShortArray(array);
@@ -1737,8 +1737,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumUShortArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumUShortArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumUShortArray(array);
@@ -1748,8 +1748,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumIntArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumIntArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumIntArray(array);
@@ -1759,8 +1759,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumUIntArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumUIntArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumUIntArray(array);
@@ -1770,8 +1770,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumLongArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumLongArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumLongArray(array);
@@ -1781,8 +1781,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">枚举数组序列化</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void enumULongArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void enumULongArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else enumULongArray(array);
@@ -1792,8 +1792,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">数组对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableArrayMember<valueType>(Nullable<valueType>[] array) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableArrayMember<valueType>(Nullable<valueType>[] array) where valueType : struct
         {
             if (array == null) Stream.Write(NullValue);
             else nullableArray(array);
@@ -1803,8 +1803,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">数组对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structArrayMember<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structArrayMember<valueType>(valueType[] array)
         {
             if (array == null) Stream.Write(NullValue);
             else structArray(array);
@@ -1814,8 +1814,8 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="array">数组对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void arrayMember<valueType>(valueType[] array) where valueType : class
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void arrayMember<valueType>(valueType[] array) where valueType : class
         {
             if (array == null) Stream.Write(NullValue);
             else this.array(array);

@@ -1039,7 +1039,8 @@ namespace AutoCSer.Xml
             }
             if (type.IsArray)
             {
-                if (type.GetArrayRank() == 1) DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetArray(type.GetElementType()));
+                //if (type.GetArrayRank() == 1) DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetArray(type.GetElementType()));
+                if (type.GetArrayRank() == 1) DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), GenericType.Get(type.GetElementType()).XmlParseArrayMethod);
                 else DefaultParser = notSupport;
                 return;
             }
@@ -1081,12 +1082,14 @@ namespace AutoCSer.Xml
                 if (genericType == typeof(Nullable<>))
                 {
                     Type[] parameterTypes = type.GetGenericArguments();
-                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), parameterTypes[0].IsEnum ? ParseMethodCache.GetNullableEnumParse(type, parameterTypes) : ParseMethodCache.GetNullableParse(type, parameterTypes));
+                    //DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), parameterTypes[0].IsEnum ? ParseMethodCache.GetNullableEnumParse(type, parameterTypes) : ParseMethodCache.GetNullableParse(type, parameterTypes));
+                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), parameterTypes[0].IsEnum ? StructGenericType.Get(parameterTypes[0]).XmlParseNullableEnumMethod : StructGenericType.Get(parameterTypes[0]).XmlParseNullableMethod);
                     return;
                 }
                 if (genericType == typeof(KeyValuePair<,>))
                 {
-                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetKeyValuePair(type));
+                    //DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), ParseMethodCache.GetKeyValuePair(type));
+                    DefaultParser = (TryParse)Delegate.CreateDelegate(typeof(TryParse), GenericType2.Get(type.GetGenericArguments()).XmlParseKeyValuePairMethod);
                     isValueType = true;
                     return;
                 }

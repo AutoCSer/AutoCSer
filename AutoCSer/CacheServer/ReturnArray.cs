@@ -156,8 +156,8 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe static ReturnValue<DataStructure.Value.Json<valueType>[]> deSerializeJson(SubArray<byte> data)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe static ReturnValue<DataStructure.Value.Json<valueType>[]> deSerializeJson(SubArray<byte> data)
         {
             byte[] dataArray = data.Array;
             fixed (byte* dataFixed = dataArray)
@@ -211,8 +211,8 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe static ReturnValue<DataStructure.Value.Binary<valueType>[]> deSerializeBinary(SubArray<byte> data)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe static ReturnValue<DataStructure.Value.Binary<valueType>[]> deSerializeBinary(SubArray<byte> data)
         {
             byte[] dataArray = data.Array;
             fixed (byte* dataFixed = dataArray)
@@ -275,11 +275,13 @@ namespace AutoCSer.CacheServer
             switch (ValueData.Data<valueType>.DataType)
             {
                 case ValueData.DataType.Json:
-                    if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)Delegate.CreateDelegate(typeof(Func<SubArray<byte>, ReturnValue<valueType[]>>), typeof(ReturnArray<>).MakeGenericType(typeof(valueType).GetGenericArguments()).GetMethod("deSerializeJson", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(SubArray<byte>) }, null));
+                    //if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)Delegate.CreateDelegate(typeof(Func<SubArray<byte>, ReturnValue<valueType[]>>), typeof(ReturnArray<>).MakeGenericType(typeof(valueType).GetGenericArguments()).GetMethod("deSerializeJson", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(SubArray<byte>) }, null));
+                    if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)AutoCSer.CacheServer.Metadata.GenericType.Get(typeof(valueType).GetGenericArguments()[0]).ValueDataGetJsonDelegate;
                     else Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, Cache.Value.Json[]>)ReturnArray.Serialize;
                     break;
                 case ValueData.DataType.BinarySerialize:
-                    if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)Delegate.CreateDelegate(typeof(Func<SubArray<byte>, ReturnValue<valueType[]>>), typeof(ReturnArray<>).MakeGenericType(typeof(valueType).GetGenericArguments()).GetMethod("deSerializeBinary", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(SubArray<byte>) }, null));
+                    //if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)Delegate.CreateDelegate(typeof(Func<SubArray<byte>, ReturnValue<valueType[]>>), typeof(ReturnArray<>).MakeGenericType(typeof(valueType).GetGenericArguments()).GetMethod("deSerializeBinary", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { typeof(SubArray<byte>) }, null));
+                    if (typeof(valueType).IsGenericType) DeSerialize = (Func<SubArray<byte>, ReturnValue<valueType[]>>)AutoCSer.CacheServer.Metadata.GenericType.Get(typeof(valueType).GetGenericArguments()[0]).ValueDataGetBinaryDelegate;
                     else Serialize = (Action<UnmanagedStream, valueType[]>)(object)(Action<UnmanagedStream, Cache.Value.Binary[]>)ReturnArray.Serialize;
                     break;
                 case ValueData.DataType.ByteArray:

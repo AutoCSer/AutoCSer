@@ -33,5 +33,10 @@ namespace AutoCSer.BinarySerialize
             }
             else DefaultSerializer(serializer, value);
         }
+        /// <summary>
+        /// 预编译
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Compile() { }
     }
 }

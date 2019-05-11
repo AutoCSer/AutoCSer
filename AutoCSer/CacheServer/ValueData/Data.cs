@@ -1846,8 +1846,8 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static DataStructure.Value.Json<valueType> getJson(ref Data parameter)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static DataStructure.Value.Json<valueType> getJson(ref Data parameter)
         {
             return new DataStructure.Value.Json<valueType>(ref parameter);
         }
@@ -1856,8 +1856,8 @@ namespace AutoCSer.CacheServer.ValueData
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static DataStructure.Value.Binary<valueType> getBinary(ref Data parameter)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static DataStructure.Value.Binary<valueType> getBinary(ref Data parameter)
         {
             return new DataStructure.Value.Binary<valueType>(ref parameter);
         }
@@ -1967,13 +1967,15 @@ namespace AutoCSer.CacheServer.ValueData
                 if (genericType == typeof(DataStructure.Value.Json<>))
                 {
                     DataType = DataType.Json;
-                    GetData = (GetData<valueType>)Delegate.CreateDelegate(typeof(GetData<valueType>), typeof(Data<>).MakeGenericType(type.GetGenericArguments()).GetMethod("getJson", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { Data.RefType }, null));
+                    //GetData = (GetData<valueType>)Delegate.CreateDelegate(typeof(GetData<valueType>), typeof(Data<>).MakeGenericType(type.GetGenericArguments()).GetMethod("getJson", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { Data.RefType }, null));
+                    GetData = (GetData<valueType>)AutoCSer.CacheServer.Metadata.GenericType.Get(type.GetGenericArguments()[0]).ValueDataGetJsonDelegate;
                     return;
                 }
                 if (genericType == typeof(DataStructure.Value.Binary<>))
                 {
                     DataType = DataType.BinarySerialize;
-                    GetData = (GetData<valueType>)Delegate.CreateDelegate(typeof(GetData<valueType>), typeof(Data<>).MakeGenericType(type.GetGenericArguments()).GetMethod("getBinary", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { Data.RefType }, null));
+                    //GetData = (GetData<valueType>)Delegate.CreateDelegate(typeof(GetData<valueType>), typeof(Data<>).MakeGenericType(type.GetGenericArguments()).GetMethod("getBinary", BindingFlags.NonPublic | BindingFlags.Static, null, new Type[] { Data.RefType }, null));
+                    GetData = (GetData<valueType>)AutoCSer.CacheServer.Metadata.GenericType.Get(type.GetGenericArguments()[0]).ValueDataGetBinaryDelegate;
                     return;
                 }
                 return;

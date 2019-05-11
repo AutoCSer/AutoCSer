@@ -53,6 +53,11 @@ namespace AutoCSer.Net.SimpleSerialize
         /// </summary>
         internal static readonly SimpleSerializer Serializer;
 #endif
+        /// <summary>
+        /// 预编译
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Compile() { }
 
         static TypeSerializer()
         {

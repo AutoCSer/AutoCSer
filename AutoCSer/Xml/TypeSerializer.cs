@@ -157,7 +157,8 @@ namespace AutoCSer.Xml
                 Type genericType = type.GetGenericTypeDefinition();
                 if (genericType == typeof(Nullable<>))
                 {
-                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetNullable(type));
+                    //defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetNullable(type));
+                    defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), StructGenericType.Get(type.GetGenericArguments()[0]).XmlSerializeNullableMethod);
                     isValueType = true;
                     return;
                 }

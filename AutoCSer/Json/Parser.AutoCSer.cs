@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
+using AutoCSer.Metadata;
 
 namespace AutoCSer.Json
 {
@@ -169,7 +170,7 @@ namespace AutoCSer.Json
         {
             foreach (Type type in types)
             {
-                if (type != null) RuntimeHelpers.RunClassConstructor(typeof(TypeParser<>).MakeGenericType(type).TypeHandle);
+                if (type != null) GenericType.Get(type).JsonSerializeCompile();
             }
         }
     }

@@ -458,8 +458,8 @@ namespace AutoCSer.Xml
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private bool isOutputSubString(SubString value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal bool isOutputSubString(SubString value)
         {
             return value.Length != 0 || Config.IsOutputEmptyString;
         }
@@ -469,8 +469,8 @@ namespace AutoCSer.Xml
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private bool isOutputString(string value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal bool isOutputString(string value)
         {
             if (value == null) return Config.IsOutputNull && Config.IsOutputEmptyString;
             return value.Length != 0 || Config.IsOutputEmptyString;
@@ -481,8 +481,8 @@ namespace AutoCSer.Xml
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private bool isOutput(object value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal bool isOutput(object value)
         {
             return value != null || Config.IsOutputNull;
         }
@@ -492,8 +492,8 @@ namespace AutoCSer.Xml
         /// <param name="value"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private bool isOutputNullable<valueType>(Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal bool isOutputNullable<valueType>(Nullable<valueType> value) where valueType : struct
         {
             return value.HasValue || Config.IsOutputNull;
         }
@@ -502,8 +502,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classSerialize<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classSerialize<valueType>(valueType value)
         {
             if (value != null) TypeSerializer<valueType>.ClassSerialize(this, value);
         }
@@ -512,8 +512,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structSerialize<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structSerialize<valueType>(valueType value)
         {
             TypeSerializer<valueType>.StructSerialize(this, value);
         }
@@ -522,8 +522,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumToString<valueType>(valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumToString<valueType>(valueType value)
         {
             Serialize(value.ToString());
         }
@@ -542,8 +542,8 @@ namespace AutoCSer.Xml
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structArray<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structArray<valueType>(valueType[] array)
         {
             if (array != null && Push(array))
             {
@@ -566,8 +566,8 @@ namespace AutoCSer.Xml
         /// 数组转换
         /// </summary>
         /// <param name="array">数组对象</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void array<valueType>(valueType[] array)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void array<valueType>(valueType[] array)
         {
             if (array != null && Push(array))
             {
@@ -596,8 +596,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableSerialize<valueType>(Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableSerialize<valueType>(Nullable<valueType> value) where valueType : struct
         {
             if (value.HasValue) TypeSerializer<valueType>.StructSerialize(this, value.Value);
         }
@@ -605,8 +605,8 @@ namespace AutoCSer.Xml
         /// 枚举集合转换
         /// </summary>
         /// <param name="values">枚举集合</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structStructEnumerable<valueType, elementType>(valueType values) where valueType : IEnumerable<elementType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structStructEnumerable<valueType, elementType>(valueType values) where valueType : IEnumerable<elementType>
         {
             //charStream xmlStream = CharStream;
             string itemName = GetItemName();
@@ -625,8 +625,8 @@ namespace AutoCSer.Xml
         /// 枚举集合转换
         /// </summary>
         /// <param name="values">枚举集合</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structClassEnumerable<valueType, elementType>(valueType values) where valueType : IEnumerable<elementType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structClassEnumerable<valueType, elementType>(valueType values) where valueType : IEnumerable<elementType>
         {
             //charStream xmlStream = CharStream;
             string itemName = GetItemName();
@@ -651,8 +651,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">枚举集合</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classStructEnumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classStructEnumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
         {
             if (value != null && Push(value))
             {
@@ -665,8 +665,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">枚举集合</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void classClassEnumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void classClassEnumerable<valueType, elementType>(valueType value) where valueType : IEnumerable<elementType>
         {
             if (value != null && Push(value))
             {

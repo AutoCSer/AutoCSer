@@ -30,32 +30,32 @@ namespace AutoCSer.FieldEquals
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static bool floatEquals(float left, float right)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static bool floatEquals(float left, float right)
         {
             if (float.IsNaN(left)) return float.IsNaN(right);
             return left == right || (!float.IsNaN(right) && float.Parse(left.ToString()) == right);
         }
-        /// <summary>
-        /// 浮点数比较函数信息
-        /// </summary>
-        public static readonly MethodInfo FloatMethod = typeof(MethodCache).GetMethod("floatEquals", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 浮点数比较函数信息
+        ///// </summary>
+        //public static readonly MethodInfo FloatMethod = typeof(MethodCache).GetMethod("floatEquals", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 浮点数比较
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static bool doubleEquals(double left, double right)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static bool doubleEquals(double left, double right)
         {
             if (double.IsNaN(left)) return double.IsNaN(right);
             return left == right || (!double.IsNaN(right) && double.Parse(left.ToString(), System.Globalization.CultureInfo.InvariantCulture) == right);
         }
-        /// <summary>
-        /// 浮点数比较函数信息
-        /// </summary>
-        public static readonly MethodInfo DoubleMethod = typeof(MethodCache).GetMethod("doubleEquals", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 浮点数比较函数信息
+        ///// </summary>
+        //public static readonly MethodInfo DoubleMethod = typeof(MethodCache).GetMethod("doubleEquals", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 结构体数据比较
         /// </summary>
@@ -71,7 +71,7 @@ namespace AutoCSer.FieldEquals
         /// <summary>
         /// 结构体数据比较函数信息
         /// </summary>
-        public static readonly MethodInfo StructIEquatableMethod = typeof(MethodCache).GetMethod("structIEquatable", BindingFlags.Static | BindingFlags.NonPublic);
+        internal static readonly MethodInfo StructIEquatableMethod = typeof(MethodCache).GetMethod("structIEquatable", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 引用对象比较
         /// </summary>
@@ -88,7 +88,7 @@ namespace AutoCSer.FieldEquals
         /// <summary>
         /// 引用对象比较函数信息
         /// </summary>
-        public static readonly MethodInfo ClassIEquatableMethod = typeof(MethodCache).GetMethod("classIEquatable", BindingFlags.Static | BindingFlags.NonPublic);
+        internal static readonly MethodInfo ClassIEquatableMethod = typeof(MethodCache).GetMethod("classIEquatable", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 数组比较
         /// </summary>
@@ -96,8 +96,8 @@ namespace AutoCSer.FieldEquals
         /// <param name="leftArray"></param>
         /// <param name="rightArray"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static bool array<valueType>(valueType[] leftArray, valueType[] rightArray)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static bool array<valueType>(valueType[] leftArray, valueType[] rightArray)
         {
             if (Object.ReferenceEquals(leftArray, rightArray)) return true;
             if (leftArray != null && rightArray != null && leftArray.Length == rightArray.Length)
@@ -111,10 +111,10 @@ namespace AutoCSer.FieldEquals
             }
             return false;
         }
-        /// <summary>
-        /// 数组比较函数信息
-        /// </summary>
-        public static readonly MethodInfo ArrayMethod = typeof(MethodCache).GetMethod("array", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 数组比较函数信息
+        ///// </summary>
+        //public static readonly MethodInfo ArrayMethod = typeof(MethodCache).GetMethod("array", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 可空数据比较
         /// </summary>
@@ -131,7 +131,7 @@ namespace AutoCSer.FieldEquals
         /// <summary>
         /// 可空数据比较函数信息
         /// </summary>
-        public static readonly MethodInfo NullableMethod = typeof(MethodCache).GetMethod("nullable", BindingFlags.Static | BindingFlags.NonPublic);
+        internal static readonly MethodInfo NullableMethod = typeof(MethodCache).GetMethod("nullable", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 数组比较
         /// </summary>
@@ -139,8 +139,8 @@ namespace AutoCSer.FieldEquals
         /// <param name="leftArray"></param>
         /// <param name="rightArray"></param>
         /// <returns></returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static bool leftArray<valueType>(LeftArray<valueType> leftArray, LeftArray<valueType> rightArray)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal static bool leftArray<valueType>(LeftArray<valueType> leftArray, LeftArray<valueType> rightArray)
         {
             if (leftArray.Length == rightArray.Length)
             {
@@ -153,10 +153,10 @@ namespace AutoCSer.FieldEquals
             }
             return false;
         }
-        /// <summary>
-        /// 数组比较函数信息
-        /// </summary>
-        public static readonly MethodInfo LeftArrayMethod = typeof(MethodCache).GetMethod("leftArray", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 数组比较函数信息
+        ///// </summary>
+        //public static readonly MethodInfo LeftArrayMethod = typeof(MethodCache).GetMethod("leftArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 数组比较
         /// </summary>
@@ -165,7 +165,7 @@ namespace AutoCSer.FieldEquals
         /// <param name="rightArray"></param>
         /// <returns></returns>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static bool listArray<valueType>(ListArray<valueType> leftArray, ListArray<valueType> rightArray)
+        internal static bool listArray<valueType>(ListArray<valueType> leftArray, ListArray<valueType> rightArray)
         {
             if (Object.ReferenceEquals(leftArray, rightArray)) return true;
             if (leftArray != null && rightArray != null && leftArray.Length == rightArray.Length)
@@ -179,10 +179,10 @@ namespace AutoCSer.FieldEquals
             }
             return false;
         }
-        /// <summary>
-        /// 数组比较函数信息
-        /// </summary>
-        public static readonly MethodInfo ListArrayMethod = typeof(MethodCache).GetMethod("listArray", BindingFlags.Static | BindingFlags.NonPublic);
+        ///// <summary>
+        ///// 数组比较函数信息
+        ///// </summary>
+        //public static readonly MethodInfo ListArrayMethod = typeof(MethodCache).GetMethod("listArray", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 数组比较
         /// </summary>
@@ -209,7 +209,7 @@ namespace AutoCSer.FieldEquals
         /// <summary>
         /// 数组比较函数信息
         /// </summary>
-        public static readonly MethodInfo CollectionMethod = typeof(MethodCache).GetMethod("collection", BindingFlags.Static | BindingFlags.NonPublic);
+        internal static readonly MethodInfo CollectionMethod = typeof(MethodCache).GetMethod("collection", BindingFlags.Static | BindingFlags.NonPublic);
         /// <summary>
         /// 字典比较
         /// </summary>
@@ -240,7 +240,7 @@ namespace AutoCSer.FieldEquals
         /// <summary>
         /// 字典比较函数信息
         /// </summary>
-        public static readonly MethodInfo DictionaryMethod = typeof(MethodCache).GetMethod("dictionary", BindingFlags.Static | BindingFlags.NonPublic);
+        internal static readonly MethodInfo DictionaryMethod = typeof(MethodCache).GetMethod("dictionary", BindingFlags.Static | BindingFlags.NonPublic);
 
         /// <summary>
         /// 类型比较字段与委托调用集合

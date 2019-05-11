@@ -8,6 +8,11 @@ namespace AutoCSer.TestCase
     {
         static void Main(string[] args)
         {
+            //Console.WriteLine(Json.TestCase());
+            //Console.WriteLine(Xml.TestCase());
+            //Console.WriteLine(BinarySerialize.TestCase());
+            //Console.WriteLine(SimpleSerialize.TestCase());
+            //Console.ReadLine();
 #if DotNetStandard
             Console.WriteLine("WARN : Linux .NET Core not support name EventWaitHandle");
 #else

@@ -1585,8 +1585,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void typeParse<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void typeParse<valueType>(ref valueType value)
         {
             TypeParser<valueType>.ParseClass(this, ref value);
         }
@@ -1595,8 +1595,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void structParse<valueType>(ref valueType value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structParse<valueType>(ref valueType value) where valueType : struct
         {
             TypeParser<valueType>.ParseStruct(this, ref value);
         }
@@ -1630,8 +1630,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="values">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void array<valueType>(ref valueType[] values)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void array<valueType>(ref valueType[] values)
         {
             TypeParser<valueType>.Array(this, ref values);
         }
@@ -1639,8 +1639,8 @@ namespace AutoCSer.Xml
         /// 值类型对象解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableEnumParse<valueType>(ref Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableEnumParse<valueType>(ref Nullable<valueType> value) where valueType : struct
         {
             space();
             if (State == ParseState.Success)
@@ -1672,8 +1672,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void nullableParse<valueType>(ref Nullable<valueType> value) where valueType : struct
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void nullableParse<valueType>(ref Nullable<valueType> value) where valueType : struct
         {
             valueType newValue = value.HasValue ? value.Value : default(valueType);
             TypeParser<valueType>.Parse(this, ref newValue);
@@ -1684,8 +1684,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void keyValuePairParse<keyType, valueType>(ref KeyValuePair<keyType, valueType> value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void keyValuePairParse<keyType, valueType>(ref KeyValuePair<keyType, valueType> value)
         {
             KeyValue<keyType, valueType> keyValue = new KeyValue<keyType, valueType>(value.Key, value.Value);
             TypeParser<KeyValue<keyType, valueType>>.ParseMembers(this, ref keyValue);
@@ -1696,8 +1696,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void listConstructor<valueType, argumentType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void listConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
             int count = TypeParser<argumentType>.ArrayIndex(this, ref values);
@@ -1709,8 +1709,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void collectionConstructor<valueType, argumentType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void collectionConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
             int count = TypeParser<argumentType>.ArrayIndex(this, ref values);
@@ -1722,8 +1722,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumerableConstructor<valueType, argumentType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumerableConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
             int count = TypeParser<argumentType>.ArrayIndex(this, ref values);
@@ -1735,8 +1735,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void arrayConstructor<valueType, argumentType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void arrayConstructor<valueType, argumentType>(ref valueType value)
         {
             argumentType[] values = null;
             TypeParser<argumentType>.Array(this, ref values);
@@ -1750,8 +1750,8 @@ namespace AutoCSer.Xml
         /// 集合构造函数解析
         /// </summary>
         /// <param name="value">目标数据</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void dictionaryConstructor<dictionaryType, keyType, valueType>(ref dictionaryType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void dictionaryConstructor<dictionaryType, keyType, valueType>(ref dictionaryType value)
         {
             KeyValuePair<keyType, valueType>[] values = null;
             int count = TypeParser<KeyValuePair<keyType, valueType>>.ArrayIndex(this, ref values);
@@ -1775,8 +1775,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumByte<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumByte<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumByte.Parse(this, ref value);
         }
@@ -1785,8 +1785,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumSByte<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumSByte<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumSByte.Parse(this, ref value);
         }
@@ -1795,8 +1795,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumShort<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumShort<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumShort.Parse(this, ref value);
         }
@@ -1805,8 +1805,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUShort<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUShort<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUShort.Parse(this, ref value);
         }
@@ -1815,8 +1815,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumInt<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumInt<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumInt.Parse(this, ref value);
         }
@@ -1825,8 +1825,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUInt<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUInt<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUInt.Parse(this, ref value);
         }
@@ -1835,8 +1835,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumLong<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumLong<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumLong.Parse(this, ref value);
         }
@@ -1845,8 +1845,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumULong<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumULong<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumULong.Parse(this, ref value);
         }
@@ -1855,8 +1855,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumByteFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumByteFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumByte.ParseFlags(this, ref value);
         }
@@ -1865,8 +1865,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumSByteFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumSByteFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumSByte.ParseFlags(this, ref value);
         }
@@ -1875,8 +1875,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumShortFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumShortFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumShort.ParseFlags(this, ref value);
         }
@@ -1885,8 +1885,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUShortFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUShortFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUShort.ParseFlags(this, ref value);
         }
@@ -1895,8 +1895,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumIntFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumIntFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumInt.ParseFlags(this, ref value);
         }
@@ -1905,8 +1905,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumUIntFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumUIntFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumUInt.ParseFlags(this, ref value);
         }
@@ -1915,8 +1915,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumLongFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumLongFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumLong.ParseFlags(this, ref value);
         }
@@ -1925,8 +1925,8 @@ namespace AutoCSer.Xml
         /// </summary>
         /// <param name="value">目标数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void enumULongFlags<valueType>(ref valueType value)
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void enumULongFlags<valueType>(ref valueType value)
         {
             TypeParser<valueType>.EnumULong.ParseFlags(this, ref value);
         }

@@ -143,13 +143,15 @@ namespace AutoCSer.Emit
                     if (uninitializedObject != null)
                     {
 #if NOJIT
-                        cloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic);
+                        //cloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic);
+                        cloneMethod = AutoCSer.MemberCopy.Copyer.MemberwiseCloneMethod;
                         New = clone;
 #else
                         DynamicMethod dynamicMethod = new DynamicMethod("UninitializedObjectClone", type, NullValue<Type>.Array, type, true);
                         ILGenerator generator = dynamicMethod.GetILGenerator();
                         generator.Emit(OpCodes.Ldsfld, typeof(Constructor<valueType>).GetField("uninitializedObject", BindingFlags.Static | BindingFlags.NonPublic));
-                        generator.Emit(OpCodes.Callvirt, typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
+                        //generator.Emit(OpCodes.Callvirt, typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
+                        generator.Emit(OpCodes.Callvirt, AutoCSer.MemberCopy.Copyer.MemberwiseCloneMethod);
                         generator.Emit(OpCodes.Ret);
                         New = (Func<valueType>)dynamicMethod.CreateDelegate(typeof(Func<valueType>));
 #endif

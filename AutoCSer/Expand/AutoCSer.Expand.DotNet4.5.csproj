@@ -61,6 +61,9 @@
     <Compile Include="JsonFile.cs" />
     <Compile Include="MessagePack\DataType.cs" />
     <Compile Include="MessagePack\PointerNode.cs" />
+    <Compile Include="Metadata\ClassGenericType.cs" />
+    <Compile Include="Metadata\StructGenericType.cs" />
+    <Compile Include="Metadata\UnionType.cs" />
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />

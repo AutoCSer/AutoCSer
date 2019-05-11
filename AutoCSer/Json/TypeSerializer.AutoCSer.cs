@@ -25,5 +25,10 @@ namespace AutoCSer.Json
             }
             else defaultSerializer(jsonSerializer, value);
         }
+        /// <summary>
+        /// 预编译
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void Compile() { }
     }
 }

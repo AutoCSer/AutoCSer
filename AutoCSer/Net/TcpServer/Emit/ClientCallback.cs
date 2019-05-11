@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="callback">客户端回调委托</param>
         /// <returns>客户端回调转换</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static Action<ReturnValue> Get(Func<ReturnValue, bool> callback)
         {
             return callback == null ? (Action<ReturnValue>)null : new ClientCallback(callback).call;
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="callback">客户端回调委托</param>
         /// <returns>客户端回调转换</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public static Action<ReturnValue<returnType>> Get(Func<ReturnValue<returnType>, bool> callback)
         {
             return callback == null ? (Action<ReturnValue<returnType>>)null : new ClientCallback<returnType>(callback).call;
