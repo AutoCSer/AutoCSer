@@ -48,7 +48,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(byte value)
         {
-            CharStream.WriteJson(value);
+            CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 数字转换
@@ -59,7 +59,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(byte? value)
         {
-            if (value.HasValue) CharStream.WriteJson((byte)value);
+            if (value.HasValue) CharStream.WriteJson((byte)value, Config.IsNumberToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -71,7 +71,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(sbyte value)
         {
-            CharStream.WriteJson(value);
+            CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 数字转换
@@ -82,7 +82,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(sbyte? value)
         {
-            if (value.HasValue) CharStream.WriteJson((sbyte)value);
+            if (value.HasValue) CharStream.WriteJson((sbyte)value, Config.IsNumberToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -94,7 +94,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(short value)
         {
-            CharStream.WriteJson(value);
+            CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 数字转换
@@ -105,7 +105,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(short? value)
         {
-            if (value.HasValue) CharStream.WriteJson((short)value);
+            if (value.HasValue) CharStream.WriteJson((short)value, Config.IsNumberToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -117,7 +117,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(ushort value)
         {
-            CharStream.WriteJson(value);
+            CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 数字转换
@@ -128,7 +128,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(ushort? value)
         {
-            if (value.HasValue) CharStream.WriteJson((ushort)value);
+            if (value.HasValue) CharStream.WriteJson((ushort)value, Config.IsNumberToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -140,7 +140,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(int value)
         {
-            CharStream.WriteJson(value);
+            CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 数字转换
@@ -151,7 +151,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(int? value)
         {
-            if (value.HasValue) CharStream.WriteJson((int)value);
+            if (value.HasValue) CharStream.WriteJson((int)value, Config.IsNumberToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -163,7 +163,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(uint value)
         {
-            CharStream.WriteJson(value);
+            CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 数字转换
@@ -174,7 +174,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(uint? value)
         {
-            if (value.HasValue) CharStream.WriteJson((uint)value);
+            if (value.HasValue) CharStream.WriteJson((uint)value, Config.IsNumberToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -186,7 +186,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(long value)
         {
-            CharStream.WriteJson(value, Config.IsMaxNumberToString);
+            CharStream.WriteJson(value, Config.IsNumberToHex, Config.IsMaxNumberToString);
         }
         /// <summary>
         /// 数字转换
@@ -197,7 +197,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(long? value)
         {
-            if (value.HasValue) CharStream.WriteJson((long)value, Config.IsMaxNumberToString);
+            if (value.HasValue) CharStream.WriteJson((long)value, Config.IsNumberToHex, Config.IsMaxNumberToString);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -209,7 +209,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(ulong value)
         {
-            CharStream.WriteJson(value, Config.IsMaxNumberToString);
+            CharStream.WriteJson(value, Config.IsNumberToHex, Config.IsMaxNumberToString);
         }
         /// <summary>
         /// 数字转换
@@ -220,7 +220,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(ulong? value)
         {
-            if (value.HasValue) CharStream.WriteJson((ulong)value, Config.IsMaxNumberToString);
+            if (value.HasValue) CharStream.WriteJson((ulong)value, Config.IsNumberToHex, Config.IsMaxNumberToString);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -256,7 +256,7 @@ namespace AutoCSer.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void Serialize(double value)
         {
-            if(Config.IsInfinityToNaN) CharStream.WriteJson(value);
+            if (Config.IsInfinityToNaN) CharStream.WriteJson(value);
             else CharStream.WriteJsonInfinity(value);
         }
         /// <summary>
@@ -335,7 +335,7 @@ namespace AutoCSer.Json
                 if (Config.IsDateTimeOther) CharStream.WriteJsonOther(value);
                 else CharStream.WriteJsonString(value);
             }
-            else CharStream.WriteJson(value);
+            else CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 时间转换

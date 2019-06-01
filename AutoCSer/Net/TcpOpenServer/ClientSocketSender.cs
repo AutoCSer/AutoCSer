@@ -7,6 +7,12 @@ namespace AutoCSer.Net.TcpOpenServer
     /// </summary>
     public sealed class ClientSocketSender : TcpServer.ClientSocketSender<ServerAttribute>
     {
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端套接字数据发送
+        /// </summary>
+        internal ClientSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端套接字数据发送
         /// </summary>

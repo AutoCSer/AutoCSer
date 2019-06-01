@@ -54,6 +54,12 @@ namespace AutoCSer.Net.TcpServer
         /// 套接字接收数据次数
         /// </summary>
         public abstract int ReceiveCount { get; }
+#if !NOJIT
+        /// <summary>
+        /// TCP 组件基类
+        /// </summary>
+        internal ClientBase() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
@@ -188,7 +194,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="callback">回调委托</param>
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public Callback<ReturnValue<outputParameterType>> GetCallback<returnType, outputParameterType>(Action<ReturnValue<returnType>> callback)
 #if NOJIT
         where outputParameterType : IReturnParameter

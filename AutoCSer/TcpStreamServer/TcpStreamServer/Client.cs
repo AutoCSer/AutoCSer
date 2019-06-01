@@ -10,6 +10,12 @@ namespace AutoCSer.Net.TcpStreamServer
     public abstract class Client<attributeType> : TcpServer.ClientBase<attributeType>
         where attributeType : ServerAttribute
     {
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>

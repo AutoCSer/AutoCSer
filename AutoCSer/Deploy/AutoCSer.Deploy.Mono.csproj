@@ -41,6 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssemblyEnvironment\CheckClient.cs" />
+    <Compile Include="AssemblyEnvironment\Checker.cs" />
+    <Compile Include="AssemblyEnvironment\CheckResult.cs" />
+    <Compile Include="AssemblyEnvironment\CheckServer.cs" />
+    <Compile Include="AssemblyEnvironment\CheckTask.cs" />
+    <Compile Include="AssemblyEnvironment\CheckType.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="ClientConfig.cs" />
     <Compile Include="ClientDeploy.cs" />

@@ -340,7 +340,8 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                 callGenerator.Emit(OpCodes.Ldloc_S, socketBuilder);
                                 callGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                 callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder); 
-                                callGenerator.call(Metadata.ServerSocketSendAsyncOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                //callGenerator.call(Metadata.ServerSocketSendAsyncOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                callGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSendAsyncMethod);
                                 callGenerator.Emit(OpCodes.Pop);
                                 #endregion
                             }
@@ -552,7 +553,8 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                     methodGenerator.Emit(OpCodes.Ldarg_1);
                                     methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                     methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                    methodGenerator.call(Metadata.ServerSocketSendOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                    //methodGenerator.call(Metadata.ServerSocketSendOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                    methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSendMethod);
                                     methodGenerator.Emit(OpCodes.Stloc_S, isReturnLocalBuilder);
                                     #endregion
                                     methodGenerator.Emit(OpCodes.Leave_S, returnLable);

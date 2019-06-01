@@ -38,9 +38,9 @@ namespace AutoCSer.Json
         /// </summary>
         public bool IsDateTimeMinNull = true;
         /// <summary>
-        /// 时间是否转换成字符串
+        /// 时间是否转换成字符串，默认为 true
         /// </summary>
-        public bool IsDateTimeToString;
+        public bool IsDateTimeToString = true;
         /// <summary>
         /// 第三方格式 /Date(xxx)/
         /// </summary>
@@ -57,6 +57,10 @@ namespace AutoCSer.Json
         /// Dictionary 是否转换成对象模式输出
         /// </summary>
         public bool IsDictionaryToObject;
+        /// <summary>
+        /// 数字是否允许转换为 16 进制字符串
+        /// </summary>
+        public bool IsNumberToHex;
 #if AutoCSer
         /// <summary>
         /// 是否输出客户端视图绑定类型
@@ -86,6 +90,14 @@ namespace AutoCSer.Json
             MemberMap oldMemberMap = MemberMap;
             MemberMap = memberMap;
             return oldMemberMap;
+        }
+        /// <summary>
+        /// 创建内部配置参数
+        /// </summary>
+        /// <returns></returns>
+        internal static SerializeConfig CreateInternal()
+        {
+            return new SerializeConfig { IsDateTimeToString = false, IsNumberToHex = true };
         }
     }
 }

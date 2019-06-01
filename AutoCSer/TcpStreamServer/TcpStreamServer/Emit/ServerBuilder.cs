@@ -331,7 +331,8 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                 {
                                     callGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                     callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
-                                    callGenerator.call(Metadata.ServerSocketSenderPushOutputRefMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                    //callGenerator.call(Metadata.ServerSocketSenderPushOutputRefMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                    callGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSenderPushCommandMethod);
                                 }
                                 callGenerator.Emit(OpCodes.Pop);
                                 #endregion
@@ -539,7 +540,8 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                     methodGenerator.Emit(OpCodes.Ldarg_1);
                                     methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                     methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                    methodGenerator.call(Metadata.ServerSocketSenderPushOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                    //methodGenerator.call(Metadata.ServerSocketSenderPushOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                    methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSenderPushMethod);
                                     methodGenerator.Emit(OpCodes.Pop);
                                     #endregion
                                     methodGenerator.Emit(OpCodes.Leave_S, returnLable);

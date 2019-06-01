@@ -41,6 +41,12 @@ namespace AutoCSer.Net.TcpServer
         /// 接收数据 new 缓冲区次数
         /// </summary>
         internal int ReceiveNewBufferCount;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal CommandBase() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>

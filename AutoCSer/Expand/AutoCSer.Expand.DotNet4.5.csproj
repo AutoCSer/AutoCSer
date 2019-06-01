@@ -72,6 +72,7 @@
     <Compile Include="Drawing\Thumbnail.cs" />
     <Compile Include="StateSearcher\ByteSearcher.cs" />
     <Compile Include="StatusChanged.cs" />
+    <Compile Include="Threading\LockManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.DotNet4.5.csproj">

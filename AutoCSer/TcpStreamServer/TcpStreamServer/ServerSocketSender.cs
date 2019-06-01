@@ -18,6 +18,12 @@ namespace AutoCSer.Net.TcpStreamServer
         /// 服务端任务类型
         /// </summary>
         public readonly ServerTaskType ServerTaskType;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务套接字数据发送
+        /// </summary>
+        internal ServerSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 服务套接字数据发送
         /// </summary>
@@ -46,6 +52,12 @@ namespace AutoCSer.Net.TcpStreamServer
         /// TCP 服务
         /// </summary>
         internal readonly serverType Server;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务套接字数据发送
+        /// </summary>
+        internal ServerSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 服务套接字数据发送
         /// </summary>
@@ -142,7 +154,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         /// <param name="error"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void AddLog(Exception error)
         {
             Server.Log.Add(AutoCSer.Log.LogType.Error, error);
@@ -153,7 +165,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         /// <returns>是否成功加入输出队列</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Push()
         {
             return Push(TcpServer.ReturnType.Success);
@@ -164,7 +176,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="value">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Push(TcpServer.ReturnType value)
         {
             if (IsSocket)
@@ -184,7 +196,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="outputParameter">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Push<outputParameterType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -205,7 +217,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="outputParameter">返回值</param>
         /// <returns>是否成功加入输出队列</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Push<outputParameterType>(TcpServer.OutputInfo outputInfo, ref TcpServer.ReturnValue<outputParameterType> outputParameter)
             where outputParameterType : struct
         {

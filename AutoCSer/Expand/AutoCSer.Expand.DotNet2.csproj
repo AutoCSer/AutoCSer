@@ -74,6 +74,7 @@
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />
     <Compile Include="StatusChanged.cs" />
+    <Compile Include="Threading\LockManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.DotNet2.csproj">

@@ -151,7 +151,8 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.ClientCallInputMethod.MakeGenericMethod(method.ParameterType.Type));
+                                        //methodGenerator.call(Metadata.ClientCallInputMethod.MakeGenericMethod(method.ParameterType.Type));
+                                        methodGenerator.call(Metadata.GetParameterGenericType(method.ParameterType.Type).ClientCallMethod);
                                     }
                                     methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                     #endregion
@@ -214,13 +215,15 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                                     if (method.ParameterType == null)
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.ClientGetMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                        //methodGenerator.call(Metadata.ClientGetMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                        methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ClientGetMethod);
                                     }
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.ClientGetInputMethod.MakeGenericMethod(method.ParameterType.Type, method.OutputParameterType.Type));
+                                        //methodGenerator.call(Metadata.ClientGetInputMethod.MakeGenericMethod(method.ParameterType.Type, method.OutputParameterType.Type));
+                                        methodGenerator.call(Metadata.GetParameterGenericType2(method.ParameterType.Type, method.OutputParameterType.Type).ClientGetMethod);
                                     }
                                     methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                     #endregion

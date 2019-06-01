@@ -58,6 +58,7 @@
     <Compile Include="NumberToCharStream\JoinMethod.cs" />
     <Compile Include="HostsFile.cs" />
     <Compile Include="StatusChanged.cs" />
+    <Compile Include="Threading\LockManager.cs" />
   </ItemGroup>
 
   <ItemGroup>

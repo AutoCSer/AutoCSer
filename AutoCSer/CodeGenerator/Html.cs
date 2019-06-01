@@ -222,16 +222,16 @@ namespace AutoCSer.CodeGenerator
         private static readonly string AutoCSerScriptPath;
         static Html()
         {
-            string path = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath).Parent.Parent
-#if DotNetStandard
+            string path = new DirectoryInfo(AutoCSer.PubPath.ApplicationPath).Parent.Parent.Parent
+#if !DOTNET45
                 .Parent
 #endif
                 .fullName();
-            string jsPath = path + @"AutoCSer\CodeGenerator\Js\";
+            string jsPath = path + @"CodeGenerator\Js\";
             if (!Directory.Exists(jsPath))
             {
                 jsPath = AutoCSer.PubPath.ApplicationPath + @"Js\";
-                if (!Directory.Exists(jsPath)) jsPath = path + @"AutoCSer\CodeGenerator\Js\";
+                if (!Directory.Exists(jsPath)) jsPath = path + @"CodeGenerator\Js\";
             }
             if (Directory.Exists(jsPath)) AutoCSerScriptPath = new DirectoryInfo(jsPath).fullName().fileNameToLower();
         }

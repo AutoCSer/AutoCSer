@@ -132,7 +132,7 @@ namespace AutoCSer.Net.TcpServer
         static Server()
         {
             JsonConfig = AutoCSer.Json.ConfigLoader.GetUnion(typeof(AutoCSer.Json.SerializeConfig)).SerializeConfig;
-            if (JsonConfig == null) JsonConfig = new AutoCSer.Json.SerializeConfig();
+            if (JsonConfig == null) JsonConfig = AutoCSer.Json.SerializeConfig.CreateInternal();
             else JsonConfig = AutoCSer.MemberCopy.Copyer<AutoCSer.Json.SerializeConfig>.MemberwiseClone(JsonConfig);
             JsonConfig.IsInfinityToNaN = false;
         }

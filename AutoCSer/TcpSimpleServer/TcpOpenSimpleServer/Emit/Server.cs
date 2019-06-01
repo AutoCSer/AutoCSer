@@ -12,7 +12,13 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         /// <summary>
         /// TCP 服务端元数据
         /// </summary>
-        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenSimpleServer.Server), typeof(ServerAttribute), typeof(ServerSocket), typeof(ServerCall));
+        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenSimpleServer.Server), typeof(ServerAttribute), typeof(ServerSocket), typeof(ServerCall)
+            , ParameterGenericType.Get
+            , ((Func<bool>)ParameterGenericType.ServerSocket.Send).Method
+            , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.Send).Method
+            , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.SendAsync).Method
+            , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.SendOutput).Method
+            , ((Action<Exception>)ParameterGenericType.ServerSocket.Log).Method);
     }
     /// <summary>
     /// TCP 服务

@@ -11,6 +11,12 @@ namespace AutoCSer.Net.TcpInternalServer
     /// </summary>
     public sealed class ServerSocketSender : TcpServer.ServerSocketSender<ServerAttribute, Server, ServerSocket, ServerSocketSender>
     {
+#if !NOJIT
+        /// <summary>
+        /// TCP 内部服务套接字数据发送
+        /// </summary>
+        internal ServerSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 内部服务套接字数据发送
         /// </summary>
@@ -25,7 +31,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public Func<TcpServer.ReturnValue, bool> GetCallback(TcpServer.OutputInfo outputInfo)
         {
             return outputInfo.IsKeepCallback == 0 ? (AutoCSer.Threading.RingPool<ServerCallback>.Default.Pop() ?? new ServerCallback(0)).Set(this, outputInfo.IsBuildOutputThread) : (new ServerCallback(1)).SetKeep(this, outputInfo.IsBuildOutputThread);
@@ -37,7 +43,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="outputParameter">输出参数</param>
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public Func<TcpServer.ReturnValue<returnType>, bool> GetCallback<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
 #if NOJIT
             where outputParameterType : struct, IReturnParameter

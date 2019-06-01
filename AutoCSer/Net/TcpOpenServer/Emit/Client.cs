@@ -8,12 +8,21 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
     /// <summary>
     /// TCP 客户端
     /// </summary>
-    internal static class Client
+    internal sealed class Client : TcpOpenServer.Client
     {
         /// <summary>
-        /// TCP 客户端元数据
+        /// TCP 客户端
         /// </summary>
-        internal static readonly ClientMetadata Metadata = new ClientMetadata(typeof(TcpOpenServer.Client), typeof(ClientSocketSender), typeof(MethodClient));
+        internal Client() : base() { }
+        /// <summary>
+        /// 套接字验证
+        /// </summary>
+        /// <param name="socket">TCP 调用客户端套接字</param>
+        /// <returns></returns>
+        internal override bool SocketVerifyMethod(TcpServer.ClientSocketSenderBase socket)
+        {
+            throw new NotImplementedException();
+        }
     }
     /// <summary>
     /// TCP 客户端
@@ -80,7 +89,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
             {
                 defaultServerAttribute = builder.DefaultServerAttribute;
 
-                Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ClientBuilder clientBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ClientBuilder { Metadata = Client.Metadata };
+                Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ClientBuilder clientBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ClientBuilder { Metadata = ClientMetadata.Default };
                 //clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, typeof(Client<interfaceType>).GetMethod("GetCommand", BindingFlags.Static | BindingFlags.Public));
                 clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, ((Func<int, TcpServer.CommandInfo>)Client<interfaceType>.GetCommand).Method);
                 commands = clientBuilder.Commands;

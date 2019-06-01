@@ -11,6 +11,12 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// </summary>
     public sealed class ServerSocketSender : TcpStreamServer.ServerSocketSender<ServerAttribute, Server, ServerSocket, ServerSocketSender>
     {
+#if !NOJIT
+        /// <summary>
+        /// TCP 内部服务套接字数据发送
+        /// </summary>
+        internal ServerSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 内部服务套接字数据发送
         /// </summary>

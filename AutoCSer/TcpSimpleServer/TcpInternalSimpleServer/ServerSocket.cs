@@ -11,6 +11,12 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// </summary>
     public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, Server, ServerSocket>
     {
+#if !NOJIT
+        /// <summary>
+        /// TCP 内部服务端套接字
+        /// </summary>
+        internal ServerSocket() : base(null) { }
+#endif
         /// <summary>
         /// TCP 内部服务端套接字
         /// </summary>
@@ -899,7 +905,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         /// <param name="returnType">返回值类型</param>
         /// <returns>是否发送成功</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool SendAsync(TcpServer.ReturnType returnType)
         {
             bool isSend = false;
@@ -929,7 +935,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="returnType">返回值类型</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Send(TcpServer.ReturnType returnType)
         {
             Socket socket = Socket;
@@ -945,7 +951,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Send()
         {
             return Send(TcpServer.ReturnType.Success);
@@ -957,7 +963,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter">输出数据</param>
         /// <returns>是否发送成功</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool SendAsync<outputParameterType>(TcpSimpleServer.OutputInfo outputInfo, ref TcpServer.ReturnValue<outputParameterType> outputParameter)
             where outputParameterType : struct
         {
@@ -1000,7 +1006,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="returnType">返回值类型</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool SendOutput(TcpServer.ReturnType returnType)
         {
             Socket socket = Socket;
@@ -1027,7 +1033,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="outputParameter">输出数据</param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public bool Send<outputParameterType>(TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {

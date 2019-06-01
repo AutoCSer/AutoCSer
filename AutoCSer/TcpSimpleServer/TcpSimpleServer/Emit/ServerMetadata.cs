@@ -57,10 +57,10 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         /// TCP 服务器端套接字发送数据函数信息
         /// </summary>
         internal readonly MethodInfo ServerSocketSendAsyncMethod;
-        /// <summary>
-        /// TCP 服务器端套接字发送数据函数信息
-        /// </summary>
-        internal readonly MethodInfo ServerSocketSendAsyncOutputMethod;
+        ///// <summary>
+        ///// TCP 服务器端套接字发送数据函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ServerSocketSendAsyncOutputMethod;
         /// <summary>
         /// TCP 服务器端套接字发送数据函数信息
         /// </summary>
@@ -73,10 +73,14 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         /// TCP 服务器端套接字发送数据函数信息
         /// </summary>
         internal readonly MethodInfo ServerSocketSendMethod;
+        ///// <summary>
+        ///// TCP 服务器端套接字发送数据函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ServerSocketSendOutputMethod;
         /// <summary>
-        /// TCP 服务器端套接字发送数据函数信息
+        /// 输出参数泛型类型元数据
         /// </summary>
-        internal readonly MethodInfo ServerSocketSendOutputMethod;
+        internal readonly Func<Type, ParameterGenericType> GetParameterGenericType;
         /// <summary>
         /// 服务端调用参数类型集合
         /// </summary>
@@ -96,7 +100,17 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         /// <param name="serverAttributeType">TCP 服务配置类型</param>
         /// <param name="socketType">TCP 服务套接字类型</param>
         /// <param name="serverCallType">TCP 服务器端同步调用类型</param>
-        internal ServerMetadata(Type serverType, Type serverAttributeType, Type socketType, Type serverCallType)
+        /// <param name="getParameterGenericType">输出参数泛型类型元数据</param>
+        /// <param name="serverSocketSendMethod">TCP 服务器端套接字发送数据函数信息</param>
+        /// <param name="serverSocketSendReturnTypeMethod">TCP 服务器端套接字发送数据函数信息</param>
+        /// <param name="serverSocketSendAsyncMethod">TCP 服务器端套接字发送数据函数信息</param>
+        /// <param name="serverSocketSendOutputReturnTypeMethod">TCP 服务器端套接字发送数据函数信息</param>
+        /// <param name="serverSocketLogMethod">TCP 服务器端套接字错误日志处理函数信息</param>
+        internal ServerMetadata(Type serverType, Type serverAttributeType, Type socketType, Type serverCallType
+            , Func<Type, ParameterGenericType> getParameterGenericType
+            , MethodInfo serverSocketSendMethod, MethodInfo serverSocketSendReturnTypeMethod
+            , MethodInfo serverSocketSendAsyncMethod, MethodInfo serverSocketSendOutputReturnTypeMethod
+            , MethodInfo serverSocketLogMethod)
         {
             ServerType = serverType;
             SocketType = socketType;
@@ -111,61 +125,67 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
             ServerCallCallMethod = serverCallType.GetMethod("Call", BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
             MethodParameterTypes = new Type[] { socketType, typeof(SubArray<byte>).MakeByRefType() };
 
-            foreach (MethodInfo method in socketType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            {
-                if (method.ReturnType == typeof(bool))
-                {
-                    switch (method.Name.Length)
-                    {
-                        case 4:
-                            if (method.Name == "Send")
-                            {
-                                ParameterInfo[] parameters = method.GetParameters();
-                                switch (parameters.Length)
-                                {
-                                    case 0: ServerSocketSendMethod = method; break;
-                                    case 1:
-                                        if (parameters[0].ParameterType == typeof(TcpServer.ReturnType)) ServerSocketSendReturnTypeMethod = method;
-                                        break;
-                                    case 2:
-                                        if (parameters[0].ParameterType == typeof(TcpSimpleServer.OutputInfo)) ServerSocketSendOutputMethod = method;
-                                        break;
-                                }
-                            }
-                            break;
-                        case 9:
-                            if (method.Name == "SendAsync")
-                            {
-                                ParameterInfo[] parameters = method.GetParameters();
-                                switch (parameters.Length)
-                                {
-                                    case 1:
-                                        if (parameters[0].ParameterType == typeof(TcpServer.ReturnType)) ServerSocketSendAsyncMethod = method;
-                                        break;
-                                    case 2:
-                                        if (method.IsGenericMethodDefinition && parameters[0].ParameterType == typeof(TcpSimpleServer.OutputInfo)) ServerSocketSendAsyncOutputMethod = method;
-                                        break;
-                                }
-                            }
-                            break;
-                        case 10:
-                            if (method.Name == "SendOutput")
-                            {
-                                ParameterInfo[] parameters = method.GetParameters();
-                                if (parameters.Length == 1 && parameters[0].ParameterType == typeof(TcpServer.ReturnType)) ServerSocketSendOutputReturnTypeMethod = method;
-                            }
-                            break;
-                    }
-                }
-                else if (method.ReturnType == typeof(void))
-                {
-                    if (method.Name == "Log")
-                    {
-                        ParameterInfo[] parameters = method.GetParameters();
-                        if (parameters.Length == 1 && parameters[0].ParameterType == typeof(Exception)) ServerSocketLogMethod = method;
-                    }
-                }
-            }
+            GetParameterGenericType = getParameterGenericType;
+            ServerSocketSendMethod = serverSocketSendMethod;
+            ServerSocketSendReturnTypeMethod = serverSocketSendReturnTypeMethod;
+            ServerSocketSendAsyncMethod = serverSocketSendAsyncMethod;
+            ServerSocketSendOutputReturnTypeMethod = serverSocketSendOutputReturnTypeMethod;
+            ServerSocketLogMethod = serverSocketLogMethod;
+            //foreach (MethodInfo method in socketType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+            //{
+            //    if (method.ReturnType == typeof(bool))
+            //    {
+            //        switch (method.Name.Length)
+            //        {
+            //            case 4:
+            //                if (method.Name == "Send")
+            //                {
+            //                    ParameterInfo[] parameters = method.GetParameters();
+            //                    switch (parameters.Length)
+            //                    {
+            //                        case 0: ServerSocketSendMethod = method; break;
+            //                        case 1:
+            //                            if (parameters[0].ParameterType == typeof(TcpServer.ReturnType)) ServerSocketSendReturnTypeMethod = method;
+            //                            break;
+            //                        case 2:
+            //                            if (parameters[0].ParameterType == typeof(TcpSimpleServer.OutputInfo)) ServerSocketSendOutputMethod = method;
+            //                            break;
+            //                    }
+            //                }
+            //                break;
+            //            case 9:
+            //                if (method.Name == "SendAsync")
+            //                {
+            //                    ParameterInfo[] parameters = method.GetParameters();
+            //                    switch (parameters.Length)
+            //                    {
+            //                        case 1:
+            //                            if (parameters[0].ParameterType == typeof(TcpServer.ReturnType)) ServerSocketSendAsyncMethod = method;
+            //                            break;
+            //                        case 2:
+            //                            if (method.IsGenericMethodDefinition && parameters[0].ParameterType == typeof(TcpSimpleServer.OutputInfo)) ServerSocketSendAsyncOutputMethod = method;
+            //                            break;
+            //                    }
+            //                }
+            //                break;
+            //            case 10:
+            //                if (method.Name == "SendOutput")
+            //                {
+            //                    ParameterInfo[] parameters = method.GetParameters();
+            //                    if (parameters.Length == 1 && parameters[0].ParameterType == typeof(TcpServer.ReturnType)) ServerSocketSendOutputReturnTypeMethod = method;
+            //                }
+            //                break;
+            //        }
+            //    }
+            //    else if (method.ReturnType == typeof(void))
+            //    {
+            //        if (method.Name == "Log")
+            //        {
+            //            ParameterInfo[] parameters = method.GetParameters();
+            //            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(Exception)) ServerSocketLogMethod = method;
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>

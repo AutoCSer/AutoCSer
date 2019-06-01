@@ -8,12 +8,20 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
     /// <summary>
     /// TCP 客户端
     /// </summary>
-    internal static class Client
+    internal sealed class Client : TcpInternalSimpleServer.Client
     {
         /// <summary>
-        /// TCP 客户端元数据
+        /// TCP 客户端
         /// </summary>
-        internal static readonly ClientMetadata Metadata = new ClientMetadata(typeof(TcpInternalSimpleServer.Client), typeof(MethodClient));
+        internal Client() : base() { }
+        /// <summary>
+        /// 套接字验证
+        /// </summary>
+        /// <returns></returns>
+        internal override bool CallVerifyMethod()
+        {
+            throw new NotImplementedException();
+        }
     }
     /// <summary>
     /// TCP 客户端
@@ -78,7 +86,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
             {
                 defaultServerAttribute = builder.DefaultServerAttribute;
 
-                Method<ServerAttribute, TcpSimpleServer.MethodAttribute, ServerSocket>.ClientBuilder clientBuilder = new Method<ServerAttribute, TcpSimpleServer.MethodAttribute, ServerSocket>.ClientBuilder { Metadata = Client.Metadata };
+                Method<ServerAttribute, TcpSimpleServer.MethodAttribute, ServerSocket>.ClientBuilder clientBuilder = new Method<ServerAttribute, TcpSimpleServer.MethodAttribute, ServerSocket>.ClientBuilder { Metadata = ClientMetadata.Default };
                 clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, typeof(Client<interfaceType>).GetMethod("GetCommand", BindingFlags.Static | BindingFlags.Public));
                 commands = clientBuilder.Commands;
             }

@@ -8,6 +8,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
     /// </summary>
     public abstract class Client : TcpSimpleServer.Client<ServerAttribute>
     {
+#if !NOJIT
+        /// <summary>
+        /// TCP 开放服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 开放服务客户端
         /// </summary>

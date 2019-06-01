@@ -186,7 +186,7 @@ namespace AutoCSer.Sql.MsSql
         /// <param name="expression"></param>
         private void convertMemberAccess(MemberExpression expression)
         {
-            if (typeof(ParameterExpression).IsAssignableFrom(expression.Expression.GetType()))
+            if (expression.Expression != null && typeof(ParameterExpression).IsAssignableFrom(expression.Expression.GetType()))
             {
                 string name = expression.Member.Name, sqlName = ConstantConverter.ConvertName(name);
                 if (FirstMemberName == null)

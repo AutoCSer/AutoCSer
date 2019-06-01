@@ -307,6 +307,11 @@
     <Compile Include="Net\TcpInternalServer\Emit\MethodGetter.cs" />
     <Compile Include="Net\TcpInternalServer\Emit\Server.cs" />
     <Compile Include="Net\TcpInternalServer\Emit\ServerCall.cs" />
+    <Compile Include="Net\TcpInternalServer\Emit\ClientMetadata.cs" />
+    <Compile Include="Net\TcpInternalServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="Net\TcpInternalServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="Net\TcpInternalServer\Emit\ReturnParameterGenericType.cs" />
+    <Compile Include="Net\TcpInternalServer\Emit\UnionType.cs" />
     <Compile Include="Net\TcpInternalServer\MethodClient.cs" />
     <Compile Include="Net\TcpInternalServer\Server.cs" />
     <Compile Include="Net\TcpInternalServer\ServerAttribute.cs" />
@@ -328,6 +333,11 @@
     <Compile Include="Net\TcpOpenServer\Emit\MethodGetter.cs" />
     <Compile Include="Net\TcpOpenServer\Emit\Server.cs" />
     <Compile Include="Net\TcpOpenServer\Emit\ServerCall.cs" />
+    <Compile Include="Net\TcpOpenServer\Emit\ClientMetadata.cs" />
+    <Compile Include="Net\TcpOpenServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="Net\TcpOpenServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="Net\TcpOpenServer\Emit\ReturnParameterGenericType.cs" />
+    <Compile Include="Net\TcpOpenServer\Emit\UnionType.cs" />
     <Compile Include="Net\TcpOpenServer\KeepCallbackMethodAttribute.cs" />
     <Compile Include="Net\TcpOpenServer\MethodAttribute.cs" />
     <Compile Include="Net\TcpOpenServer\MethodClient.cs" />
@@ -421,6 +431,9 @@
     <Compile Include="Net\TcpServer\Emit\ServerBuilder.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerCallback.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerMetadata.cs" />
+    <Compile Include="Net\TcpServer\Emit\ReturnParameterGenericType.cs" />
+    <Compile Include="Net\TcpServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="Net\TcpServer\Emit\ParameterGenericType.cs" />
     <Compile Include="Net\TcpServer\IServerKeepCallback.cs" />
     <Compile Include="Net\TcpServer\ISetTcpServer.cs" />
     <Compile Include="Net\TcpServer\KeepCallback.cs" />

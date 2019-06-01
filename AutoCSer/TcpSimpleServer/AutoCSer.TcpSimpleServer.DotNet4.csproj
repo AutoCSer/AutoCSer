@@ -84,6 +84,10 @@
     <Compile Include="TcpInternalSimpleServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\Server.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\ClientMetadata.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="TcpInternalSimpleServer\Emit\UnionType.cs" />
     <Compile Include="TcpInternalSimpleServer\MethodClient.cs" />
     <Compile Include="TcpInternalSimpleServer\Server.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerAttribute.cs" />
@@ -101,6 +105,10 @@
     <Compile Include="TcpOpenSimpleServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\Server.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\ClientMetadata.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="TcpOpenSimpleServer\Emit\UnionType.cs" />
     <Compile Include="TcpOpenSimpleServer\MethodAttribute.cs" />
     <Compile Include="TcpOpenSimpleServer\MethodClient.cs" />
     <Compile Include="TcpOpenSimpleServer\Server.cs" />
@@ -120,6 +128,8 @@
     <Compile Include="TcpSimpleServer\Emit\Method.cs" />
     <Compile Include="TcpSimpleServer\Emit\ServerBuilder.cs" />
     <Compile Include="TcpSimpleServer\Emit\ServerMetadata.cs" />
+    <Compile Include="TcpSimpleServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="TcpSimpleServer\Emit\ParameterGenericType2.cs" />
     <Compile Include="TcpSimpleServer\ISetTcpServer.cs" />
     <Compile Include="TcpSimpleServer\MethodAttribute.cs" />
     <Compile Include="TcpSimpleServer\OutputInfo.cs" />

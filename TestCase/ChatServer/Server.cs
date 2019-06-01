@@ -7,7 +7,7 @@ namespace AutoCSer.TestCase.ChatServer
     /// <summary>
     /// 群聊客户端
     /// </summary>
-#if DotNetStandard
+#if !DOTNET45
     [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\..\ChatClient\")]
 #else
     [AutoCSer.Net.TcpOpenServer.Server(Host = "127.0.0.1", Port = 12400, SendBufferSize = SubBuffer.Size.Kilobyte, ReceiveBufferSize = SubBuffer.Size.Kilobyte, IsAutoClient = true, ClientSegmentationCopyPath = @"..\..\..\ChatClient\")]

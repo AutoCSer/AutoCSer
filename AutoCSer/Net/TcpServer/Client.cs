@@ -33,6 +33,12 @@ namespace AutoCSer.Net.TcpServer
                 return customDataCommandInfo;
             }
         }
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>

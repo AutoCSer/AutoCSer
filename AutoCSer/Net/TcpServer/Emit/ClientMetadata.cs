@@ -38,221 +38,263 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// TCP 服务客户端调用函数信息
         /// </summary>
         internal readonly MethodInfo ClientSocketSenderCallOnlyMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderCallOnlyInputMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderCallOnlyInputMethod;
         /// <summary>
         /// TCP 服务客户端调用函数信息
         /// </summary>
         internal readonly MethodInfo ClientSocketSenderWaitCallMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderWaitCallInputMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderWaitGetMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderWaitGetInputMethod;
         /// <summary>
-        /// TCP 服务客户端调用函数信息
+        /// 输出参数泛型类型元数据
         /// </summary>
-        internal readonly MethodInfo ClientSocketSenderWaitCallInputMethod;
+        internal readonly Func<Type, ParameterGenericType> GetParameterGenericType;
         /// <summary>
-        /// TCP 服务客户端调用函数信息
+        /// 输入+输出参数泛型类型元数据
         /// </summary>
-        internal readonly MethodInfo ClientSocketSenderWaitGetMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderWaitGetInputMethod;
+        internal readonly Func<Type, Type, ParameterGenericType2> GetParameterGenericType2;
         /// <summary>
         /// TCP 客户端元数据
         /// </summary>
         /// <param name="clientType">TCP 客户端类型</param>
         /// <param name="senderType">TCP 客户端套接字发送数据类型</param>
         /// <param name="methodClientType">TCP 客户端基类类型</param>
-        internal ClientMetadataBase(Type clientType, Type senderType, Type methodClientType)
+        /// <param name="clientGetSenderMethod">TCP 服务客户端同步调用套接字发送对象函数信息</param>
+        /// <param name="getParameterGenericType">输出参数泛型类型元数据</param>
+        /// <param name="getParameterGenericType2">输入+输出参数泛型类型元数据</param>
+        /// <param name="clientSocketSenderWaitCallMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
+        internal ClientMetadataBase(Type clientType, Type senderType, Type methodClientType
+            , MethodInfo clientGetSenderMethod, Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
+            , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod)
         {
             SenderType = senderType;
             MethodClientType = methodClientType;
             ClientTypeName = clientType.fullName();
             MethodClientGetTcpClientMethod = methodClientType.GetProperty(TcpClientName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).GetGetMethod();
-            ClientGetSenderMethod = clientType.GetProperty("Sender", BindingFlags.Public | BindingFlags.Instance).GetGetMethod();
-            Type autoWaitReturnValueRefType = typeof(AutoWaitReturnValue).MakeByRefType();
-            foreach (MethodInfo method in senderType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            {
-                switch (method.Name)
-                {
-                    case "WaitGet":
-                        if (method.ReturnType == typeof(ReturnType))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            if (types.Length >= 3 && types[0].ParameterType == typeof(CommandInfo))
-                            {
-                                switch (types.Length)
-                                {
-                                    case 3: ClientSocketSenderWaitGetMethod = method; break;
-                                    case 4: ClientSocketSenderWaitGetInputMethod = method; break;
-                                }
-                            }
-                        }
-                        break;
-                    case "WaitCall":
-                        if (method.ReturnType == typeof(ReturnType))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == autoWaitReturnValueRefType)
-                            {
-                                switch (types.Length)
-                                {
-                                    case 2: ClientSocketSenderWaitCallMethod = method; break;
-                                    case 3: ClientSocketSenderWaitCallInputMethod = method; break;
-                                }
-                            }
-                        }
-                        break;
-                    case "CallOnly":
-                        if (method.ReturnType == typeof(void))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            switch (types.Length)
-                            {
-                                case 1:
-                                    if (types[0].ParameterType == typeof(CommandInfo)) ClientSocketSenderCallOnlyMethod = method;
-                                    break;
-                                case 2:
-                                    if (types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef) ClientSocketSenderCallOnlyInputMethod = method;
-                                    break;
-                            }
-                        }
-                        break;
-                }
-            }
+            //ClientGetSenderMethod = clientType.GetProperty("Sender", BindingFlags.Public | BindingFlags.Instance).GetGetMethod();
+            ClientGetSenderMethod = clientGetSenderMethod;
+            GetParameterGenericType = getParameterGenericType;
+            GetParameterGenericType2 = getParameterGenericType2;
+            ClientSocketSenderWaitCallMethod = clientSocketSenderWaitCallMethod;
+            ClientSocketSenderCallOnlyMethod = clientSocketSenderCallOnlyMethod;
+            //Type autoWaitReturnValueRefType = typeof(AutoWaitReturnValue).MakeByRefType();
+            //foreach (MethodInfo method in senderType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+            //{
+            //    switch (method.Name)
+            //    {
+            //        case "WaitGet":
+            //            if (method.ReturnType == typeof(ReturnType))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                if (types.Length >= 3 && types[0].ParameterType == typeof(CommandInfo))
+            //                {
+            //                    switch (types.Length)
+            //                    {
+            //                        case 3: ClientSocketSenderWaitGetMethod = method; break;
+            //                        case 4: ClientSocketSenderWaitGetInputMethod = method; break;
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //        case "WaitCall":
+            //            if (method.ReturnType == typeof(ReturnType))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == autoWaitReturnValueRefType)
+            //                {
+            //                    switch (types.Length)
+            //                    {
+            //                        case 2: ClientSocketSenderWaitCallMethod = method; break;
+            //                        case 3: ClientSocketSenderWaitCallInputMethod = method; break;
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //        case "CallOnly":
+            //            if (method.ReturnType == typeof(void))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                switch (types.Length)
+            //                {
+            //                    case 1:
+            //                        if (types[0].ParameterType == typeof(CommandInfo)) ClientSocketSenderCallOnlyMethod = method;
+            //                        break;
+            //                    case 2:
+            //                        if (types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef) ClientSocketSenderCallOnlyInputMethod = method;
+            //                        break;
+            //                }
+            //            }
+            //            break;
+            //    }
+            //}
         }
     }
     /// <summary>
     /// TCP 客户端元数据
     /// </summary>
     [AutoCSer.IOS.Preserve(AllMembers = false)]
-    internal sealed class ClientMetadata : ClientMetadataBase
+    internal abstract class ClientMetadata : ClientMetadataBase
     {
         /// <summary>
         /// TCP 服务客户端调用函数信息
         /// </summary>
         internal readonly MethodInfo ClientSocketSenderCallMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderCallInputMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderCallInputMethod;
         /// <summary>
         /// TCP 服务客户端调用函数信息
         /// </summary>
         internal readonly MethodInfo ClientSocketSenderCallKeepMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderCallKeepInputMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderGetAsynchronousMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderGetInputAsynchronousMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderGetKeepAsynchronousMethod;
+        ///// <summary>
+        ///// TCP 服务客户端调用函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientSocketSenderGetKeepInputAsynchronousMethod;
+        ///// <summary>
+        ///// TCP 服务客户端获取异步回调函数信息
+        ///// </summary>
+        //internal readonly MethodInfo ClientGetCallbackMethod;
         /// <summary>
-        /// TCP 服务客户端调用函数信息
+        /// 获取输出参数泛型类型元数据
         /// </summary>
-        internal readonly MethodInfo ClientSocketSenderCallKeepInputMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderGetAsynchronousMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderGetInputAsynchronousMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderGetKeepAsynchronousMethod;
-        /// <summary>
-        /// TCP 服务客户端调用函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientSocketSenderGetKeepInputAsynchronousMethod;
-        /// <summary>
-        /// TCP 服务客户端获取异步回调函数信息
-        /// </summary>
-        internal readonly MethodInfo ClientGetCallbackMethod;
+        internal readonly Func<Type, Type, ReturnParameterGenericType> GetOutputParameterGenericType;
         /// <summary>
         /// TCP 客户端元数据
         /// </summary>
         /// <param name="clientType">TCP 客户端类型</param>
         /// <param name="senderType">TCP 客户端套接字发送数据类型</param>
         /// <param name="methodClientType">TCP 客户端基类类型</param>
-        internal ClientMetadata(Type clientType, Type senderType, Type methodClientType) : base(clientType, senderType, methodClientType)
+        /// <param name="clientGetSenderMethod">TCP 服务客户端同步调用套接字发送对象函数信息</param>
+        /// <param name="getOutputParameterGenericType">获取输出参数泛型类型元数据</param>
+        /// <param name="getParameterGenericType">输出参数泛型类型元数据</param>
+        /// <param name="getParameterGenericType2">输入+输出参数泛型类型元数据</param>
+        /// <param name="clientSocketSenderWaitCallMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallKeepMethod">TCP 服务客户端调用函数信息</param>
+        internal ClientMetadata(Type clientType, Type senderType, Type methodClientType
+            , MethodInfo clientGetSenderMethod, Func<Type, Type, ReturnParameterGenericType> getOutputParameterGenericType
+            , Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
+            , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
+            , MethodInfo clientSocketSenderCallMethod, MethodInfo clientSocketSenderCallKeepMethod)
+            : base(clientType, senderType, methodClientType
+            , clientGetSenderMethod, getParameterGenericType, getParameterGenericType2
+            , clientSocketSenderWaitCallMethod, clientSocketSenderCallOnlyMethod)
         {
-            foreach (MethodInfo method in clientType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            {
-                switch (method.Name)
-                {
-                    case "GetCallback":
-                        if (method.ReturnType.IsGenericType && method.GetParameters().Length == 1) ClientGetCallbackMethod = method;
-                        break;
-                }
-            }
-            Type autoWaitReturnValueRefType = typeof(AutoWaitReturnValue).MakeByRefType();
-            foreach (MethodInfo method in senderType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            {
-                switch (method.Name)
-                {
-                    case "Get":
-                        if (method.ReturnType == typeof(void))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef)
-                            {
-                                switch (types.Length)
-                                {
-                                    case 2:
-                                        if (method.GetGenericArguments().Length == 1) ClientSocketSenderGetAsynchronousMethod = method;
-                                        break;
-                                    case 3:
-                                        if (types[2].ParameterType.IsByRef && method.GetGenericArguments().Length == 2) ClientSocketSenderGetInputAsynchronousMethod = method;
-                                        break;
-                                }
-                            }
-                        }
-                        break;
-                    case "GetKeep":
-                        if (method.ReturnType == typeof(KeepCallback))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef)
-                            {
-                                switch (types.Length)
-                                {
-                                    case 2:
-                                        if (method.GetGenericArguments().Length == 1) ClientSocketSenderGetKeepAsynchronousMethod = method;
-                                        break;
-                                    case 3:
-                                        if (types[2].ParameterType.IsByRef && method.GetGenericArguments().Length == 2) ClientSocketSenderGetKeepInputAsynchronousMethod = method;
-                                        break;
-                                }
-                            }
-                        }
-                        break;
-                    case "Call":
-                        if (method.ReturnType == typeof(void))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == typeof(Action<ReturnValue>))
-                            {
-                                switch (types.Length)
-                                {
-                                    case 2: ClientSocketSenderCallMethod = method; break;
-                                    case 3: ClientSocketSenderCallInputMethod = method; break;
-                                }
-                            }
-                        }
-                        break;
-                    case "CallKeep":
-                        if (method.ReturnType == typeof(KeepCallback))
-                        {
-                            ParameterInfo[] types = method.GetParameters();
-                            if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == typeof(Action<ReturnValue>))
-                            {
-                                switch (types.Length)
-                                {
-                                    case 2: ClientSocketSenderCallKeepMethod = method; break;
-                                    case 3: ClientSocketSenderCallKeepInputMethod = method; break;
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
+            GetOutputParameterGenericType = getOutputParameterGenericType;
+            ClientSocketSenderCallMethod = clientSocketSenderCallMethod;
+            ClientSocketSenderCallKeepMethod = clientSocketSenderCallKeepMethod;
+            //foreach (MethodInfo method in clientType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+            //{
+            //    switch (method.Name)
+            //    {
+            //        case "GetCallback":
+            //            if (method.ReturnType.IsGenericType && method.GetParameters().Length == 1) ClientGetCallbackMethod = method;
+            //            break;
+            //    }
+            //}
+            //Type autoWaitReturnValueRefType = typeof(AutoWaitReturnValue).MakeByRefType();
+            //foreach (MethodInfo method in senderType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
+            //{
+            //    switch (method.Name)
+            //    {
+            //        case "Get":
+            //            if (method.ReturnType == typeof(void))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef)
+            //                {
+            //                    switch (types.Length)
+            //                    {
+            //                        case 2:
+            //                            if (method.GetGenericArguments().Length == 1) ClientSocketSenderGetAsynchronousMethod = method;
+            //                            break;
+            //                        case 3:
+            //                            if (types[2].ParameterType.IsByRef && method.GetGenericArguments().Length == 2) ClientSocketSenderGetInputAsynchronousMethod = method;
+            //                            break;
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //        case "GetKeep":
+            //            if (method.ReturnType == typeof(KeepCallback))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef)
+            //                {
+            //                    switch (types.Length)
+            //                    {
+            //                        case 2:
+            //                            if (method.GetGenericArguments().Length == 1) ClientSocketSenderGetKeepAsynchronousMethod = method;
+            //                            break;
+            //                        case 3:
+            //                            if (types[2].ParameterType.IsByRef && method.GetGenericArguments().Length == 2) ClientSocketSenderGetKeepInputAsynchronousMethod = method;
+            //                            break;
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //        case "Call":
+            //            if (method.ReturnType == typeof(void))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == typeof(Action<ReturnValue>))
+            //                {
+            //                    switch (types.Length)
+            //                    {
+            //                        case 2: ClientSocketSenderCallMethod = method; break;
+            //                        case 3: ClientSocketSenderCallInputMethod = method; break;
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //        case "CallKeep":
+            //            if (method.ReturnType == typeof(KeepCallback))
+            //            {
+            //                ParameterInfo[] types = method.GetParameters();
+            //                if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == typeof(Action<ReturnValue>))
+            //                {
+            //                    switch (types.Length)
+            //                    {
+            //                        case 2: ClientSocketSenderCallKeepMethod = method; break;
+            //                        case 3: ClientSocketSenderCallKeepInputMethod = method; break;
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //    }
+            //}
         }
 
         /// <summary>

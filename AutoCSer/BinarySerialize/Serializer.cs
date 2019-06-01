@@ -240,7 +240,7 @@ namespace AutoCSer.BinarySerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal AutoCSer.Json.SerializeConfig GetJsonConfig(MemberMap memberMap)
         {
-            if (jsonConfig == null) jsonConfig = new AutoCSer.Json.SerializeConfig();
+            if (jsonConfig == null) jsonConfig = AutoCSer.Json.SerializeConfig.CreateInternal();
             jsonConfig.MemberMap = memberMap;
             return jsonConfig;
         }

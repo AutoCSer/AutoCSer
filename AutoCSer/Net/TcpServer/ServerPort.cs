@@ -8,6 +8,10 @@ namespace AutoCSer.Net
     internal enum ServerPort
     {
         /// <summary>
+        /// 发布程序集环境检测服务 8987
+        /// </summary>
+        DeployAssemblyEnvironmentCheck = 9000 - 13,
+        /// <summary>
         /// K-V 数据库从服务 8988
         /// </summary>
         KeyValueStreamSlaveServer = 9000 - 12,

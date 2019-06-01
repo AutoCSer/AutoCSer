@@ -67,6 +67,11 @@ namespace AutoCSer.Extension
         /// <returns>字符串长度</returns>
         internal unsafe static int ToString(byte value, char* chars)
         {
+            if (value < 10)
+            {
+                *chars = (char)(value + '0');
+                return 1;
+            }
             if (value >= 100)
             {
                 int value10 = (value * (int)Div10_16Mul) >> Div10_16Shift;
@@ -75,14 +80,12 @@ namespace AutoCSer.Extension
                 *(int*)chars = ((value10 - value100 * 10) << 16) | value100 | 0x300030;
                 return 3;
             }
-            if (value >= 10)
+            else
             {
                 int value10 = (value * (int)Div10_16Mul) >> Div10_16Shift;
                 *(int*)chars = ((value - value10 * 10) << 16) | value10 | 0x300030;
                 return 2;
             }
-            *chars = (char)(value + '0');
-            return 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -118,6 +121,11 @@ namespace AutoCSer.Extension
         {
             if (value >= 0)
             {
+                if (value < 10)
+                {
+                    *chars = (char)(value + '0');
+                    return 1;
+                }
                 if (value >= 100)
                 {
                     value -= 100;
@@ -126,16 +134,19 @@ namespace AutoCSer.Extension
                     *(int*)(chars + 1) = ((value - value10 * 10) << 16) | value10 | 0x300030;
                     return 3;
                 }
-                else if (value >= 10)
+                else
                 {
                     int value10 = (value * (int)Div10_16Mul) >> Div10_16Shift;
                     *(int*)chars = ((value - value10 * 10) << 16) | value10 | 0x300030;
                     return 2;
                 }
-                *chars = (char)(value + '0');
-                return 1;
             }
             int value32 = -value;
+            if (value32 < 10)
+            {
+                *(int*)chars = '-' + ((value32 + '0') << 16);
+                return 2;
+            }
             if (value32 >= 100)
             {
                 value32 -= 100;
@@ -144,15 +155,13 @@ namespace AutoCSer.Extension
                 *(int*)(chars + 2) = ((value32 - value10 * 10) << 16) | value10 | 0x300030;
                 return 4;
             }
-            if (value32 >= 10)
+            else
             {
                 *chars = '-';
                 int value10 = (value32 * (int)Div10_16Mul) >> Div10_16Shift;
                 *(int*)(chars + 1) = ((value32 - value10 * 10) << 16) | value10 | 0x300030;
                 return 3;
             }
-            *(int*)chars = '-' + ((value32 + '0') << 16);
-            return 2;
         }
         /// <summary>
         /// 数值转字符串
@@ -186,6 +195,11 @@ namespace AutoCSer.Extension
         /// <returns>字符串长度</returns>
         internal unsafe static int ToString(ushort value, char* chars)
         {
+            if (value < 10)
+            {
+                *chars = (char)(value + '0');
+                return 1;
+            }
             if (value >= 10000)
             {
                 int value10 = (int)((uint)(value * Div10_16Mul) >> Div10_16Shift);
@@ -216,14 +230,12 @@ namespace AutoCSer.Extension
                     return 3;
                 }
             }
-            if (value >= 10)
+            else
             {
                 int value10 = (value * (int)Div10_16Mul) >> Div10_16Shift;
                 *(int*)chars = ((value - value10 * 10) << 16) | value10 | 0x300030;
                 return 2;
             }
-            *chars = (char)(value + '0');
-            return 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -259,6 +271,11 @@ namespace AutoCSer.Extension
         {
             if (value >= 0) return ToString((ushort)value, chars);
             int value32 = -value;
+            if (value32 < 10)
+            {
+                *(int*)chars = '-' + ((value32 + '0') << 16);
+                return 2;
+            }
             if (value32 >= 10000)
             {
                 int value10 = (int)((uint)(value32 * Div10_16Mul) >> Div10_16Shift);
@@ -291,15 +308,13 @@ namespace AutoCSer.Extension
                     return 4;
                 }
             }
-            if (value32 >= 10)
+            else
             {
                 *chars = '-';
                 int value10 = (value32 * (int)Div10_16Mul) >> Div10_16Shift;
                 *(int*)(chars + 1) = ((value32 - value10 * 10) << 16) | value10 | 0x300030;
                 return 3;
             }
-            *(int*)chars = '-' + ((value32 + '0') << 16);
-            return 2;
         }
         /// <summary>
         /// 数值转字符串
@@ -360,6 +375,11 @@ namespace AutoCSer.Extension
         /// <returns>字符串长度</returns>
         private unsafe static int toString99999999(uint value, char* chars)
         {
+            if (value < 10)
+            {
+                *chars = (char)(value + '0');
+                return 1;
+            }
             if (value >= 10000)
             {
                 uint value10000 = (uint)((value * Div10000Mul) >> Div10000Shift);
@@ -414,14 +434,12 @@ namespace AutoCSer.Extension
                     return 3;
                 }
             }
-            if (value >= 10)
+            else
             {
                 uint value10 = (value * Div10_16Mul) >> Div10_16Shift;
                 *(uint*)chars = ((value - value10 * 10) << 16) | value10 | 0x300030U;
                 return 2;
             }
-            *chars = (char)(value + '0');
-            return 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -472,7 +490,7 @@ namespace AutoCSer.Extension
                 }
                 uIntToString(value10000, chars + 2);
                 uIntToString(value32 - value10000 * 10000, chars + 6);
-                *(uint*)chars= '-' + ((value100000000 + '0') << 16);
+                *(uint*)chars = '-' + ((value100000000 + '0') << 16);
                 return 10;
             }
             return toString_99999999(value32, chars);
@@ -485,6 +503,11 @@ namespace AutoCSer.Extension
         /// <returns>字符串长度</returns>
         private unsafe static int toString_99999999(uint value, char* chars)
         {
+            if (value < 10)
+            {
+                *(uint*)chars = '-' + ((value + '0') << 16);
+                return 2;
+            }
             if (value >= 10000)
             {
                 uint value10000 = (uint)((value * Div10000Mul) >> Div10000Shift);
@@ -543,15 +566,13 @@ namespace AutoCSer.Extension
                     return 4;
                 }
             }
-            if (value >= 10)
+            else
             {
                 *chars = '-';
                 uint value10 = (value * Div10_16Mul) >> Div10_16Shift;
                 *(uint*)(chars + 1) = ((value - value10 * 10) << 16) | value10 | 0x300030U;
                 return 3;
             }
-            *(uint*)chars = '-' + ((value + '0') << 16);
-            return 2;
         }
         /// <summary>
         /// 数值转字符串

@@ -20,6 +20,12 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal readonly SubBuffer.Pool SendBufferPool;
 
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal CommandBuffer() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
@@ -47,6 +53,12 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务调用配置
         /// </summary>
         internal readonly attributeType Attribute;
+#if !NOJIT
+        /// <summary>
+        /// TCP 组件基类
+        /// </summary>
+        internal CommandBuffer() : base() { }
+#endif
         /// <summary>
         /// TCP 组件基类
         /// </summary>

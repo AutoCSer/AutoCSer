@@ -12,7 +12,14 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// <summary>
         /// TCP 服务端元数据
         /// </summary>
-        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenServer.Server), typeof(ServerAttribute), typeof(ServerSocketSender), typeof(ServerCall));
+        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenServer.Server), typeof(ServerAttribute), typeof(ServerSocketSender), typeof(ServerCall)
+            , ParameterGenericType.Get, ReturnParameterGenericType.Get
+            , ((Func<bool>)ParameterGenericType.ServerSocketSender.Push).Method
+            , ((Func<AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
+            , ((Func<uint, AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
+            , ((Func<uint, AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.PushNoThread).Method
+            , ((Func<TcpServer.OutputInfo, Func<TcpServer.ReturnValue, bool>>)ParameterGenericType.ServerSocketSender.GetCallback).Method
+            , ((Action<Exception>)ParameterGenericType.ServerSocketSender.AddLog).Method);
     }
     /// <summary>
     /// TCP 服务

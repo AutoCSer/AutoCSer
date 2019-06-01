@@ -98,6 +98,12 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// 客户端心跳检测定时
         /// </summary>
         internal ClientCheckTimer CheckTimer;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
@@ -198,6 +204,12 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         internal readonly object SocketLock = new object();
 
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
@@ -557,7 +569,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="inputParameter">输入参数</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>返回值类型</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Get<inputParameterType, outputParameterType>(TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter, ref outputParameterType outputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
@@ -600,7 +612,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="commandInfo">命令信息</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>返回值类型</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Get<outputParameterType>(TcpServer.CommandInfoBase commandInfo, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -641,7 +653,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="commandInfo">命令信息</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>返回值类型</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Call<inputParameterType>(TcpServer.CommandInfoBase commandInfo, ref inputParameterType inputParameter)
             where inputParameterType : struct
         {
@@ -683,7 +695,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         /// <param name="commandInfo">命令信息</param>
         /// <returns>返回值类型</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe TcpServer.ReturnType Call(TcpServer.CommandInfoBase commandInfo)
         {
             TcpServer.ReturnType returnType = TcpServer.ReturnType.ClientDisposed;

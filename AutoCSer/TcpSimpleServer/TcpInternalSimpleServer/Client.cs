@@ -20,6 +20,12 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// 服务名称
         /// </summary>
         string TcpRegister.IClient.ServerName { get { return base.ServerName; } }
+#if !NOJIT
+        /// <summary>
+        /// TCP 内部服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 内部服务客户端
         /// </summary>

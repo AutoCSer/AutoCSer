@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.Sql
 {
@@ -47,6 +48,17 @@ namespace AutoCSer.Sql
             return false;
         }
         /// <summary>
+        /// IN 表达式
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="value">数据</param>
+        /// <param name="values">数值集合</param>
+        /// <returns>是否包含数据</returns>
+        public static bool In<valueType>(valueType value, IEnumerable<valueType> values)
+        {
+            return false;
+        }
+        /// <summary>
         /// NOT IN 表达式
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
@@ -54,6 +66,17 @@ namespace AutoCSer.Sql
         /// <param name="values">数值集合</param>
         /// <returns>是否不包含数据</returns>
         public static bool NotIn<valueType>(valueType value, params valueType[] values)
+        {
+            return false;
+        }
+        /// <summary>
+        /// NOT IN 表达式
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="value">数据</param>
+        /// <param name="values">数值集合</param>
+        /// <returns>是否不包含数据</returns>
+        public static bool NotIn<valueType>(valueType value, IEnumerable<valueType> values)
         {
             return false;
         }

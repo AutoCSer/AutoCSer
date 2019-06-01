@@ -44,6 +44,12 @@ namespace AutoCSer.Net.TcpServer
         //        return commandCount - buildCommandCount;
         //    }
         //}
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端套接字数据发送
+        /// </summary>
+        internal ClientSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端套接字数据发送
         /// </summary>
@@ -70,6 +76,12 @@ namespace AutoCSer.Net.TcpServer
         /// 远程表达式客户端检测服务端映射标识
         /// </summary>
         private readonly RemoteExpressionServerNodeIdChecker remoteExpressionServerNodeIdChecker;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端套接字数据发送
+        /// </summary>
+        internal ClientSocketSender() : base() { }
+#endif
         /// <summary>
         /// TCP 服务客户端套接字数据发送
         /// </summary>
@@ -87,7 +99,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="identityCommand">命令信息</param>
         /// <param name="callback">异步回调</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public KeepCallback GetKeep<outputParameterType>(CommandInfo identityCommand, ref Callback<ReturnValue<outputParameterType>> callback)
             where outputParameterType : struct
         {
@@ -110,7 +122,7 @@ namespace AutoCSer.Net.TcpServer
         /// <typeparam name="outputParameterType">输出参数类型</typeparam>
         /// <param name="identityCommand">命令信息</param>
         /// <param name="callback">异步回调</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void Get<outputParameterType>(CommandInfo identityCommand, ref Callback<ReturnValue<outputParameterType>> callback)
             where outputParameterType : struct
         {
@@ -159,7 +171,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="callback">异步回调</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public KeepCallback GetKeep<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref Callback<ReturnValue<outputParameterType>> callback, ref inputParameterType inputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
@@ -185,7 +197,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="identityCommand">命令信息</param>
         /// <param name="callback">异步回调</param>
         /// <param name="inputParameter">输入参数</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void Get<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref Callback<ReturnValue<outputParameterType>> callback, ref inputParameterType inputParameter)
             where inputParameterType : struct
             where outputParameterType : struct
@@ -237,7 +249,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="callback">异步回调</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public ReturnType WaitGet<outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback, ref outputParameterType outputParameter)
             where outputParameterType : struct
         {
@@ -266,7 +278,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="inputParameter">输入参数</param>
         /// <param name="outputParameter">输出参数</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public ReturnType WaitGet<inputParameterType, outputParameterType>(CommandInfo identityCommand, ref AutoCSer.Net.TcpServer.AutoWaitReturnValue<outputParameterType> callback
             , ref inputParameterType inputParameter, ref outputParameterType outputParameter)
             where inputParameterType : struct
@@ -294,7 +306,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="identityCommand">命令信息</param>
         /// <param name="onCall">回调委托</param>
         /// <param name="inputParameter">输入参数</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void Call<inputParameterType>(CommandInfo identityCommand, Action<ReturnValue> onCall, ref inputParameterType inputParameter)
             where inputParameterType : struct
         {
@@ -316,7 +328,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="onCall">回调委托</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public KeepCallback CallKeep<inputParameterType>(CommandInfo identityCommand, Action<ReturnValue> onCall, ref inputParameterType inputParameter)
             where inputParameterType : struct
         {
@@ -340,7 +352,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="identityCommand">命令信息</param>
         /// <param name="onCall">回调委托</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void Call(CommandInfo identityCommand, Action<ReturnValue> onCall)
         {
             if (IsSocket)
@@ -359,7 +371,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="identityCommand">命令信息</param>
         /// <param name="onCall">回调委托</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public KeepCallback CallKeep(CommandInfo identityCommand, Action<ReturnValue> onCall)
         {
             ReturnValue returnValue;
@@ -385,7 +397,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="onCall">回调委托</param>
         /// <param name="inputParameter">输入参数</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public ReturnType WaitCall<inputParameterType>(CommandInfo identityCommand, ref AutoWaitReturnValue onCall, ref inputParameterType inputParameter)
             where inputParameterType : struct
         {
@@ -425,7 +437,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="identityCommand">命令信息</param>
         /// <param name="onCall">回调委托</param>
         /// <returns>保持回调</returns>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public ReturnType WaitCall(CommandInfo identityCommand, ref AutoWaitReturnValue onCall)
         {
             if (IsSocket)
@@ -449,7 +461,7 @@ namespace AutoCSer.Net.TcpServer
         /// <typeparam name="inputParameterType">输入参数类型</typeparam>
         /// <param name="identityCommand">命令信息</param>
         /// <param name="inputParameter">输入参数</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void CallOnly<inputParameterType>(CommandInfo identityCommand, ref inputParameterType inputParameter)
             where inputParameterType : struct
         {
@@ -467,7 +479,7 @@ namespace AutoCSer.Net.TcpServer
         /// TCP调用
         /// </summary>
         /// <param name="identityCommand">命令信息</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void CallOnly(CommandInfo identityCommand)
         {
             if (IsSocket)

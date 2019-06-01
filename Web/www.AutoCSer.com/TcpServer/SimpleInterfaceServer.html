@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=03DC7237"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=03F837B2"></script>
     <title>TCP 接口同步应答服务框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -11,36 +11,36 @@
 </head>
 <body>
     <p>
-        高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html?v=3DC7237">全局默认配置</a>，需要引用 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.TcpSimpleServer.dll。
-        <br />TCP 接口同步应答服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html?v=3DC7237">静态代码生成</a>的 <a href="/TcpServer/SimpleMethodServer.html?v=3DC7237">TCP 函数同步应答服务框架</a>上手简单，但功能支持相对简单，<b>服务端仅支持同步模式</b>。
+        高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html?v=3F837B2">全局默认配置</a>，需要引用 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.TcpSimpleServer.dll。
+        <br />TCP 接口同步应答服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html?v=3F837B2">静态代码生成</a>的 <a href="/TcpServer/SimpleMethodServer.html?v=3F837B2">TCP 函数同步应答服务框架</a>上手简单，但功能支持相对简单，<b>服务端仅支持同步模式</b>。
         <br />框架根据应用场景分为<b>内部服务</b>与<b>开放服务</b>，两种服务的默认配置参数与防御攻击策略不同。
-<br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html?v=3DC7237">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html?v=3DC7237">服务注册</a>。
-<br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出无等待时间，使用 <a href="/Serialize/Json.html?v=3DC7237">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
+<br /><b>内部服务</b>默认配置：数据缓冲区 64KB，最大发送数据缓冲区 1MB，验证超时 4s，客户端失败重连时间 10ms，批量输出休眠等待时间 0ms，使用<a href="/Serialize/Binary.html?v=3F837B2">二进制序列化</a>，服务端开启线程输出，客户端启动时创建连接，支持<a href="/TcpServer/Register.html?v=3F837B2">服务注册</a>。
+<br /><b>开放服务</b>默认配置：数据缓冲区 8KB，服务端最大发送数据缓冲区 8KB，验证超时 9s，客户端失败重连时间 1s，批量输出无等待时间，使用 <a href="/Serialize/Json.html?v=3F837B2">JSON 序列化</a>，服务端同步输出，客户端在第一次访问时创建连接，客户端最大自定义数据包为 16KB
 <br />注意：interface 接口定义必须使用 public 修饰，而且对于其它程序集可见。
     </p>
     <div><h1>内部服务</h1></div>
     <div>
         <p>
             . 同步函数支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpInterfaceSimpleServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">TcpInterfaceSimpleServer\RefOut.cs</a></div>
         </p>
         <p>
             . 支持接口继承与显示接口实现
-            <div> 参考示例 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpInterfaceSimpleServer\Inherit.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">TcpInterfaceSimpleServer\Inherit.cs</a></div>
         </p>
         <p>
-            . 集成支持<a href="/TcpServer/RemoteExpression.html?v=3DC7237">远程表达式链</a>
-            <div> 参考示例 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">TcpInterfaceSimpleServer\Expression.cs</a></div>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html?v=3F837B2">远程表达式链</a>
+            <div> 参考示例 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">TcpInterfaceSimpleServer\Expression.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=3DC7237">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=3DC7237">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=3F837B2">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=3F837B2">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance.Emit
-            <br /><a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleClientPerformance.Emit
+            <br /><a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleServerPerformance.Emit
+            <br /><a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpInternalSimpleClientPerformance.Emit
             <br /><img @src="//f.autocser.com/TcpServer/SimpleInterfaceServer.png" alt="TCP 接口同步应答服务框架 内部服务 吞吐性能测试" />
         </p>
     </div>
@@ -48,25 +48,25 @@
     <div>
         <p>
             . 同步函数支持 ref / out 参数。
-            <div> 参考示例 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpInterfaceOpenSimpleServer\RefOut.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">TcpInterfaceOpenSimpleServer\RefOut.cs</a></div>
         </p>
         <p>
             . 支持接口继承与显示接口实现
-            <div> 参考示例 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">TcpInterfaceOpenSimpleServer\Inherit.cs</a></div>
+            <div> 参考示例 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">TcpInterfaceOpenSimpleServer\Inherit.cs</a></div>
         </p>
         <p>
-            . 集成支持<a href="/TcpServer/RemoteExpression.html?v=3DC7237">远程表达式链</a>
-            <div> 参考示例 <a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">TcpInterfaceOpenSimpleServer\Expression.cs</a></div>
+            . 集成支持<a href="/TcpServer/RemoteExpression.html?v=3F837B2">远程表达式链</a>
+            <div> 参考示例 <a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">TcpInterfaceOpenSimpleServer\Expression.cs</a></div>
         </p>
         <p>
-    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=3DC7237">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=3DC7237">二进制序列化</a>。
+    . 简单序列化模式，采用<a href="/Serialize/Binary.html?v=3F837B2">二进制序列化</a>模式时，输入输出参数类型如果全部属于以下类型，将默认开启简单序列化模式以提升序列化性能，否则将使用支持循环引用与成员选择的通用<a href="/Serialize/Binary.html?v=3F837B2">二进制序列化</a>。
     <br /><b>bool</b>, <b>byte</b>, <b>sbyte</b>, <b>short</b>, <b>ushort</b>, <b>int</b>, <b>uint</b>, <b>long</b>, <b>ulong</b>, <b>float</b>, <b>double</b>, <b>decimal</b>, <b>char</b>, <b>DateTime</b>, <b>Guid</b>, <b>string</b>
     <br /><b>bool?</b>, <b>byte?</b>, <b>sbyte?</b>, <b>short?</b>, <b>ushort?</b>, <b>int?</b>, <b>uint?</b>, <b>long?</b>, <b>ulong?</b>, <b>float?</b>, <b>double?</b>, <b>decimal?</b>, <b>char?</b>, <b>DateTime?</b>, <b>Guid?</b>, <b>enum</b>
 </p>
         <p>
             性能测试项目
-            <br /><a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance.Emit
-            <br /><a href="/Index.html?v=3DC7237" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleClientPerformance.Emit
+            <br /><a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleServerPerformance.Emit
+            <br /><a href="/Index.html?v=3F837B2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientSimplePerformance\AutoCSer.TestCase.TcpOpenSimpleClientPerformance.Emit
             <br /><img @src="//f.autocser.com/TcpServer/SimpleInterfaceOpenServer.png" alt="TCP 接口同步应答服务框架 开放服务 吞吐性能测试" />
         </p>
     </div>

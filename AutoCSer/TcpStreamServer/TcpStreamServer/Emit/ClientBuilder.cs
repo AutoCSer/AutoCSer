@@ -144,7 +144,8 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                 else
                                 {
                                     methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
-                                    methodGenerator.call(Metadata.ClientSocketSenderCallOnlyInputMethod.MakeGenericMethod(method.ParameterType.Type));
+                                    //methodGenerator.call(Metadata.ClientSocketSenderCallOnlyInputMethod.MakeGenericMethod(method.ParameterType.Type));
+                                    methodGenerator.call(Metadata.GetParameterGenericType(method.ParameterType.Type).ClientSocketSenderCallOnlyMethod);
                                 }
                                 #endregion
                                 methodGenerator.Emit(OpCodes.Ret);
@@ -250,7 +251,8 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.ClientSocketSenderWaitCallInputMethod.MakeGenericMethod(method.ParameterType.Type));
+                                        //methodGenerator.call(Metadata.ClientSocketSenderWaitCallInputMethod.MakeGenericMethod(method.ParameterType.Type));
+                                        methodGenerator.call(Metadata.GetParameterGenericType(method.ParameterType.Type).ClientSocketSenderWaitCallMethod);
                                     }
                                     methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                     #endregion
@@ -311,13 +313,15 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                     if (method.ParameterType == null)
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.ClientSocketSenderWaitGetMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                        //methodGenerator.call(Metadata.ClientSocketSenderWaitGetMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                        methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ClientSocketSenderWaitGetMethod);
                                     }
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.ClientSocketSenderWaitGetInputMethod.MakeGenericMethod(method.ParameterType.Type, method.OutputParameterType.Type));
+                                        //methodGenerator.call(Metadata.ClientSocketSenderWaitGetInputMethod.MakeGenericMethod(method.ParameterType.Type, method.OutputParameterType.Type));
+                                        methodGenerator.call(Metadata.GetParameterGenericType2(method.ParameterType.Type, method.OutputParameterType.Type).ClientSocketSenderWaitGetMethod);
                                     }
                                     methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
                                     #endregion

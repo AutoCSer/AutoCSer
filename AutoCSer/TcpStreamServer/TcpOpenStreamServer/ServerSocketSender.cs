@@ -32,8 +32,14 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// 发送数据量过低次数
         /// </summary>
         private int sendSizeLessCount;
+#if !NOJIT
         /// <summary>
-        /// TCP 内部服务套接字数据发送
+        /// TCP 开放服务套接字数据发送
+        /// </summary>
+        internal ServerSocketSender() : base() { }
+#endif
+        /// <summary>
+        /// TCP 开放服务套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 内部服务套接字</param>
         internal ServerSocketSender(ServerSocket socket)

@@ -80,6 +80,12 @@ namespace AutoCSer.Net.TcpServer
                 return ServerSocket.Socket == Socket;
             }
         }
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务套接字数据发送
+        /// </summary>
+        internal ServerSocketSenderBase() : base(null) { }
+#endif
         /// <summary>
         /// TCP 服务套接字数据发送
         /// </summary>

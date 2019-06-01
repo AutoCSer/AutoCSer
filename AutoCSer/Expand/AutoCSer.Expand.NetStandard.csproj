@@ -60,6 +60,7 @@
     <Compile Include="HostsFile.cs" />
     <Compile Include="StateSearcher\ByteSearcher.cs" />
     <Compile Include="StatusChanged.cs" />
+    <Compile Include="Threading\LockManager.cs" />
   </ItemGroup>
 
   <ItemGroup>

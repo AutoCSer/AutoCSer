@@ -20,6 +20,12 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 注册当前服务的 TCP 注册服务名称
         /// </summary>
         internal override string TcpRegisterName { get { return null; } }
+#if !NOJIT
+        /// <summary>
+        /// TCP 开放服务客户端
+        /// </summary>
+        internal Client() : base() { }
+#endif
         /// <summary>
         /// TCP 开放服务客户端
         /// </summary>
@@ -35,7 +41,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// TCP 服务客户端套接字数据发送
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public ClientSocketSender Sender
         {
             get
@@ -48,6 +54,17 @@ namespace AutoCSer.Net.TcpOpenServer
                 return clientRoute.Sender;
             }
         }
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端套接字数据发送
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal ClientSocketSender GetSender()
+        {
+            return Sender;
+        }
+#endif
         /// <summary>
         /// 套接字发送数据次数
         /// </summary>

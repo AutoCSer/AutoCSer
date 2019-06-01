@@ -3,9 +3,15 @@
 <!--Include:Include\Header[AutoCSer 更新记录]-->
 <body>
     <div>
+        <b>1.1.38</b>
+        <br />. <a href="/Serialize/Json.html">JSON 序列化</a> 整数值默认由十六进制修改为十进制字符串，时间值默认由 new Date(x) 修改为字符串，用于默认兼容其他 JSON 反序列化组件。
+        <br />. Emit 模式的 TCP 服务生成获取泛型函数元数据，由反射模式修改为通过委托获取。
+        <br />. 发布工具 AutoCSer.Deploy 增加独立的程序集环境检测服务，采用一次性检测模式防止程序集不加载造成二次检测结果错误的问题。
+    </div>
+    <div>
         <b>1.1.37</b>
         <br />. 使用接口通过委托获取函数元数据减少泛型函数反射构造操作。
-        <br />. 发布工具增加通过 Windows 服务启动的兼容支持。
+        <br />. 发布工具 AutoCSer.Deploy 增加通过 Windows 服务启动的兼容支持。
     </div>
     <div>
         <b>1.1.36</b>

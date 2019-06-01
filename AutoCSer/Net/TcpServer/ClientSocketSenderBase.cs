@@ -24,6 +24,12 @@ namespace AutoCSer.Net.TcpServer
         /// 套接字发送数据次数
         /// </summary>
         internal int SendCount;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务客户端套接字数据发送
+        /// </summary>
+        internal ClientSocketSenderBase() : base(null) { }
+#endif
         /// <summary>
         /// TCP 服务客户端套接字数据发送
         /// </summary>

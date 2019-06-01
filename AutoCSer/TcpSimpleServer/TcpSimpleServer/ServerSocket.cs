@@ -255,7 +255,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         /// <param name="error"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public void Log(Exception error)
         {
             Server.Log.Add(AutoCSer.Log.LogType.Error, error);

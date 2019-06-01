@@ -48,6 +48,10 @@
     <Compile Include="TcpInternalStreamServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\Server.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\ClientMetadata.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="TcpInternalStreamServer\Emit\UnionType.cs" />
     <Compile Include="TcpInternalStreamServer\MethodClient.cs" />
     <Compile Include="TcpInternalStreamServer\Server.cs" />
     <Compile Include="TcpInternalStreamServer\ServerAttribute.cs" />
@@ -67,6 +71,10 @@
     <Compile Include="TcpOpenStreamServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\Server.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\ServerCall.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\ClientMetadata.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\ParameterGenericType2.cs" />
+    <Compile Include="TcpOpenStreamServer\Emit\UnionType.cs" />
     <Compile Include="TcpOpenStreamServer\MethodAttribute.cs" />
     <Compile Include="TcpOpenStreamServer\MethodClient.cs" />
     <Compile Include="TcpOpenStreamServer\Server.cs" />

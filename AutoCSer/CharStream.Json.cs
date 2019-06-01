@@ -71,10 +71,10 @@ namespace AutoCSer
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
-        public void WriteJson(byte value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(byte value, bool isNumberToHex = true)
         {
-            if (value == 0) Write('0');
-            else
+            if (isNumberToHex)
             {
                 byte* chars = (byte*)GetPrepSizeCurrent(4);
                 *(int*)chars = '0' + ('x' << 16);
@@ -82,15 +82,16 @@ namespace AutoCSer
                 *(char*)(chars + sizeof(char) * 3) = (char)AutoCSer.Extension.Number.ToHex((uint)value & 15);
                 ByteSize += 4 * sizeof(char);
             }
+            else AutoCSer.Extension.Number.ToString(value, this);
         }
         /// <summary>
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
-        public void WriteJson(sbyte value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(sbyte value, bool isNumberToHex = true)
         {
-            if (value == 0) Write('0');
-            else
+            if (isNumberToHex)
             {
                 if (value < 0)
                 {
@@ -112,86 +113,95 @@ namespace AutoCSer
                     ByteSize += 4 * sizeof(char);
                 }
             }
+            else AutoCSer.Extension.Number.ToString(value, this);
         }
         /// <summary>
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
-        public void WriteJson(short value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(short value, bool isNumberToHex = true)
         {
-            if (value >= 0) WriteJson((ushort)value);
+            if (value >= 0) WriteJson((ushort)value, isNumberToHex);
             else
             {
                 PrepLength(7);
                 UnsafeWrite('-');
-                WriteJson((ushort)-value);
+                WriteJson((ushort)-value, isNumberToHex);
             }
         }
         /// <summary>
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
-        public void WriteJson(ushort value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(ushort value, bool isNumberToHex = true)
         {
-            char* chars;
-            if (value < 10000)
+            if (isNumberToHex && value >= 10000)
             {
-                if (value < 10)
-                {
-                    Write((char)(value + '0'));
-                    return;
-                }
-                int div10 = (value * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
-                if (div10 < 10)
-                {
-                    *(chars = GetPrepSizeCurrent(2)) = (char)(div10 + '0');
-                    *(chars + 1) = (char)((value - div10 * 10) + '0');
-                    ByteSize += 2 * sizeof(char);
-                    return;
-                }
-                int div100 = (div10 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
-                if (div100 < 10)
-                {
-                    *(chars = GetPrepSizeCurrent(3)) = (char)(div100 + '0');
-                    *(chars + 1) = (char)((div10 - div100 * 10) + '0');
-                    *(chars + 2) = (char)((value - div10 * 10) + '0');
-                    ByteSize += 3 * sizeof(char);
-                    return;
-                }
-                int div1000 = (div100 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
-                *(chars = GetPrepSizeCurrent(4)) = (char)(div1000 + '0');
-                *(chars + 1) = (char)((div100 - div1000 * 10) + '0');
-                *(chars + 2) = (char)((div10 - div100 * 10) + '0');
-                *(chars + 3) = (char)((value - div10 * 10) + '0');
-                ByteSize += 4 * sizeof(char);
-                return;
+                char* chars;
+                //if (value < 10000)
+                //{
+                //    if (value < 10)
+                //    {
+                //        Write((char)(value + '0'));
+                //        return;
+                //    }
+                //    int div10 = (value * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                //    if (div10 < 10)
+                //    {
+                //        *(chars = GetPrepSizeCurrent(2)) = (char)(div10 + '0');
+                //        *(chars + 1) = (char)((value - div10 * 10) + '0');
+                //        ByteSize += 2 * sizeof(char);
+                //        return;
+                //    }
+                //    int div100 = (div10 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                //    if (div100 < 10)
+                //    {
+                //        *(chars = GetPrepSizeCurrent(3)) = (char)(div100 + '0');
+                //        *(chars + 1) = (char)((div10 - div100 * 10) + '0');
+                //        *(chars + 2) = (char)((value - div10 * 10) + '0');
+                //        ByteSize += 3 * sizeof(char);
+                //        return;
+                //    }
+                //    int div1000 = (div100 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+                //    *(chars = GetPrepSizeCurrent(4)) = (char)(div1000 + '0');
+                //    *(chars + 1) = (char)((div100 - div1000 * 10) + '0');
+                //    *(chars + 2) = (char)((div10 - div100 * 10) + '0');
+                //    *(chars + 3) = (char)((value - div10 * 10) + '0');
+                //    ByteSize += 4 * sizeof(char);
+                //    return;
+                //}
+                *(int*)(chars = GetPrepSizeCurrent(6)) = '0' + ('x' << 16);
+                AutoCSer.Extension.Number.ToHex16(value, chars + 2);
+                ByteSize += 6 * sizeof(char);
             }
-            *(int*)(chars = GetPrepSizeCurrent(6)) = '0' + ('x' << 16);
-            AutoCSer.Extension.Number.ToHex16(value, chars + 2);
-            ByteSize += 6 * sizeof(char);
+            else AutoCSer.Extension.Number.ToString(value, this);
         }
         /// <summary>
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
-        public void WriteJson(int value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(int value, bool isNumberToHex = true)
         {
-            if (value >= 0) WriteJson((uint)value);
+            if (value >= 0) WriteJson((uint)value, isNumberToHex);
             else
             {
                 PrepLength(11);
                 UnsafeWrite('-');
-                WriteJson((uint)-value);
+                WriteJson((uint)-value, isNumberToHex);
             }
         }
         /// <summary>
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
-        public void WriteJson(uint value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(uint value, bool isNumberToHex = true)
         {
-            if (value <= ushort.MaxValue) WriteJson((ushort)value);
-            else
+            if (value <= ushort.MaxValue) WriteJson((ushort)value, isNumberToHex);
+            else if (isNumberToHex)
             {
                 char* chars = GetPrepSizeCurrent(10);
                 *(int*)chars = '0' + ('x' << 16);
@@ -199,15 +209,17 @@ namespace AutoCSer
                 AutoCSer.Extension.Number.ToHex16(value & 0xffff, next);
                 ByteSize += ((int)(next - chars) + 4) * sizeof(char);
             }
+            else AutoCSer.Extension.Number.ToString(value, this);
         }
         /// <summary>
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value">数字值</param>
         /// <param name="isMaxToString">超出最大有效精度是否转换成字符串</param>
-        public void WriteJson(long value, bool isMaxToString = true)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(long value, bool isNumberToHex = true, bool isMaxToString = true)
         {
-            if ((ulong)(value + AutoCSer.Json.Serializer.MaxInt) <= (ulong)(AutoCSer.Json.Serializer.MaxInt << 1) || !isMaxToString) writeJson(value);
+            if ((ulong)(value + AutoCSer.Json.Serializer.MaxInt) <= (ulong)(AutoCSer.Json.Serializer.MaxInt << 1) || !isMaxToString) writeJson(value, isNumberToHex);
             else
             {
                 PrepLength(24 + 2);
@@ -220,14 +232,15 @@ namespace AutoCSer
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value"></param>
-        private void writeJson(long value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        private void writeJson(long value, bool isNumberToHex)
         {
-            if (value >= 0) writeJson((ulong)value);
+            if (value >= 0) writeJson((ulong)value, isNumberToHex);
             else
             {
                 PrepLength(19);
                 UnsafeWrite('-');
-                writeJson((ulong)-value);
+                writeJson((ulong)-value, isNumberToHex);
             }
         }
         /// <summary>
@@ -235,9 +248,10 @@ namespace AutoCSer
         /// </summary>
         /// <param name="value">数字值</param>
         /// <param name="isMaxToString">超出最大有效精度是否转换成字符串</param>
-        public void WriteJson(ulong value, bool isMaxToString = true)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(ulong value, bool isNumberToHex = true, bool isMaxToString = true)
         {
-            if (value <= AutoCSer.Json.Serializer.MaxInt || !isMaxToString) writeJson(value);
+            if (value <= AutoCSer.Json.Serializer.MaxInt || !isMaxToString) writeJson(value, isNumberToHex);
             else
             {
                 PrepLength(22 + 2);
@@ -250,10 +264,11 @@ namespace AutoCSer
         /// 数字转换成字符串
         /// </summary>
         /// <param name="value"></param>
-        private void writeJson(ulong value)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        private void writeJson(ulong value, bool isNumberToHex)
         {
-            if (value <= uint.MaxValue) WriteJson((uint)value);
-            else
+            if (value <= uint.MaxValue) WriteJson((uint)value, isNumberToHex);
+            else if (isNumberToHex)
             {
                 char* chars = GetPrepSizeCurrent(18), next;
                 uint value32 = (uint)(value >> 32);
@@ -269,6 +284,7 @@ namespace AutoCSer
                 AutoCSer.Extension.Number.ToHex16(value32 & 0xffff, next + 4);
                 ByteSize += ((int)(next - chars) + 8) * sizeof(char);
             }
+            else AutoCSer.Extension.Number.ToString(value, this);
         }
         /// <summary>
         /// 输出 double 值
@@ -469,7 +485,7 @@ namespace AutoCSer
             PrepLength(AutoCSer.Json.Serializer.OtherDateStart.Length + (19 + 1 + 4));
             UnsafeWrite('"');
             UnsafeSimpleWrite(AutoCSer.Json.Serializer.OtherDateStart);
-            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond));
+            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond), false);
             *(long*)CurrentChar = AutoCSer.Json.Serializer.DateEnd + ('/' << 16) + ((long)'"' << 32);
             ByteSize += 3 * sizeof(char);
         }
@@ -488,11 +504,12 @@ namespace AutoCSer
         /// 时间转字符串
         /// </summary>
         /// <param name="time">时间</param>
-        public void WriteJson(DateTime time)
+        /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
+        public void WriteJson(DateTime time, bool isNumberToHex = true)
         {
             PrepLength(AutoCSer.Json.Serializer.DateStart.Length + (19 + 1));
             UnsafeSimpleWrite(AutoCSer.Json.Serializer.DateStart);
-            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond));
+            writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond), isNumberToHex);
             UnsafeWrite(AutoCSer.Json.Serializer.DateEnd);
         }
         /// <summary>

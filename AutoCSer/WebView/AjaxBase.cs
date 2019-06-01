@@ -24,7 +24,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// AJAX响应输出参数
         /// </summary>
-        internal static readonly AutoCSer.Json.SerializeConfig JsonSerializeConfig = new AutoCSer.Json.SerializeConfig { IsViewClientType = true, GetLoopObject = "AutoCSer.Pub.GetJsonLoop", SetLoopObject = "AutoCSer.Pub.SetJsonLoop", NullChar = ' ', IsMaxNumberToString = true, CheckLoopDepth = AutoCSer.Json.SerializeConfig.DefaultCheckLoopDepth };
+        internal static readonly AutoCSer.Json.SerializeConfig JsonSerializeConfig = new AutoCSer.Json.SerializeConfig { IsViewClientType = true, GetLoopObject = "AutoCSer.Pub.GetJsonLoop", SetLoopObject = "AutoCSer.Pub.SetJsonLoop", NullChar = ' ', IsMaxNumberToString = true, CheckLoopDepth = AutoCSer.Json.SerializeConfig.DefaultCheckLoopDepth, IsDateTimeToString = false, IsNumberToHex = true };
         /// <summary>
         /// 公用错误处理函数名称
         /// </summary>
