@@ -28,7 +28,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        protected volatile int queueLock;
+        protected int queueLock;
         /// <summary>
         /// 队列任务线程
         /// </summary>

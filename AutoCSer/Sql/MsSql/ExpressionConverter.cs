@@ -357,6 +357,13 @@ namespace AutoCSer.Sql.MsSql
                 {
                     case "In": convertCall(expression, true); break;
                     case "NotIn": convertCall(expression, false); break;
+                    case "Like":
+                        System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
+                        convertIsSimple(arguments[0]);
+                        SqlStream.SimpleWriteNotNull(" like ");
+                        convertIsSimple(expression.Object);
+                        ConstantConverter.ConvertLike(SqlStream, arguments[1].GetConstant(), true, true);
+                        break;
                     default:
                         SqlStream.SimpleWriteNotNull(method.Name);
                         SqlStream.Write('(');
@@ -374,7 +381,31 @@ namespace AutoCSer.Sql.MsSql
                         break;
                 }
             }
+            else if (IsStringContains(method))
+            {
+                convertIsSimple(expression.Object);
+                SqlStream.SimpleWriteNotNull(" like ");
+                ConstantConverter.ConvertLike(SqlStream, expression.Arguments[0].GetConstant(), true, true);
+            }
             else convertConstant(expression.GetConstant());
+        }
+        /// <summary>
+        /// 判断是否 string.Contains
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        internal static bool IsStringContains(System.Reflection.MethodInfo method)
+        {
+            if (method.ReflectedType == typeof(string) && method.Name == "Contains" && method.ReturnType == typeof(bool)
+                && !method.IsGenericMethod)
+            {
+                ParameterInfo[] Parameters = method.GetParameters();
+                if (Parameters.Length == 1 && Parameters[0].ParameterType == typeof(string))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         /// <summary>
         /// 转换表达式

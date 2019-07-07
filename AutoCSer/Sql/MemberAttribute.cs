@@ -59,6 +59,14 @@ namespace AutoCSer.Sql
         /// 是否生成当前时间
         /// </summary>
         public bool IsNowTime;
+        /// <summary>
+        /// decimal 整数位数
+        /// </summary>
+        public byte DecimalIntegerSize;
+        /// <summary>
+        /// decimal 小数位数
+        /// </summary>
+        public byte DecimalSize;
 
         /// <summary>
         /// 获取数据库成员信息

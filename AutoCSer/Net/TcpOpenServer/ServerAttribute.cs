@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoCSer.Metadata;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpOpenServer
 {
@@ -8,6 +9,27 @@ namespace AutoCSer.Net.TcpOpenServer
     /// </summary>
     public unsafe class ServerAttribute : TcpServer.ServerAttribute
     {
+        /// <summary>
+        /// 默认二进制反序列化配置参数名称
+        /// </summary>
+        public const string BinaryDeSerializeConfigName = "TcpOpenServer";
+        /// <summary>
+        /// 默认二进制反序列化配置参数
+        /// </summary>
+        internal static readonly AutoCSer.BinarySerialize.DeSerializeConfig DefaultBinaryDeSerializeConfig = AutoCSer.BinarySerialize.ConfigLoader.GetUnion(typeof(AutoCSer.BinarySerialize.DeSerializeConfig), BinaryDeSerializeConfigName).DeSerializeConfig ?? new AutoCSer.BinarySerialize.DeSerializeConfig { IsDisposeMemberMap = true, MaxArraySize = 1024 };
+        /// <summary>
+        /// 获取二进制反序列化配置参数
+        /// </summary>
+        /// <param name="maxArraySize"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static AutoCSer.BinarySerialize.DeSerializeConfig GetBinaryDeSerializeConfig(int maxArraySize)
+        {
+            if (maxArraySize == AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize) return AutoCSer.BinarySerialize.DeSerializer.DefaultConfig;
+            if (maxArraySize == DefaultBinaryDeSerializeConfig.MaxArraySize) return DefaultBinaryDeSerializeConfig;
+            return new AutoCSer.BinarySerialize.DeSerializeConfig { IsDisposeMemberMap = true, MaxArraySize = maxArraySize };
+        }
+
         /// <summary>
         /// 成员选择类型
         /// </summary>
@@ -144,6 +166,14 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal override bool GetIsServerBuildOutputThread { get { return IsServerBuildOutputThread; } }
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        public int BinaryDeSerializeMaxArraySize = DefaultBinaryDeSerializeConfig.MaxArraySize;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
         /// <summary>
         /// 默认为 false 需要第一次调用触发，否则在创建客户端对象的时候自动启动连接
         /// </summary>

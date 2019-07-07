@@ -41,32 +41,59 @@ namespace AutoCSer.Sql
             return formCSharpTypes.TryGetValue(type.nullableType() ?? type, out value) ? value : SqlDbType.NVarChar;
         }
         /// <summary>
-        /// 字符串类型占位集合
-        /// </summary>
-        private static MemoryMap stringTypeMap;
-        /// <summary>
         /// 判断是否字符串类型
         /// </summary>
         /// <param name="type">数据类型</param>
         /// <returns>是否字符串类型</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static int isStringType(this SqlDbType type)
+        public static bool isStringType(this SqlDbType type)
         {
-            return stringTypeMap.Get((int)type);
+            switch (type)
+            {
+                case SqlDbType.Char:
+                case SqlDbType.NChar:
+                case SqlDbType.VarChar:
+                case SqlDbType.NVarChar:
+                case SqlDbType.Text:
+                case SqlDbType.NText:
+                    return true;
+                default:
+                    return false;
+            }
         }
         /// <summary>
-        /// 文本类型占位集合
+        /// 是否数字类型
         /// </summary>
-        private static MemoryMap textImageTypeMap;
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static bool isDecimalType(this SqlDbType type)
+        {
+            switch (type)
+            {
+                case SqlDbType.Decimal:
+                case SqlDbType.Money:
+                case SqlDbType.SmallMoney: return true;
+                default:
+                    return false;
+            }
+        }
         /// <summary>
         /// 判断是否文本类型
         /// </summary>
         /// <param name="type">数据类型</param>
         /// <returns>是否文本类型</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static int isTextImageType(this SqlDbType type)
+        public static bool isTextImageType(this SqlDbType type)
         {
-            return textImageTypeMap.Get((int)type);
+            switch (type)
+            {
+                case SqlDbType.Text:
+                case SqlDbType.NText:
+                case SqlDbType.Image: return true;
+                default:
+                    return false;
+            }
         }
         /// <summary>
         /// 未知数据长度
@@ -79,11 +106,24 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 获取数据长度
         /// </summary>
-        /// <returns>数据长度</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static int getSize(this SqlDbType type)
+        /// <param name="type"></param>
+        /// <param name="memberAttribute"></param>
+        /// <returns></returns>
+        internal static int getSize(this SqlDbType type, MemberAttribute memberAttribute)
         {
-            return sizes.Int[(int)type];
+            switch (type)
+            {
+                case SqlDbType.Decimal:
+                    return ((memberAttribute.DecimalIntegerSize <= 0 ? 18 : (int)memberAttribute.DecimalIntegerSize) << 8)
+                        + (memberAttribute.DecimalSize <= 0 ? 2 : memberAttribute.DecimalSize);
+                case SqlDbType.Money:
+                    return ((memberAttribute.DecimalIntegerSize <= 0 ? 15 : (int)memberAttribute.DecimalIntegerSize) << 8)
+                        + (memberAttribute.DecimalSize <= 0 ? 2 : memberAttribute.DecimalSize);
+                case SqlDbType.SmallMoney:
+                    return ((memberAttribute.DecimalIntegerSize <= 0 ? 6 : (int)memberAttribute.DecimalIntegerSize) << 8)
+                        + (memberAttribute.DecimalSize <= 0 ? 2 : memberAttribute.DecimalSize);
+                default: return sizes.Int[(int)type];
+            }
         }
         /// <summary>
         /// SQL数据类型最大枚举值
@@ -147,29 +187,9 @@ namespace AutoCSer.Sql
             formCSharpTypes.Add(typeof(byte[]), SqlDbType.VarBinary);
             #endregion
 
-            MaxEnumValue = EnumAttribute<SqlDbType>.GetMaxValue(-1) + 1;
-            int mapSize = ((MaxEnumValue + 31) >> 5) << 2;
-            stringTypeMap = new MemoryMap(Unmanaged.GetStatic64(mapSize * 2 + ((MaxEnumValue + 1) & (int.MaxValue - 1)) * sizeof(int), false));
-            Memory.ClearUnsafe((ulong*)stringTypeMap.Map, mapSize >> 2);
-            textImageTypeMap = new MemoryMap(stringTypeMap.Map + mapSize);
-
-            #region 字符串类型占位集合
-            stringTypeMap.Set((int)SqlDbType.Char);
-            stringTypeMap.Set((int)SqlDbType.NChar);
-            stringTypeMap.Set((int)SqlDbType.VarChar);
-            stringTypeMap.Set((int)SqlDbType.NVarChar);
-            stringTypeMap.Set((int)SqlDbType.Text);
-            stringTypeMap.Set((int)SqlDbType.NText);
-            #endregion
-
-            #region 文本类型占位集合
-            textImageTypeMap.Set((int)SqlDbType.Text);
-            textImageTypeMap.Set((int)SqlDbType.NText);
-            textImageTypeMap.Set((int)SqlDbType.Image);
-            #endregion
-
             #region 类型默认长度
-            sizes = new Pointer { Data = textImageTypeMap.Map + mapSize };
+            MaxEnumValue = EnumAttribute<SqlDbType>.GetMaxValue(-1) + 1;
+            sizes = new Pointer { Data = Unmanaged.GetStatic64(((MaxEnumValue + 1) & (int.MaxValue - 1)) * sizeof(int), false) };
             int* sizeData = sizes.Int;
             for (int i = 0; i != MaxEnumValue; i++) sizeData[i] = UnknownSize;
             sizeData[(int)SqlDbType.BigInt] = sizeof(long);
@@ -180,11 +200,11 @@ namespace AutoCSer.Sql
             sizeData[(int)SqlDbType.DateTime] = sizeof(long);
             //TypeSize[(int)SqlDbType.DateTime2] = sizeof(long);
             //TypeSize[(int)SqlDbType.DateTimeOffset] = sizeof(long);
-            sizeData[(int)SqlDbType.Decimal] = sizeof(decimal);
+            //sizeData[(int)SqlDbType.Decimal] = sizeof(decimal);
             sizeData[(int)SqlDbType.Float] = sizeof(double);
             sizeData[(int)SqlDbType.Image] = int.MaxValue;
             sizeData[(int)SqlDbType.Int] = sizeof(int);
-            sizeData[(int)SqlDbType.Money] = sizeof(decimal);
+            //sizeData[(int)SqlDbType.Money] = sizeof(decimal);
             //TypeSize[(int)SqlDbType.NChar] = MaxStringSize;
             sizeData[(int)SqlDbType.NText] = int.MaxValue;
             //TypeSize[(int)SqlDbType.NVarChar] = MaxStringSize;
@@ -192,7 +212,7 @@ namespace AutoCSer.Sql
             sizeData[(int)SqlDbType.UniqueIdentifier] = 8;
             sizeData[(int)SqlDbType.SmallDateTime] = sizeof(long);
             sizeData[(int)SqlDbType.SmallInt] = sizeof(short);
-            sizeData[(int)SqlDbType.SmallMoney] = sizeof(decimal);
+            //sizeData[(int)SqlDbType.SmallMoney] = sizeof(decimal);
             sizeData[(int)SqlDbType.Text] = int.MaxValue;
             //TypeSize[(int)SqlDbType.Time] = 8;
             sizeData[(int)SqlDbType.Timestamp] = 8;

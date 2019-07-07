@@ -67,7 +67,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 物理文件刷新秒数
         /// </summary>
-        private volatile int fileFlushSeconds;
+        private int fileFlushSeconds;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
@@ -536,7 +536,7 @@ namespace AutoCSer.CacheServer
                 buffer.Free();
                 if (IsDisposed == 0)
                 {
-                    fileFlushSeconds = Config.FileFlushSeconds;
+                    Interlocked.Exchange(ref fileFlushSeconds, Config.FileFlushSeconds);
                     AutoCSer.Threading.ThreadPool.TinyBackground.Start(writeCache);
                 }
                 else

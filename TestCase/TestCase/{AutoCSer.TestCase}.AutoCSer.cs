@@ -655,7 +655,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1614,7 +1614,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2076,7 +2076,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2609,7 +2609,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            public partial class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -3122,7 +3122,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            public partial class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -3476,7 +3476,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            public partial class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -4216,7 +4216,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -5188,7 +5188,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -5649,7 +5649,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -6452,7 +6452,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
+            public partial class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -7372,7 +7372,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
+            public partial class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -7828,7 +7828,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
+            public partial class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -8373,7 +8373,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            public partial class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -8872,7 +8872,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            public partial class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -9221,7 +9221,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            public partial class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -9975,7 +9975,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -10909,7 +10909,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -11365,7 +11365,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端

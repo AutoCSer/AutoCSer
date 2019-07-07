@@ -21,7 +21,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 保持回调访问锁
         /// </summary>
-        protected volatile int keepLock;
+        protected int keepLock;
         /// <summary>
         /// 尝试启动创建输出线程
         /// </summary>
@@ -93,7 +93,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 保持回调访问锁
         /// </summary>
-        protected volatile int keepLock;
+        protected int keepLock;
         /// <summary>
         /// 输出参数
         /// </summary>

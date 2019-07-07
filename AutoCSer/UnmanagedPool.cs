@@ -26,7 +26,7 @@ namespace AutoCSer
         /// <summary>
         /// 空闲内存地址访问锁
         /// </summary>
-        private volatile int freeLock;
+        private int freeLock;
         /// <summary>
         /// 缓冲区尺寸
         /// </summary>

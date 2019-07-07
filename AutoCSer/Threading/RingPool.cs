@@ -68,7 +68,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 可写结束位置访问锁
         /// </summary>
-        private volatile int writeEndLock = 1;
+        private int writeEndLock = 1;
         /// <summary>
         /// 已写入位置
         /// </summary>
@@ -85,7 +85,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 可读结束位置访问锁
         /// </summary>
-        private volatile int readEndLock;
+        private int readEndLock;
         /// <summary>
         /// 已读取位置
         /// </summary>

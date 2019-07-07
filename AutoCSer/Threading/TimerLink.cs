@@ -22,7 +22,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 是否已经触发定时任务
         /// </summary>
-        protected volatile int isTimer;
+        protected int isTimer;
         /// <summary>
         /// 当前秒计数
         /// </summary>

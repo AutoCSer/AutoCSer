@@ -44,7 +44,7 @@ namespace AutoCSer.Net.RawSocketListener
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private volatile int receiveAsyncLock;
+        private int receiveAsyncLock;
 #endif
 #endif
         /// <summary>
@@ -241,7 +241,7 @@ namespace AutoCSer.Net.RawSocketListener
                 }
             }
 #if !DotNetStandard
-            receiveAsyncLock = 0;
+            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
             if (async.SocketError == SocketError.Success)
             {

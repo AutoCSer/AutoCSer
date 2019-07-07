@@ -252,11 +252,14 @@ namespace AutoCSer.DomainUnload
             unloadEvent(null, null);
         }
 
+        /// <summary>
+        /// 公共默认应用程序默认卸载配置
+        /// </summary>
+        internal static readonly UnloadEventConfig DefaultConfig = ConfigLoader.GetUnion(typeof(UnloadEventConfig)).UnloadEventConfig ?? new UnloadEventConfig();
+
         static Unloader()
         {
-            if (AppDomain.CurrentDomain.IsDefaultAppDomain()) AppDomain.CurrentDomain.ProcessExit += unloadEvent;
-            else AppDomain.CurrentDomain.DomainUnload += unloadEvent;
-            AppDomain.CurrentDomain.UnhandledException += onError;
+            DefaultConfig.Set(unloadEvent, onError);
         }
     }
 }

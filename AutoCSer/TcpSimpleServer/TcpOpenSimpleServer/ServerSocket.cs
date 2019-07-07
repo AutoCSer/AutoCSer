@@ -27,7 +27,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// TCP 开放服务端套接字
         /// </summary>
-        internal ServerSocket() : base(null) { }
+        internal ServerSocket() : base() { }
 #endif
         /// <summary>
         /// TCP 开放服务端套接字
@@ -133,7 +133,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
 #endif
             }
@@ -163,7 +163,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
 #endif
             }
@@ -258,7 +258,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return true;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                 return isVerifyCommand();
 #endif
@@ -379,7 +379,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return true;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                 return isVerifyData();
 #endif
@@ -491,7 +491,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return true;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                 return isCommand();
 #endif
@@ -523,7 +523,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     {
                         command = *(int*)(bufferStart = receiveDataFixed + Buffer.StartIndex);
                         int commandIndex = base.commandIndex;
-                        if (Server.IsCommand(commandIndex))
+                        if (Server.IsCommand(commandIndex) && IsCommand(commandIndex))
                         {
                             if (commandIndex != TcpServer.Server.CheckCommandIndex)
                             {
@@ -612,7 +612,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                             if (asyncEventArgs.SocketError == SocketError.Success)
                             {
 #if !DotNetStandard
-                                asyncLock = 0;
+                                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                                 if (compressionDataSize == (receiveBigBufferCount += asyncEventArgs.BytesTransferred)) return isDoCommandBig();
                                 goto BIGRECEIVE;
@@ -666,7 +666,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
 #if !DotNetStandard
-                            asyncLock = 0;
+                            Interlocked.Exchange(ref asyncLock, 0);
 #endif
                             receiveCount += (receiveSize = asyncEventArgs.BytesTransferred);
                             if ((nextSize -= receiveSize) == 0) return isDoCommand();
@@ -735,7 +735,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                             return true;
                         }
 #if !DotNetStandard
-                        asyncLock = 0;
+                        Interlocked.Exchange(ref asyncLock, 0);
 #endif
                         goto CHECK;
                     }
@@ -805,7 +805,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                             return true;
                         }
 #if !DotNetStandard
-                        asyncLock = 0;
+                        Interlocked.Exchange(ref asyncLock, 0);
 #endif
                         goto CHECK;
                     }
@@ -987,7 +987,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                         return true;
                     }
 #if !DotNetStandard
-                    asyncLock = 0;
+                    Interlocked.Exchange(ref asyncLock, 0);
 #endif
                     if (asyncEventArgs.SocketError == SocketError.Success)
                     {
@@ -1042,7 +1042,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return true;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                 if (asyncEventArgs.SocketError == SocketError.Success) return asyncEventArgs.BytesTransferred == sizeof(int) && isReceiveCommand();
                 socketError = asyncEventArgs.SocketError;
@@ -1177,7 +1177,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     return true;
                 }
 #if !DotNetStandard
-                asyncLock = 0;
+                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                 if (asyncEventArgs.SocketError == SocketError.Success)
                 {
@@ -1252,7 +1252,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                             return isSend = true;
                         }
 #if !DotNetStandard
-                        asyncLock = 0;
+                        Interlocked.Exchange(ref asyncLock, 0);
 #endif
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
@@ -1294,7 +1294,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                             return isSend = true;
                         }
 #if !DotNetStandard
-                        asyncLock = 0;
+                        Interlocked.Exchange(ref asyncLock, 0);
 #endif
                         if (asyncEventArgs.SocketError == SocketError.Success)
                         {
@@ -1406,7 +1406,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                                 return true;
                             }
 #if !DotNetStandard
-                            asyncLock = 0;
+                            Interlocked.Exchange(ref asyncLock, 0);
 #endif
                             goto CHECK;
                         }

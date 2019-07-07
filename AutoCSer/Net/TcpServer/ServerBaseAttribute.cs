@@ -147,6 +147,10 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 客户端路由类型，需要继承自 AutoCSer.Net.TcpServer.ClientRoute[]
         /// </summary>
         public Type ClientRouteType;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        internal abstract int GetBinaryDeSerializeMaxArraySize { get; }
 
         internal static attributeType GetConfig<attributeType>(string serviceName, Type type, attributeType attribute)
             where attributeType : ServerBaseAttribute

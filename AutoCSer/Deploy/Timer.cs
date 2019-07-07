@@ -41,49 +41,56 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 启动定时任务
         /// </summary>
-        internal void Start()
+        internal void StartTimer()
         {
-            if (!IsCancel)
+            Start();
+        }
+        /// <summary>
+        /// 启动定时任务
+        /// </summary>
+        internal DeployState Start()
+        {
+            if (IsCancel) return DeployState.Canceled;
+            IndexIdentity clientId = new IndexIdentity();
+            Log log = new Log { Identity = Identity };
+            bool isLog = true;
+            try
             {
-                IndexIdentity clientId = new IndexIdentity();
-                Log log = new Log { Identity = Identity };
-                bool isLog = true;
-                try
+                Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = Server.GetLog(ref Identity, ref clientId) ?? Timer.onLog;
+                log.Type = LogType.CreateBakDirectory;
+                isLog |= onLog(log);
+                (BakDirectory = new DirectoryInfo(Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + Identity.Index.toString() + "_" + Identity.Identity.toString()))).Create();
+                log.Type = LogType.OnCreateBakDirectory;
+                isLog |= onLog(log);
+                while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)
                 {
-                    Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = Server.GetLog(ref Identity, ref clientId) ?? Timer.onLog;
-                    log.Type = LogType.CreateBakDirectory;
+                    Task task = DeployInfo.Tasks.Array[TaskIndex];
+                    log.Set(TaskIndex, task.Type);
                     isLog |= onLog(log);
-                    (BakDirectory = new DirectoryInfo(Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + Identity.Index.toString() + "_" + Identity.Identity.toString()))).Create();
-                    log.Type = LogType.OnCreateBakDirectory;
+                    task.Run(this);
+                    log.Type = LogType.OnRun;
                     isLog |= onLog(log);
-                    while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)
-                    {
-                        Task task = DeployInfo.Tasks.Array[TaskIndex];
-                        log.Set(TaskIndex, task.Type);
-                        isLog |= onLog(log);
-                        task.Run(this);
-                        log.Type = LogType.OnRun;
-                        isLog |= onLog(log);
-                        ++TaskIndex;
-                    }
+                    ++TaskIndex;
                 }
-                catch (Exception error)
-                {
-                    Console.WriteLine(error.ToString());
-                    Error = error;
-                }
-                finally
-                {
-                    Server.Clear(ref Identity);
-                    if (Error == null) log.Type = LogType.Completed;
-                    else
-                    {
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, Error);
-                        log.Type = LogType.Error;
-                    }
-                    if (!(isLog |= onLog(log))) Server.ClearClient(ref clientId);
-                }
+                return DeployState.Success;
             }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.ToString());
+                Error = error;
+            }
+            finally
+            {
+                Server.Clear(ref Identity);
+                if (Error == null) log.Type = LogType.Completed;
+                else
+                {
+                    AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, Error);
+                    log.Type = LogType.Error;
+                }
+                if (!(isLog |= onLog(log))) Server.ClearClient(ref clientId);
+            }
+            return DeployState.Exception;
         }
         /// <summary>
         /// 创建备份目录

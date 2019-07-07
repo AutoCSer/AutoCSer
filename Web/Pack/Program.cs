@@ -44,7 +44,8 @@ namespace AutoCSer.Tool.OpenPack
                     using (FileStream stream = new FileStream(newPackZipFileName, FileMode.Create))
                     using (zipArchive = new ZipArchive(stream, ZipArchiveMode.Create, true))
                     {
-                        foreach (DirectoryInfo directory in new DirectoryInfo(path).GetDirectories()) newPack(directory, directory.Name + @"\");
+                        newPack(new DirectoryInfo(path), string.Empty);
+                        //foreach (DirectoryInfo directory in new DirectoryInfo(path).GetDirectories()) newPack(directory, directory.Name + @"\");
                     }
                     Console.WriteLine(newPackZipFileName);
                 }
@@ -68,7 +69,7 @@ namespace AutoCSer.Tool.OpenPack
                         if (!newOutput && file.Extension == ".cs" && file.LastWriteTimeUtc > newOutputTime)
                         {
                             newOutput = true;
-                            Console.WriteLine(File.ReadAllText(fileName));
+                            Console.WriteLine(File.ReadAllText(file.FullName));
                         }
                         githubFile(file.Name, File.ReadAllBytes(file.FullName), entryStream, null);
                     }

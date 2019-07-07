@@ -40,7 +40,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 是否启动线程
         /// </summary>
-        private volatile int isThread;
+        private int isThread;
         /// <summary>
         /// 添加任务
         /// </summary>

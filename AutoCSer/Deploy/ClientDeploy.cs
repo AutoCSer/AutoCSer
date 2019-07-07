@@ -40,7 +40,7 @@ namespace AutoCSer.Deploy
             if (TcpClient.IsClient)
             {
                 AutoCSer.Net.IndexIdentity identity = TcpClient.TcpInternalClient.create(TcpClient.ClientId);
-                byte isStart = 0;
+                bool isClear = false;
                 try
                 {
                     Client client = TcpClient.Client;
@@ -114,20 +114,38 @@ namespace AutoCSer.Deploy
                                 break;
                         }
                     }
-                    if (TcpClient.TcpInternalClient.start(identity, startTime))
+                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.DeployState> result = TcpClient.TcpInternalClient.start(identity, startTime);
+                    if (result.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                     {
-                        isStart = 1;
-                        return new DeployResult { Index = identity.Index, State = DeployState.Success };
+                        isClear = checkIsClear(result.Value);
+                        return new DeployResult { Index = identity.Index, State = result.Value };
                     }
                     return new DeployResult { Index = -1, State = DeployState.StartError };
                 }
                 finally
                 {
-                    if (isStart == 0) TcpClient.TcpInternalClient.clear(identity);// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
+                    if (isClear) TcpClient.TcpInternalClient.clear(identity);// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
                 }
             }
 #endif
             return new DeployResult { Index = -1, State = DeployState.NoClient };
+        }
+        /// <summary>
+        /// 判断部署是否需要清理操作
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        private static bool checkIsClear(DeployState state)
+        {
+            switch (state)
+            {
+                case DeployState.Success:
+                case DeployState.IdentityError:
+                case DeployState.Canceled:
+                case DeployState.Exception:
+                    return true;
+            }
+            return false;
         }
         /// <summary>
         /// 添加文件数据源

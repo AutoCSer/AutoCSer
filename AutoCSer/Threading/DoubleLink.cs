@@ -46,7 +46,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 链表访问锁
             /// </summary>
-            private volatile int linkLock;
+            private int linkLock;
             /// <summary>
             /// 添加节点
             /// </summary>
@@ -87,6 +87,16 @@ namespace AutoCSer.Threading
                     System.Threading.Interlocked.Exchange(ref linkLock, 0);
                 }
             }
+            ///// <summary>
+            ///// 清除数据
+            ///// </summary>
+            //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            //internal void Clear()
+            //{
+            //    while (System.Threading.Interlocked.CompareExchange(ref linkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePop);
+            //    End = null;
+            //    System.Threading.Interlocked.Exchange(ref linkLock, 0);
+            //}
         }
     }
 }

@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 链表访问锁
         /// </summary>
-        private volatile int queueLock;
+        private int queueLock;
         /// <summary>
         /// 客户端心跳检测定时
         /// </summary>

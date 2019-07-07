@@ -125,7 +125,7 @@ namespace AutoCSer.Net.TcpInternalServer
                     if (socketError == SocketError.Success)
 #else
 #if !DotNetStandard
-                    receiveAsyncLock = 1;
+                    Interlocked.Exchange(ref receiveAsyncLock, 1);
 #endif
                     receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
                     if (Socket.ReceiveAsync(receiveAsyncEventArgs))

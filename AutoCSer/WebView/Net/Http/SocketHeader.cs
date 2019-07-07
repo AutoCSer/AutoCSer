@@ -87,7 +87,7 @@ namespace AutoCSer.Net.Http
                     Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                     return;
                 }
-                httpSocket.ReceiveAsyncLock = 0;
+                Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                 if (onReceive()) return;
 #endif
             }
@@ -138,7 +138,7 @@ namespace AutoCSer.Net.Http
                     Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                     return;
                 }
-                httpSocket.ReceiveAsyncLock = 0;
+                Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                 if (onReceive()) return;
 #endif
             }
@@ -238,7 +238,7 @@ namespace AutoCSer.Net.Http
                             Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                             return true;
                         }
-                        httpSocket.ReceiveAsyncLock = 0;
+                        Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                         goto START;
 #endif
                 }

@@ -21,7 +21,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 是否正在检测线程切换
         /// </summary>
-        private volatile int isCheck;
+        private int isCheck;
         /// <summary>
         /// 检测线程切换事件
         /// </summary>
@@ -51,7 +51,7 @@ namespace AutoCSer.Threading
             if (System.Threading.Interlocked.CompareExchange(ref isCheck, 1, 0) == 0)
             {
                 onCheck();
-                isCheck = 0;
+                System.Threading.Interlocked.Exchange(ref isCheck, 0);
             }
         }
         /// <summary>

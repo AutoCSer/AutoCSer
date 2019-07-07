@@ -54,7 +54,7 @@ namespace AutoCSer.Log
         /// <summary>
         /// 日志信息访问锁
         /// </summary>
-        private volatile int debugLock;
+        private int debugLock;
         /// <summary>
         /// 日志同步标志
         /// </summary>
@@ -70,11 +70,11 @@ namespace AutoCSer.Log
         /// <summary>
         /// 是否已经触发定时任务
         /// </summary>
-        private volatile int isTimer;
+        private int isTimer;
         /// <summary>
         /// 是否添加到文件日志链表
         /// </summary>
-        private volatile int isPushFiles;
+        private int isPushFiles;
         /// <summary>
         /// 最大字节长度(小于等于0表示不限)
         /// </summary>

@@ -349,7 +349,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 #region IF IsTimeVerify
                 private bool _timerVerify_(TcpOpenStreamClient client, AutoCSer.Net.TcpOpenStreamServer.ClientSocketSender sender)

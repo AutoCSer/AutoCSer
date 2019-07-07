@@ -29,11 +29,11 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 任务队列访问锁
         /// </summary>
-        private volatile int queueLock;
+        private int queueLock;
         /// <summary>
         /// 是否启动线程
         /// </summary>
-        private volatile int isThread;
+        private int isThread;
         /// <summary>
         /// 链表任务队列
         /// </summary>

@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        protected volatile int commandQueueLock;
+        protected int commandQueueLock;
 #if !NOJIT
         /// <summary>
         /// TCP 服务客户端套接字数据发送

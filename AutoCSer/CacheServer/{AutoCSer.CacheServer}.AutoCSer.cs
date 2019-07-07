@@ -1434,7 +1434,7 @@ namespace AutoCSer.CacheServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 private bool _timerVerify_(TcpInternalClient client, AutoCSer.Net.TcpInternalServer.ClientSocketSender sender)
                 {
@@ -3689,7 +3689,7 @@ namespace AutoCSer.CacheServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 private bool _timerVerify_(TcpInternalClient client, AutoCSer.Net.TcpInternalServer.ClientSocketSender sender)
                 {

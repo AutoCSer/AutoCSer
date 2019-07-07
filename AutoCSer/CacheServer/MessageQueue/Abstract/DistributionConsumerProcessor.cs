@@ -24,7 +24,7 @@ namespace AutoCSer.CacheServer.MessageQueue.Abstract
         /// <summary>
         /// 是否正在操作队列消息
         /// </summary>
-        protected volatile int isRead;
+        protected int isRead;
         /// <summary>
         /// 消息分发 客户端消费者 处理器
         /// </summary>

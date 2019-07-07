@@ -159,7 +159,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 链表访问锁
             /// </summary>
-            private volatile int linkLock;
+            private int linkLock;
             /// <summary>
             /// 获取链表尾部并清除数据
             /// </summary>

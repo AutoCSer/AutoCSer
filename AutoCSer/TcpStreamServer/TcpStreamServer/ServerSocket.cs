@@ -32,8 +32,42 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
         internal ServerSocket(serverType server)
+            : base(server.Attribute.GetBinaryDeSerializeMaxArraySize)
         {
             Server = server;
+        }
+        /// <summary>
+        /// 设置命令索引信息
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        private unsafe bool setCommand(int command)
+        {
+            if ((uint)command <= (uint)Server.MaxCommand
+                && (commandData.Data != null || (commands.Map == null && Server.CreateCommandData(ref commandData, ref commands))))
+            {
+                commands.Set(command);
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 设置命令索引信息
+        /// </summary>
+        /// <param name="methodIndex"></param>
+        /// <returns></returns>
+        internal override bool SetCommand(int methodIndex)
+        {
+            return setCommand(methodIndex + TcpServer.Server.CommandStartIndex);
+        }
+        /// <summary>
+        /// 设置基础命令索引信息
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        internal override bool SetBaseCommand(int command)
+        {
+            return command < TcpServer.Server.CommandStartIndex && setCommand(command);
         }
     }
 }

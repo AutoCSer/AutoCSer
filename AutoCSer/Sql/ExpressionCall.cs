@@ -80,5 +80,15 @@ namespace AutoCSer.Sql
         {
             return false;
         }
+        /// <summary>
+        /// LIKE 表达式
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="matchValue"></param>
+        /// <returns></returns>
+        public static bool Like(string value, string matchValue)
+        {
+            return false;
+        }
     }
 }

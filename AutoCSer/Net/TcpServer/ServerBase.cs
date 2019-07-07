@@ -55,7 +55,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 最大命令
         /// </summary>
-        private int maxCommand;
+        internal int MaxCommand;
         /// <summary>
         /// 验证超时
         /// </summary>
@@ -67,7 +67,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 是否已启动服务
         /// </summary>
-        protected volatile int isStart;
+        protected int isStart;
         /// <summary>
         /// 验证命令序号
         /// </summary>
@@ -220,15 +220,14 @@ namespace AutoCSer.Net.TcpServer
         /// 初始化序号识别命令处理委托集合
         /// </summary>
         /// <param name="count">命令数量</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected internal void setCommandData(int count)
         {
             commandData = Unmanaged.GetSizeUnsafe64(((count + TcpServer.Server.CommandStartIndex + 63) >> 6) << 3, true);
             commands = new MemoryMap(commandData.Data);
             commands.Set(TcpServer.Server.CheckCommandIndex);
-            if(isCustomData) commands.Set(TcpServer.Server.CustomDataCommandIndex);
-            if(isKeepCallback) commands.Set(TcpServer.Server.CancelKeepCommandIndex);
-            if(isMergeCommand) commands.Set(TcpServer.Server.MergeCommandIndex);
+            if (isCustomData) commands.Set(TcpServer.Server.CustomDataCommandIndex);
+            if (isKeepCallback) commands.Set(TcpServer.Server.CancelKeepCommandIndex);
+            if (isMergeCommand) commands.Set(TcpServer.Server.MergeCommandIndex);
             if (Attribute.IsRemoteExpression)
             {
                 commands.Set(TcpServer.Server.RemoteExpressionNodeIdCommandIndex);
@@ -243,8 +242,33 @@ namespace AutoCSer.Net.TcpServer
         protected internal void setCommand(int methodIndex)
         {
             int command = methodIndex + TcpServer.Server.CommandStartIndex;
-            if (command > maxCommand) maxCommand = command;
+            if (command > MaxCommand) MaxCommand = command;
             commands.Set(command);
+        }
+        /// <summary>
+        /// 创建客户端命令数据
+        /// </summary>
+        /// <param name="commandData"></param>
+        /// <param name="commands"></param>
+        /// <returns></returns>
+        internal bool CreateCommandData(ref Pointer.Size commandData, ref MemoryMap commands)
+        {
+            if (this.commandData.Data != null)
+            {
+                commandData = Unmanaged.GetSizeUnsafe64(this.commandData.ByteSize, true);
+                commands = new MemoryMap(commandData.Data);
+                commands.Set(TcpServer.Server.CheckCommandIndex);
+                //if (isCustomData) commands.Set(TcpServer.Server.CustomDataCommandIndex);
+                if (isKeepCallback) commands.Set(TcpServer.Server.CancelKeepCommandIndex);
+                if (isMergeCommand) commands.Set(TcpServer.Server.MergeCommandIndex);
+                //if (Attribute.IsRemoteExpression)
+                //{
+                //    commands.Set(TcpServer.Server.RemoteExpressionNodeIdCommandIndex);
+                //    commands.Set(TcpServer.Server.RemoteExpressionCommandIndex);
+                //}
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// 判断命令是否有效
@@ -254,7 +278,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool IsCommand(int index)
         {
-            if ((uint)index <= (uint)maxCommand)
+            if ((uint)index <= (uint)MaxCommand)
             {
                 if (commands.Get(index) != 0)
                 {

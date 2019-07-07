@@ -36,7 +36,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 等待加载成员位图访问锁
         /// </summary>
-        private volatile int waitMapLock;
+        private int waitMapLock;
         /// <summary>
         /// 日志回调委托索引
         /// </summary>
@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 是否开始处理日志
         /// </summary>
-        protected volatile int isStart;
+        protected int isStart;
         /// <summary>
         /// 是否加载完成
         /// </summary>

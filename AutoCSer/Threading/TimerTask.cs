@@ -25,7 +25,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 是否已经触发定时任务
         /// </summary>
-        private volatile int isTimer;
+        private int isTimer;
         /// <summary>
         /// 定时任务
         /// </summary>

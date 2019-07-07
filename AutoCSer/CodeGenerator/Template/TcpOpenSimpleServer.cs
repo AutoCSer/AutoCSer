@@ -353,7 +353,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            public partial class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
             {
                 #region IF IsTimeVerify
                 private bool _timerVerify_(TcpOpenSimpleClient client)

@@ -78,7 +78,7 @@ Host: ").getBytes();
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private volatile int asyncLock;
+        private int asyncLock;
 #endif
 #endif
         /// <summary>
@@ -518,7 +518,7 @@ Host: ").getBytes();
                                     return;
                                 }
 #if !DotNetStandard
-                                asyncLock = 0;
+                                Interlocked.Exchange(ref asyncLock, 0);
 #endif
                                 if (socketAsync.SocketError != SocketError.Success) break;
                             }
@@ -559,7 +559,7 @@ Host: ").getBytes();
                                 if (socketAsync.SocketError == SocketError.Success)
                                 {
 #if !DotNetStandard
-                                    asyncLock = 0;
+                                    Interlocked.Exchange(ref asyncLock, 0);
 #endif
                                     goto ONRECEIVE;
                                 }
@@ -790,7 +790,7 @@ Host: ").getBytes();
                     if (socketAsync.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        asyncLock = 0;
+                        Interlocked.Exchange(ref asyncLock, 0);
 #endif
                         count = socketAsync.BytesTransferred;
                         goto START;

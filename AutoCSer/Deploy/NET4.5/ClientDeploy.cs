@@ -23,7 +23,7 @@ namespace AutoCSer.Deploy
             if (TcpClient.IsClient)
             {
                 AutoCSer.Net.IndexIdentity identity = await TcpClient.TcpInternalClient.createAwaiter(TcpClient.ClientId);
-                byte isStart = 0;
+                bool isClear = true;
                 try
                 {
                     Client client = TcpClient.Client;
@@ -97,16 +97,17 @@ namespace AutoCSer.Deploy
                                 break;
                         }
                     }
-                    if (await TcpClient.TcpInternalClient.startAwaiter(identity, DateTime.MinValue))
+                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.DeployState> result = await TcpClient.TcpInternalClient.startAwaiter(identity, DateTime.MinValue);
+                    if (result.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                     {
-                        isStart = 1;
-                        return new DeployResult { Index = identity.Index, State = DeployState.Success };
+                        isClear = checkIsClear(result.Value);
+                        return new DeployResult { Index = identity.Index, State = result.Value };
                     }
                     return new DeployResult { Index = -1, State = DeployState.StartError };
                 }
                 finally
                 {
-                    if (isStart == 0) await TcpClient.TcpInternalClient.clearAwaiter(identity);// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
+                    if (isClear) await TcpClient.TcpInternalClient.clearAwaiter(identity);// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
                 }
             }
 #endif

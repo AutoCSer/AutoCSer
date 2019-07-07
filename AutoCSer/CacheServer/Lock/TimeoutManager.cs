@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.Lock
         /// <summary>
         /// 申请锁
         /// </summary>
-        private volatile int enterLock;
+        private int enterLock;
         /// <summary>
         /// 申请锁返回值
         /// </summary>

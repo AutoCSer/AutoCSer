@@ -56,7 +56,7 @@ namespace AutoCSer.IO
         /// <summary>
         /// 是否已经触发定时任务
         /// </summary>
-        private volatile int isTimer;
+        private int isTimer;
         /// <summary>
         /// 是否释放资源
         /// </summary>

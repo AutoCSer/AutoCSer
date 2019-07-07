@@ -37,7 +37,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 是否正在读取数据
         /// </summary>
-        private volatile int isReading;
+        private int isReading;
         /// <summary>
         /// 读取文件回调委托调用是否出错
         /// </summary>
@@ -66,7 +66,7 @@ namespace AutoCSer.CacheServer
             {
                 fileStream = new FileStream(file.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, buffer.Length, FileOptions.SequentialScan | FileOptions.Asynchronous);
                 fileStream.Seek(index, SeekOrigin.Begin);
-                isReading = 1;
+                Interlocked.Exchange(ref isReading, 1);
                 file.Readers.PushNotNull(this);
                 isFree = false;
                 read();

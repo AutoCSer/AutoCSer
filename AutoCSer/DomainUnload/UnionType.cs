@@ -19,5 +19,10 @@ namespace AutoCSer.DomainUnload
         /// </summary>
         [FieldOffset(0)]
         public AutoCSer.DomainUnload.UnloadObject UnloadObject;
+        /// <summary>
+        /// 应用程序默认卸载配置
+        /// </summary>
+        [FieldOffset(0)]
+        public AutoCSer.DomainUnload.UnloadEventConfig UnloadEventConfig;
     }
 }

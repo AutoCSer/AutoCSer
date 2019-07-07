@@ -118,7 +118,7 @@ namespace AutoCSer.Metadata
             /// <summary>
             /// 空闲内存地址访问锁
             /// </summary>
-            private volatile int freeLock;
+            private int freeLock;
             /// <summary>
             /// 填充整数数量
             /// </summary>
@@ -266,7 +266,7 @@ namespace AutoCSer.Metadata
             /// <summary>
             /// 成员位图内存池访问锁
             /// </summary>
-            private volatile static int memoryLock;
+            private static int memoryLock;
             /// <summary>
             /// 成员位图内存池访问锁
             /// </summary>

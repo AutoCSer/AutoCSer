@@ -220,7 +220,7 @@ namespace AutoCSer.Deploy
         /// <param name="time">启动时间</param>
         /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private bool start(IndexIdentity identity, DateTime time)
+        private DeployState start(IndexIdentity identity, DateTime time)
         {
             if ((uint)identity.Index < (uint)deployPool.PoolIndex)
             {
@@ -228,11 +228,11 @@ namespace AutoCSer.Deploy
                 Monitor.Enter(arrayLock);
                 try
                 {
-                    if (deployPool.Array[identity.Index].Start(identity.Identity, time, new Timer { Server = this, Identity = identity })) return true;
+                    return deployPool.Array[identity.Index].Start(identity.Identity, time, new Timer { Server = this, Identity = identity });
                 }
                 finally { Monitor.Exit(arrayLock); }
             }
-            return false;
+            return DeployState.IdentityError;
         }
         /// <summary>
         /// 设置文件数据源

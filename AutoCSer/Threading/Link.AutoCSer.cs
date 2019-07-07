@@ -23,7 +23,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private volatile int popLock;
+            private int popLock;
             /// <summary>
             /// 是否空链表
             /// </summary>
@@ -282,7 +282,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private volatile int queueLock;
+            private int queueLock;
             /// <summary>
             /// 节点队列链表
             /// </summary>

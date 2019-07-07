@@ -533,7 +533,7 @@ namespace AutoCSer.Net.TcpServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             ++ReceiveCount;
                             if (compressionDataSize <= (receiveCount += count) - receiveIndex) return isOnData = isOnDataLoopFixed();
@@ -580,7 +580,7 @@ namespace AutoCSer.Net.TcpServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             ++ReceiveCount;
                             if (compressionDataSize == (receiveBigBufferCount += count)) return isOnData = isOnBigDataLoopFixed();
@@ -685,7 +685,7 @@ namespace AutoCSer.Net.TcpServer
                     if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto START;
@@ -735,7 +735,7 @@ namespace AutoCSer.Net.TcpServer
                             if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                             {
 #if !DotNetStandard
-                                receiveAsyncLock = 0;
+                                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                                 ++ReceiveCount;
                                 return commandIdentityAsync(count);
@@ -771,7 +771,7 @@ namespace AutoCSer.Net.TcpServer
                         if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             ++ReceiveCount;
                             goto START;
@@ -869,7 +869,7 @@ namespace AutoCSer.Net.TcpServer
                     if ((receiveSize = (receiveCount += receiveAsyncEventArgs.BytesTransferred) - receiveIndex) >= sizeof(uint))
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto ONRECEIVE;

@@ -14,15 +14,15 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 最后一次验证时间访问锁
         /// </summary>
-        private volatile int lastVerifyTickLock;
+        private int lastVerifyTickLock;
         /// <summary>
         /// 验证时间戳
         /// </summary>
         /// <param name="ticks"></param>
         public TimeVerifyTick(long ticks)
         {
-            lastVerifyTicks = ticks;
             lastVerifyTickLock = 0;
+            lastVerifyTicks = ticks;
         }
         /// <summary>
         /// 检测当前时间戳

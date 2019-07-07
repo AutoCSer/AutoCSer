@@ -31,7 +31,7 @@ namespace AutoCSer.Net.TcpStreamServer
         internal ClientSocket(IPAddress ipAddress, int port, ILog log, int maxInputSize) : base(ipAddress, port, log, maxInputSize)
         {
             ClientCommand.Command command = ClientCommand.CheckCommand.Get(this);
-            command.FreeLock = 1;
+            Interlocked.Exchange(ref command.FreeLock, 1);
             CommandQueue = command;
         }
         /// <summary>
@@ -251,7 +251,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     if (count > 0)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         return dataSizeAsync(count);
@@ -354,7 +354,7 @@ namespace AutoCSer.Net.TcpStreamServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             ++ReceiveCount;
                             if (compressionDataSize <= (receiveCount += count) - receiveIndex)
@@ -402,7 +402,7 @@ namespace AutoCSer.Net.TcpStreamServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             ++ReceiveCount;
                             if (compressionDataSize == (receiveBigBufferCount += count))
@@ -488,7 +488,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto START;
@@ -538,7 +538,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto START;
@@ -586,7 +586,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     if ((receiveCount += receiveAsyncEventArgs.BytesTransferred) - receiveIndex >= sizeof(int))
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto ONRECEIVE;
@@ -682,7 +682,7 @@ namespace AutoCSer.Net.TcpStreamServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             receiveCount += count;
                             ++ReceiveCount;
@@ -727,7 +727,7 @@ namespace AutoCSer.Net.TcpStreamServer
                         if (count > 0)
                         {
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             receiveBigBufferCount += count;
                             ++ReceiveCount;
@@ -776,7 +776,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto START;
@@ -822,7 +822,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     if ((count = receiveAsyncEventArgs.BytesTransferred) > 0)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         ++ReceiveCount;
                         goto START;

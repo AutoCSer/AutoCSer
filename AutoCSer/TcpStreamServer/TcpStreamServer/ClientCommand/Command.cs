@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
         /// <summary>
         /// 释放 TCP 客户端访问锁
         /// </summary>
-        internal volatile int FreeLock;
+        internal int FreeLock;
         /// <summary>
         /// 是否创建输出错误
         /// </summary>

@@ -499,7 +499,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 是否正在检测消息超时
         /// </summary>
-        private volatile static int isTimer;
+        private static int isTimer;
         /// <summary>
         /// 添加消息分发
         /// </summary>

@@ -73,6 +73,14 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// 默认为 false 需要第一次调用触发，否则在创建客户端对象的时候自动启动连接
         /// </summary>
         public bool IsAutoClient;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        public int BinaryDeSerializeMaxArraySize = AutoCSer.Net.TcpOpenServer.ServerAttribute.DefaultBinaryDeSerializeConfig.MaxArraySize;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
 
         /// <summary>
         /// 获取配置信息

@@ -204,7 +204,7 @@ namespace AutoCSer.Net
             /// <summary>
             /// 链表访问锁
             /// </summary>
-            private volatile int queueLock;
+            private int queueLock;
             /// <summary>
             /// 定时器双向链表节点
             /// </summary>

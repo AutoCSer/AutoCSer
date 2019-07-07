@@ -12,6 +12,10 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         public bool IsFullData = true;
         /// <summary>
+        /// 最大数组长度
+        /// </summary>
+        public int MaxArraySize = int.MaxValue;
+        /// <summary>
         /// 是否自动释放成员位图
         /// </summary>
         internal bool IsDisposeMemberMap;

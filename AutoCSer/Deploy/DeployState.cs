@@ -12,7 +12,7 @@ namespace AutoCSer.Deploy
         /// </summary>
         NoClient,
         /// <summary>
-        /// 部署启动成功
+        /// 定时部署启动成功或者同步部署执行成功
         /// </summary>
         Success,
         /// <summary>
@@ -44,5 +44,17 @@ namespace AutoCSer.Deploy
         /// 添加自定义任务失败
         /// </summary>
         AddCustomError,
+        /// <summary>
+        /// 部署索引标识错误
+        /// </summary>
+        IdentityError,
+        /// <summary>
+        /// 部署任务已经被取消
+        /// </summary>
+        Canceled,
+        /// <summary>
+        /// 执行异常
+        /// </summary>
+        Exception,
     }
 }

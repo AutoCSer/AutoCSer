@@ -106,6 +106,8 @@
     <Compile Include="Diagnostics\UnionType.cs" />
     <Compile Include="DictionaryCreator.cs" />
     <Compile Include="DictionaryCreator.AutoCSer.cs" />
+    <Compile Include="DomainUnload\ConfigLoader.cs" />
+    <Compile Include="DomainUnload\UnloadEventConfig.cs" />
     <Compile Include="DomainUnload\State.cs" />
     <Compile Include="DomainUnload\Type.cs" />
     <Compile Include="DomainUnload\UnionType.cs" />

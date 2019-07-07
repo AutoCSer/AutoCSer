@@ -173,6 +173,8 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
  + @"\netcoreapp2.0"
 #elif DOTNET2
  + @"\DotNet2"
+#elif DOTNET4
+ + @"\DotNet4"
 #endif
 
  + @"\" + fileName

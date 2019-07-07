@@ -20,7 +20,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 引用计数
         /// </summary>
-        private volatile int referenceCount;
+        private int referenceCount;
         /// <summary>
         /// 数据缓冲区
         /// </summary>
@@ -41,9 +41,9 @@ namespace AutoCSer.CacheServer
         /// <param name="count">字节数量</param>
         internal Buffer(BufferCount bufferCount, int index, int count)
         {
+            referenceCount = 1;
             this.BufferCount = bufferCount;
             Array.Set(bufferCount.Buffer.Buffer, index, count);
-            referenceCount = 1;
         }
         /// <summary>
         /// 增加引用计数

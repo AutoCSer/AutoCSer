@@ -132,7 +132,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     return;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
 #endif
             }
@@ -162,7 +162,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     return;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
 #endif
             }
@@ -253,7 +253,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                 return isVerifyCommand();
 #endif
@@ -374,7 +374,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                 return isVerifyData();
 #endif
@@ -498,7 +498,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                 return isCommand();
 #endif
@@ -557,7 +557,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 if (receiveSize >= (sizeof(int) + sizeof(uint)))
                 {
                     byte* start = receiveDataStart + receiveIndex;
-                    if (Server.IsCommand(command = *(int*)start))
+                    if (Server.IsCommand(command = *(int*)start) && IsCommand(command))
                     {
                         switch (command - TcpServer.Server.MinCommandIndex)
                         {
@@ -726,7 +726,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                 {
 #if !DotNetStandard
-                    receiveAsyncLock = 0;
+                    Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                     receiveCount += receiveAsyncEventArgs.BytesTransferred;
                     isCommand = true;
@@ -781,7 +781,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         if (compressionDataSize <= (receiveCount += receiveAsyncEventArgs.BytesTransferred) - receiveIndex) return isDoCommand = isDoCommandLoop();
                         goto RECEIVE;
@@ -825,7 +825,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         if (compressionDataSize == (receiveBigBufferCount += receiveAsyncEventArgs.BytesTransferred)) return isDoCommand = isDoCommandBig();
                         goto BIGRECEIVE;
@@ -895,7 +895,7 @@ namespace AutoCSer.Net.TcpOpenServer
                             return true;
                         }
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         goto CHECK;
                     }
@@ -966,7 +966,7 @@ namespace AutoCSer.Net.TcpOpenServer
                             return true;
                         }
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         goto CHECK;
                     }
@@ -1096,7 +1096,7 @@ namespace AutoCSer.Net.TcpOpenServer
                         do
                         {
                             byte* start = dataFixed + receiveIndex;
-                            if (!Server.IsCommand(command = *(int*)start)) break;
+                            if (!Server.IsCommand(command = *(int*)start) || !IsCommand(command)) break;
                             switch (command - TcpServer.Server.MinCommandIndex)
                             {
                                 case TcpServer.Server.CancelKeepCommandIndex - TcpServer.Server.MinCommandIndex:

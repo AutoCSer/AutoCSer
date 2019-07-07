@@ -353,7 +353,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            public partial class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
             {
                 /// <summary>
                 /// TCP调用客户端

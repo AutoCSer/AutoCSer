@@ -165,7 +165,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                 return isVerifyCommand();
 #endif
@@ -288,7 +288,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                 return isVerifyData();
 #endif
@@ -401,7 +401,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     return true;
                 }
 #if !DotNetStandard
-                receiveAsyncLock = 0;
+                Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                 return isCommand();
 #endif
@@ -500,7 +500,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     else
                     {
                         CommandIndex = (uint)command & TcpServer.Server.CommandFlagsAnd;
-                        if (Server.IsCommand(command &= (int)TcpServer.Server.CommandIndexAnd))
+                        if (Server.IsCommand(command &= (int)TcpServer.Server.CommandIndexAnd) && IsCommand(command))
                         {
                             if (command != TcpServer.Server.CheckCommandIndex)
                             {
@@ -569,7 +569,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                 {
 #if !DotNetStandard
-                    receiveAsyncLock = 0;
+                    Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                     receiveCount += receiveAsyncEventArgs.BytesTransferred;
                     isCommand = true;
@@ -619,7 +619,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         if (compressionDataSize <= (receiveCount += receiveAsyncEventArgs.BytesTransferred) - receiveIndex)
                         {
@@ -662,7 +662,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     if (receiveAsyncEventArgs.SocketError == SocketError.Success)
                     {
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         if (compressionDataSize == (receiveBigBufferCount += receiveAsyncEventArgs.BytesTransferred))
                         {
@@ -730,7 +730,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                 return;
                             }
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             goto CHECK;
 
@@ -801,7 +801,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                 return;
                             }
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             goto CHECK;
                         }
@@ -910,7 +910,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     {
                         int count = receiveAsyncEventArgs.BytesTransferred;
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         receiveCount += count;
                         if ((nextSize -= count) == 0) return doCompressionCommand() && isReceiveCommand();
@@ -951,7 +951,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     {
                         int count = receiveAsyncEventArgs.BytesTransferred;
 #if !DotNetStandard
-                        receiveAsyncLock = 0;
+                        Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                         receiveBigBufferCount += count;
                         if ((nextSize -= count) == 0) return doCompressionBigDataCommand() && isReceiveCommand();
@@ -1012,7 +1012,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                 return;
                             }
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             goto CHECK;
 
@@ -1082,7 +1082,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                 return;
                             }
 #if !DotNetStandard
-                            receiveAsyncLock = 0;
+                            Interlocked.Exchange(ref receiveAsyncLock, 0);
 #endif
                             goto CHECK;
                         }
@@ -1148,7 +1148,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     do
                     {
                         CommandIndex = (uint)(command = *(int*)start) & TcpServer.Server.CommandFlagsAnd;
-                        if (Server.IsCommand(command &= (int)TcpServer.Server.CommandIndexAnd))
+                        if (Server.IsCommand(command &= (int)TcpServer.Server.CommandIndexAnd) && IsCommand(command))
                         {
                             switch (command - TcpServer.Server.MinCommandIndex)
                             {

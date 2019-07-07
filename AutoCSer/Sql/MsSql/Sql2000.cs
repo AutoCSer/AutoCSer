@@ -117,7 +117,7 @@ namespace AutoCSer.Sql.MsSql
             else
             {
                 sqlType = memberType.formCSharpType();
-                size = sqlType.getSize();
+                size = sqlType.getSize(memberAttribute); 
             }
             return new Column
             {
@@ -261,7 +261,7 @@ end";
                 {
                     if (isNext) sqlStream.Write(',');
                     appendColumn(sqlStream, column);
-                    if (!isTextImage) isTextImage = column.DbType.isTextImageType() != 0;
+                    if (!isTextImage) isTextImage = column.DbType.isTextImageType();
                     isNext = true;
                 }
                 ColumnCollection primaryKey = table.PrimaryKey;
@@ -342,10 +342,18 @@ create");
             constantConverter.ConvertNameToSqlStream(sqlStream, column.Name);
             sqlStream.Write(' ');
             sqlStream.SimpleWriteNotNull(column.DbType.ToString());
+            if (column.DbType.isDecimalType() && column.Size != 0)
+            {
+                sqlStream.Write('(');
+                AutoCSer.Extension.Number.ToString(column.Size >> 8, sqlStream);
+                sqlStream.Write(',');
+                AutoCSer.Extension.Number.ToString((column.Size) & 0xff, sqlStream);
+                sqlStream.Write(')');
+            }
             //if (isIdentity) sqlStream.Write(" identity(1,1)not");
             //else
             //{
-            if (column.DbType.isStringType() != 0 && column.Size != int.MaxValue)
+            if (column.DbType.isStringType() && column.Size != int.MaxValue)
             {
                 sqlStream.Write('(');
                 sqlStream.SimpleWriteNotNull(column.Size == -1 ? "max" : column.Size.toString());

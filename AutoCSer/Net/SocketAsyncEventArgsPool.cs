@@ -20,7 +20,7 @@ namespace AutoCSer.Net
         /// <summary>
         /// 套接字异步事件对象池弹出节点访问锁
         /// </summary>
-        private volatile static int popLock;
+        private static int popLock;
         /// <summary>
         /// 缓存数量
         /// </summary>

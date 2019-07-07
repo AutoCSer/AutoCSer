@@ -45,7 +45,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 设置当前读取数据标识
         /// </summary>
-        internal volatile QueueTaskThread.SetIdentity SetIdentity;
+        internal QueueTaskThread.SetIdentity SetIdentity;
         /// <summary>
         /// 当前尝试设置已完成消息标识
         /// </summary>

@@ -23,7 +23,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 最后一次访问数据锁
         /// </summary>
-        private volatile int lastLock;
+        private int lastLock;
         /// <summary>
         /// 最后一次访问的关键字
         /// </summary>

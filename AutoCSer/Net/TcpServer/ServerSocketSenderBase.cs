@@ -68,7 +68,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 是否正在输出
         /// </summary>
-        internal volatile int IsOutput;
+        internal int IsOutput;
         /// <summary>
         /// 套接字是否有效
         /// </summary>
@@ -98,6 +98,26 @@ namespace AutoCSer.Net.TcpServer
             this.ServerSocket = socket;
             IsBuildOutputThread = isBuildOutputThread;
             OutputSleep = outputSleep;
+        }
+        /// <summary>
+        /// 设置命令索引信息
+        /// </summary>
+        /// <param name="methodIndex"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool SetCommand(int methodIndex)
+        {
+            return ServerSocket.SetCommand(methodIndex);
+        }
+        /// <summary>
+        /// 设置基础命令索引信息
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool SetBaseCommand(int command)
+        {
+            return ServerSocket.SetBaseCommand(command);
         }
         /// <summary>
         /// 调用关闭事件

@@ -10,6 +10,18 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// </summary>
     public abstract unsafe class ServerSocket : SocketTimeoutLink
     {
+        /// <summary>
+        /// 二进制反序列化配置参数
+        /// </summary>
+        private readonly AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig;
+        /// <summary>
+        /// 命令位图
+        /// </summary>
+        protected Pointer.Size commandData;
+        /// <summary>
+        /// 命令位图
+        /// </summary>
+        protected MemoryMap commands;
 #if DOTNET2
         /// <summary>
         /// 套接字异步回调
@@ -28,7 +40,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        protected volatile int asyncLock;
+        protected int asyncLock;
 #endif
 #endif
         /// <summary>
@@ -142,6 +154,30 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         internal long TimeVerifyTicks;
 
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务端套接字
+        /// </summary>
+        internal ServerSocket() : base() { }
+#endif
+        /// <summary>
+        /// TCP 服务端套接字
+        /// </summary>
+        /// <param name="binaryDeSerializeMaxArraySize">二进制反序列化数组最大长度</param>
+        internal ServerSocket(int binaryDeSerializeMaxArraySize)
+        {
+            binaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
+        }
+        /// <summary>
+        /// 判断命令是否有效
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal unsafe bool IsCommand(int index)
+        {
+            return commands.Map == null || (commands.Get(index) != 0 && commandData.Data != null);
+        }
         /// <summary>
         /// 通过函数验证处理
         /// </summary>
@@ -176,7 +212,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 if (ReceiveDeSerializer == null)
                 {
                     ReceiveDeSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                    ReceiveDeSerializer.SetTcpServer();
+                    ReceiveDeSerializer.SetTcpServer(binaryDeSerializeConfig);
                 }
                 return ReceiveDeSerializer.DeSerializeTcpServer(ref data, ref value);
                 //if (ReceiveDeSerializer.DeSerializeTcpServer(ref data, ref value)) return true;
@@ -242,13 +278,54 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// TCP 服务
         /// </summary>
         internal readonly serverType Server;
+#if !NOJIT
+        /// <summary>
+        /// TCP 服务端套接字
+        /// </summary>
+        internal ServerSocket() : base() { }
+#endif
         /// <summary>
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
-        internal ServerSocket(serverType server)
+        internal ServerSocket(serverType server): base(server.Attribute.GetBinaryDeSerializeMaxArraySize)
         {
             Server = server;
+        }
+        /// <summary>
+        /// 设置命令索引信息
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        private unsafe bool setCommand(int command)
+        {
+            if ((uint)command <= (uint)Server.MaxCommand
+                && (commandData.Data != null || (commands.Map == null && Server.CreateCommandData(ref commandData, ref commands))))
+            {
+                commands.Set(command);
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 设置命令索引信息
+        /// </summary>
+        /// <param name="methodIndex"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool SetCommand(int methodIndex)
+        {
+            return setCommand(methodIndex + TcpServer.Server.CommandStartIndex);
+        }
+        /// <summary>
+        /// 设置基础命令索引信息
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool SetBaseCommand(int command)
+        {
+            return command < TcpServer.Server.CommandStartIndex && setCommand(command);
         }
         /// <summary>
         /// 错误日志处理

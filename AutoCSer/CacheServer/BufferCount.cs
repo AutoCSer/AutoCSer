@@ -96,7 +96,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 当前分配缓冲区访问锁
         /// </summary>
-        private volatile static int bufferCountLock;
+        private static int bufferCountLock;
         /// <summary>
         /// 当前分配缓冲区创建访问锁
         /// </summary>

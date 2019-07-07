@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 回调保持访问锁
         /// </summary>
-        private volatile int keepLock;
+        private int keepLock;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>

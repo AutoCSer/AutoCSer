@@ -59,6 +59,22 @@
     <Compile Include="Metadata\ClassGenericType.cs" />
     <Compile Include="Metadata\StructGenericType.cs" />
     <Compile Include="Metadata\UnionType.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\Client.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ClientDownloadFile.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ClientFile.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ClientUploadFile.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\DownloadData.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\DownloadFileIdentity.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\FileNameKey.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\IClient.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ListFileItem.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\Server.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ServerDownloadFile.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ServerFile.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\ServerUploadFile.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\SynchronousState.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\UnionType.cs" />
+    <Compile Include="Net\TcpServer\FileSynchronous\UploadFileIdentity.cs" />
     <Compile Include="NET2.0\Action.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleMapping32.cs" />
@@ -67,11 +83,16 @@
     <Compile Include="StateSearcher\ByteSearcher.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="Extension\SynchronizationContext.cs" />
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />
     <Compile Include="NumberToCharStream\JoinMethod.cs" />
     <Compile Include="StatusChanged.cs" />
     <Compile Include="Threading\LockManager.cs" />
+    <Compile Include="Threading\SynchronizationContextPost.cs" />
+    <Compile Include="Threading\TimerPeriodic.cs" />
+    <Compile Include="Threading\TimerPeriodicReader.cs" />
+    <Compile Include="Threading\TimerPeriodicUnit.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.Unity3D.csproj">

@@ -68,6 +68,10 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         ErrorType,
         /// <summary>
+        /// 数组大小超出范围
+        /// </summary>
+        ArraySizeOutOfRange,
+        /// <summary>
         /// 自定义序列化失败
         /// </summary>
         Custom,

@@ -15,6 +15,20 @@ namespace AutoCSer
         /// <typeparam name="valueType">数据类型</typeparam>
         /// <returns>字典</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static Dictionary<long, valueType> CreateLong<valueType>()
+        {
+#if __IOS__
+            return new Dictionary<long, valueType>(EqualityComparer.Long);
+#else
+            return new Dictionary<long, valueType>();
+#endif
+        }
+        /// <summary>
+        /// 创建字典
+        /// </summary>
+        /// <typeparam name="valueType">数据类型</typeparam>
+        /// <returns>字典</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static Dictionary<short, valueType> CreateShort<valueType>()
         {
 #if __IOS__

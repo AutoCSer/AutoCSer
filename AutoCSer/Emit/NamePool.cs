@@ -23,7 +23,7 @@ namespace AutoCSer.Emit
         /// <summary>
         /// 申请池获取访问锁
         /// </summary>
-        private volatile static int getLock;
+        private static int getLock;
         /// <summary>
         /// 申请池大小
         /// </summary>

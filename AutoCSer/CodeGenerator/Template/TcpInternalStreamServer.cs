@@ -354,7 +354,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 #region IF IsTimeVerify
                 private bool _timerVerify_(TcpInternalStreamClient client, AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender sender)

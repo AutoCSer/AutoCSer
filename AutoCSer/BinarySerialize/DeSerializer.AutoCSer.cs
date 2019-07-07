@@ -149,10 +149,11 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="config"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetTcpServer()
+        internal void SetTcpServer(DeSerializeConfig config)
         {
-            Config = DefaultConfig;
+            Config = config;
         }
         /// <summary>
         /// 反序列化

@@ -42,7 +42,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        protected volatile int receiveAsyncLock;
+        protected int receiveAsyncLock;
 #endif
 #endif
         /// <summary>
@@ -329,7 +329,7 @@ namespace AutoCSer.Net.TcpServer
             if (deSerializer == null)
             {
                 deSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                deSerializer.SetTcpServer();
+                deSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig);
             }
             bool isValue = deSerializer.DeSerializeTcpServer(ref data, ref value);
             if (Interlocked.CompareExchange(ref ReceiveDeSerializer, deSerializer, null) != null) deSerializer.Free();

@@ -73,7 +73,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 是否释放资源
         /// </summary>
-        private volatile int isDisposed;
+        private int isDisposed;
         /// <summary>
         /// 会话标识
         /// </summary>
@@ -132,7 +132,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 链表访问锁
         /// </summary>
-        private volatile static int sessionLinkLock;
+        private static int sessionLinkLock;
         /// <summary>
         /// 添加节点
         /// </summary>

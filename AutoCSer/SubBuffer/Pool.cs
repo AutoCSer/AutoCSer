@@ -55,7 +55,7 @@ namespace AutoCSer.SubBuffer
         /// <summary>
         /// 空闲缓冲区访问锁
         /// </summary>
-        private volatile int freeBufferLock;
+        private int freeBufferLock;
         /// <summary>
         /// 当前缓冲区索引
         /// </summary>

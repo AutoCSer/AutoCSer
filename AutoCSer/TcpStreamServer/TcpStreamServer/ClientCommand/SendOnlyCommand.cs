@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.Net.TcpServer;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace AutoCSer.Net.TcpStreamServer.ClientCommand
 {
@@ -33,7 +34,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
                 *(int*)stream.CurrentData = CommandInfo.Command | (int)(uint)(CommandInfo.CommandFlags | CommandFlags.NullData);
                 stream.ByteSize += sizeof(int);
                 Socket = null;
-                FreeLock = 1;
+                Interlocked.Exchange(ref FreeLock, 1);
                 IsBuildError = true;
                 return LinkNext;
             }
@@ -103,7 +104,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
 
                 InputParameter = default(inputParameterType);
                 Socket = null;
-                FreeLock = 1;
+                Interlocked.Exchange(ref FreeLock, 1);
                 IsBuildError = true;
                 return LinkNext;
             }

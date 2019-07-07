@@ -76,7 +76,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// 文件监视是否超时
         /// </summary>
-        private volatile int isFileWatcherTimeout;
+        private int isFileWatcherTimeout;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>

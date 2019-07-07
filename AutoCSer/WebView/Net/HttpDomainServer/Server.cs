@@ -62,7 +62,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 是否停止服务
         /// </summary>
-        private volatile int isDisposed;
+        private int isDisposed;
         /// <summary>
         /// 域名服务
         /// </summary>

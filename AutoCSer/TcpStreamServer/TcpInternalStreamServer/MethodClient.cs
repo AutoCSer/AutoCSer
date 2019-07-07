@@ -17,7 +17,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
-        private volatile int _isDisposed_;
+        private int _isDisposed_;
         /// <summary>
         /// 释放资源
         /// </summary>

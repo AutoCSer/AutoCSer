@@ -160,6 +160,14 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         internal override byte GetCommandPoolBitSize { get { return CommandPoolBitSize; } }
         /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        public int BinaryDeSerializeMaxArraySize = AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
+        /// <summary>
         /// 默认为 true 表示在创建客户端对象的时候自动启动连接，否则需要第一次调用触发
         /// </summary>
         public bool IsAutoClient = true;

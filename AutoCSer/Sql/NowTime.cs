@@ -26,7 +26,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 时间访问锁
         /// </summary>
-        private volatile int timeLock;
+        private int timeLock;
         /// <summary>
         /// 获取下一个时间
         /// </summary>

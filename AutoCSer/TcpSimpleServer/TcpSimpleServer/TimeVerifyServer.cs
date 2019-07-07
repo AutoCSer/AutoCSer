@@ -41,7 +41,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 最后一次验证时间访问锁
         /// </summary>
-        private volatile int lastVerifyTickLock;
+        private int lastVerifyTickLock;
         /// <summary>
         /// 时间验证函数
         /// </summary>

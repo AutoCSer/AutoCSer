@@ -47,7 +47,7 @@ namespace AutoCSer.Threading
             /// <summary>
             /// 弹出节点访问锁
             /// </summary>
-            private volatile int popLock;
+            private int popLock;
             /// <summary>
             /// 缓存数量
             /// </summary>

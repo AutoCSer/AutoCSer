@@ -93,7 +93,7 @@ namespace AutoCSer.Search
         /// <summary>
         /// 分词查询
         /// </summary>
-        private volatile WordQuery query;
+        private WordQuery query;
         /// <summary>
         /// 绑定结果池的分词搜索器
         /// </summary>

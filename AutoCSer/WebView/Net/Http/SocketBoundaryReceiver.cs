@@ -113,7 +113,7 @@ namespace AutoCSer.Net.Http
                     Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
                     return true;
                 }
-                httpSocket.ReceiveAsyncLock = 0;
+                Interlocked.Exchange(ref httpSocket.ReceiveAsyncLock, 0);
 #endif
 #if !DOTNET2
                 if (socketAsyncEventArgs.SocketError == SocketError.Success)

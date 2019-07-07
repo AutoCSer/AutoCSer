@@ -38,11 +38,11 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        internal volatile int ReceiveAsyncLock;
+        internal int ReceiveAsyncLock;
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private volatile int sendAsyncLock;
+        private int sendAsyncLock;
 #endif
         /// <summary>
         /// HTTP 套接字数据接收器
@@ -187,7 +187,7 @@ namespace AutoCSer.Net.Http
                         Interlocked.Exchange(ref sendAsyncLock, 0);
                         return;
                     }
-                    sendAsyncLock = 0;
+                    Interlocked.Exchange(ref sendAsyncLock, 0);
                     if (onSend()) return;
 #endif
                 }
@@ -294,7 +294,7 @@ namespace AutoCSer.Net.Http
                                 while (Interlocked.CompareExchange(ref ReceiveAsyncLock, 1, 0) != 0) Thread.Sleep(0);
                                 return;
                             }
-                            ReceiveAsyncLock = 0;
+                            Interlocked.Exchange(ref ReceiveAsyncLock, 0);
                             isHeaderError = true;
                             if (onReceive()) return;
 #endif
@@ -366,7 +366,7 @@ namespace AutoCSer.Net.Http
                         Interlocked.Exchange(ref sendAsyncLock, 0);
                         return true;
                     }
-                    sendAsyncLock = 0;
+                    Interlocked.Exchange(ref sendAsyncLock, 0);
                     if (--sendDepth == 0)
                     {
                         sendDepth = maxSendDepth;
@@ -485,7 +485,7 @@ namespace AutoCSer.Net.Http
                                             Interlocked.Exchange(ref sendAsyncLock, 0);
                                             return true;
                                         }
-                                        sendAsyncLock = 0;
+                                        Interlocked.Exchange(ref sendAsyncLock, 0);
                                         if (--sendDepth == 0)
                                         {
                                             sendDepth = maxSendDepth;
@@ -537,7 +537,7 @@ namespace AutoCSer.Net.Http
                             Interlocked.Exchange(ref sendAsyncLock, 0);
                             return true;
                         }
-                        sendAsyncLock = 0;
+                        Interlocked.Exchange(ref sendAsyncLock, 0);
                         if (--sendDepth == 0)
                         {
                             sendDepth = maxSendDepth;
@@ -647,7 +647,7 @@ namespace AutoCSer.Net.Http
                                 Interlocked.Exchange(ref ReceiveAsyncLock, 0);
                                 return true;
                             }
-                            ReceiveAsyncLock = 0;
+                            Interlocked.Exchange(ref ReceiveAsyncLock, 0);
                             goto START;
 #endif
                             case ReceiveType.GetForm: return OnGetForm();
@@ -823,7 +823,7 @@ namespace AutoCSer.Net.Http
                                         Interlocked.Exchange(ref sendAsyncLock, 0);
                                         return true;
                                     }
-                                    sendAsyncLock = 0;
+                                    Interlocked.Exchange(ref sendAsyncLock, 0);
                                     goto START;
 #endif
                                     case ResponseType.File:
@@ -862,7 +862,7 @@ namespace AutoCSer.Net.Http
                                     Interlocked.Exchange(ref sendAsyncLock, 0);
                                     return true;
                                 }
-                                sendAsyncLock = 0;
+                                Interlocked.Exchange(ref sendAsyncLock, 0);
                                 goto START;
 #endif
                                 }
@@ -895,7 +895,7 @@ namespace AutoCSer.Net.Http
                             Interlocked.Exchange(ref sendAsyncLock, 0);
                             return true;
                         }
-                        sendAsyncLock = 0;
+                        Interlocked.Exchange(ref sendAsyncLock, 0);
                         goto START;
                     }
 #endif
@@ -967,7 +967,7 @@ namespace AutoCSer.Net.Http
                             Interlocked.Exchange(ref sendAsyncLock, 0);
                             return;
                         }
-                        sendAsyncLock = 0;
+                        Interlocked.Exchange(ref sendAsyncLock, 0);
                         if (sendAsyncEventArgs.SocketError == SocketError.Success && sendAsyncEventArgs.BytesTransferred == Data.Length && getForm()) return;
 #endif
                     }

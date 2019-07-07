@@ -110,16 +110,20 @@ namespace AutoCSer.Deploy
         /// <param name="time"></param>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal bool Start(int identity, DateTime time, Timer timer)
+        internal DeployState Start(int identity, DateTime time, Timer timer)
         {
-            if (Identity == identity && Tasks.Length != 0 && Timer == null)
+            if (Identity == identity)
             {
-                (Timer = timer).DeployInfo = this;
-                if (time == default(DateTime)) timer.Start();
-                else AutoCSer.Threading.TimerTask.Default.Add(timer.Start, time);
-                return true;
+                if (Tasks.Length != 0 && Timer == null)
+                {
+                    (Timer = timer).DeployInfo = this;
+                    if (time == default(DateTime)) return timer.Start();
+                    AutoCSer.Threading.TimerTask.Default.Add(timer.StartTimer, time);
+                    return DeployState.Success;
+                }
+                return DeployState.Canceled;
             }
-            return false;
+            return DeployState.IdentityError;
         }
         /// <summary>
         /// 获取部署服务端标识

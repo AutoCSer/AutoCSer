@@ -52,10 +52,11 @@ namespace AutoCSer.Extension
                         {
                             case "In":
                             case "NotIn":
-                            //case "Like":
+                            case "Like":
                                 return false;
                         }
                     }
+                    else if (AutoCSer.Sql.MsSql.ExpressionConverter.IsStringContains(method)) return false;
                     return true;
             }
             return false;

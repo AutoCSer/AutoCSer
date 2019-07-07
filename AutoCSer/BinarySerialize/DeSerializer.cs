@@ -423,15 +423,22 @@ namespace AutoCSer.BinarySerialize
         /// <typeparam name="valueType"></typeparam>
         /// <param name="array"></param>
         /// <param name="length"></param>
+        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void createArray<valueType>(ref valueType[] array, int length)
+        private bool createArray<valueType>(ref valueType[] array, int length)
         {
-            array = new valueType[length];
-            if (isReferenceArray)
+            if (length <= Config.MaxArraySize)
             {
-                if (isReferenceMember) points.Add((int)(start - Read), array);
+                array = new valueType[length];
+                if (isReferenceArray)
+                {
+                    if (isReferenceMember) points.Add((int)(start - Read), array);
+                }
+                else isReferenceArray = true;
+                return true;
             }
-            else isReferenceArray = true;
+            State = DeSerializeState.ArraySizeOutOfRange;
+            return false;
         }
         /// <summary>
         /// 数组反序列化
@@ -1428,10 +1435,12 @@ namespace AutoCSer.BinarySerialize
                 int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
                 if (dataLength <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    byte* data = Read + sizeof(int);
-                    for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, byte>.FromInt(*data++)) ;
-                    Read += dataLength;
+                    if (createArray(ref array, length))
+                    {
+                        byte* data = Read + sizeof(int);
+                        for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, byte>.FromInt(*data++)) ;
+                        Read += dataLength;
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1449,10 +1458,12 @@ namespace AutoCSer.BinarySerialize
                 int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
                 if (dataLength <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    byte* data = Read + sizeof(int);
-                    for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, sbyte>.FromInt((sbyte)*data++)) ;
-                    Read += dataLength;
+                    if (createArray(ref array, length))
+                    {
+                        byte* data = Read + sizeof(int);
+                        for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, sbyte>.FromInt((sbyte)*data++)) ;
+                        Read += dataLength;
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1470,10 +1481,12 @@ namespace AutoCSer.BinarySerialize
                 int dataLength = ((length << 1) + (3 + sizeof(int))) & (int.MaxValue - 3);
                 if (dataLength <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    short* data = (short*)(Read + sizeof(int));
-                    for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, short>.FromInt(*data++)) ;
-                    Read += dataLength;
+                    if (createArray(ref array, length))
+                    {
+                        short* data = (short*)(Read + sizeof(int));
+                        for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, short>.FromInt(*data++)) ;
+                        Read += dataLength;
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1491,10 +1504,12 @@ namespace AutoCSer.BinarySerialize
                 int dataLength = ((length << 1) + (3 + sizeof(int))) & (int.MaxValue - 3);
                 if (dataLength <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    ushort* data = (ushort*)(Read + sizeof(int));
-                    for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, ushort>.FromInt(*data++)) ;
-                    Read += dataLength;
+                    if (createArray(ref array, length))
+                    {
+                        ushort* data = (ushort*)(Read + sizeof(int));
+                        for (int index = 0; index != array.Length; array[index++] = Emit.EnumCast<valueType, ushort>.FromInt(*data++)) ;
+                        Read += dataLength;
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1511,9 +1526,11 @@ namespace AutoCSer.BinarySerialize
             {
                 if ((length + 1) * sizeof(int) <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    Read += sizeof(int);
-                    for (int index = 0; index != array.Length; Read += sizeof(int)) array[index++] = Emit.EnumCast<valueType, int>.FromInt(*(int*)Read);
+                    if (createArray(ref array, length))
+                    {
+                        Read += sizeof(int);
+                        for (int index = 0; index != array.Length; Read += sizeof(int)) array[index++] = Emit.EnumCast<valueType, int>.FromInt(*(int*)Read);
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1530,9 +1547,11 @@ namespace AutoCSer.BinarySerialize
             {
                 if ((length + 1) * sizeof(int) <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    Read += sizeof(int);
-                    for (int index = 0; index != array.Length; Read += sizeof(uint)) array[index++] = Emit.EnumCast<valueType, uint>.FromInt(*(uint*)Read);
+                    if (createArray(ref array, length))
+                    {
+                        Read += sizeof(int);
+                        for (int index = 0; index != array.Length; Read += sizeof(uint)) array[index++] = Emit.EnumCast<valueType, uint>.FromInt(*(uint*)Read);
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1549,9 +1568,11 @@ namespace AutoCSer.BinarySerialize
             {
                 if (length * sizeof(long) + sizeof(int) <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    Read += sizeof(int);
-                    for (int index = 0; index != array.Length; Read += sizeof(long)) array[index++] = Emit.EnumCast<valueType, long>.FromInt(*(long*)Read);
+                    if (createArray(ref array, length))
+                    {
+                        Read += sizeof(int);
+                        for (int index = 0; index != array.Length; Read += sizeof(long)) array[index++] = Emit.EnumCast<valueType, long>.FromInt(*(long*)Read);
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1568,9 +1589,11 @@ namespace AutoCSer.BinarySerialize
             {
                 if (length * sizeof(ulong) + sizeof(int) <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    Read += sizeof(int);
-                    for (int index = 0; index != array.Length; Read += sizeof(ulong)) array[index++] = Emit.EnumCast<valueType, ulong>.FromInt(*(ulong*)Read);
+                    if (createArray(ref array, length))
+                    {
+                        Read += sizeof(int);
+                        for (int index = 0; index != array.Length; Read += sizeof(ulong)) array[index++] = Emit.EnumCast<valueType, ulong>.FromInt(*(ulong*)Read);
+                    }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
             }
@@ -1588,18 +1611,20 @@ namespace AutoCSer.BinarySerialize
                 int mapLength = ((length + (31 + 32)) >> 5) << 2;
                 if (mapLength <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    DeSerializeArrayMap arrayMap = new DeSerializeArrayMap(Read + sizeof(int));
-                    Read += mapLength;
-                    for (int index = 0; index != array.Length; ++index)
+                    if (createArray(ref array, length))
                     {
-                        if (arrayMap.Next() == 0) array[index] = null;
-                        else
+                        DeSerializeArrayMap arrayMap = new DeSerializeArrayMap(Read + sizeof(int));
+                        Read += mapLength;
+                        for (int index = 0; index != array.Length; ++index)
                         {
-                            valueType value = default(valueType);
-                            TypeDeSerializer<valueType>.StructDeSerialize(this, ref value);
-                            if (State != DeSerializeState.Success) return;
-                            array[index] = value;
+                            if (arrayMap.Next() == 0) array[index] = null;
+                            else
+                            {
+                                valueType value = default(valueType);
+                                TypeDeSerializer<valueType>.StructDeSerialize(this, ref value);
+                                if (State != DeSerializeState.Success) return;
+                                array[index] = value;
+                            }
                         }
                     }
                 }
@@ -1618,12 +1643,14 @@ namespace AutoCSer.BinarySerialize
             {
                 if ((length + 1) * sizeof(int) <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    Read += sizeof(int);
-                    for (int index = 0; index != array.Length; ++index)
+                    if (createArray(ref array, length))
                     {
-                        TypeDeSerializer<valueType>.StructDeSerialize(this, ref array[index]);
-                        if (State != DeSerializeState.Success) return;
+                        Read += sizeof(int);
+                        for (int index = 0; index != array.Length; ++index)
+                        {
+                            TypeDeSerializer<valueType>.StructDeSerialize(this, ref array[index]);
+                            if (State != DeSerializeState.Success) return;
+                        }
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -1642,16 +1669,18 @@ namespace AutoCSer.BinarySerialize
                 int mapLength = ((length + (31 + 32)) >> 5) << 2;
                 if (mapLength <= (int)(end - Read))
                 {
-                    createArray(ref array, length);
-                    DeSerializeArrayMap arrayMap = new DeSerializeArrayMap(Read + sizeof(int));
-                    Read += mapLength;
-                    for (int index = 0; index != array.Length; ++index)
+                    if (createArray(ref array, length))
                     {
-                        if (arrayMap.Next() == 0) array[index] = null;
-                        else
+                        DeSerializeArrayMap arrayMap = new DeSerializeArrayMap(Read + sizeof(int));
+                        Read += mapLength;
+                        for (int index = 0; index != array.Length; ++index)
                         {
-                            TypeDeSerializer<valueType>.ClassDeSerialize(this, ref array[index]);
-                            if (State != DeSerializeState.Success) return;
+                            if (arrayMap.Next() == 0) array[index] = null;
+                            else
+                            {
+                                TypeDeSerializer<valueType>.ClassDeSerialize(this, ref array[index]);
+                                if (State != DeSerializeState.Success) return;
+                            }
                         }
                     }
                 }

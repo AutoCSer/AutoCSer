@@ -9,7 +9,7 @@ namespace AutoCSer
     /// 汉字编码检测
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    internal unsafe struct ChineseEncoder
+    public unsafe struct ChineseEncoder
     {
         /// <summary>
         /// UTF32文件BOM
@@ -189,7 +189,7 @@ namespace AutoCSer
                 utf16Char[0] = char.MaxValue;
                 utf16Char[0x7684 & 0xf] = (char)0x7684;
                 //utf16Char[0x662f & 0xf] = (char)0x662f;
-                utf16Char[0x4e0d & 0xf] = (char)0x4e0d;
+                //utf16Char[0x4e0d & 0xf] = (char)0x4e0d;
                 utf16Char[0x4e86 & 0xf] = (char)0x4e86;
                 //utf16Char[0x4e2a & 0xf] = (char)0x4e2a;
                 utf16Char[0xff0c & 0xf] = (char)0xff0c;
@@ -200,7 +200,7 @@ namespace AutoCSer
                 bigUtf16Char[0] = char.MaxValue;
                 bigUtf16Char[(0x8476 >> 8) & 0xf] = (char)0x8476;
                 //bigUtf16Char[(0x2f66 >> 8) & 0xf] = (char)0x2f66;
-                bigUtf16Char[(0x0d4e >> 8) & 0xf] = (char)0x0d4e;
+                //bigUtf16Char[(0x0d4e >> 8) & 0xf] = (char)0x0d4e;
                 bigUtf16Char[(0x864e >> 8) & 0xf] = (char)0x864e;
                 //bigUtf16Char[(0x2a4e >> 8) & 0xf] = (char)0x2a4e;
                 bigUtf16Char[(0x0cff >> 8) & 0xf] = (char)0x0cff;
@@ -718,7 +718,7 @@ namespace AutoCSer
             utf32Char[0] = uint.MaxValue;
             utf32Char[0x7684 & 0xf] = 0x7684;
             utf32Char[0x662f & 0xf] = 0x662f;
-            utf32Char[0x4e0d & 0xf] = 0x4e0d;
+            //utf32Char[0x4e0d & 0xf] = 0x4e0d;
             utf32Char[0x4e86 & 0xf] = 0x4e86;
             utf32Char[0x4e2a & 0xf] = 0x4e2a;
             utf32Char[0xff0c & 0xf] = 0xff0c;

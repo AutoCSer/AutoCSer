@@ -13361,7 +13361,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {");
             _if_ = false;
                     if (IsTimeVerify)
@@ -20180,7 +20180,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
+            public partial class TcpInternalSimpleClient : AutoCSer.Net.TcpInternalSimpleServer.MethodClient<TcpInternalSimpleClient>
             {");
             _if_ = false;
                     if (IsTimeVerify)
@@ -24173,7 +24173,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {");
             _if_ = false;
                     if (IsTimeVerify)
@@ -30939,7 +30939,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
+            public partial class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
             {");
             _if_ = false;
                     if (IsTimeVerify)
@@ -37733,7 +37733,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
+            public partial class TcpOpenSimpleClient : AutoCSer.Net.TcpOpenSimpleServer.MethodClient<TcpOpenSimpleClient>
             {");
             _if_ = false;
                     if (IsTimeVerify)
@@ -41701,7 +41701,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {");
             _if_ = false;
                     if (IsTimeVerify)

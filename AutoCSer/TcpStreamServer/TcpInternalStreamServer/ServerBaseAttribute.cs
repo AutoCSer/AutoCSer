@@ -160,5 +160,13 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// 默认为 true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
         /// </summary>
         public bool IsSingleRegister = true;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        public int BinaryDeSerializeMaxArraySize = AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize;
+        /// <summary>
+        /// 二进制反序列化数组最大长度
+        /// </summary>
+        internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
     }
 }

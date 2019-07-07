@@ -107,7 +107,7 @@ namespace AutoCSer.Sql.MySql
             else
             {
                 sqlType = memberType.formCSharpType();
-                size = sqlType.getSize();
+                size = sqlType.getSize(memberAttribute); 
             }
             return new Column
             {
@@ -346,7 +346,15 @@ index ");
             else
             {
                 sqlStream.WriteNotNull(column.DbType.getSqlTypeName());
-                if (column.DbType.isStringType() != 0)
+                if (column.DbType.isDecimalType() && column.Size != 0)
+                {
+                    sqlStream.Write('(');
+                    AutoCSer.Extension.Number.ToString(column.Size >> 8, sqlStream);
+                    sqlStream.Write(',');
+                    AutoCSer.Extension.Number.ToString((column.Size) & 0xff, sqlStream);
+                    sqlStream.Write(')');
+                } 
+                if (column.DbType.isStringType())
                 {
                     if (column.Size != int.MaxValue)
                     {

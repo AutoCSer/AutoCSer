@@ -45,7 +45,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 是否释放资源
         /// </summary>
-        private volatile int isDisposed;
+        private int isDisposed;
         /// <summary>
         /// TCP 内部注册写服务
         /// </summary>
@@ -386,7 +386,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 链表访问锁
         /// </summary>
-        private volatile static int serverLinkLock;
+        private static int serverLinkLock;
         /// <summary>
         /// 添加节点
         /// </summary>

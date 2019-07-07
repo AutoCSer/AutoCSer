@@ -168,7 +168,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 空闲命令结束位置访问锁
         /// </summary>
-        private volatile int freeEndIndexLock;
+        private int freeEndIndexLock;
         /// <summary>
         /// 是否输出过错误日志 活动会话数量过多
         /// </summary>

@@ -21,7 +21,7 @@ namespace AutoCSer
         /// <summary>
         /// 32位种子位置
         /// </summary>
-        private volatile int current;
+        private int current;
         /// <summary>
         /// 64位种子位置
         /// </summary>
@@ -29,7 +29,7 @@ namespace AutoCSer
         /// <summary>
         /// 64位种子位置访问锁
         /// </summary>
-        private volatile int currentLock;
+        private int currentLock;
         /// <summary>
         /// 随机位缓存
         /// </summary>
@@ -41,7 +41,7 @@ namespace AutoCSer
         /// <summary>
         /// 字节缓存访问锁
         /// </summary>
-        private volatile int byteLock;
+        private int byteLock;
         /// <summary>
         /// 字节缓存
         /// </summary>
@@ -53,7 +53,7 @@ namespace AutoCSer
         /// <summary>
         /// 双字节缓存访问锁
         /// </summary>
-        private volatile int ushortLock;
+        private int ushortLock;
         /// <summary>
         /// 双字节缓存
         /// </summary>

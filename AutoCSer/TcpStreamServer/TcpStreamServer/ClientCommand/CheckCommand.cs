@@ -24,7 +24,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
                 *(int*)stream.CurrentData = Server.CheckCommandIndex | (int)(uint)TcpServer.CommandFlags.NullData;
                 stream.ByteSize += sizeof(int);
             }
-            FreeLock = 1;
+            Interlocked.Exchange(ref FreeLock, 1);
             IsBuildError = true;
             Socket = null;
             return LinkNext;

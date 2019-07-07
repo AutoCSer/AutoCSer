@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// .NET 底层线程安全 BUG 处理锁
         /// </summary>
-        private volatile int sendAsyncLock;
+        private int sendAsyncLock;
 #endif
 #endif
         /// <summary>
@@ -303,7 +303,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 {
                     sendData.MoveStart(sendAsyncEventArgs.BytesTransferred);
 #if !DotNetStandard
-                    sendAsyncLock = 0;
+                    Interlocked.Exchange(ref sendAsyncLock, 0);
 #endif
                     if (sendData.Length == 0)
                     {

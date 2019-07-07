@@ -101,7 +101,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 已完成消息标识访问锁
         /// </summary>
-        private volatile int saveStateLock;
+        private int saveStateLock;
         /// <summary>
         /// 状态文件名称
         /// </summary>

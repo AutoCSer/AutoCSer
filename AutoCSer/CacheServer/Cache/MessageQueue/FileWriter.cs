@@ -147,7 +147,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 是否正在写入操作
         /// </summary>
-        private volatile int isWrite;
+        private int isWrite;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>

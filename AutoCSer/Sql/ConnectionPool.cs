@@ -21,7 +21,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 连接数组访问锁
         /// </summary>
-        private volatile int arrayLock;
+        private int arrayLock;
         /// <summary>
         /// 是否启用连接池
         /// </summary>
