@@ -14,9 +14,11 @@ namespace AutoCSer.Web.DeployServer
         /// </summary>
         /// <param name="server"></param>
         /// <param name="customData"></param>
-        public void OnDeployServerUpdated(Server server, byte[] customData)
+        /// <returns></returns>
+        public DeployState OnDeployServerUpdated(Server server, byte[] customData)
         {
             AutoCSer.Threading.ThreadPool.TinyBackground.Start(server.OnDeployServerUpdated);
+            return DeployState.Success;
         }
         /// <summary>
         /// 游戏服务更新以后的后续处理

@@ -221,7 +221,7 @@ namespace AutoCSer.Metadata
         /// <summary>
         /// 成员索引分组集合
         /// </summary>
-        private static readonly Dictionary<Type, MemberIndexGroup> cache = AutoCSer.DictionaryCreator.CreateOnly<Type, MemberIndexGroup>();
+        private static Dictionary<Type, MemberIndexGroup> cache = AutoCSer.DictionaryCreator.CreateOnly<Type, MemberIndexGroup>();
         /// <summary>
         /// 成员索引分组集合访问锁
         /// </summary>
@@ -340,8 +340,11 @@ namespace AutoCSer.Metadata
         internal static void ClearCache()
         {
             Monitor.Enter(cacheLock);
-            cache.Clear();
-            Monitor.Exit(cacheLock);
+            try
+            {
+                if (cache.Count != 0) cache = AutoCSer.DictionaryCreator.CreateOnly<Type, MemberIndexGroup>();
+            }
+            finally { Monitor.Exit(cacheLock); }
         }
     }
     /// <summary>

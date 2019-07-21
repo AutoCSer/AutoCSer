@@ -1119,7 +1119,7 @@ namespace AutoCSer.BinarySerialize
                         if (dataLength <= (int)(end - Read))
                         {
                             value = new string((char*)(Read + sizeof(int)), 0, length >> 1);
-                            if (isReferenceMember) points.Add((int)(start - Read), value);
+                            if (isReferenceMember) points.Set((int)(start - Read), value);
                             Read += dataLength;
                         }
                         else State = DeSerializeState.IndexOutOfRange;
@@ -1137,7 +1137,7 @@ namespace AutoCSer.BinarySerialize
                     if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
                     {
                         value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
-                        if (isReferenceMember) points.Add((int)(start - Read), value);
+                        if (isReferenceMember) points.Set((int)(start - Read), value);
                         fixed (char* valueFixed = value)
                         {
                             byte* read = DeSerialize(Read, end, valueFixed, length, lengthSize);
@@ -1256,7 +1256,7 @@ namespace AutoCSer.BinarySerialize
                 {
                     if (remoteType.TryGet(out value))
                     {
-                        if (isReferenceMember) points.Add(point, value);
+                        if (isReferenceMember) points.Set(ref point, value);
                     }
                     else State = DeSerializeState.ErrorType;
                 }

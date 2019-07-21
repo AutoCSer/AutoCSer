@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Search
 {
@@ -13,23 +14,39 @@ namespace AutoCSer.Search
         /// </summary>
         internal string FormatText;
         /// <summary>
-        /// 可直接用于搜索简体文本
+        /// 搜索简体文本字符长度
         /// </summary>
-        public string Text
-        {
-            get { return FormatText; }
-        }
+        internal int Size;
         /// <summary>
         /// 可直接用于搜索简体文本
         /// </summary>
+        public SubString Text
+        {
+            get { return new SubString(0, Size, FormatText); }
+        }
+        /// <summary>
+        /// 设置文本数据
+        /// </summary>
         /// <param name="text">文本</param>
         /// <param name="maxSize">最大搜索文本长度（包括间隔空格）</param>
-        public Simplified(string text, int maxSize)
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Set(string text, int maxSize)
         {
+            Set(text, maxSize, false);
+        }
+        /// <summary>
+        /// 设置文本数据
+        /// </summary>
+        /// <param name="text">文本</param>
+        /// <param name="maxSize">最大搜索文本长度（包括间隔空格）</param>
+        /// <param name="isThreadParameter">线程参数</param>
+        internal void Set(string text, int maxSize, bool isThreadParameter)
+        {
+            Size = 0;
             if (!string.IsNullOrEmpty(text))
             {
                 char* simplified = chars.Char;
-                int size = 0, isSpace = 1;
+                int isSpace = 1;
                 fixed (char* textFixed = text)
                 {
                     char* start = textFixed, end = textFixed + text.Length;
@@ -38,24 +55,27 @@ namespace AutoCSer.Search
                         if (isSpace == 0)
                         {
                             if (simplified[*start] == ' ') isSpace = 1;
-                            if (++size == maxSize) break;
+                            if (++Size == maxSize) break;
                         }
                         else if (simplified[*start] != ' ')
                         {
                             isSpace = 0;
-                            if (++size == maxSize) break;
+                            if (++Size == maxSize) break;
                         }
                     }
                     while (++start != end);
-                    if (size != 0)
+                    if (Size != 0)
                     {
-                        if (isSpace == 0) ++size;
-                        FormatText = AutoCSer.Extension.StringExtension.FastAllocateString(size);
+                        if (isSpace == 0) ++Size;
+                        if (FormatText == null || FormatText.Length < Size)
+                        {
+                            FormatText = AutoCSer.Extension.StringExtension.FastAllocateString(isThreadParameter ? maxSize + 1 : Size);
+                        }
                         isSpace = 1;
                         fixed (char* newTextFixed = FormatText)
                         {
                             char* write = newTextFixed;
-                            end = newTextFixed + (size - 1);
+                            end = newTextFixed + (Size - 1);
                             start = textFixed;
                             do
                             {
@@ -79,7 +99,15 @@ namespace AutoCSer.Search
                     }
                 }
             }
-            FormatText = null;
+        }
+        /// <summary>
+        /// 搜索简体文本字符长度
+        /// </summary>
+        /// <returns>搜索简体文本字符长度</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public int GetSize()
+        {
+            return Size;
         }
         /// <summary>
         /// 格式化字符集

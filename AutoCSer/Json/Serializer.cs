@@ -47,7 +47,7 @@ namespace AutoCSer.Json
         /// <summary>
         /// 对象编号
         /// </summary>
-        private Dictionary<ObjectReference, string> objectIndexs;
+        private ReusableDictionary<ObjectReference, string> objectIndexs;
         /// <summary>
         /// 祖先节点集合
         /// </summary>
@@ -161,7 +161,7 @@ namespace AutoCSer.Json
                 if (!isLoopObject)
                 {
                     isLoopObject = true;
-                    if (objectIndexs == null) objectIndexs = DictionaryCreator<ObjectReference>.Create<string>();
+                    if (objectIndexs == null) objectIndexs = ReusableDictionary<ObjectReference>.Create<string>();
                 }
                 Warning = SerializeWarning.None;
                 checkLoopDepth = Config.CheckLoopDepth <= 0 ? SerializeConfig.DefaultCheckLoopDepth : Config.CheckLoopDepth;
@@ -257,7 +257,7 @@ namespace AutoCSer.Json
                         CharStream.UnsafeSimpleWrite(",[])");
                         return false;
                     }
-                    objectIndexs.Add(new ObjectReference { Value = value }, index = objectIndexs.Count.toString());
+                    objectIndexs.Set(new ObjectReference { Value = value }, index = objectIndexs.Count.toString());
                     CharStream.PrepLength(Config.SetLoopObject.Length + index.Length + (2 + 2));
                     CharStream.UnsafeSimpleWrite(Config.SetLoopObject);
                     CharStream.UnsafeWrite('(');
@@ -309,7 +309,7 @@ namespace AutoCSer.Json
                         CharStream.UnsafeWrite(')');
                         return false;
                     }
-                    objectIndexs.Add(new ObjectReference { Value = value }, index = objectIndexs.Count.toString());
+                    objectIndexs.Set(new ObjectReference { Value = value }, index = objectIndexs.Count.toString());
                     CharStream.PrepLength(Config.SetLoopObject.Length + index.Length + (2 + 2));
                     CharStream.UnsafeSimpleWrite(Config.SetLoopObject);
                     CharStream.UnsafeWrite('(');

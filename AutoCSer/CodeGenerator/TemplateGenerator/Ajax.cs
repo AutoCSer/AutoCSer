@@ -167,7 +167,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 函数参数类型与名称集合关键字
                 /// </summary>
-                public readonly Dictionary<MethodParameterTypeNames, MethodParameterTypeNames> ParameterIndexs = DictionaryCreator<MethodParameterTypeNames>.Create<MethodParameterTypeNames>();
+                public readonly ReusableDictionary<MethodParameterTypeNames, MethodParameterTypeNames> ParameterIndexs = ReusableDictionary<MethodParameterTypeNames>.Create<MethodParameterTypeNames>();
                 /// <summary>
                 /// 参数序号
                 /// </summary>
@@ -177,7 +177,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public void Clear()
                 {
-                    ParameterIndexs.Clear();
+                    ParameterIndexs.Empty();
                     ParameterIndex = 0;
                 }
                 /// <summary>
@@ -192,19 +192,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     MethodParameterTypeNames historyInputJsonParameterIndex = default(MethodParameterTypeNames), historyOutputJsonParameterIndex = default(MethodParameterTypeNames);
                     if (inputParameterTypeNames.IsParameter)
                     {
-                        if (!ParameterIndexs.TryGetValue(inputParameterTypeNames, out historyInputJsonParameterIndex))
+                        if (!ParameterIndexs.TryGetValue(ref inputParameterTypeNames, out historyInputJsonParameterIndex))
                         {
                             inputParameterTypeNames.Copy(++ParameterIndex);
-                            ParameterIndexs.Add(inputParameterTypeNames, historyInputJsonParameterIndex = inputParameterTypeNames);
+                            ParameterIndexs.Set(ref inputParameterTypeNames, historyInputJsonParameterIndex = inputParameterTypeNames);
                         }
                         method.InputParameterIndex = historyInputJsonParameterIndex.Index;
                     }
                     if (outputParameterTypeNames.IsParameter)
                     {
-                        if (!ParameterIndexs.TryGetValue(outputParameterTypeNames, out historyOutputJsonParameterIndex))
+                        if (!ParameterIndexs.TryGetValue(ref outputParameterTypeNames, out historyOutputJsonParameterIndex))
                         {
                             outputParameterTypeNames.Copy(++ParameterIndex);
-                            ParameterIndexs.Add(outputParameterTypeNames, historyOutputJsonParameterIndex = outputParameterTypeNames);
+                            ParameterIndexs.Set(ref outputParameterTypeNames, historyOutputJsonParameterIndex = outputParameterTypeNames);
                         }
                         method.OutputParameterIndex = historyOutputJsonParameterIndex.Index;
                     }
@@ -218,7 +218,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <returns></returns>
                 public MethodParameterTypeNames[] Get()
                 {
-                    return ParameterIndexs.Keys.getArray();
+                    return ParameterIndexs.Keys.getLeftArray(ParameterIndexs.Count).ToArray();
                 }
             }
             /// <summary>

@@ -806,7 +806,7 @@ namespace AutoCSer.CodeGenerator
                     if (valueIndex != -1)
                     {
                         value = memberName.GetSub(valueIndex + 1);
-                        memberName = memberName.GetSub(0, valueIndex);
+                        memberName.Sub(0, valueIndex);
                     }
                     MemberNode member = null;
                     bool isDepth = false, isClient = false, isNot = false;
@@ -1035,7 +1035,7 @@ namespace AutoCSer.CodeGenerator
                     if (valueIndex != -1)
                     {
                         value = memberName.GetSub(valueIndex + 1);
-                        memberName = memberName.GetSub(0, valueIndex);
+                        memberName.Sub(0, valueIndex);
                     }
                     MemberNode member = null;
                     bool isDepth = false, isClient = false, isNot = false;

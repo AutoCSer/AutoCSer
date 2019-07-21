@@ -65,6 +65,8 @@
     <Compile Include="StaticSearchInitializeAdder.cs" />
     <Compile Include="StaticSearchData.cs" />
     <Compile Include="StaticSearchQueue.cs" />
+    <Compile Include="ThreadParameter.cs" />
+    <Compile Include="Weight.cs" />
     <Compile Include="WordCounter.cs" />
     <Compile Include="StaticSearcher.cs" />
     <Compile Include="Simplified.cs" />

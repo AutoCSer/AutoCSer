@@ -36,7 +36,7 @@ namespace AutoCSer
         /// <summary>
         /// 数据集合
         /// </summary>
-        private Dictionary<keyType, Node> dictionary;
+        private ReusableDictionary<keyType, Node> dictionary;
         /// <summary>
         /// 获取所有数据
         /// </summary>
@@ -44,7 +44,7 @@ namespace AutoCSer
         {
             get
             {
-                foreach (KeyValuePair<keyType, Node> KeyValue in dictionary) yield return new KeyValue<keyType, valueType>(KeyValue.Key, KeyValue.Value.Value);
+                foreach (KeyValue<keyType, Node> KeyValue in dictionary.KeyValues) yield return new KeyValue<keyType, valueType>(KeyValue.Key, KeyValue.Value.Value);
             }
         }
         /// <summary>
@@ -80,9 +80,19 @@ namespace AutoCSer
         /// 先进先出优先队列
         /// </summary>
         /// <param name="dictionaryCapacity">字典初始化容器尺寸</param>
-        public FifoPriorityQueue(int dictionaryCapacity = 0)
+        /// <param name="isClear">是否需要清除数据</param>
+        public FifoPriorityQueue(int dictionaryCapacity = 0, bool isClear = true)
         {
-            dictionary = dictionaryCapacity <= 0 ? DictionaryCreator<keyType>.Create<Node>() : DictionaryCreator<keyType>.Create<Node>(dictionaryCapacity);
+            dictionary = ReusableDictionary<keyType>.Create<Node>(dictionaryCapacity, isClear);
+        }
+        /// <summary>
+        /// 长度设为0（注意：对于引用类型没有置 0 可能导致内存泄露）
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Empty()
+        {
+            dictionary.Empty();
+            header = end = null;
         }
         /// <summary>
         /// 清除数据
@@ -131,7 +141,7 @@ namespace AutoCSer
         private Node getNode(ref keyType key)
         {
             Node node;
-            if (dictionary.TryGetValue(key, out node))
+            if (dictionary.TryGetValue(ref key, out node))
             {
                 if (node != end)
                 {
@@ -155,7 +165,7 @@ namespace AutoCSer
         public bool TryGetOnly(keyType key, out valueType value)
         {
             Node node;
-            if (dictionary.TryGetValue(key, out node))
+            if (dictionary.TryGetValue(ref key, out node))
             {
                 value = node.Value;
                 return true;
@@ -193,7 +203,7 @@ namespace AutoCSer
         public void SetOnly(keyType key, valueType value)
         {
             Node node;
-            if (dictionary.TryGetValue(key, out node)) node.Value = value;
+            if (dictionary.TryGetValue(ref key, out node)) node.Value = value;
         }
         /// <summary>
         /// 添加数据
@@ -204,7 +214,7 @@ namespace AutoCSer
         internal void UnsafeAdd(ref keyType key, valueType value)
         {
             Node node = new Node { Value = value, Key = key, Previous = end };
-            dictionary.Add(key, node);
+            dictionary.Set(ref key, node);
             if (end == null) header = end = node;
             else
             {
@@ -221,7 +231,7 @@ namespace AutoCSer
             Node node = header;
             if ((header = header.Next) == null) end = null;
             else header.Previous = null;
-            dictionary.Remove(node.Key);
+            dictionary.Remove(ref node.Key);
             return node;
         }
         /// <summary>
@@ -250,9 +260,8 @@ namespace AutoCSer
         public bool Remove(ref keyType key, out valueType value)
         {
             Node node;
-            if (dictionary.TryGetValue(key, out node))
+            if (dictionary.Remove(ref key, out node))
             {
-                dictionary.Remove(key);
                 if (node.Previous == null)
                 {
                     header = node.Next;

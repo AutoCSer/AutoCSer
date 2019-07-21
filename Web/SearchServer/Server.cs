@@ -61,15 +61,16 @@ namespace AutoCSer.Web.SearchServer
         [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod]
         internal static SearchItem[] Search(string key)
         {
-            AutoCSer.Search.Simplified simplified = new AutoCSer.Search.Simplified(key, maxTextSize);
-            if (simplified.Text != null)
+            AutoCSer.Search.Simplified simplified = new AutoCSer.Search.Simplified();
+            simplified.Set(key, maxTextSize);
+            if (simplified.GetSize() != 0)
             {
                 HashString cacheKey = simplified.Text;
                 SearchItem[] value = resultCache.Get(ref cacheKey, null);
                 if (value == null)
                 {
                     long wordCount = Searcher.Default.Results.WordCount;
-                    LeftArray<KeyValue<HashString, AutoCSer.Search.StaticSearcher<DataKey>.QueryResult>> results = Searcher.Default.Search(simplified);
+                    LeftArray<KeyValue<HashString, AutoCSer.Search.StaticSearcher<DataKey>.QueryResult>> results = Searcher.Default.Search(ref simplified);
                     switch (results.Count)
                     {
                         case 0: value = NullValue<SearchItem>.Array; break;
@@ -78,9 +79,9 @@ namespace AutoCSer.Web.SearchServer
                                 .GetRangeSortDesc(result => getWeight(result.Key.Type, result.Value.Indexs.Length), 0, pageSize, result => new SearchItem(results[0].Key, result));
                             break;
                         default:
-                            value = Searcher.Default.GetWeights(ref results, Weight.Default)
-                                .getArray(weight => new KeyValue<DataKey, int>(weight.Key, getWeight(weight.Key.Type, weight.Value)))
-                                .getRangeSortDesc(weight => weight.Value, 0, pageSize, weight => new SearchItem(weight.Key, results));
+                            value = Searcher.Default.GetWeights(ref results).KeyValues
+                                .getLeftArray(weight => new KeyValue<DataKey, int>(weight.Key, getWeight(weight.Key.Type, weight.Value)))
+                                .GetRangeSortDesc(weight => weight.Value, 0, pageSize, weight => new SearchItem(weight.Key, results));
                             break;
                     }
                     Monitor.Enter(resultCacheLock);

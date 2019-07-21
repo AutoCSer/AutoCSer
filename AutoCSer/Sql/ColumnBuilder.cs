@@ -107,7 +107,7 @@ namespace AutoCSer.Sql
             Monitor.Enter(sqlColumnLock);
             try
             {
-                sqlColumns.Clear();
+                if (sqlColumns.Count != 0) sqlColumns = DictionaryCreator.CreateOnly<Type, Column[]>();
             }
             finally { Monitor.Exit(sqlColumnLock); }
         }

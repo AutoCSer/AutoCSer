@@ -82,6 +82,14 @@ namespace AutoCSer
             Length = length;
         }
         /// <summary>
+        /// 长度设为0（注意：对于引用类型没有置 0 可能导致内存泄露）
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Empty()
+        {
+            Length = 0;
+        }
+        /// <summary>
         /// 返回非 null 数组  
         /// </summary>
         /// <returns></returns>

@@ -27,7 +27,7 @@ namespace AutoCSer.Net.HtmlTitle
         /// <summary>
         /// 域名转换IP地址集合
         /// </summary>
-        private static readonly FifoPriorityQueue<HashBytes, DomainIPAddress> domainIps = new FifoPriorityQueue<HashBytes, DomainIPAddress>();
+        private static FifoPriorityQueue<HashBytes, DomainIPAddress> domainIps = new FifoPriorityQueue<HashBytes, DomainIPAddress>();
         /// <summary>
         /// 域名转换IP地址访问锁
         /// </summary>
@@ -113,8 +113,11 @@ namespace AutoCSer.Net.HtmlTitle
         private static void clearCache(int count)
         {
             Monitor.Enter(domainIpLock);
-            domainIps.Clear();
-            Monitor.Exit(domainIpLock);
+            try
+            {
+                if (domainIps.Count != 0) domainIps = new FifoPriorityQueue<HashBytes, DomainIPAddress>();
+            }
+            finally { Monitor.Exit(domainIpLock); }
         }
         static DomainIPAddress()
         {

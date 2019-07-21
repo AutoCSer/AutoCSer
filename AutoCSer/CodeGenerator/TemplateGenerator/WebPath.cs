@@ -74,7 +74,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             protected override void nextCreate()
             {
-                PathMembers.Clear();
+                PathMembers.Length = 0;
                 object pathValue = typeof(AutoCSer.Emit.Constructor<>).MakeGenericType(Type).GetMethod("Default", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, NullValue<Type>.Array, null).Invoke(null, null);
                 string queryName = (Attribute.QueryName ?? (Type.Type.Name + "Id")), query;
                 FieldInfo idField = Type.Type.GetField("Id", BindingFlags.Instance | BindingFlags.Public);

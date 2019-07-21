@@ -13,13 +13,13 @@ namespace AutoCSer.Threading
     internal sealed class LockLastDictionary<keyType, valueType> where keyType : class
     {
         /// <summary>
-        /// 字典
-        /// </summary>
-        private readonly Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
-        /// <summary>
         /// 访问锁
         /// </summary>
         private readonly object dictionaryLock = new object();
+        /// <summary>
+        /// 字典
+        /// </summary>
+        private Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
         /// <summary>
         /// 最后一次访问数据锁
         /// </summary>
@@ -39,12 +39,15 @@ namespace AutoCSer.Threading
         public void Clear()
         {
             Monitor.Enter(dictionaryLock);
-            dictionary.Clear();
-            while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
-            lastKey = default(keyType);
-            lastValue = default(valueType);
-            System.Threading.Interlocked.Exchange(ref lastLock, 0);
-            Monitor.Exit(dictionaryLock);
+            try
+            {
+                if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateOnly<keyType, valueType>();
+                while (System.Threading.Interlocked.CompareExchange(ref lastLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.LockLastDictionarySet);
+                lastKey = default(keyType);
+                lastValue = default(valueType);
+                System.Threading.Interlocked.Exchange(ref lastLock, 0);
+            }
+            finally { Monitor.Exit(dictionaryLock); }
         }
         /// <summary>
         /// 获取数据

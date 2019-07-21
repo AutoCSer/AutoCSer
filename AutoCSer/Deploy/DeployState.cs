@@ -56,5 +56,9 @@ namespace AutoCSer.Deploy
         /// 执行异常
         /// </summary>
         Exception,
+        /// <summary>
+        /// 未知任务类型
+        /// </summary>
+        UnknownTaskType,
     }
 }

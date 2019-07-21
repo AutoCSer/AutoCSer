@@ -64,7 +64,11 @@ namespace AutoCSer.Search
                     if (result.Count != 0)
                     {
                         searcher.initializeAdd(ref key, text, result);
-                        if ((searcher.flags & SearchFlags.ResultIndexs) != 0) indexArrays.Add(result.Values, value => value.Indexs.Array);
+                        if ((searcher.flags & SearchFlags.ResultIndexs) != 0)
+                        {
+                            indexArrays.PrepLength(result.Count);
+                            foreach (ResultIndexLeftArray indexArray in result.Values) indexArrays.UnsafeAdd(indexArray.Indexs.Array);
+                        }
                     }
                 }
             }

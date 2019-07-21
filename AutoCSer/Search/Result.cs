@@ -26,7 +26,7 @@ namespace AutoCSer.Search
             /// </summary>
             /// <param name="key">数据标识</param>
             /// <param name="values">分词结果</param>
-            void Add(ref keyType key, Dictionary<HashString, ResultIndexLeftArray> values);
+            void Add(ref keyType key, ReusableDictionary<HashString, ResultIndexLeftArray> values);
             /// <summary>
             /// 添加新的数据
             /// </summary>
@@ -48,7 +48,7 @@ namespace AutoCSer.Search
             /// <summary>
             /// 关键字数据结果集合
             /// </summary>
-            private readonly Dictionary<HashString, WordCounterIndex> results = DictionaryCreator.CreateHashString<WordCounterIndex>();
+            private readonly ReusableDictionary<HashString, WordCounterIndex> results = ReusableDictionary.CreateHashString<WordCounterIndex>();
             /// <summary>
             /// 当前更新版本
             /// </summary>
@@ -74,24 +74,24 @@ namespace AutoCSer.Search
             /// </summary>
             public void Dispose()
             {
-                counterPool.Free(results.Values);
-                results.Clear();
+                counterPool.Free(results.Values, results.Count);
+                results.Empty();
             }
             /// <summary>
             /// 添加新的数据
             /// </summary>
             /// <param name="key">数据标识</param>
             /// <param name="values">分词结果</param>
-            public void Add(ref keyType key, Dictionary<HashString, ResultIndexLeftArray> values)
+            public void Add(ref keyType key, ReusableDictionary<HashString, ResultIndexLeftArray> values)
             {
                 WordCounterIndex counterIndex;
                 ResultIndexArray resultIndex = default(ResultIndexArray);
-                foreach (KeyValuePair<HashString, ResultIndexLeftArray> result in values)
+                foreach (KeyValue<HashString, ResultIndexLeftArray> result in values.KeyValues)
                 {
                     if (!results.TryGetValue(result.Key, out counterIndex))
                     {
                         counterIndex.Index = counterPool.Get(out counterIndex.Array);
-                        results.Add(result.Key, counterIndex);
+                        results.Set(result.Key, counterIndex);
                         counterIndex.CreateResult();
                     }
                     if ((flags & SearchFlags.ResultIndexs) == 0)
@@ -131,7 +131,7 @@ namespace AutoCSer.Search
             public bool GetResult(ref HashString word, ref QueryResult result)
             {
                 WordCounterIndex counterIndex;
-                if (results.TryGetValue(word, out counterIndex))
+                if (results.TryGetValue(ref word, out counterIndex))
                 {
                     counterIndex.SetResult(ref result);
                     return true;

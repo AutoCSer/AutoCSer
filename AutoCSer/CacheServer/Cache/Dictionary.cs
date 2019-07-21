@@ -17,7 +17,7 @@ namespace AutoCSer.CacheServer.Cache
         /// <summary>
         /// 字典
         /// </summary>
-        private readonly System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<nodeType>();
+        private System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<nodeType>();
         /// <summary>
         /// 字典节点
         /// </summary>
@@ -88,7 +88,7 @@ namespace AutoCSer.CacheServer.Cache
                     if (dictionary.Count != 0)
                     {
                         onClear();
-                        dictionary.Clear();
+                        dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<nodeType>();
                         parser.IsOperation = true;
                     }
                     parser.ReturnParameter.ReturnParameterSet(true);

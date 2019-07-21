@@ -185,7 +185,7 @@ namespace AutoCSer.BinarySerialize
                             else
                             {
                                 isReferenceMember = true;
-                                if (points == null) points = DictionaryCreator.CreateInt<object>();
+                                if (points == null) points = ReusableDictionary.CreateInt<object>();
                                 else points.Clear();
                             }
                         }

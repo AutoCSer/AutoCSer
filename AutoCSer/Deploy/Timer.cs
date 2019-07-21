@@ -67,9 +67,10 @@ namespace AutoCSer.Deploy
                     Task task = DeployInfo.Tasks.Array[TaskIndex];
                     log.Set(TaskIndex, task.Type);
                     isLog |= onLog(log);
-                    task.Run(this);
+                    DeployState state = task.Run(this);
                     log.Type = LogType.OnRun;
                     isLog |= onLog(log);
+                    if (state != DeployState.Success) return state;
                     ++TaskIndex;
                 }
                 return DeployState.Success;

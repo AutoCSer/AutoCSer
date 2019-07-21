@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <summary>
         /// 字典
         /// </summary>
-        private readonly System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<valueType>();
+        private System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<valueType>();
         /// <summary>
         /// 字典 数据节点
         /// </summary>
@@ -121,7 +121,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                 case OperationParameter.OperationType.Clear:
                     if (dictionary.Count != 0)
                     {
-                        dictionary.Clear();
+                        dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<valueType>();
                         parser.IsOperation = true;
                     }
                     parser.ReturnParameter.ReturnParameterSet(true);

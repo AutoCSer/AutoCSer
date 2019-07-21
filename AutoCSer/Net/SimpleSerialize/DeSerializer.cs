@@ -12,6 +12,7 @@ namespace AutoCSer.Net.SimpleSerialize
     /// </summary>
     internal unsafe sealed partial class DeSerializer
     {
+#if NOJIT
         /// <summary>
         /// 当前读取位置
         /// </summary>
@@ -20,7 +21,6 @@ namespace AutoCSer.Net.SimpleSerialize
         /// 结束位置
         /// </summary>
         internal byte* End;
-#if NOJIT
         /// <summary>
         /// 逻辑值反序列化
         /// </summary>

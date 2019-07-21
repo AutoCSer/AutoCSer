@@ -52,6 +52,7 @@
     <Compile Include="Email\EventSender.cs" />
     <Compile Include="Email\Sender.cs" />
     <Compile Include="Email\Smtp.cs" />
+    <Compile Include="Emit\BuildParameterType.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
     <Compile Include="Extension\Memory.cs" />
@@ -91,6 +92,8 @@
     <Compile Include="StatusChanged.cs" />
     <Compile Include="Threading\LockManager.cs" />
     <Compile Include="Threading\SynchronizationContextPost.cs" />
+    <Compile Include="Threading\TaskQueue.cs" />
+    <Compile Include="Threading\TaskQueueNode.cs" />
     <Compile Include="Threading\TimerPeriodic.cs" />
     <Compile Include="Threading\TimerPeriodicReader.cs" />
     <Compile Include="Threading\TimerPeriodicUnit.cs" />

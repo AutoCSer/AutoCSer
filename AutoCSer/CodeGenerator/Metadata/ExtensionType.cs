@@ -466,7 +466,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <summary>
         /// 成员类型隐式转换集合
         /// </summary>
-        private static readonly Dictionary<Type, ExtensionType> types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
+        private static Dictionary<Type, ExtensionType> types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
         /// <summary>
         /// 隐式转换集合转换锁
         /// </summary>
@@ -479,8 +479,11 @@ namespace AutoCSer.CodeGenerator.Metadata
         private static void clearCache(int count)
         {
             Monitor.Enter(typeLock);
-            types.Clear();
-            Monitor.Exit(typeLock);
+            try
+            {
+                if (types.Count != 0) types = DictionaryCreator.CreateOnly<Type, ExtensionType>();
+            }
+            finally { Monitor.Exit(typeLock); }
         }
         static ExtensionType()
         {

@@ -87,6 +87,8 @@
     <Compile Include="StatusChanged.cs" />
     <Compile Include="Threading\LockManager.cs" />
     <Compile Include="Threading\SynchronizationContextPost.cs" />
+    <Compile Include="Threading\TaskQueue.cs" />
+    <Compile Include="Threading\TaskQueueNode.cs" />
     <Compile Include="Threading\TimerPeriodic.cs" />
     <Compile Include="Threading\TimerPeriodicReader.cs" />
     <Compile Include="Threading\TimerPeriodicUnit.cs" />

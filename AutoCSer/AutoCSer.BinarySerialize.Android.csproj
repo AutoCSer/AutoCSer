@@ -196,6 +196,7 @@
     <Compile Include="RangeLength.cs" />
     <Compile Include="Reflection\Assembly.cs" />
     <Compile Include="RemoteType.cs" />
+    <Compile Include="ReusableDictionary.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateSearcher\AsciiBuilder.cs" />

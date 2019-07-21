@@ -251,7 +251,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// <summary>
         /// 类型成员方法缓存
         /// </summary>
-        private static readonly Dictionary<Type, MethodIndex[]> methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
+        private static Dictionary<Type, MethodIndex[]> methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
         /// <summary>
         /// 字符串比较大小
         /// </summary>
@@ -378,7 +378,7 @@ namespace AutoCSer.CodeGenerator.Metadata
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static void clearCache(int count)
         {
-            methodCache.Clear();
+            if (methodCache.Count != 0) methodCache = DictionaryCreator.CreateOnly<Type, MethodIndex[]>();
         }
 
         static MethodIndex()

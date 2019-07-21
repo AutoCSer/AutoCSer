@@ -695,7 +695,7 @@ namespace AutoCSer.HtmlNode
         /// <summary>
         /// 节点筛选器解析缓存
         /// </summary>
-        private static readonly Dictionary<HashString, Filter> cache = DictionaryCreator.CreateHashString<Filter>();
+        private static Dictionary<HashString, Filter> cache = DictionaryCreator.CreateHashString<Filter>();
         /// <summary>
         /// 根据筛选路径解析筛选器
         /// </summary>
@@ -720,7 +720,7 @@ namespace AutoCSer.HtmlNode
         /// <param name="count">保留缓存数据数量</param>
         private static void clearCache(int count)
         {
-            cache.Clear();
+            if (cache.Count != 0) cache = DictionaryCreator.CreateHashString<Filter>();
         }
         static Filter()
         {

@@ -588,7 +588,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP 静态服务类型集合
             /// </summary>
-            private Dictionary<HashString, ServerType> serverTypes = DictionaryCreator.CreateHashString<ServerType>();
+            private ReusableDictionary<HashString, ServerType> serverTypes = ReusableDictionary.CreateHashString<ServerType>();
             /// <summary>
             /// 服务类名称(临时变量)
             /// </summary>
@@ -768,7 +768,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                         }
                     }
-                    serverTypes.Clear();
+                    serverTypes.Empty();
                 }
             }
             /// <summary>
@@ -793,10 +793,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             servers.Add(nameKey, server = new Server());
                             server.Attribute.Name = serviceName;
                         }
-                        if (!serverTypes.TryGetValue(nameKey, out serverType))
+                        if (!serverTypes.TryGetValue(ref nameKey, out serverType))
                         {
                             server.Types.Add(serverType = new ServerType { Type = Type });
-                            serverTypes.Add(nameKey, serverType);
+                            serverTypes.Set(ref nameKey, serverType);
                         }
                     }
                 }
@@ -833,7 +833,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         else Coder.Add(code.Code);
                     }
                 }
-                clientCodes.Clear();
+                if (clientCodes.Count != 0) clientCodes = DictionaryCreator.CreateOnly<Type, ClientCode>();
 
                 StringArray clientCallCode = new StringArray();
                 LeftArray<TcpMethod> methods = new LeftArray<TcpMethod>();
@@ -959,7 +959,7 @@ namespace " + AutoParameter.DefaultNamespace + "." + ClientPart + @"
             /// <summary>
             /// 其它组件产生的客户端代码
             /// </summary>
-            private static readonly Dictionary<Type, ClientCode> clientCodes = DictionaryCreator.CreateOnly<Type, ClientCode>();
+            private static Dictionary<Type, ClientCode> clientCodes = DictionaryCreator.CreateOnly<Type, ClientCode>();
             /// <summary>
             /// 其它组件产生的客户端代码
             /// </summary>

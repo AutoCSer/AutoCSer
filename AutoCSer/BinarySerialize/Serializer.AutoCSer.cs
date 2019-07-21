@@ -143,7 +143,7 @@ namespace AutoCSer.BinarySerialize
             else
             {
                 isReferenceMember = true;
-                if (points == null) points = DictionaryCreator<ObjectReference>.Create<int>();
+                if (points == null) points = ReusableDictionary<ObjectReference>.Create<int>();
                 else points.Clear();
             }
             //streamStartIndex = Stream.OffsetLength;
@@ -194,7 +194,7 @@ namespace AutoCSer.BinarySerialize
                 else
                 {
                     isReferenceMember = true;
-                    if (points == null) points = DictionaryCreator<ObjectReference>.Create<int>();
+                    if (points == null) points = ReusableDictionary<ObjectReference>.Create<int>();
                     else points.Clear();
                 }
                 //streamStartIndex = Stream.OffsetLength;

@@ -51,7 +51,7 @@ namespace AutoCSer.WebView
         /// <summary>
         /// 错误信息队列
         /// </summary>
-        private static readonly FifoPriorityQueue<HashString, string> errorQueue = new FifoPriorityQueue<HashString, string>();
+        private static FifoPriorityQueue<HashString, string> errorQueue = new FifoPriorityQueue<HashString, string>();
         /// <summary>
         /// 错误信息队列访问锁
         /// </summary>
@@ -62,7 +62,7 @@ namespace AutoCSer.WebView
         /// <param name="count">保留缓存数据数量</param>
         private static void clearCache(int count)
         {
-            errorQueue.Clear();
+            if (errorQueue.Count != 0) errorQueue = new FifoPriorityQueue<HashString, string>();
         }
 
         static PubAjax()

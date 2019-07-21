@@ -92,7 +92,7 @@ namespace AutoCSer.Search
                 {
                     char letter = *start;
                     if (node != boot) goto NEXT;
-                    BOOT:
+                BOOT:
                     if ((node = nodes[letter]) == 0)
                     {
                         ++index;
@@ -100,7 +100,7 @@ namespace AutoCSer.Search
                         continue;
                     }
                     goto MATCH;
-                    NEXT:
+                NEXT:
                     if (pool[node >> ArrayPool.ArraySizeBit][node & ArrayPool.ArraySizeAnd].GetLinkWhereNull(letter, ref node, ref linkNode) == 0)
                     {
                         if (linkNode == 0) goto BOOT;
@@ -120,7 +120,7 @@ namespace AutoCSer.Search
                         }
                         while (true);
                     }
-                    MATCH:
+                MATCH:
                     ++index;
                     if ((value = pool[node >> ArrayPool.ArraySizeBit][node & ArrayPool.ArraySizeAnd].Value) != null)
                     {
@@ -128,7 +128,7 @@ namespace AutoCSer.Search
                         matchs.Array[matchs.Length++].Set(index - value.Length + 1, value.Length);
                     }
                 }
-                while (++start != end) ;
+                while (++start != end);
                 if (node != boot)
                 {
                     node = pool[node >> ArrayPool.ArraySizeBit][node & ArrayPool.ArraySizeAnd].Link;

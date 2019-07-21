@@ -181,10 +181,10 @@ namespace AutoCSer.Search
         /// 释放索引
         /// </summary>
         /// <param name="indexs"></param>
-        internal unsafe void Free<keyType>(ICollection<StaticSearcher<keyType>.WordCounterIndex> indexs)
+        /// <param name="count"></param>
+        internal unsafe void Free<keyType>(IEnumerable<StaticSearcher<keyType>.WordCounterIndex> indexs, int count)
             where keyType : IEquatable<keyType>
         {
-            int count = indexs.Count;
             if (count != 0)
             {
                 Monitor.Enter(Lock);

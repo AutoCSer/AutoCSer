@@ -154,8 +154,11 @@ namespace AutoCSer.Net.HttpRegister
                     Monitor.Enter(hostLock);
                     try
                     {
-                        foreach (Http.Server httpServer in hosts.Values) httpServer.Dispose();
-                        hosts.Clear();
+                        if (hosts.Count != 0)
+                        {
+                            foreach (Http.Server httpServer in hosts.Values) httpServer.Dispose();
+                            hosts.Clear();
+                        }
                     }
                     finally { Monitor.Exit(hostLock); }
                 }

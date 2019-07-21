@@ -98,7 +98,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP 静态服务类型集合
             /// </summary>
-            private Dictionary<HashString, ServerType> serverTypes = DictionaryCreator.CreateHashString<ServerType>();
+            private ReusableDictionary<HashString, ServerType> serverTypes = ReusableDictionary.CreateHashString<ServerType>();
             /// <summary>
             /// 服务类名称(临时变量)
             /// </summary>
@@ -189,7 +189,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                         }
                     }
-                    serverTypes.Clear();
+                    serverTypes.Empty();
                 }
             }
             /// <summary>
@@ -214,10 +214,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             servers.Add(nameKey, server = new Server());
                             server.Attribute.Name = serviceName;
                         }
-                        if (!serverTypes.TryGetValue(nameKey, out serverType))
+                        if (!serverTypes.TryGetValue(ref nameKey, out serverType))
                         {
                             server.Types.Add(serverType = new ServerType { Type = Type });
-                            serverTypes.Add(nameKey, serverType);
+                            serverTypes.Set(ref nameKey, serverType);
                         }
                     }
                 }

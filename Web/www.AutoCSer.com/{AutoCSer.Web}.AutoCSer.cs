@@ -341,12 +341,8 @@ namespace AutoCSer.Web
                     }
                     _js_.WriteNotNull(@",");
                     {
-                        string _value3_ = _value2_.Text;
-                                if (_value3_ == null) _js_.WriteJsonNull();
-                                else
-                                {
+                        AutoCSer.SubString _value3_ = _value2_.Text;
                                     _js_.WriteJson(_value3_);
-                                }
                     }
                     _js_.WriteNotNull(@"]");
                             ++_loopIndex_;

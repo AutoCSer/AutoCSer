@@ -460,8 +460,11 @@ namespace AutoCSer.Net.TcpRegister
             Monitor.Enter(clientsLock);
             try
             {
-                foreach (Client client in clients.Values) client.close();
-                clients.Clear();
+                if (clients.Count != 0)
+                {
+                    foreach (Client client in clients.Values) client.close();
+                    clients.Clear();
+                }
             }
             finally { Monitor.Exit(clientsLock); }
         }

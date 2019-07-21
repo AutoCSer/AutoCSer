@@ -40,6 +40,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Algorithm\DateTimeSortIndex.cs" />
     <Compile Include="Algorithm\RadixSort.cs" />
+    <Compile Include="Algorithm\RangeQuickSort.cs" />
     <Compile Include="Algorithm\TopologySort.cs" />
     <Compile Include="Algorithm\UnionType.cs" />
     <Compile Include="CombinationTemplateConfig.cs" />

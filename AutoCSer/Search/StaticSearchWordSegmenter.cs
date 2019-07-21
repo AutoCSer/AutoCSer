@@ -38,7 +38,7 @@ namespace AutoCSer.Search
             /// <summary>
             /// 格式化文本长度
             /// </summary>
-            protected int foramtLength;
+            protected int formatLength;
             /// <summary>
             /// 匹配位置位图
             /// </summary>
@@ -72,7 +72,7 @@ namespace AutoCSer.Search
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             protected void checkMatchMap()
             {
-                int matchMapSize = (foramtLength + 7) >> 3, matchMapDataSize = Math.Max((int)((uint)matchMapSize).UpToPower2(), 8);
+                int matchMapSize = (formatLength + 7) >> 3, matchMapDataSize = Math.Max((int)((uint)matchMapSize).UpToPower2(), 8);
                 if (matchMapData.ByteSize < matchMapDataSize)
                 {
                     Unmanaged.Free(ref matchMapData);
@@ -89,7 +89,7 @@ namespace AutoCSer.Search
             /// <summary>
             /// 结果缓冲区
             /// </summary>
-            protected readonly Dictionary<HashString, ResultIndexLeftArray> result = DictionaryCreator.CreateHashString<ResultIndexLeftArray>();
+            protected readonly ReusableDictionary<HashString, ResultIndexLeftArray> result = ReusableDictionary.CreateHashString<ResultIndexLeftArray>();
             /// <summary>
             /// 匹配位置结果缓冲区
             /// </summary>
@@ -109,13 +109,14 @@ namespace AutoCSer.Search
             /// <param name="text"></param>
             protected void getResult(string text)
             {
-                result.Clear();
-                formatText = AutoCSer.Extension.StringExtension.FastAllocateString((foramtLength = text.Length) + 1);
+                result.Empty();
+                formatLength = text.Length;
+                formatText = AutoCSer.Extension.StringExtension.FastAllocateString(formatLength + 1);
                 fixed (char* textFixed = formatText)
                 {
-                    Simplified.FormatNotEmpty(text, textFixed, foramtLength);
+                    Simplified.FormatNotEmpty(text, textFixed, formatLength);
                     words.Length = matchs.Length = 0;
-                    char* start = textFixed, end = textFixed + foramtLength;
+                    char* start = textFixed, end = textFixed + formatLength;
                     byte type, nextType, wordType;
                     bool isMatchMap = false;
                     if (charTypeData != StringTrieGraph.DefaultCharTypeData.Byte)
@@ -258,7 +259,7 @@ namespace AutoCSer.Search
                         {
                             foreach (KeyValue<SubString, WordType> word in words.Array)
                             {
-                                result[word.Key] = new ResultIndexLeftArray { WordType = word.Value, TextLength = textLength };
+                                result.Set(word.Key, new ResultIndexLeftArray { WordType = word.Value, TextLength = textLength });
                                 if (--count == 0) break;
                             }
                         }
@@ -268,17 +269,17 @@ namespace AutoCSer.Search
                             foreach (KeyValue<SubString, WordType> word in words.Array)
                             {
                                 HashString wordKey = word.Key;
-                                if (result.TryGetValue(wordKey, out indexs))
+                                if (result.TryGetValue(ref wordKey, out indexs))
                                 {
                                     indexs.Indexs.Add(word.Key.Start);
-                                    result[wordKey] = indexs;
+                                    result.Set(ref wordKey, indexs);
                                 }
                                 else
                                 {
                                     indexs.Set(textLength, word.Value);
                                     if (indexArrays.Length != 0) indexs.Indexs.Set(indexArrays.UnsafePopOnly(), 0);
                                     indexs.Indexs.Add(word.Key.Start);
-                                    result.Add(wordKey, indexs);
+                                    result.Set(ref wordKey, indexs);
                                 }
                                 if (--count == 0) break;
                             }

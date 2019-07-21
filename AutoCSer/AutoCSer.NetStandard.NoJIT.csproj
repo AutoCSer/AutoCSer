@@ -488,6 +488,8 @@
     <Compile Include="Reflection\InvokeMethodRefReturn.cs" />
     <Compile Include="Reflection\PropertyParser.cs" />
     <Compile Include="RemoteType.cs" />
+    <Compile Include="ReusableDictionary.cs" />
+    <Compile Include="ReusableDictionary.AutoCSer.cs" />
     <Compile Include="StateSearcher\AsciiBuilder.cs" />
     <Compile Include="StateSearcher\AsciiSearcher.cs" />
     <Compile Include="StateSearcher\AsciiSearcher.AutoCSer.cs" />

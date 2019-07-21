@@ -16,11 +16,11 @@ namespace AutoCSer.CsvFile
         /// <summary>
         /// 索引名称集合
         /// </summary>
-        private readonly Dictionary<string, int> names = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> names = DictionaryCreator.CreateOnly<string, int>();
         /// <summary>
         /// 索引集合
         /// </summary>
-        private Dictionary<int, int> indexs = new Dictionary<int, int>();
+        private Dictionary<int, int> indexs = DictionaryCreator.CreateInt<int>();
         /// <summary>
         /// 索引映射数组
         /// </summary>

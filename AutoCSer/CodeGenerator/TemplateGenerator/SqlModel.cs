@@ -799,7 +799,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 ListArray<WebPathType> types;
                 if (webPathTypes == null)
                 {
-                    webPathTypes = new Dictionary<Type, ListArray<WebPathType>>();
+                    webPathTypes = DictionaryCreator.CreateOnly<Type, ListArray<WebPathType>>();
                     foreach (Type nextType in AutoParameter.Types)
                     {
                         AutoCSer.WebView.PathAttribute webPath = nextType.customAttribute<AutoCSer.WebView.PathAttribute>();

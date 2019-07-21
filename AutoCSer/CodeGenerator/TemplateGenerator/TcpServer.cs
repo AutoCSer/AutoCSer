@@ -574,11 +574,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 函数参数类型集合关键字
                 /// </summary>
-                public readonly Dictionary<MethodParameterTypes, MethodParameterTypes> ParameterIndexs = DictionaryCreator<MethodParameterTypes>.Create<MethodParameterTypes>();
+                public readonly ReusableDictionary<MethodParameterTypes, MethodParameterTypes> ParameterIndexs = ReusableDictionary<MethodParameterTypes>.Create<MethodParameterTypes>();
                 /// <summary>
                 /// 函数参数类型与名称集合关键字
                 /// </summary>
-                public readonly Dictionary<MethodParameterTypeNames, MethodParameterTypeNames> JsonParameterIndexs = DictionaryCreator<MethodParameterTypeNames>.Create<MethodParameterTypeNames>();
+                public readonly ReusableDictionary<MethodParameterTypeNames, MethodParameterTypeNames> JsonParameterIndexs = ReusableDictionary<MethodParameterTypeNames>.Create<MethodParameterTypeNames>();
                 /// <summary>
                 /// 参数序号
                 /// </summary>
@@ -594,8 +594,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 public void Clear(bool isSimpleSerialize)
                 {
                     IsSimpleSerialize = isSimpleSerialize;
-                    ParameterIndexs.Clear();
-                    JsonParameterIndexs.Clear();
+                    ParameterIndexs.Empty();
+                    JsonParameterIndexs.Empty();
                 }
                 /// <summary>
                 /// 添加方法索引信息
@@ -611,19 +611,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         MethodParameterTypeNames historyInputJsonParameterIndex = default(MethodParameterTypeNames), historyOutputJsonParameterIndex = default(MethodParameterTypeNames);
                         if (inputParameterTypeNames.IsParameter)
                         {
-                            if (!JsonParameterIndexs.TryGetValue(inputParameterTypeNames, out historyInputJsonParameterIndex))
+                            if (!JsonParameterIndexs.TryGetValue(ref inputParameterTypeNames, out historyInputJsonParameterIndex))
                             {
                                 inputParameterTypeNames.Copy(++ParameterIndex);
-                                JsonParameterIndexs.Add(inputParameterTypeNames, historyInputJsonParameterIndex = inputParameterTypeNames);
+                                JsonParameterIndexs.Set(ref inputParameterTypeNames, historyInputJsonParameterIndex = inputParameterTypeNames);
                             }
                             method.InputParameterIndex = historyInputJsonParameterIndex.Index;
                         }
                         if (outputParameterTypeNames.IsParameter)
                         {
-                            if (!JsonParameterIndexs.TryGetValue(outputParameterTypeNames, out historyOutputJsonParameterIndex))
+                            if (!JsonParameterIndexs.TryGetValue(ref outputParameterTypeNames, out historyOutputJsonParameterIndex))
                             {
                                 outputParameterTypeNames.Copy(++ParameterIndex);
-                                JsonParameterIndexs.Add(outputParameterTypeNames, historyOutputJsonParameterIndex = outputParameterTypeNames);
+                                JsonParameterIndexs.Set(ref outputParameterTypeNames, historyOutputJsonParameterIndex = outputParameterTypeNames);
                             }
                             method.OutputParameterIndex = historyOutputJsonParameterIndex.Index;
                         }
@@ -637,20 +637,20 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         MethodParameterTypes historyInputParameterIndex = default(MethodParameterTypes), historyOutputParameterIndex = default(MethodParameterTypes);
                         if (inputParameterTypes.IsParameter)
                         {
-                            if (!ParameterIndexs.TryGetValue(inputParameterTypes, out historyInputParameterIndex))
+                            if (!ParameterIndexs.TryGetValue(ref inputParameterTypes, out historyInputParameterIndex))
                             {
                                 inputParameterTypes.Copy(++ParameterIndex);
-                                ParameterIndexs.Add(inputParameterTypes, historyInputParameterIndex = inputParameterTypes);
+                                ParameterIndexs.Set(ref inputParameterTypes, historyInputParameterIndex = inputParameterTypes);
                             }
                             method.InputParameterIndex = historyInputParameterIndex.Index;
                             if (IsSimpleSerialize) method.IsSimpleSerializeInputParamter = historyInputParameterIndex.IsSimpleSerialize;
                         }
                         if (outputParameterTypes.IsParameter)
                         {
-                            if (!ParameterIndexs.TryGetValue(outputParameterTypes, out historyOutputParameterIndex))
+                            if (!ParameterIndexs.TryGetValue(ref outputParameterTypes, out historyOutputParameterIndex))
                             {
                                 outputParameterTypes.Copy(++ParameterIndex);
-                                ParameterIndexs.Add(outputParameterTypes, historyOutputParameterIndex = outputParameterTypes);
+                                ParameterIndexs.Set(ref outputParameterTypes, historyOutputParameterIndex = outputParameterTypes);
                             }
                             method.OutputParameterIndex = historyOutputParameterIndex.Index;
                             if (IsSimpleSerialize) method.IsSimpleSerializeOutputParamter = historyOutputParameterIndex.IsSimpleSerialize;
@@ -762,7 +762,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 命令序号记忆数据
             /// </summary>
-            protected static readonly Dictionary<HashString, int> nullRememberIdentityName = new Dictionary<HashString, int>();
+            protected static readonly Dictionary<HashString, int> nullRememberIdentityName = AutoCSer.DictionaryCreator.CreateHashString<int>();
             /// <summary>
             /// 获取命令序号记忆数据
             /// </summary>

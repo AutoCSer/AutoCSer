@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=042730A7"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=043A5EC0"></script>
     <title>前后端一体 WEB 视图框架 HTTP 调用函数 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -14,34 +14,34 @@
         HTTP 调用函数，用于手动处理 HTTP 响应，比如 单纯的重定向、文件上传。
     </p>
     <p>
-        1. 添加继承自 <b>AutoCSer.WebView.Call</b> 或者 <b>AutoCSer.WebView.CallAsynchronous</b> 的 class，并且申明为 HTTP 调用函数容器 <b>[AutoCSer.WebView.Call]</b>，支持<a href="/Config/Index.html?v=42730A7">全局默认配置</a>。
+        1. 添加继承自 <b>AutoCSer.WebView.Call</b> 或者 <b>AutoCSer.WebView.CallAsynchronous</b> 的 class，并且申明为 HTTP 调用函数容器 <b>[AutoCSer.WebView.Call]</b>，支持<a href="/Config/Index.html?v=43A5EC0">全局默认配置</a>。
         <br />也可以添加继承自基于对象池支持实现 <b>AutoCSer.WebView.Call&lt;callType&gt;</b> 或者 <b>AutoCSer.WebView.CallAsynchronous&lt;callType&gt;</b> 的 class，callType 用于标识当前类型。
     </p>
     <p>
         2. 根据需求在 class 中添加 public 实例方法（注意不要添加名称相同的重载方法），返回值类型必须为 void，项目编译后将生成这些方法的服务端调用代理。
     </p>
     <p>
-        . 默认支持 GET / POST 请求，输入参数解析支持参考 <a href="/WebView/Ajax.html?v=42730A7">AJAX 调用函数</a>。
-        <div> 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\Call.cs</a></div>
+        . 默认支持 GET / POST 请求，输入参数解析支持参考 <a href="/WebView/Ajax.html?v=43A5EC0">AJAX 调用函数</a>。
+        <div> 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\Call.cs</a></div>
     </p>
     <p>
         . 支持异步模式，必须保证调用 RepsonseEnd 函数一次性输出数据。文件输出必须使用异步模式。
-        <div> 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\CallAsynchronous.cs</a></div>
-        <div>文件输出 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">WebView\File.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\CallAsynchronous.cs</a></div>
+        <div>文件输出 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">WebView\File.cs</a></div>
     </p>
     <p>
         . 对于只有一个输入参数的情况下，支持类似 <b>[AutoCSer.Emit.BoxSerialize]</b> 的序列化拆包，直接操作该参数。
-        <div> 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">WebView\CallBoxSerialize.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">WebView\CallBoxSerialize.cs</a></div>
     </p>
     <p>
         . 调用函数默认 URL 为 <b>类型名称/函数名称</b>，支持自定义调用名称。
-        <div> 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">WebView\CallName.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">WebView\CallName.cs</a></div>
     </p>
     <p>
-        <div>文件上传 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">WebView\Upload.cs</a></div>
+        <div>文件上传 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">WebView\Upload.cs</a></div>
     </p>
     <p>
-        <div>URL 重定向 参考示例 <a href="/Index.html?v=42730A7" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">WebView\Location.cs</a></div>
+        <div>URL 重定向 参考示例 <a href="/Index.html?v=43A5EC0" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode6" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','6');">WebView\Location.cs</a></div>
     </p>
 </body>
 </html>

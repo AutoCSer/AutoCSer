@@ -55,7 +55,6 @@
     <Compile Include="SearchItem.cs" />
     <Compile Include="SegmentArray.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="Weight.cs" />
     <Compile Include="{AutoCSer.Web.SearchServer}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>

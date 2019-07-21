@@ -20,7 +20,7 @@ namespace AutoCSer.SearchTree
         /// <summary>
         /// 先进先出缓存
         /// </summary>
-        internal readonly FifoPriorityQueue<RandomKey<int>, PageCacheVersion<valueType>> Queue;
+        internal FifoPriorityQueue<RandomKey<int>, PageCacheVersion<valueType>> Queue;
         /// <summary>
         /// 分页大小
         /// </summary>
@@ -51,7 +51,7 @@ namespace AutoCSer.SearchTree
         private void onReset()
         {
             Array.Clear(ArrayCache, 0, ArrayCache.Length);
-            Queue.Clear();
+            if (Queue.Count != 0) Queue = new FifoPriorityQueue<RandomKey<int>, PageCacheVersion<valueType>>(fifoPageCount);
         }
     }
     /// <summary>

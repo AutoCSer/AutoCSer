@@ -274,7 +274,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (index != -1)
                 {
                     isClient = true;
-                    memberName = memberName.GetSub(0, index);
+                    memberName.Sub(0, index);
                 }
             }
             /// <summary>
@@ -301,7 +301,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     int clientIndex = memberName.IndexOf('#');
                     if (clientIndex != -1)
                     {
-                        memberName = memberName.GetSub(0, clientIndex);
+                        memberName.Sub(0, clientIndex);
                         isClient = true;
                     }
                 }
@@ -1341,7 +1341,7 @@ namespace " + AutoParameter.DefaultNamespace + @"
             /// <summary>
             /// 代码集合
             /// </summary>
-            private static readonly Dictionary<TypeKey, StringArray> codes = DictionaryCreator<TypeKey>.Create<StringArray>();
+            private static readonly ReusableDictionary<TypeKey, StringArray> codes = ReusableDictionary<TypeKey>.Create<StringArray>();
             /// <summary>
             /// 类型集合
             /// </summary>
@@ -1356,7 +1356,7 @@ namespace " + AutoParameter.DefaultNamespace + @"
                     if (codes.Count != 0)
                     {
                         StringArray code = new StringArray();
-                        foreach (KeyValuePair<TypeKey, StringArray> typeCode in codes)
+                        foreach (KeyValue<TypeKey, StringArray> typeCode in codes.KeyValues)
                         {
                             code.Append(@"module ", typeCode.Key.Namespace, @" {
 	export class ", typeCode.Key.Name, @" {");
@@ -1366,7 +1366,7 @@ namespace " + AutoParameter.DefaultNamespace + @"
 }
 ");
                         }
-                        codes.Clear();
+                        codes.Empty();
                         return code.ToString();
                     }
                     return null;
@@ -1396,7 +1396,7 @@ namespace " + AutoParameter.DefaultNamespace + @"
                 _code_.Length = 0;
                 create(false);
                 StringArray code;
-                if (!codes.TryGetValue(typeKey, out code)) codes.Add(typeKey, code = new StringArray());
+                if (!codes.TryGetValue(ref typeKey, out code)) codes.Set(ref typeKey, code = new StringArray());
                 code.Add(_code_);
             }
         }

@@ -15,7 +15,7 @@ namespace AutoCSer
         /// <summary>
         /// 是否需要清除数组缓存信息
         /// </summary>
-        private static readonly Dictionary<Type, bool> isClearArrayCache = AutoCSer.DictionaryCreator.CreateOnly<Type, bool>();
+        private static Dictionary<Type, bool> isClearArrayCache = AutoCSer.DictionaryCreator.CreateOnly<Type, bool>();
         /// <summary>
         /// 是否需要清除数组缓存 访问锁
         /// </summary>
@@ -80,8 +80,11 @@ namespace AutoCSer
         internal static void ClearCache()
         {
             Monitor.Enter(isClearArrayLock);
-            isClearArrayCache.Clear();
-            Monitor.Exit(isClearArrayLock);
+            try
+            {
+                if (isClearArrayCache.Count != 0) isClearArrayCache = AutoCSer.DictionaryCreator.CreateOnly<Type, bool>();
+            }
+            finally { Monitor.Exit(isClearArrayLock); }
         }
     }
     /// <summary>

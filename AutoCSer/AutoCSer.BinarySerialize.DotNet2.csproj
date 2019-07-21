@@ -327,6 +327,7 @@
     <Compile Include="RemoteType.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReusableDictionary.cs" />
     <Compile Include="StateSearcher\CharBuilder.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -59,5 +59,36 @@ namespace AutoCSer.Extension
             PageCount page = new PageCount(count = values.Length, pageSize, currentPage);
             return new SubArray<valueType>(page.DescSkipCount, page.CurrentPageSize, values.Array).GetReverse();
         }
+
+        /// <summary>
+        /// 范围排序
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="skipCount">跳过数据数量</param>
+        /// <param name="getCount">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static SubArray<valueType> RangeSort<valueType>
+            (this LeftArray<valueType> values, Func<valueType, valueType, int> comparer, int skipCount, int getCount)
+        {
+            return Array_Sort.RangeSort(values.Array, 0, values.Length, comparer, skipCount, getCount);
+        }
+        /// <summary>
+        /// 范围排序
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="skipCount">跳过数据数量</param>
+        /// <param name="getCount">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static SubArray<valueType> GetRangeSort<valueType>
+            (this LeftArray<valueType> values, Func<valueType, valueType, int> comparer, int skipCount, int getCount)
+        {
+            return Array_Sort.GetRangeSort(values.Array, 0, values.Length, comparer, skipCount, getCount);
+        }
     }
 }

@@ -54,7 +54,8 @@ namespace AutoCSer.Deploy
         /// 运行任务
         /// </summary>
         /// <param name="timer"></param>
-        internal void Run(Timer timer)
+        /// <returns></returns>
+        internal DeployState Run(Timer timer)
         {
             switch (Type)
             {
@@ -69,8 +70,10 @@ namespace AutoCSer.Deploy
                     break;
                 case TaskType.AssemblyFile: assemblyFile(timer); break;
                 case TaskType.WaitRunSwitch: wait(timer); break;
-                case TaskType.Custom: timer.Server.CustomTask.Call(timer.Server, this); break;
+                case TaskType.Custom: return timer.Server.CustomTask.Call(timer.Server, this);
+                default: return DeployState.UnknownTaskType;
             }
+            return DeployState.Success;
         }
         /// <summary>
         /// 判断文件是否可写
@@ -99,7 +102,7 @@ namespace AutoCSer.Deploy
         {
             if (!ServerDirectory.Exists) ServerDirectory.Create();
             string serverDirectoryName = ServerDirectory.fullName(), runFileName = serverDirectoryName + (RunFileName ?? FileIndexs[0].Key);
-            DirectoryInfo otherServerDirectory = new DirectoryInfo(serverDirectoryName + "other");
+            DirectoryInfo otherServerDirectory = new DirectoryInfo(serverDirectoryName + Server.DefaultSwitchDirectoryName);
             if (otherServerDirectory.Exists && !canWrite(runFileName))
             {
                 ServerDirectory = otherServerDirectory;
@@ -136,7 +139,7 @@ namespace AutoCSer.Deploy
             get
             {
                 if (IsRunOther) return ServerDirectory.Parent.fullName() + FileIndexs[0].Key;
-                return ServerDirectory.fullName() + "other" + AutoCSer.Extension.DirectoryExtension.Separator + FileIndexs[0].Key;
+                return ServerDirectory.fullName() + Server.DefaultSwitchDirectoryName + AutoCSer.Extension.DirectoryExtension.Separator + FileIndexs[0].Key;
             }
         }
         /// <summary>

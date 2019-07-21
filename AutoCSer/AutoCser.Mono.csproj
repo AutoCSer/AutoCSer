@@ -467,6 +467,8 @@
     <Compile Include="RangeLength.AutoCSer.cs" />
     <Compile Include="RangeLength.cs" />
     <Compile Include="RemoteType.cs" />
+    <Compile Include="ReusableDictionary.cs" />
+    <Compile Include="ReusableDictionary.AutoCSer.cs" />
     <Compile Include="StringArray.cs" />
     <Compile Include="SubArray.AutoCSer.cs" />
     <Compile Include="SubArray.cs" />

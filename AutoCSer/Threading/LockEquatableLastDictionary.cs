@@ -15,7 +15,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 字典
         /// </summary>
-        internal readonly Dictionary<keyType, valueType> Dictionary = DictionaryCreator<keyType>.Create<valueType>();
+        internal Dictionary<keyType, valueType> Dictionary = DictionaryCreator<keyType>.Create<valueType>();
         /// <summary>
         /// 访问锁
         /// </summary>
@@ -35,10 +35,13 @@ namespace AutoCSer.Threading
         public void Clear()
         {
             Monitor.Enter(Lock);
-            Dictionary.Clear();
-            lastKey = default(keyType);
-            lastValue = default(valueType);
-            Monitor.Exit(Lock);
+            try
+            {
+                if (Dictionary.Count != 0) Dictionary = DictionaryCreator<keyType>.Create<valueType>();
+                lastKey = default(keyType);
+                lastValue = default(valueType);
+            }
+            finally { Monitor.Exit(Lock); }
         }
         /// <summary>
         /// 获取数据

@@ -67,7 +67,7 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 历史对象指针位置
         /// </summary>
-        private Dictionary<ObjectReference, int> points;
+        private ReusableDictionary<ObjectReference, int> points;
         /// <summary>
         /// 是否支持循环引用处理
         /// </summary>
@@ -127,7 +127,7 @@ namespace AutoCSer.BinarySerialize
                 else
                 {
                     isReferenceMember = true;
-                    if (points == null) points = DictionaryCreator<ObjectReference>.Create<int>();
+                    if (points == null) points = ReusableDictionary<ObjectReference>.Create<int>();
                 }
             }
             isReferenceArray = true;
@@ -157,7 +157,7 @@ namespace AutoCSer.BinarySerialize
         internal void Free()
         {
             MemberMap = CurrentMemberMap = null;
-            if (points != null) points.Clear();
+            if (points != null) points.ClearKey();
             YieldPool.Default.PushNotNull(this);
         }
         /// <summary>
@@ -177,7 +177,7 @@ namespace AutoCSer.BinarySerialize
                     return false;
                 }
                 //points[new AutoCSer.ObjectReference { Value = value }] = Stream.OffsetLength - streamStartIndex;
-                points[new AutoCSer.ObjectReference { Value = value }] = Stream.ByteSize - streamStartIndex;
+                points.Set(new AutoCSer.ObjectReference { Value = value }, Stream.ByteSize - streamStartIndex);
             }
             return true;
         }

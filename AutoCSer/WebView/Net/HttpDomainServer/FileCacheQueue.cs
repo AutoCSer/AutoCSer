@@ -16,7 +16,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <summary>
         /// 文件缓存队列
         /// </summary>
-        private readonly FifoPriorityQueue<FileCacheKey, FileCache> files = new FifoPriorityQueue<FileCacheKey, FileCache>();
+        private FifoPriorityQueue<FileCacheKey, FileCache> files = new FifoPriorityQueue<FileCacheKey, FileCache>();
         /// <summary>
         /// 文件缓存队列访问锁
         /// </summary>
@@ -117,9 +117,12 @@ namespace AutoCSer.Net.HttpDomainServer
         internal void Clear()
         {
             Monitor.Enter(fileLock);
-            files.Clear();
-            freeCacheSize = maxCacheSize;
-            Monitor.Exit(fileLock);
+            try
+            {
+                if (files.Count != 0) files = new FifoPriorityQueue<FileCacheKey, FileCache>();
+                freeCacheSize = maxCacheSize;
+            }
+            finally { Monitor.Exit(fileLock); }
         }
 
         /// <summary>

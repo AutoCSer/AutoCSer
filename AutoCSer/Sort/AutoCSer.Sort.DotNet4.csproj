@@ -84,6 +84,7 @@
     <Compile Include="Algorithm\RadixSort.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Algorithm\RangeQuickSort.cs" />
     <Compile Include="Algorithm\TopologySort.cs">
       <SubType>Code</SubType>
     </Compile>

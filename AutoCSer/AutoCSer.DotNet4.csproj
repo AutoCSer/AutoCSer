@@ -549,6 +549,7 @@
     <Compile Include="RangeLength.cs" />
     <Compile Include="Reflection\Assembly.cs" />
     <Compile Include="RemoteType.cs" />
+    <Compile Include="ReusableDictionary.cs" />
     <Compile Include="StateSearcher\AsciiBuilder.cs" />
     <Compile Include="StateSearcher\AsciiSearcher.cs" />
     <Compile Include="StateSearcher\AsciiSearcher.AutoCSer.cs" />
@@ -646,6 +647,7 @@
     <Compile Include="{AutoCSer}.AutoCSer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReusableDictionary.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

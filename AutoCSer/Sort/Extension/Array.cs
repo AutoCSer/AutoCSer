@@ -8,6 +8,255 @@ namespace AutoCSer.Extension
     /// </summary>
     public static partial class Array_Sort
     {
+        /// <summary>
+        /// 范围排序
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="skipCount">跳过数据数量</param>
+        /// <param name="getCount">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        public static SubArray<valueType> RangeSort<valueType>
+            (this valueType[] values, Func<valueType, valueType, int> comparer, int skipCount, int getCount)
+        {
+            FormatRange range = new FormatRange(values.length(), skipCount, getCount);
+            if ((getCount = range.GetCount) != 0)
+            {
+                if (comparer == null) throw new ArgumentNullException();
+                new AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType>
+                {
+                    Array = values,
+                    Comparer = comparer,
+                    SkipCount = range.SkipCount,
+                    GetEndIndex = range.EndIndex - 1
+                }.Sort(0, values.Length - 1);
+                return new SubArray<valueType>(range.SkipCount, getCount, values);
+            }
+            return default(SubArray<valueType>);
+        }
+        /// <summary>
+        /// 范围排序
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="skipCount">跳过数据数量</param>
+        /// <param name="getCount">排序数据数量</param>
+        /// <returns>排序后的新数据</returns>
+        public static SubArray<valueType> GetRangeSort<valueType>
+            (this valueType[] values, Func<valueType, valueType, int> comparer, int skipCount, int getCount)
+        {
+            FormatRange range = new FormatRange(values.length(), skipCount, getCount);
+            if ((getCount = range.GetCount) != 0)
+            {
+                if (comparer == null) throw new ArgumentNullException();
+                AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType> sorter = new AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType>
+                {
+                    Array = values.copy(),
+                    Comparer = comparer,
+                    SkipCount = range.SkipCount,
+                    GetEndIndex = range.EndIndex - 1
+                };
+                sorter.Sort(0, values.Length - 1);
+                return new SubArray<valueType>(range.SkipCount, getCount, sorter.Array);
+            }
+            return default(SubArray<valueType>);
+        }
+        /// <summary>
+        /// 范围排序
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="startIndex">起始位置</param>
+        /// <param name="count">排序范围数据数量</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="skipCount">跳过数据数量</param>
+        /// <param name="getCount">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        public static SubArray<valueType> RangeSort<valueType>
+            (this valueType[] values, int startIndex, int count, Func<valueType, valueType, int> comparer, int skipCount, int getCount)
+        {
+            FormatRange range = new FormatRange(values.length(), startIndex, count);
+            if ((count = range.GetCount) != 0)
+            {
+                FormatRange getRange = new FormatRange(count, skipCount, getCount);
+                if ((getCount = getRange.GetCount) != 0)
+                {
+                    if (comparer == null) throw new ArgumentNullException();
+                    skipCount = range.SkipCount + getRange.SkipCount;
+                    new AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType>
+                    {
+                        Array = values,
+                        Comparer = comparer,
+                        SkipCount = skipCount,
+                        GetEndIndex = skipCount + getCount - 1
+                    }.Sort(range.SkipCount, range.SkipCount + --count);
+                    return new SubArray<valueType>(skipCount, getCount, values);
+                }
+            }
+            return default(SubArray<valueType>);
+        }
+        /// <summary>
+        /// 范围排序
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="startIndex">起始位置</param>
+        /// <param name="count">排序范围数据数量</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="skipCount">跳过数据数量</param>
+        /// <param name="getCount">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        public static SubArray<valueType> GetRangeSort<valueType>
+            (this valueType[] values, int startIndex, int count, Func<valueType, valueType, int> comparer, int skipCount, int getCount)
+        {
+            FormatRange range = new FormatRange(values.length(), startIndex, count);
+            if ((count = range.GetCount) != 0)
+            {
+                FormatRange getRange = new FormatRange(count, skipCount, getCount);
+                if ((getCount = getRange.GetCount) != 0)
+                {
+                    valueType[] newValues = new valueType[count];
+                    Array.Copy(values, range.SkipCount, newValues, 0, count);
+                    return RangeSort(newValues, comparer, getRange.SkipCount, getCount);
+                }
+            }
+            return default(SubArray<valueType>);
+        }
+
+
+        /// <summary>
+        /// 排序取Top N
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="count">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        public static SubArray<valueType> GetTop<valueType>(this valueType[] values, Func<valueType, valueType, int> comparer, int count)
+        {
+            if (values == null) return default(SubArray<valueType>);
+            if (comparer == null) throw new ArgumentNullException();
+            if (count > 0)
+            {
+                if (count < values.Length)
+                {
+                    if (count <= values.Length >> 1) return getTop(values, comparer, count);
+                    values = getRemoveTop(values, comparer, count);
+                }
+                else
+                {
+                    valueType[] newValues = new valueType[values.Length];
+                    Array.Copy(values, 0, newValues, 0, values.Length);
+                    values = newValues;
+                }
+                return new SubArray<valueType>(0, values.Length, values);
+            }
+            return default(SubArray<valueType>);
+        }
+        /// <summary>
+        /// 排序取Top N
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="count">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        public static SubArray<valueType> Top<valueType>(this valueType[] values, Func<valueType, valueType, int> comparer, int count)
+        {
+            if (values == null) return default(SubArray<valueType>);
+            if (comparer == null) throw new ArgumentNullException();
+            if (count > 0)
+            {
+                if (count < values.Length)
+                {
+                    if (count <= values.Length >> 1) return getTop(values, comparer, count);
+                    values = getRemoveTop(values, comparer, count);
+                }
+                return new SubArray<valueType>(0, values.Length, values);
+            }
+            return default(SubArray<valueType>);
+        }
+        /// <summary>
+        /// 排序取Top N
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="count">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        private static SubArray<valueType> getTop<valueType>(this valueType[] values, Func<valueType, valueType, int> comparer, int count)
+        {
+            uint sqrtMod;
+            int length = Math.Min(Math.Max(count << 2, count + (int)Number.sqrt((uint)values.Length, out sqrtMod)), values.Length);
+            valueType[] newValues = new valueType[length];
+            int readIndex = values.Length - length, writeIndex = count;
+            Array.Copy(values, readIndex, newValues, 0, length);
+            AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType> sort = new AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType> { Array = newValues, Comparer = comparer, SkipCount = count - 1, GetEndIndex = count - 1 };
+            sort.Sort(0, --length);
+            for (valueType maxValue = newValues[sort.GetEndIndex]; readIndex != 0; )
+            {
+                if (comparer(values[--readIndex], maxValue) < 0)
+                {
+                    newValues[writeIndex] = values[readIndex];
+                    if (writeIndex == length)
+                    {
+                        sort.Sort(0, length);
+                        writeIndex = count;
+                        maxValue = newValues[sort.GetEndIndex];
+                    }
+                    else ++writeIndex;
+                }
+            }
+            if (writeIndex != count) sort.Sort(0, writeIndex - 1);
+            Array.Clear(newValues, count, newValues.Length - count);
+            return new SubArray<valueType>(0, count, newValues);
+        }
+        /// <summary>
+        /// 排序去除Top N
+        /// </summary>
+        /// <typeparam name="valueType">排序数据类型</typeparam>
+        /// <param name="values">待排序数组</param>
+        /// <param name="comparer">排序比较器</param>
+        /// <param name="count">排序数据数量</param>
+        /// <returns>排序后的数据</returns>
+        private static valueType[] getRemoveTop<valueType>(this valueType[] values, Func<valueType, valueType, int> comparer, int count)
+        {
+            valueType[] newValues = new valueType[count];
+            count = values.Length - count;
+            uint sqrtMod;
+            int length = Math.Min(Math.Max(count << 2, count + (int)Number.sqrt((uint)values.Length, out sqrtMod)), values.Length);
+            valueType[] removeValues = new valueType[length];
+            int readIndex = values.Length - length, copyCount = length - count, removeIndex = copyCount, writeIndex = copyCount;
+            Array.Copy(values, readIndex, removeValues, 0, length);
+            AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType> sort = new AutoCSer.Algorithm.RangeQuickSort.Sorter<valueType> { Array = removeValues, Comparer = comparer, SkipCount = copyCount, GetEndIndex = copyCount };
+            sort.Sort(0, --length);
+            Array.Copy(removeValues, 0, newValues, 0, copyCount);
+            for (valueType maxValue = removeValues[copyCount]; readIndex != 0; )
+            {
+                if (comparer(values[--readIndex], maxValue) <= 0) newValues[writeIndex++] = values[readIndex];
+                else
+                {
+                    removeValues[--removeIndex] = values[readIndex];
+                    if (removeIndex == 0)
+                    {
+                        sort.Sort(0, length);
+                        removeIndex = copyCount;
+                        maxValue = removeValues[copyCount];
+                        Array.Copy(removeValues, 0, newValues, writeIndex, copyCount);
+                        writeIndex += copyCount;
+                    }
+                }
+            }
+            if (removeIndex != copyCount)
+            {
+                sort.Sort(removeIndex, length);
+                Array.Copy(removeValues, removeIndex, newValues, writeIndex, copyCount - removeIndex);
+            }
+            return newValues;
+        }
+
         #region 二分查找第一个匹配值位置
         /// <summary>
         /// 二分查找第一个匹配值位置

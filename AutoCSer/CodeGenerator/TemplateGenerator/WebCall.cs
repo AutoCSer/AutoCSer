@@ -169,7 +169,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// 函数参数类型与名称集合关键字
                 /// </summary>
-                public readonly Dictionary<MethodParameterTypeNames, MethodParameterTypeNames> ParameterIndexs = DictionaryCreator<MethodParameterTypeNames>.Create<MethodParameterTypeNames>();
+                public readonly ReusableDictionary<MethodParameterTypeNames, MethodParameterTypeNames> ParameterIndexs = ReusableDictionary<MethodParameterTypeNames>.Create<MethodParameterTypeNames>();
                 /// <summary>
                 /// 参数序号
                 /// </summary>
@@ -179,7 +179,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// </summary>
                 public void Clear()
                 {
-                    ParameterIndexs.Clear();
+                    ParameterIndexs.Empty();
                     ParameterIndex = 0;
                 }
                 /// <summary>
@@ -193,10 +193,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     MethodParameterTypeNames historyJsonParameterIndex = default(MethodParameterTypeNames);
                     if (parameterTypeNames.IsParameter)
                     {
-                        if (!ParameterIndexs.TryGetValue(parameterTypeNames, out historyJsonParameterIndex))
+                        if (!ParameterIndexs.TryGetValue(ref parameterTypeNames, out historyJsonParameterIndex))
                         {
                             parameterTypeNames.Copy(++ParameterIndex);
-                            ParameterIndexs.Add(parameterTypeNames, historyJsonParameterIndex = parameterTypeNames);
+                            ParameterIndexs.Set(ref parameterTypeNames, historyJsonParameterIndex = parameterTypeNames);
                         }
                         method.ParameterIndex = historyJsonParameterIndex.Index;
                     }
@@ -208,7 +208,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <returns></returns>
                 public MethodParameterTypeNames[] Get()
                 {
-                    return ParameterIndexs.Keys.getArray();
+                    return ParameterIndexs.Keys.getLeftArray(ParameterIndexs.Count).ToArray();
                 }
             }
             /// <summary>

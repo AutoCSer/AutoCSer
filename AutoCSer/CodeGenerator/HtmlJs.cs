@@ -203,13 +203,13 @@ in " + this.fileName + @"
                                 {
                                     int arrayIndex = name.IndexOf('[');
                                     array = new SubString { String = code, Start = name.Start + arrayIndex + 1, Length = name.Length - arrayIndex - 2 }.Split(',');
-                                    name = name.GetSub(0, arrayIndex);
+                                    name.Sub(0, arrayIndex);
                                 }
                                 int memberIndex = name.IndexOf('=');
                                 if (memberIndex != -1)
                                 {
                                     memberName = name.GetSub(0, memberIndex);
-                                    name = name.GetSub(++memberIndex);
+                                    name.Sub(++memberIndex);
                                     if (memberIndex == 1) memberName = name.Split('\\').LastOrDefault();
                                     memberName = @"<!--Value:" + memberName + @"-->";
                                 }

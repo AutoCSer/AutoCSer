@@ -15,7 +15,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 字典
         /// </summary>
-        private readonly Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
+        private Dictionary<keyType, valueType> dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
         /// <summary>
         /// 访问锁
         /// </summary>
@@ -84,8 +84,11 @@ namespace AutoCSer.Threading
         internal void Clear()
         {
             Monitor.Enter(dictionaryLock);
-            dictionary.Clear();
-            Monitor.Exit(dictionaryLock);
+            try
+            {
+                if (dictionary.Count != 0) dictionary = DictionaryCreator.CreateAny<keyType, valueType>();
+            }
+            finally { Monitor.Exit(dictionaryLock); }
         }
     }
 }

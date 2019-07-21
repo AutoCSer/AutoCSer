@@ -10,6 +10,13 @@ namespace AutoCSer
     public unsafe partial struct SubString
     {
         /// <summary>
+        /// 原字符串
+        /// </summary>
+        public string OriginalString
+        {
+            get { return String; }
+        }
+        /// <summary>
         /// 原字符串中的起始位置
         /// </summary>
         public int StartIndex
@@ -85,6 +92,27 @@ namespace AutoCSer
         internal SubString GetSub(int startIndex)
         {
             return new SubString { String = String, Start = Start + startIndex, Length = Length - startIndex };
+        }
+        /// <summary>
+        /// 设置为子串
+        /// </summary>
+        /// <param name="startIndex">起始位置</param>
+        /// <param name="length">长度</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Sub(int startIndex, int length)
+        {
+            Start += startIndex;
+            Length = length;
+        }
+        /// <summary>
+        /// 设置为子串
+        /// </summary>
+        /// <param name="startIndex">起始位置</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Sub(int startIndex)
+        {
+            Start += startIndex;
+            Length -= startIndex;
         }
         /// <summary>
         /// 字符查找

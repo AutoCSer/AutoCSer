@@ -40,13 +40,17 @@ namespace AutoCSer.Web.SearchServer
         /// <summary>
         /// 匹配文本
         /// </summary>
-        internal string MatchText;
+        internal SubString MatchText;
         /// <summary>
         /// 匹配文本
         /// </summary>
-        public string Text
+        public SubString Text
         {
-            get { return MatchText ?? Html.Title; }
+            get
+            {
+                if (MatchText.OriginalString == null) return Html.Title;
+                return MatchText;
+            }
         }
         /// <summary>
         /// 匹配位置集合
@@ -75,7 +79,7 @@ namespace AutoCSer.Web.SearchServer
             {
                 case DataType.HtmlTitle:
                     Html = Html.Cache[DataKey.Id];
-                    MatchText = null;
+                    MatchText = default(SubString);
                     Indexs = result.Value.Indexs.getArray(index => new KeyValue<int, int>(index, word.Count));
                     break;
                 case DataType.HtmlBodyText:
@@ -90,7 +94,7 @@ namespace AutoCSer.Web.SearchServer
                     break;
                 default:
                     Html = null;
-                    MatchText = null;
+                    MatchText = default(SubString);
                     Indexs = null;
                     break;
             }
@@ -107,7 +111,7 @@ namespace AutoCSer.Web.SearchServer
             {
                 case DataType.HtmlTitle:
                     Html = Html.Cache[dataKey.Id];
-                    MatchText = null;
+                    MatchText = default(SubString);
                     Indexs = Searcher.Default.GetResultIndexs(ref dataKey, Html.Title.Length, ref results);
                     break;
                 case DataType.HtmlBodyText:
@@ -118,11 +122,11 @@ namespace AutoCSer.Web.SearchServer
                     HtmlImage image = HtmlImage.Cache[dataKey.Id];
                     Html = Html.Cache[image.HtmlId];
                     MatchText = image.Title;
-                    Indexs = Searcher.Default.GetResultIndexs(ref dataKey, MatchText.Length, ref results);
+                    Indexs = Searcher.Default.GetResultIndexs(ref dataKey, MatchText.Count, ref results);
                     break;
                 default:
                     Html = null;
-                    MatchText = null;
+                    MatchText = default(SubString);
                     Indexs = null;
                     break;
             }

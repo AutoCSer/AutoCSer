@@ -15,7 +15,8 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="server"></param>
         /// <param name="customData"></param>
-        void OnDeployServerUpdated(Server server, byte[] customData);
+        /// <returns></returns>
+        DeployState OnDeployServerUpdated(Server server, byte[] customData);
     }
     /// <summary>
     /// 自定义任务调用
@@ -27,7 +28,8 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="server"></param>
         /// <param name="task"></param>
-        internal virtual void Call(Server server, Task task) { }
+        /// <returns></returns>
+        internal virtual DeployState Call(Server server, Task task) { return DeployState.Success; }
         /// <summary>
         /// 自定义任务调用
         /// </summary>
@@ -50,7 +52,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 自定义任务集合
         /// </summary>
-        private readonly Dictionary<string, Action<valueType, Server, byte[]>> tasks = DictionaryCreator.CreateOnly<string, Action<valueType, Server, byte[]>>();
+        private readonly Dictionary<string, Func<valueType, Server, byte[], DeployState>> tasks = DictionaryCreator.CreateOnly<string, Func<valueType, Server, byte[], DeployState>>();
         /// <summary>
         /// 自定义任务调用
         /// </summary>
@@ -60,7 +62,7 @@ namespace AutoCSer.Deploy
             this.value = value;
             foreach (MethodInfo method in typeof(valueType).GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (!method.IsGenericMethodDefinition && method.ReturnType == typeof(void))
+                if (!method.IsGenericMethodDefinition && method.ReturnType == typeof(DeployState))
                 {
                     ParameterInfo[] parameters = method.GetParameters();
                     if (parameters.Length == 2 && parameters[0].ParameterType == typeof(Server) && parameters[1].ParameterType == typeof(byte[]))
@@ -77,7 +79,7 @@ namespace AutoCSer.Deploy
                         }
                         if (customAttribute == null || !customAttribute.GetIsIgnoreCurrent)
                         {
-                            tasks.Add(method.Name, (Action<valueType, Server, byte[]>)Delegate.CreateDelegate(typeof(Action<valueType, Server, byte[]>), method));
+                            tasks.Add(method.Name, (Func<valueType, Server, byte[], DeployState>)Delegate.CreateDelegate(typeof(Func<valueType, Server, byte[], DeployState>), method));
                         }
                     }
                 }
@@ -88,9 +90,10 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="server"></param>
         /// <param name="task"></param>
-        internal override void Call(Server server, Task task)
+        /// <returns></returns>
+        internal override DeployState Call(Server server, Task task)
         {
-            tasks[task.RunFileName](value, server, task.CustomData);
+            return tasks[task.RunFileName](value, server, task.CustomData);
         }
     }
 }

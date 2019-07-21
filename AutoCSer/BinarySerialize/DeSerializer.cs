@@ -58,7 +58,7 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 历史对象指针位置
         /// </summary>
-        private Dictionary<int, object> points;
+        private ReusableDictionary<int, object> points;
         /// <summary>
         /// 是否检测相同的引用成员
         /// </summary>
@@ -94,7 +94,7 @@ namespace AutoCSer.BinarySerialize
                 else
                 {
                     isReferenceMember = true;
-                    if (points == null) points = DictionaryCreator.CreateInt<object>();
+                    if (points == null) points = ReusableDictionary.CreateInt<object>();
                 }
             }
             isReferenceArray = true;
@@ -178,7 +178,7 @@ namespace AutoCSer.BinarySerialize
                 }
             }
             else MemberMap = null;
-            if (points != null) points.Clear();
+            if (points != null) points.ClearValue();
             YieldPool.Default.PushNotNull(this);
         }
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -248,7 +248,7 @@ namespace AutoCSer.BinarySerialize
         internal void AddPoint<valueType>(ref valueType value)
         {
             if (value == null) value = AutoCSer.Emit.Constructor<valueType>.New();
-            if (isReferenceMember) points.Add((int)(start - Read), value);
+            if (isReferenceMember) points.Set((int)(start - Read), value);
         }
         /// <summary>
         /// 检测成员数量
@@ -432,7 +432,7 @@ namespace AutoCSer.BinarySerialize
                 array = new valueType[length];
                 if (isReferenceArray)
                 {
-                    if (isReferenceMember) points.Add((int)(start - Read), array);
+                    if (isReferenceMember) points.Set((int)(start - Read), array);
                 }
                 else isReferenceArray = true;
                 return true;
@@ -1143,7 +1143,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数据对象</param>
         private void dictionaryArrayDeSerialize<keyType, valueType>(IDictionary<keyType, valueType> value)
         {
-            if (isReferenceMember) points.Add((int)(start - Read), value);
+            if (isReferenceMember) points.Set((int)(start - Read), value);
             keyType[] keys = null;
             isReferenceArray = false;
             TypeDeSerializer<keyType[]>.DefaultDeSerializer(this, ref keys);
@@ -1243,7 +1243,7 @@ namespace AutoCSer.BinarySerialize
             if (CheckPoint(ref value))
             {
                 value = AutoCSer.Emit.Constructor<valueType>.New();
-                if (isReferenceMember) points.Add((int)(start - Read), value);
+                if (isReferenceMember) points.Set((int)(start - Read), value);
                 collection<valueType, argumentType>(ref value);
             }
         }
@@ -1289,7 +1289,7 @@ namespace AutoCSer.BinarySerialize
             if (CheckPoint(ref value))
             {
                 value = AutoCSer.Emit.Constructor<dictionaryType>.New();
-                if (isReferenceMember) points.Add((int)(start - Read), value);
+                if (isReferenceMember) points.Set((int)(start - Read), value);
                 dictionaryConstructorDeSerialize<dictionaryType, keyType, valueType>(ref value);
             }
         }

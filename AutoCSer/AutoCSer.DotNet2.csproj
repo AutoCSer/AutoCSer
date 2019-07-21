@@ -644,6 +644,8 @@
     <Compile Include="RemoteType.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReusableDictionary.cs" />
+    <Compile Include="ReusableDictionary.AutoCSer.cs" />
     <Compile Include="StateSearcher\AsciiBuilder.cs" />
     <Compile Include="StateSearcher\AsciiSearcher.cs" />
     <Compile Include="StateSearcher\AsciiSearcher.AutoCSer.cs" />
