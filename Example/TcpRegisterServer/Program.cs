@@ -24,12 +24,9 @@ namespace AutoCSer.Example.TcpRegisterServer
 ");
                     try
                     {
-                        AutoCSer.Net.TcpRegister.ReaderServer reader = AutoCSer.Net.TcpRegister.ReaderServer.Create();
-                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalServer(null, null, reader.Server))
-                        using (AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer registerReaderServer = new AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer(null, null, reader))
-                        //using (AutoCSer.Net.TcpRegister.DefaultServer server = AutoCSer.Net.TcpRegister.DefaultServer.Create())
+                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalServer())//null, null, reader.Server
                         {
-                            if (registerServer.IsListen && registerReaderServer.IsListen)
+                            if (registerServer.IsListen)
                             {
                                 if (!startProcess("TcpRegisterClient", "AutoCSer.Example.TcpRegisterClient")) Console.WriteLine("未找到 TCP 注册服务客户端测试程序");
 

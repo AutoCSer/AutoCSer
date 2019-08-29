@@ -11,7 +11,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 端口分配起始位置，默认为 9000
         /// </summary>
-        public int PortStart = (int)ServerPort.TcpRegisterReader + 1;
+        public int PortStart = (int)ServerPort.Reserved + 1;
         /// <summary>
         /// 端口分配结束位置（不包含），默认为 65536
         /// </summary>
@@ -31,7 +31,7 @@ namespace AutoCSer.Net.TcpRegister
                 PortStart = PortEnd;
                 PortEnd = port;
             }
-            if (PortStart <= 0) PortStart = (int)ServerPort.TcpRegisterReader + 1;
+            if (PortStart <= 0) PortStart = (int)ServerPort.Reserved + 1;
             if (PortEnd > 65536) PortEnd = 65536;
             if (PortStart == PortEnd) PortEnd = PortStart + 1;
         }

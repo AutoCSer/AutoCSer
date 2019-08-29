@@ -54,6 +54,7 @@
     <Compile Include="Email\Smtp.cs" />
     <Compile Include="Emit\BuildParameterType.cs" />
     <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extension\String.cs" />
     <Compile Include="HostsFile.cs" />
     <Compile Include="JsonFile.cs" />
     <Compile Include="IO\Compression\Deflate.cs" />

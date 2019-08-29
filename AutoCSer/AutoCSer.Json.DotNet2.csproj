@@ -40,6 +40,7 @@
     <Compile Include="Algorithm\QuickSort.cs" />
     <Compile Include="CharStream.cs" />
     <Compile Include="CharStream.Json.cs" />
+    <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />
     <Compile Include="Config\MemberAttribute.cs" />
     <Compile Include="Config\Pub.cs" />

@@ -55,13 +55,17 @@ namespace AutoCSer.Net.TcpServer
             internal int Get(int nextIndex, out ClientCommand.Command command)
             {
                 command = Command;
-                if (Command.CommandInfo.IsKeepCallback == 0)
+                if (Command != null)
                 {
-                    Command = null;
-                    Next = nextIndex;
-                    return 0;
+                    if (Command.CommandInfo.IsKeepCallback == 0)
+                    {
+                        Command = null;
+                        Next = nextIndex;
+                        return 0;
+                    }
+                    return 1;
                 }
-                return 1;
+                return 2;
             }
             /// <summary>
             /// 释放客户端命令
@@ -275,38 +279,38 @@ namespace AutoCSer.Net.TcpServer
             if (arrayIndex == 0)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                if (Array[index].Get(commandCount, out command) == 0)
+                switch (Array[index].Get(commandCount, out command))
                 {
-                    arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
-                    freeEndIndex = index;
-                    System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
-                }
-                else
-                {
-                    System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
-                    keepCallbackCommand = command;
-                    keepCallbackCommandIndex = index;
+                    case 0:
+                        arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
+                        freeEndIndex = index;
+                        System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                        return command;
+                    case 1:
+                        System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
+                        keepCallbackCommand = command;
+                        keepCallbackCommandIndex = index;
+                        return command;
+                    default: System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0); return null;
                 }
             }
-            else
+            if (arrayIndex != getArrayIndex) getArray = arrays[getArrayIndex = arrayIndex];
+            int commandIndex = index & arraySizeAnd;
+            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            switch (getArray[commandIndex].Get(commandCount, out command))
             {
-                if (arrayIndex != getArrayIndex) getArray = arrays[getArrayIndex = arrayIndex];
-                int commandIndex = index & arraySizeAnd;
-                while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                if (getArray[commandIndex].Get(commandCount, out command) == 0)
-                {
+                case 0:
                     arrays[freeEndIndex >> bitSize][freeEndIndex & arraySizeAnd].Next = index;
                     freeEndIndex = index;
                     System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
-                }
-                else
-                {
+                    return command;
+                case 1:
                     System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
                     keepCallbackCommand = command;
                     keepCallbackCommandIndex = index;
-                }
+                    return command;
+                default: System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0); return null;
             }
-            return command;
         }
         /// <summary>
         /// 取消客户端命令
@@ -347,46 +351,51 @@ namespace AutoCSer.Net.TcpServer
         internal ClientCommand.CommandBase Free(ClientCommand.CommandBase head, ClientCommand.CommandBase end, int startIndex)
         {
             bool isNext = false;
-            foreach (CommandLink[] array in arrays)
+            while (System.Threading.Interlocked.CompareExchange(ref freeEndIndexLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            try
             {
-                if (isNext)
+                foreach (CommandLink[] array in arrays)
                 {
-                    if (array == null) break;
-                    for (startIndex = array.Length; startIndex != 0;)
+                    if (isNext)
                     {
-                        ClientCommand.Command command = array[--startIndex].Command;
-                        if (command != null)
+                        if (array == null) break;
+                        for (startIndex = array.Length; startIndex != 0; )
                         {
-                            array[startIndex].Command = null;
-                            if (head == null) head = end = command;
-                            else
+                            ClientCommand.Command command = array[--startIndex].Command;
+                            if (command != null)
                             {
-                                end.LinkNext = command;
-                                end = command;
+                                array[startIndex].Command = null;
+                                if (head == null) head = end = command;
+                                else
+                                {
+                                    end.LinkNext = command;
+                                    end = command;
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    isNext = true;
-                    do
+                    else
                     {
-                        ClientCommand.Command command = array[startIndex].Command;
-                        if (command != null)
+                        isNext = true;
+                        do
                         {
-                            array[startIndex].Command = null;
-                            if (head == null) head = end = command;
-                            else
+                            ClientCommand.Command command = array[startIndex].Command;
+                            if (command != null)
                             {
-                                end.LinkNext = command;
-                                end = command;
+                                array[startIndex].Command = null;
+                                if (head == null) head = end = command;
+                                else
+                                {
+                                    end.LinkNext = command;
+                                    end = command;
+                                }
                             }
                         }
+                        while (++startIndex != array.Length);
                     }
-                    while (++startIndex != array.Length);
                 }
             }
+            finally { System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0); }
             return head;
         }
     }

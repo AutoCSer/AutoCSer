@@ -1071,7 +1071,7 @@ namespace AutoCSer.Xml
                 }
                 return;
             }
-            if (type.IsPointer || type.IsInterface || typeof(Delegate).IsAssignableFrom(type))
+            if (type.IsInterface || type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
             {
                 DefaultParser = notSupport;
                 return;

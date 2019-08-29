@@ -48,7 +48,7 @@ namespace AutoCSer.Search
             {
                 int count = indexs.Indexs.Length;
                 WordType = wordType;
-                Result.Add(key, indexs);
+                Result[key] = indexs;
                 if (count == 0) ++Count;
                 else Count += indexs.Indexs.Length;
             }

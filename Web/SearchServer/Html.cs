@@ -78,12 +78,12 @@ namespace AutoCSer.Web.SearchServer
                         Monitor.Exit(htmlLock);
                         if (html.Title != newHtml.Title)
                         {
-                            Searcher.Default.Update(new DataKey { Type = DataType.HtmlTitle, Id = html.Id }, newHtml.Title, html.Title);
+                            Searcher.SearchTaskQueue.Add(new Queue.Update(new DataKey { Type = DataType.HtmlTitle, Id = html.Id }, newHtml.Title, html.Title));
                             html.Title = newHtml.Title;
                         }
                         if (html.Text != newHtml.Text)
                         {
-                            Searcher.Default.Update(new DataKey { Type = DataType.HtmlBodyText, Id = html.Id }, newHtml.Text, html.Text);
+                            Searcher.SearchTaskQueue.Add(new Queue.Update(new DataKey { Type = DataType.HtmlBodyText, Id = html.Id }, newHtml.Text, html.Text));
                             html.Text = newHtml.Text;
                         }
                         HtmlImage.Free(ref html.Images);
@@ -98,14 +98,14 @@ namespace AutoCSer.Web.SearchServer
                         finally { Monitor.Exit(htmlLock); }
                         newHtml.Url = url;
                         newHtml.Id = Cache.GetIndex(newHtml);
-                        Searcher.Default.Add(new DataKey { Id = newHtml.Id, Type = DataType.HtmlTitle }, newHtml.Title);
-                        Searcher.Default.Add(new DataKey { Id = newHtml.Id, Type = DataType.HtmlBodyText }, newHtml.Text);
+                        Searcher.SearchTaskQueue.Add(new Queue.Append(new DataKey { Id = newHtml.Id, Type = DataType.HtmlTitle }, newHtml.Title));
+                        Searcher.SearchTaskQueue.Add(new Queue.Append(new DataKey { Id = newHtml.Id, Type = DataType.HtmlBodyText }, newHtml.Text));
                         html = newHtml;
                     }
                     foreach (HtmlImage image in html.Images)
                     {
                         image.GetIndex(html.Id);
-                        Searcher.Default.Add(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title);
+                        Searcher.SearchTaskQueue.Add(new Queue.Append(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title));
                     }
                 }
             }
@@ -140,8 +140,8 @@ namespace AutoCSer.Web.SearchServer
         /// </summary>
         private void onDeleteHtml()
         {
-            Searcher.Default.Remove(new DataKey { Type = DataType.HtmlTitle, Id = Id }, Title);
-            Searcher.Default.Remove(new DataKey { Type = DataType.HtmlBodyText, Id = Id }, Text);
+            Searcher.SearchTaskQueue.Add(new Queue.Delete(new DataKey { Type = DataType.HtmlTitle, Id = Id }, Title));
+            Searcher.SearchTaskQueue.Add(new Queue.Delete(new DataKey { Type = DataType.HtmlBodyText, Id = Id }, Text));
             HtmlImage.Free(ref Images);
         }
         /// <summary>
@@ -183,32 +183,26 @@ namespace AutoCSer.Web.SearchServer
         }
         static Html()
         {
-            try
+            Cache = new SegmentArray<Html>(8);
+            int urlIndex = AutoCSer.Web.Config.Search.HtmlPath.Length;
+            foreach (FileInfo htmlFile in new DirectoryInfo(AutoCSer.Web.Config.Search.HtmlPath).GetFiles("*.html", SearchOption.AllDirectories))
             {
-                Cache = new SegmentArray<Html>(8);
-                using (AutoCSer.Search.StaticSearcher<DataKey>.InitializeAdder adder = Searcher.Default.GetInitializeAdder())
+                Html html = getHtml(htmlFile);
+                if (html != null)
                 {
-                    int urlIndex = AutoCSer.Web.Config.Search.HtmlPath.Length;
-                    foreach (FileInfo htmlFile in new DirectoryInfo(AutoCSer.Web.Config.Search.HtmlPath).GetFiles("*.html", SearchOption.AllDirectories))
+                    html.Url = htmlFile.FullName.Substring(urlIndex).Replace('\\', '/');
+                    urls.Add(html.Url.FileNameToLower(), html);
+                    html.Id = Cache.GetIndex(html);
+                    Searcher.SearchTaskQueue.Add(new Queue.Append(new DataKey { Id = html.Id, Type = DataType.HtmlTitle }, html.Title));
+                    Searcher.SearchTaskQueue.Add(new Queue.Append(new DataKey { Id = html.Id, Type = DataType.HtmlBodyText }, html.Text));
+                    foreach (HtmlImage image in html.Images)
                     {
-                        Html html = getHtml(htmlFile);
-                        if (html != null)
-                        {
-                            html.Url = htmlFile.FullName.Substring(urlIndex).Replace('\\', '/');
-                            urls.Add(html.Url.FileNameToLower(), html);
-                            html.Id = Cache.GetIndex(html);
-                            adder.Add(new DataKey { Id = html.Id, Type = DataType.HtmlTitle }, html.Title);
-                            adder.Add(new DataKey { Id = html.Id, Type = DataType.HtmlBodyText }, html.Text);
-                            foreach (HtmlImage image in html.Images)
-                            {
-                                image.GetIndex(html.Id);
-                                adder.Add(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title);
-                            }
-                        }
+                        image.GetIndex(html.Id);
+                        Searcher.SearchTaskQueue.Add(new Queue.Append(new DataKey { Id = image.Id, Type = DataType.HtmlImage }, image.Title));
                     }
                 }
             }
-            finally { Searcher.Default.Initialized(); }
+
             htmlWatcher = new FileSystemWatcher(AutoCSer.Web.Config.Search.HtmlPath, "*.html");
             htmlWatcher.IncludeSubdirectories = false;
             htmlWatcher.EnableRaisingEvents = true;

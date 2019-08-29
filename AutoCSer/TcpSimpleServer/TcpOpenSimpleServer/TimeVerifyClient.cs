@@ -11,11 +11,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 时间验证服务客户端委托
         /// </summary>
+        /// <param name="userID">用户ID</param>
         /// <param name="randomPrefix">随机前缀</param>
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns></returns>
-        public delegate TcpServer.ReturnValue<bool> Verifier(ulong randomPrefix, byte[] md5Data, ref long ticks);
+        public delegate TcpServer.ReturnValue<bool> Verifier(string userID, ulong randomPrefix, byte[] md5Data, ref long ticks);
         /// <summary>
         /// 时间验证客户端验证
         /// </summary>
@@ -24,15 +25,27 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <returns></returns>
         public unsafe static bool Verify(Verifier verify, AutoCSer.Net.TcpOpenSimpleServer.Client client)
         {
-            long ticks;
-            ServerAttribute attribute = client.Attribute;
-            string verifyString = attribute.VerifyString;
+            string verifyString = client.Attribute.VerifyString;
             if (verifyString == null)
             {
-                ticks = 0;
-                return verify(0, null, ref ticks).Value;
+                long ticks = 0;
+                return verify(null, 0, null, ref ticks).Value;
             }
+            return Verify(verify, client, null, verifyString);
+        }
+        /// <summary>
+        /// 时间验证客户端验证
+        /// </summary>
+        /// <param name="verify">时间验证服务客户端委托</param>
+        /// <param name="client"></param>
+        /// <param name="userID">用户ID</param>
+        /// <param name="verifyString">验证字符串</param>
+        /// <returns></returns>
+        public unsafe static bool Verify(Verifier verify, AutoCSer.Net.TcpOpenSimpleServer.Client client, string userID, string verifyString)
+        {
+            long ticks;
             ulong markData = 0;
+            ServerAttribute attribute = client.Attribute;
             if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
             ticks = Date.NowTime.SetUtc().Ticks;
             do
@@ -42,7 +55,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 client.ReceiveMarkData = attribute.IsMarkData ? markData ^ randomPrefix : 0UL;
                 client.SendMarkData = 0;
                 long lastTicks = ticks;
-                TcpServer.ReturnValue<bool> isVerify = verify(randomPrefix, TcpServer.TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), ref ticks);
+                TcpServer.ReturnValue<bool> isVerify = verify(userID, randomPrefix, TcpServer.TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), ref ticks);
                 if (isVerify.Value)
                 {
                     client.SendMarkData = client.ReceiveMarkData;

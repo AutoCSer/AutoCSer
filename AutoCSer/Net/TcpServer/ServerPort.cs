@@ -8,6 +8,14 @@ namespace AutoCSer.Net
     internal enum ServerPort
     {
         /// <summary>
+        /// 远程控制连接数据中转服务 8985
+        /// </summary>
+        RemoteControlConnection = 9000 - 15,
+        /// <summary>
+        /// 远程控制客户端登陆服务 8986
+        /// </summary>
+        RemoteControl = 9000 - 14,
+        /// <summary>
         /// 发布程序集环境检测服务 8987
         /// </summary>
         DeployAssemblyEnvironmentCheck = 9000 - 13,
@@ -56,8 +64,8 @@ namespace AutoCSer.Net
         /// </summary>
         TcpRegister = 9000 - 2,
         /// <summary>
-        /// TCP 内部注册读取服务 8999
+        /// 保留
         /// </summary>
-        TcpRegisterReader = 9000 - 1
+        Reserved = 9000 - 1
     }
 }

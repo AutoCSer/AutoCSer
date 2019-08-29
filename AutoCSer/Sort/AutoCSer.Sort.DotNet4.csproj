@@ -157,6 +157,7 @@
     <Compile Include="Extension\IComparable.cs" />
     <Compile Include="Extension\LeftArray.cs" />
     <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="FragmentDictionary256.cs" />
     <Compile Include="PageCount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchTree\DictionaryPageDescCache.cs" />

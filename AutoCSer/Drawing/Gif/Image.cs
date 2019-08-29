@@ -55,7 +55,7 @@ namespace AutoCSer.Drawing.Gif
         {
             if (Width == 0 || Height == 0 || LzwSize == 0 || LzwSize > 8) return null;
             int colorSize = Width * Height;
-            Pointer.Size colorIndexs = FileWriter.LzwEncodeTableBufferPool.GetSize(colorSize);
+            Pointer.Size colorIndexs = Writer.LzwEncodeTableBufferPool.GetSize(colorSize);
             try
             {
                 int length = lzwDecode(Decoder.BlocksToByte(ref LzwDatas), colorIndexs.Byte, LzwSize);
@@ -107,7 +107,7 @@ namespace AutoCSer.Drawing.Gif
                     }
                 }
             }
-            finally { FileWriter.LzwEncodeTableBufferPool.Push(ref colorIndexs); }
+            finally { Writer.LzwEncodeTableBufferPool.Push(ref colorIndexs); }
             return null;
         }
         /// <summary>
@@ -148,7 +148,7 @@ namespace AutoCSer.Drawing.Gif
                 {
                     byte* nextStrings = null, stringStart = stringFixed + stringBuffer.StartIndex;
                     byte* currentInput = inputFixed, inputEnd = inputFixed + input.Length;
-                    byte* currentOutput = output, outputEnd = output + FileWriter.LzwEncodeTableBufferPool.Size;
+                    byte* currentOutput = output, outputEnd = output + Writer.LzwEncodeTableBufferPool.Size;
                     int valueBits = 0, inputSize = 0, inputOffset = (int)inputEnd & (sizeof(ulong) - 1), startSize = tableSize;
                     ulong inputValue = 0, inputMark = ushort.MaxValue, startMark = ((ulong)1UL << startSize) - 1;
                     short endIndex = (short)(clearIndex + 1), prefixIndex, currentIndex = 0;

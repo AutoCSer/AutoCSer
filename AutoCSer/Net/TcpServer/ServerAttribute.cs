@@ -23,6 +23,11 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal abstract int GetClientTryCreateSleep { get; }
         /// <summary>
+        /// 客户端第一次重建连接休眠毫秒数（默认为客户端重建连接休眠毫秒数）
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetClientFirstTryCreateSleep { get { return GetClientTryCreateSleep; } }
+        /// <summary>
         /// 批量处理休眠毫秒数
         /// </summary>
         [AutoCSer.Metadata.Ignore]

@@ -84,6 +84,7 @@
     <Compile Include="StateSearcher\ByteSearcher.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
+    <Compile Include="Extension\String.cs" />
     <Compile Include="Extension\SynchronizationContext.cs" />
     <Compile Include="NumberToCharStream\Join.cs" />
     <Compile Include="NumberToCharStream\JoinDynamicMethod.cs" />

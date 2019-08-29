@@ -20,11 +20,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP 注册服务客户端
         /// </summary>
-        private readonly ReaderServer.TcpInternalClient readerClient;
-        /// <summary>
-        /// TCP 注册服务客户端
-        /// </summary>
-        private Server.TcpInternalClient registerClient;
+        private readonly Server.TcpInternalClient registerClient;
 #endif
         /// <summary>
         /// TCP 客户端套接字初始化处理
@@ -84,11 +80,10 @@ namespace AutoCSer.Net.TcpRegister
             //attribute.TcpRegister = null;
             this.serviceName = serviceName;
             createWait.Set(0);
-            readerClient = new ReaderServer.TcpInternalClient(TcpInternalServer.ServerAttribute.GetConfig(serviceName + ReaderServer.ServerNameSuffix, typeof(AutoCSer.Net.TcpRegister.ReaderServer)));
-            //registerClient = new AutoCSer.net.tcp.tcpRegister.tcpClient(AutoCSer.code.cSharp.tcpServer.GetConfig(serviceName, typeof(AutoCSer.net.tcp.tcpRegisterReader)));
+            registerClient = new Server.TcpInternalClient(TcpInternalServer.ServerAttribute.GetConfig(serviceName, typeof(AutoCSer.Net.TcpRegister.Server)));
             //isNewClientErrorLog = true;
             logHandle = onLog;
-            checkSocketVersion = readerClient._TcpClient_.CreateCheckSocketVersion(onNewSocket);
+            checkSocketVersion = registerClient._TcpClient_.CreateCheckSocketVersion(onNewSocket);
 #endif
         }
         /// <summary>
@@ -99,12 +94,7 @@ namespace AutoCSer.Net.TcpRegister
 #if NoAutoCSer
             throw new Exception();
 #else
-            readerClient.Dispose();
-            if (registerClient != null)
-            {
-                registerClient.Dispose();
-                registerClient = null;
-            }
+            registerClient.Dispose();
 #endif
             clientId.Tick = 0;
         }
@@ -131,7 +121,7 @@ namespace AutoCSer.Net.TcpRegister
                         }
                         if (clientId.Tick == 0)
                         {
-                            clientId = readerClient.register();
+                            clientId = registerClient.register();
                             if (clientId.Tick != 0) createWait.Set();
                         }
                         if (clientId.Tick != 0)
@@ -156,7 +146,7 @@ namespace AutoCSer.Net.TcpRegister
                                 finally { Monitor.Exit(serverSetLock); }
                             }
                             isRegisterLoaded = false;
-                            if ((logKeep = readerClient.getLog(clientId, logHandle)) != null)
+                            if ((logKeep = registerClient.getLog(clientId, logHandle)) != null)
                             {
                                 byte isError = 0;
                                 foreach (IServer server in servers)
@@ -170,7 +160,6 @@ namespace AutoCSer.Net.TcpRegister
                                         {
                                             serverInfo.ClientIndex = clientId.Index;
                                             serverInfo.ClientIdentity = clientId.Identity;
-                                            checkRegisterClient();
                                             if (registerClient.checkRegister(clientTick, serverInfo).Value) serverInfo.RegisterTick = clientTick;
                                             else if (isError == 0)
                                             {
@@ -192,11 +181,11 @@ namespace AutoCSer.Net.TcpRegister
                     }
                     catch (Exception error)
                     {
-                        readerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Debug, error, null, true);
+                        registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Debug, error, null, true);
                     }
-                    Thread.Sleep(readerClient._TcpClient_.TryCreateSleep);
+                    Thread.Sleep(registerClient._TcpClient_.TryCreateSleep);
                 }
-                while (readerClient._TcpClient_.IsDisposed == 0);
+                while (registerClient._TcpClient_.IsDisposed == 0);
             }
 #endif
         }
@@ -293,21 +282,6 @@ namespace AutoCSer.Net.TcpRegister
         }
 
         /// <summary>
-        /// 创建 TCP 注册服务客户端
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void checkRegisterClient()
-        {
-#if NoAutoCSer
-            throw new Exception();
-#else
-            if (registerClient == null)
-            {
-                registerClient = new Server.TcpInternalClient(TcpInternalServer.ServerAttribute.GetConfig(serviceName, typeof(AutoCSer.Net.TcpRegister.Server)));
-            }
-#endif
-        }
-        /// <summary>
         /// 获取服务端口
         /// </summary>
         /// <typeparam name="serverAttributeType"></typeparam>
@@ -321,7 +295,6 @@ namespace AutoCSer.Net.TcpRegister
                 Monitor.Enter(registerLock);
                 try
                 {
-                    checkRegisterClient();
 #if NoAutoCSer
                     throw new Exception();
 #else
@@ -353,7 +326,6 @@ namespace AutoCSer.Net.TcpRegister
             Monitor.Enter(registerLock);
             try
             {
-                checkRegisterClient();
                 servers.Add(server);
                 long tick = clientId.Tick;
                 if (registerClient.register(tick, serverInfo).Value)
@@ -387,7 +359,6 @@ namespace AutoCSer.Net.TcpRegister
                 {
                     if (server.TcpRegisterInfo != null)
                     {
-                        checkRegisterClient();
                         servers.RemoveToEnd(server);
                         if (registerClient.removeRegister(clientId.Tick, server.TcpRegisterInfo).Type == AutoCSer.Net.TcpServer.ReturnType.Success) server.TcpRegisterInfo = null;
                     }

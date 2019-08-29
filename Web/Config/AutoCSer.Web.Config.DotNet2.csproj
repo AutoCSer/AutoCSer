@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoCSer.Web.Config</RootNamespace>
-    <AssemblyName>AutoCSer.Web.Config</AssemblyName>
+    <AssemblyName>AutoCSer.Config.Web</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,6 +45,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Deploy.cs" />
     <Compile Include="GameServer.cs" />
     <Compile Include="Http.cs" />

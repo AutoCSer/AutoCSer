@@ -58,7 +58,7 @@ namespace AutoCSer.Extension
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void SimpleCopyNotNull64(char* source, char* destination, int count)
         {
-            Memory.SimpleCopyNotNull64((byte*)source, (byte*)destination, count << 1);
+            if (count > 0) Memory.SimpleCopyNotNull64((byte*)source, (byte*)destination, count << 1);
         }
         /// <summary>
         /// 获取Ascii字符串原始字节流

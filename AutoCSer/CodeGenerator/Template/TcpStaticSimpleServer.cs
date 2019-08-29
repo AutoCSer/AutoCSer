@@ -73,7 +73,7 @@ namespace AutoCSer.CodeGenerator.Template
             public /*NOTE*/partial class /*NOTE*/@NoAccessTypeNameDefinition
             {
                 #region NOTE
-                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender sender, ulong randomPrefix, byte[] md5Data, ref long ticks) { return false; }
+                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks) { return false; }
                 #endregion NOTE
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod

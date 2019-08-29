@@ -49,10 +49,15 @@ namespace AutoCSer.Deploy
             if (isOnlySet) SwitchWait.Set();
             else
             {
+                initialize();
                 ExitEvent = new ManualResetEvent(false);
                 switchWait = new SwitchWait(exit);
             }
         }
+        /// <summary>
+        /// 初始化操作
+        /// </summary>
+        protected virtual void initialize() { }
         /// <summary>
         /// 退出
         /// </summary>
@@ -68,6 +73,9 @@ namespace AutoCSer.Deploy
         {
             if (switchWait != null)
             {
+#if !MONO
+                Win32.Kernel32.SetErrorMode(Win32.ErrorMode.SEM_NOGPFAULTERRORBOX | Win32.ErrorMode.SEM_NOOPENFILEERRORBOX);
+#endif
                 onStart();
                 if (autoGuard) AutoCSer.Diagnostics.ProcessCopyClient.Guard();
                 ExitEvent.WaitOne();

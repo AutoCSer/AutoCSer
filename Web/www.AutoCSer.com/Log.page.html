@@ -3,6 +3,13 @@
 <!--Include:Include\Header[AutoCSer 更新记录]-->
 <body>
     <div>
+        <b>1.1.41</b>
+        <br />. <a href="/Config/Index.html">代码配置</a>支持实例化，用于兼容文件配置反序列化。
+        <br />. <a href="/TcpServer/Register.html">TCP 注册服务</a>读写服务合并，通过设置只读权限来兼容旧的读取服务。
+        <br />. <a href="/TcpServer/MethodServer.html">TCP 服务</a>时间验证函数增加 用户ID 参数，用于适配常规用户认证模式。
+        <br />. 修复 ASCII 状态机没有判断匹配数据超出范围可能造成野指针读操作的 BUG。
+    </div>
+    <div>
         <b>1.1.40</b>
         <br />. 搜索组件增加 AutoCSer.Search 线程参数支持单线程队列处理的中间数据缓存，基础数据结构增加可重用字典替代 Dictionary 避免 Clear 操作性能问题。
     </div>

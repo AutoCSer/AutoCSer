@@ -19,7 +19,7 @@ namespace AutoCSer.Net.HttpDomainServer
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[6];
                 names[0].Set(@"(AutoCSer.Net.HttpDomainServer.SessionId)Get", 0);
-                names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,ulong,byte[],ref long)verify", 1);
+                names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"(AutoCSer.Net.HttpDomainServer.SessionId,valueType)Get", 2);
                 names[3].Set(@"(AutoCSer.Net.HttpDomainServer.SessionId)Remove", 3);
                 names[4].Set(@"(AutoCSer.Net.HttpDomainServer.SessionId,valueType)Set", 4);
@@ -101,7 +101,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                     
                                     bool Return;
                                     
-                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
                                     if (Return) sender.SetVerifyMethod();
                                     
                                     _outputParameter_.p0 = inputParameter.p1;
@@ -274,7 +274,8 @@ namespace AutoCSer.Net.HttpDomainServer
                 {
                     public byte[] p0;
                     public long p1;
-                    public ulong p2;
+                    public string p2;
+                    public ulong p3;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -450,7 +451,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4>.Pop();
                     try
@@ -461,7 +462,9 @@ namespace AutoCSer.Net.HttpDomainServer
                             TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                             {
                                 
-                                p2 = randomPrefix,
+                                p2 = userID,
+                                
+                                p3 = randomPrefix,
                                 
                                 p0 = md5Data,
                                 
@@ -699,7 +702,7 @@ namespace AutoCSer.Net.HttpDomainServer
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[6];
                 names[0].Set(@"(string,string,AutoCSer.Net.HttpRegister.Domain,bool)start", 0);
-                names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,ulong,byte[],ref long)verify", 1);
+                names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"(string,string,AutoCSer.Net.HttpRegister.Domain[],bool)start", 2);
                 names[3].Set(@"(AutoCSer.Net.HttpRegister.Domain)stop", 3);
                 names[4].Set(@"(AutoCSer.Net.HttpRegister.Domain[])stop", 4);
@@ -781,7 +784,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                     
                                     bool Return;
                                     
-                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
                                     if (Return) sender.SetVerifyMethod();
                                     
                                     _outputParameter_.p0 = inputParameter.p1;
@@ -949,7 +952,8 @@ namespace AutoCSer.Net.HttpDomainServer
                 {
                     public byte[] p0;
                     public long p1;
-                    public ulong p2;
+                    public string p2;
+                    public ulong p3;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -1121,7 +1125,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4>.Pop();
                     try
@@ -1132,7 +1136,9 @@ namespace AutoCSer.Net.HttpDomainServer
                             TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                             {
                                 
-                                p2 = randomPrefix,
+                                p2 = userID,
+                                
+                                p3 = randomPrefix,
                                 
                                 p0 = md5Data,
                                 

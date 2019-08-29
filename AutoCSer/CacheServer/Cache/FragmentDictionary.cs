@@ -15,13 +15,9 @@ namespace AutoCSer.CacheServer.Cache
         where nodeType : Node
     {
         /// <summary>
-        /// 字典
+        /// 256 基分片 字典
         /// </summary>
-        private readonly System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType>[] dictionarys = new System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType>[256];
-        /// <summary>
-        /// 有效数据数量
-        /// </summary>
-        private int count;
+        private readonly FragmentDictionary256<HashCodeKey<keyType>, nodeType> fragmentDictionary = new FragmentDictionary256<HashCodeKey<keyType>, nodeType>();
         /// <summary>
         /// 256 基分片 字典节点
         /// </summary>
@@ -39,12 +35,8 @@ namespace AutoCSer.CacheServer.Cache
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary != null)
-                {
-                    nodeType node;
-                    if (dictionary.TryGetValue(key, out node)) return node;
-                }
+                nodeType node;
+                if (fragmentDictionary.TryGetValue(key, out node)) return node;
                 parser.ReturnParameter.ReturnType = ReturnType.NotFoundDictionaryKey;
             }
             return null;
@@ -97,11 +89,10 @@ namespace AutoCSer.CacheServer.Cache
                 case OperationParameter.OperationType.GetOrCreateNode: getOrCreateNode(ref parser); return;
                 case OperationParameter.OperationType.Remove: remove(ref parser); return;
                 case OperationParameter.OperationType.Clear:
-                    if (count != 0)
+                    if (fragmentDictionary.Count != 0)
                     {
                         onClear();
-                        Array.Clear(dictionarys, 0, 256);
-                        count = 0;
+                        fragmentDictionary.ClearArray();
                         parser.IsOperation = true;
                     }
                     parser.ReturnParameter.ReturnParameterSet(true);
@@ -118,12 +109,11 @@ namespace AutoCSer.CacheServer.Cache
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary == null) dictionarys[key.HashCode & 0xff] = dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<nodeType>();
+                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = fragmentDictionary.GetOrCreateDictionary(key);
                 if (!dictionary.ContainsKey(key))
                 {
                     dictionary.Add(key, nodeConstructor(this, ref parser));
-                    ++count;
+                    ++fragmentDictionary.Count;
                     parser.IsOperation = true;
                 }
                 parser.ReturnParameter.ReturnParameterSet(true);
@@ -139,18 +129,15 @@ namespace AutoCSer.CacheServer.Cache
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary != null)
+                nodeType node;
+                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary;
+                if (fragmentDictionary.TryGetValue(key, out node, out dictionary))
                 {
-                    nodeType node;
-                    if (dictionary.TryGetValue(key, out node))
-                    {
-                        dictionary.Remove(key);
-                        --count;
-                        parser.SetOperationReturnParameter();
-                        node.OnRemoved();
-                        return;
-                    }
+                    dictionary.Remove(key);
+                    --fragmentDictionary.Count;
+                    parser.SetOperationReturnParameter();
+                    node.OnRemoved();
+                    return;
                 }
                 parser.ReturnParameter.ReturnParameterSet(false);
             }
@@ -173,13 +160,12 @@ namespace AutoCSer.CacheServer.Cache
         {
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(fragmentDictionary.Count); return;
                 case OperationParameter.OperationType.ContainsKey:
                     HashCodeKey<keyType> key;
                     if (HashCodeKey<keyType>.Get(ref parser, out key))
                     {
-                        System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary = dictionarys[key.HashCode & 0xff];
-                        parser.ReturnParameter.ReturnParameterSet(dictionary != null && dictionary.ContainsKey(key));
+                        parser.ReturnParameter.ReturnParameterSet(fragmentDictionary.ContainsKey(key));
                     }
                     return;
                 case OperationParameter.OperationType.CreateShortPath:
@@ -205,13 +191,7 @@ namespace AutoCSer.CacheServer.Cache
         {
             if (nodeInfo.IsOnRemovedEvent)
             {
-                foreach (System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary in dictionarys)
-                {
-                    if (dictionary != null)
-                    {
-                        foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, nodeType> node in dictionary) node.Value.OnRemoved();
-                    }
-                }
+                foreach (nodeType node in fragmentDictionary.Values) node.OnRemoved();
             }
         }
         /// <summary>
@@ -220,15 +200,9 @@ namespace AutoCSer.CacheServer.Cache
         /// <returns></returns>
         internal override Snapshot.Node CreateSnapshot()
         {
-            KeyValue<keyType, Snapshot.Node>[] array = new KeyValue<keyType, Snapshot.Node>[count];
+            KeyValue<keyType, Snapshot.Node>[] array = new KeyValue<keyType, Snapshot.Node>[fragmentDictionary.Count];
             int index = 0;
-            foreach (System.Collections.Generic.Dictionary<HashCodeKey<keyType>, nodeType> dictionary in dictionarys)
-            {
-                if (dictionary != null)
-                {
-                    foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, nodeType> node in dictionary) array[index++].Set(node.Key.Value, node.Value.CreateSnapshot());
-                }
-            }
+            foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, nodeType> node in fragmentDictionary.KeyValues) array[index++].Set(node.Key.Value, node.Value.CreateSnapshot());
             return new Snapshot.Dictionary<keyType>(array);
         }
 #if NOJIT

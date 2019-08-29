@@ -38,7 +38,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -68,7 +68,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length >> 1)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -98,7 +98,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -123,7 +123,7 @@ namespace AutoCSer.BinarySerialize
             }
             else
             {
-                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     byte[] array = new byte[length];
                     Read = DeSerialize(Read + sizeof(int), array);
@@ -155,12 +155,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -189,7 +189,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -219,12 +219,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize((sbyte*)Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -253,7 +253,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length * sizeof(short)) + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if ((((length * sizeof(short)) + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -283,12 +283,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -317,7 +317,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (((length * sizeof(ushort) + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((length * sizeof(ushort) + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -347,12 +347,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -383,7 +383,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((length + 1) * sizeof(int) <= (int)(end - Read))
+                if ((length + 1) * sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -413,12 +413,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -449,7 +449,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((length + 1) * sizeof(int) <= (int)(end - Read))
+                if ((length + 1) * sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -479,12 +479,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -515,7 +515,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(long) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(long) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -545,12 +545,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -581,7 +581,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(ulong) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(ulong) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -611,12 +611,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -647,7 +647,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(float) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(float) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -677,12 +677,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -713,7 +713,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(double) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(double) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -743,12 +743,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -779,7 +779,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(decimal) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(decimal) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -809,12 +809,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -846,7 +846,7 @@ namespace AutoCSer.BinarySerialize
                 if (length != 0)
                 {
                     int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
-                    if (dataLength <= (int)(end - Read))
+                    if (dataLength <= (int)(End - Read))
                     {
                         if (createArray(ref value, length >> 1))
                         {
@@ -862,13 +862,13 @@ namespace AutoCSer.BinarySerialize
             {
                 length >>= 1;
                 int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
-                if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         fixed (char* valueFixed = value)
                         {
-                            byte* read = DeSerialize(Read, end, valueFixed, length, lengthSize);
+                            byte* read = DeSerialize(Read, End, valueFixed, length, lengthSize);
                             if (read != null)
                             {
                                 Read = read;
@@ -904,12 +904,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -940,7 +940,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(DateTime) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(DateTime) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -970,12 +970,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -1006,7 +1006,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if (length * sizeof(Guid) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(Guid) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length)) Read = DeSerialize(Read + sizeof(int), value);
                 }
@@ -1036,12 +1036,12 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref value);
             if (length != 0)
             {
-                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(end - Read))
+                if ((((length + (31 + 32)) >> 5) << 2) <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
                         Read = DeSerialize(Read + sizeof(int), value);
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -1116,7 +1116,7 @@ namespace AutoCSer.BinarySerialize
                     if (length != 0)
                     {
                         int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
-                        if (dataLength <= (int)(end - Read))
+                        if (dataLength <= (int)(End - Read))
                         {
                             value = new string((char*)(Read + sizeof(int)), 0, length >> 1);
                             if (isReferenceMember) points.Set((int)(start - Read), value);
@@ -1134,13 +1134,13 @@ namespace AutoCSer.BinarySerialize
                 {
                     length >>= 1;
                     int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
-                    if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                    if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                     {
                         value = AutoCSer.Extension.StringExtension.FastAllocateString(length);
                         if (isReferenceMember) points.Set((int)(start - Read), value);
                         fixed (char* valueFixed = value)
                         {
-                            byte* read = DeSerialize(Read, end, valueFixed, length, lengthSize);
+                            byte* read = DeSerialize(Read, End, valueFixed, length, lengthSize);
                             if (read != null)
                             {
                                 Read = read;
@@ -1164,7 +1164,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int mapLength = ((length + (31 + 32)) >> 5) << 2;
-                if (mapLength <= (int)(end - Read))
+                if (mapLength <= (int)(End - Read))
                 {
                     if (createArray(ref value, length))
                     {
@@ -1179,7 +1179,7 @@ namespace AutoCSer.BinarySerialize
                                 if (State != DeSerializeState.Success) return;
                             }
                         }
-                        if (Read > end) State = DeSerializeState.IndexOutOfRange;
+                        if (Read > End) State = DeSerializeState.IndexOutOfRange;
                     }
                 }
                 else State = DeSerializeState.IndexOutOfRange;
@@ -1205,7 +1205,7 @@ namespace AutoCSer.BinarySerialize
                 if (length != 0)
                 {
                     int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
-                    if (dataLength <= (int)(end - Read))
+                    if (dataLength <= (int)(End - Read))
                     {
                         length >>= 1;
                         value.Set(new string((char*)(Read + sizeof(int)), 0, length), 0, length);
@@ -1223,12 +1223,12 @@ namespace AutoCSer.BinarySerialize
             {
                 length >>= 1;
                 int lengthSize = (length <= byte.MaxValue ? 1 : (length <= ushort.MaxValue ? sizeof(ushort) : sizeof(int)));
-                if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((lengthSize + length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     value.Set(AutoCSer.Extension.StringExtension.FastAllocateString(length), 0, length);
                     fixed (char* valueFixed = value.String)
                     {
-                        byte* read = DeSerialize(Read, end, valueFixed, length, lengthSize);
+                        byte* read = DeSerialize(Read, End, valueFixed, length, lengthSize);
                         if (read != null)
                         {
                             Read = read;

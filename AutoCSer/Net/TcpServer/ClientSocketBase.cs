@@ -329,7 +329,7 @@ namespace AutoCSer.Net.TcpServer
             if (deSerializer == null)
             {
                 deSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                deSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig);
+                deSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig, null);
             }
             bool isValue = deSerializer.DeSerializeTcpServer(ref data, ref value);
             if (Interlocked.CompareExchange(ref ReceiveDeSerializer, deSerializer, null) != null) deSerializer.Free();

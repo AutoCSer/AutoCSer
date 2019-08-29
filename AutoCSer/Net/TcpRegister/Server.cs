@@ -27,6 +27,37 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         private readonly long ticks = AutoCSer.Pub.StartTime.Ticks;
         /// <summary>
+        /// 命令
+        /// </summary>
+        private enum command
+        {
+            /// <summary>
+            /// TCP 服务端注册
+            /// </summary>
+            register = 2,
+            /// <summary>
+            /// TCP 服务端轮询
+            /// </summary>
+            getLog,
+            /// <summary>
+            /// 分配服务端口号
+            /// </summary>
+            getPort,
+            /// <summary>
+            /// 注册 TCP 服务信息
+            /// </summary>
+            registerServer,
+            /// <summary>
+            /// 失败重连检测 TCP 服务信息
+            /// </summary>
+            checkRegister,
+            /// <summary>
+            /// 注销TCP服务信息
+            /// </summary>
+            removeRegister,
+        }
+
+        /// <summary>
         /// 客户端信息池
         /// </summary>
         private AutoCSer.Threading.IndexValuePool<ClientInfo> clientPool;
@@ -61,10 +92,12 @@ namespace AutoCSer.Net.TcpRegister
             if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0) PopNotNull(this);
         }
         /// <summary>
-        /// TCP服务端注册
+        /// TCP 服务端注册
         /// </summary>
-        /// <returns>TCP服务端标识</returns>
-        internal ClientId Register()
+        /// <returns>TCP 服务端标识</returns>
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false, CommandIdentity = (int)command.register)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private ClientId register()
         {
             int index, identity;
             object arrayLock = clientPool.ArrayLock;
@@ -78,11 +111,13 @@ namespace AutoCSer.Net.TcpRegister
             return new ClientId { Tick = ticks, Index = index, Identity = identity };
         }
         /// <summary>
-        /// TCP服务端轮询
+        /// TCP 服务端轮询
         /// </summary>
-        /// <param name="clientId">TCP服务端标识</param>
-        /// <param name="onLog">TCP服务注册通知委托</param>
-        internal void GetLog(ref ClientId clientId, Func<TcpServer.ReturnValue<Log>, bool> onLog)
+        /// <param name="clientId">TCP 服务端标识</param>
+        /// <param name="onLog">TCP 服务注册通知委托</param>
+        [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = (int)command.getLog)]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private void getLog(ClientId clientId, Func<TcpServer.ReturnValue<Log>, bool> onLog)
         {
             if (clientId.Tick == ticks)
             {
@@ -103,12 +138,22 @@ namespace AutoCSer.Net.TcpRegister
             onLog(Log.ClientError);
         }
         /// <summary>
+        /// 设置只读模式
+        /// </summary>
+        /// <param name="sender"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static void SetReadCommand(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
+        {
+            sender.SetCommand((int)command.register);
+            sender.SetCommand((int)command.getLog);
+        }
+        /// <summary>
         /// 分配服务端口号
         /// </summary>
         /// <param name="clientId"></param>
         /// <param name="host"></param>
         /// <returns></returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = (int)command.getPort)]
         private int getPort(ClientId clientId, string host)
         {
             if (ticks == clientId.Tick && host != null)
@@ -140,7 +185,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="ticks">全局注册标识</param>
         /// <param name="server">TCP 服务信息</param>
         /// <returns>注册状态</returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = (int)command.registerServer)]
         private bool register(long ticks, ServerInfo server)
         {
             if (ticks == this.ticks && server != null && server.HostToIpAddress())
@@ -179,7 +224,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="ticks">全局注册标识</param>
         /// <param name="server">TCP 服务信息</param>
         /// <returns>注册状态</returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = (int)command.checkRegister)]
         private bool checkRegister(long ticks, ServerInfo server)
         {
             if (ticks == this.ticks && server != null && server.HostToIpAddress())
@@ -226,7 +271,7 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <param name="ticks"></param>
         /// <param name="server"></param>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = (int)command.removeRegister)]
         private void removeRegister(long ticks, ServerInfo server)
         {
             if (ticks == this.ticks && server != null && server.HostToIpAddress())

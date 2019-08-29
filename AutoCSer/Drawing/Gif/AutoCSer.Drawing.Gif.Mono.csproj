@@ -52,7 +52,7 @@
     <Compile Include="DataType.cs" />
     <Compile Include="Decoder.cs" />
     <Compile Include="File.cs" />
-    <Compile Include="FileWriter.cs" />
+    <Compile Include="Writer.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="ImageFillBitmap.cs" />
     <Compile Include="PlainText.cs" />

@@ -374,7 +374,7 @@ namespace AutoCSer.Json
                 isValueType = true;
                 return;
             }
-            if (type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
+            if (type.IsInterface || type.IsPointer || typeof(Delegate).IsAssignableFrom(type))
             {
                 defaultSerializer = toNull;
                 isValueType = true;

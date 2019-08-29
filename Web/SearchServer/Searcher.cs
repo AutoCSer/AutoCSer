@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using AutoCSer.Extension;
+using AutoCSer.Threading;
 
 namespace AutoCSer.Web.SearchServer
 {
@@ -17,7 +18,15 @@ namespace AutoCSer.Web.SearchServer
         /// <summary>
         /// 搜索器
         /// </summary>
-        internal static readonly AutoCSer.Search.StaticSearcher<DataKey> Default = new AutoCSer.Search.StaticSearcher<DataKey>();
+        internal static readonly AutoCSer.Search.StaticSearcher<DataKey> Default;
+        /// <summary>
+        /// 搜索器线程参数
+        /// </summary>
+        internal static readonly ThreadParameter DefaultThreadParameter;
+        /// <summary>
+        /// 搜索处理队列
+        /// </summary>
+        internal static readonly TaskQueue SearchTaskQueue = new TaskQueue();
         unsafe static Searcher()
         {
             if (File.Exists(AutoCSer.Web.Config.Search.WordFileName))
@@ -61,6 +70,7 @@ namespace AutoCSer.Web.SearchServer
             }
             else Console.WriteLine("未找到文件 " + AutoCSer.Web.Config.Search.WordFileName);
             Default = new AutoCSer.Search.StaticSearcher<DataKey>(staticTrieGraph);
+            DefaultThreadParameter = new ThreadParameter(Default);
         }
     }
 }

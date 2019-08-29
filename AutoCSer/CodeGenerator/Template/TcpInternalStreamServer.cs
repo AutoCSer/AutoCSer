@@ -362,7 +362,7 @@ namespace AutoCSer.CodeGenerator.Template
                     return AutoCSer.Net.TcpInternalStreamServer.TimeVerifyClient.Verify(verify, sender, _TcpClient_);
                 }
                 #region NOTE
-                public AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender sender, ulong randomPrefix, byte[] md5Data, ref long ticks) { return false; }
+                public AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalStreamServer.ClientSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks) { return false; }
                 #endregion NOTE
                 #endregion IF IsTimeVerify
                 /// <summary>

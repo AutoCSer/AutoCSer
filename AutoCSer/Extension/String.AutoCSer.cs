@@ -75,14 +75,22 @@ namespace AutoCSer.Extension
         {
             fixed (char* valueFixed = value)
             {
-                char* start = valueFixed, end = valueFixed + value.Length;
-                do
-                {
-                    if ((uint)(*start - 'A') < 26) *start |= (char)0x20;
-                }
-                while (++start != end);
+                ToLower(valueFixed, valueFixed + value.Length);
             }
             return value;
+        }
+        /// <summary>
+        /// 大写转小写
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end">长度必须大于0</param>
+        internal static void ToLower(char* start, char* end)
+        {
+            do
+            {
+                if ((uint)(*start - 'A') < 26) *start |= (char)0x20;
+            }
+            while (++start != end);
         }
         /// <summary>
         /// 字符查找

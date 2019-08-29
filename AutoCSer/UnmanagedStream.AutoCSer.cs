@@ -48,6 +48,18 @@ namespace AutoCSer
         /// 写数据
         /// </summary>
         /// <param name="data">数据</param>
+        /// <param name="index"></param>
+        /// <param name="length"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void UnsafeWrite(byte[] data, int index, int length)
+        {
+            fixed (byte* dataFixed = data) AutoCSer.Memory.CopyNotNull(dataFixed + index, Data.Byte + ByteSize, length);
+            ByteSize += length;
+        }
+        /// <summary>
+        /// 写数据
+        /// </summary>
+        /// <param name="data">数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Write(byte[] data)
         {

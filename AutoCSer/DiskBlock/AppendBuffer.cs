@@ -66,7 +66,7 @@ namespace AutoCSer.DiskBlock
             if (size > 0)
             {
                 int offset = -(size + sizeof(ushort)) & 3;
-                if (deSerializer.VerifyRead(size + offset + (sizeof(int) + sizeof(ulong) + sizeof(ushort))))
+                if (deSerializer.MoveReadAny(size + offset + (sizeof(int) + sizeof(ulong) + sizeof(ushort))))
                 {
                     Index = *(ulong*)(read + sizeof(int));
                     deSerializer.DeSerializeTcpServer(ref Buffer, read += sizeof(int) + sizeof(ulong), size);

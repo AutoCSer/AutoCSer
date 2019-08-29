@@ -1,0 +1,6 @@
+﻿{
+  "ServiceName": "AutoCSer.DeployService",
+  "ServiceDescription": "AutoCSer 发布工具启动服务",
+  "StartBatFileName": "C:\\AutoCSer\\DeployService\\bin\\Release\\AutoCSer.DeployService.bat",
+  "StopBatFileName": "C:\\AutoCSer\\DeployService\\bin\\Release\\AutoCSer.DeployService.Stop.bat"
+}

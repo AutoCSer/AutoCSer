@@ -114,6 +114,15 @@ namespace AutoCSer.Net.TcpOpenServer
         [AutoCSer.Metadata.Ignore]
         internal override int GetClientTryCreateSleep { get { return ClientTryCreateSleep; } }
         /// <summary>
+        /// 客户端第一次重建连接休眠毫秒数，默认为 1000
+        /// </summary>
+        public int ClientFirstTryCreateSleep = 1000;
+        /// <summary>
+        /// 客户端第一次重建连接休眠毫秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetClientFirstTryCreateSleep { get { return ClientFirstTryCreateSleep; } }
+        /// <summary>
         /// 批量处理休眠毫秒数，默认为 -1 表示不等待，设置为 0 适应于延时要求不高只要求吞吐量的情况以减少套接字调用次数，设置为 0 适应于低延时高频串行调用
         /// </summary>
         public int ClientOutputSleep = -1;

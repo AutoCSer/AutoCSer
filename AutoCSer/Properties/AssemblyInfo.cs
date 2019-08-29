@@ -71,6 +71,8 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("AutoCSer.HtmlTitle")]
 [assembly: InternalsVisibleTo("AutoCSer.RawSocketListener")]
 [assembly: InternalsVisibleTo("AutoCSer.DataSetSerialize")]
+[assembly: InternalsVisibleTo("AutoCSer.RemoteControl")]
+[assembly: InternalsVisibleTo("AutoCSer.RemoteControlClient")]
 
 [assembly: InternalsVisibleTo("AutoCSer.WebClient")]
 [assembly: InternalsVisibleTo("AutoCSer.OpenAPI")]

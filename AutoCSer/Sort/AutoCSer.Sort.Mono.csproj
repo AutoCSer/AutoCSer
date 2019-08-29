@@ -67,6 +67,7 @@
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\IComparable.cs" />
     <Compile Include="Extension\SubArray.cs" />
+    <Compile Include="FragmentDictionary256.cs" />
     <Compile Include="SearchTree\Dictionary.cs" />
     <Compile Include="SearchTree\DictionaryPageDescCache.cs" />
     <Compile Include="SearchTree\DictionaryPageCache.cs" />

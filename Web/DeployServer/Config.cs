@@ -6,18 +6,7 @@ namespace AutoCSer.Web.DeployServer
     /// 部署服务配置
     /// </summary>
     [AutoCSer.Config.Type]
-    internal static class Config
+    internal class Config : AutoCSer.Web.Config.Config
     {
-        /// <summary>
-        /// 进程复制重启服务配置
-        /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.Diagnostics.ProcessCopyServer.ServerName)]
-        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute ProcessCopyServerAttribute
-        {
-            get
-            {
-                return AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Diagnostics.ProcessCopyServer));
-            }
-        }
     }
 }

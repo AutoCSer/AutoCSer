@@ -75,7 +75,7 @@ namespace AutoCSer.DiskBlock
             }
             else if (size == Buffer.Length)
             {
-                if (deSerializer.VerifyRead(sizeof(int) + size + (-size & 3)))
+                if (deSerializer.MoveReadAny(sizeof(int) + size + (-size & 3)))
                 {
                     fixed (byte* bufferFixed = Buffer.Array) AutoCSer.Memory.CopyNotNull(read + sizeof(int), bufferFixed + Buffer.Start, size);
                     State = MemberState.Remote;

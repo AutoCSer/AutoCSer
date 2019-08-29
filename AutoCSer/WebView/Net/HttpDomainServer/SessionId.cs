@@ -213,7 +213,7 @@ namespace AutoCSer.Net.HttpDomainServer
         [AutoCSer.BinarySerialize.SerializeCustom]
         private unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer)
         {
-            if (deSerializer.VerifyRead(sizeof(ulong) * 4))
+            if (deSerializer.MoveReadAny(sizeof(ulong) * 4))
             {
                 byte* dataStart = deSerializer.Read;
                 Ticks = *(ulong*)(dataStart - sizeof(ulong) * 4);

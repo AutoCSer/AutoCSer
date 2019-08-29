@@ -21,13 +21,17 @@ namespace AutoCSer.Net.TcpServer
         protected readonly Func<System.Net.Sockets.Socket, bool> verify;
 
         /// <summary>
+        /// 二进制反序列化配置参数
+        /// </summary>
+        internal readonly AutoCSer.BinarySerialize.DeSerializeConfig BinaryDeSerializeConfig;
+        /// <summary>
         /// 服务 IP 地址
         /// </summary>
         internal readonly IPAddress IpAddress;
         /// <summary>
         /// 服务端口
         /// </summary>
-        internal int Port;
+        public int Port { get; internal set; }
         /// <summary>
         /// TCP 服务器端同步调用队列
         /// </summary>
@@ -97,6 +101,8 @@ namespace AutoCSer.Net.TcpServer
             if (isCallQueue) CallQueue = new ServerCallCanDisposableQueue();
             Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
+            int binaryDeSerializeMaxArraySize = attribute.GetBinaryDeSerializeMaxArraySize;
+            BinaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
         }
         /// <summary>
         /// 停止服务

@@ -19,9 +19,24 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected readonly ClientSocketCreator<attributeType> clientCreator;
         /// <summary>
+        /// 套接字是否可用
+        /// </summary>
+        public bool IsSocket
+        {
+            get
+            {
+                ClientSocketBase socket = clientCreator.Socket;
+                return socket != null && !socket.IsClose;
+            }
+        }
+        /// <summary>
         /// 批量处理休眠毫秒数
         /// </summary>
         internal readonly int OutputSleep;
+        /// <summary>
+        /// 第一次重建连接休眠毫秒数
+        /// </summary>
+        internal readonly int FristTryCreateSleep;
         /// <summary>
         /// 重建连接休眠毫秒数
         /// </summary>
@@ -69,6 +84,7 @@ namespace AutoCSer.Net.TcpServer
             : base(attribute, attribute.GetSendBufferSize, attribute.GetReceiveBufferSize, attribute.ClientSendBufferMaxSize, log)
         {
             OutputSleep = attribute.GetClientOutputSleep;
+            FristTryCreateSleep = Math.Max(attribute.GetClientFirstTryCreateSleep, 10);
             TryCreateSleep = Math.Max(attribute.GetClientTryCreateSleep, 10);
             SocketWait.Set(0);
             clientCreator = new ClientSocketCreator<attributeType>(this);

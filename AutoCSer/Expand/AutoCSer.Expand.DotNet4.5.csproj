@@ -56,6 +56,7 @@
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\EmitGenerator.cs" />
     <Compile Include="Extension\Memory.cs" />
+    <Compile Include="Extension\String.cs" />
     <Compile Include="Extension\SynchronizationContext.cs" />
     <Compile Include="HostsFile.cs" />
     <Compile Include="IO\Compression\Deflate.cs" />

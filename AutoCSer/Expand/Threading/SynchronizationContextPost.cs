@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Threading
 {
@@ -38,7 +39,14 @@ namespace AutoCSer.Threading
         /// <param name="Value"></param>
         private void onPost(object Value)
         {
-            action();
+            try
+            {
+                action();
+            }
+            catch (Exception error)
+            {
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+            }
         }
     }
     /// <summary>
@@ -79,7 +87,14 @@ namespace AutoCSer.Threading
         /// <param name="Value"></param>
         private void onPost(object Value)
         {
-            action((valueType)Value);
+            try
+            {
+                action((valueType)Value);
+            }
+            catch (Exception error)
+            {
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+            }
         }
     }
 }

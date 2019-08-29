@@ -17,84 +17,14 @@ namespace AutoCSer.Web.SearchServer
         /// </summary>
         public const string ServerName = "SearchServer";
         /// <summary>
-        /// 最大搜索文本长度
-        /// </summary>
-        private const int maxTextSize = 127;
-        /// <summary>
-        /// 搜索结果最大缓存数量
-        /// </summary>
-        private const int maxResultCount = 1024;
-        /// <summary>
-        /// 分页记录数量
-        /// </summary>
-        private const int pageSize = 20;
-        /// <summary>
-        /// 搜索结果缓存
-        /// </summary>
-        private static readonly AutoCSer.FifoPriorityQueue<HashString, SearchItem[]> resultCache = new AutoCSer.FifoPriorityQueue<HashString, SearchItem[]>();
-        /// <summary>
-        /// 搜索结果缓存访问锁
-        /// </summary>
-        private static readonly object resultCacheLock = new object();
-        /// <summary>
-        /// 获取数据权重
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="weight"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static int getWeight(DataType type, int weight)
-        {
-            switch (type)
-            {
-                case DataType.HtmlTitle:
-                    return (weight << 4);
-                case DataType.HtmlImage:
-                    return (weight << 2);
-            }
-            return weight;
-        }
-        /// <summary>
         /// 关键字搜索
         /// </summary>
         /// <param name="key">字搜索</param>
+        /// <param name="onSearch">搜索回调</param>
         [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod]
-        internal static SearchItem[] Search(string key)
+        internal static void Search(string key, Func<AutoCSer.Net.TcpServer.ReturnValue<SearchItem[]>, bool> onSearch)
         {
-            AutoCSer.Search.Simplified simplified = new AutoCSer.Search.Simplified();
-            simplified.Set(key, maxTextSize);
-            if (simplified.GetSize() != 0)
-            {
-                HashString cacheKey = simplified.Text;
-                SearchItem[] value = resultCache.Get(ref cacheKey, null);
-                if (value == null)
-                {
-                    long wordCount = Searcher.Default.Results.WordCount;
-                    LeftArray<KeyValue<HashString, AutoCSer.Search.StaticSearcher<DataKey>.QueryResult>> results = Searcher.Default.Search(ref simplified);
-                    switch (results.Count)
-                    {
-                        case 0: value = NullValue<SearchItem>.Array; break;
-                        case 1:
-                            value = results[0].Value.Result.getLeftArray(results[0].Value.Count)
-                                .GetRangeSortDesc(result => getWeight(result.Key.Type, result.Value.Indexs.Length), 0, pageSize, result => new SearchItem(results[0].Key, result));
-                            break;
-                        default:
-                            value = Searcher.Default.GetWeights(ref results).KeyValues
-                                .getLeftArray(weight => new KeyValue<DataKey, int>(weight.Key, getWeight(weight.Key.Type, weight.Value)))
-                                .GetRangeSortDesc(weight => weight.Value, 0, pageSize, weight => new SearchItem(weight.Key, results));
-                            break;
-                    }
-                    Monitor.Enter(resultCacheLock);
-                    try
-                    {
-                        resultCache.Set(ref cacheKey, value);
-                        if (resultCache.Count > maxResultCount) resultCache.Pop();
-                    }
-                    finally { Monitor.Exit(resultCacheLock); }
-                }
-                return value;
-            }
-            return NullValue<SearchItem>.Array;
+            Searcher.SearchTaskQueue.Add(new Queue.Search(key, onSearch));
         }
 
         /// <summary>
@@ -102,25 +32,34 @@ namespace AutoCSer.Web.SearchServer
         /// </summary>
         private static readonly Html html0 = Html.Cache[0];
         /// <summary>
-        /// 当前进程标识
-        /// </summary>
-        internal static readonly int CurrentProcessId = System.Diagnostics.Process.GetCurrentProcess().Id;
-        /// <summary>
         /// 当前服务实例
         /// </summary>
-        internal static AutoCSer.Web.SearchServer.TcpStaticServer.SearchServer CurrentServer;
+        private static AutoCSer.Web.SearchServer.TcpStaticServer.SearchServer searchServer;
         /// <summary>
-        /// 停止服务监听
+        /// 创建搜索服务
         /// </summary>
-        /// <param name="processId">请求方进程标识</param>
-        [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod]
-        internal static void StopListen(int processId)
+        internal static void CreateSearchServer()
         {
-            if (processId != CurrentProcessId && CurrentServer != null)
+            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server));
+            do
             {
-                CurrentServer.StopListen();
-                AutoCSer.Web.Config.Pub.Exit();
+                try
+                {
+                    searchServer = new AutoCSer.Web.SearchServer.TcpStaticServer.SearchServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute));
+                    if (searchServer.IsListen)
+                    {
+                        Console.WriteLine("Search 服务启动成功 " + serverAttribute.Host + ":" + searchServer.Port.toString());
+                        return;
+                    }
+                    Console.WriteLine("Search 服务启动失败 " + serverAttribute.Host + ":" + searchServer.Port.toString());
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.ToString());
+                }
+                Thread.Sleep(1000);
             }
+            while (true);
         }
     }
 }

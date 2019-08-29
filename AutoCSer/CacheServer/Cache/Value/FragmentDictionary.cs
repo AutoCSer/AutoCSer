@@ -13,13 +13,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         where keyType : IEquatable<keyType>
     {
         /// <summary>
-        /// 字典
+        /// 256 基分片 字典
         /// </summary>
-        private readonly System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType>[] dictionarys = new System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType>[256];
-        /// <summary>
-        /// 有效数据数量
-        /// </summary>
-        private int count;
+        private readonly FragmentDictionary256<HashCodeKey<keyType>, valueType> fragmentDictionary = new FragmentDictionary256<HashCodeKey<keyType>, valueType>();
         /// <summary>
         /// 256 基分片 字典 数据节点
         /// </summary>
@@ -50,12 +46,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key) && parser.LoadValueData() && parser.IsEnd && parser.ValueData.Type == ValueData.Data<valueType>.DataType)
             {
-                valueType value = ValueData.Data<valueType>.GetData(ref parser.ValueData);
-                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary == null) dictionarys[key.HashCode & 0xff] = dictionary = AutoCSer.DictionaryCreator<HashCodeKey<keyType>>.Create<valueType>();
-                int count = dictionary.Count;
-                dictionary[key] = value;
-                this.count += dictionary.Count - count;
+                fragmentDictionary[key] = ValueData.Data<valueType>.GetData(ref parser.ValueData);
                 parser.SetOperationReturnParameter();
             }
             else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
@@ -70,8 +61,8 @@ namespace AutoCSer.CacheServer.Cache.Value
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
                 valueType value;
-                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary != null && dictionary.TryGetValue(key, out value))
+                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary;
+                if (fragmentDictionary.TryGetValue(key, out value, out dictionary))
                 {
                     byte* read = parser.Read;
                     if (parser.LoadValueData() && !parser.IsEnd)
@@ -101,7 +92,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                                         goto SETDATA;
                                     case ReturnType.Unknown:
                                         parser.ReturnParameter.ReturnType = ReturnType.Success;
-                                        SETDATA:
+                                    SETDATA:
                                         ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, value);
                                         return;
                                 }
@@ -128,10 +119,9 @@ namespace AutoCSer.CacheServer.Cache.Value
             {
                 case OperationParameter.OperationType.Remove: remove(ref parser); return;
                 case OperationParameter.OperationType.Clear:
-                    if (count != 0)
+                    if (fragmentDictionary.Count != 0)
                     {
-                        Array.Clear(dictionarys, 0, 256);
-                        count = 0;
+                        fragmentDictionary.ClearArray();
                         parser.IsOperation = true;
                     }
                     parser.ReturnParameter.ReturnParameterSet(true);
@@ -148,12 +138,7 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<keyType> key;
             if (HashCodeKey<keyType>.Get(ref parser, out key))
             {
-                System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = dictionarys[key.HashCode & 0xff];
-                if (dictionary != null && dictionary.Remove(key))
-                {
-                    --count;
-                    parser.SetOperationReturnParameter();
-                }
+                if (fragmentDictionary.Remove(key)) parser.SetOperationReturnParameter();
                 else parser.ReturnParameter.ReturnParameterSet(false);
             }
         }
@@ -176,13 +161,12 @@ namespace AutoCSer.CacheServer.Cache.Value
             HashCodeKey<keyType> key;
             switch (parser.OperationType)
             {
-                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(count); return;
+                case OperationParameter.OperationType.GetCount: parser.ReturnParameter.ReturnParameterSet(fragmentDictionary.Count); return;
                 case OperationParameter.OperationType.GetValue:
                     if (HashCodeKey<keyType>.Get(ref parser, out key))
                     {
-                        System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = dictionarys[key.HashCode & 0xff];
                         valueType value;
-                        if (dictionary != null && dictionary.TryGetValue(key, out value))
+                        if (fragmentDictionary.TryGetValue(key, out value))
                         {
                             ValueData.Data<valueType>.SetData(ref parser.ReturnParameter, value);
                             parser.ReturnParameter.ReturnType = ReturnType.Success;
@@ -191,11 +175,7 @@ namespace AutoCSer.CacheServer.Cache.Value
                     }
                     return;
                 case OperationParameter.OperationType.ContainsKey:
-                    if (HashCodeKey<keyType>.Get(ref parser, out key))
-                    {
-                        System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary = dictionarys[key.HashCode & 0xff];
-                        parser.ReturnParameter.ReturnParameterSet(dictionary != null && dictionary.ContainsKey(key));
-                    }
+                    if (HashCodeKey<keyType>.Get(ref parser, out key)) parser.ReturnParameter.ReturnParameterSet(fragmentDictionary.ContainsKey(key));
                     return;
             }
             parser.ReturnParameter.ReturnType = ReturnType.OperationTypeError;
@@ -207,15 +187,9 @@ namespace AutoCSer.CacheServer.Cache.Value
         /// <returns></returns>
         internal override Snapshot.Node CreateSnapshot()
         {
-            KeyValue<keyType, valueType>[] array = new KeyValue<keyType, valueType>[count];
+            KeyValue<keyType, valueType>[] array = new KeyValue<keyType, valueType>[fragmentDictionary.Count];
             int index = 0;
-            foreach (System.Collections.Generic.Dictionary<HashCodeKey<keyType>, valueType> dictionary in dictionarys)
-            {
-                if (dictionary != null)
-                {
-                    foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, valueType> node in dictionary) array[index++].Set(node.Key.Value, node.Value);
-                }
-            }
+            foreach (System.Collections.Generic.KeyValuePair<HashCodeKey<keyType>, valueType> node in fragmentDictionary.KeyValues) array[index++].Set(node.Key.Value, node.Value);
             return new Snapshot.Value.Dictionary<keyType, valueType>(array);
         }
 #if NOJIT

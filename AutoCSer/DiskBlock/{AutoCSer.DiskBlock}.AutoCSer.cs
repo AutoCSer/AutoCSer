@@ -19,7 +19,7 @@ namespace AutoCSer.DiskBlock
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[3];
                 names[0].Set(@"(AutoCSer.DiskBlock.AppendBuffer,System.Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>,bool>)append", 0);
-                names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,ulong,byte[],ref long)verify", 1);
+                names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"(AutoCSer.DiskBlock.ClientBuffer,ulong,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer>,bool>)read", 2);
                 return names;
             }
@@ -91,7 +91,7 @@ namespace AutoCSer.DiskBlock
                                     
                                     bool Return;
                                     
-                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
                                     if (Return) sender.SetVerifyMethod();
                                     
                                     _outputParameter_.p0 = inputParameter.p1;
@@ -186,7 +186,8 @@ namespace AutoCSer.DiskBlock
                 {
                     public byte[] p0;
                     public long p1;
-                    public ulong p2;
+                    public string p2;
+                    public ulong p3;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -342,7 +343,7 @@ namespace AutoCSer.DiskBlock
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 1 + 128, InputParameterIndex = 3, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4>.Pop();
                     try
@@ -353,7 +354,9 @@ namespace AutoCSer.DiskBlock
                             TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                             {
                                 
-                                p2 = randomPrefix,
+                                p2 = userID,
+                                
+                                p3 = randomPrefix,
                                 
                                 p0 = md5Data,
                                 

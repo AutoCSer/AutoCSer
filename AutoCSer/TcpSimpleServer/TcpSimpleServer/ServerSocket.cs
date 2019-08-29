@@ -163,10 +163,10 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// TCP 服务端套接字
         /// </summary>
-        /// <param name="binaryDeSerializeMaxArraySize">二进制反序列化数组最大长度</param>
-        internal ServerSocket(int binaryDeSerializeMaxArraySize)
+        /// <param name="binaryDeSerializeConfig">二进制反序列化配置参数</param>
+        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig)
         {
-            binaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
+            this.binaryDeSerializeConfig = binaryDeSerializeConfig;
         }
         /// <summary>
         /// 判断命令是否有效
@@ -212,7 +212,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                 if (ReceiveDeSerializer == null)
                 {
                     ReceiveDeSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                    ReceiveDeSerializer.SetTcpServer(binaryDeSerializeConfig);
+                    ReceiveDeSerializer.SetTcpServer(binaryDeSerializeConfig, this);
                 }
                 return ReceiveDeSerializer.DeSerializeTcpServer(ref data, ref value);
                 //if (ReceiveDeSerializer.DeSerializeTcpServer(ref data, ref value)) return true;
@@ -288,7 +288,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
-        internal ServerSocket(serverType server): base(server.Attribute.GetBinaryDeSerializeMaxArraySize)
+        internal ServerSocket(serverType server): base(server.BinaryDeSerializeConfig)
         {
             Server = server;
         }

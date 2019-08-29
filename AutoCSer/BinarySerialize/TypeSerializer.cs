@@ -492,7 +492,7 @@ namespace AutoCSer.BinarySerialize
                 isValueType = true;
                 return;
             }
-            if (type.IsAbstract || type.IsInterface || Emit.Constructor<valueType>.New == null)
+            if (type.IsInterface || type.IsAbstract || Emit.Constructor<valueType>.New == null)
             {
                 DefaultSerializer = noConstructor;
                 isValueType = IsReferenceMember = true;

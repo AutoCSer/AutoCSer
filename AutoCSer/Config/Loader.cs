@@ -23,7 +23,7 @@ namespace AutoCSer.Config
         /// 配置关键字
         /// </summary>
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-        private struct key : IEquatable<key>
+        private struct Key : IEquatable<Key>
         {
             /// <summary>
             /// 配置类型
@@ -42,7 +42,7 @@ namespace AutoCSer.Config
             /// </summary>
             /// <param name="type"></param>
             /// <param name="name"></param>
-            public key(Type type, string name)
+            public Key(Type type, string name)
             {
                 this.type = type;
                 this.name = name;
@@ -53,7 +53,7 @@ namespace AutoCSer.Config
             /// </summary>
             /// <param name="other"></param>
             /// <returns></returns>
-            public bool Equals(key other)
+            public bool Equals(Key other)
             {
                 return type == other.type && hashCode == other.hashCode && name == other.name;
             }
@@ -64,7 +64,7 @@ namespace AutoCSer.Config
             /// <returns></returns>
             public override bool Equals(object obj)
             {
-                return Equals((key)obj);
+                return Equals((Key)obj);
             }
             /// <summary>
             /// 
@@ -78,7 +78,7 @@ namespace AutoCSer.Config
         /// <summary>
         /// 配置集合
         /// </summary>
-        private static readonly Dictionary<key, KeyValue<object, bool>> configs = DictionaryCreator<key>.Create<KeyValue<object, bool>>();
+        private static readonly Dictionary<Key, Creator> configs = DictionaryCreator<Key>.Create<Creator>();
         /// <summary>
         /// 配置程序集名称集合（主要用于 WebForm 等动态应用程序域配置）
         /// </summary>
@@ -95,14 +95,13 @@ namespace AutoCSer.Config
         /// <returns>配置项数据</returns>
         public static object GetObject(Type type, string name = "")
         {
-            key key = new key(type, name ?? string.Empty);
-            KeyValue<object, bool> value;
+            Key key = new Key(type, name ?? string.Empty);
+            Creator creator;
             Monitor.Enter(configLock);
-            if (configs.TryGetValue(key, out value))
+            if (configs.TryGetValue(key, out creator))
             {
                 Monitor.Exit(configLock);
-                MethodInfo method = value.Key as MethodInfo;
-                return method == null ? (value.Key as FieldInfo).GetValue(null) : method.Invoke(null, null);
+                return creator.Create();
             }
             Monitor.Exit(configLock);
             return null;
@@ -129,7 +128,7 @@ namespace AutoCSer.Config
             Assembly assembly = args.LoadedAssembly;
             if (checkName(assembly))
             {
-                foreach (KeyValue<key, object> config in getConfigs(assembly))
+                foreach (KeyValue<Key, Creator> config in getConfigs(assembly, false))
                 {
                     Monitor.Enter(configLock);
                     try
@@ -157,58 +156,86 @@ namespace AutoCSer.Config
         /// 获取配置数据
         /// </summary>
         /// <param name="assembly"></param>
+        /// <param name="isMain"></param>
         /// <returns></returns>
-        private static IEnumerable<KeyValue<key, object>> getConfigs(Assembly assembly)
+        private static IEnumerable<KeyValue<Key, Creator>> getConfigs(Assembly assembly, bool isMain)
         {
             foreach (Type type in assembly.GetTypes())
             {
-                if (type.IsDefined(typeof(TypeAttribute), false))
+                foreach (TypeAttribute typeAttribute in type.GetCustomAttributes(typeof(TypeAttribute), false))
                 {
-                    foreach (FieldInfo field in type.GetFields(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
+                    object instance = null;
+                    BindingFlags instanceBindingFlags;
+                    if (typeAttribute.IsInstance)
                     {
-                        //object fieldValue = null;
-                        foreach (MemberAttribute attribute in field.GetCustomAttributes(typeof(MemberAttribute), false))
+                        instance = getInstance(type);
+                        instanceBindingFlags = BindingFlags.Instance;
+                    }
+                    else instanceBindingFlags = BindingFlags.Static | BindingFlags.FlattenHierarchy;
+
+                    if (!typeAttribute.IsInstance || instance != null)
+                    {
+                        foreach (FieldInfo field in type.GetFields(instanceBindingFlags | BindingFlags.NonPublic | BindingFlags.Public))
                         {
-                            if (attribute != null)
+                            foreach (MemberAttribute attribute in field.GetCustomAttributes(typeof(MemberAttribute), false))
                             {
-                                //if (fieldValue == null)
-                                //{
-                                //    fieldValue = field.GetValue(null);
-                                //    if (fieldValue == null) break;
-                                //}
-                                yield return new KeyValue<key, object>(new key(field.FieldType, attribute.Name ?? field.Name), field);
-                                //yield return new KeyValue<key, object>(new key(attribute.Type ?? field.FieldType, attribute.Name ?? field.Name), field);
-                                break;
+                                if (attribute != null)
+                                {
+                                    yield return new KeyValue<Key, Creator>(new Key(field.FieldType, attribute.Name ?? field.Name), new Creator.Field(instance, isMain, field));
+                                    break;
+                                }
                             }
                         }
-                    }
-                    foreach (PropertyInfo property in type.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
-                    {
-                        if (property.CanRead)
+                        foreach (PropertyInfo property in type.GetProperties(instanceBindingFlags | BindingFlags.NonPublic | BindingFlags.Public))
                         {
-                            MethodInfo method = property.GetGetMethod(true);
-                            if (method != null && method.GetParameters().Length == 0)
+                            if (property.CanRead)
                             {
-                                //object propertyValue = null;
-                                foreach (MemberAttribute attribute in property.GetCustomAttributes(typeof(MemberAttribute), false))
+                                MethodInfo method = property.GetGetMethod(true);
+                                if (method != null && method.GetParameters().Length == 0)
                                 {
-                                    if (attribute != null)
+                                    foreach (MemberAttribute attribute in property.GetCustomAttributes(typeof(MemberAttribute), false))
                                     {
-                                        //if (propertyValue == null)
-                                        //{
-                                        //    propertyValue = method.Invoke(null, null);
-                                        //    if (propertyValue == null) break;
-                                        //}
-                                        //yield return new KeyValue<key, object>(new key(attribute.Type ?? property.PropertyType, attribute.Name ?? property.Name), method);
-                                        yield return new KeyValue<key, object>(new key(property.PropertyType, attribute.Name ?? property.Name), method);
-                                        break;
+                                        if (attribute != null)
+                                        {
+                                            yield return new KeyValue<Key, Creator>(new Key(property.PropertyType, attribute.Name ?? property.Name), new Creator.Property(instance, isMain, method));
+                                            break;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    break;
                 }
             }
+        }
+        /// <summary>
+        /// 获取配置实例
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static object getInstance(Type type)
+        {
+            try
+            {
+                foreach (PropertyInfo property in type.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
+                {
+                    if (property.CanRead && property.PropertyType == type)
+                    {
+                        MethodInfo method = property.GetGetMethod(true);
+                        if (method != null && method.GetParameters().Length == 0)
+                        {
+                            foreach (MemberAttribute attribute in property.GetCustomAttributes(typeof(MemberAttribute), false))
+                            {
+                                if (attribute != null) return method.Invoke(null, null);
+                            }
+                        }
+                    }
+                }
+                return Activator.CreateInstance(type);
+            }
+            catch { }
+            return null;
         }
         /// <summary>
         /// 配置加载检测
@@ -217,17 +244,17 @@ namespace AutoCSer.Config
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static void load(Assembly assembly)
         {
-            foreach (KeyValue<key, object> config in getConfigs(assembly)) set(config);
+            foreach (KeyValue<Key, Creator> config in getConfigs(assembly, false)) set(config);
         }
         /// <summary>
         /// 设置配置
         /// </summary>
         /// <param name="config"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static void set(KeyValue<key, object> config)
+        private static void set(KeyValue<Key, Creator> config)
         {
-            KeyValue<object, bool> oldConfig;
-            if (!configs.TryGetValue(config.Key, out oldConfig) || !oldConfig.Value) configs[config.Key] = new KeyValue<object, bool>(config.Value, false);
+            Creator oldCreator;
+            if (!configs.TryGetValue(config.Key, out oldCreator) || !oldCreator.IsMain) configs[config.Key] = config.Value;
         }
 
         static Loader()
@@ -265,7 +292,7 @@ namespace AutoCSer.Config
             }
             if (mainAssembly != null)
             {
-                foreach (KeyValue<key, object> config in getConfigs(mainAssembly)) configs[config.Key] = new KeyValue<object, bool>(config.Value, true);
+                foreach (KeyValue<Key, Creator> config in getConfigs(mainAssembly, true)) configs[config.Key] = config.Value;
             }
         }
     }

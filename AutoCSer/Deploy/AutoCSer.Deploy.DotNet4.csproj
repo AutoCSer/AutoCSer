@@ -115,6 +115,8 @@
     <Compile Include="Timer.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Win32\ErrorMode.cs" />
+    <Compile Include="Win32\Kernel32.cs" />
     <Compile Include="{AutoCSer.Deploy}.AutoCSer.cs" />
   </ItemGroup>
   <ItemGroup>

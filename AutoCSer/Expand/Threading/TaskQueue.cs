@@ -6,7 +6,6 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 任务队列
     /// </summary>
-    /// <typeparam name="taskType">任务类型</typeparam>
     public sealed class TaskQueue : IDisposable
     {
         /// <summary>

@@ -81,7 +81,9 @@ namespace AutoCSer.Tool.OpenPack
                 switch (nextDircectory.Name)
                 {
                     case "bin":
-                    case "obj": break;
+                    case "obj":
+                    case ".vs":
+                    case ".git": break;
                     default: newPack(nextDircectory, path + nextDircectory.Name + @"\"); break;
                 }
             }
@@ -270,8 +272,10 @@ namespace AutoCSer.Tool.OpenPack
                                     using (Stream entryStream = zipArchive.CreateEntry(path + fileName).Open())
                                     {
                                         string code = File.ReadAllText(file.FullName).Replace(@" public static readonly bool IsLocal = false;", @" public static readonly bool IsLocal = true;");
-                                        code = "000" + new Regex(@" public const string TcpVerifyString = ""([^""]+)"";").Replace(code, match => @" public const string TcpVerifyString = ""XXX"";");
-                                        byte[] data = System.Text.Encoding.UTF8.GetBytes(code);
+                                        code = new Regex(@" public const string TcpVerifyString = ""([^""]+)"";").Replace(code, match => @" public const string TcpVerifyString = ""XXX"";");
+                                        code = new Regex(@" public const ulong RemoteControlClearPassword = 0x[0-9A-Za-z]+UL;").Replace(code, match => @" public const ulong RemoteControlClearPassword = 0UL;");
+                                        code = new Regex(@" public const ulong RemoteControlPassword = 0x[0-9A-Za-z]+UL;").Replace(code, match => @" public const ulong RemoteControlPassword = 0UL;");
+                                        byte[] data = System.Text.Encoding.UTF8.GetBytes("000" + code);
                                         data[0] = 0xef;
                                         data[1] = 0xbb;
                                         data[2] = 0xbf;

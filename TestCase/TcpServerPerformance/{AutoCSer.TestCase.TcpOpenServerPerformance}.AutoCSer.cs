@@ -479,7 +479,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
+            public partial class TcpOpenClient : AutoCSer.Net.TcpOpenServer.MethodClient<TcpOpenClient>
             {
                 /// <summary>
                 /// TCP调用客户端

@@ -89,7 +89,7 @@ namespace AutoCSer
         /// 长度设为0（注意：对于引用类型没有置 0 可能导致内存泄露）
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Empty()
+        public void Empty()
         {
             dictionary.Empty();
             header = end = null;

@@ -40,7 +40,7 @@ namespace AutoCSer.StateSearcher
                     if (start == end || *start != *prefix) return -1;
                 }
                 if (start == end) return *(int*)(currentState + sizeof(int) * 2);
-                if (*(int*)(currentState + sizeof(int)) == 0) return -1;
+                if (*(int*)(currentState + sizeof(int)) == 0 || *start >= 128) return -1;
                 int index = (int)*(charsAscii + *start);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
                 if (tableType == 0)
@@ -115,7 +115,7 @@ namespace AutoCSer.StateSearcher
                     }
                 }
                 if (start == end) return *(int*)(currentState + sizeof(int) * 2);
-                if (*(int*)(currentState + sizeof(int)) == 0) return -1;
+                if (*(int*)(currentState + sizeof(int)) == 0 || *start >= 128) return -1;
                 int index = (int)*(charsAscii + ((uint)(*start - 'A') < 26 ? (*start | 0x20) : *start));
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
                 if (tableType == 0)
@@ -192,7 +192,7 @@ namespace AutoCSer.StateSearcher
                     if (start == end || *start != *prefix) return -1;
                 }
                 if (start == end) return *(int*)(currentState + sizeof(int) * 2);
-                if (*(int*)(currentState + sizeof(int)) == 0) return -1;
+                if (*(int*)(currentState + sizeof(int)) == 0 || *start >= 128) return -1;
                 int index = (int)*(charsAscii + *start);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
                 if (tableType == 0)
@@ -253,7 +253,7 @@ namespace AutoCSer.StateSearcher
                     }
                 }
                 if (start == end) return *(int*)(currentState + sizeof(int) * 2);
-                if (*(int*)(currentState + sizeof(int)) == 0) return -1;
+                if (*(int*)(currentState + sizeof(int)) == 0 || *start >= 128) return -1;
                 int index = (int)*(charsAscii + ((uint)(*start - 'A') < 26 ? (*start | 0x20) : *start));
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
                 if (tableType == 0)

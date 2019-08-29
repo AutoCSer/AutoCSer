@@ -55,7 +55,7 @@ namespace AutoCSer.Web.SearchServer
                 {
                     foreach (HtmlImage image in images)
                     {
-                        Searcher.Default.Remove(new DataKey { Type = DataType.HtmlImage, Id = image.Id }, image.Title);
+                        Searcher.SearchTaskQueue.Add(new Queue.Delete(new DataKey { Type = DataType.HtmlImage, Id = image.Id }, image.Title));
                         image.Title = image.Url = null;
                         image.HtmlId = headIndex;
                         headIndex = image.Id;

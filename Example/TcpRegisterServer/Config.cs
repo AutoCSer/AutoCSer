@@ -9,19 +9,6 @@ namespace AutoCSer.Example.TcpRegisterServer
     internal static class Config
     {
         /// <summary>
-        /// TCP 内部注册读取服务 TCP 服务配置
-        /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.Net.TcpRegister.ReaderServer.ServerName)]
-        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterReaderServerAttribute
-        {
-            get
-            {
-                AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalServer.ServerAttribute>(typeof(AutoCSer.Net.TcpRegister.ReaderServer), false);
-                attribute.VerifyString = "1";
-                return attribute;
-            }
-        }
-        /// <summary>
         /// TCP 内部注册写服务 TCP 服务配置
         /// </summary>
         [AutoCSer.Config.Member(Name = AutoCSer.Net.TcpRegister.Server.ServerName)]

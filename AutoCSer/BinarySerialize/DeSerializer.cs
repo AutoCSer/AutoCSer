@@ -29,6 +29,10 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         internal int DataLength;
         /// <summary>
+        /// 上下文
+        /// </summary>
+        internal object Context;
+        /// <summary>
         /// 全局版本编号
         /// </summary>
         internal uint GlobalVersion;
@@ -39,7 +43,7 @@ namespace AutoCSer.BinarySerialize
         /// <summary>
         /// 序列化数据结束位置
         /// </summary>
-        private byte* end;
+        internal byte* End;
         /// <summary>
         /// 当前读取数据位置
         /// </summary>
@@ -86,7 +90,7 @@ namespace AutoCSer.BinarySerialize
             Config = config;
             Buffer = data;
             this.start = start;
-            this.end = end;
+            this.End = end;
             getGlobalVersion();
             if (isReferenceMember != TypeDeSerializer<valueType>.IsReferenceMember)
             {
@@ -169,6 +173,7 @@ namespace AutoCSer.BinarySerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Free()
         {
+            Context = null;
             if (Config.IsDisposeMemberMap)
             {
                 if (MemberMap != null)
@@ -188,9 +193,9 @@ namespace AutoCSer.BinarySerialize
             {
                 if (Config.IsFullData)
                 {
-                    if (Read != end) State = DeSerializeState.FullDataError;
+                    if (Read != End) State = DeSerializeState.FullDataError;
                 }
-                else if (Read <= end)
+                else if (Read <= End)
                 {
                     int length = *(int*)Read;
                     if (length == Read - start) DataLength = length + sizeof(int);
@@ -303,7 +308,7 @@ namespace AutoCSer.BinarySerialize
                     int fieldCount = MemberMap.Type.FieldCount, size = MemberMap.Type.BinarySerializeSize;
                     if (*(int*)Read == fieldCount)
                     {
-                        if (size <= (int)(end - (Read += sizeof(int))))
+                        if (size <= (int)(End - (Read += sizeof(int))))
                         {
                             for (byte* mapEnd = map + (size & (int.MaxValue - sizeof(ulong) + 1)); map != mapEnd; map += sizeof(ulong), Read += sizeof(ulong)) *(ulong*)map = *(ulong*)Read;
                             if ((size & sizeof(int)) != 0)
@@ -336,7 +341,7 @@ namespace AutoCSer.BinarySerialize
             if (size > 0 && (size & 1) == 0)
             {
                 byte* start = Read;
-                if ((Read += (size + (2 + sizeof(int))) & (int.MaxValue - 3)) <= end)
+                if ((Read += (size + (2 + sizeof(int))) & (int.MaxValue - 3)) <= End)
                 {
                     if (!AutoCSer.Json.Parser.UnsafeParse((char*)(start + sizeof(int)), size >> 1, ref value)) State = DeSerializeState.JsonError;
                     return;
@@ -368,14 +373,14 @@ namespace AutoCSer.BinarySerialize
             return 1;
         }
         /// <summary>
-        /// 自定义序列化重置当前读取数据位置
+        /// 自定义序列化重置当前读取数据位置，允许向前移动
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool VerifyRead(int size)
+        public bool MoveReadAny(int size)
         {
-            if ((Read += size) <= end) return true;
+            if ((Read += size) <= End) return true;
             State = DeSerializeState.Custom;
             return false;
         }
@@ -389,7 +394,7 @@ namespace AutoCSer.BinarySerialize
         {
             if (size >= 0)
             {
-                if ((Read += size) <= end) return true;
+                if ((Read += size) <= End) return true;
             }
             if (State == DeSerializeState.Success) State = DeSerializeState.Custom;
             return false;
@@ -1433,7 +1438,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
-                if (dataLength <= (int)(end - Read))
+                if (dataLength <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1456,7 +1461,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int dataLength = (length + (3 + sizeof(int))) & (int.MaxValue - 3);
-                if (dataLength <= (int)(end - Read))
+                if (dataLength <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1479,7 +1484,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int dataLength = ((length << 1) + (3 + sizeof(int))) & (int.MaxValue - 3);
-                if (dataLength <= (int)(end - Read))
+                if (dataLength <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1502,7 +1507,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int dataLength = ((length << 1) + (3 + sizeof(int))) & (int.MaxValue - 3);
-                if (dataLength <= (int)(end - Read))
+                if (dataLength <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1524,7 +1529,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref array);
             if (length != 0)
             {
-                if ((length + 1) * sizeof(int) <= (int)(end - Read))
+                if ((length + 1) * sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1545,7 +1550,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref array);
             if (length != 0)
             {
-                if ((length + 1) * sizeof(int) <= (int)(end - Read))
+                if ((length + 1) * sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1566,7 +1571,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref array);
             if (length != 0)
             {
-                if (length * sizeof(long) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(long) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1587,7 +1592,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref array);
             if (length != 0)
             {
-                if (length * sizeof(ulong) + sizeof(int) <= (int)(end - Read))
+                if (length * sizeof(ulong) + sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1609,7 +1614,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int mapLength = ((length + (31 + 32)) >> 5) << 2;
-                if (mapLength <= (int)(end - Read))
+                if (mapLength <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1641,7 +1646,7 @@ namespace AutoCSer.BinarySerialize
             int length = deSerializeArray(ref array);
             if (length != 0)
             {
-                if ((length + 1) * sizeof(int) <= (int)(end - Read))
+                if ((length + 1) * sizeof(int) <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {
@@ -1667,7 +1672,7 @@ namespace AutoCSer.BinarySerialize
             if (length != 0)
             {
                 int mapLength = ((length + (31 + 32)) >> 5) << 2;
-                if (mapLength <= (int)(end - Read))
+                if (mapLength <= (int)(End - Read))
                 {
                     if (createArray(ref array, length))
                     {

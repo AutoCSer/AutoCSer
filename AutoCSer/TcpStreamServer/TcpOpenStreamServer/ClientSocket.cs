@@ -94,7 +94,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                 if (isSleep)
                 {
                     isSleep = false;
-                    Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
+                    Thread.Sleep(ClientCreator.CommandClient.FristTryCreateSleep);
                     if (checkCreate() == 0) return;
                 }
                 try
@@ -155,6 +155,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
 #endif
                             Socket = null;
                         }
+                        ClientCreator.CommandClient.SocketWait.PulseReset();
                         return;
                     }
                 }
@@ -166,6 +167,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
                     }
                 }
+                ClientCreator.CommandClient.SocketWait.PulseReset();
                 if (isReceiveAsync) return;
                 CreateSleep();
             }

@@ -103,8 +103,7 @@ namespace AutoCSer.Web.SearchServer
         /// 搜索结果项
         /// </summary>
         /// <param name="dataKey">搜索数据关键字</param>
-        /// <param name="results">搜索结果</param>
-        internal SearchItem(DataKey dataKey, LeftArray<KeyValue<HashString, AutoCSer.Search.StaticSearcher<DataKey>.QueryResult>> results)
+        internal SearchItem(DataKey dataKey)
         {
             DataKey = dataKey;
             switch (dataKey.Type)
@@ -112,17 +111,17 @@ namespace AutoCSer.Web.SearchServer
                 case DataType.HtmlTitle:
                     Html = Html.Cache[dataKey.Id];
                     MatchText = default(SubString);
-                    Indexs = Searcher.Default.GetResultIndexs(ref dataKey, Html.Title.Length, ref results);
+                    Indexs = Searcher.DefaultThreadParameter.GetResultIndexs(ref dataKey, Html.Title.Length);
                     break;
                 case DataType.HtmlBodyText:
                     MatchText = (Html = Html.Cache[dataKey.Id]).Text;
-                    Indexs = Searcher.Default.FormatTextIndexs(ref dataKey, ref MatchText, ref results, maxTextLength);
+                    Indexs = Searcher.DefaultThreadParameter.FormatTextIndexs(ref dataKey, ref MatchText, maxTextLength);
                     break;
                 case DataType.HtmlImage:
                     HtmlImage image = HtmlImage.Cache[dataKey.Id];
                     Html = Html.Cache[image.HtmlId];
                     MatchText = image.Title;
-                    Indexs = Searcher.Default.GetResultIndexs(ref dataKey, MatchText.Count, ref results);
+                    Indexs = Searcher.DefaultThreadParameter.GetResultIndexs(ref dataKey, MatchText.Count);
                     break;
                 default:
                     Html = null;

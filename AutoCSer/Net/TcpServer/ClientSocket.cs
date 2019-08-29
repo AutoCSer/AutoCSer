@@ -392,7 +392,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CreateSleep()
         {
-            ClientCreator.CommandClient.SocketWait.PulseReset();
+            //ClientCreator.CommandClient.SocketWait.PulseReset();
             //Thread.Sleep(0);
             //CommandClient.SocketWait.Reset();
             if (Socket != null)

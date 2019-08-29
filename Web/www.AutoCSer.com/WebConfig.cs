@@ -29,14 +29,14 @@ namespace AutoCSer.Web
         public override bool IsHtmlLinkVersion { get { return true; } }
 
         /// <summary>
-        /// TCP 内部注册读取服务配置
+        /// TCP 内部注册服务配置
         /// </summary>
-        [AutoCSer.Config.Member(Name = AutoCSer.Web.Config.Pub.TcpRegisterReader)]
-        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterReaderServerAttribute
+        [AutoCSer.Config.Member(Name = AutoCSer.Web.Config.Pub.TcpRegister)]
+        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterServerAttribute
         {
             get
             {
-                return AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.ReaderServer));
+                return AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.Server));
             }
         }
     }

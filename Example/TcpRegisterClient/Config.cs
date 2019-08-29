@@ -13,19 +13,6 @@ namespace AutoCSer.Example.TcpRegisterClient
         /// </summary>
         internal const string TcpRegisterConfigName = "127.0.0.1";
         /// <summary>
-        /// TCP 内部注册读取服务 TCP 服务配置
-        /// </summary>
-        [AutoCSer.Config.Member(Name = TcpRegisterConfigName + AutoCSer.Net.TcpRegister.ReaderServer.ServerNameSuffix)]
-        internal static AutoCSer.Net.TcpInternalServer.ServerAttribute TcpRegisterReaderServerAttribute
-        {
-            get
-            {
-                AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = AutoCSer.Metadata.TypeAttribute.GetAttribute<AutoCSer.Net.TcpInternalServer.ServerAttribute>(typeof(AutoCSer.Net.TcpRegister.ReaderServer), false);
-                attribute.VerifyString = "1";
-                return attribute;
-            }
-        }
-        /// <summary>
         /// TCP 内部注册写服务 TCP 服务配置
         /// </summary>
         [AutoCSer.Config.Member(Name = TcpRegisterConfigName)]

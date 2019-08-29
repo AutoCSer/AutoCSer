@@ -145,7 +145,7 @@ namespace AutoCSer.Example.TcpRegisterClient
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端

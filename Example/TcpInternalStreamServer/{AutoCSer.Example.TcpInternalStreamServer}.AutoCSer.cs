@@ -576,7 +576,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -854,7 +854,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1232,7 +1232,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1497,7 +1497,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1957,7 +1957,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2288,7 +2288,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2473,7 +2473,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2673,7 +2673,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
+            public partial class TcpInternalStreamClient : AutoCSer.Net.TcpInternalStreamServer.MethodClient<TcpInternalStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端

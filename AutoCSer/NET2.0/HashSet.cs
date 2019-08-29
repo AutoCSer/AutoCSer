@@ -104,7 +104,6 @@ namespace System.Collections.Generic
         /// 根据集合内容返回数组
         /// </summary>
         /// <typeparam name="arrayType">返回数组类型</typeparam>
-        /// <param name="values">值集合</param>
         /// <param name="getValue">获取数组值的委托</param>
         /// <returns>数组</returns>
         public arrayType[] getArray<arrayType>(Func<valueType, arrayType> getValue)

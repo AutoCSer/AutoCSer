@@ -114,22 +114,37 @@ namespace AutoCSer.Net.TcpServer
         /// 时间验证函数
         /// </summary>
         /// <param name="sender"></param>
+        /// <param name="userID">用户ID</param>
         /// <param name="randomPrefix">随机前缀</param>
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
         [AutoCSer.Net.TcpOpenServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
         [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
-        protected virtual bool verify(serverSocketSenderType sender, ulong randomPrefix, byte[] md5Data, ref long ticks)
+        protected virtual bool verify(serverSocketSenderType sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             ServerBaseAttribute attribute = server.Attribute;
             if (TimeVerifyServer.CheckVerifyString(server, attribute)) return true;
+            return verify(sender, randomPrefix, attribute.VerifyString, md5Data, ref ticks);
+        }
+        /// <summary>
+        /// 时间验证函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="randomPrefix">随机前缀</param>
+        /// <param name="verifyString">验证字符串</param>
+        /// <param name="md5Data">MD5 数据</param>
+        /// <param name="ticks">验证时钟周期</param>
+        /// <returns>是否验证成功</returns>
+        protected bool verify(serverSocketSenderType sender, ulong randomPrefix, string verifyString, byte[] md5Data, ref long ticks)
+        {
             if (md5Data != null && md5Data.Length == 16)
             {
                 if (!timeVerifyTick.Check(sender, ref ticks)) return false;
-                if (TimeVerifyServer.IsMd5(TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
+                if (TimeVerifyServer.IsMd5(TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     timeVerifyTick.Set(ticks);
+                    ServerBaseAttribute attribute = server.Attribute;
                     if (!attribute.IsMarkData || sender.SetMarkData(attribute.VerifyHashCode ^ randomPrefix)) return true;
                 }
             }

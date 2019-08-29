@@ -546,7 +546,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -825,7 +825,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1104,7 +1104,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1479,7 +1479,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1716,7 +1716,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -1937,7 +1937,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2390,7 +2390,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2722,7 +2722,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -2910,7 +2910,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -3110,7 +3110,7 @@ namespace AutoCSer.Example.TcpInternalServer
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
+            public partial class TcpInternalClient : AutoCSer.Net.TcpInternalServer.MethodClient<TcpInternalClient>
             {
                 /// <summary>
                 /// TCP调用客户端

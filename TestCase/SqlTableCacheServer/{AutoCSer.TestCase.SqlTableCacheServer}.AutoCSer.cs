@@ -812,11 +812,11 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static bool _M11(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                public static bool _M11(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
 
                     
-                    return AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify.verify(_sender_, randomPrefix, md5Data, ref ticks);
+                    return AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify.verify(_sender_, userID, randomPrefix, md5Data, ref ticks);
                 }
             }
         }
@@ -834,7 +834,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
             {
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 10 + 128, InputParameterIndex = 8, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
-                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p9> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p9>.Pop();
                     try
@@ -846,7 +846,9 @@ namespace AutoCSer.TestCase.SqlTableCacheServer
                             AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataReader/**/._p8
                             {
                                 
-                                p2 = randomPrefix,
+                                p2 = userID,
+                                
+                                p3 = randomPrefix,
                                 
                                 p0 = md5Data,
                                 
@@ -1273,7 +1275,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                                 
                                 bool Return;
                                 
-                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify/**/.TcpStaticServer._M11(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify/**/.TcpStaticServer._M11(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
                                 if (Return) sender.SetVerifyMethod();
                                 
                                 _outputParameter_.p0 = inputParameter.p1;
@@ -1866,7 +1868,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             {
                 public byte[] p0;
                 public long p1;
-                public ulong p2;
+                public string p2;
+                public ulong p3;
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]
@@ -2145,11 +2148,11 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static bool _M16(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                public static bool _M16(AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
 
                     
-                    return AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify.verify(_sender_, randomPrefix, md5Data, ref ticks);
+                    return AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify.verify(_sender_, userID, randomPrefix, md5Data, ref ticks);
                 }
             }
         }
@@ -2167,7 +2170,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
             {
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c16 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 2 + 128, InputParameterIndex = 16, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = true, IsSimpleSerializeOutputParamter = true };
 
-                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, ulong randomPrefix, byte[] md5Data, ref long ticks)
+                public static AutoCSer.Net.TcpServer.ReturnValue<bool> verify(AutoCSer.Net.TcpInternalServer.ClientSocketSender _sender_, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p17> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p17>.Pop();
                     try
@@ -2179,7 +2182,9 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                             AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p16 _inputParameter_ = new AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer/**/.DataLog/**/._p16
                             {
                                 
-                                p2 = randomPrefix,
+                                p2 = userID,
+                                
+                                p3 = randomPrefix,
                                 
                                 p0 = md5Data,
                                 
@@ -2408,7 +2413,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
                                 
                                 bool Return;
                                 
-                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify/**/.TcpStaticServer._M16(sender, inputParameter.p2, inputParameter.p0, ref inputParameter.p1);
+                                Return =  AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify/**/.TcpStaticServer._M16(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
                                 if (Return) sender.SetVerifyMethod();
                                 
                                 _outputParameter_.p0 = inputParameter.p1;
@@ -2544,7 +2549,8 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             {
                 public byte[] p0;
                 public long p1;
-                public ulong p2;
+                public string p2;
+                public ulong p3;
             }
             [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
             [AutoCSer.Metadata.BoxSerialize]

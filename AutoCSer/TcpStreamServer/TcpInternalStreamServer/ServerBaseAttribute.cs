@@ -96,6 +96,15 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         [AutoCSer.Metadata.Ignore]
         internal override int GetClientTryCreateSleep { get { return ClientTryCreateSleep; } }
         /// <summary>
+        /// 客户端第一次重建连接休眠毫秒数，默认为 10
+        /// </summary>
+        public int ClientFirstTryCreateSleep = 10;
+        /// <summary>
+        /// 客户端第一次重建连接休眠毫秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetClientFirstTryCreateSleep { get { return ClientFirstTryCreateSleep; } }
+        /// <summary>
         /// 批量处理休眠毫秒数，默认为 0 适应于低延时高频串行调用，对于延时要求不高只要求吞吐量的情况可以设置为 1 以减少套接字调用次数
         /// </summary>
         public int ClientOutputSleep;

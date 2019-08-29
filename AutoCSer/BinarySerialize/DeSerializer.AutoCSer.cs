@@ -21,7 +21,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         public int NextSize
         {
-            get { return (int)(Read - end); }
+            get { return (int)(Read - End); }
         }
         ///// <summary>
         ///// 当前读取数据位置
@@ -42,7 +42,7 @@ namespace AutoCSer.BinarySerialize
         public bool GetBuffer(ref SubArray<byte> buffer)
         {
             if (Buffer == null) return false;
-            fixed (byte* bufferFixed = Buffer) buffer.Set(Buffer, (int)(Read - bufferFixed), (int)(end - Read));
+            fixed (byte* bufferFixed = Buffer) buffer.Set(Buffer, (int)(Read - bufferFixed), (int)(End - Read));
             return true;
         }
         /// <summary>
@@ -63,7 +63,7 @@ namespace AutoCSer.BinarySerialize
             }
             else
             {
-                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(end - Read))
+                if (((length + (3 + sizeof(int))) & (int.MaxValue - 3)) <= (int)(End - Read))
                 {
                     byte[] array = new byte[length];
                     Read = DeSerialize(Read + sizeof(int), array);
@@ -150,10 +150,12 @@ namespace AutoCSer.BinarySerialize
         /// 初始化
         /// </summary>
         /// <param name="config"></param>
+        /// <param name="context"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetTcpServer(DeSerializeConfig config)
+        internal void SetTcpServer(DeSerializeConfig config, object context)
         {
             Config = config;
+            Context = context;
         }
         /// <summary>
         /// 反序列化
@@ -170,8 +172,8 @@ namespace AutoCSer.BinarySerialize
                 {
                     start = dataFixed + (bufferIndex = data.Start);
                     int length = data.Length - sizeof(int);
-                    end = start + length;
-                    if (((uint)(*(int*)end ^ length) | ((*(uint*)start & SerializeConfig.HeaderMapAndValue) ^ SerializeConfig.HeaderMapValue)) == 0)
+                    End = start + length;
+                    if (((uint)(*(int*)End ^ length) | ((*(uint*)start & SerializeConfig.HeaderMapAndValue) ^ SerializeConfig.HeaderMapValue)) == 0)
                     {
                         //MemberMap = null;
                         getGlobalVersion();
@@ -192,7 +194,7 @@ namespace AutoCSer.BinarySerialize
                         isReferenceArray = true;
                         State = DeSerializeState.Success;
                         TypeDeSerializer<valueType>.DeSerializeTcpServer(this, ref value);
-                        return State == DeSerializeState.Success && Read == end;
+                        return State == DeSerializeState.Success && Read == End;
                     }
                 }
             }
@@ -253,7 +255,7 @@ namespace AutoCSer.BinarySerialize
             Buffer = data.Array;
             bufferIndex = data.Start;
             this.start = Read = start;
-            end = start + data.Length;
+            End = start + data.Length;
         }
         /// <summary>
         /// 反序列化字符串
@@ -263,7 +265,7 @@ namespace AutoCSer.BinarySerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal bool DeSerializeString(ref string value)
         {
-            value = DeSerializeString(ref Read, end);
+            value = DeSerializeString(ref Read, End);
             if (value != null) return true;
             State = DeSerializeState.IndexOutOfRange;
             return false;

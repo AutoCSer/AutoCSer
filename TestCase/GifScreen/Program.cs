@@ -16,7 +16,8 @@ namespace AutoCSer.TestCase.GifScreen
             Screen screen = Screen.PrimaryScreen;
             int width = screen.Bounds.Width, height = screen.Bounds.Height;
             FileInfo file = new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, AutoCSer.IO.File.BakPrefix + ((ulong)Date.Now.Ticks).toHex() + ".gif"));
-            using (AutoCSer.Drawing.Gif.TimerWriter gif = new AutoCSer.Drawing.Gif.TimerWriter(file.FullName, () =>
+            using (FileStream fileStream = new FileStream(file.FullName, FileMode.CreateNew, FileAccess.Write, FileShare.None, 1, FileOptions.WriteThrough))
+            using (AutoCSer.Drawing.Gif.TimerWriter gif = new AutoCSer.Drawing.Gif.TimerWriter(fileStream, () =>
             {
                 Bitmap bitmap = new Bitmap(width, height);
                 using (Graphics graphics = Graphics.FromImage(bitmap)) graphics.CopyFromScreen(0, 0, 0, 0, new Size(width, height));

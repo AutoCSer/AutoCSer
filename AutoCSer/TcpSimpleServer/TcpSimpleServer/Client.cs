@@ -536,7 +536,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                     if (receiveDeSerializer == null)
                     {
                         receiveDeSerializer = BinarySerialize.DeSerializer.YieldPool.Default.Pop() ?? new BinarySerialize.DeSerializer();
-                        receiveDeSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig);
+                        receiveDeSerializer.SetTcpServer(AutoCSer.BinarySerialize.DeSerializer.DefaultConfig, null);
                     }
                     if (receiveDeSerializer.DeSerializeTcpServer(ref clientBuffer.Data, ref outputParameter))
                     {

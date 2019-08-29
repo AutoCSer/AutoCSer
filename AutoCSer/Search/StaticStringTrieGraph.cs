@@ -14,6 +14,13 @@ namespace AutoCSer.Search
         /// </summary>
         internal Pointer.Size CharTypeData;
         /// <summary>
+        /// 字符分词类型
+        /// </summary>
+        public CharWordType CharWordType
+        {
+            get { return new CharWordType { Data = CharTypeData.Byte }; }
+        }
+        /// <summary>
         /// 任意字符，用于搜索哨岗
         /// </summary>
         internal char AnyHeadChar;

@@ -33,7 +33,7 @@ namespace AutoCSer.Example.BinarySerialize
         private static unsafe void deSerialize(AutoCSer.BinarySerialize.DeSerializer deSerializer, ref CustomClass value)
         {
             byte* read = deSerializer.CustomRead;
-            if (deSerializer.VerifyRead(sizeof(int)))
+            if (deSerializer.MoveReadAny(sizeof(int)))
             {
                 switch (*(int*)read)
                 {

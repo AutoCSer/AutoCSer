@@ -53,9 +53,9 @@ namespace AutoCSer.Net.TcpServer
             }
         }
         /// <summary>
-        /// 最大验证字节数量，默认为 1KB
+        /// 最大验证字节数量，默认为 256 字节
         /// </summary>
-        public int MaxVerifyDataSize = 1 << 10;
+        public int MaxVerifyDataSize = 1 << 8;
         /// <summary>
         /// 成员选择类型
         /// </summary>

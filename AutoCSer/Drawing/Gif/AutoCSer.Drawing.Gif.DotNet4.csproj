@@ -93,7 +93,7 @@
     <Compile Include="PraphicControlMethodType.cs" />
     <Compile Include="TimerWriter.cs" />
     <Compile Include="UnionType.cs" />
-    <Compile Include="FileWriter.cs" />
+    <Compile Include="Writer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

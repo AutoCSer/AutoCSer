@@ -3,81 +3,84 @@ using System.Threading;
 using System.Drawing;
 using AutoCSer.Extension;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace AutoCSer.Drawing.Gif
 {
     /// <summary>
-    /// 定时获取图片生成 GIF 文件，一般用于截屏（比如 Graphics.CopyFromScreen）
+    /// 定时获取图片生成 GIF 文件数据，一般用于截屏（比如 Graphics.CopyFromScreen）
     /// </summary>
     public sealed class TimerWriter : IDisposable
     {
         /// <summary>
-        /// GIF 文件
+        /// GIF 文件数据写入器
         /// </summary>
-        private FileWriter gif;
+        private readonly Writer gif;
         /// <summary>
         /// 获取图片委托
         /// </summary>
-        private Func<Bitmap> getBitmap;
+        private readonly Func<Bitmap> getBitmap;
+        /// <summary>
+        /// GIF 文件处理结束等待锁
+        /// </summary>
+        private readonly AutoCSer.Threading.WaitHandle finallyWait;
+        /// <summary>
+        /// 位图等待锁
+        /// </summary>
+        private readonly AutoCSer.Threading.AutoWaitHandle bitmapWait;
+        /// <summary>
+        /// 未处理图片队列
+        /// </summary>
+        private readonly BitmapInfo.YieldQueue bitmapQueue;
+        /// <summary>
+        /// 截屏定时毫秒数
+        /// </summary>
+        private readonly double interval;
+
         /// <summary>
         /// 截屏定时器
         /// </summary>
         private System.Threading.Timer timer;
         /// <summary>
-        /// GIF 文件处理结束等待锁
-        /// </summary>
-        private AutoCSer.Threading.WaitHandle finallyWait;
-        /// <summary>
-        /// 位图等待锁
-        /// </summary>
-        private AutoCSer.Threading.AutoWaitHandle bitmapWait;
-        /// <summary>
-        /// 未处理图片队列
-        /// </summary>
-        private BitmapInfo.YieldQueue bitmapQueue;
-        /// <summary>
-        /// 截屏定时毫秒数
-        /// </summary>
-        private double interval;
-        /// <summary>
-        /// 是否正在获取图片
-        /// </summary>
-        private int isTimer;
-        /// <summary>
-        /// 跳图数量
-        /// </summary>
-        private int keepCount;
-        /// <summary>
         /// 最大色彩深度
         /// </summary>
-        private byte maxPixel;
+        private readonly byte maxPixel;
+        /// <summary>
+        /// 释放资源是否等待 GIF 文件处理结束
+        /// </summary>
+        private readonly bool isWaitFinally;
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
         private bool isDisposed;
         /// <summary>
-        /// 释放资源是否等待 GIF 文件处理结束
+        /// 跳图数量
         /// </summary>
-        private bool isWaitFinally;
+        private int keepCount;
+        /// <summary>
+        /// 是否正在获取图片
+        /// </summary>
+        private int isTimer;
         /// <summary>
         /// 定时获取图片生成 GIF 文件
         /// </summary>
-        /// <param name="filename">输出 GIF 文件名</param>
+        /// <param name="stream">输出数据流</param>
         /// <param name="getBitmap">获取图片委托</param>
         /// <param name="width">图片最大高度</param>
         /// <param name="height">图片最大宽度</param>
         /// <param name="interval">截屏定时毫秒数</param>
         /// <param name="maxPixel">最大色彩深度</param>
         /// <param name="isWaitFinally">释放资源是否等待 GIF 文件处理结束</param>
-        public TimerWriter(string filename, Func<Bitmap> getBitmap, int width, int height, int interval = 40, byte maxPixel = 8, bool isWaitFinally = true)
+        /// <param name="isLeaveDisposeStream">是否自动释放输出数据流</param>
+        public TimerWriter(Stream stream, Func<Bitmap> getBitmap, int width, int height, int interval = 40, byte maxPixel = 8, bool isWaitFinally = true, bool isLeaveDisposeStream = false)
         {
-            if (getBitmap == null) throw new ArgumentNullException();
+            if (stream == null || getBitmap == null) throw new ArgumentNullException();
             if (width <= 0) throw new IndexOutOfRangeException("width");
             if (height <= 0) throw new IndexOutOfRangeException("height");
             this.getBitmap = getBitmap;
             this.maxPixel = (byte)(maxPixel - 2) < 8 ? maxPixel : (byte)8;
             bitmapQueue = new BitmapInfo.YieldQueue(new BitmapInfo());
-            gif = new FileWriter(filename, (short)width, (short)height);
+            gif = new Writer(stream, (short)width, (short)height, null, 0, null, isLeaveDisposeStream);
             this.interval = interval < 40 ? 40 : interval;
             bitmapWait.Set(0);
             if (this.isWaitFinally = isWaitFinally) finallyWait.Set(0);

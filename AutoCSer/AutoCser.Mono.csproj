@@ -75,6 +75,7 @@
     <Compile Include="BinarySerialize\TypeSerializer.cs" />
     <Compile Include="BinarySerialize\UnionType.cs" />
     <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />
     <Compile Include="Config\MemberAttribute.cs" />
     <Compile Include="Config\Pub.cs" />
@@ -287,7 +288,6 @@
     <Compile Include="Net\TcpRegister\Log.cs" />
     <Compile Include="Net\TcpRegister\LogType.cs" />
     <Compile Include="Net\TcpRegister\PortCache.cs" />
-    <Compile Include="Net\TcpRegister\ReaderServer.cs" />
     <Compile Include="Net\TcpRegister\RegisterState.cs" />
     <Compile Include="Net\TcpRegister\Server.cs" />
     <Compile Include="Net\TcpRegister\ServerInfo.cs" />
@@ -532,7 +532,6 @@
     <Compile Include="BinarySerialize\SerializeMemberMap.cs" />
     <Compile Include="Json\IgnoreMemberAttribute.cs" />
     <Compile Include="Xml\IgnoreMemberAttribute.cs" />
-    <Compile Include="Net\TcpRegister\DefaultServer.cs" />
     <Compile Include="Net\TcpRegister\Ports.cs" />
     <Compile Include="Extension\BinarySerialize.cs" />
     <Compile Include="Extension\JsonSerialize.cs" />

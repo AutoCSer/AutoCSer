@@ -57,6 +57,7 @@ namespace AutoCSer.StateSearcher
                     if (*start != *prefix) return -1;
                 }
                 if (*(int*)(currentState + sizeof(int)) == 0) return *(int*)(currentState + sizeof(int) * 2);
+                if (*start >= 128) return -1;
                 int index = (int)*(charsAscii + *start);
                 byte* table = currentState + *(int*)(currentState + sizeof(int));
                 if (tableType == 0)

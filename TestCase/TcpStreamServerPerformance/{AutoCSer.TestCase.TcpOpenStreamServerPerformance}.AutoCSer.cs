@@ -246,7 +246,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -583,7 +583,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端
@@ -964,7 +964,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
             /// <summary>
             /// TCP客户端
             /// </summary>
-            public class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
+            public partial class TcpOpenStreamClient : AutoCSer.Net.TcpOpenStreamServer.MethodClient<TcpOpenStreamClient>
             {
                 /// <summary>
                 /// TCP调用客户端

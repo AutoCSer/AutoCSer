@@ -20,6 +20,14 @@ namespace AutoCSer.Web.Config
         /// TCP 服务默认验证字符串
         /// </summary>
         public const string TcpVerifyString = "XXX";
+        /// <summary>
+        /// 远程控制明文密码
+        /// </summary>
+        public const ulong RemoteControlClearPassword = 0UL;
+        /// <summary>
+        /// 远程控制密码
+        /// </summary>
+        public const ulong RemoteControlPassword = 0UL;
         #endregion
         /// <summary>
         /// 服务器监听 IP 地址
@@ -99,35 +107,23 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 控制台命令处理
         /// </summary>
-        /// <param name="OnQuit"></param>
-        public static void ConsoleCommand(Action OnQuit = null)
+        /// <param name="exitEvent"></param>
+        /// <param name="onUnknownCommand"></param>
+        public static void ConsoleCommand(EventWaitHandle exitEvent = null, Action<string> onUnknownCommand = null)
         {
             do
             {
-                Console.WriteLine("clear cache / quit");
-                //Console.WriteLine("threads / clear cache / quit");
-                switch (Console.ReadLine())
+                Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\nclear cache / quit");//threads / 
+                string command = Console.ReadLine();
+                switch (command)
                 {
-                    case "quit":
-                        if (OnQuit != null) OnQuit();
-                        return;
+                    case "quit": if (exitEvent != null) exitEvent.Set(); return;
                     case "clear cache": AutoCSer.Pub.ClearCache(); break;
                     //case "threads": AutoCSer.Deploy.Server.CheckThreadLog(); break;
+                    default: if (onUnknownCommand != null) onUnknownCommand(command); break;
                 }
             }
             while (true);
-        }
-        /// <summary>
-        /// 退出服务进程
-        /// </summary>
-        public static void Exit()
-        {
-            AutoCSer.Diagnostics.ProcessCopyClient.Remove();
-            AutoCSer.Threading.ThreadPool.TinyBackground.Start(() =>
-            {
-                Thread.Sleep(1000);
-                Environment.Exit(-1);
-            });
         }
         static Pub()
         {

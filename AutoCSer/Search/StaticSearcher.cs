@@ -436,6 +436,7 @@ namespace AutoCSer.Search
                             }
                             else startIndex = (int)(start - textStart);
                             text.Sub((int)(start - textStart), Math.Min(maxLength, text.Length - startIndex));
+                            if (resultIndexs == null || resultIndexs.Length < indexs.Length) resultIndexs = new KeyValue<int, int>[indexs.Length];
                             endIndex = 0;
                             foreach (int index in indexs) resultIndexs[endIndex++].Set(index - startIndex, wordLength);
                             return indexs.Length;
@@ -443,11 +444,13 @@ namespace AutoCSer.Search
                     }
                 }
                 text.Sub(startIndex);
+                if (resultIndexs == null || resultIndexs.Length < indexs.Length) resultIndexs = new KeyValue<int, int>[indexs.Length];
                 endIndex = 0;
                 foreach (int index in indexs) resultIndexs[endIndex++].Set(index - startIndex, wordLength);
                 return indexs.Length;
             }
             if (text.Length > maxLength) text.Sub(0, maxLength);
+            if (resultIndexs == null || resultIndexs.Length < indexs.Length) resultIndexs = new KeyValue<int, int>[indexs.Length];
             endIndex = 0;
             foreach (int index in indexs) resultIndexs[endIndex++].Set(index, wordLength);
             return indexs.Length;

@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Compile Include="ArrayPool.cs" />
+    <Compile Include="CharWordType.cs" />
     <Compile Include="IWeight.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

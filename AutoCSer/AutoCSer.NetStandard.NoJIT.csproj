@@ -81,6 +81,7 @@
     <Compile Include="CharStream.AutoCSer.cs" />
     <Compile Include="CharStream.Json.cs" />
     <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />
     <Compile Include="Config\MemberAttribute.cs" />
     <Compile Include="Config\Pub.cs" />
@@ -346,7 +347,6 @@
     <Compile Include="Net\TcpRegister\ClientServerSet.cs" />
     <Compile Include="Net\TcpRegister\Config.cs" />
     <Compile Include="Net\TcpRegister\ConfigLoader.cs" />
-    <Compile Include="Net\TcpRegister\DefaultServer.cs" />
     <Compile Include="Net\TcpRegister\IClient.cs" />
     <Compile Include="Net\TcpRegister\IServer.cs" />
     <Compile Include="Net\TcpRegister\IServerAttribute.cs" />
@@ -354,7 +354,6 @@
     <Compile Include="Net\TcpRegister\LogType.cs" />
     <Compile Include="Net\TcpRegister\PortCache.cs" />
     <Compile Include="Net\TcpRegister\Ports.cs" />
-    <Compile Include="Net\TcpRegister\ReaderServer.cs" />
     <Compile Include="Net\TcpRegister\RegisterState.cs" />
     <Compile Include="Net\TcpRegister\Server.cs" />
     <Compile Include="Net\TcpRegister\ServerInfo.cs" />

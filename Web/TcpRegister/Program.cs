@@ -2,6 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Web.TcpRegister
 {
@@ -17,40 +18,13 @@ namespace AutoCSer.Web.TcpRegister
                 {
                     try
                     {
-                        AutoCSer.Net.TcpInternalServer.ServerAttribute readerServerAttribute = AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.ReaderServer));
                         AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Net.TcpRegister.Server)); 
-                        AutoCSer.Net.TcpRegister.ReaderServer reader = AutoCSer.Net.TcpRegister.ReaderServer.Create();
-                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalServer(serverAttribute, null, reader.Server))
-                        using (AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer registerReaderServer = new AutoCSer.Net.TcpRegister.ReaderServer.TcpInternalServer(readerServerAttribute, null, reader))
+                        using (AutoCSer.Net.TcpRegister.Server.TcpInternalServer registerServer = new AutoCSer.Net.TcpRegister.Server.TcpInternalServer(serverAttribute))
                         {
-                            if (registerServer.IsListen && registerReaderServer.IsListen)
+                            if (registerServer.IsListen)
                             {
-                                Console.WriteLine("TCP 注册服务启动成功");
+                                Console.WriteLine("TCP 注册服务启动成功 " + serverAttribute.Host + ":" + registerServer.Port.toString());
                                 AutoCSer.Threading.ThreadPool.TinyBackground.Start(processCopy);
-
-                                FileInfo httpServer = new FileInfo(@"..\..\..\HttpServer\bin\Release\AutoCSer.Web.HttpServer.exe");
-                                if (httpServer.Exists)
-                                {
-                                    ProcessStartInfo start = new ProcessStartInfo(httpServer.FullName);
-                                    start.WorkingDirectory = httpServer.Directory.FullName;
-                                    Process.Start(start);
-                                }
-
-                                FileInfo searchServer = new FileInfo(@"..\..\..\SearchServer\bin\Release\AutoCSer.Web.SearchServer.exe");
-                                if (searchServer.Exists)
-                                {
-                                    ProcessStartInfo start = new ProcessStartInfo(searchServer.FullName);
-                                    start.WorkingDirectory = searchServer.Directory.FullName;
-                                    Process.Start(start);
-                                }
-
-                                FileInfo deployServer = new FileInfo(@"..\..\..\DeployServer\bin\Release\AutoCSer.Web.DeployServer.exe");
-                                if (deployServer.Exists)
-                                {
-                                    ProcessStartInfo start = new ProcessStartInfo(deployServer.FullName);
-                                    start.WorkingDirectory = deployServer.Directory.FullName;
-                                    Process.Start(start);
-                                }
 
                                 AutoCSer.Web.Config.Pub.ConsoleCommand();
                                 isExit = true;
@@ -90,7 +64,7 @@ namespace AutoCSer.Web.TcpRegister
                     AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer server = new AutoCSer.Diagnostics.ProcessCopyServer.TcpInternalServer(serverAttribute);
                     if(server.IsListen)
                     {
-                        Console.WriteLine("进程复制重启服务启动成功");
+                        Console.WriteLine("进程复制重启服务启动成功 " + serverAttribute.Host + ":" + server.Port.toString());
                         processCopyServer = server;
                         return;
                     }

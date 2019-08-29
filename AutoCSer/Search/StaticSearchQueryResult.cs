@@ -41,6 +41,16 @@ namespace AutoCSer.Search
             /// 分词类型
             /// </summary>
             public WordType WordType;
+
+            /// <summary>
+            /// 复制数据
+            /// </summary>
+            /// <param name="array"></param>
+            public void CopyTo(ref LeftArray<KeyValuePair<keyType, ResultIndexArray>> array)
+            {
+                array.PrepLength(Dictionary.Count);
+                foreach (KeyValuePair<keyType, ResultIndexArray> value in Dictionary) array.UnsafeAdd(value);
+            }
         }
     }
 }
