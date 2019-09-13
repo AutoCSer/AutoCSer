@@ -32,16 +32,14 @@ namespace AutoCSer.TestCase.RadixSortPerformance
         private static void sort(Int[] number1, Int[] number2)
         {
             random(number1, number2);
-            long time = AutoCSer.Pub.StopwatchTicks;
+            long time = System.Diagnostics.Stopwatch.GetTimestamp();
             Array.Sort(number2);
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("Array.Sort " + type + "[" + number1.Length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("Array.Sort " + type + "[" + number1.Length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
-            time = AutoCSer.Pub.StopwatchTicks;
+            double milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("Array.Sort " + type + "[" + number1.Length.toString() + "] " + milliseconds.ToString() + "ms");
+            time = System.Diagnostics.Stopwatch.GetTimestamp();
             number1.sort();
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("AutoCSer.sort " + type + "[" + number1.Length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("AutoCSer.sort " + type + "[" + number1.Length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
+            milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("AutoCSer.sort " + type + "[" + number1.Length.toString() + "] " + milliseconds.ToString() + "ms");
             for (int index = number1.Length; index != 0;)
             {
                 --index;
@@ -60,17 +58,15 @@ namespace AutoCSer.TestCase.RadixSortPerformance
         private static void sortDesc(Int[] number1, Int[] number2)
         {
             random(number1, number2);
-            long time = AutoCSer.Pub.StopwatchTicks;
+            long time = System.Diagnostics.Stopwatch.GetTimestamp();
             Array.Sort(number2);
             Array.Reverse(number2);
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("Array.Sort+Array.Reverse " + type + "[" + number1.Length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("Array.Sort+Array.Reverse " + type + "[" + number1.Length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
-            time = AutoCSer.Pub.StopwatchTicks;
+            double milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("Array.Sort+Array.Reverse " + type + "[" + number1.Length.toString() + "] " + milliseconds.ToString() + "ms");
+            time = System.Diagnostics.Stopwatch.GetTimestamp();
             number1.sortDesc();
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("AutoCSer.sortDesc " + type + "[" + number1.Length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("AutoCSer.sortDesc " + type + "[" + number1.Length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
+            milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("AutoCSer.sortDesc " + type + "[" + number1.Length.toString() + "] " + milliseconds.ToString() + "ms");
             for (int index = number1.Length; index != 0;)
             {
                 --index;
@@ -91,16 +87,14 @@ namespace AutoCSer.TestCase.RadixSortPerformance
         private static void sort(Int[] number1, Int[] number2, int startIndex, int length)
         {
             random(number1, number2);
-            long time = AutoCSer.Pub.StopwatchTicks;
+            long time = System.Diagnostics.Stopwatch.GetTimestamp();
             Array.Sort(number2, startIndex, length);
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("Array.Sort " + type + "[" + length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("Array.Sort " + type + "[" + length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
-            time = AutoCSer.Pub.StopwatchTicks;
+            double milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("Array.Sort " + type + "[" + length.toString() + "] " + milliseconds.ToString() + "ms");
+            time = System.Diagnostics.Stopwatch.GetTimestamp();
             number1.sort(startIndex, length);
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("AutoCSer.sort " + type + "[" + length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("AutoCSer.sort " + type + "[" + length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
+            milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("AutoCSer.sort " + type + "[" + length.toString() + "] " + milliseconds.ToString() + "ms");
             for (int index = startIndex, endIndex = startIndex + length; index != endIndex; ++index)
             {
                 if (number1[index] != number2[index])
@@ -120,17 +114,15 @@ namespace AutoCSer.TestCase.RadixSortPerformance
         private static void sortDesc(Int[] number1, Int[] number2, int startIndex, int length)
         {
             random(number1, number2);
-            long time = AutoCSer.Pub.StopwatchTicks;
+            long time = System.Diagnostics.Stopwatch.GetTimestamp();
             Array.Sort(number2, startIndex, length);
             Array.Reverse(number2, startIndex, length);
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("Array.Sort+Array.Reverse " + type + "[" + length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("Array.Sort+Array.Reverse " + type + "[" + length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
-            time = AutoCSer.Pub.StopwatchTicks;
+            double milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("Array.Sort+Array.Reverse " + type + "[" + length.toString() + "] " + milliseconds.ToString() + "ms");
+            time = System.Diagnostics.Stopwatch.GetTimestamp();
             number1.sortDesc(startIndex, length);
-            time = AutoCSer.Pub.GetStopwatchTicks(time);
-            if (number1.Length < 1 << 10) Console.WriteLine("AutoCSer.sortDesc " + type + "[" + length.toString() + "] " + time.ToString() + "t");
-            else Console.WriteLine("AutoCSer.sortDesc " + type + "[" + length.toString() + "] " + new TimeSpan(time).TotalMilliseconds.ToString() + "ms");
+            milliseconds = Date.GetTimestampTimeSpan(time).TotalMilliseconds;
+            Console.WriteLine("AutoCSer.sortDesc " + type + "[" + length.toString() + "] " + milliseconds.ToString() + "ms");
             for (int index = startIndex, endIndex = startIndex + length; index != endIndex; ++index)
             {
                 if (number1[index] != number2[index])

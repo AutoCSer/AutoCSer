@@ -104,7 +104,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }
                     }
                     MethodIndexs = methodArray.ToArray();
-                    MethodIndexs = TcpMethod.CheckIdentity(MethodIndexs, getRememberIdentityName(Attribute.GenericType ?? Type), method => method.Method.MethodKeyFullName);
+                    MethodIndexs = TcpMethod.CheckIdentity(MethodIndexs, Attribute.CommandIdentityEnmuType, getRememberIdentityName(Attribute.CommandIdentityEnmuType == null ? Attribute.GenericType ?? Type : null), method => method.Method.MethodKeyFullName);
                     if (MethodIndexs == null) return;
                     int methodIndex = 0;
                     IsVerifyMethod = false;

@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
         /// <param name="identity"></param>
         internal UploadFileIdentity(long identity)
         {
-            Tick = AutoCSer.Pub.StartTime.Ticks;
+            Tick = AutoCSer.Date.StartTime.Ticks;
             Identity = identity;
         }
         /// <summary>

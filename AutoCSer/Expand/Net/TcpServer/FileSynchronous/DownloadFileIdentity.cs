@@ -44,7 +44,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
         /// <param name="fileLength">文件长度</param>
         internal DownloadFileIdentity(long identity, FileInfo fileInfo, byte[] data, long index, long fileLength)
         {
-            Tick = AutoCSer.Pub.StartTime.Ticks;
+            Tick = AutoCSer.Date.StartTime.Ticks;
             Identity = identity;
             ListFileItem.Set(null, fileInfo.LastWriteTimeUtc, fileLength);
             Index = index;

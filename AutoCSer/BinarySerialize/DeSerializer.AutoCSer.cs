@@ -53,7 +53,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMethod]
         [DeSerializeMemberMapMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref SubArray<byte> value)
+        public void CallDeSerialize(ref SubArray<byte> value)
         {
             int length = *(int*)Read;
             if (length == 0)

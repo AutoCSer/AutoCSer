@@ -23,7 +23,7 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        internal long TaskTicks;
+        internal long TaskTimestamp;
         /// <summary>
         /// 操作超时时间
         /// </summary>

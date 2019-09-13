@@ -52,7 +52,7 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="chars">字符串</param>
-        /// <returns>起始位置+字符串长度</returns>
+        /// <returns>字符串长度</returns>
         internal unsafe static int ToBytes(int value, byte* chars)
         {
             if (value >= 0) return ToBytes((uint)value, chars);

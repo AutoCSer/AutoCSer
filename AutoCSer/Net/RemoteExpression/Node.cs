@@ -166,7 +166,7 @@ namespace AutoCSer.Net.RemoteExpression
         protected void serializeStart(AutoCSer.Json.Serializer serializer, ServerNodeIdChecker checker)
         {
             serializer.CharStream.Write('[');
-            serializer.Serialize(checker.ServerNodeIds[GetType()]);
+            serializer.CallSerialize(checker.ServerNodeIds[GetType()]);
         }
         /// <summary>
         /// JSON 序列化父节点并结束
@@ -231,7 +231,7 @@ namespace AutoCSer.Net.RemoteExpression
             if (*parser.Current++ == '[')
             {
                 int serverNodeId = 0;
-                parser.Parse(ref serverNodeId);
+                parser.CallParse(ref serverNodeId);
                 if (parser.State == Json.ParseState.Success) (value = createNodes.Array[serverNodeId]()).deSerialize(parser);
                 return;
             }

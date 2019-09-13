@@ -94,27 +94,6 @@ namespace AutoCSer.Json
             }
             return GetIEnumerable(type) ?? GetType(type);
         }
-#if !NOJIT
-        /// <summary>
-        /// 名称数据信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<string, Pointer> namePools = new AutoCSer.Threading.LockDictionary<string, Pointer>();
-        /// <summary>
-        /// 获取名称数据
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public unsafe static char* GetNamePool(string name)
-        {
-            Pointer pointer;
-            if (namePools.TryGetValue(name, out pointer)) return pointer.Char;
-            char* value = NamePool.Get(name, 2, 2);
-            *(int*)value = ',' + ('"' << 16);
-            *(int*)(value + (2 + name.Length)) = '"' + (':' << 16);
-            namePools.Set(name, new Pointer { Data = value });
-            return value;
-        }
-#endif
 
         ///// <summary>
         ///// 枚举转换调用函数信息集合

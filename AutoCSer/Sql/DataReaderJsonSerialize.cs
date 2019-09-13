@@ -135,7 +135,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeInt(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((int)value);
+            serializer.CallSerialize((int)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -144,7 +144,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeString(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((string)value);
+            serializer.CallSerialize((string)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -153,7 +153,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeDateTime(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((DateTime)value);
+            serializer.CallSerialize((DateTime)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -162,7 +162,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeDouble(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((double)value);
+            serializer.CallSerialize((double)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -171,7 +171,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeFloat(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((float)value);
+            serializer.CallSerialize((float)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -180,7 +180,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeDecimal(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((decimal)value);
+            serializer.CallSerialize((decimal)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -189,7 +189,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeGuid(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((Guid)value);
+            serializer.CallSerialize((Guid)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -198,7 +198,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeBool(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((bool)value);
+            serializer.CallSerialize((bool)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -207,7 +207,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeByte(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((byte)value);
+            serializer.CallSerialize((byte)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -225,7 +225,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeSByte(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((sbyte)value);
+            serializer.CallSerialize((sbyte)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -234,7 +234,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeShort(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((short)value);
+            serializer.CallSerialize((short)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -243,7 +243,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeUShort(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((ushort)value);
+            serializer.CallSerialize((ushort)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -252,7 +252,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeUInt(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((uint)value);
+            serializer.CallSerialize((uint)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -261,7 +261,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeLong(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((long)value);
+            serializer.CallSerialize((long)value);
         }
         /// <summary>
         /// 序列化数据值
@@ -270,7 +270,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeULong(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.Serialize((ulong)value);
+            serializer.CallSerialize((ulong)value);
         }
         static DataReaderJsonSerialize()
         {

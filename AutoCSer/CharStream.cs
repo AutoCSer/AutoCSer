@@ -94,11 +94,16 @@ namespace AutoCSer
         /// 写字符串
         /// </summary>
         /// <param name="value">字符串</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal void SimpleWriteNotNull(string value)
         {
-            fixed (char* valueFixed = value) SimpleWriteNotNull(valueFixed, value.Length);
+            fixed (char* valueFixed = value)
+            {
+                int length = value.Length << 1;
+                prepSize(length + 6);
+                AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(valueFixed, (char*)(Data.Byte + ByteSize), value.Length);
+                ByteSize += length;
+            }
         }
         /// <summary>
         /// 写字符串(无需预增数据流)
@@ -109,19 +114,6 @@ namespace AutoCSer
         {
             AutoCSer.Extension.StringExtension.SimpleCopyNotNull(value, Data.Byte + ByteSize);
             ByteSize += value.Length << 1;
-        }
-        /// <summary>
-        /// 写字符串
-        /// </summary>
-        /// <param name="start">字符串起始位置</param>
-        /// <param name="count">写入字符数</param>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        internal void SimpleWriteNotNull(char* start, int count)
-        {
-            int length = count << 1;
-            prepSize(length + 6);
-            AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(start, (char*)(Data.Byte + ByteSize), count);
-            ByteSize += length;
         }
         /// <summary>
         /// 写字符串

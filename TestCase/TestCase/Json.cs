@@ -11,8 +11,24 @@ namespace AutoCSer.TestCase
         /// <summary>
         /// 带成员位图的JSON序列化参数配置
         /// </summary>
-        private static readonly AutoCSer.Json.SerializeConfig jsonSerializeConfig = new AutoCSer.Json.SerializeConfig(); 
-        
+        private static readonly AutoCSer.Json.SerializeConfig jsonSerializeConfig = new AutoCSer.Json.SerializeConfig();
+        /// <summary>
+        /// Javascript 时间值JSON序列化参数配置
+        /// </summary>
+        private static readonly AutoCSer.Json.SerializeConfig javascriptDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.Javascript, IsBoolToInt = true, IsIntegerToHex = true };
+        /// <summary>
+        /// ISO 时间值JSON序列化参数配置
+        /// </summary>
+        private static readonly AutoCSer.Json.SerializeConfig isoDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.ISO };
+        /// <summary>
+        /// 第三方时间值JSON序列化参数配置
+        /// </summary>
+        private static readonly AutoCSer.Json.SerializeConfig thirdPartyDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.ThirdParty };
+        /// <summary>
+        /// 自定义格式时间值JSON序列化参数配置
+        /// </summary>
+        private static readonly AutoCSer.Json.SerializeConfig customDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.CustomFormat, DateTimeCustomFormat = "yyyy-MM-dd  HH:mm:ss" };
+
         /// <summary>
         /// JSON 序列化测试
         /// </summary>
@@ -79,6 +95,45 @@ namespace AutoCSer.TestCase
             jsonString = AutoCSer.Json.Serializer.Serialize(structPropertyData);
             Data.StructPropertyData newStructPropertyData = AutoCSer.Json.Parser.Parse<Data.StructPropertyData>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.StructPropertyData>.Equals(structPropertyData, newStructPropertyData))
+            {
+                return false;
+            }
+            #endregion
+
+            #region 16进制整数JSON序列化测试
+            filedData = AutoCSer.RandomObject.Creator<Data.FieldData>.Create(RandomConfig);
+            jsonString = AutoCSer.Json.Serializer.Serialize(filedData, javascriptDateTimeSerializeConfig);
+            newFieldData = AutoCSer.Json.Parser.Parse<Data.FieldData>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.FieldData>.Equals(filedData, newFieldData))
+            {
+                return false;
+            }
+            #endregion
+
+            #region 时间格式JSON序列化测试
+            Data.MemberClass memberClassData = AutoCSer.RandomObject.Creator<Data.MemberClass>.Create(RandomConfig);
+            memberClassData.DateTime = new DateTime(memberClassData.DateTime.Ticks, DateTimeKind.Local);
+            jsonString = AutoCSer.Json.Serializer.Serialize(memberClassData);
+            Data.MemberClass newMemberClassData = AutoCSer.Json.Parser.Parse<Data.MemberClass>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.MemberClass>.Equals(memberClassData, newMemberClassData))
+            {
+                return false;
+            }
+            jsonString = AutoCSer.Json.Serializer.Serialize(memberClassData, isoDateTimeSerializeConfig);
+            newMemberClassData = AutoCSer.Json.Parser.Parse<Data.MemberClass>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.MemberClass>.Equals(memberClassData, newMemberClassData))
+            {
+                return false;
+            }
+            jsonString = AutoCSer.Json.Serializer.Serialize(memberClassData, thirdPartyDateTimeSerializeConfig);
+            newMemberClassData = AutoCSer.Json.Parser.Parse<Data.MemberClass>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.MemberClass>.Equals(memberClassData, newMemberClassData))
+            {
+                return false;
+            }
+            jsonString = AutoCSer.Json.Serializer.Serialize(memberClassData, customDateTimeSerializeConfig);
+            newMemberClassData = AutoCSer.Json.Parser.Parse<Data.MemberClass>(jsonString);
+            if (!AutoCSer.FieldEquals.Comparor<Data.MemberClass>.Equals(memberClassData, newMemberClassData))
             {
                 return false;
             }

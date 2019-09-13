@@ -14,9 +14,10 @@ namespace AutoCSer.Deploy
         /// 发布服务更新以后的后续处理
         /// </summary>
         /// <param name="server"></param>
+        /// <param name="sender"></param>
         /// <param name="customData"></param>
         /// <returns></returns>
-        DeployState OnDeployServerUpdated(Server server, byte[] customData);
+        DeployState OnDeployServerUpdated(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, byte[] customData);
     }
     /// <summary>
     /// 自定义任务调用
@@ -27,9 +28,10 @@ namespace AutoCSer.Deploy
         /// 调用自定义任务
         /// </summary>
         /// <param name="server"></param>
+        /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        internal virtual DeployState Call(Server server, Task task) { return DeployState.Success; }
+        internal virtual DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task) { return DeployState.Success; }
         /// <summary>
         /// 自定义任务调用
         /// </summary>
@@ -52,7 +54,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 自定义任务集合
         /// </summary>
-        private readonly Dictionary<string, Func<valueType, Server, byte[], DeployState>> tasks = DictionaryCreator.CreateOnly<string, Func<valueType, Server, byte[], DeployState>>();
+        private readonly Dictionary<string, Func<valueType, Server, AutoCSer.Net.TcpInternalServer.ServerSocketSender, byte[], DeployState>> tasks = DictionaryCreator.CreateOnly<string, Func<valueType, Server, AutoCSer.Net.TcpInternalServer.ServerSocketSender, byte[], DeployState>>();
         /// <summary>
         /// 自定义任务调用
         /// </summary>
@@ -65,7 +67,7 @@ namespace AutoCSer.Deploy
                 if (!method.IsGenericMethodDefinition && method.ReturnType == typeof(DeployState))
                 {
                     ParameterInfo[] parameters = method.GetParameters();
-                    if (parameters.Length == 2 && parameters[0].ParameterType == typeof(Server) && parameters[1].ParameterType == typeof(byte[]))
+                    if (parameters.Length == 3 && parameters[0].ParameterType == typeof(Server) && parameters[1].ParameterType == typeof(AutoCSer.Net.TcpInternalServer.ServerSocketSender) && parameters[2].ParameterType == typeof(byte[]))
                     {
                         CustomAttribute customAttribute = null;
                         foreach (CustomAttribute nextCustomAttribute in method.GetCustomAttributes(typeof(CustomAttribute), false))
@@ -79,7 +81,7 @@ namespace AutoCSer.Deploy
                         }
                         if (customAttribute == null || !customAttribute.GetIsIgnoreCurrent)
                         {
-                            tasks.Add(method.Name, (Func<valueType, Server, byte[], DeployState>)Delegate.CreateDelegate(typeof(Func<valueType, Server, byte[], DeployState>), method));
+                            tasks.Add(method.Name, (Func<valueType, Server, AutoCSer.Net.TcpInternalServer.ServerSocketSender, byte[], DeployState>)Delegate.CreateDelegate(typeof(Func<valueType, Server, AutoCSer.Net.TcpInternalServer.ServerSocketSender, byte[], DeployState>), method));
                         }
                     }
                 }
@@ -89,11 +91,12 @@ namespace AutoCSer.Deploy
         /// 调用自定义任务
         /// </summary>
         /// <param name="server"></param>
+        /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        internal override DeployState Call(Server server, Task task)
+        internal override DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task)
         {
-            return tasks[task.RunFileName](value, server, task.CustomData);
+            return tasks[task.RunFileName](value, server, sender, task.CustomData);
         }
     }
 }

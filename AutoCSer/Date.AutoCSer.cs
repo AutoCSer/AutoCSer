@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace AutoCSer
 {
@@ -144,6 +145,96 @@ namespace AutoCSer
             string timeString = AutoCSer.Extension.StringExtension.FastAllocateString(10);
             fixed (char* timeFixed = timeString) toString(time, timeFixed, split);
             return timeString;
+        }
+
+        /// <summary>
+        /// 每毫秒时间戳
+        /// </summary>
+        internal static readonly long TimestampPerMillisecond = Stopwatch.IsHighResolution ? Stopwatch.Frequency / 1000 : TimeSpan.TicksPerMillisecond;
+        /// <summary>
+        /// 每秒 毫秒时间戳误差
+        /// </summary>
+        internal static readonly long MillisecondTimestampDifferencePerSecond = Stopwatch.IsHighResolution ? Stopwatch.Frequency - Stopwatch.Frequency / 1000 * 1000 : 0;
+        /// <summary>
+        /// 获取初始化时间差
+        /// </summary>
+        /// <returns></returns>
+        internal static long TimestampDifference
+        {
+            get
+            {
+                return Stopwatch.GetTimestamp() - startTimestamp;
+            }
+        }
+        ///// <summary>
+        ///// 获取初始化时间差
+        ///// </summary>
+        //internal static long TimestampDifferenceTicks
+        //{
+        //    get
+        //    {
+        //        if (Stopwatch.IsHighResolution)
+        //        {
+        //            return (Stopwatch.GetTimestamp() - startTimestamp) * TimeSpan.TicksPerSecond / Stopwatch.Frequency;
+        //        }
+        //        return Stopwatch.GetTimestamp() - startTimestamp;
+        //    }
+        //}
+        /// <summary>
+        /// 时钟周期转时间戳乘数
+        /// </summary>
+        private static readonly double ticksToTimestamp = Stopwatch.IsHighResolution ? (double)Stopwatch.Frequency / TimeSpan.TicksPerSecond : 1;
+        /// <summary>
+        /// 时钟周期转时间戳
+        /// </summary>
+        /// <param name="ticks"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static long GetTimestampByTicks(long ticks)
+        {
+            return Stopwatch.IsHighResolution ? (long)(ticks * ticksToTimestamp) : ticks;
+        }
+        /// <summary>
+        /// 时间戳转毫秒数乘数
+        /// </summary>
+        private static readonly double timestampToMilliseconds = Stopwatch.IsHighResolution ? 1000 / (double)Stopwatch.Frequency : (1 / (double)TimeSpan.TicksPerMillisecond);
+        /// <summary>
+        /// 时间戳转毫秒数
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static long GetMillisecondsByTimestamp(long timestamp)
+        {
+            if (Stopwatch.IsHighResolution) return (long)(timestamp * timestampToMilliseconds);
+            return timestamp / TimeSpan.TicksPerMillisecond;
+        }
+        /// <summary>
+        /// 毫秒数转时间戳乘数
+        /// </summary>
+        private static readonly double millisecondsToTimestamp = Stopwatch.IsHighResolution ? (double)Stopwatch.Frequency / 1000 : TimeSpan.TicksPerMillisecond;
+        /// <summary>
+        /// 毫秒数转时间戳
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static long GetTimestampByMilliseconds(long milliseconds)
+        {
+            if (Stopwatch.IsHighResolution) return (long)(milliseconds * millisecondsToTimestamp);
+            return milliseconds * TimeSpan.TicksPerMillisecond;
+        }
+        /// <summary>
+        /// 获取时钟周期差值（不处理溢出）
+        /// </summary>
+        /// <param name="startTimestamp"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static TimeSpan GetTimestampTimeSpan(long startTimestamp)
+        {
+            long timestamp = Stopwatch.GetTimestamp() - startTimestamp;
+            if (Stopwatch.IsHighResolution) return new TimeSpan(timestamp * TimeSpan.TicksPerSecond / Stopwatch.Frequency);
+            return new TimeSpan(timestamp);
         }
     }
 }

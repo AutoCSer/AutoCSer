@@ -91,7 +91,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     byte intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, byte>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -106,7 +106,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     byte intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, byte>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -161,7 +161,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     sbyte intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, sbyte>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -176,7 +176,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     sbyte intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, sbyte>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -231,7 +231,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     short intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, short>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -246,7 +246,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     short intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, short>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -301,7 +301,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     ushort intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, ushort>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -316,7 +316,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     ushort intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, ushort>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -371,7 +371,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     int intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, int>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -386,7 +386,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     int intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, int>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -441,7 +441,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     uint intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, uint>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -456,7 +456,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     uint intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, uint>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -511,7 +511,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     long intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, long>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -526,7 +526,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumberFlag())
                 {
                     long intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, long>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -581,7 +581,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     ulong intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, ulong>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success) parse(parser, ref value);
@@ -596,7 +596,7 @@ namespace AutoCSer.Json
                 if (parser.IsEnumNumber())
                 {
                     ulong intValue = 0;
-                    parser.Parse(ref intValue);
+                    parser.CallParse(ref intValue);
                     value = Emit.EnumCast<valueType, ulong>.FromInt(intValue);
                 }
                 else if (parser.ParseState == ParseState.Success)
@@ -1022,7 +1022,7 @@ namespace AutoCSer.Json
                         valueType value = default(valueType);
                         Parse(parser, ref value);
                         if (parser.ParseState != ParseState.Success) return -1;
-                        values = values.copyNew(index == 0 ? sizeof(int) : (index << 1));
+                        values = values.copyNew(index == 0 ? parser.Config.NewArraySize : (index << 1));
                         values[index++] = value;
                     }
                     else

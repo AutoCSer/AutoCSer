@@ -69,6 +69,7 @@
     <Compile Include="BinarySerialize\UnionType.cs" />
     <Compile Include="CharStream.cs" />
     <Compile Include="CharStream.Json.cs" />
+    <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />
     <Compile Include="Config\MemberAttribute.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Emit\ListConstructor.cs" />
     <Compile Include="Emit\NamePool.cs" />
     <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Emit\StringWriter.cs" />
     <Compile Include="Enumerator.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\BinarySerialize.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="HashString.cs" />
     <Compile Include="IOS\Preserve.cs" />
     <Compile Include="Json\ConfigLoader.cs" />
+    <Compile Include="Json\DateTimeType.cs" />
     <Compile Include="Json\IgnoreMemberAttribute.cs" />
     <Compile Include="Json\Node.cs" />
     <Compile Include="Json\NodeType.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="Json\ParseConfig.cs" />
     <Compile Include="Json\ParseCustomAttribute.cs" />
     <Compile Include="Json\ParseDynamicMethod.cs" />
+    <Compile Include="Json\ParseIntState.cs" />
     <Compile Include="Json\ParseMemberAttribute.cs" />
     <Compile Include="Json\ParseMethod.cs" />
     <Compile Include="Json\ParseMethodCache.cs" />
@@ -134,6 +138,7 @@
     <Compile Include="Json\SerializeResult.cs" />
     <Compile Include="Json\SerializeWarning.cs" />
     <Compile Include="Json\StateSearcher.cs" />
+    <Compile Include="Json\ThreadStatic.cs" />
     <Compile Include="Json\TypeParser.cs" />
     <Compile Include="Json\TypeSerializer.cs" />
     <Compile Include="Json\UnionType.cs" />
@@ -236,6 +241,7 @@
     <Compile Include="Xml\TypeSerializer.cs" />
     <Compile Include="Xml\UnionType.cs" />
     <Compile Include="Xml\UnknownNameAttribute.cs" />
+    <Compile Include="{AutoCSer.Json}.CombinationTemplate.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -95,6 +95,7 @@
     <Compile Include="Emit\Pub.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Emit\StringWriter.cs" />
     <Compile Include="Enumerator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -165,6 +166,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Json\ConfigLoader.cs" />
+    <Compile Include="Json\DateTimeType.cs" />
     <Compile Include="Json\IgnoreMemberAttribute.cs" />
     <Compile Include="Json\Node.cs">
       <SubType>Code</SubType>
@@ -181,6 +183,7 @@
     </Compile>
     <Compile Include="Json\ParseCustomAttribute.cs" />
     <Compile Include="Json\ParseDynamicMethod.cs" />
+    <Compile Include="Json\ParseIntState.cs" />
     <Compile Include="Json\ParseMemberAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -238,6 +241,7 @@
     <Compile Include="Json\StateSearcher.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Json\ThreadStatic.cs" />
     <Compile Include="Json\TypeParser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -261,6 +265,7 @@
     <Compile Include="Memory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="MemoryMap.cs" />
     <Compile Include="Metadata\AttributeMethod.cs" />
     <Compile Include="Metadata\BoxSerializeAttribute.cs" />
@@ -362,6 +367,7 @@
     <Compile Include="Win32\Kernel32.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="{AutoCSer.Json}.CombinationTemplate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -36,5 +36,9 @@ namespace AutoCSer.Xml
         /// 是否强制匹配枚举值
         /// </summary>
         public bool IsMatchEnum;
+        /// <summary>
+        /// 默认数组大小
+        /// </summary>
+        public int NewArraySize = 10;
     }
 }

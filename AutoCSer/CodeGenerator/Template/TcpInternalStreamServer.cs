@@ -31,7 +31,7 @@ namespace AutoCSer.CodeGenerator.Template
             public void SetTcpServer(AutoCSer.Net.TcpInternalStreamServer.Server commandServer) { }
             #endregion NOTE
             #region IF IsServerCode
-            #region IF ServiceAttribute.IsRememberCommand
+            #region IF ServiceAttribute.GetIsRememberCommand
             /// <summary>
             /// 命令序号记忆数据
             /// </summary>
@@ -45,7 +45,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion LOOP MethodIndexs
                 return names;
             }
-            #endregion IF ServiceAttribute.IsRememberCommand
+            #endregion IF ServiceAttribute.GetIsRememberCommand
             #endregion IF IsServerCode
             /// <summary>
             /// @ServerRegisterName TCP服务/*NOT:IsServerCode*/参数/*NOT:IsServerCode*/

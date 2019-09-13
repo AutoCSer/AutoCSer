@@ -21,7 +21,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(SubArray<byte> value)
+        public void CallSerialize(SubArray<byte> value)
         {
             if (value.Length == 0) Stream.Write(0);
             else Serialize(Stream, ref value);

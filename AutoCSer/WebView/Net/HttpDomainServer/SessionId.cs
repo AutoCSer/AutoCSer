@@ -132,7 +132,7 @@ namespace AutoCSer.Net.HttpDomainServer
         internal void NewNoIndex()
         {
             Low = AutoCSer.Random.Default.SecureNextULongNotZero();
-            Ticks = (ulong)Pub.StartTime.Ticks;
+            Ticks = (ulong)AutoCSer.Date.StartTime.Ticks;
             highRandom ^= Low;
             High = (highRandom << 11) | (highRandom >> 53);
         }
@@ -229,7 +229,7 @@ namespace AutoCSer.Net.HttpDomainServer
         internal void New()
         {
             Low = AutoCSer.Random.Default.SecureNextULongNotZero();
-            Ticks = (ulong)Pub.StartTime.Ticks;
+            Ticks = (ulong)AutoCSer.Date.StartTime.Ticks;
             highRandom ^= Low;
             Identity = (ulong)Interlocked.Increment(ref identityRandom);
             High = (highRandom << 11) | (highRandom >> 53);

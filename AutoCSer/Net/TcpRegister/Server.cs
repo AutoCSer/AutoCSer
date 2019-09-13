@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 全局注册标识
         /// </summary>
-        private readonly long ticks = AutoCSer.Pub.StartTime.Ticks;
+        private readonly long ticks = AutoCSer.Date.StartTime.Ticks;
         /// <summary>
         /// 命令
         /// </summary>

@@ -2,6 +2,7 @@
 using AutoCSer.Metadata;
 using AutoCSer.Extension;
 using System.Reflection;
+using AutoCSer.Emit;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -57,10 +58,10 @@ namespace AutoCSer.Json
         /// <param name="name">成员名称</param>
         private unsafe void push(string name)
         {
-            if (isFirstMember == 0) generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNamePool(name), name.Length + 4);
+            if (isFirstMember == 0) WriteName(generator, OpCodes.Ldloc_0, name, true);
             else
             {
-                generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNamePool(name) + 1, name.Length + 3);
+                WriteName(generator, OpCodes.Ldloc_0, name, false);
                 isFirstMember = 0;
             }
         }
@@ -178,6 +179,24 @@ namespace AutoCSer.Json
         {
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(delegateType));
+        }
+
+        /// <summary>
+        /// 写入名称
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="name"></param>
+        /// <param name="isNext"></param>
+        internal static void WriteName(ILGenerator generator, OpCode target, string name, bool isNext)
+        {
+            StringWriter stringWriter = new StringWriter(generator, target, (name.Length << 1) + (isNext ? 8 : 6));
+            if (isNext) stringWriter.Write(',');
+            stringWriter.Write('"');
+            stringWriter.Write(name);
+            stringWriter.Write('"');
+            stringWriter.Write(':');
+            stringWriter.WriteEnd();
         }
     }
 }

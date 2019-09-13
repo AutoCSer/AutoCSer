@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.ColumnGroup
         /// <param name="index">字段名称序号</param>
         public unsafe void Push(Field field, int index)
         {
-            if (isNextMember) generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_0, DataModel.PrimaryKeyWhere.AndString.Char, 5);
+            if (isNextMember) AutoCSer.Emit.StringWriter.Write(generator, OpCodes.Ldarg_0, " and ");
             else isNextMember = true;
             updateDynamicMethod.PushOnly(field, index);
         }

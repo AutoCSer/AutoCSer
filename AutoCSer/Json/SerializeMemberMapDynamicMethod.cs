@@ -51,19 +51,18 @@ namespace AutoCSer.Json
         {
             Label next = generator.DefineLabel(), value = generator.DefineLabel();
             generator.memberMapIsMember(OpCodes.Ldarg_0, memberIndex);
-            generator.Emit(OpCodes.Brfalse_S, end);
+            generator.Emit(OpCodes.Brfalse, end);
 
             generator.Emit(OpCodes.Ldloc_0);
-            generator.Emit(OpCodes.Brtrue_S, next);
+            generator.Emit(name.Length > 40 ? OpCodes.Brtrue : OpCodes.Brtrue_S, next);
 
-            char* nameChar = SerializeMethodCache.GetNamePool(name);
             generator.Emit(OpCodes.Ldc_I4_1);
             generator.Emit(OpCodes.Stloc_0);
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_3, nameChar + 1, name.Length + 3);
+            SerializeMemberDynamicMethod.WriteName(generator, OpCodes.Ldarg_3, name, false);
             generator.Emit(OpCodes.Br_S, value);
 
             generator.MarkLabel(next);
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_3, nameChar, name.Length + 4);
+            SerializeMemberDynamicMethod.WriteName(generator, OpCodes.Ldarg_3, name, true);
 
             generator.MarkLabel(value);
         }

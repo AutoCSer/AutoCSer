@@ -326,11 +326,11 @@ namespace AutoCSer.Xml
             switch (length)
             {
                 case 1:
-                    Serialize(*start);
+                    CallSerialize(*start);
                     return;
                 case 2:
-                    Serialize(*start);
-                    Serialize(*(start + 1));
+                    CallSerialize(*start);
+                    CallSerialize(*(start + 1));
                     return;
             }
             char* end = start + (length - 1);
@@ -525,7 +525,7 @@ namespace AutoCSer.Xml
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void enumToString<valueType>(valueType value)
         {
-            Serialize(value.ToString());
+            CallSerialize(value.ToString());
         }
         /// <summary>
         /// 基类转换

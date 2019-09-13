@@ -12,15 +12,15 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 客户端回调任务处理
         /// </summary>
-        /// <param name="taskTicks">线程切换超时时钟周期</param>
-        private ClientCallTask(long taskTicks) : base(taskTicks) { }
+        /// <param name="taskTimestamp">线程切换超时时钟周期</param>
+        private ClientCallTask(long taskTimestamp) : base(taskTimestamp) { }
         /// <summary>
         /// 添加任务
         /// </summary>
         /// <param name="value"></param>
         internal void Add(ClientCommand.CommandBase value)
         {
-            value.TaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
+            value.TaskTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             ClientCommand.CommandBase headValue;
             do
             {
@@ -49,12 +49,12 @@ namespace AutoCSer.Net.TcpServer
         {
             do
             {
-                currentTaskTicks = taskTicks;
+                currentTaskTimestamp = taskTimestamp;
                 waitHandle.Wait();
                 ClientCommand.CommandBase value = Interlocked.Exchange(ref head, null);
                 do
                 {
-                    currentTaskTicks = value.TaskTicks;
+                    currentTaskTimestamp = value.TaskTimestamp;
                     value = value.OnReceiveTask();
                 }
                 while (value != null);
@@ -75,7 +75,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         private static void check()
         {
-            if (TaskConfig.Default.IsCheck(Task.currentTaskTicks))
+            if (TaskConfig.Default.IsCheck(Task.currentTaskTimestamp))
             {
                 if (isAllTask)
                 {
@@ -86,7 +86,7 @@ namespace AutoCSer.Net.TcpServer
                 {
                     try
                     {
-                        Task = new ClientCallTask(TaskConfig.Default.TaskTicks);
+                        Task = new ClientCallTask(TaskConfig.Default.TaskTimestamp);
                         tasks[++taskIndex] = Task;
                         if (taskIndex + 1 == tasks.Length) isAllTask = true;
                     }
@@ -105,7 +105,7 @@ namespace AutoCSer.Net.TcpServer
             else
             {
                 tasks = new ClientCallTask[config.ThreadCount];
-                tasks[0] = Task = new ClientCallTask(config.TaskTicks);
+                tasks[0] = Task = new ClientCallTask(config.TaskTimestamp);
                 config.OnCheck(check);
             }
         }

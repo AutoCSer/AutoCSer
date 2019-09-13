@@ -16,18 +16,6 @@ namespace AutoCSer.Json
         /// </summary>
         internal const long MaxInt = (1L << 52) - 1;
         /// <summary>
-        /// 第三方ajax时间前缀
-        /// </summary>
-        internal const string OtherDateStart = @"/Date(";
-        /// <summary>
-        /// ajax时间后缀
-        /// </summary>
-        internal const char DateEnd = ')';
-        /// <summary>
-        /// ajax时间前缀
-        /// </summary>
-        internal const string DateStart = "new Date(";
-        /// <summary>
         /// 默认序列化类型配置
         /// </summary>
         internal static readonly SerializeAttribute AllMemberAttribute = ConfigLoader.GetUnion(typeof(SerializeAttribute)).SerializeAttribute ?? new SerializeAttribute { IsBaseType = false };
@@ -39,15 +27,11 @@ namespace AutoCSer.Json
         /// 字符串输出缓冲区
         /// </summary>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public readonly CharStream CharStream = new CharStream(null, 0);
+        public readonly CharStream CharStream;
         /// <summary>
         /// 配置参数
         /// </summary>
         internal SerializeConfig Config;
-        /// <summary>
-        /// 对象编号
-        /// </summary>
-        private ReusableDictionary<ObjectReference, string> objectIndexs;
         /// <summary>
         /// 祖先节点集合
         /// </summary>
@@ -64,10 +48,24 @@ namespace AutoCSer.Json
         /// 警告提示状态
         /// </summary>
         public SerializeWarning Warning { get; internal set; }
+#if AutoCSer
+        /// <summary>
+        /// 对象编号
+        /// </summary>
+        private ReusableDictionary<ObjectReference, int> objectIndexs;
         /// <summary>
         /// 是否调用循环引用处理函数
         /// </summary>
         private bool isLoopObject;
+#endif
+        /// <summary>
+        /// JSON 序列化
+        /// </summary>
+        /// <param name="isThread">是否单线程模式</param>
+        internal Serializer(bool isThread = false)
+        {
+            CharStream = isThread ? new CharStream() : new CharStream(null, 0);
+        }
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -140,6 +138,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据对象</param>
         private void serialize<valueType>(ref valueType value)
         {
+#if AutoCSer
             if (Config.GetLoopObject == null || Config.SetLoopObject == null)
             {
                 if (Config.GetLoopObject != null) Warning = SerializeWarning.LessSetLoop;
@@ -161,12 +160,38 @@ namespace AutoCSer.Json
                 if (!isLoopObject)
                 {
                     isLoopObject = true;
-                    if (objectIndexs == null) objectIndexs = ReusableDictionary<ObjectReference>.Create<string>();
+                    if (objectIndexs == null) objectIndexs = ReusableDictionary<ObjectReference>.Create<int>();
                 }
                 Warning = SerializeWarning.None;
                 checkLoopDepth = Config.CheckLoopDepth <= 0 ? SerializeConfig.DefaultCheckLoopDepth : Config.CheckLoopDepth;
             }
-            TypeSerializer<valueType>.Serialize(this, value);
+#else
+            Warning = SerializeWarning.None;
+            if (checkLoopDepth != Config.CheckLoopDepth)
+            {
+                if (Config.CheckLoopDepth <= 0)
+                {
+                    checkLoopDepth = 0;
+                    if (forefather == null) forefather = new object[sizeof(int)];
+                }
+                else checkLoopDepth = Config.CheckLoopDepth;
+            }
+#endif
+            TypeSerializer<valueType>.Serialize(this, ref value);
+        }
+        /// <summary>
+        /// 对象转换JSON字符串（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>Json字符串</returns>
+        private string serializeThread<valueType>(ref valueType value, SerializeConfig config)
+        {
+            Config = config ?? DefaultConfig;
+            CharStream.Clear();
+            serialize(ref value);
+            return CharStream.ToString();
         }
         /// <summary>
         /// 自定义序列化调用
@@ -177,7 +202,7 @@ namespace AutoCSer.Json
         public void TypeSerialize<valueType>(valueType value)
         {
             if (value == null) CharStream.WriteJsonNull();
-            else TypeSerializer<valueType>.Serialize(this, value);
+            else TypeSerializer<valueType>.Serialize(this, ref value);
         }
         /// <summary>
         /// 自定义序列化调用
@@ -201,18 +226,29 @@ namespace AutoCSer.Json
             return Config.SetCustomMemberMap(memberMap);
         }
         /// <summary>
+        /// 释放资源（单线程模式）
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private void freeThread()
+        {
+            Config = null;
+#if AutoCSer
+            if (isLoopObject) objectIndexs.Clear();
+            else
+#endif
+            if (forefatherCount != 0)
+            {
+                System.Array.Clear(forefather, 0, forefatherCount);
+                forefatherCount = 0;
+            }
+        }
+        /// <summary>
         /// 释放资源
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Free()
         {
-            Config = null;
-            if (isLoopObject) objectIndexs.Clear();
-            else if (forefatherCount != 0)
-            {
-                System.Array.Clear(forefather, 0, forefatherCount);
-                forefatherCount = 0;
-            }
+            freeThread();
             YieldPool.Default.PushNotNull(this);
         }
         /// <summary>
@@ -245,25 +281,27 @@ namespace AutoCSer.Json
             else
             {
                 if (--checkLoopDepth == 0) throw new OverflowException();
+#if AutoCSer
                 if (isLoopObject)
                 {
-                    string index;
+                    int index;
                     if (objectIndexs.TryGetValue(new ObjectReference { Value = value }, out index))
                     {
-                        CharStream.PrepLength(Config.GetLoopObject.Length + index.Length + (5 + 3));
+                        CharStream.PrepLength(Config.GetLoopObject.Length + (10 + 5 + 3));
                         CharStream.UnsafeSimpleWrite(Config.GetLoopObject);
                         CharStream.UnsafeWrite('(');
-                        CharStream.UnsafeSimpleWrite(index);
+                        CharStream.WriteJson((uint)index, true);
                         CharStream.UnsafeSimpleWrite(",[])");
                         return false;
                     }
-                    objectIndexs.Set(new ObjectReference { Value = value }, index = objectIndexs.Count.toString());
-                    CharStream.PrepLength(Config.SetLoopObject.Length + index.Length + (2 + 2));
+                    objectIndexs.Set(new ObjectReference { Value = value }, index = objectIndexs.Count);
+                    CharStream.PrepLength(Config.SetLoopObject.Length + (10 + 2 + 2));
                     CharStream.UnsafeSimpleWrite(Config.SetLoopObject);
                     CharStream.UnsafeWrite('(');
-                    CharStream.UnsafeSimpleWrite(index);
+                    CharStream.WriteJson((uint)index, true);
                     CharStream.UnsafeWrite(',');
                 }
+#endif
             }
             return true;
         }
@@ -297,25 +335,27 @@ namespace AutoCSer.Json
             else
             {
                 if (--checkLoopDepth == 0) throw new OverflowException();
+#if AutoCSer
                 if (isLoopObject)
                 {
-                    string index;
+                    int index;
                     if (objectIndexs.TryGetValue(new ObjectReference { Value = value }, out index))
                     {
-                        CharStream.PrepLength(Config.GetLoopObject.Length + index.Length + (2 + 2));
+                        CharStream.PrepLength(Config.GetLoopObject.Length + (10 + 2 + 2));
                         CharStream.UnsafeSimpleWrite(Config.GetLoopObject);
                         CharStream.UnsafeWrite('(');
-                        CharStream.UnsafeSimpleWrite(index);
+                        CharStream.WriteJson((uint)index, true);
                         CharStream.UnsafeWrite(')');
                         return false;
                     }
-                    objectIndexs.Set(new ObjectReference { Value = value }, index = objectIndexs.Count.toString());
-                    CharStream.PrepLength(Config.SetLoopObject.Length + index.Length + (2 + 2));
+                    objectIndexs.Set(new ObjectReference { Value = value }, index = objectIndexs.Count);
+                    CharStream.PrepLength(Config.SetLoopObject.Length + (10 + 2 + 2));
                     CharStream.UnsafeSimpleWrite(Config.SetLoopObject);
                     CharStream.UnsafeWrite('(');
-                    CharStream.UnsafeSimpleWrite(index);
+                    CharStream.WriteJson((uint)index, true);
                     CharStream.UnsafeWrite(',');
                 }
+#endif
             }
             return true;
         }
@@ -329,7 +369,9 @@ namespace AutoCSer.Json
             else
             {
                 ++checkLoopDepth;
+#if AutoCSer
                 if (isLoopObject) CharStream.Write(')');
+#endif
             }
         }
 
@@ -342,7 +384,7 @@ namespace AutoCSer.Json
         public void CustomSerialize<valueType>(valueType value)
         {
             if (value == null) CharStream.WriteJsonNull();
-            else TypeSerializer<valueType>.Serialize(this, value);
+            else TypeSerializer<valueType>.Serialize(this, ref value);
         }
         /// <summary>
         /// 写入对象名称
@@ -615,6 +657,23 @@ namespace AutoCSer.Json
             int length = stream.ByteSize - index;
             *(int*)(stream.Data.Byte + index - sizeof(int)) = length;
             if ((length & 2) != 0) stream.Write(' ');
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 字符串</returns>
+        public static SerializeResult SerializeThread<valueType>(valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = ThreadStatic.Get().Serializer;
+            try
+            {
+                string json = jsonSerializer.serializeThread<valueType>(ref value, config);
+                return new SerializeResult { Json = json, Warning = jsonSerializer.Warning };
+            }
+            finally { jsonSerializer.freeThread(); }
         }
 
         static Serializer()

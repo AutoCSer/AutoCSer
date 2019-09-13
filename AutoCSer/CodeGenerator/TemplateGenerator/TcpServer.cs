@@ -511,11 +511,12 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// 检测方法序号
                 /// </summary>
                 /// <param name="methodIndexs">方法集合</param>
+                /// <param name="commandIdentityEnmuType">命令映射枚举类型</param>
                 /// <param name="rememberIdentityCommand">命令序号记忆数据</param>
                 /// <param name="getMethodKeyName">获取命令名称的委托</param>
                 /// <param name="nullMethod">空方法索引信息</param>
                 /// <returns>方法集合,失败返回null</returns>
-                public static methodType[] CheckIdentity(methodType[] methodIndexs, Dictionary<HashString, int> rememberIdentityCommand, Func<methodType, string> getMethodKeyName, methodType nullMethod)
+                public static methodType[] CheckIdentity(methodType[] methodIndexs, Type commandIdentityEnmuType, Dictionary<HashString, int> rememberIdentityCommand, Func<methodType, string> getMethodKeyName, methodType nullMethod)
                 {
                     int maxIdentity = methodIndexs.Length - 1;
                     Dictionary<int, methodType> identitys = DictionaryCreator.CreateInt<methodType>();
@@ -532,6 +533,31 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             }
                             identitys.Add(identity, method);
                             if (identity > maxIdentity) maxIdentity = identity;
+                        }
+                    }
+                    if (commandIdentityEnmuType != null)
+                    {
+                        if (commandIdentityEnmuType.IsEnum && Enum.GetUnderlyingType(commandIdentityEnmuType) == typeof(int))
+                        {
+                            Dictionary<string, int> commandIdentitys = DictionaryCreator.CreateOnly<string, int>();
+                            foreach (object value in Enum.GetValues(commandIdentityEnmuType))
+                            {
+                                commandIdentitys.Add(value.ToString(), ((IConvertible)value).ToInt32(null));
+                            }
+                            foreach (methodType method in methodIndexs)
+                            {
+                                int identity = method.Attribute.CommandIdentity;
+                                if (identity < 0 && commandIdentitys.TryGetValue(method.Method.MethodName, out identity) && identity >= 0)
+                                {
+                                    identitys.Add(method.Attribute.CommandIdentity = identity, method);
+                                    if (identity > maxIdentity) maxIdentity = identity;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Messages.Add(commandIdentityEnmuType.fullName() + " 不是有效的命令映射枚举类型");
+                            return null;
                         }
                     }
                     if (rememberIdentityCommand.Count != 0)
@@ -553,6 +579,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         if (method.Attribute.CommandIdentity < 0)
                         {
+                            if (commandIdentityEnmuType != null) Messages.Message(method.Method.MethodName + " 无法映射命令枚举");
                             while (sortMethodIndexs[maxIdentity] != null) ++maxIdentity;
                             sortMethodIndexs[method.Attribute.CommandIdentity = maxIdentity] = method;
                             ++maxIdentity;
@@ -770,18 +797,21 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <returns></returns>
             protected Dictionary<HashString, int> getRememberIdentityName(Type type)
             {
-                MethodInfo rememberIdentity = type.GetMethod(RememberIdentityCommeandName, BindingFlags.Static | BindingFlags.NonPublic);
-                if (rememberIdentity != null)
+                if (type != null)
                 {
-                    KeyValue<string, int>[] nameArray = (KeyValue<string, int>[])rememberIdentity.Invoke(null, null);
-                    if (nameArray.Length != 0)
+                    MethodInfo rememberIdentity = type.GetMethod(RememberIdentityCommeandName, BindingFlags.Static | BindingFlags.NonPublic);
+                    if (rememberIdentity != null)
                     {
-                        Dictionary<HashString, int> names = DictionaryCreator.CreateHashString<int>(nameArray.Length << 1);
-                        foreach (KeyValue<string, int> name in (KeyValue<string, int>[])rememberIdentity.Invoke(null, null))
+                        KeyValue<string, int>[] nameArray = (KeyValue<string, int>[])rememberIdentity.Invoke(null, null);
+                        if (nameArray.Length != 0)
                         {
-                            if (name.Key != null) names[name.Key] = name.Value;
+                            Dictionary<HashString, int> names = DictionaryCreator.CreateHashString<int>(nameArray.Length << 1);
+                            foreach (KeyValue<string, int> name in (KeyValue<string, int>[])rememberIdentity.Invoke(null, null))
+                            {
+                                if (name.Key != null) names[name.Key] = name.Value;
+                            }
+                            return names;
                         }
-                        return names;
                     }
                 }
                 return nullRememberIdentityName;
@@ -992,12 +1022,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// 检测方法序号
                 /// </summary>
                 /// <param name="methodIndexs">方法集合</param>
+                /// <param name="commandIdentityEnmuType">命令映射枚举类型</param>
                 /// <param name="rememberIdentityCommand">命令序号记忆数据</param>
                 /// <param name="getMethodKeyName">获取命令名称的委托</param>
                 /// <returns>方法集合,失败返回null</returns>
-                public static TcpMethod[] CheckIdentity(TcpMethod[] methodIndexs, Dictionary<HashString, int> rememberIdentityCommand, Func<TcpMethod, string> getMethodKeyName)
+                public static TcpMethod[] CheckIdentity(TcpMethod[] methodIndexs, Type commandIdentityEnmuType, Dictionary<HashString, int> rememberIdentityCommand, Func<TcpMethod, string> getMethodKeyName)
                 {
-                    return CheckIdentity(methodIndexs, rememberIdentityCommand, getMethodKeyName, nullMethod);
+                    return CheckIdentity(methodIndexs, commandIdentityEnmuType, rememberIdentityCommand, getMethodKeyName, nullMethod);
                 }
             }
             /// <summary>

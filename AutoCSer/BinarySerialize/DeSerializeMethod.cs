@@ -22,7 +22,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref bool value)
+        public void CallDeSerialize(ref bool value)
         {
             value = *(bool*)Read;
             Read += sizeof(int);
@@ -33,7 +33,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">逻辑值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref bool[] value)
+        public void CallDeSerialize(ref bool[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -52,7 +52,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref bool? value)
+        public void CallDeSerialize(ref bool? value)
         {
             value = *(bool*)Read;
             Read += sizeof(int);
@@ -63,7 +63,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">逻辑值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref bool?[] value)
+        public void CallDeSerialize(ref bool?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -82,7 +82,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref byte value)
+        public void CallDeSerialize(ref byte value)
         {
             value = *(byte*)Read;
             Read += sizeof(int);
@@ -93,7 +93,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref byte[] value)
+        public void CallDeSerialize(ref byte[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -113,7 +113,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMethod]
         [DeSerializeMemberMapMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref LeftArray<byte> value)
+        public void CallDeSerialize(ref LeftArray<byte> value)
         {
             int length = *(int*)Read;
             if (length == 0)
@@ -139,7 +139,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref byte? value)
+        public void CallDeSerialize(ref byte? value)
         {
             value = *(byte*)Read;
             Read += sizeof(int);
@@ -150,7 +150,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref byte?[] value)
+        public void CallDeSerialize(ref byte?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -173,7 +173,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref sbyte value)
+        public void CallDeSerialize(ref sbyte value)
         {
             value = (sbyte)*(int*)Read;
             Read += sizeof(int);
@@ -184,7 +184,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref sbyte[] value)
+        public void CallDeSerialize(ref sbyte[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -203,7 +203,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref sbyte? value)
+        public void CallDeSerialize(ref sbyte? value)
         {
             value = (sbyte)*(int*)Read;
             Read += sizeof(int);
@@ -214,7 +214,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref sbyte?[] value)
+        public void CallDeSerialize(ref sbyte?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -237,7 +237,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref short value)
+        public void CallDeSerialize(ref short value)
         {
             value = (short)*(int*)Read;
             Read += sizeof(int);
@@ -248,7 +248,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref short[] value)
+        public void CallDeSerialize(ref short[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -267,7 +267,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref short? value)
+        public void CallDeSerialize(ref short? value)
         {
             value = (short)*(int*)Read;
             Read += sizeof(int);
@@ -278,7 +278,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref short?[] value)
+        public void CallDeSerialize(ref short?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -301,7 +301,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ushort value)
+        public void CallDeSerialize(ref ushort value)
         {
             value = *(ushort*)Read;
             Read += sizeof(int);
@@ -312,7 +312,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ushort[] value)
+        public void CallDeSerialize(ref ushort[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -331,7 +331,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ushort? value)
+        public void CallDeSerialize(ref ushort? value)
         {
             value = *(ushort*)Read;
             Read += sizeof(int);
@@ -342,7 +342,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ushort?[] value)
+        public void CallDeSerialize(ref ushort?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -367,7 +367,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void deSerialize(ref int value)
+        public void CallDeSerialize(ref int value)
         {
             value = *(int*)Read;
             Read += sizeof(int);
@@ -378,7 +378,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref int[] value)
+        public void CallDeSerialize(ref int[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -397,7 +397,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref int? value)
+        public void CallDeSerialize(ref int? value)
         {
             value = *(int*)Read;
             Read += sizeof(int);
@@ -408,7 +408,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref int?[] value)
+        public void CallDeSerialize(ref int?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -433,7 +433,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref uint value)
+        public void CallDeSerialize(ref uint value)
         {
             value = *(uint*)Read;
             Read += sizeof(int);
@@ -444,7 +444,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref uint[] value)
+        public void CallDeSerialize(ref uint[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -463,7 +463,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref uint? value)
+        public void CallDeSerialize(ref uint? value)
         {
             value = *(uint*)Read;
             Read += sizeof(int);
@@ -474,7 +474,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref uint?[] value)
+        public void CallDeSerialize(ref uint?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -499,7 +499,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref long value)
+        public void CallDeSerialize(ref long value)
         {
             value = *(long*)Read;
             Read += sizeof(long);
@@ -510,7 +510,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref long[] value)
+        public void CallDeSerialize(ref long[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -529,7 +529,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref long? value)
+        public void CallDeSerialize(ref long? value)
         {
             value = *(long*)Read;
             Read += sizeof(long);
@@ -540,7 +540,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref long?[] value)
+        public void CallDeSerialize(ref long?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -565,7 +565,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ulong value)
+        public void CallDeSerialize(ref ulong value)
         {
             value = *(ulong*)Read;
             Read += sizeof(ulong);
@@ -576,7 +576,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ulong[] value)
+        public void CallDeSerialize(ref ulong[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -595,7 +595,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ulong? value)
+        public void CallDeSerialize(ref ulong? value)
         {
             value = *(ulong*)Read;
             Read += sizeof(ulong);
@@ -606,7 +606,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref ulong?[] value)
+        public void CallDeSerialize(ref ulong?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -631,7 +631,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref float value)
+        public void CallDeSerialize(ref float value)
         {
             value = *(float*)Read;
             Read += sizeof(float);
@@ -642,7 +642,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref float[] value)
+        public void CallDeSerialize(ref float[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -661,7 +661,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref float? value)
+        public void CallDeSerialize(ref float? value)
         {
             value = *(float*)Read;
             Read += sizeof(float);
@@ -672,7 +672,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref float?[] value)
+        public void CallDeSerialize(ref float?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -697,7 +697,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref double value)
+        public void CallDeSerialize(ref double value)
         {
             value = *(double*)Read;
             Read += sizeof(double);
@@ -708,7 +708,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref double[] value)
+        public void CallDeSerialize(ref double[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -727,7 +727,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref double? value)
+        public void CallDeSerialize(ref double? value)
         {
             value = *(double*)Read;
             Read += sizeof(double);
@@ -738,7 +738,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref double?[] value)
+        public void CallDeSerialize(ref double?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -763,7 +763,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref decimal value)
+        public void CallDeSerialize(ref decimal value)
         {
             value = *(decimal*)Read;
             Read += sizeof(decimal);
@@ -774,7 +774,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref decimal[] value)
+        public void CallDeSerialize(ref decimal[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -793,7 +793,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref decimal? value)
+        public void CallDeSerialize(ref decimal? value)
         {
             value = *(decimal*)Read;
             Read += sizeof(decimal);
@@ -804,7 +804,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数值</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref decimal?[] value)
+        public void CallDeSerialize(ref decimal?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -827,7 +827,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref char value)
+        public void CallDeSerialize(ref char value)
         {
             value = *(char*)Read;
             Read += sizeof(int);
@@ -838,7 +838,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">字符</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref char[] value)
+        public void CallDeSerialize(ref char[] value)
         {
             int length = deSerializeArray(ref value);
             if ((length & 1) == 0)
@@ -888,7 +888,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref char? value)
+        public void CallDeSerialize(ref char? value)
         {
             value = *(char*)Read;
             Read += sizeof(int);
@@ -899,7 +899,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">字符</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref char?[] value)
+        public void CallDeSerialize(ref char?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -924,7 +924,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref DateTime value)
+        public void CallDeSerialize(ref DateTime value)
         {
             value = *(DateTime*)Read;
             Read += sizeof(DateTime);
@@ -935,7 +935,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">时间</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref DateTime[] value)
+        public void CallDeSerialize(ref DateTime[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -954,7 +954,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref DateTime? value)
+        public void CallDeSerialize(ref DateTime? value)
         {
             value = *(DateTime*)Read;
             Read += sizeof(DateTime);
@@ -965,7 +965,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">时间</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref DateTime?[] value)
+        public void CallDeSerialize(ref DateTime?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -990,7 +990,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref Guid value)
+        public void CallDeSerialize(ref Guid value)
         {
             value = *(Guid*)Read;
             Read += sizeof(Guid);
@@ -1001,7 +1001,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">Guid</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref Guid[] value)
+        public void CallDeSerialize(ref Guid[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -1020,7 +1020,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref Guid? value)
+        public void CallDeSerialize(ref Guid? value)
         {
             value = *(Guid*)Read;
             Read += sizeof(Guid);
@@ -1031,7 +1031,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">Guid</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref Guid?[] value)
+        public void CallDeSerialize(ref Guid?[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -1053,7 +1053,7 @@ namespace AutoCSer.BinarySerialize
         ///// <param name="value">字符串</param>
         //[DeSerializeMethod]
         //[AutoCSer.IOS.Preserve(Conditional = true)]
-        //private void deSerialize(ref string value)
+        //public void CallDeSerialize(ref string value)
         //{
         //    if (CheckPoint(ref value))
         //    {
@@ -1106,7 +1106,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">字符串</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref string value)
+        public void CallDeSerialize(ref string value)
         {
             if (CheckPoint(ref value))
             {
@@ -1158,7 +1158,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">字符串</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref string[] value)
+        public void CallDeSerialize(ref string[] value)
         {
             int length = deSerializeArray(ref value);
             if (length != 0)
@@ -1175,7 +1175,7 @@ namespace AutoCSer.BinarySerialize
                             if (arrayMap.Next() == 0) value[index] = null;
                             else
                             {
-                                deSerialize(ref value[index]);
+                                CallDeSerialize(ref value[index]);
                                 if (State != DeSerializeState.Success) return;
                             }
                         }
@@ -1194,7 +1194,7 @@ namespace AutoCSer.BinarySerialize
         [DeSerializeMemberMapMethod]
         //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private unsafe void deSerialize(ref SubString value)
+        public unsafe void CallDeSerialize(ref SubString value)
         {
             //string stringValue = null;
             //if ((Read = DeSerialize(Read, end, ref stringValue)) == null) State = DeSerializeState.IndexOutOfRange;
@@ -1245,7 +1245,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">类型信息</param>
         [DeSerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        private void deSerialize(ref Type value)
+        public void CallDeSerialize(ref Type value)
         {
             if (CheckPoint(ref value))
             {

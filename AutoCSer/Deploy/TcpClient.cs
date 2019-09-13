@@ -45,14 +45,15 @@ namespace AutoCSer.Deploy
         /// <param name="client"></param>
         /// <param name="name"></param>
         /// <param name="attribute"></param>
-        internal TcpClient(Client client, string name, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute)
+        /// <param name="verifyMethod"></param>
+        internal TcpClient(Client client, string name, AutoCSer.Net.TcpInternalServer.ServerAttribute attribute, Func<Server.TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod)
         {
             this.Client = client;
             this.name = name;
 #if NoAutoCSer
             throw new Exception();
 #else
-            TcpInternalClient = new Server.TcpInternalClient(attribute);
+            TcpInternalClient = new Server.TcpInternalClient(attribute, verifyMethod);
             checkSocketVersion = TcpInternalClient._TcpClient_.CreateCheckSocketVersion(onClientSocket);
 #endif
         }

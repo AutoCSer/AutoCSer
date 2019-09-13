@@ -44,6 +44,10 @@ namespace AutoCSer.Json
         /// </summary>
         NotBool,
         /// <summary>
+        /// 整数值解析错误
+        /// </summary>
+        NotInteger,
+        /// <summary>
         /// 非数字解析错误
         /// </summary>
         NotNumber,
@@ -51,6 +55,10 @@ namespace AutoCSer.Json
         /// 16 进制数字解析错误
         /// </summary>
         NotHex,
+        /// <summary>
+        /// 超出范围
+        /// </summary>
+        OutOfRange,
         /// <summary>
         /// 字符解析错误
         /// </summary>

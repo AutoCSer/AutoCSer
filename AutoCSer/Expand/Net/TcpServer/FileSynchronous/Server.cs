@@ -251,7 +251,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             SynchronousState state = SynchronousState.IdentityError;
             try
             {
-                if (fileIdentity.Tick == AutoCSer.Pub.StartTime.Ticks)
+                if (fileIdentity.Tick == AutoCSer.Date.StartTime.Ticks)
                 {
                     ServerFile serverFile;
                     Monitor.Enter(fileLock);
@@ -316,7 +316,7 @@ namespace AutoCSer.Net.TcpServer.FileSynchronous
             SynchronousState state = SynchronousState.IdentityError;
             try
             {
-                if (tick == AutoCSer.Pub.StartTime.Ticks)
+                if (tick == AutoCSer.Date.StartTime.Ticks)
                 {
                     ServerFile serverFile;
                     Monitor.Enter(fileLock);

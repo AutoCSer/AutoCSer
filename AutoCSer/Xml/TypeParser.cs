@@ -982,7 +982,7 @@ namespace AutoCSer.Xml
                                 if (parser.State != ParseState.Success) return -1;
                                 if (parser.CheckNameEnd(itemFixed, name.ByteSize) == 0) break;
                             }
-                            values = values.copyNew(index == 0 ? sizeof(int) : (index << 1));
+                            values = values.copyNew(index == 0 ? parser.Config.NewArraySize : (index << 1));
                             values[index++] = value;
                         }
                         else
@@ -998,7 +998,7 @@ namespace AutoCSer.Xml
                     }
                     else
                     {
-                        if (index == values.Length) values = values.copyNew(index == 0 ? sizeof(int) : (index << 1));
+                        if (index == values.Length) values = values.copyNew(index == 0 ? parser.Config.NewArraySize : (index << 1));
                         values[index++] = default(valueType);
                     }
                 }

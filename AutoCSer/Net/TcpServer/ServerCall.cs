@@ -13,14 +13,14 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        public long TaskTicks;
+        public long TaskTimestamp;
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        long AutoCSer.Threading.ILinkTask.LinkTaskTicks
+        long AutoCSer.Threading.ILinkTask.LinkTaskTimestamp
         {
-            get { return TaskTicks; }
-            set { TaskTicks = value; }
+            get { return TaskTimestamp; }
+            set { TaskTimestamp = value; }
         }
         /// <summary>
         /// 下一个任务节点
@@ -70,12 +70,13 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务器端同步调用
         /// </summary>
+        /// <param name="currentTaskTimestamp"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerCall SingleRunTask(ref long currentTaskTicks)
+        internal ServerCall SingleRunTask(ref long currentTaskTimestamp)
         {
             ServerCall value = new UnionType { Value = NextTask }.ServerCall;
-            currentTaskTicks = TaskTicks;
+            currentTaskTimestamp = TaskTimestamp;
             NextTask = null;
             Call();
             return value;

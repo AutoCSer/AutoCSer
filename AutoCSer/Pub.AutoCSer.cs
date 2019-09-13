@@ -23,7 +23,7 @@ namespace AutoCSer
         /// <summary>
         /// 默认自增标识
         /// </summary>
-        private static long identity;
+        private static long identity = AutoCSer.Date.StartTime.Ticks;
         /// <summary>
         /// 默认自增标识
         /// </summary>

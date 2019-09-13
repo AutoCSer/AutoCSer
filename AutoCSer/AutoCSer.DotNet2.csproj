@@ -85,6 +85,7 @@
     <Compile Include="CharStream.AutoCSer.cs" />
     <Compile Include="CharStream.Json.cs" />
     <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />
     <Compile Include="Config\MemberAttribute.cs" />
@@ -154,6 +155,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Emit\Pub.AutoCSer.cs" />
+    <Compile Include="Emit\StringWriter.cs" />
     <Compile Include="EncodingCache.cs" />
     <Compile Include="EnumAttribute.cs" />
     <Compile Include="Enumerator.cs">
@@ -221,6 +223,7 @@
     <Compile Include="IO\FileStreamWriter.cs" />
     <Compile Include="IO\UnionType.cs" />
     <Compile Include="Json\ConfigLoader.cs" />
+    <Compile Include="Json\DateTimeType.cs" />
     <Compile Include="Json\IgnoreMemberAttribute.cs" />
     <Compile Include="Json\Node.cs">
       <SubType>Code</SubType>
@@ -237,6 +240,7 @@
     </Compile>
     <Compile Include="Json\ParseCustomAttribute.cs" />
     <Compile Include="Json\ParseDynamicMethod.cs" />
+    <Compile Include="Json\ParseIntState.cs" />
     <Compile Include="Json\ParseMemberAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -296,6 +300,7 @@
     <Compile Include="Json\StateSearcher.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Json\ThreadStatic.cs" />
     <Compile Include="Json\TypeParser.AutoCSer.cs" />
     <Compile Include="Json\TypeParser.cs">
       <SubType>Code</SubType>
@@ -750,6 +755,7 @@
     <Compile Include="Xml\UnionType.cs" />
     <Compile Include="Xml\UnknownNameAttribute.cs" />
     <Compile Include="{AutoCSer}.AutoCSer.cs" />
+    <Compile Include="{AutoCSer.Json}.CombinationTemplate.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

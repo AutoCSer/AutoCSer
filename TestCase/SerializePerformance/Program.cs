@@ -8,30 +8,41 @@ namespace AutoCSer.TestCase.SerializePerformance
     {
         static void Main(string[] args)
         {
+#if NOJIT
+            int count = 10 * 10000;
+#else
+            int count = 100 * 10000;
+#endif
+            bool isJson = true, isJsonThread = true, isXml = true, isBinary = true;
+            AutoCSer.RandomObject.Config randomConfig = new AutoCSer.RandomObject.Config { IsSecondDateTime = true, IsParseFloat = true };
             do
             {
                 //AOT（NoJIT）模式应该尽量使用属性而非字段
                 PropertyData propertyData = AutoCSer.RandomObject.Creator<PropertyData>.Create(randomConfig);
-                json(propertyData);
-                xml(propertyData);
+                if (isJson) json(propertyData, "Property Json", count);
+                if (isJsonThread) jsonThread(propertyData, "Property Json", count);
+                if (isXml) xml(propertyData, "Property Json", count);
 
                 //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是.NET Core 的实现，指数越高性能越低。
                 FloatPropertyData floatPropertyData = AutoCSer.RandomObject.Creator<FloatPropertyData>.Create(randomConfig);
-                json(floatPropertyData);
-                xml(floatPropertyData);
+                if (isJson) json(floatPropertyData, "float Property Json", count);
+                if (isJsonThread) jsonThread(floatPropertyData, "float Property Json", count);
+                if (isXml) xml(floatPropertyData, "float Property Json", count);
 
                 FieldData filedData = AutoCSer.RandomObject.Creator<FieldData>.Create(randomConfig);
-                json(filedData);
-                xml(filedData);
+                if (isJson) json(filedData, "Field Json", count);
+                if (isJsonThread) jsonThread(filedData, "Field Json", count);
+                if (isXml) xml(filedData, "Field Json", count);
 
                 //浮点数不仅存在精度问题，而且序列化性能非常低，应该尽量避免使用。特别是.NET Core 的实现，指数越高性能越低。
                 FloatFieldData floatFiledData = AutoCSer.RandomObject.Creator<FloatFieldData>.Create(randomConfig);
-                json(floatFiledData);
-                xml(floatFiledData);
+                if (isJson) json(floatFiledData, "float Field Json", count);
+                if (isJsonThread) jsonThread(floatFiledData, "float Field Json", count);
+                if (isXml) xml(floatFiledData, "float Field Json", count);
 
                 //AOT（NoJIT）模式尽量不要使用二进制序列化
                 //浮点数对二进制序列化无影响
-                fieldSerialize(floatFiledData);
+                if (isBinary) fieldSerialize(floatFiledData, count);
 
                 Console.WriteLine(@"Sleep 3000ms
 ");
@@ -41,191 +52,96 @@ namespace AutoCSer.TestCase.SerializePerformance
         }
 
         /// <summary>
-        /// 测试对象数量
-        /// </summary>
-#if NOJIT
-        private const int count = 10 * 10000;
-#else
-        private const int count = 100 * 10000;
-#endif
-        /// <summary>
-        /// 随机生成对象参数
-        /// </summary>
-        private static readonly AutoCSer.RandomObject.Config randomConfig = new AutoCSer.RandomObject.Config { IsSecondDateTime = true, IsParseFloat = true };
-
-        /// <summary>
         /// JSON 序列化测试
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        private static void json(PropertyData value)
+        /// <param name="type"></param>
+        /// <param name="count"></param>
+        /// <param name="title"></param>
+        /// <param name="isOutput"></param>
+        private static void json<T>(T value, string type, int count, string title = null, bool isOutput = false)
         {
-            Console.WriteLine(@"
+            Console.WriteLine(title ?? @"
 http://www.AutoCSer.com/Serialize/Json.html");
             string json = null;
             Stopwatch time = new Stopwatch();
             time.Start();
             for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object "+ ((json.Length * count * 2) >> 20).toString() + "MB Property Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB "+ type + " Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+
+            if (isOutput) Console.WriteLine(json);
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<PropertyData>(json);
+            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<T>(json);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB Property Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB " + type + " DeSerialize " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
-        /// JSON 序列化测试
+        /// JSON 序列化测试（单线程模式）
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        private static void json(FloatPropertyData value)
+        /// <param name="type"></param>
+        /// <param name="count"></param>
+        /// <param name="title"></param>
+        /// <param name="isOutput"></param>
+        private static void jsonThread<T>(T value, string type, int count, string title = null, bool isOutput = false)
         {
-            Console.WriteLine(@"
+            Console.WriteLine(title ?? @"
 http://www.AutoCSer.com/Serialize/Json.html");
             string json = null;
             Stopwatch time = new Stopwatch();
             time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
+            for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.SerializeThread(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Property Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB " + type + " Thread Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+
+            if (isOutput) Console.WriteLine(json);
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FloatPropertyData>(json);
+            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.ParseThread<T>(json);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Property Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
-        }
-        /// <summary>
-        /// JSON序列化测试
-        /// </summary>
-        /// <param name="value"></param>
-        private static void json(FieldData value)
-        {
-            Console.WriteLine(@"
-http://www.AutoCSer.com/Serialize/Json.html");
-            string json = null;
-            Stopwatch time = new Stopwatch();
-            time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
-
-            time.Reset();
-            time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FieldData>(json);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
-        }
-        /// <summary>
-        /// JSON序列化测试
-        /// </summary>
-        /// <param name="value"></param>
-        private static void json(FloatFieldData value)
-        {
-            Console.WriteLine(@"
-http://www.AutoCSer.com/Serialize/Json.html");
-            string json = null;
-            Stopwatch time = new Stopwatch();
-            time.Start();
-            for (int index = count; index != 0; --index) json = AutoCSer.Json.Serializer.Serialize(value);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Serialize " + time.ElapsedMilliseconds.toString() + "ms");
-
-            time.Reset();
-            time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Json.Parser.Parse<FloatFieldData>(json);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((json.Length * count * 2) >> 20).toString() + "MB Field Json Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((json.Length * count * 2) >> 20).toString() + "MB " + type + " Thread DeSerialize " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// XML 序列化测试
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        private static void xml(PropertyData value)
+        /// <param name="type"></param>
+        /// <param name="count"></param>
+        /// <param name="title"></param>
+        /// <param name="isOutput"></param>
+        private static void xml<T>(T value, string type, int count, string title = null, bool isOutput = false)
         {
-            Console.WriteLine(@"
+            Console.WriteLine(title ?? @"
 http://www.AutoCSer.com/Serialize/Xml.html");
             string xml = null;
             Stopwatch time = new Stopwatch();
             time.Start();
             for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB " + type + " Serialize " + time.ElapsedMilliseconds.toString() + "ms");
+
+            if (isOutput) Console.WriteLine(xml);
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<PropertyData>(xml);
+            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<T>(xml);
             time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
-        }
-        /// <summary>
-        /// XML 序列化测试
-        /// </summary>
-        /// <param name="value"></param>
-        private static void xml(FloatPropertyData value)
-        {
-            Console.WriteLine(@"
-http://www.AutoCSer.com/Serialize/Xml.html");
-            string xml = null;
-            Stopwatch time = new Stopwatch();
-            time.Start();
-            for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
-
-            time.Reset();
-            time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FloatPropertyData>(xml);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB Property XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
-        }
-        /// <summary>
-        /// XML序列化测试
-        /// </summary>
-        /// <param name="value"></param>
-        private static void xml(FieldData value)
-        {
-            Console.WriteLine(@"
-http://www.AutoCSer.com/Serialize/Xml.html");
-            string xml = null;
-            Stopwatch time = new Stopwatch();
-            time.Start();
-            for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
-
-            time.Reset();
-            time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FieldData>(xml);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
-        }
-        /// <summary>
-        /// XML序列化测试
-        /// </summary>
-        /// <param name="value"></param>
-        private static void xml(FloatFieldData value)
-        {
-            Console.WriteLine(@"
-http://www.AutoCSer.com/Serialize/Xml.html");
-            string xml = null;
-            Stopwatch time = new Stopwatch();
-            time.Start();
-            for (int index = count; index != 0; --index) xml = AutoCSer.Xml.Serializer.Serialize(value);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Serialize " + time.ElapsedMilliseconds.toString() + "ms");
-
-            time.Reset();
-            time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.Xml.Parser.Parse<FloatFieldData>(xml);
-            time.Stop();
-            Console.WriteLine((count / 10000).toString() + "W object + float " + ((xml.Length * count * 2) >> 20).toString() + "MB XML Parse " + time.ElapsedMilliseconds.toString() + "ms");
+            Console.WriteLine((count / 10000).toString() + "W object " + ((xml.Length * count * 2) >> 20).toString() + "MB " + type + " DeSerialize " + time.ElapsedMilliseconds.toString() + "ms");
         }
         /// <summary>
         /// 二进制序列化测试
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        private static void fieldSerialize(FloatFieldData value)
+        /// <param name="count"></param>
+        private static void fieldSerialize<T>(T value, int count)
         {
             Console.WriteLine(@"
 http://www.AutoCSer.com/Serialize/Binary.html");
@@ -238,7 +154,7 @@ http://www.AutoCSer.com/Serialize/Binary.html");
 
             time.Reset();
             time.Start();
-            for (int index = count; index != 0; --index) value = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<FloatFieldData>(bytes);
+            for (int index = count; index != 0; --index) value = AutoCSer.BinarySerialize.DeSerializer.DeSerialize<T>(bytes);
             time.Stop();
             Console.WriteLine((count / 10000).toString() + "W object " + ((bytes.Length * count) >> 20).toString() + "MB Binary DeSerialize " + time.ElapsedMilliseconds.toString() + "ms");
         }

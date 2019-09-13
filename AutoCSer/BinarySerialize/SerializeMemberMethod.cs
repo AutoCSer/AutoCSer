@@ -42,7 +42,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(bool[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 逻辑值序列化
@@ -68,7 +68,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(bool?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -93,7 +93,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(byte[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -119,7 +119,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(byte?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -144,7 +144,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(sbyte[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -170,7 +170,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(sbyte?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -195,7 +195,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(short[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -221,7 +221,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(short?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -246,7 +246,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(ushort[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -272,7 +272,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(ushort?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -297,7 +297,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(int[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -328,7 +328,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(int?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -353,7 +353,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(uint[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -384,7 +384,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(uint?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -409,7 +409,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(long[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -440,7 +440,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(long?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -465,7 +465,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(ulong[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -496,7 +496,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(ulong?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -521,7 +521,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(float[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -552,7 +552,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(float?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -577,7 +577,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(double[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -608,7 +608,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(double?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -633,7 +633,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(decimal[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 数值序列化
@@ -664,7 +664,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(decimal?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 字符序列化
@@ -689,7 +689,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(char[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 字符序列化
@@ -715,7 +715,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(char?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 时间序列化
@@ -740,7 +740,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(DateTime[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 时间序列化
@@ -771,7 +771,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(DateTime?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// Guid序列化
@@ -796,7 +796,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(Guid[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// Guid序列化
@@ -827,7 +827,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(Guid?[] value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 字符串序列化
@@ -840,7 +840,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(string value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
         /// <summary>
         /// 字符串序列化
@@ -853,7 +853,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(string[] array)
         {
             if (array == null) Stream.Write(NullValue);
-            else Serialize(array);
+            else CallSerialize(array);
         }
         /// <summary>
         /// 类型信息序列化
@@ -866,7 +866,7 @@ namespace AutoCSer.BinarySerialize
         private void memberSerialize(Type value)
         {
             if (value == null) Stream.Write(NullValue);
-            else Serialize(value);
+            else CallSerialize(value);
         }
 
         /// <summary>

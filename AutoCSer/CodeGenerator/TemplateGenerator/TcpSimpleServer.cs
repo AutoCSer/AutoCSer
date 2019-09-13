@@ -36,12 +36,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// 检测方法序号
                 /// </summary>
                 /// <param name="methodIndexs">方法集合</param>
+                /// <param name="commandIdentityEnmuType">命令映射枚举类型</param>
                 /// <param name="rememberIdentityCommand">命令序号记忆数据</param>
                 /// <param name="getMethodKeyName">获取命令名称的委托</param>
                 /// <returns>方法集合,失败返回null</returns>
-                public static TcpMethod[] CheckIdentity(TcpMethod[] methodIndexs, Dictionary<HashString, int> rememberIdentityCommand, Func<TcpMethod, string> getMethodKeyName)
+                public static TcpMethod[] CheckIdentity(TcpMethod[] methodIndexs, Type commandIdentityEnmuType, Dictionary<HashString, int> rememberIdentityCommand, Func<TcpMethod, string> getMethodKeyName)
                 {
-                    return CheckIdentity(methodIndexs, rememberIdentityCommand, getMethodKeyName, nullMethod);
+                    return CheckIdentity(methodIndexs, commandIdentityEnmuType, rememberIdentityCommand, getMethodKeyName, nullMethod);
                 }
             }
             /// <summary>

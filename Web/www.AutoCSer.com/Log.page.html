@@ -3,6 +3,15 @@
 <!--Include:Include\Header[AutoCSer 更新记录]-->
 <body>
     <div>
+        <b>1.1.42</b>
+        <br />. <a href="/Serialize/Json.html">JSON 序列化</a> 增加 ThreadStatic 支持，时间值增加 ISO 8601 与自定义格式字符串支持。
+        <br />. <a href="/TcpServer/MethodServer.html">TCP 服务</a> 增加命令序号映射枚举类型支持。
+        <br />. 发布工具 AutoCSer.Deploy 接口与自定义任务增加自定义扩展验证权限机制。
+        <br />. 小工具整合项目 AutoCSer.Expand 增加 64b 分布式毫秒计数的 ID 生成工具。
+        <br />. 修复框架中使用 Stopwatch 与 DateTime 时钟周期未做适配处理造成 TCP 队列切换频率高于预期值的 BUG。
+        <br />. 修复匹配数据缺少宽字符状态机在匹配宽字符的时候可能产生死循环的 BUG。
+    </div>
+    <div>
         <b>1.1.41</b>
         <br />. <a href="/Config/Index.html">代码配置</a>支持实例化，用于兼容文件配置反序列化。
         <br />. <a href="/TcpServer/Register.html">TCP 注册服务</a>读写服务合并，通过设置只读权限来兼容旧的读取服务。

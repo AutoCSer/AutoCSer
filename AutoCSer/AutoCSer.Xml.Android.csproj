@@ -66,6 +66,7 @@
     <Compile Include="Emit\ListConstructor.cs" />
     <Compile Include="Emit\NamePool.cs" />
     <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Emit\StringWriter.cs" />
     <Compile Include="Enumerator.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\Collection.cs" />

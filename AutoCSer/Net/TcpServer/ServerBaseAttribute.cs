@@ -151,6 +151,18 @@ namespace AutoCSer.Net.TcpServer
         /// 二进制反序列化数组最大长度
         /// </summary>
         internal abstract int GetBinaryDeSerializeMaxArraySize { get; }
+        /// <summary>
+        /// 默认为 true 表示生成记忆数字编号标识与长字符串名称标识之间对应关系的代码，用于保持多次代码生成的命令序号（仅当没有设置命令映射枚举类型 CommandIdentityEnmuType 时有效）
+        /// </summary>
+        public bool IsRememberCommand = true;
+        /// <summary>
+        /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        public virtual bool GetIsRememberCommand
+        {
+            get { return IsRememberCommand; }
+        }
 
         internal static attributeType GetConfig<attributeType>(string serviceName, Type type, attributeType attribute)
             where attributeType : ServerBaseAttribute

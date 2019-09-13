@@ -482,11 +482,12 @@ namespace AutoCSer
         /// <param name="time">时间</param>
         internal void WriteJsonOther(DateTime time)
         {
-            PrepLength(AutoCSer.Json.Serializer.OtherDateStart.Length + (19 + 1 + 4));
-            UnsafeWrite('"');
-            UnsafeSimpleWrite(AutoCSer.Json.Serializer.OtherDateStart);
+            byte* data = (byte*)GetPrepSizeCurrent(7 + 19 + 4);
+            *(long*)data = '"' + ('/' << 16) + ((long)'D' << 32) + ((long)'a' << 48);
+            *(long*)(data + sizeof(long)) = 't' + ('e' << 16) + ((long)'(' << 32);
+            ByteSize += 7 * sizeof(char);
             writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond), false);
-            *(long*)CurrentChar = AutoCSer.Json.Serializer.DateEnd + ('/' << 16) + ((long)'"' << 32);
+            *(long*)CurrentChar = ')' + ('/' << 16) + ((long)'"' << 32);
             ByteSize += 3 * sizeof(char);
         }
         /// <summary>
@@ -494,6 +495,32 @@ namespace AutoCSer
         /// </summary>
         /// <param name="time">时间</param>
         internal void WriteJsonString(DateTime time)
+        {
+            switch(time.Kind)
+            {
+                case DateTimeKind.Utc:
+                    char* utcFixed = GetPrepSizeCurrent(19 + 3);
+                    *utcFixed = '"';
+                    AutoCSer.Date.ToString(time, utcFixed + 1);
+                    *(int*)(utcFixed + 20) = 'Z' + ('"' << 16);
+                    ByteSize += (19 + 3) << 1;
+                    return;
+                case DateTimeKind.Local:
+                    char* localFixed = GetPrepSizeCurrent(20 + 8);
+                    *localFixed = '"';
+                    AutoCSer.Date.ToString(time, localFixed + 1);
+                    *(long*)(localFixed + 20) = Date.ZoneHourString;
+                    *(long*)(localFixed + 24) = Date.ZoneMinuteString;
+                    ByteSize += (19 + 6 + 2) << 1;
+                    return;
+                default: WriteJsonSqlString(time); return;
+            }
+        }
+        /// <summary>
+        /// 时间转字符串
+        /// </summary>
+        /// <param name="time">时间</param>
+        internal void WriteJsonSqlString(DateTime time)
         {
             PrepLength(AutoCSer.Date.MillisecondStringSize + 2);
             UnsafeWrite('"');
@@ -507,10 +534,13 @@ namespace AutoCSer
         /// <param name="isNumberToHex">数字是否允许转换为 16 进制字符串</param>
         public void WriteJson(DateTime time, bool isNumberToHex = true)
         {
-            PrepLength(AutoCSer.Json.Serializer.DateStart.Length + (19 + 1));
-            UnsafeSimpleWrite(AutoCSer.Json.Serializer.DateStart);
+            byte* data = (byte*)GetPrepSizeCurrent(9 + 19 + 1);
+            *(long*)data = 'n' + ('e' << 16) + ((long)'w' << 32) + ((long)' ' << 48);
+            *(long*)(data + sizeof(long)) = 'D' + ('a' << 16) + ((long)'t' << 32) + ((long)'e' << 48);
+            *(char*)(data + sizeof(long) * 2) = '(';
+            ByteSize += 9 * sizeof(char);
             writeJson((long)(((time.Kind == DateTimeKind.Utc ? time.Ticks + Date.LocalTimeTicks : time.Ticks) - AutoCSer.Json.Parser.JavascriptLocalMinTimeTicks) / TimeSpan.TicksPerMillisecond), isNumberToHex);
-            UnsafeWrite(AutoCSer.Json.Serializer.DateEnd);
+            UnsafeWrite(')');
         }
         /// <summary>
         /// Guid转换成字符串

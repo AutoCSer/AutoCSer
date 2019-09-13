@@ -13,13 +13,75 @@ namespace AutoCSer.Deploy
     /// <summary>
     /// 部署服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = Server.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.Deploy, MinCompressSize = 1024)]
+    [AutoCSer.Net.TcpInternalServer.Server(Name = Server.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.Deploy, MinCompressSize = 1024, CommandIdentityEnmuType = typeof(Server.Command))]
     public partial class Server : AutoCSer.Net.TcpInternalServer.TimeVerifyServer
     {
         /// <summary>
         /// 服务名称
         /// </summary>
         public const string ServerName = "Deploy";
+        /// <summary>
+        /// 部署服务命令
+        /// </summary>
+        public enum Command
+        {
+            /// <summary>
+            /// 写文件
+            /// </summary>
+            addAssemblyFiles = 0,
+            /// <summary>
+            /// 添加自定义任务
+            /// </summary>
+            addCustom = 2,
+            /// <summary>
+            /// 添加web任务(css/js/html)
+            /// </summary>
+            addFiles,
+            /// <summary>
+            /// 写文件并运行程序
+            /// </summary>
+            addRun,
+            /// <summary>
+            /// 等待运行程序切换结束
+            /// </summary>
+            addWaitRunSwitch,
+            /// <summary>
+            /// 清除所有部署任务
+            /// </summary>
+            clearAll,
+            /// <summary>
+            /// 清除部署信息
+            /// </summary>
+            clear,
+            /// <summary>
+            /// 创建部署
+            /// </summary>
+            create,
+            /// <summary>
+            /// 自定义服务端推送
+            /// </summary>
+            customPush,
+            /// <summary>
+            /// 比较文件最后修改时间
+            /// </summary>
+            getFileDifferent,
+            /// <summary>
+            /// 部署任务状态轮询
+            /// </summary>
+            getLog,
+            /// <summary>
+            /// 注册客户端
+            /// </summary>
+            register,
+            /// <summary>
+            /// 设置文件数据源
+            /// </summary>
+            setFileSource,
+            /// <summary>
+            /// 启动部署
+            /// </summary>
+            start
+        }
 
         /// <summary>
         /// 自定义任务集合
@@ -77,6 +139,13 @@ namespace AutoCSer.Deploy
             }
             finally { SwitchFile.StartProcessDirectory(); }
         }
+        /// <summary>
+        /// 检测任务权限
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        protected virtual bool checkCommand(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Command command) { return true; }
         /// <summary>
         /// 设置自定义任务处理类型
         /// </summary>
@@ -154,46 +223,65 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 清除所有部署任务
         /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
-        private void clear()
+        private bool clearAll(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
         {
-            object arrayLock = deployPool.ArrayLock;
-            Monitor.Enter(arrayLock);
-            DeployInfo[] deployArray = deployPool.Array;
-            int poolIndex = deployPool.PoolIndex;
-            while (poolIndex != 0) deployArray[--poolIndex].Clear();
-            deployPool.ClearIndexContinue();
-            Monitor.Exit(arrayLock);
-            GC.Collect();
+            if (checkCommand(sender, Command.clearAll))
+            {
+                object arrayLock = deployPool.ArrayLock;
+                Monitor.Enter(arrayLock);
+                DeployInfo[] deployArray = deployPool.Array;
+                int poolIndex = deployPool.PoolIndex;
+                while (poolIndex != 0) deployArray[--poolIndex].Clear();
+                deployPool.ClearIndexContinue();
+                Monitor.Exit(arrayLock);
+                GC.Collect();
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// 创建部署
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="clientId">部署服务端标识</param>
         /// <returns>部署信息索引标识</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private IndexIdentity create(IndexIdentity clientId)
+        private IndexIdentity create(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity clientId)
         {
-            int index, identity;
-            object arrayLock = deployPool.ArrayLock;
-            Monitor.Enter(arrayLock);
-            try
+            if (checkCommand(sender, Command.create))
             {
-                index = deployPool.GetIndexContinue();
-                identity = deployPool.Array[index].Set(ref clientId);
+                int index, identity;
+                object arrayLock = deployPool.ArrayLock;
+                Monitor.Enter(arrayLock);
+                try
+                {
+                    index = deployPool.GetIndexContinue();
+                    identity = deployPool.Array[index].Set(ref clientId);
+                }
+                finally { Monitor.Exit(arrayLock); }
+                return new IndexIdentity { Index = index, Identity = identity };
             }
-            finally { Monitor.Exit(arrayLock); }
-            return new IndexIdentity { Index = index, Identity = identity };
+            return new IndexIdentity { Index = -1 };
         }
         /// <summary>
         /// 清除部署信息
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>       
+        /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void clear(IndexIdentity identity)
+        private bool clear(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity)
         {
-            Clear(ref identity);
+            if (checkCommand(sender, Command.clear))
+            {
+                Clear(ref identity);
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// 清除部署信息
@@ -216,13 +304,14 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 启动部署
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="time">启动时间</param>
         /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private DeployState start(IndexIdentity identity, DateTime time)
+        private DeployState start(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, DateTime time)
         {
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCommand(sender, Command.start))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
@@ -237,13 +326,14 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 设置文件数据源
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="files">文件数据源</param>
         /// <returns></returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private bool setFileSource(IndexIdentity identity, byte[][] files)
+        private bool setFileSource(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, byte[][] files)
         {
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCommand(sender, Command.setFileSource))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
@@ -271,18 +361,19 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 添加web任务(css/js/html)
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="directory">目录信息</param>
         /// <param name="webFile">写文件任务信息</param>
         /// <param name="taskType">任务类型</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private int addFiles(IndexIdentity identity, Directory directory, ClientTask.WebFile webFile, TaskType taskType)
+        private int addFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, Directory directory, ClientTask.WebFile webFile, TaskType taskType)
         {
             //System.IO.FileInfo file = new System.IO.FileInfo(@"ServerDeSerializeError" + AutoCSer.Date.NowTime.Set().Ticks.ToString());
             //System.IO.File.WriteAllBytes(file.FullName, data.ToArray());
             //Console.WriteLine(file.FullName);
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCommand(sender, Command.addFiles))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
@@ -297,14 +388,15 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 写文件
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="files">文件集合</param>
         /// <param name="assemblyFile">写文件 exe/dll/pdb 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private int addAssemblyFiles(IndexIdentity identity, KeyValue<string, int>[] files, ClientTask.AssemblyFile assemblyFile)
+        private int addAssemblyFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, KeyValue<string, int>[] files, ClientTask.AssemblyFile assemblyFile)
         {
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCommand(sender, Command.addAssemblyFiles))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
@@ -319,14 +411,15 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 写文件并运行程序
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="files">文件集合</param>
         /// <param name="run">写文件并运行程序 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private int addRun(IndexIdentity identity, KeyValue<string, int>[] files, ClientTask.Run run)
+        private int addRun(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, KeyValue<string, int>[] files, ClientTask.Run run)
         {
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCommand(sender, Command.addRun))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
@@ -341,13 +434,14 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 等待运行程序切换结束
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="taskIndex">任务索引位置</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private int addWaitRunSwitch(IndexIdentity identity, int taskIndex)
+        private int addWaitRunSwitch(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, int taskIndex)
         {
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCommand(sender, Command.addWaitRunSwitch))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
@@ -360,21 +454,29 @@ namespace AutoCSer.Deploy
             return -1;
         }
         /// <summary>
+        /// 检测自定义任务权限
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="customName"></param>
+        /// <returns></returns>
+        protected virtual bool checkCustom(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, string customName) { return true; }
+        /// <summary>
         /// 添加自定义任务
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="identity">部署信息索引标识</param>
         /// <param name="custom">自定义任务处理 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private int addCustom(IndexIdentity identity, ClientTask.Custom custom)
+        private int addCustom(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity identity, ClientTask.Custom custom)
         {
-            if ((uint)identity.Index < (uint)deployPool.PoolIndex)
+            if ((uint)identity.Index < (uint)deployPool.PoolIndex && checkCustom(sender, custom.CallName))
             {
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
                 try
                 {
-                    return deployPool.Array[identity.Index].AddTask(identity.Identity, new Task { RunFileName = custom.CallName, CustomData = custom.CustomData, Type = TaskType.Custom });
+                    return deployPool.Array[identity.Index].AddTask(identity.Identity, new Task { Sender = sender, RunFileName = custom.CallName, CustomData = custom.CustomData, Type = TaskType.Custom });
                 }
                 finally { Monitor.Exit(arrayLock); }
             }

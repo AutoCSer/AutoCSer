@@ -18,7 +18,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        internal long TaskTicks;
+        internal long TaskTimestamp;
         /// <summary>
         /// 下一个任务
         /// </summary>

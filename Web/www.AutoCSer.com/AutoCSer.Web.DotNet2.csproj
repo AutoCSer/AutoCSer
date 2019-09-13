@@ -153,7 +153,7 @@
     <Content Include="WebView\Script.page.html" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Download\AutoCSer.Example.zip" />
+    <None Include="Download\AutoCSer.zip" />
     <None Include="Hyper-v\Hyper-v.auto.bat" />
     <None Include="Hyper-v\Hyper-v.off.bat" />
   </ItemGroup>

@@ -22,7 +22,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(bool value)
+        public void CallSerialize(bool value)
         {
             Stream.Write(value ? (int)1 : 0);
         }
@@ -33,7 +33,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(bool[] value)
+        public void CallSerialize(bool[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -44,7 +44,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(bool? value)
+        public void CallSerialize(bool? value)
         {
             Stream.Write((bool)value ? (int)1 : 0);
         }
@@ -55,7 +55,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(bool?[] value)
+        public void CallSerialize(bool?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -66,7 +66,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(byte value)
+        public void CallSerialize(byte value)
         {
             Stream.Write((uint)value);
         }
@@ -77,7 +77,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(byte[] value)
+        public void CallSerialize(byte[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -90,7 +90,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(LeftArray<byte> value)
+        public void CallSerialize(LeftArray<byte> value)
         {
             if (value.Length == 0) Stream.Write(0);
             else Serialize(Stream, ref value);
@@ -102,7 +102,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(byte? value)
+        public void CallSerialize(byte? value)
         {
             Stream.Write((uint)(byte)value);
         }
@@ -113,7 +113,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(byte?[] value)
+        public void CallSerialize(byte?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -124,7 +124,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(sbyte value)
+        public void CallSerialize(sbyte value)
         {
             Stream.Write((int)value);
         }
@@ -135,7 +135,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(sbyte[] value)
+        public void CallSerialize(sbyte[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -146,7 +146,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(sbyte? value)
+        public void CallSerialize(sbyte? value)
         {
             Stream.Write((int)(sbyte)value);
         }
@@ -157,7 +157,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(sbyte?[] value)
+        public void CallSerialize(sbyte?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -168,7 +168,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(short value)
+        public void CallSerialize(short value)
         {
             Stream.Write((int)value);
         }
@@ -179,7 +179,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(short[] value)
+        public void CallSerialize(short[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -190,7 +190,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(short? value)
+        public void CallSerialize(short? value)
         {
             Stream.Write((int)(short)value);
         }
@@ -201,7 +201,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(short?[] value)
+        public void CallSerialize(short?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -212,7 +212,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ushort value)
+        public void CallSerialize(ushort value)
         {
             Stream.Write((uint)value);
         }
@@ -223,7 +223,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ushort[] value)
+        public void CallSerialize(ushort[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -234,7 +234,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ushort? value)
+        public void CallSerialize(ushort? value)
         {
             Stream.Write((uint)(ushort)value);
         }
@@ -245,7 +245,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ushort?[] value)
+        public void CallSerialize(ushort?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -256,7 +256,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(int value)
+        public void CallSerialize(int value)
         {
             Stream.Write(value);
         }
@@ -267,7 +267,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(int[] value)
+        public void CallSerialize(int[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -278,7 +278,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(int? value)
+        public void CallSerialize(int? value)
         {
             Stream.Write((int)value);
         }
@@ -289,7 +289,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(int?[] value)
+        public void CallSerialize(int?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -300,7 +300,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(uint value)
+        public void CallSerialize(uint value)
         {
             Stream.Write(value);
         }
@@ -311,7 +311,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(uint[] value)
+        public void CallSerialize(uint[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -322,7 +322,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(uint? value)
+        public void CallSerialize(uint? value)
         {
             Stream.Write((uint)value);
         }
@@ -333,7 +333,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(uint?[] value)
+        public void CallSerialize(uint?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -344,7 +344,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(long value)
+        public void CallSerialize(long value)
         {
             Stream.Write(value);
         }
@@ -355,7 +355,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(long[] value)
+        public void CallSerialize(long[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -366,7 +366,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(long? value)
+        public void CallSerialize(long? value)
         {
             Stream.Write((long)value);
         }
@@ -377,7 +377,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(long?[] value)
+        public void CallSerialize(long?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -388,7 +388,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ulong value)
+        public void CallSerialize(ulong value)
         {
             Stream.Write(value);
         }
@@ -399,7 +399,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ulong[] value)
+        public void CallSerialize(ulong[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -410,7 +410,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ulong? value)
+        public void CallSerialize(ulong? value)
         {
             Stream.Write((ulong)value);
         }
@@ -421,7 +421,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ulong?[] value)
+        public void CallSerialize(ulong?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -432,7 +432,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(float value)
+        public void CallSerialize(float value)
         {
             Stream.Write(value);
         }
@@ -443,7 +443,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(float[] value)
+        public void CallSerialize(float[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -454,7 +454,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(float? value)
+        public void CallSerialize(float? value)
         {
             Stream.Write((float)value);
         }
@@ -465,7 +465,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(float?[] value)
+        public void CallSerialize(float?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -476,7 +476,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(double value)
+        public void CallSerialize(double value)
         {
             Stream.Write(value);
         }
@@ -487,7 +487,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(double[] value)
+        public void CallSerialize(double[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -498,7 +498,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(double? value)
+        public void CallSerialize(double? value)
         {
             Stream.Write((double)value);
         }
@@ -509,7 +509,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(double?[] value)
+        public void CallSerialize(double?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -520,7 +520,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(decimal value)
+        public void CallSerialize(decimal value)
         {
             Stream.Write(value);
         }
@@ -531,7 +531,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(decimal[] value)
+        public void CallSerialize(decimal[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -542,7 +542,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(decimal? value)
+        public void CallSerialize(decimal? value)
         {
             Stream.Write((decimal)value);
         }
@@ -553,7 +553,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(decimal?[] value)
+        public void CallSerialize(decimal?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -564,7 +564,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(char value)
+        public void CallSerialize(char value)
         {
             Stream.Write((uint)value);
         }
@@ -575,7 +575,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(char[] value)
+        public void CallSerialize(char[] value)
         {
             if (checkPoint(value))
             {
@@ -589,7 +589,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(char? value)
+        public void CallSerialize(char? value)
         {
             Stream.Write((uint)(char)value);
         }
@@ -600,7 +600,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(char?[] value)
+        public void CallSerialize(char?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -611,7 +611,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(DateTime value)
+        public void CallSerialize(DateTime value)
         {
             Stream.Write(value);
         }
@@ -622,7 +622,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(DateTime[] value)
+        public void CallSerialize(DateTime[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -633,7 +633,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(DateTime? value)
+        public void CallSerialize(DateTime? value)
         {
             Stream.Write((DateTime)value);
         }
@@ -644,7 +644,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(DateTime?[] value)
+        public void CallSerialize(DateTime?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -655,7 +655,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Guid value)
+        public void CallSerialize(Guid value)
         {
             Stream.Write(value);
         }
@@ -666,7 +666,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Guid[] value)
+        public void CallSerialize(Guid[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -677,7 +677,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Guid? value)
+        public void CallSerialize(Guid? value)
         {
             Stream.Write((Guid)value);
         }
@@ -688,7 +688,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Guid?[] value)
+        public void CallSerialize(Guid?[] value)
         {
             if (checkPoint(value)) Serialize(Stream, value);
         }
@@ -699,7 +699,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(string value)
+        public void CallSerialize(string value)
         {
             if (value.Length == 0) Stream.Write(0);
             else if (CheckPoint(value))
@@ -713,7 +713,7 @@ namespace AutoCSer.BinarySerialize
         /// <param name="array">字符串数组</param>
         [SerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(string[] array)
+        public void CallSerialize(string[] array)
         {
             if (checkPoint(array))
             {
@@ -742,7 +742,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMemberMapMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(SubString value)
+        public void CallSerialize(SubString value)
         {
             Serialize(Stream, ref value);
         }
@@ -753,7 +753,7 @@ namespace AutoCSer.BinarySerialize
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Type value)
+        public void CallSerialize(Type value)
         {
             if (CheckPoint(value)) TypeSerializer<RemoteType>.Serialize(this, new RemoteType(value));
         }

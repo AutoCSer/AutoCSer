@@ -46,7 +46,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 逻辑值反序列化
@@ -77,7 +77,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -106,7 +106,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -137,7 +137,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -166,7 +166,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -197,7 +197,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -227,7 +227,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -258,7 +258,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -288,7 +288,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -319,7 +319,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -357,7 +357,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -374,7 +374,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -412,7 +412,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -429,7 +429,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -467,7 +467,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -484,7 +484,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -522,7 +522,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -539,7 +539,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -577,7 +577,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -594,7 +594,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -632,7 +632,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -649,7 +649,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -687,7 +687,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 数值反序列化
@@ -704,7 +704,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 字符反序列化
@@ -734,7 +734,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 字符反序列化
@@ -765,7 +765,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 时间反序列化
@@ -804,7 +804,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 时间反序列化
@@ -821,7 +821,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// Guid反序列化
@@ -859,7 +859,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// Guid反序列化
@@ -876,7 +876,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 字符串反序列化
@@ -893,7 +893,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 字符串反序列化
@@ -910,7 +910,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
         /// <summary>
         /// 类型信息反序列化
@@ -927,7 +927,7 @@ namespace AutoCSer.BinarySerialize
                 Read += sizeof(int);
                 value = null;
             }
-            else deSerialize(ref value);
+            else CallDeSerialize(ref value);
         }
 
         /// <summary>

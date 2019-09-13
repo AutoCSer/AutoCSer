@@ -56,8 +56,7 @@ namespace AutoCSer.Extension
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static void ToString(byte value, CharStream charStream)
         {
-            charStream.PrepLength(3);
-            charStream.ByteSize += ToString(value, charStream.CurrentChar) * sizeof(char);
+            charStream.ByteSize += ToString(value, charStream.GetPrepSizeCurrent(3)) << 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -108,8 +107,7 @@ namespace AutoCSer.Extension
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static void ToString(sbyte value, CharStream charStream)
         {
-            charStream.PrepLength(4);
-            charStream.ByteSize += ToString(value, charStream.CurrentChar) * sizeof(char);
+            charStream.ByteSize += ToString(value, charStream.GetPrepSizeCurrent(4)) << 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -184,8 +182,7 @@ namespace AutoCSer.Extension
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static void ToString(ushort value, CharStream charStream)
         {
-            charStream.PrepLength(5);
-            charStream.ByteSize += ToString(value, charStream.CurrentChar) * sizeof(char);
+            charStream.ByteSize += ToString(value, charStream.GetPrepSizeCurrent(5)) << 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -258,8 +255,7 @@ namespace AutoCSer.Extension
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static void ToString(short value, CharStream charStream)
         {
-            charStream.PrepLength(6);
-            charStream.ByteSize += ToString(value, charStream.CurrentChar) * sizeof(char);
+            charStream.ByteSize += ToString(value, charStream.GetPrepSizeCurrent(6)) << 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -333,11 +329,11 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="charStream">字符流</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal unsafe static void ToString(uint value, CharStream charStream)
         {
-            char* chars = charStream.GetPrepSizeCurrent(10 + 3);
-            charStream.UnsafeSimpleWriteNotNull(chars, ToString(value, chars));
+            charStream.ByteSize += ToString(value, charStream.GetPrepSizeCurrent(10 + 3)) << 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -350,19 +346,15 @@ namespace AutoCSer.Extension
             if (value >= 100000000)
             {
                 uint value100000000 = (uint)((value * (ulong)Div100000000Mul) >> Div100000000Shift);
-                value -= value100000000 * 100000000;
-                uint value10000 = (uint)((value * Div10000Mul) >> Div10000Shift);
                 if (value100000000 >= 10)
                 {
-                    uIntToString(value10000, chars + 2);
-                    uIntToString(value - value10000 * 10000, chars + 6);
-                    value10000 = (value100000000 * Div10_16Mul) >> Div10_16Shift;
+                    uint value10000 = (value100000000 * Div10_16Mul) >> Div10_16Shift;
                     *(uint*)chars = ((value100000000 - value10000 * 10) << 16) | value10000 | 0x300030U;
+                    toString8(value - value100000000 * 100000000, chars + 2);
                     return 10;
                 }
-                uIntToString(value10000, chars + 1);
-                uIntToString(value - value10000 * 10000, chars + 5);
                 *chars = (char)(value100000000 + '0');
+                toString8(value - value100000000 * 100000000, chars + 1);
                 return 9;
             }
             return toString99999999(value, chars);
@@ -388,7 +380,7 @@ namespace AutoCSer.Extension
                     uint value10 = (value10000 * Div10_16Mul) >> Div10_16Shift;
                     if (value10000 >= 1000)
                     {
-                        uIntToString(value - value10000 * 10000, chars + 4);
+                        toString4(value - value10000 * 10000, chars + 4);
                         value = (value10 * Div10_16Mul) >> Div10_16Shift;
                         *(uint*)(chars + 2) = ((value10000 - value10 * 10) << 16) | (value10 - value * 10) | 0x300030U;
                         value10 = (value * Div10_16Mul) >> Div10_16Shift;
@@ -397,7 +389,7 @@ namespace AutoCSer.Extension
                     }
                     else
                     {
-                        uIntToString(value - value10000 * 10000, chars + 3);
+                        toString4(value - value10000 * 10000, chars + 3);
                         chars[2] = (char)((value10000 - value10 * 10) + '0');
                         value = (value10 * Div10_16Mul) >> Div10_16Shift;
                         *(uint*)chars = ((value10 - value * 10) << 16) | value | 0x300030U;
@@ -406,12 +398,12 @@ namespace AutoCSer.Extension
                 }
                 if (value10000 >= 10)
                 {
-                    uIntToString(value - value10000 * 10000, chars + 2);
+                    toString4(value - value10000 * 10000, chars + 2);
                     value = (value10000 * Div10_16Mul) >> Div10_16Shift;
                     *(uint*)chars = ((value10000 - value * 10) << 16) | value | 0x300030U;
                     return 6;
                 }
-                uIntToString(value - value10000 * 10000, chars + 1);
+                toString4(value - value10000 * 10000, chars + 1);
                 *chars = (char)(value10000 + '0');
                 return 5;
             }
@@ -458,18 +450,18 @@ namespace AutoCSer.Extension
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="charStream">字符流</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public unsafe static void ToString(int value, CharStream charStream)
         {
-            char* chars = charStream.GetPrepSizeCurrent(12 + 3);
-            charStream.UnsafeSimpleWriteNotNull(chars, ToString(value, chars));
+            charStream.ByteSize += ToString(value, charStream.GetPrepSizeCurrent(12 + 3)) << 1;
         }
         /// <summary>
         /// 数值转字符串
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="chars">字符串</param>
-        /// <returns>起始位置+字符串长度</returns>
+        /// <returns>字符串长度</returns>
         internal unsafe static int ToString(int value, char* chars)
         {
             if (value >= 0) return ToString((uint)value, chars);
@@ -477,20 +469,16 @@ namespace AutoCSer.Extension
             if (value32 >= 100000000)
             {
                 uint value100000000 = (uint)((value32 * (ulong)Div100000000Mul) >> Div100000000Shift);
-                value32 -= value100000000 * 100000000;
-                uint value10000 = (uint)((value32 * Div10000Mul) >> Div10000Shift);
                 if (value100000000 >= 10)
                 {
-                    uIntToString(value10000, chars + 3);
-                    uIntToString(value32 - value10000 * 10000, chars + 7);
-                    value10000 = (value100000000 * Div10_16Mul) >> Div10_16Shift;
+                    uint value10000 = (value100000000 * Div10_16Mul) >> Div10_16Shift;
                     *(uint*)(chars + 1) = ((value100000000 - value10000 * 10) << 16) | value10000 | 0x300030U;
                     *chars = '-';
+                    toString8(value32 - value100000000 * 100000000, chars + 3);
                     return 11;
                 }
-                uIntToString(value10000, chars + 2);
-                uIntToString(value32 - value10000 * 10000, chars + 6);
                 *(uint*)chars = '-' + ((value100000000 + '0') << 16);
+                toString8(value32 - value100000000 * 100000000, chars + 2);
                 return 10;
             }
             return toString_99999999(value32, chars);
@@ -516,7 +504,7 @@ namespace AutoCSer.Extension
                     uint value10 = (value10000 * Div10_16Mul) >> Div10_16Shift;
                     if (value10000 >= 1000)
                     {
-                        uIntToString(value - value10000 * 10000, chars + 5);
+                        toString4(value - value10000 * 10000, chars + 5);
                         value = (value10 * Div10_16Mul) >> Div10_16Shift;
                         *(uint*)(chars + 3) = ((value10000 - value10 * 10) << 16) | (value10 - value * 10) | 0x300030U;
                         value10 = (value * Div10_16Mul) >> Div10_16Shift;
@@ -526,7 +514,7 @@ namespace AutoCSer.Extension
                     }
                     else
                     {
-                        uIntToString(value - value10000 * 10000, chars + 4);
+                        toString4(value - value10000 * 10000, chars + 4);
                         value = (value10 * Div10_16Mul) >> Div10_16Shift;
                         *(uint*)(chars + 2) = ((value10000 - value10 * 10) << 16) | (value10 - value * 10) | 0x300030U;
                         *(uint*)chars = '-' + ((value + '0') << 16);
@@ -535,13 +523,13 @@ namespace AutoCSer.Extension
                 }
                 if (value10000 >= 10)
                 {
-                    uIntToString(value - value10000 * 10000, chars + 3);
+                    toString4(value - value10000 * 10000, chars + 3);
                     value = (value10000 * Div10_16Mul) >> Div10_16Shift;
                     *(uint*)(chars + 1) = ((value10000 - value * 10) << 16) | value | 0x300030U;
                     *chars = '-';
                     return 7;
                 }
-                uIntToString(value - value10000 * 10000, chars + 2);
+                toString4(value - value10000 * 10000, chars + 2);
                 *(uint*)chars = '-' + ((value10000 + '0') << 16);
                 return 6;
             }
@@ -575,16 +563,28 @@ namespace AutoCSer.Extension
             }
         }
         /// <summary>
-        /// 数值转字符串
+        /// 4位十进制数值转字符串
         /// </summary>
         /// <param name="value">数值</param>
         /// <param name="chars">字符串</param>
-        private unsafe static void uIntToString(uint value, char* chars)
+        private unsafe static void toString4(uint value, char* chars)
         {
             uint value10 = (value * Div10_16Mul) >> Div10_16Shift, value100 = (value10 * Div10_16Mul) >> Div10_16Shift;
             *(uint*)(chars + 2) = ((value - value10 * 10) << 16) | (value10 - value100 * 10) | 0x300030U;
             value10 = (value100 * Div10_16Mul) >> Div10_16Shift;
             *(uint*)chars = ((value100 - value10 * 10) << 16) | value10 | 0x300030U;
+        }
+        /// <summary>
+        /// 8位十进制数值转字符串
+        /// </summary>
+        /// <param name="value">数值</param>
+        /// <param name="chars">字符串</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private unsafe static void toString8(uint value, char* chars)
+        {
+            uint value10000 = (uint)((value * Div10000Mul) >> Div10000Shift);
+            toString4(value10000, chars);
+            toString4(value - value10000 * 10000U, chars + 4);
         }
         /// <summary>
         /// 数值转字符串
@@ -596,8 +596,7 @@ namespace AutoCSer.Extension
         public unsafe static string toString(this ulong value)
         {
             char* chars = stackalloc char[20];
-            RangeLength index = ToString(value, chars);
-            return new string(chars + index.Start, 0, index.Length);
+            return new string(chars, 0, ToString(value, chars));
         }
         /// <summary>
         /// 数值转字符串
@@ -619,9 +618,19 @@ namespace AutoCSer.Extension
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal unsafe static void UnsafeToString(ulong value, CharStream charStream)
         {
-            char* chars = charStream.CurrentChar;
-            RangeLength index = ToString(value, chars);
-            charStream.UnsafeSimpleWriteNotNull(chars + index.Start, index.Length);
+            charStream.ByteSize += ToString(value, charStream.CurrentChar) << 1;
+        }
+        /// <summary>
+        /// 16位十进制数值转字符串
+        /// </summary>
+        /// <param name="value">数值</param>
+        /// <param name="chars">字符串</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private unsafe static void toString16(ulong value, char* chars)
+        {
+            ulong value100000000 = value / 100000000;
+            toString8((uint)value100000000, chars);
+            toString8((uint)(value - value100000000 * 100000000), chars + 8);
         }
         /// <summary>
         /// 数值转字符串
@@ -629,56 +638,49 @@ namespace AutoCSer.Extension
         /// <param name="value">数值</param>
         /// <param name="chars">字符串</param>
         /// <returns>起始位置+字符串长度</returns>
-        internal unsafe static RangeLength ToString(ulong value, char* chars)
+        internal unsafe static int ToString(ulong value, char* chars)
         {
             if (value >= 10000000000000000L)
             {
-                ulong value100000000 = value / 100000000;
-                value -= value100000000 * 100000000;
-                uint value10000 = (uint)((value * Div10000Mul) >> Div10000Shift);
-                uIntToString(value10000, chars + 12);
-                uIntToString((uint)value - value10000 * 10000U, chars + 16);
-                value = value100000000 / 100000000;
-                value100000000 -= value * 100000000;
-                value10000 = (uint)((value100000000 * Div10000Mul) >> Div10000Shift);
-                uIntToString(value10000, chars + 4);
-                uIntToString((uint)value100000000 - value10000 * 10000U, chars + 8);
-                uint value32 = (uint)value;
+                ulong value10000000000000000 = value / 10000000000000000UL;
+                value -= value10000000000000000 * 10000000000000000UL;
+                uint value32 = (uint)value10000000000000000;
                 if (value32 >= 100)
                 {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
+                    uint value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
                     uint value100 = (value10000 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 2) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
                     if (value32 >= 1000)
                     {
+                        *(uint*)(chars + 2) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
                         value10000 = (value100 * Div10_16Mul) >> Div10_16Shift;
                         *(uint*)chars = ((value100 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                        return new RangeLength(0, 20);
+                        toString16(value, chars + 4);
+                        return 20;
                     }
-                    *(chars + 1) = (char)(value100 + '0');
-                    return new RangeLength(1, 19);
+                    *(uint*)(chars + 1) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
+                    *chars = (char)(value100 + '0');
+                    toString16(value, chars + 3);
+                    return 19;
                 }
                 if (value32 >= 10)
                 {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 2) = ((value32 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                    return new RangeLength(2, 18);
+                    uint value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
+                    *(uint*)chars = ((value32 - value10000 * 10) << 16) | value10000 | 0x300030U;
+                    toString16(value, chars + 2);
+                    return 18;
                 }
-                *(chars + 3) = (char)(value32 + '0');
-                return new RangeLength(3, 17);
+                *chars = (char)(value32 + '0');
+                toString16(value, chars + 1);
+                return 17;
             }
             if (value >= 100000000)
             {
                 ulong value100000000 = value / 100000000;
                 value -= value100000000 * 100000000;
-                uint value10000 = (uint)((value * Div10000Mul) >> Div10000Shift);
-                uIntToString(value10000, chars + 8);
-                uIntToString((uint)value - value10000 * 10000U, chars + 12);
                 uint value32 = (uint)value100000000;
                 if (value32 >= 10000)
                 {
-                    value10000 = (uint)((value100000000 * Div10000Mul) >> Div10000Shift);
-                    uIntToString(value32 - value10000 * 10000, chars + 4);
+                    uint value10000 = (uint)((value100000000 * Div10000Mul) >> Div10000Shift), value8 = value32 - value10000 * 10000;
                     if (value10000 >= 100)
                     {
                         value32 = (value10000 * Div10_16Mul) >> Div10_16Shift;
@@ -688,52 +690,64 @@ namespace AutoCSer.Extension
                             *(uint*)(chars + 2) = ((value10000 - value32 * 10) << 16) | (value32 - value100 * 10) | 0x300030U;
                             value32 = (value100 * Div10_16Mul) >> Div10_16Shift;
                             *(uint*)chars = ((value100 - value32 * 10) << 16) | value32 | 0x300030U;
-                            return new RangeLength(0, 16);
+                            toString4(value8, chars + 4);
+                            toString8((uint)value, chars + 8);
+                            return 16;
                         }
                         else
                         {
-                            chars[3] = (char)((value10000 - value32 * 10) + '0');
-                            *(uint*)(chars + 1) = ((value32 - value100 * 10) << 16) | value100 | 0x300030U;
-                            return new RangeLength(1, 15);
+                            chars[2] = (char)((value10000 - value32 * 10) + '0');
+                            *(uint*)chars = ((value32 - value100 * 10) << 16) | value100 | 0x300030U;
+                            toString4(value8, chars + 3);
+                            toString8((uint)value, chars + 7);
+                            return 15;
                         }
                     }
                     if (value10000 >= 10)
                     {
                         value32 = (value10000 * Div10_16Mul) >> Div10_16Shift;
-                        *(uint*)(chars + 2) = ((value10000 - value32 * 10) << 16) | value32 | 0x300030U;
-                        return new RangeLength(2, 14);
+                        *(uint*)chars = ((value10000 - value32 * 10) << 16) | value32 | 0x300030U;
+                        toString4(value8, chars + 2);
+                        toString8((uint)value, chars + 6);
+                        return 14;
                     }
-                    *(chars + 3) = (char)(value10000 + '0');
-                    return new RangeLength(3, 13);
+                    *chars = (char)(value10000 + '0');
+                    toString4(value8, chars + 1);
+                    toString8((uint)value, chars + 5);
+                    return 13;
                 }
                 if (value32 >= 100)
                 {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
+                    uint value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
                     uint value100 = (value10000 * Div10_16Mul) >> Div10_16Shift;
                     if (value32 >= 1000)
                     {
-                        *(uint*)(chars + 6) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
+                        *(uint*)(chars + 2) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
                         value10000 = (value100 * Div10_16Mul) >> Div10_16Shift;
-                        *(uint*)(chars + 4) = ((value100 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                        return new RangeLength(4, 12);
+                        *(uint*)chars = ((value100 - value10000 * 10) << 16) | value10000 | 0x300030U;
+                        toString8((uint)value, chars + 4);
+                        return 12;
                     }
                     else
                     {
-                        chars[7] = (char)((value32 - value10000 * 10) + '0');
-                        *(uint*)(chars + 5) = ((value10000 - value100 * 10) << 16) | value100 | 0x300030U;
-                        return new RangeLength(5, 11);
+                        chars[2] = (char)((value32 - value10000 * 10) + '0');
+                        *(uint*)chars = ((value10000 - value100 * 10) << 16) | value100 | 0x300030U;
+                        toString8((uint)value, chars + 3);
+                        return 11;
                     }
                 }
                 if (value32 >= 10)
                 {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 6) = ((value32 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                    return new RangeLength(6, 10);
+                    uint value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
+                    *(uint*)chars = ((value32 - value10000 * 10) << 16) | value10000 | 0x300030U;
+                    toString8((uint)value, chars + 2);
+                    return 10;
                 }
-                *(chars + 7) = (char)(value32 + '0');
-                return new RangeLength(7, 9);
+                *chars = (char)(value32 + '0');
+                toString8((uint)value, chars + 1);
+                return 9;
             }
-            return new RangeLength(0, toString99999999((uint)value, chars));
+            return toString99999999((uint)value, chars);
         }
         /// <summary>
         /// 数值转字符串
@@ -745,8 +759,7 @@ namespace AutoCSer.Extension
         public unsafe static string toString(this long value)
         {
             char* chars = stackalloc char[22 + 2];
-            RangeLength index = ToString(value, chars);
-            return new string(chars + index.Start, 0, index.Length);
+            return new string(chars, 0, ToString(value, chars));
         }
         /// <summary>
         /// 数值转字符串
@@ -768,9 +781,7 @@ namespace AutoCSer.Extension
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal unsafe static void UnsafeToString(long value, CharStream charStream)
         {
-            char* chars = charStream.CurrentChar;
-            RangeLength index = ToString(value, chars);
-            charStream.UnsafeSimpleWriteNotNull(chars + index.Start, index.Length);
+            charStream.ByteSize += ToString(value, charStream.CurrentChar) << 1;
         }
         /// <summary>
         /// 数值转字符串
@@ -778,111 +789,12 @@ namespace AutoCSer.Extension
         /// <param name="value">数值</param>
         /// <param name="chars">字符串</param>
         /// <returns>起始位置+字符串长度</returns>
-        internal unsafe static RangeLength ToString(long value, char* chars)
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal unsafe static int ToString(long value, char* chars)
         {
             if (value >= 0) return ToString((ulong)value, chars);
-            ulong value64 = (ulong)-value;
-            if (value64 >= 10000000000000000L)
-            {
-                ulong value100000000 = value64 / 100000000;
-                value64 -= value100000000 * 100000000;
-                uint value10000 = (uint)((value64 * Div10000Mul) >> Div10000Shift);
-                uIntToString(value10000, chars + 14);
-                uIntToString((uint)value64 - value10000 * 10000U, chars + 18);
-                value64 = value100000000 / 100000000;
-                value100000000 -= value64 * 100000000;
-                value10000 = (uint)((value100000000 * Div10000Mul) >> Div10000Shift);
-                uIntToString(value10000, chars + 6);
-                uIntToString((uint)value100000000 - value10000 * 10000U, chars + 10);
-                uint value32 = (uint)value64;
-                if (value32 >= 100)
-                {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                    uint value100 = (value10000 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 4) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
-                    if (value32 >= 1000)
-                    {
-                        value10000 = (value100 * Div10_16Mul) >> Div10_16Shift;
-                        *(uint*)(chars + 2) = ((value100 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                        *(chars + 1) = '-';
-                        return new RangeLength(1, 21);
-                    }
-                    *(uint*)(chars + 2) = '-' + ((value100 + '0') << 16);
-                    return new RangeLength(2, 20);
-                }
-                if (value32 >= 10)
-                {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 4) = ((value32 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                    *(chars + 3) = '-';
-                    return new RangeLength(3, 19);
-                }
-                *(uint*)(chars + 4) = '-' + ((value32 + '0') << 16);
-                return new RangeLength(4, 18);
-            }
-            if (value64 >= 100000000)
-            {
-                ulong value100000000 = value64 / 100000000;
-                value64 -= value100000000 * 100000000;
-                uint value10000 = (uint)((value64 * Div10000Mul) >> Div10000Shift);
-                uIntToString(value10000, chars + 10);
-                uIntToString((uint)value64 - value10000 * 10000U, chars + 14);
-                uint value32 = (uint)value100000000;
-                if (value32 >= 10000)
-                {
-                    value10000 = (uint)((value100000000 * Div10000Mul) >> Div10000Shift);
-                    uIntToString(value32 - value10000 * 10000, chars + 6);
-                    if (value10000 >= 100)
-                    {
-                        value32 = (value10000 * Div10_16Mul) >> Div10_16Shift;
-                        uint value100 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                        *(uint*)(chars + 4) = ((value10000 - value32 * 10) << 16) | (value32 - value100 * 10) | 0x300030U;
-                        if (value10000 >= 1000)
-                        {
-                            value32 = (value100 * Div10_16Mul) >> Div10_16Shift;
-                            *(uint*)(chars + 2) = ((value100 - value32 * 10) << 16) | value32 | 0x300030U;
-                            *(chars + 1) = '-';
-                            return new RangeLength(1, 17);
-                        }
-                        *(uint*)(chars + 2) = '-' + ((value100 + '0') << 16);
-                        return new RangeLength(2, 16);
-                    }
-                    if (value10000 >= 10)
-                    {
-                        value32 = (value10000 * Div10_16Mul) >> Div10_16Shift;
-                        *(uint*)(chars + 4) = ((value10000 - value32 * 10) << 16) | value32 | 0x300030U;
-                        *(chars + 3) = '-';
-                        return new RangeLength(3, 15);
-                    }
-                    *(uint*)(chars + 4) = '-' + ((value10000 + '0') << 16);
-                    return new RangeLength(4, 14);
-                }
-                if (value32 >= 100)
-                {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                    uint value100 = (value10000 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 8) = ((value32 - value10000 * 10) << 16) | (value10000 - value100 * 10) | 0x300030U;
-                    if (value32 >= 1000)
-                    {
-                        value10000 = (value100 * Div10_16Mul) >> Div10_16Shift;
-                        *(uint*)(chars + 6) = ((value100 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                        *(chars + 5) = '-';
-                        return new RangeLength(5, 13);
-                    }
-                    *(uint*)(chars + 6) = '-' + ((value100 + '0') << 16);
-                    return new RangeLength(6, 12);
-                }
-                if (value32 >= 10)
-                {
-                    value10000 = (value32 * Div10_16Mul) >> Div10_16Shift;
-                    *(uint*)(chars + 8) = ((value32 - value10000 * 10) << 16) | value10000 | 0x300030U;
-                    *(chars + 7) = '-';
-                    return new RangeLength(7, 11);
-                }
-                *(uint*)(chars + 8) = '-' + ((value32 + '0') << 16);
-                return new RangeLength(8, 10);
-            }
-            return new RangeLength(0, toString_99999999((uint)value64, chars));
+            *chars = '-';
+            return ToString((ulong)-value, chars + 1) + 1;
         }
 
         /// <summary>

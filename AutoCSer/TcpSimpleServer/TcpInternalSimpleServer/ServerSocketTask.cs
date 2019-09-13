@@ -12,15 +12,15 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <summary>
         /// TCP 内部服务端套接字任务处理
         /// </summary>
-        /// <param name="taskTicks">线程切换超时时钟周期</param>
-        private ServerSocketTask(long taskTicks) : base(taskTicks) { }
+        /// <param name="taskTimestamp">线程切换超时时钟周期</param>
+        private ServerSocketTask(long taskTimestamp) : base(taskTimestamp) { }
         /// <summary>
         /// 添加任务
         /// </summary>
         /// <param name="value"></param>
         internal void Add(ServerSocket value)
         {
-            value.TaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
+            value.TaskTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             ServerSocket headValue;
             do
             {
@@ -49,7 +49,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         {
             do
             {
-                currentTaskTicks = taskTicks;
+                currentTaskTimestamp = taskTimestamp;
                 waitHandle.Wait();
                 ServerSocket value = Interlocked.Exchange(ref head, null);
                 do
@@ -58,8 +58,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                     {
                         do
                         {
-                            currentTaskTicks = value.TaskTicks;
-                            value = value.RunTask();
+                            value = value.RunTask(ref currentTaskTimestamp);
                         }
                         while (value != null);
                         break;
@@ -88,7 +87,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         private static void check()
         {
-            if (TcpInternalServer.ServerSocketTaskConfig.Default.IsCheck(Task.currentTaskTicks))
+            if (TcpInternalServer.ServerSocketTaskConfig.Default.IsCheck(Task.currentTaskTimestamp))
             {
                 if (isAllTask)
                 {
@@ -99,7 +98,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 {
                     try
                     {
-                        Task = new ServerSocketTask(TcpInternalServer.ServerSocketTaskConfig.Default.TaskTicks);
+                        Task = new ServerSocketTask(TcpInternalServer.ServerSocketTaskConfig.Default.TaskTimestamp);
                         tasks[++taskIndex] = Task;
                         if (taskIndex + 1 == tasks.Length) isAllTask = true;
                     }
@@ -118,7 +117,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             else
             {
                 tasks = new ServerSocketTask[config.ThreadCount];
-                tasks[0] = Task = new ServerSocketTask(config.TaskTicks);
+                tasks[0] = Task = new ServerSocketTask(config.TaskTimestamp);
                 config.OnCheck(check);
             }
         }

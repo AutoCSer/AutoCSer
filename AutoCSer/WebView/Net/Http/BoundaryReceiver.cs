@@ -91,7 +91,7 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        public long LinkTaskTicks { get; set; }
+        public long LinkTaskTimestamp { get; set; }
         /// <summary>
         /// 下一个任务节点
         /// </summary>

@@ -10980,7 +10980,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     AutoCSer.Net.TcpInternalServer.ServerAttribute _value1_ = ServiceAttribute;
                     if (_value1_ != null)
                     {
-                    if (_value1_.IsRememberCommand)
+                    if (_value1_.GetIsRememberCommand)
                     {
                         _if_ = true;
                     }
@@ -17884,7 +17884,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
                     if (_value1_ != null)
                     {
-                    if (_value1_.IsRememberCommand)
+                    if (_value1_.GetIsRememberCommand)
                     {
                         _if_ = true;
                     }
@@ -22000,7 +22000,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     AutoCSer.Net.TcpInternalStreamServer.ServerAttribute _value1_ = ServiceAttribute;
                     if (_value1_ != null)
                     {
-                    if (_value1_.IsRememberCommand)
+                    if (_value1_.GetIsRememberCommand)
                     {
                         _if_ = true;
                     }
@@ -28570,6 +28570,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenServer.ServerAttribute _value1_ = ServiceAttribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.GetIsRememberCommand)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
             _code_.Add(@"
             /// <summary>
             /// 命令序号记忆数据
@@ -28628,6 +28641,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 return names;
             }");
+            }
             }
             _code_.Add(@"
             /// <summary>
@@ -35448,6 +35462,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.GetIsRememberCommand)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
             _code_.Add(@"
             /// <summary>
             /// 命令序号记忆数据
@@ -35506,6 +35533,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 return names;
             }");
+            }
             }
             _code_.Add(@"
             /// <summary>
@@ -39539,6 +39567,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                {
+                    AutoCSer.Net.TcpOpenStreamServer.ServerAttribute _value1_ = ServiceAttribute;
+                    if (_value1_ != null)
+                    {
+                    if (_value1_.GetIsRememberCommand)
+                    {
+                        _if_ = true;
+                    }
+                }
+                }
+            if (_if_)
+            {
             _code_.Add(@"
             /// <summary>
             /// 命令序号记忆数据
@@ -39597,6 +39638,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 return names;
             }");
+            }
             }
             _code_.Add(@"
             /// <summary>

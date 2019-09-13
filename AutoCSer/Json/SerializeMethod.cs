@@ -23,9 +23,10 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(bool value)
+        public void CallSerialize(bool value)
         {
-            CharStream.WriteJsonBool(value);
+            if (Config.IsBoolToInt) CharStream.Write(value ? '1' : '0');
+            else CharStream.WriteJsonBool(value);
         }
         /// <summary>
         /// 逻辑值转换
@@ -34,9 +35,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(bool? value)
+        public void CallSerialize(bool? value)
         {
-            if (value.HasValue) Serialize((bool)value);
+            if (value.HasValue) CallSerialize((bool)value);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -46,9 +47,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(byte value)
+        public void CallSerialize(byte value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex);
+            CharStream.WriteJson(value, Config.IsIntegerToHex);
         }
         /// <summary>
         /// 数字转换
@@ -57,9 +58,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(byte? value)
+        public void CallSerialize(byte? value)
         {
-            if (value.HasValue) CharStream.WriteJson((byte)value, Config.IsNumberToHex);
+            if (value.HasValue) CharStream.WriteJson((byte)value, Config.IsIntegerToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -69,9 +70,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(sbyte value)
+        public void CallSerialize(sbyte value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex);
+            CharStream.WriteJson(value, Config.IsIntegerToHex);
         }
         /// <summary>
         /// 数字转换
@@ -80,9 +81,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(sbyte? value)
+        public void CallSerialize(sbyte? value)
         {
-            if (value.HasValue) CharStream.WriteJson((sbyte)value, Config.IsNumberToHex);
+            if (value.HasValue) CharStream.WriteJson((sbyte)value, Config.IsIntegerToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -92,9 +93,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(short value)
+        public void CallSerialize(short value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex);
+            CharStream.WriteJson(value, Config.IsIntegerToHex);
         }
         /// <summary>
         /// 数字转换
@@ -103,9 +104,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(short? value)
+        public void CallSerialize(short? value)
         {
-            if (value.HasValue) CharStream.WriteJson((short)value, Config.IsNumberToHex);
+            if (value.HasValue) CharStream.WriteJson((short)value, Config.IsIntegerToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -115,9 +116,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ushort value)
+        public void CallSerialize(ushort value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex);
+            CharStream.WriteJson(value, Config.IsIntegerToHex);
         }
         /// <summary>
         /// 数字转换
@@ -126,9 +127,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ushort? value)
+        public void CallSerialize(ushort? value)
         {
-            if (value.HasValue) CharStream.WriteJson((ushort)value, Config.IsNumberToHex);
+            if (value.HasValue) CharStream.WriteJson((ushort)value, Config.IsIntegerToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -138,9 +139,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(int value)
+        public void CallSerialize(int value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex);
+            CharStream.WriteJson(value, Config.IsIntegerToHex);
         }
         /// <summary>
         /// 数字转换
@@ -149,9 +150,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(int? value)
+        public void CallSerialize(int? value)
         {
-            if (value.HasValue) CharStream.WriteJson((int)value, Config.IsNumberToHex);
+            if (value.HasValue) CharStream.WriteJson((int)value, Config.IsIntegerToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -161,9 +162,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(uint value)
+        public void CallSerialize(uint value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex);
+            CharStream.WriteJson(value, Config.IsIntegerToHex);
         }
         /// <summary>
         /// 数字转换
@@ -172,9 +173,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(uint? value)
+        public void CallSerialize(uint? value)
         {
-            if (value.HasValue) CharStream.WriteJson((uint)value, Config.IsNumberToHex);
+            if (value.HasValue) CharStream.WriteJson((uint)value, Config.IsIntegerToHex);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -184,9 +185,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(long value)
+        public void CallSerialize(long value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex, Config.IsMaxNumberToString);
+            CharStream.WriteJson(value, Config.IsIntegerToHex, Config.IsMaxNumberToString);
         }
         /// <summary>
         /// 数字转换
@@ -195,9 +196,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(long? value)
+        public void CallSerialize(long? value)
         {
-            if (value.HasValue) CharStream.WriteJson((long)value, Config.IsNumberToHex, Config.IsMaxNumberToString);
+            if (value.HasValue) CharStream.WriteJson((long)value, Config.IsIntegerToHex, Config.IsMaxNumberToString);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -207,9 +208,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ulong value)
+        public void CallSerialize(ulong value)
         {
-            CharStream.WriteJson(value, Config.IsNumberToHex, Config.IsMaxNumberToString);
+            CharStream.WriteJson(value, Config.IsIntegerToHex, Config.IsMaxNumberToString);
         }
         /// <summary>
         /// 数字转换
@@ -218,9 +219,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(ulong? value)
+        public void CallSerialize(ulong? value)
         {
-            if (value.HasValue) CharStream.WriteJson((ulong)value, Config.IsNumberToHex, Config.IsMaxNumberToString);
+            if (value.HasValue) CharStream.WriteJson((ulong)value, Config.IsIntegerToHex, Config.IsMaxNumberToString);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -230,7 +231,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(float value)
+        public void CallSerialize(float value)
         {
             if (Config.IsInfinityToNaN) CharStream.WriteJson(value);
             else CharStream.WriteJsonInfinity(value);
@@ -242,9 +243,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(float? value)
+        public void CallSerialize(float? value)
         {
-            if (value.HasValue) Serialize(value.Value);
+            if (value.HasValue) CallSerialize(value.Value);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -254,7 +255,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(double value)
+        public void CallSerialize(double value)
         {
             if (Config.IsInfinityToNaN) CharStream.WriteJson(value);
             else CharStream.WriteJsonInfinity(value);
@@ -266,9 +267,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(double? value)
+        public void CallSerialize(double? value)
         {
-            if (value.HasValue) Serialize(value.Value);
+            if (value.HasValue) CallSerialize(value.Value);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -278,7 +279,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(decimal value)
+        public void CallSerialize(decimal value)
         {
             CharStream.SimpleWriteNotNull(value.ToString());
         }
@@ -289,7 +290,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(decimal? value)
+        public void CallSerialize(decimal? value)
         {
             if (value.HasValue) CharStream.SimpleWriteNotNull(((decimal)value).ToString());
             else CharStream.WriteJsonNull();
@@ -301,7 +302,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(char value)
+        public void CallSerialize(char value)
         {
             CharStream.WriteJson(value, Config.NullChar);
         }
@@ -312,9 +313,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(char? value)
+        public void CallSerialize(char? value)
         {
-            if (value.HasValue) Serialize((char)value);
+            if (value.HasValue) CallSerialize((char)value);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -323,19 +324,24 @@ namespace AutoCSer.Json
         /// <param name="value">时间</param>
         [SerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(DateTime value)
+        public void CallSerialize(DateTime value)
         {
             if (value == DateTime.MinValue && Config.IsDateTimeMinNull)
             {
                 CharStream.WriteJsonNull();
                 return;
             }
-            if (Config.IsDateTimeToString)
+            switch (Config.DateTimeType)
             {
-                if (Config.IsDateTimeOther) CharStream.WriteJsonOther(value);
-                else CharStream.WriteJsonString(value);
+                case DateTimeType.Default: CharStream.WriteJsonSqlString(value); return;
+                case DateTimeType.ISO: CharStream.WriteJsonString(value); return;
+                case DateTimeType.Javascript: CharStream.WriteJson(value, Config.IsIntegerToHex); return;
+                case DateTimeType.ThirdParty: CharStream.WriteJsonOther(value); return;
+                case DateTimeType.CustomFormat:
+                    if (Config.DateTimeCustomFormat == null) CallSerialize(value.ToString());
+                    else CallSerialize(value.ToString(Config.DateTimeCustomFormat));
+                    return;
             }
-            else CharStream.WriteJson(value, Config.IsNumberToHex);
         }
         /// <summary>
         /// 时间转换
@@ -344,9 +350,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(DateTime? value)
+        public void CallSerialize(DateTime? value)
         {
-            if (value.HasValue) Serialize((DateTime)value);
+            if (value.HasValue) CallSerialize((DateTime)value);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -356,7 +362,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(System.Guid value)
+        public void CallSerialize(System.Guid value)
         {
             CharStream.WriteJson(ref value);
         }
@@ -367,9 +373,9 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(System.Guid? value)
+        public void CallSerialize(System.Guid? value)
         {
-            if (value.HasValue) Serialize((System.Guid)value);
+            if (value.HasValue) CallSerialize((System.Guid)value);
             else CharStream.WriteJsonNull();
         }
         /// <summary>
@@ -379,7 +385,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(string value)
+        public void CallSerialize(string value)
         {
             if (value == null) CharStream.WriteJsonNull();
             else
@@ -394,7 +400,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(SubString value)
+        public void CallSerialize(SubString value)
         {
             if (value.String == null) CharStream.WriteJsonNull();
             else
@@ -408,10 +414,10 @@ namespace AutoCSer.Json
         /// <param name="value">字符串</param>
         [SerializeMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(object value)
+        public void CallSerialize(object value)
         {
             if (value == null) CharStream.WriteJsonNull();
-            else if (value.GetType() == typeof(Node)) Serialize((Node)value);
+            else if (value.GetType() == typeof(Node)) CallSerialize((Node)value);
             else if (Config.IsObject)
             {
                 Type type = value.GetType();
@@ -428,10 +434,14 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Type type)
+        public void CallSerialize(Type type)
         {
             if (type == null) CharStream.WriteJsonNull();
-            else TypeSerializer<RemoteType>.Serialize(this, new RemoteType(type));
+            else
+            {
+                RemoteType remoteType = new RemoteType(type);
+                TypeSerializer<RemoteType>.Serialize(this, ref remoteType);
+            }
         }
         /// <summary>
         /// 字符串转换
@@ -440,7 +450,7 @@ namespace AutoCSer.Json
         [SerializeMethod]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Serialize(Node value)
+        public void CallSerialize(Node value)
         {
             serialize(ref value);
         }
@@ -506,10 +516,10 @@ namespace AutoCSer.Json
                     }
                     return;
                 case NodeType.Bool:
-                    Serialize((int)value.Int64 != 0);
+                    CallSerialize((int)value.Int64 != 0);
                     return;
                 case NodeType.DateTimeTick:
-                    Serialize(new DateTime(value.Int64, DateTimeKind.Local));
+                    CallSerialize(new DateTime(value.Int64, DateTimeKind.Local));
                     return;
                 case NodeType.NaN:
                     CharStream.WriteJsonNaN();

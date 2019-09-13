@@ -11,6 +11,10 @@ namespace AutoCSer.Deploy
     internal sealed class Task
     {
         /// <summary>
+        /// TCP 内部服务套接字数据发送
+        /// </summary>
+        internal AutoCSer.Net.TcpInternalServer.ServerSocketSender Sender;
+        /// <summary>
         /// 服务器端目录
         /// </summary>
         internal DirectoryInfo ServerDirectory;
@@ -70,7 +74,7 @@ namespace AutoCSer.Deploy
                     break;
                 case TaskType.AssemblyFile: assemblyFile(timer); break;
                 case TaskType.WaitRunSwitch: wait(timer); break;
-                case TaskType.Custom: return timer.Server.CustomTask.Call(timer.Server, this);
+                case TaskType.Custom: return timer.Server.CustomTask.Call(timer.Server, Sender, this);
                 default: return DeployState.UnknownTaskType;
             }
             return DeployState.Success;

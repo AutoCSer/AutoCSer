@@ -2,6 +2,7 @@
 using AutoCSer.Extension;
 using AutoCSer.Metadata;
 using System.Reflection;
+using AutoCSer.Emit;
 #if !NOJIT
 using/**/System.Reflection.Emit;
 #endif
@@ -57,7 +58,7 @@ namespace AutoCSer.Xml
         /// <param name="attribute">XML序列化成员配置</param>
         private void nameStart(string name, MemberAttribute attribute)
         {
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameStartPool(name), name.Length + 2);
+            WriteName(generator, OpCodes.Ldloc_0, name, false);
 
             if (attribute != null && attribute.ItemName != null)
             {
@@ -82,7 +83,7 @@ namespace AutoCSer.Xml
                 else generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldfld, field.Member);
                 generator.call(isOutputMethod);
-                generator.Emit(OpCodes.Brfalse_S, end = generator.DefineLabel());
+                generator.Emit(OpCodes.Brfalse, end = generator.DefineLabel());
             }
 
             string name = field.AnonymousName;
@@ -105,7 +106,7 @@ namespace AutoCSer.Xml
             }
             generator.call(method);
 
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameEndPool(name), name.Length + 3);
+            WriteName(generator, OpCodes.Ldloc_0, name, true);
 
             if (isOutputMethod != null) generator.MarkLabel(end);
         }
@@ -126,7 +127,7 @@ namespace AutoCSer.Xml
                 else generator.Emit(OpCodes.Ldarg_1);
                 generator.call(propertyMethod);
                 generator.call(isOutputMethod);
-                generator.Emit(OpCodes.Brfalse_S, end = generator.DefineLabel());
+                generator.Emit(OpCodes.Brfalse, end = generator.DefineLabel());
             }
 
             nameStart(property.Member.Name, attribute);
@@ -151,7 +152,7 @@ namespace AutoCSer.Xml
             }
             generator.call(method);
 
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameEndPool(property.Member.Name), property.Member.Name.Length + 3);
+            WriteName(generator, OpCodes.Ldloc_0, property.Member.Name, true);
 
             if (isOutputMethod != null) generator.MarkLabel(end);
         }
@@ -170,7 +171,7 @@ namespace AutoCSer.Xml
                 else generator.Emit(OpCodes.Ldarg_1);
                 generator.Emit(OpCodes.Ldfld, field.Member);
                 generator.call(isOutputMethod);
-                generator.Emit(OpCodes.Brfalse_S, end = generator.DefineLabel());
+                generator.Emit(OpCodes.Brfalse, end = generator.DefineLabel());
             }
             bool isCustom = false;
             MethodInfo method = SerializeMethodCache.GetMemberMethodInfo(field.Member.FieldType, ref isCustom);
@@ -208,7 +209,7 @@ namespace AutoCSer.Xml
                 else generator.Emit(OpCodes.Ldarg_1);
                 generator.call(propertyMethod);
                 generator.call(isOutputMethod);
-                generator.Emit(OpCodes.Brfalse_S, end = generator.DefineLabel());
+                generator.Emit(OpCodes.Brfalse, end = generator.DefineLabel());
             }
 
             bool isCustom = false;
@@ -242,6 +243,23 @@ namespace AutoCSer.Xml
         {
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(delegateType));
+        }
+
+        /// <summary>
+        /// 写入名称
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="name"></param>
+        /// <param name="isEnd"></param>
+        internal static void WriteName(ILGenerator generator, OpCode target, string name, bool isEnd)
+        {
+            StringWriter stringWriter = new StringWriter(generator, target, (name.Length << 1) + (isEnd ? 6 : 4));
+            stringWriter.Write('<');
+            if (isEnd) stringWriter.Write('/');
+            stringWriter.Write(name);
+            stringWriter.Write('>');
+            stringWriter.WriteEnd();
         }
     }
 }

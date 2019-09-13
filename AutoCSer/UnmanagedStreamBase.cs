@@ -106,6 +106,7 @@ namespace AutoCSer
         /// </summary>
         /// <param name="length">增加长度</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
         protected void prepSize(int length)
         {
             if ((LastPrepSize = length + ByteSize) > Data.ByteSize) setStreamLength(Math.Max(LastPrepSize, Data.ByteSize << 1));
@@ -251,9 +252,91 @@ namespace AutoCSer
         }
 
         /// <summary>
-        /// 内存数据流转换
+        /// 写入 64 字节数据
         /// </summary>
-        /// <param name="stream">内存数据流</param>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="value3"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void UnsafeWrite(ulong value0, ulong value1, ulong value2, ulong value3)
+        {
+            byte* data = Data.Byte + ByteSize;
+            *(ulong*)data = value0;
+            *(ulong*)(data + sizeof(ulong)) = value1;
+            *(ulong*)(data + sizeof(ulong) * 2) = value2;
+            *(ulong*)(data + sizeof(ulong) * 3) = value3;
+            ByteSize += sizeof(ulong) * 4;
+        }
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="value3"></param>
+        /// <param name="size"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void UnsafeWrite(ulong value0, ulong value1, ulong value2, ulong value3, int size)
+        {
+            byte* data = Data.Byte + ByteSize;
+            *(ulong*)data = value0;
+            *(ulong*)(data + sizeof(ulong)) = value1;
+            *(ulong*)(data + sizeof(ulong) * 2) = value2;
+            *(ulong*)(data + sizeof(ulong) * 3) = value3;
+            ByteSize += size;
+        }
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="size"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void UnsafeWrite(ulong value0, ulong value1, ulong value2, int size)
+        {
+            byte* data = Data.Byte + ByteSize;
+            *(ulong*)data = value0;
+            *(ulong*)(data + sizeof(ulong)) = value1;
+            *(ulong*)(data + sizeof(ulong) * 2) = value2;
+            ByteSize += size;
+        }
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="size"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void UnsafeWrite(ulong value0, ulong value1, int size)
+        {
+            byte* data = Data.Byte + ByteSize;
+            *(ulong*)data = value0;
+            *(ulong*)(data + sizeof(ulong)) = value1;
+            ByteSize += size;
+        }
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="size"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        internal unsafe void UnsafeWrite(ulong value, int size)
+        {
+            *(ulong*)(Data.Byte + ByteSize) = value;
+            ByteSize += size;
+        }
+        
+        /// <summary>
+                 /// 内存数据流转换
+                 /// </summary>
+                 /// <param name="stream">内存数据流</param>
         internal virtual void From(UnmanagedStreamBase stream)
         {
             IsUnmanaged = stream.IsUnmanaged;

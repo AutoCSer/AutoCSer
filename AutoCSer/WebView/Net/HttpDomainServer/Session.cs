@@ -481,7 +481,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <returns>Session是否被更新</returns>
         public unsafe bool Set(ref SessionId sessionId, valueType value)
         {
-            if (sessionId.Ticks != (ulong)Pub.StartTime.Ticks || valuePool[(byte)sessionId.Low].Set(ref sessionId, value) == 0)
+            if (sessionId.Ticks != (ulong)AutoCSer.Date.StartTime.Ticks || valuePool[(byte)sessionId.Low].Set(ref sessionId, value) == 0)
             {
                 sessionId.NewNoIndex();
                 return valuePool[(byte)sessionId.Low].New(ref sessionId, value);
@@ -572,7 +572,7 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool TryGet(ref SessionId sessionId, out valueType value)
         {
-            if (sessionId.Ticks == (ulong)Pub.StartTime.Ticks) return valuePool[(byte)sessionId.Low].TryGet(ref sessionId, out value);
+            if (sessionId.Ticks == (ulong)AutoCSer.Date.StartTime.Ticks) return valuePool[(byte)sessionId.Low].TryGet(ref sessionId, out value);
             value = default(valueType);
             return false;
         }
@@ -593,7 +593,7 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Remove(ref SessionId sessionId)
         {
-            if (sessionId.Ticks == (ulong)Pub.StartTime.Ticks) valuePool[(byte)sessionId.Low].Remove(ref sessionId);
+            if (sessionId.Ticks == (ulong)AutoCSer.Date.StartTime.Ticks) valuePool[(byte)sessionId.Low].Remove(ref sessionId);
         }
     }
 }

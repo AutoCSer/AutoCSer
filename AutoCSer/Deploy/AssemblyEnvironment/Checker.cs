@@ -34,7 +34,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         public CheckResult Check(CheckTask task)
         {
             int taskId = CheckServer.Check(task);
-            checkFile.StartProcessDirectory(AutoCSer.Pub.StartTime.Ticks.toString() + " " + taskId.toString());
+            checkFile.StartProcessDirectory(AutoCSer.Date.StartTime.Ticks.toString() + " " + taskId.toString());
             task.WaitHandle.Wait();
             return task.Result;
         }

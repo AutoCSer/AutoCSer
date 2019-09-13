@@ -23,16 +23,20 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// 远程控制明文密码
         /// </summary>
-        public const ulong RemoteControlClearPassword = 0UL;
+        public const ulong RemoteControlClearPassword = 1UL;
         /// <summary>
         /// 远程控制密码
         /// </summary>
-        public const ulong RemoteControlPassword = 0UL;
+        public const ulong RemoteControlPassword = 1UL;
+        /// <summary>
+        /// nuget key
+        /// </summary>
+        public const string NugetKey = "XXX";
         #endregion
         /// <summary>
         /// 服务器监听 IP 地址
         /// </summary>
-        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "172.19.51.248";
+        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "XXX";
         /// <summary>
         /// AutoCSer 根目录
         /// </summary>
@@ -40,11 +44,24 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// TCP 注册服务名称
         /// </summary>
-        public const string TcpRegister = "TcpRegister";
+        public const string TcpRegister = "XXX";
         /// <summary>
         /// TCP 注册服务名称
         /// </summary>
-        public const string TcpRegisterReader = TcpRegister + "Reader";
+        public const string TcpRegisterReader = TcpRegister + "XXX";
+
+        /// <summary>
+        /// VS 2017 devenv.exe
+        /// </summary>
+        public static readonly FileInfo VS2017IdeFile = new FileInfo(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe");
+        /// <summary>
+        /// dotnet.exe
+        /// </summary>
+        public static readonly FileInfo DotnetExeFile = new FileInfo(@"C:\Program Files\dotnet\dotnet.exe");
+        /// <summary>
+        /// nuget.exe
+        /// </summary>
+        public static readonly FileInfo NugetFile = new FileInfo(@"C:\AutoCSer\Nuget\nuget.exe");
 
         /// <summary>
         /// 获取默认 TCP 内部服务配置

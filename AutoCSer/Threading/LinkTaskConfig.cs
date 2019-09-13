@@ -17,7 +17,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 线程切换超时时钟周期
         /// </summary>
-        internal long TaskTicks;
+        internal long TaskTimestamp;
         /// <summary>
         /// 是否正在检测线程切换
         /// </summary>
@@ -38,7 +38,7 @@ namespace AutoCSer.Threading
             {
                 onCheck += nullCheck;
                 int milliseconds = Math.Max(newThreadMilliseconds, 1);
-                TaskTicks = milliseconds * TimeSpan.TicksPerMillisecond;
+                TaskTimestamp = Date.GetTimestampByMilliseconds(milliseconds);
                 timer = new Timer(check, null, milliseconds, milliseconds);
             }
         }
@@ -66,11 +66,11 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 判断是否切换线程
         /// </summary>
-        /// <param name="currentTaskTicks"></param>
+        /// <param name="currentTaskTimestamp"></param>
         /// <returns></returns>
-        internal bool IsCheck(long currentTaskTicks)
+        internal bool IsCheck(long currentTaskTimestamp)
         {
-            return currentTaskTicks + TaskTicks <= AutoCSer.Pub.Stopwatch.ElapsedTicks;
+            return currentTaskTimestamp + TaskTimestamp <= Stopwatch.GetTimestamp();
         }
         /// <summary>
         /// 线程切换检测

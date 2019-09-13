@@ -2,6 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace AutoCSer
 {
@@ -10,6 +11,15 @@ namespace AutoCSer
     /// </summary>
     public unsafe static partial class Date
     {
+        /// <summary>
+        /// 初始化时间 Utc
+        /// </summary>
+        public static readonly DateTime StartTime;
+        /// <summary>
+        /// 初始化时钟周期
+        /// </summary>
+        private static readonly long startTimestamp;
+
         ///// <summary>
         ///// 每毫秒计时周期数
         ///// </summary>
@@ -30,6 +40,14 @@ namespace AutoCSer
         /// 本地时钟周期
         /// </summary>
         public static readonly long LocalTimeTicks;
+        /// <summary>
+        /// 时区小时字符串 +HH:
+        /// </summary>
+        internal static readonly long ZoneHourString;
+        /// <summary>
+        /// 时区f分钟字符串 mm"
+        /// </summary>
+        internal static readonly long ZoneMinuteString;
         /// <summary>
         /// 精确到秒的时间
         /// </summary>
@@ -384,6 +402,18 @@ namespace AutoCSer
             charStream.ByteSize += 19 * sizeof(char);
         }
         /// <summary>
+        /// 时间转换成字符串 yyyy-MM-ddTHH:mm:ss
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="timeFixed"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void ToString(this DateTime time, char* timeFixed)
+        {
+            toString(time, timeFixed, '-');
+            *(timeFixed + 10) = 'T';
+            toString((int)((time.Ticks % TimeSpan.TicksPerDay) / (1000 * 10000)), timeFixed + 11);
+        }
+        /// <summary>
         /// 时间转换
         /// </summary>
         /// <param name="date"></param>
@@ -396,8 +426,37 @@ namespace AutoCSer
 
         static Date()
         {
-            DateTime now = DateTime.Now;
-            LocalTimeTicks = now.Ticks - now.ToUniversalTime().Ticks;
+            if (Stopwatch.IsHighResolution)
+            {
+                StartTime = DateTime.UtcNow;
+                startTimestamp = Stopwatch.GetTimestamp();
+            }
+            else
+            {
+                StartTime = DateTime.UtcNow;
+                startTimestamp = StartTime.Ticks;
+            }
+            //LocalTimeTicks = StartTime.ToLocalTime().Ticks - StartTime.Ticks;
+            LocalTimeTicks = TimeZoneInfo.Local.BaseUtcOffset.Ticks;
+
+            long zoneChar0, localTimeTicks;
+            if (LocalTimeTicks >= 0)
+            {
+                zoneChar0 = '+' + ((long)':' << 48);
+                localTimeTicks = LocalTimeTicks;
+            }
+            else
+            {
+                zoneChar0 = '-' + ((long)':' << 48);
+                localTimeTicks = -LocalTimeTicks;
+            }
+            long minute = (int)(LocalTimeTicks / TimeSpan.TicksPerMinute);
+            int hour = (int)(((ulong)minute * Div60_32Mul) >> Div60_32Shift), high = (hour * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            ZoneHourString = zoneChar0 + ((high + '0') << 16) + ((long)((hour - high * 10) + '0') << 32);
+            minute -= hour * 60;
+            high = ((int)minute * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            ZoneMinuteString = (high + '0') + ((((int)minute - high * 10) + '0') << 16) + ((long)'"' << 32);
+
 #if !Serialize
             weekData = new Pointer { Data = Unmanaged.GetStatic64(8 * sizeof(int) + 12 * sizeof(int), false) };
             monthData = new Pointer { Data = weekData.Byte + 8 * sizeof(int) };

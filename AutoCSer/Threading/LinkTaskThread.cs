@@ -26,19 +26,19 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 当前处理任务时钟周期
         /// </summary>
-        protected long currentTaskTicks;
+        protected long currentTaskTimestamp;
         /// <summary>
         /// 线程切换超时时钟周期
         /// </summary>
-        protected long taskTicks;
+        protected long taskTimestamp;
         /// <summary>
         /// TCP 服务器端同步调用任务处理
         /// </summary>
-        /// <param name="taskTicks">线程切换超时时钟周期</param>
-        internal LinkTaskThread(long taskTicks)
+        /// <param name="taskTimestamp">线程切换超时时钟周期</param>
+        internal LinkTaskThread(long taskTimestamp)
         {
             //maxTaskCount = taskCount;
-            this.taskTicks = currentTaskTicks = long.MaxValue - taskTicks;
+            this.taskTimestamp = currentTaskTimestamp = long.MaxValue - taskTimestamp;
             waitHandle.Set(0);
             threadHandle = new System.Threading.Thread(run, AutoCSer.Threading.ThreadPool.TinyStackSize);
             threadHandle.IsBackground = true;

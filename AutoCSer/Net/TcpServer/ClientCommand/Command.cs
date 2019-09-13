@@ -28,14 +28,14 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        internal long TaskTicks;
+        internal long TaskTimestamp;
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        long AutoCSer.Threading.ILinkTask.LinkTaskTicks
+        long AutoCSer.Threading.ILinkTask.LinkTaskTimestamp
         {
-            get { return TaskTicks; }
-            set { TaskTicks = value; }
+            get { return TaskTimestamp; }
+            set { TaskTimestamp = value; }
         }
         /// <summary>
         /// 下一个任务

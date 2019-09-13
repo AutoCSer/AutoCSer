@@ -14,7 +14,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 线程切换检测时间
         /// </summary>
-        long LinkTaskTicks { get; set; }
+        long LinkTaskTimestamp { get; set; }
         /// <summary>
         /// 下一个任务节点
         /// </summary>
@@ -47,7 +47,7 @@ namespace AutoCSer.Threading
         /// <param name="value"></param>
         internal void Add(ILinkTask value)
         {
-            value.LinkTaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
+            value.LinkTaskTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             ILinkTask headValue;
             do
             {
@@ -81,7 +81,7 @@ namespace AutoCSer.Threading
         private int addNullHead(ILinkTask value)
         {
             if (head != null) System.Threading.Thread.Sleep(0);
-            value.LinkTaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
+            value.LinkTaskTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             ILinkTask headValue;
             do
             {
@@ -167,7 +167,7 @@ namespace AutoCSer.Threading
         private static void check()
         {
             ILinkTask value = Task.head;
-            if (value != null && LinkTaskConfig.Default.IsCheck(value.LinkTaskTicks))
+            if (value != null && LinkTaskConfig.Default.IsCheck(value.LinkTaskTimestamp))
             {
                 if (isAllTask)
                 {

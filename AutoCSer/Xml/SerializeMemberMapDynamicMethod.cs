@@ -51,7 +51,7 @@ namespace AutoCSer.Xml
         {
             Label end = generator.DefineLabel();
             generator.memberMapIsMember(OpCodes.Ldarg_0, field.MemberIndex);
-            generator.Emit(OpCodes.Brfalse_S, end);
+            generator.Emit(OpCodes.Brfalse, end);
 
             MethodInfo isOutputMethod = SerializeMethodCache.GetIsOutputMethod(field.Member.FieldType);
             if (isOutputMethod != null)
@@ -61,10 +61,10 @@ namespace AutoCSer.Xml
                 else generator.Emit(OpCodes.Ldarg_2);
                 generator.Emit(OpCodes.Ldfld, field.Member);
                 generator.call(isOutputMethod);
-                generator.Emit(OpCodes.Brfalse_S, end);
+                generator.Emit(OpCodes.Brfalse, end);
             }
             string name = field.AnonymousName;
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameStartPool(name), name.Length + 2);
+            SerializeMemberDynamicMethod.WriteName(generator, OpCodes.Ldloc_0, name, false);
 
             if (attribute != null && attribute.ItemName != null)
             {
@@ -90,7 +90,7 @@ namespace AutoCSer.Xml
             }
             generator.call(method);
 
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameEndPool(name), name.Length + 3);
+            SerializeMemberDynamicMethod.WriteName(generator, OpCodes.Ldloc_0, name, true);
 
             generator.MarkLabel(end);
         }
@@ -104,7 +104,7 @@ namespace AutoCSer.Xml
         {
             Label end = generator.DefineLabel();
             generator.memberMapIsMember(OpCodes.Ldarg_0, property.MemberIndex);
-            generator.Emit(OpCodes.Brfalse_S, end);
+            generator.Emit(OpCodes.Brfalse, end);
 
             MethodInfo isOutputMethod = SerializeMethodCache.GetIsOutputMethod(property.Member.PropertyType);
             if (isOutputMethod != null)
@@ -114,9 +114,9 @@ namespace AutoCSer.Xml
                 else generator.Emit(OpCodes.Ldarg_2);
                 generator.call(propertyMethod);
                 generator.call(isOutputMethod);
-                generator.Emit(OpCodes.Brfalse_S, end);
+                generator.Emit(OpCodes.Brfalse, end);
             }
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameStartPool(property.Member.Name), property.Member.Name.Length + 2);
+            SerializeMemberDynamicMethod.WriteName(generator, OpCodes.Ldloc_0, property.Member.Name, false);
 
             if (attribute != null && attribute.ItemName != null)
             {
@@ -145,7 +145,7 @@ namespace AutoCSer.Xml
             }
             generator.call(method);
 
-            generator.charStreamSimpleWriteNotNull(OpCodes.Ldloc_0, SerializeMethodCache.GetNameEndPool(property.Member.Name), property.Member.Name.Length + 3);
+            SerializeMemberDynamicMethod.WriteName(generator, OpCodes.Ldloc_0, property.Member.Name, true);
 
             generator.MarkLabel(end);
         }

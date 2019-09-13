@@ -40,6 +40,10 @@ namespace AutoCSer.Json
         /// </summary>
         internal ParseConfig Config;
         /// <summary>
+        /// 临时字符串
+        /// </summary>
+        private string stringBuffer;
+        /// <summary>
         /// 成员位图
         /// </summary>
         public AutoCSer.Metadata.MemberMap MemberMap { internal get; set; }
@@ -171,7 +175,7 @@ namespace AutoCSer.Json
             end = (jsonFixed = Current = json) + length;
             parse(ref value);
             if (ParseState == ParseState.Success) return new ParseResult { State = ParseState.Success, MemberMap = MemberMap };
-            return new ParseResult { State = ParseState, MemberMap = MemberMap, Json = new string(json, 0, length), Index = (int)(Current - jsonFixed) };
+            return new ParseResult { State = ParseState, MemberMap = MemberMap, Json = Config.IsErrorJsonNewString ? new string(json, 0, length) : null, Index = (int)(Current - jsonFixed) };
         }
         /// <summary>
         /// JSON 解析
@@ -265,16 +269,24 @@ namespace AutoCSer.Json
             return false;
         }
         /// <summary>
-        /// 释放 JSON 解析器
+        /// 释放 JSON 解析器（单线程模式）
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Free()
+        private void freeThread()
         {
             json = null;
             Config = null;
             //Buffer = null;
             MemberMap = null;
             anonymousTypes.SetNull();
+        }
+        /// <summary>
+        /// 释放 JSON 解析器
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Free()
+        {
+            freeThread();
             YieldPool.Default.PushNotNull(this);
         }
         /// <summary>
@@ -398,46 +410,146 @@ namespace AutoCSer.Json
             return false;
         }
         /// <summary>
-        /// 是否非数字 NaN / Infinity
+        /// 逻辑值解析
         /// </summary>
-        /// <returns>是否非数字NaN</returns>
-        private NumberType isNaNPositiveInfinity()
+        /// <param name="value"></param>
+        /// <returns>是否 null</returns>
+        private bool parse(out bool value)
         {
-            if (*Current == 'N')
+        START:
+            switch (*Current & 7)
             {
-                if (*(int*)(Current + 1) == ('a' + ('N' << 16)) && (int)((byte*)end - (byte*)Current) >= 3 * sizeof(char))
+                case 'f' & 7:
+                    if (*Current == 'f')
+                    {
+                        if ((int)((byte*)end - (byte*)Current) >= 5 * sizeof(char)
+                            && *(long*)(Current + 1) == 'a' + ('l' << 16) + ((long)'s' << 32) + ((long)'e' << 48))
+                        {
+                            value = false;
+                            Current += 5;
+                            return false;
+                        }
+                    }
+                    else if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char)
+                        && *(long*)(Current) == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
+                    {
+                        value = false;
+                        Current += 4;
+                        return true;
+                    }
+                    break;
+                case 't' & 7:
+                    if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char)
+                        && *(long*)(Current) == 't' + ('r' << 16) + ((long)'u' << 32) + ((long)'e' << 48))
+                    {
+                        value = true;
+                        Current += 4;
+                        return false;
+                    }
+                    break;
+                case '0' & 7:
+                    if (*Current == '0')
+                    {
+                        value = false;
+                        ++Current;
+                        return false;
+                    }
+                    break;
+                case '1' & 7:
+                    if (*Current == '1')
+                    {
+                        value = true;
+                        ++Current;
+                        return false;
+                    }
+                    break;
+                case '"' & 7:
+                case '\'' & 7:
+                    if ((*Current == '"' || *Current == '\'') && Quote <= 1)
+                    {
+                        Quote = *Current;
+                        if ((int)((byte*)end - (byte*)Current) >= 3 * sizeof(char))
+                        {
+                            ++Current;
+                            bool isNull = parse(out value);
+                            if (!isNull)
+                            {
+                                if (Current >= end) ParseState = ParseState.CrashEnd;
+                                else if (*Current == Quote) ++Current;
+                                else ParseState = ParseState.NotBool;
+                                return false;
+                            }
+                        }
+                    }
+                    break;
+            }
+            if (Quote == 0)
+            {
+                char* current = Current;
+                space();
+                if (current != Current)
                 {
-                    Current += 3;
-                    return NumberType.NaN;
+                    if (ParseState != ParseState.Success) return value = false;
+                    if (Current == end)
+                    {
+                        ParseState = ParseState.CrashEnd;
+                        return value = false;
+                    }
+                    Quote = (char)1;
+                    goto START;
                 }
             }
-            else if (*Current == 'I')
-            {
-                if (((*(long*)Current ^ ('I' + ('n' << 16) + ((long)'f' << 32) + ((long)'i' << 48))) | (*(long*)(Current + 4) ^ ('n' + ('i' << 16) + ((long)'t' << 32) + ((long)'y' << 48)))) == 0
-                    && (int)((byte*)end - (byte*)Current) >= 8 * sizeof(char))
-                {
-                    Current += 8;
-                    return NumberType.PositiveInfinity;
-                }
-            }
-            ParseState = ParseState.NotNumber;
-            return NumberType.Error;
+            ParseState = ParseState.NotBool;
+            return value = false;
         }
         /// <summary>
-        /// 是否 -Infinity
+        /// 解析10进制数字
         /// </summary>
-        /// <returns>是否 -Infinity</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private NumberType isNegativeInfinity()
+        /// <param name="value">第一位数字</param>
+        /// <returns>数字</returns>
+        private uint parseUInt32(uint value)
         {
-            if (((*(long*)(Current + 1) ^ ('I' + ('n' << 16) + ((long)'f' << 32) + ((long)'i' << 48))) | (*(long*)(Current + 5) ^ ('n' + ('i' << 16) + ((long)'t' << 32) + ((long)'y' << 48)))) == 0
-                && (int)((byte*)end - (byte*)Current) >= 9 * sizeof(char))
+            uint number;
+            if (isEndDigital)
             {
-                Current += 9;
-                return NumberType.NegativeInfinity;
+                do
+                {
+                    if ((number = (uint)(*Current - '0')) > 9) return value;
+                    value = value * 10 + number;
+                    if (++Current == end) return value;
+                }
+                while (true);
             }
-            ParseState = ParseState.NotNumber;
-            return NumberType.Error;
+            while ((number = (uint)(*Current - '0')) < 10)
+            {
+                value = value * 10 + number;
+                ++Current;
+            }
+            return value;
+        }
+        /// <summary>
+        /// 解析10进制数字
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private void parseInt32Next(ref uint value)
+        {
+            uint number;
+            if (isEndDigital)
+            {
+                do
+                {
+                    if ((number = (uint)(*Current - '0')) > 9) return;
+                    value = value * 10 + number;
+                    if (++Current == end) return;
+                }
+                while (true);
+            }
+            while ((number = (uint)(*Current - '0')) < 10)
+            {
+                value = value * 10 + number;
+                ++Current;
+            }
         }
         /// <summary>
         /// 解析16进制数字
@@ -450,6 +562,7 @@ namespace AutoCSer.Json
             {
                 if ((number = (number - ('A' - '0')) & 0xffdfU) > 5)
                 {
+                    value = 0;
                     ParseState = ParseState.NotHex;
                     return;
                 }
@@ -466,51 +579,26 @@ namespace AutoCSer.Json
                         if ((number = (number - ('A' - '0')) & 0xffdfU) > 5) return;
                         number += 10;
                     }
-                    value <<= 4;
-                    value += number;
+                    value = (value << 4) + number;
+                    //if ((value & 0xf0000000U) != 0) return;
                 }
                 while (++Current != end);
-                return;
             }
-            do
-            {
-                if ((number = (uint)(*Current - '0')) > 9)
-                {
-                    if ((number = (number - ('A' - '0')) & 0xffdfU) > 5) return;
-                    number += 10;
-                }
-                value <<= 4;
-                ++Current;
-                value += number;
-            }
-            while (true);
-        }
-        /// <summary>
-        /// 解析10进制数字
-        /// </summary>
-        /// <param name="value">第一位数字</param>
-        /// <returns>数字</returns>
-        private uint parseUInt32(uint value)
-        {
-            uint number;
-            if (isEndDigital)
+            else
             {
                 do
                 {
-                    if ((number = (uint)(*Current - '0')) > 9) return value;
-                    value *= 10;
-                    value += number;
-                    if (++Current == end) return value;
+                    if ((number = (uint)(*Current - '0')) > 9)
+                    {
+                        if ((number = (number - ('A' - '0')) & 0xffdfU) > 5) return;
+                        number += 10;
+                    }
+                    value = (value << 4) + number;
+                    ++Current;
+                    //if ((value & 0xf0000000U) != 0) return;
                 }
                 while (true);
             }
-            while ((number = (uint)(*Current - '0')) < 10)
-            {
-                value *= 10;
-                ++Current;
-                value += (byte)number;
-            }
-            return value;
         }
         /// <summary>
         /// 解析10进制数字
@@ -525,8 +613,7 @@ namespace AutoCSer.Json
             do
             {
                 if ((number = (uint)(*Current - '0')) > 9) return value;
-                value *= 10;
-                value += number;
+                value = value * 10 + number;
             }
             while (++Current != end32);
             if (Current == end) return value;
@@ -536,17 +623,15 @@ namespace AutoCSer.Json
                 do
                 {
                     if ((number = (uint)(*Current - '0')) > 9) return value64;
-                    value64 *= 10;
-                    value64 += number;
+                    value64 = value64 * 10 + number;
                     if (++Current == end) return value64;
                 }
                 while (true);
             }
             while ((number = (uint)(*Current - '0')) < 10)
             {
-                value64 *= 10;
+                value64 = value64 * 10 + number;
                 ++Current;
-                value64 += (byte)number;
             }
             return value64;
         }
@@ -644,6 +729,48 @@ namespace AutoCSer.Json
             code += (number << 4);
             number = (uint)(*++Current - '0');
             return code + (number > 9 ? (((number - ('A' - '0')) & 0xffdfU) + 10) : number);
+        }
+        /// <summary>
+        /// 是否非数字 NaN / Infinity
+        /// </summary>
+        /// <returns>是否非数字NaN</returns>
+        private NumberType isNaNPositiveInfinity()
+        {
+            if (*Current == 'N')
+            {
+                if (*(int*)(Current + 1) == ('a' + ('N' << 16)) && (int)((byte*)end - (byte*)Current) >= 3 * sizeof(char))
+                {
+                    Current += 3;
+                    return NumberType.NaN;
+                }
+            }
+            else if (*Current == 'I')
+            {
+                if (((*(long*)Current ^ ('I' + ('n' << 16) + ((long)'f' << 32) + ((long)'i' << 48))) | (*(long*)(Current + 4) ^ ('n' + ('i' << 16) + ((long)'t' << 32) + ((long)'y' << 48)))) == 0
+                    && (int)((byte*)end - (byte*)Current) >= 8 * sizeof(char))
+                {
+                    Current += 8;
+                    return NumberType.PositiveInfinity;
+                }
+            }
+            ParseState = ParseState.NotNumber;
+            return NumberType.Error;
+        }
+        /// <summary>
+        /// 是否 -Infinity
+        /// </summary>
+        /// <returns>是否 -Infinity</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private NumberType isNegativeInfinity()
+        {
+            if (((*(long*)(Current + 1) ^ ('I' + ('n' << 16) + ((long)'f' << 32) + ((long)'i' << 48))) | (*(long*)(Current + 5) ^ ('n' + ('i' << 16) + ((long)'t' << 32) + ((long)'y' << 48)))) == 0
+                && (int)((byte*)end - (byte*)Current) >= 9 * sizeof(char))
+            {
+                Current += 9;
+                return NumberType.NegativeInfinity;
+            }
+            ParseState = ParseState.NotNumber;
+            return NumberType.Error;
         }
         /// <summary>
         /// 查找数字结束位置
@@ -756,71 +883,377 @@ namespace AutoCSer.Json
             }
             return (int)(numberEnd - Current) != 1 || *Current != '-' ? NumberType.Number : isNegativeInfinity();
         }
+        ///// <summary>
+        ///// 获取数字字符串
+        ///// </summary>
+        ///// <param name="end"></param>
+        ///// <returns></returns>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //private string getNumberString(char* end)
+        //{
+        //    int length = (int)(end - Current);
+        //    return json == null || json.Length != length ? new string(Current, 0, length) : json;
+        //}
         /// <summary>
-        /// 获取数字字符串
+        /// 时间值解析
         /// </summary>
-        /// <param name="end"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private string getNumberString(char* end)
-        {
-            int length = (int)(end - Current);
-            return json == null || json.Length != length ? new string(Current, 0, length) : json;
-        }
-        /// <summary>
-        /// 时间解析 /Date(xxx)/
-        /// </summary>
-        /// <param name="timeString"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
-        private unsafe static bool parseTime(string timeString, out DateTime value)
+        /// <returns>是否 null</returns>
+        private bool parseDateTime(ref DateTime value)
         {
-            if (timeString.Length > 8)
+        START:
+            switch (*Current)
             {
-                fixed (char* timeFixed = timeString)
-                {
-                    if (*(long*)(timeFixed + 1) == 'D' + ('a' << 16) + ((long)'t' << 32) + ((long)'e' << 48))
+                case '"':
+                case '\'':
+                    if (Quote <= 1)
                     {
-                        char* end = timeFixed + (timeString.Length - 2);
-                        if (((*(timeFixed + 5) ^ '(') | (*(int*)end ^ (')' + ('/' << 16)))) == 0)
+                        if ((int)((byte*)end - (byte*)Current) >= 10 * sizeof(char))
                         {
-                            char* start = timeFixed + 6;
-                            bool isSign;
-                            if (*start == '-')
+                            char* start = Current;
+                            switch (parseDateTimeString(ref value))
                             {
-                                if (timeString.Length == 9)
-                                {
-                                    value = DateTime.MinValue;
-                                    return false;
-                                }
-                                isSign = true;
-                                ++start;
-                            }
-                            else isSign = false;
-                            uint code = (uint)(*start - '0');
-                            if (code < 10)
-                            {
-                                long millisecond = code;
-                                while (++start != end)
-                                {
-                                    if ((code = (uint)(*start - '0')) >= 10)
+                                case 0:
+                                    if (Current >= end)
                                     {
-                                        value = DateTime.MinValue;
+                                        ParseState = ParseState.CrashEnd;
                                         return false;
                                     }
-                                    millisecond *= 10;
-                                    millisecond += code;
-                                }
-                                value = JavascriptLocalMinTime.AddTicks((isSign ? -millisecond : millisecond) * TimeSpan.TicksPerMillisecond);
-                                return true;
+                                    if (*Current == *start)
+                                    {
+                                        ++Current;
+                                        return false;
+                                    }
+                                    break;
+                                case 1:
+                                    if (Current >= end) ParseState = ParseState.CrashEnd;
+                                    else if (*Current == *start) ++Current;
+                                    else ParseState = ParseState.NotDateTime;
+                                    return false;
+                            }
+                            Current = start;
+                            if (parseStringBuffer() != 0 && DateTime.TryParse(stringBuffer, out value))
+                            {
+                                ParseState = ParseState.Success;
+                                return false;
+                            }
+                        }
+                        Quote = (char)1;
+                    }
+                    break;
+                case 'n':
+                    if ((int)((byte*)end - (byte*)Current) >= 11 * sizeof(char))
+                    {
+                        if (((*(long*)(Current + 1) ^ ('e' + ('w' << 16) + ((long)' ' << 32) + ((long)'D' << 48))) | (*(long*)(Current + 5) ^ ('a' + ('t' << 16) + ((long)'e' << 32) + ((long)'(' << 48)))) == 0)
+                        {
+                            Current += 9;
+                            parseDateTimeMillisecond(ref value);
+                            return false;
+                        }
+                    }
+                    if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char) && *(long*)Current == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
+                    {
+                        Current += 4;
+                        return true;
+                    }
+                    Quote = (char)1;
+                    break;
+            }
+            if (Quote == 0)
+            {
+                char* current = Current;
+                space();
+                if (current != Current)
+                {
+                    if (ParseState != ParseState.Success)
+                    {
+                        return false;
+                    }
+                    if (Current == end)
+                    {
+                        ParseState = ParseState.CrashEnd;
+                        return false;
+                    }
+                    Quote = (char)1;
+                    goto START;
+                }
+            }
+            ParseState = ParseState.NotDateTime;
+            return false;
+        }
+        /// <summary>
+        /// 时间值解析
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private bool parseDateTimeMillisecond(ref DateTime value)
+        {
+            long millisecond = 0;
+            CallParse(ref millisecond);
+            if (ParseState == ParseState.Success)
+            {
+                if (Current != end)
+                {
+                    if (*Current == ')')
+                    {
+                        value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
+                        ++Current;
+                        return true;
+                    }
+                    ParseState = ParseState.NotDateTime;
+                }
+                else ParseState = ParseState.CrashEnd;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 时间值解析
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private int parseDateTimeString(ref DateTime value)
+        {
+            switch (*++Current & 15)
+            {
+                case '0' & 15:
+                case '1' & 15:
+                case '2' & 15:
+                case '3' & 15:
+                case '4' & 15:
+                case '5' & 15:
+                case '6' & 15:
+                case '7' & 15:
+                case '8' & 15:
+                case '9' & 15:
+                    uint year = (uint)(*Current - '0');
+                    if (year < 10)
+                    {
+                        ++Current;
+                        parseInt32Next(ref year);
+                        if ((int)((byte*)end - (byte*)Current) >= 5 * sizeof(char))
+                        {
+                            switch (*Current)
+                            {
+                                case '/':
+                                case '-':
+                                    Quote = *Current;
+                                    uint month = parseDateTime();
+                                    if ((month - 1U) <= (12U - 1U) && *Current == Quote && (int)((byte*)end - (byte*)Current) >= 3 * sizeof(char))
+                                    {
+                                        uint day = parseDateTime();
+                                        if ((day - 1U) <= (31U - 1U) && Current < end)
+                                        {
+                                            try
+                                            {
+                                                switch(*Current)
+                                                {
+                                                    case ' ':
+                                                    case 'T':
+                                                        if ((int)((byte*)end - (byte*)Current) >= 7 * sizeof(char))
+                                                        {
+                                                            uint hour = parseDateTime();
+                                                            if (hour < 24 && *Current == ':')
+                                                            {
+                                                                uint minute = parseDateTime();
+                                                                if (minute < 60)
+                                                                {
+                                                                    uint second;
+                                                                    if (*Current == ':')
+                                                                    {
+                                                                        if ((int)((byte*)end - (byte*)Current) < 3 * sizeof(char)) return 2;
+                                                                        second = parseDateTime();
+                                                                        if (second >= 60 || Current >= end) return 2;
+                                                                    }
+                                                                    else second = 0;
+                                                                    uint millisecond;
+                                                                    switch (*Current)
+                                                                    {
+                                                                        case ' ':
+                                                                        case '.':
+                                                                            if ((int)((byte*)end - (byte*)Current) < 3 * sizeof(char)) return 2;
+                                                                            millisecond = parseDateTimeMillisecond();
+                                                                            if (Current >= end) return 2;
+                                                                            break;
+                                                                        default: millisecond = 0; break;
+                                                                    }
+                                                                    bool zone;
+                                                                    switch (*Current & 3)
+                                                                    {
+                                                                        case 'Z' & 3:
+                                                                            if (*Current == 'Z')
+                                                                            {
+                                                                                ++Current;
+                                                                                value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)millisecond, DateTimeKind.Utc);
+                                                                                return 0;
+                                                                            }
+                                                                            goto MILLISECOND;
+                                                                        case '+' & 3:
+                                                                            if (*Current == '+')
+                                                                            {
+                                                                                if ((int)((byte*)end - (byte*)Current) < 7 * sizeof(char)) return 2;
+                                                                                zone = true;
+                                                                                break;
+                                                                            }
+                                                                            goto MILLISECOND;
+                                                                        case '-' & 3:
+                                                                            if (*Current == '-')
+                                                                            {
+                                                                                if ((int)((byte*)end - (byte*)Current) < 7 * sizeof(char)) return 2;
+                                                                                zone = false;
+                                                                                break;
+                                                                            }
+                                                                            goto MILLISECOND;
+                                                                        default:
+                                                                            MILLISECOND:
+                                                                            value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)millisecond);
+                                                                            return 0;
+                                                                    }
+                                                                    uint zoneHour = parseDateTime();
+                                                                    if (zoneHour < 24 && *Current == ':')
+                                                                    {
+                                                                        uint zoneMinute = parseDateTime();
+                                                                        if (zoneMinute < 60)
+                                                                        {
+                                                                            long zoneTicks = (int)(zoneHour * 60 + zoneMinute) * TimeSpan.TicksPerMinute;
+                                                                            if (zone) zoneTicks = -zoneTicks;
+                                                                             value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)millisecond, DateTimeKind.Local)
+                                                                                .AddTicks(zoneTicks + Date.LocalTimeTicks);
+                                                                            return 0;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        break;
+                                                    default:
+                                                        value = new DateTime((int)year, (int)month, (int)day);
+                                                        return 0;
+                                                }
+                                            }
+                                            catch { }
+                                        }
+                                    }
+                                    break;
                             }
                         }
                     }
-                }
+                    break;
+                case '/' & 15:
+                    if (*(long*)Current == '/' + ('D' << 16) + ((long)'a' << 32) + ((long)'t' << 48) && *(int*)(Current + 4) == 'e' + ('(' << 16))
+                    {
+                        Current += 6;
+                        if (parseDateTimeMillisecond(ref value) && *Current == '/')
+                        {
+                            ++Current;
+                            return 1;
+                        }
+                    }
+                    break;
             }
-            value = DateTime.MinValue;
-            return false;
+            return 2;
         }
+        /// <summary>
+        /// 时间片段值解析
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private uint parseDateTime()
+        {
+            uint high = (uint)(*(Current + 1) - '0');
+            if (high < 10)
+            {
+                uint low = (uint)(*(Current + 2) - '0');
+                if (low < 10)
+                {
+                    Current += 3;
+                    return high * 10 + low;
+                }
+                Current += 2;
+                return high;
+            }
+            return uint.MinValue;
+        }
+        /// <summary>
+        /// 时间毫秒解析
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private uint parseDateTimeMillisecond()
+        {
+            uint high = (uint)(*(Current + 1) - '0');
+            if (high < 10)
+            {
+                uint low = (uint)(*(Current + 2) - '0');
+                if (low < 10)
+                {
+                    high = high * 10 + low;
+                    if ((low = (uint)(*(Current + 3) - '0')) < 10)
+                    {
+                        Current += 4;
+                        return high * 10 + low;
+                    }
+                    else Current += 3;
+                }
+                else Current += 2;
+                return high;
+            }
+            return uint.MinValue;
+        }
+        ///// <summary>
+        ///// 时间解析 /Date(xxx)/
+        ///// </summary>
+        ///// <param name="timeString"></param>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //private unsafe static bool parseTime(string timeString, out DateTime value)
+        //{
+        //    if (timeString.Length > 8)
+        //    {
+        //        fixed (char* timeFixed = timeString)
+        //        {
+        //            if (*(long*)(timeFixed + 1) == 'D' + ('a' << 16) + ((long)'t' << 32) + ((long)'e' << 48))
+        //            {
+        //                char* end = timeFixed + (timeString.Length - 2);
+        //                if (((*(timeFixed + 5) ^ '(') | (*(int*)end ^ (')' + ('/' << 16)))) == 0)
+        //                {
+        //                    char* start = timeFixed + 6;
+        //                    bool isSign;
+        //                    if (*start == '-')
+        //                    {
+        //                        if (timeString.Length == 9)
+        //                        {
+        //                            value = DateTime.MinValue;
+        //                            return false;
+        //                        }
+        //                        isSign = true;
+        //                        ++start;
+        //                    }
+        //                    else isSign = false;
+        //                    uint code = (uint)(*start - '0');
+        //                    if (code < 10)
+        //                    {
+        //                        long millisecond = code;
+        //                        while (++start != end)
+        //                        {
+        //                            if ((code = (uint)(*start - '0')) >= 10)
+        //                            {
+        //                                value = DateTime.MinValue;
+        //                                return false;
+        //                            }
+        //                            millisecond *= 10;
+        //                            millisecond += code;
+        //                        }
+        //                        value = JavascriptLocalMinTime.AddTicks((isSign ? -millisecond : millisecond) * TimeSpan.TicksPerMillisecond);
+        //                        return true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    value = DateTime.MinValue;
+        //    return false;
+        //}
         /// <summary>
         /// Guid解析
         /// </summary>
@@ -873,6 +1306,105 @@ namespace AutoCSer.Json
                 return;
             }
             ParseState = ParseState.NotGuid;
+        }
+        /// <summary>
+        /// 临时字符串解析（不处理转义）
+        /// </summary>
+        /// <returns>长度为0表示失败</returns>
+        private int parseStringBuffer()
+        {
+            Quote = *Current;
+            if (++Current != end)
+            {
+                if (stringBuffer == null) stringBuffer = new string((char)0, 32);
+                int length = 0;
+                fixed (char* bufferFixed = stringBuffer)
+                {
+                    if (endChar == Quote)
+                    {
+                        while (*Current != Quote)
+                        {
+                            if (length == 32) return 0;
+                            *(bufferFixed + length) = *Current++;
+                            ++length;
+                        }
+                    }
+                    else
+                    {
+                        do
+                        {
+                            if (Current == end) return 0;
+                            if (*Current == Quote) break;
+                            if (length == 32) return 0;
+                            *(bufferFixed + length) = *Current++;
+                            ++length;
+                        }
+                        while (true);
+                    }
+                    if (length != 0)
+                    {
+                        ++Current;
+                        fillStringBuffer(bufferFixed, length);
+                        return length;
+                    }
+                }
+            }
+            return 0;
+        }
+        /// <summary>
+        /// 临时字符串填充空格
+        /// </summary>
+        /// <param name="bufferFixed"></param>
+        /// <param name="length"></param>
+        private void fillStringBuffer(char* bufferFixed, int length)
+        {
+            if (length <= 28)
+            {
+                if ((length & 3) != 0)
+                {
+                    //*(long*)(bufferFixed + length) = 0x20002000200020;
+                    *(long*)(bufferFixed + length) = 0;
+                    length = (length + 3) & (60);
+                }
+                while (length != 32)
+                {
+                    //*(long*)(bufferFixed + length) = 0x20002000200020;
+                    *(long*)(bufferFixed + length) = 0;
+                    length += 4;
+                }
+            }
+            else
+            {
+                //while (length != 32) *(bufferFixed + length++) = ' ';
+                while (length != 32) *(bufferFixed + length++) = (char)0;
+            }
+        }
+        /// <summary>
+        /// 获取数字字符串
+        /// </summary>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        private int parseStringBuffer(char* end)
+        {
+            int length = (int)(end - Current);
+            if ((uint)(length - 1) <= (32U - 1))
+            {
+                if (stringBuffer == null) stringBuffer = new string((char)0, 32);
+                fixed (char* bufferFixed = stringBuffer)
+                {
+                    byte* read = (byte*)Current, write = (byte*)bufferFixed, writeEnd = write + (((length << 1) + 6) & (127 - 7));
+                    do
+                    {
+                        *(long*)write = *(long*)read;
+                        write += sizeof(long);
+                        read += sizeof(long);
+                    }
+                    while (write != writeEnd);
+                    fillStringBuffer(bufferFixed, length);
+                }
+                return length;
+            }
+            return 0;
         }
         /// <summary>
         /// 查找字符串中的转义符
@@ -3045,6 +3577,96 @@ namespace AutoCSer.Json
                 return parser.parse<valueType>(json, length, ref value);//, config, buffer
             }
             finally { parser.Free(); }
+        }
+        /// <summary>
+        /// JSON 解析（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="json">JSON 字符串</param>
+        /// <param name="value">目标数据</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>是否解析成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static ParseResult ParseThread<valueType>(SubString json, ref valueType value, ParseConfig config = null)
+        {
+            return ParseThread(ref json, ref value, config);
+        }
+        /// <summary>
+        /// JSON 解析（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="json">JSON 字符串</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>目标数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static valueType ParseThread<valueType>(SubString json, ParseConfig config = null)
+        {
+            valueType value = default(valueType);
+            return ParseThread(ref json, ref value, config).State == ParseState.Success ? value : default(valueType);
+        }
+        /// <summary>
+        /// JSON 解析（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="json">JSON 字符串</param>
+        /// <param name="value">目标数据</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>是否解析成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static ParseResult ParseThread<valueType>(ref SubString json, ref valueType value, ParseConfig config = null)
+        {
+            if (json.Length == 0) return new ParseResult { State = ParseState.NullJson };
+            Parser parser =  ThreadStatic.Get().Parser;
+            try
+            {
+                return parser.parse<valueType>(ref json, ref value, config);
+            }
+            finally { parser.freeThread(); }
+        }
+        /// <summary>
+        /// JSON 解析（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="json">JSON 字符串</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>目标数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static valueType ParseThread<valueType>(ref SubString json, ParseConfig config = null)
+        {
+            valueType value = default(valueType);
+            return ParseThread(ref json, ref value, config).State == ParseState.Success ? value : default(valueType);
+        }
+        /// <summary>
+        /// JSON 解析（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="json">JSON 字符串</param>
+        /// <param name="value">目标数据</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>是否解析成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static ParseResult ParseThread<valueType>(string json, ref valueType value, ParseConfig config = null)
+        {
+            if (string.IsNullOrEmpty(json)) return new ParseResult { State = ParseState.NullJson };
+            Parser parser = ThreadStatic.Get().Parser;
+            try
+            {
+                return parser.parse<valueType>(json, ref value, config);
+            }
+            finally { parser.freeThread(); }
+        }
+        /// <summary>
+        /// JSON 解析（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="json">JSON 字符串</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>目标数据</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static valueType ParseThread<valueType>(string json, ParseConfig config = null)
+        {
+            valueType value = default(valueType);
+            return ParseThread(json, ref value, config).State == ParseState.Success ? value : default(valueType);
         }
 
         /// <summary>

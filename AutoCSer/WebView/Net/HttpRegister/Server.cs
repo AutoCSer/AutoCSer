@@ -263,7 +263,7 @@ namespace AutoCSer.Net.HttpRegister
                     {
                         if (!register.IsShareAssembly || !assemblyCache.TryGetValue(pathKey, out assembly))
                         {
-                            string serverPath = Config.WorkPath + ((ulong)AutoCSer.Pub.StartTime.Ticks).toHex() + ((ulong)AutoCSer.Pub.Identity).toHex() + AutoCSer.Extension.DirectoryExtension.Separator;
+                            string serverPath = Config.WorkPath + ((ulong)AutoCSer.Pub.Identity).toHex() + AutoCSer.Extension.DirectoryExtension.Separator;
                             Directory.CreateDirectory(serverPath);
                             foreach (FileInfo file in directory.GetFiles()) file.CopyTo(serverPath + file.Name);
                             assembly = Assembly.LoadFrom(serverPath + assemblyFile.Name);

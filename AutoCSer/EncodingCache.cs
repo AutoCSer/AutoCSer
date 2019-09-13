@@ -399,20 +399,13 @@ namespace AutoCSer
                 else
                 {
                     char* write = (char*)stream.GetPrepSizeCurrent(20 * sizeof(char));
-                    RangeLength index = AutoCSer.Extension.Number.ToString(value, write);
-                    char* start = write + index.Start;
-                    int size = Encoding.GetByteCount(start, index.Length);
-                    Encoding.GetBytes(start, index.Length, (byte*)write, size);
+                    int length = AutoCSer.Extension.Number.ToString(value, write);
+                    int size = Encoding.GetByteCount(write, length);
+                    Encoding.GetBytes(write, length, (byte*)write, size);
                     stream.ByteSize += size;
                 }
             }
-            else
-            {
-                char* write = (char*)stream.GetPrepSizeCurrent(20 * sizeof(char));
-                RangeLength index = AutoCSer.Extension.Number.ToString(value, write);
-                if (index.Start != 0) AutoCSer.Memory.SimpleCopyNotNull64((byte*)(write + index.Start), (byte*)write, index.Length << 1);
-                stream.ByteSize += (index.Length * sizeof(char));
-            }
+            else stream.ByteSize += AutoCSer.Extension.Number.ToString(value, (char*)stream.GetPrepSizeCurrent(20 * sizeof(char))) << 1;
         }
         /// <summary>
         /// 写数值
@@ -422,27 +415,22 @@ namespace AutoCSer
         internal void Write(long value, UnmanagedStream stream)
         {
             char* write = (char*)stream.GetPrepSizeCurrent(22 * sizeof(char));
-            RangeLength index = AutoCSer.Extension.Number.ToString(value, write);
+            int length = AutoCSer.Extension.Number.ToString(value, write);
             if ((Type & 4) == 0)
             {
-                char* start = write + index.Start;
                 if ((Type & 2) != 0)
                 {
-                    AutoCSer.Extension.StringExtension.WriteBytes(start, index.Length, (byte*)write);
-                    stream.ByteSize += index.Length;
+                    AutoCSer.Extension.StringExtension.WriteBytes(write, length, (byte*)write);
+                    stream.ByteSize += length;
                 }
                 else
                 {
-                    int size = Encoding.GetByteCount(start, index.Length);
-                    Encoding.GetBytes(start, index.Length, (byte*)write, size);
+                    int size = Encoding.GetByteCount(write, length);
+                    Encoding.GetBytes(write, length, (byte*)write, size);
                     stream.ByteSize += size;
                 }
             }
-            else
-            {
-                if (index.Start != 0) AutoCSer.Memory.SimpleCopyNotNull64((byte*)(write + index.Start), (byte*)write, index.Length << 1);
-                stream.ByteSize += (index.Length * sizeof(char));
-            }
+            else stream.ByteSize += length << 1;
         }
         /// <summary>
         /// URL 哈希字符

@@ -729,12 +729,13 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 数据发送完成后的任务处理
         /// </summary>
-        /// <param name="currentTaskTicks"></param>
+        /// <param name="currentTaskTimestamp"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Socket SingleRunTask(ref long currentTaskTicks)
+        internal Socket SingleRunTask(ref long currentTaskTimestamp)
         {
             Socket nextTask = NextTask;
+            currentTaskTimestamp = TaskTimestamp;
             NextTask = null;
             try
             {

@@ -67,6 +67,7 @@ namespace AutoCSer.Xml
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int getCharIndex(char value)
         {
+            if (charStart == charEnd) return 0;
             char* current = AutoCSer.StateSearcher.CharSearcher.GetCharIndex((char*)charStart, (char*)charEnd, value);
             return current == null ? 0 : (charIndex + (int)(current - (char*)charStart));
         }

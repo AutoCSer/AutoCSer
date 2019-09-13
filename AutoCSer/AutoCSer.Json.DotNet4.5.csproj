@@ -32,6 +32,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\Release\DotNet4.5\Serialize\AutoCSer.Json.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
@@ -39,6 +42,8 @@
     <Compile Include="Algorithm\QuickSort.cs" />
     <Compile Include="CharStream.cs" />
     <Compile Include="CharStream.Json.cs" />
+    <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />
     <Compile Include="Config\MemberAttribute.cs" />
@@ -59,6 +64,7 @@
     <Compile Include="Emit\ListConstructor.cs" />
     <Compile Include="Emit\NamePool.cs" />
     <Compile Include="Emit\Pub.cs" />
+    <Compile Include="Emit\StringWriter.cs" />
     <Compile Include="Enumerator.cs" />
     <Compile Include="Extension\Array.cs" />
     <Compile Include="Extension\Collection.cs" />
@@ -74,7 +80,9 @@
     <Compile Include="HashSetCreator.cs" />
     <Compile Include="HashString.cs" />
     <Compile Include="IOS\Preserve.cs" />
+    <Compile Include="Json\ThreadStatic.cs" />
     <Compile Include="Json\ConfigLoader.cs" />
+    <Compile Include="Json\DateTimeType.cs" />
     <Compile Include="Json\IgnoreMemberAttribute.cs" />
     <Compile Include="Json\Node.cs" />
     <Compile Include="Json\NodeType.cs" />
@@ -83,6 +91,7 @@
     <Compile Include="Json\ParseConfig.cs" />
     <Compile Include="Json\ParseCustomAttribute.cs" />
     <Compile Include="Json\ParseDynamicMethod.cs" />
+    <Compile Include="Json\ParseIntState.cs" />
     <Compile Include="Json\ParseMemberAttribute.cs" />
     <Compile Include="Json\ParseMethod.cs" />
     <Compile Include="Json\ParseMethodCache.cs" />
@@ -164,8 +173,12 @@
     <Compile Include="UnmanagedStream.cs" />
     <Compile Include="UnmanagedStreamBase.cs" />
     <Compile Include="Win32\Kernel32.cs" />
+    <Compile Include="{AutoCSer.Json}.CombinationTemplate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(ProjectDir)CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -187,11 +187,6 @@ namespace AutoCSer.Net.TcpInternalServer
         {
             get { return IsAutoClient && TcpRegisterName == null; }
         }
-
-        /// <summary>
-        /// 默认为 true 表示生成记忆数字编号标识与长字符串名称标识之间对应关系的代码，用于保持多次代码生成的命令序号
-        /// </summary>
-        public bool IsRememberCommand = true;
         /// <summary>
         /// 默认为 true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
         /// </summary>

@@ -47,7 +47,7 @@ namespace AutoCSer.Sql.DataModel
         /// <param name="field">字段信息</param>
         public unsafe void Push(Field field)
         {
-            if (isNextMember) generator.charStreamSimpleWriteNotNull(OpCodes.Ldarg_0, AndString.Char, 5);
+            if (isNextMember) AutoCSer.Emit.StringWriter.Write(generator, OpCodes.Ldarg_0, " and ");
             else isNextMember = true;
             if (field.IsSqlColumn)
             {
@@ -84,10 +84,6 @@ namespace AutoCSer.Sql.DataModel
             generator.Emit(OpCodes.Ret);
             return dynamicMethod.CreateDelegate(typeof(delegateType));
         }
-        /// <summary>
-        /// 添加连接字符串
-        /// </summary>
-        internal static Pointer AndString = new Pointer { Data = AutoCSer.Emit.NamePool.Get(" and ", 0, 0) };
     }
     /// <summary>
     /// 数据模型

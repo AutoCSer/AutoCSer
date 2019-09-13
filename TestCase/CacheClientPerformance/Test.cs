@@ -82,7 +82,7 @@ namespace AutoCSer.TestCase.CacheClientPerformance
             errorCount = 0;
             Console.WriteLine("start " + count.toString() + " " + callbackType.ToString() + " " + type.ToString() + (isFile ? " + File" : null));
             waitEvent.Reset();
-            time = AutoCSer.Pub.StopwatchTicks;
+            time = System.Diagnostics.Stopwatch.GetTimestamp();
         }
         /// <summary>
         /// 测试回调
@@ -145,9 +145,9 @@ namespace AutoCSer.TestCase.CacheClientPerformance
         /// </summary>
         protected void wait()
         {
-            Console.WriteLine("loop end " + ((long)new TimeSpan(AutoCSer.Pub.StopwatchTicks - time).TotalMilliseconds).toString() + "ms");
+            Console.WriteLine("loop end " + ((long)Date.GetTimestampTimeSpan(time).TotalMilliseconds).toString() + "ms");
             waitEvent.WaitOne();
-            long milliseconds = Math.Max((long)new TimeSpan(AutoCSer.Pub.StopwatchTicks - time).TotalMilliseconds, 1);
+            long milliseconds = Math.Max((long)Date.GetTimestampTimeSpan(time).TotalMilliseconds, 1);
             Console.WriteLine(count.toString() + " / " + milliseconds.toString() + "ms = " + (count / milliseconds) + "/ms " + (errorCount == 0 ? null : (" ERROR[" + errorCount.toString() + "]")));
             Console.WriteLine(@"Sleep 3000ms
 ");

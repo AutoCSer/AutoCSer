@@ -15,10 +15,6 @@ namespace AutoCSer
         /// </summary>
         internal const int PuzzleValue = 0x10035113;
         /// <summary>
-        /// 程序启用时间
-        /// </summary>
-        public static readonly DateTime StartTime = DateTime.Now;
-        /// <summary>
         /// 默认自增标识
         /// </summary>
         private static int identity32;
@@ -85,45 +81,5 @@ namespace AutoCSer
         /// 空委托
         /// </summary>
         internal static readonly Action EmptyAction = emptyAction;
-
-        /// <summary>
-        /// 全局计时器
-        /// </summary>
-        internal static readonly Stopwatch Stopwatch;
-        /// <summary>
-        /// 获取全局计时器当前运行时钟周期
-        /// </summary>
-        public static long StopwatchTicks
-        {
-            get
-            {
-                return Stopwatch.ElapsedTicks;
-            }
-        }
-        /// <summary>
-        /// 获取时钟周期差值
-        /// </summary>
-        /// <param name="startTicks"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static long GetStopwatchTicks(long startTicks)
-        {
-            return Stopwatch.ElapsedTicks - startTicks;
-        }
-        /// <summary>
-        /// 获取时钟周期差值
-        /// </summary>
-        /// <param name="startTicks"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static TimeSpan GetStopwatchTimeSpan(long startTicks)
-        {
-            return new TimeSpan(Stopwatch.ElapsedTicks - startTicks);
-        }
-        static Pub()
-        {
-            Stopwatch = new Stopwatch();
-            Stopwatch.Start();
-        }
     }
 }

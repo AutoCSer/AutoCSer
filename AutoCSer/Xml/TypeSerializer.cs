@@ -113,7 +113,7 @@ namespace AutoCSer.Xml
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private static void enumToString(Serializer xmlSerializer, valueType value)
         {
-            xmlSerializer.Serialize(value.ToString());
+            xmlSerializer.CallSerialize(value.ToString());
         }
         /// <summary>
         /// 不支持序列化

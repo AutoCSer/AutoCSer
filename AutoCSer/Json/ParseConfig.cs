@@ -29,6 +29,18 @@ namespace AutoCSer.Json
         /// </summary>
         public bool IsMatchEnum;
         /// <summary>
+        /// 默认数组大小
+        /// </summary>
+        public int NewArraySize = 10;
+        ///// <summary>
+        ///// 是否紧凑解析模式
+        ///// </summary>
+        //public bool IsCompact;
+        /// <summary>
+        /// 指针模式 JSON 解析失败时是否 new string
+        /// </summary>
+        public bool IsErrorJsonNewString;
+        /// <summary>
         /// 清空数据
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]

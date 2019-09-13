@@ -56,7 +56,8 @@ namespace AutoCSer.Deploy
         /// </summary>
         /// <param name="config">部署服务客户端配置</param>
         /// <param name="onClient">部署服务客户端就绪</param>
-        public Client(ClientConfig config = null, Action<OnClientParameter> onClient = null)
+        /// <param name="verifyMethod">验证函数</param>
+        public Client(ClientConfig config = null, Action<OnClientParameter> onClient = null, Func<Server.TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null)
         {
             this.Config = config ?? ConfigLoader.GetUnion(typeof(ClientConfig)).ClientConfig;
             this.onClient = onClient;
@@ -65,7 +66,7 @@ namespace AutoCSer.Deploy
 
             Dictionary<HashString, AutoCSer.Net.TcpInternalServer.ServerAttribute> attributes;
             if (config.ServerAttributes.length() == 0) attributes = null;
-            else 
+            else
             {
                 attributes = DictionaryCreator.CreateHashString<AutoCSer.Net.TcpInternalServer.ServerAttribute>();
                 foreach (KeyValue<string, AutoCSer.Net.TcpInternalServer.ServerAttribute> attribute in config.ServerAttributes.notNull())
@@ -79,13 +80,13 @@ namespace AutoCSer.Deploy
             {
                 if (deploy.Tasks.length() == 0) throw new ArgumentNullException("deploys[" + deployIndex.toString() + "].Tasks");
                 HashString serverName = deploy.ServerName ?? string.Empty;
-                if (!clients.TryGetValue(serverName, out tcpClient)) 
+                if (!clients.TryGetValue(serverName, out tcpClient))
                 {
-                    if (serverName.String.Length == 0) clients.Add(serverName, tcpClient = new TcpClient(this, string.Empty, null));
+                    if (serverName.String.Length == 0) clients.Add(serverName, tcpClient = new TcpClient(this, string.Empty, null, verifyMethod));
                     else
                     {
                         AutoCSer.Net.TcpInternalServer.ServerAttribute attribute;
-                        if (attributes.TryGetValue(serverName, out attribute)) clients.Add(serverName, tcpClient = new TcpClient(this, serverName.String, attribute));
+                        if (attributes.TryGetValue(serverName, out attribute)) clients.Add(serverName, tcpClient = new TcpClient(this, serverName.String, attribute, verifyMethod));
                         else throw new ArgumentNullException("缺少服务命名 " + serverName);
                     }
                 }

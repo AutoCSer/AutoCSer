@@ -81,6 +81,19 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// 二进制反序列化数组最大长度
         /// </summary>
         internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
+        /// <summary>
+        /// 命令映射枚举类型
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        public Type CommandIdentityEnmuType;
+        /// <summary>
+        /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        public override bool GetIsRememberCommand
+        {
+            get { return IsRememberCommand && CommandIdentityEnmuType == null; }
+        }
 
         /// <summary>
         /// 获取配置信息

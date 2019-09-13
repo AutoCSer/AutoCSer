@@ -413,7 +413,8 @@ namespace AutoCSer.TestCase
         internal class MemberClass
         {
             public string String;
-            public int Int;
+            public DateTime DateTime;
+            public bool Bool;
         }
         /// <summary>
         /// 值类型成员包装处理测试数据定义

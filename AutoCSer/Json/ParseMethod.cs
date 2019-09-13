@@ -20,105 +20,12 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         /// <returns>解析状态</returns>
         [ParseMethod]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref bool value)
+        public void CallParse(ref bool value)
         {
-            byte isSpace = 0;
-        START:
-            switch (*Current & 7)
-            {
-                case 'f' & 7:
-                    if (*(long*)(Current + 1) == 'a' + ('l' << 16) + ((long)'s' << 32) + ((long)'e' << 48)
-                        && (int)((byte*)end - (byte*)Current) >= 5 * sizeof(char))
-                    {
-                        value = false;
-                        Current += 5;
-                        return;
-                    }
-                    break;
-                case 't' & 7:
-                    if (*(long*)(Current) == 't' + ('r' << 16) + ((long)'u' << 32) + ((long)'e' << 48)
-                        && (int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                    {
-                        value = true;
-                        Current += 4;
-                        return;
-                    }
-                    break;
-                case '0' & 7:
-                    if (*Current == '0')
-                    {
-                        value = false;
-                        ++Current;
-                        return;
-                    }
-                    break;
-                case '1' & 7:
-                    if (*Current == '1')
-                    {
-                        value = true;
-                        ++Current;
-                        return;
-                    }
-                    break;
-                case '"' & 7:
-                case '\'' & 7:
-                    if (*Current == '"' || *Current == '\'')
-                    {
-                        Quote = *Current;
-                        if (++Current == end)
-                        {
-                            ParseState = ParseState.CrashEnd;
-                            return;
-                        }
-                        if ((uint)(*Current - '0') < 2) value = *(byte*)Current++ != '0';
-                        else if (*Current == 'f')
-                        {
-                            if (*(long*)(Current + 1) == 'a' + ('l' << 16) + ((long)'s' << 32) + ((long)'e' << 48) && (int)((byte*)end - (byte*)Current) >= 5 * sizeof(char))
-                            {
-                                value = false;
-                                Current += 5;
-                            }
-                            else
-                            {
-                                ParseState = ParseState.NotBool;
-                                return;
-                            }
-                        }
-                        else if (*(long*)(Current) == 't' + ('r' << 16) + ((long)'u' << 32) + ((long)'e' << 48) && (int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                        {
-                            value = true;
-                            Current += 4;
-                        }
-                        else
-                        {
-                            ParseState = ParseState.NotBool;
-                            return;
-                        }
-                        if (Current == end) ParseState = ParseState.CrashEnd;
-                        else if (*Current == Quote) ++Current;
-                        else ParseState = ParseState.NotBool;
-                        return;
-                    }
-                    break;
-            }
-            if (isSpace == 0)
-            {
-                char* current = Current;
-                space();
-                if (current != Current)
-                {
-                    if (ParseState != ParseState.Success) return;
-                    if (Current == end)
-                    {
-                        ParseState = ParseState.CrashEnd;
-                        return;
-                    }
-                    isSpace = 1;
-                    goto START;
-                }
-            }
-            ParseState = ParseState.NotBool;
+            Quote = (char)0;
+            parse(out value);
         }
         /// <summary>
         /// 逻辑值解析
@@ -127,114 +34,12 @@ namespace AutoCSer.Json
         /// <returns>解析状态</returns>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref bool? value)
+        public void CallParse(ref bool? value)
         {
-            byte isSpace = 0;
-        START:
-            switch (*Current & 7)
-            {
-                case 'f' & 7:
-                    if (*Current == 'f')
-                    {
-                        if (*(long*)(Current + 1) == 'a' + ('l' << 16) + ((long)'s' << 32) + ((long)'e' << 48)
-                            && (int)((byte*)end - (byte*)Current) >= 5 * sizeof(char))
-                        {
-                            value = false;
-                            Current += 5;
-                            return;
-                        }
-                    }
-                    else if (*(long*)(Current) == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48)
-                        && (int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                    {
-                        value = null;
-                        Current += 4;
-                        return;
-                    }
-                    break;
-                case 't' & 7:
-                    if (*(long*)(Current) == 't' + ('r' << 16) + ((long)'u' << 32) + ((long)'e' << 48)
-                        && (int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                    {
-                        value = true;
-                        Current += 4;
-                        return;
-                    }
-                    break;
-                case '0' & 7:
-                    if (*Current == '0')
-                    {
-                        value = false;
-                        ++Current;
-                        return;
-                    }
-                    break;
-                case '1' & 7:
-                    if (*Current == '1')
-                    {
-                        value = true;
-                        ++Current;
-                        return;
-                    }
-                    break;
-                case '"' & 7:
-                case '\'' & 7:
-                    if (*Current == '"' || *Current == '\'')
-                    {
-                        Quote = *Current;
-                        if (++Current == end)
-                        {
-                            ParseState = ParseState.CrashEnd;
-                            return;
-                        }
-                        if ((uint)(*Current - '0') < 2) value = *(byte*)Current++ != '0';
-                        else if (*Current == 'f')
-                        {
-                            if (*(long*)(Current + 1) == 'a' + ('l' << 16) + ((long)'s' << 32) + ((long)'e' << 48) && (int)((byte*)end - (byte*)Current) >= 5 * sizeof(char))
-                            {
-                                value = false;
-                                Current += 5;
-                            }
-                            else
-                            {
-                                ParseState = ParseState.NotBool;
-                                return;
-                            }
-                        }
-                        else if (*(long*)(Current) == 't' + ('r' << 16) + ((long)'u' << 32) + ((long)'e' << 48) && (int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                        {
-                            value = true;
-                            Current += 4;
-                        }
-                        else
-                        {
-                            ParseState = ParseState.NotBool;
-                            return;
-                        }
-                        if (Current == end) ParseState = ParseState.CrashEnd;
-                        else if (*Current == Quote) ++Current;
-                        else ParseState = ParseState.NotBool;
-                        return;
-                    }
-                    break;
-            }
-            if (isSpace == 0)
-            {
-                char* current = Current;
-                space();
-                if (current != Current)
-                {
-                    if (ParseState != ParseState.Success) return;
-                    if (Current == end)
-                    {
-                        ParseState = ParseState.CrashEnd;
-                        return;
-                    }
-                    isSpace = 1;
-                    goto START;
-                }
-            }
-            ParseState = ParseState.NotBool;
+            Quote = (char)0;
+            bool boolValue;
+            if (parse(out boolValue)) value = null;
+            else value = boolValue;
         }
         /// <summary>
         /// 数字解析
@@ -242,7 +47,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref byte value)
+        public void CallParse(ref byte value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -337,7 +142,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref byte? value)
+        public void CallParse(ref byte? value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -442,7 +247,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref sbyte value)
+        public void CallParse(ref sbyte value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -583,7 +388,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref sbyte? value)
+        public void CallParse(ref sbyte? value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -734,7 +539,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref ushort value)
+        public void CallParse(ref ushort value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -829,7 +634,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref ushort? value)
+        public void CallParse(ref ushort? value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -934,7 +739,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref short value)
+        public void CallParse(ref short value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -1075,7 +880,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref short? value)
+        public void CallParse(ref short? value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -1226,7 +1031,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref uint value)
+        public void CallParse(ref uint value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -1321,7 +1126,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref uint? value)
+        public void CallParse(ref uint? value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -1426,7 +1231,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref int value)
+        public void CallParse(ref int value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -1567,7 +1372,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref int? value)
+        public void CallParse(ref int? value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -1718,7 +1523,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref ulong value)
+        public void CallParse(ref ulong value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -1811,7 +1616,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref ulong? value)
+        public void CallParse(ref ulong? value)
         {
             uint number = (uint)(*Current - '0');
             if (number > 9)
@@ -1914,7 +1719,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref long value)
+        public void CallParse(ref long value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -2059,7 +1864,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref long? value)
+        public void CallParse(ref long? value)
         {
             int sign = 0;
             uint number = (uint)(*Current - '0');
@@ -2214,17 +2019,17 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref float value)
+        public void CallParse(ref float value)
         {
             char* end = null;
             switch (searchNumber(ref end))
             {
                 case NumberType.Number:
-                    if (float.TryParse(getNumberString(end), out value)) Current = end;
+                    if (parseStringBuffer(end) != 0 && float.TryParse(stringBuffer, out value)) Current = end;
                     else ParseState = ParseState.NotNumber;
                     return;
                 case NumberType.String:
-                    if (float.TryParse(getNumberString(end), out value)) Current = end + 1;
+                    if (parseStringBuffer(end) != 0 && float.TryParse(stringBuffer, out value)) Current = end + 1;
                     else ParseState = ParseState.NotNumber;
                     return;
                 case NumberType.NaN: value = float.NaN; return;
@@ -2238,14 +2043,14 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref float? value)
+        public void CallParse(ref float? value)
         {
             char* end = null;
             switch (searchNumberNull(ref end))
             {
                 case NumberType.Number:
                     float parseValue;
-                    if (float.TryParse(getNumberString(end), out parseValue))
+                    if (parseStringBuffer(end) != 0 && float.TryParse(stringBuffer, out parseValue))
                     {
                         Current = end;
                         value = parseValue;
@@ -2254,7 +2059,7 @@ namespace AutoCSer.Json
                     return;
                 case NumberType.String:
                     float parseStringValue;
-                    if (float.TryParse(getNumberString(end), out parseStringValue))
+                    if (parseStringBuffer(end) != 0 && float.TryParse(stringBuffer, out parseStringValue))
                     {
                         Current = end + 1;
                         value = parseStringValue;
@@ -2273,17 +2078,17 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref double value)
+        public void CallParse(ref double value)
         {
             char* end = null;
             switch (searchNumber(ref end))
             {
                 case NumberType.Number:
-                    if (double.TryParse(getNumberString(end), out value)) Current = end;
+                    if (parseStringBuffer(end) != 0 && double.TryParse(stringBuffer, out value)) Current = end;
                     else ParseState = ParseState.NotNumber;
                     return;
                 case NumberType.String:
-                    if (double.TryParse(getNumberString(end), out value)) Current = end + 1;
+                    if (parseStringBuffer(end) != 0 && double.TryParse(stringBuffer, out value)) Current = end + 1;
                     else ParseState = ParseState.NotNumber;
                     return;
                 case NumberType.NaN: value = double.NaN; return;
@@ -2297,14 +2102,14 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref double? value)
+        public void CallParse(ref double? value)
         {
             char* end = null;
             switch (searchNumberNull(ref end))
             {
                 case NumberType.Number:
                     double parseValue;
-                    if (double.TryParse(getNumberString(end), out parseValue))
+                    if (parseStringBuffer(end) != 0 && double.TryParse(stringBuffer, out parseValue))
                     {
                         Current = end;
                         value = parseValue;
@@ -2313,7 +2118,7 @@ namespace AutoCSer.Json
                     return;
                 case NumberType.String:
                     double parseStringValue;
-                    if (double.TryParse(getNumberString(end), out parseStringValue))
+                    if (parseStringBuffer(end) != 0 && double.TryParse(stringBuffer, out parseStringValue))
                     {
                         Current = end + 1;
                         value = parseStringValue;
@@ -2332,17 +2137,17 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref decimal value)
+        public void CallParse(ref decimal value)
         {
             char* end = null;
             switch (searchNumber(ref end))
             {
                 case NumberType.Number:
-                    if (decimal.TryParse(getNumberString(end), out value)) Current = end;
+                    if (parseStringBuffer(end) != 0 && decimal.TryParse(stringBuffer, out value)) Current = end;
                     else ParseState = ParseState.NotNumber;
                     return;
                 case NumberType.String:
-                    if (decimal.TryParse(getNumberString(end), out value)) Current = end + 1;
+                    if (parseStringBuffer(end) != 0 && decimal.TryParse(stringBuffer, out value)) Current = end + 1;
                     else ParseState = ParseState.NotNumber;
                     return;
                 case NumberType.NaN:
@@ -2358,14 +2163,14 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref decimal? value)
+        public void CallParse(ref decimal? value)
         {
             char* end = null;
             switch (searchNumberNull(ref end))
             {
                 case NumberType.Number:
                     decimal parseValue;
-                    if (decimal.TryParse(getNumberString(end), out parseValue))
+                    if (parseStringBuffer(end) != 0 && decimal.TryParse(stringBuffer, out parseValue))
                     {
                         Current = end;
                         value = parseValue;
@@ -2374,7 +2179,7 @@ namespace AutoCSer.Json
                     return;
                 case NumberType.String:
                     decimal parseStringValue;
-                    if (decimal.TryParse(getNumberString(end), out parseStringValue))
+                    if (parseStringBuffer(end) != 0 && decimal.TryParse(stringBuffer, out parseStringValue))
                     {
                         Current = end + 1;
                         value = parseStringValue;
@@ -2395,7 +2200,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref char value)
+        public void CallParse(ref char value)
         {
             byte isSpace = 0;
         START:
@@ -2478,7 +2283,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref char? value)
+        public void CallParse(ref char? value)
         {
             byte isSpace = 0;
         START:
@@ -2564,83 +2369,173 @@ namespace AutoCSer.Json
             }
             ParseState = ParseState.NotChar;
         }
+        ///// <summary>
+        ///// 时间解析
+        ///// </summary>
+        ///// <param name="value">数据</param>
+        //[ParseMethod]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //public void CallParse(ref DateTime value)
+        //{
+        //    byte isSpace = 0;
+        //START:
+        //    if (*Current == '"' || *Current == '\'')
+        //    {
+        //        string timeString = parseString();
+        //        if (!string.IsNullOrEmpty(timeString))
+        //        {
+        //            DateTime parseTime;
+        //            if (timeString[0] == '/')
+        //            {
+        //                if (Parser.parseTime(timeString, out parseTime))
+        //                {
+        //                    value = parseTime;
+        //                    return;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (DateTime.TryParse(timeString, out parseTime))
+        //                {
+        //                    value = parseTime;
+        //                    return;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
+        //        {
+        //            if (*(long*)(Current) == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
+        //            {
+        //                value = DateTime.MinValue;
+        //                Current += 4;
+        //                return;
+        //            }
+        //            if (*Current == 'n' && (int)((byte*)end - (byte*)Current) > 9 * sizeof(char) && ((*(long*)(Current + 1) ^ ('e' + ('w' << 16) + ((long)' ' << 32) + ((long)'D' << 48))) | (*(long*)(Current + 5) ^ ('a' + ('t' << 16) + ((long)'e' << 32) + ((long)'(' << 48)))) == 0)
+        //            {
+        //                long millisecond = 0;
+        //                Current += 9;
+        //                CallParse(ref millisecond);
+        //                if (ParseState != ParseState.Success) return;
+        //                if (Current == end)
+        //                {
+        //                    ParseState = ParseState.CrashEnd;
+        //                    return;
+        //                }
+        //                if (*Current == ')')
+        //                {
+        //                    value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
+        //                    ++Current;
+        //                    return;
+        //                }
+        //            }
+        //        }
+        //        if (isSpace == 0)
+        //        {
+        //            space();
+        //            if (ParseState != ParseState.Success) return;
+        //            if (Current == end)
+        //            {
+        //                ParseState = ParseState.CrashEnd;
+        //                return;
+        //            }
+        //            isSpace = 1;
+        //            goto START;
+        //        }
+        //    }
+        //    ParseState = ParseState.NotDateTime;
+        //}
+        ///// <summary>
+        ///// 时间解析
+        ///// </summary>
+        ///// <param name="value">数据</param>
+        //[ParseMethod]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        //public void CallParse(ref DateTime? value)
+        //{
+        //    byte isSpace = 0;
+        //START:
+        //    if (*Current == '"' || *Current == '\'')
+        //    {
+        //        string timeString = parseString();
+        //        if (!string.IsNullOrEmpty(timeString))
+        //        {
+        //            DateTime parseTime;
+        //            if (timeString[0] == '/')
+        //            {
+        //                if (Parser.parseTime(timeString, out parseTime))
+        //                {
+        //                    value = parseTime;
+        //                    return;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (DateTime.TryParse(timeString, out parseTime))
+        //                {
+        //                    value = parseTime;
+        //                    return;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
+        //        {
+        //            if (*(long*)(Current) == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
+        //            {
+        //                value = null;
+        //                Current += 4;
+        //                return;
+        //            }
+        //            if (*Current == 'n' && (int)((byte*)end - (byte*)Current) > 9 * sizeof(char) && ((*(long*)(Current + 1) ^ ('e' + ('w' << 16) + ((long)' ' << 32) + ((long)'D' << 48))) | (*(long*)(Current + 5) ^ ('a' + ('t' << 16) + ((long)'e' << 32) + ((long)'(' << 48)))) == 0)
+        //            {
+        //                long millisecond = 0;
+        //                Current += 9;
+        //                CallParse(ref millisecond);
+        //                if (ParseState != ParseState.Success) return;
+        //                if (Current == end)
+        //                {
+        //                    ParseState = ParseState.CrashEnd;
+        //                    return;
+        //                }
+        //                if (*Current == ')')
+        //                {
+        //                    value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
+        //                    ++Current;
+        //                    return;
+        //                }
+        //            }
+        //        }
+        //        if (isSpace == 0)
+        //        {
+        //            space();
+        //            if (ParseState != ParseState.Success) return;
+        //            if (Current == end)
+        //            {
+        //                ParseState = ParseState.CrashEnd;
+        //                return;
+        //            }
+        //            isSpace = 1;
+        //            goto START;
+        //        }
+        //    }
+        //    ParseState = ParseState.NotDateTime;
+        //}
         /// <summary>
         /// 时间解析
         /// </summary>
         /// <param name="value">数据</param>
         [ParseMethod]
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref DateTime value)
+        public void CallParse(ref DateTime value)
         {
-            byte isSpace = 0;
-        START:
-            if (*Current == '"' || *Current == '\'')
-            {
-                string timeString = parseString();
-                if (!string.IsNullOrEmpty(timeString))
-                {
-                    DateTime parseTime;
-                    if (timeString[0] == '/')
-                    {
-                        if (Parser.parseTime(timeString, out parseTime))
-                        {
-                            value = parseTime;
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        if (DateTime.TryParse(timeString, out parseTime))
-                        {
-                            value = parseTime;
-                            return;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                {
-                    if (*(long*)(Current) == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
-                    {
-                        value = DateTime.MinValue;
-                        Current += 4;
-                        return;
-                    }
-                    if (*Current == 'n' && (int)((byte*)end - (byte*)Current) > 9 * sizeof(char) && ((*(long*)(Current + 1) ^ ('e' + ('w' << 16) + ((long)' ' << 32) + ((long)'D' << 48))) | (*(long*)(Current + 5) ^ ('a' + ('t' << 16) + ((long)'e' << 32) + ((long)'(' << 48)))) == 0)
-                    {
-                        long millisecond = 0;
-                        Current += 9;
-                        Parse(ref millisecond);
-                        if (ParseState != ParseState.Success) return;
-                        if (Current == end)
-                        {
-                            ParseState = ParseState.CrashEnd;
-                            return;
-                        }
-                        if (*Current == ')')
-                        {
-                            value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
-                            ++Current;
-                            return;
-                        }
-                    }
-                }
-                if (isSpace == 0)
-                {
-                    space();
-                    if (ParseState != ParseState.Success) return;
-                    if (Current == end)
-                    {
-                        ParseState = ParseState.CrashEnd;
-                        return;
-                    }
-                    isSpace = 1;
-                    goto START;
-                }
-            }
-            ParseState = ParseState.NotDateTime;
+            Quote = (char)0;
+            if (parseDateTime(ref value)) value = DateTime.MinValue;
         }
         /// <summary>
         /// 时间解析
@@ -2648,77 +2543,12 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref DateTime? value)
+        public void CallParse(ref DateTime? value)
         {
-            byte isSpace = 0;
-        START:
-            if (*Current == '"' || *Current == '\'')
-            {
-                string timeString = parseString();
-                if (!string.IsNullOrEmpty(timeString))
-                {
-                    DateTime parseTime;
-                    if (timeString[0] == '/')
-                    {
-                        if (Parser.parseTime(timeString, out parseTime))
-                        {
-                            value = parseTime;
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        if (DateTime.TryParse(timeString, out parseTime))
-                        {
-                            value = parseTime;
-                            return;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
-                {
-                    if (*(long*)(Current) == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
-                    {
-                        value = null;
-                        Current += 4;
-                        return;
-                    }
-                    if (*Current == 'n' && (int)((byte*)end - (byte*)Current) > 9 * sizeof(char) && ((*(long*)(Current + 1) ^ ('e' + ('w' << 16) + ((long)' ' << 32) + ((long)'D' << 48))) | (*(long*)(Current + 5) ^ ('a' + ('t' << 16) + ((long)'e' << 32) + ((long)'(' << 48)))) == 0)
-                    {
-                        long millisecond = 0;
-                        Current += 9;
-                        Parse(ref millisecond);
-                        if (ParseState != ParseState.Success) return;
-                        if (Current == end)
-                        {
-                            ParseState = ParseState.CrashEnd;
-                            return;
-                        }
-                        if (*Current == ')')
-                        {
-                            value = JavascriptLocalMinTime.AddTicks(millisecond * TimeSpan.TicksPerMillisecond);
-                            ++Current;
-                            return;
-                        }
-                    }
-                }
-                if (isSpace == 0)
-                {
-                    space();
-                    if (ParseState != ParseState.Success) return;
-                    if (Current == end)
-                    {
-                        ParseState = ParseState.CrashEnd;
-                        return;
-                    }
-                    isSpace = 1;
-                    goto START;
-                }
-            }
-            ParseState = ParseState.NotDateTime;
+            Quote = (char)0;
+            DateTime dateTime = default(DateTime);
+            if (parseDateTime(ref dateTime)) value = null;
+            else value = dateTime;
         }
         /// <summary>
         /// Guid解析
@@ -2726,7 +2556,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref System.Guid value)
+        public void CallParse(ref System.Guid value)
         {
             if (*Current == '\'' || *Current == '"')
             {
@@ -2757,7 +2587,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref System.Guid? value)
+        public void CallParse(ref System.Guid? value)
         {
             byte isSpace = 0;
         START:
@@ -2794,7 +2624,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref string value)
+        public void CallParse(ref string value)
         {
             byte isSpace = 0;
         START:
@@ -2829,7 +2659,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref SubString value)
+        public void CallParse(ref SubString value)
         {
             byte isSpace = 0;
         START:
@@ -2889,10 +2719,10 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref object value)
+        public void CallParse(ref object value)
         {
             Node node = default(Node);
-            Parse(ref node);
+            CallParse(ref node);
             if (ParseState == ParseState.Success)
             {
                 if (node.Type == NodeType.Null) value = null;
@@ -2924,7 +2754,7 @@ namespace AutoCSer.Json
         /// <param name="type">类型</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref Type type)
+        public void CallParse(ref Type type)
         {
             byte isSpace = 0;
         START:
@@ -2962,7 +2792,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据</param>
         [ParseMethod]
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public void Parse(ref Node value)
+        public void CallParse(ref Node value)
         {
             LeftArray<Node> nodeArray = default(LeftArray<Node>), nameArray = default(LeftArray<Node>);
             NEXTNODE:
@@ -3052,7 +2882,7 @@ namespace AutoCSer.Json
                         {
                             long millisecond = 0;
                             Current += 9;
-                            Parse(ref millisecond);
+                            CallParse(ref millisecond);
                             if (ParseState != ParseState.Success) return;
                             if (Current == end)
                             {
@@ -3148,7 +2978,7 @@ namespace AutoCSer.Json
         }
         //[ParseMethod]
         //[AutoCSer.IOS.Preserve(Conditional = true)]
-        //public void Parse(ref Node value)
+        //public void CallParse(ref Node value)
         //{
         //    space();
         //    if (ParseState != ParseState.Success) return;

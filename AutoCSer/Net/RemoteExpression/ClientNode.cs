@@ -73,7 +73,7 @@ namespace AutoCSer.Net.RemoteExpression
         private void serialize(AutoCSer.Json.Serializer serializer)
         {
             serializer.CharStream.Write('[');
-            serializer.Serialize(ClientNodeId);
+            serializer.CallSerialize(ClientNodeId);
             serializer.CharStream.Write(',');
             Node.Serialize(serializer, Checker);
             serializer.CharStream.Write(']');
@@ -88,7 +88,7 @@ namespace AutoCSer.Net.RemoteExpression
         {
             if (*parser.Current++ == '[')
             {
-                parser.Parse(ref ClientNodeId);
+                parser.CallParse(ref ClientNodeId);
                 if (parser.State == Json.ParseState.Success)
                 {
                     if (*parser.Current++ == ',')

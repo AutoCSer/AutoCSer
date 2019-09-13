@@ -101,48 +101,148 @@ namespace AutoCSer.Extension
         {
             generator.Emit(method.IsFinal || !method.IsVirtual ? OpCodes.Call : OpCodes.Callvirt, method);
         }
+        ///// <summary>
+        ///// 整数转换成指针
+        ///// </summary>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //private static unsafe char* toPointer(long value)
+        //{
+        //    return (char*)value;
+        //}
+        ///// <summary>
+        ///// 整数转换成指针
+        ///// </summary>
+        //private static readonly MethodInfo toPointerMethod = typeof(EmitGenerator).GetMethod("toPointer", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof(long) }, null);
         /// <summary>
-        /// 整数转换成指针
+        /// 非托管内存数据流预增数据流长度方法信息
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private static unsafe char* toPointer(long value)
-        {
-            return (char*)value;
-        }
+        private static readonly MethodInfo unmanagedStreamBasePrepSizeMethod = typeof(UnmanagedStreamBase).GetMethod("prepSize", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(int) }, null);
         /// <summary>
-        /// 整数转换成指针
-        /// </summary>
-        private static readonly MethodInfo toPointerMethod = typeof(EmitGenerator).GetMethod("toPointer", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof(long) }, null);
-        /// <summary>
-        /// 内存字符流写入字符串方法信息
-        /// </summary>
-        private static readonly MethodInfo charStreamSimpleWriteNotNullCharsMethod = typeof(CharStream).GetMethod("SimpleWriteNotNull", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(char*), typeof(int) }, null);
-        /// <summary>
-        /// 写字符串
+        /// 预增数据流长度
         /// </summary>
         /// <param name="generator"></param>
         /// <param name="target"></param>
-        /// <param name="value">字符串起始位置</param>
-        /// <param name="count">写入字符数</param>
-        public static unsafe void charStreamSimpleWriteNotNull(this ILGenerator generator, OpCode target, char* value, int count)
+        /// <param name="size"></param>
+        public static void unmanagedStreamBasePrepSize(this ILGenerator generator, OpCode target, int size)
+        {
+            generator.Emit(target);
+            generator.int32(size);
+            generator.Emit(OpCodes.Call, unmanagedStreamBasePrepSizeMethod);
+        }
+        /// <summary>
+        /// 非托管内存数据流写入 64 字节数据方法信息
+        /// </summary>
+        private static readonly MethodInfo unmanagedStreamBaseUnsafeWriteULong4Method = typeof(UnmanagedStreamBase).GetMethod("UnsafeWrite", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(ulong), typeof(ulong), typeof(ulong), typeof(ulong) }, null);
+        /// <summary>
+        /// 写入 64 字节数据
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="value3"></param>
+        public static void unmanagedStreamBaseUnsafeWrite(this ILGenerator generator, OpCode target, ulong value0, ulong value1, ulong value2, ulong value3)
+        {
+            generator.Emit(target);
+            generator.Emit(OpCodes.Ldc_I8, (long)value0);
+            generator.Emit(OpCodes.Ldc_I8, (long)value1);
+            generator.Emit(OpCodes.Ldc_I8, (long)value2);
+            generator.Emit(OpCodes.Ldc_I8, (long)value3);
+            generator.Emit(OpCodes.Call, unmanagedStreamBaseUnsafeWriteULong4Method);
+        }
+        /// <summary>
+        /// 非托管内存数据流写入数据方法信息
+        /// </summary>
+        private static readonly MethodInfo unmanagedStreamBaseUnsafeWriteULong4SizeMethod = typeof(UnmanagedStreamBase).GetMethod("UnsafeWrite", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(ulong), typeof(ulong), typeof(ulong), typeof(ulong), typeof(int) }, null);
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="value3"></param>
+        /// <param name="size"></param>
+        public static void unmanagedStreamBaseUnsafeWrite(this ILGenerator generator, OpCode target, ulong value0, ulong value1, ulong value2, ulong value3, int size)
+        {
+            generator.Emit(target);
+            generator.Emit(OpCodes.Ldc_I8, (long)value0);
+            generator.Emit(OpCodes.Ldc_I8, (long)value1);
+            generator.Emit(OpCodes.Ldc_I8, (long)value2);
+            generator.Emit(OpCodes.Ldc_I8, (long)value3);
+            generator.int32(size);
+            generator.Emit(OpCodes.Call, unmanagedStreamBaseUnsafeWriteULong4SizeMethod);
+        }
+        /// <summary>
+        /// 非托管内存数据流写入数据方法信息
+        /// </summary>
+        private static readonly MethodInfo unmanagedStreamBaseUnsafeWriteULong3SizeMethod = typeof(UnmanagedStreamBase).GetMethod("UnsafeWrite", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(ulong), typeof(ulong), typeof(ulong), typeof(int) }, null);
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="size"></param>
+        public static void unmanagedStreamBaseUnsafeWrite(this ILGenerator generator, OpCode target, ulong value0, ulong value1, ulong value2, int size)
+        {
+            generator.Emit(target);
+            generator.Emit(OpCodes.Ldc_I8, (long)value0);
+            generator.Emit(OpCodes.Ldc_I8, (long)value1);
+            generator.Emit(OpCodes.Ldc_I8, (long)value2);
+            generator.int32(size);
+            generator.Emit(OpCodes.Call, unmanagedStreamBaseUnsafeWriteULong3SizeMethod);
+        }
+        /// <summary>
+        /// 非托管内存数据流写入数据方法信息
+        /// </summary>
+        private static readonly MethodInfo unmanagedStreamBaseUnsafeWriteULong2SizeMethod = typeof(UnmanagedStreamBase).GetMethod("UnsafeWrite", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(ulong), typeof(ulong), typeof(int) }, null);
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="value0"></param>
+        /// <param name="value1"></param>
+        /// <param name="size"></param>
+        public static void unmanagedStreamBaseUnsafeWrite(this ILGenerator generator, OpCode target, ulong value0, ulong value1, int size)
+        {
+            generator.Emit(target);
+            generator.Emit(OpCodes.Ldc_I8, (long)value0);
+            generator.Emit(OpCodes.Ldc_I8, (long)value1);
+            generator.int32(size);
+            generator.Emit(OpCodes.Call, unmanagedStreamBaseUnsafeWriteULong2SizeMethod);
+        }
+        /// <summary>
+        /// 非托管内存数据流写入数据方法信息
+        /// </summary>
+        private static readonly MethodInfo unmanagedStreamBaseUnsafeWriteULongSizeMethod = typeof(UnmanagedStreamBase).GetMethod("UnsafeWrite", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(ulong), typeof(int) }, null);
+        /// <summary>
+        /// 写入数据
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        /// <param name="size"></param>
+        public static void unmanagedStreamBaseUnsafeWrite(this ILGenerator generator, OpCode target, ulong value, int size)
         {
             generator.Emit(target);
             generator.Emit(OpCodes.Ldc_I8, (long)value);
-            generator.Emit(OpCodes.Call, toPointerMethod);
-            //if ((ulong)value > uint.MaxValue) generator.Emit(OpCodes.Ldc_I8, (ulong)value);
-            //else generator.Emit(OpCodes.Ldc_I4, (uint)value);
-            //generator.Emit(OpCodes.Conv_U);
-            generator.int32(count);
-            generator.Emit(OpCodes.Call, charStreamSimpleWriteNotNullCharsMethod);
+            generator.int32(size);
+            generator.Emit(OpCodes.Call, unmanagedStreamBaseUnsafeWriteULongSizeMethod);
         }
         /// <summary>
-        /// 对象初始化
-        /// </summary>
-        /// <param name="generator"></param>
-        /// <param name="type"></param>
-        /// <param name="local"></param>
+                 /// 对象初始化
+                 /// </summary>
+                 /// <param name="generator"></param>
+                 /// <param name="type"></param>
+                 /// <param name="local"></param>
         public static void initobjShort(this ILGenerator generator, Type type, LocalBuilder local)
         {
             if (type.isInitobj())

@@ -376,47 +376,6 @@ namespace AutoCSer.Xml
             return method;
         }
 
-#if !NOJIT
-        /// <summary>
-        /// 名称数据信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<string, Pointer> nameStartPools = new AutoCSer.Threading.LockDictionary<string, Pointer>();
-        /// <summary>
-        /// 获取名称数据
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public unsafe static char* GetNameStartPool(string name)
-        {
-            Pointer pointer;
-            if (nameStartPools.TryGetValue(name, out pointer)) return pointer.Char;
-            char* value = Emit.NamePool.Get(name, 1, 1);
-            *value = '<';
-            *(value + (1 + name.Length)) = '>';
-            nameStartPools.Set(name, new Pointer { Data = value });
-            return value;
-        }
-        /// <summary>
-        /// 名称数据信息集合
-        /// </summary>
-        private static readonly AutoCSer.Threading.LockDictionary<string, Pointer> nameEndPools = new AutoCSer.Threading.LockDictionary<string, Pointer>();
-        /// <summary>
-        /// 获取名称数据
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public unsafe static char* GetNameEndPool(string name)
-        {
-            Pointer pointer;
-            if (nameEndPools.TryGetValue(name, out pointer)) return pointer.Char;
-            char* value = Emit.NamePool.Get(name, 2, 1);
-            *(int*)value = '<' + ('/' << 16);
-            *(value + (2 + name.Length)) = '>';
-            nameEndPools.Set(name, new Pointer { Data = value });
-            return value;
-        }
-#endif
-
         /// <summary>
         /// 清除缓存数据
         /// </summary>

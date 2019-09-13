@@ -34,7 +34,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         private CheckTask get(long tick, int taskId)
         {
             CheckTask task;
-            return tick == AutoCSer.Pub.StartTime.Ticks && tasks.TryGetValue(taskId, out task) ? task : null;
+            return tick == AutoCSer.Date.StartTime.Ticks && tasks.TryGetValue(taskId, out task) ? task : null;
         }
         /// <summary>
         /// 设置程序集环境检测结果
@@ -44,7 +44,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         private void setResult(CheckResult result)
         {
             CheckTask task;
-            if (result.Tick == AutoCSer.Pub.StartTime.Ticks && tasks.TryGetValue(result.TaskId, out task))
+            if (result.Tick == AutoCSer.Date.StartTime.Ticks && tasks.TryGetValue(result.TaskId, out task))
             {
                 Monitor.Enter(taskLock);
                 tasks.Remove(result.TaskId);

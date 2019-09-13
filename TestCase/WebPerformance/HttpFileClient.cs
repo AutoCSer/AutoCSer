@@ -435,12 +435,11 @@ Date: Mon, 15 May 2017 12:16:35 GMT
                             task.ErrorCount = task.RefusedCount = 0;
                             requestData = new SubArray<byte>(requestDatas[(byte)loopTestType], 0, requestDatas[(byte)loopTestType].Length / 16 * pipeline);
                             receiveKeepAliveSize = responseSizes[(byte)loopTestType] * pipeline;
-                            long time = AutoCSer.Pub.StopwatchTicks;
+                            long time = System.Diagnostics.Stopwatch.GetTimestamp();
                             task.Add(count / pipeline);
                             task.Wait();
-                            time = AutoCSer.Pub.GetStopwatchTicks(time);
+                            long milliseconds = (long)Date.GetTimestampTimeSpan(time).TotalMilliseconds;
                             task.CloseClient();
-                            long milliseconds = (long)new TimeSpan(time).TotalMilliseconds;
                             Console.WriteLine(@"Finally[" + count.toString() + "] Error[" + (task.ErrorCount * pipeline).toString() + "] Refused[" + task.RefusedCount.toString() + "] " + milliseconds.toString() + "ms" + (milliseconds == 0 ? null : ("[" + ((count - task.RefusedCount) / milliseconds).toString() + "/ms]")) + " " + loopTestType.ToString());
                             Console.WriteLine(@"Sleep 3000ms
 ");

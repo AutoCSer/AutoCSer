@@ -31,7 +31,7 @@ namespace AutoCSer.CodeGenerator
                             LeftArray<string>[] codes = Directory.GetFiles(directory.FullName, "*.cs").getArray(name => code(name));
                             if (!codes.any(code => code.Length == 0))
                             {
-                                string fileName = parameter.ProjectPath + @"{" + parameter.DefaultNamespace + "}.CombinationTemplate.cs";
+                                string fileName = parameter.ProjectPath + @"{" + (config.CodeFileName ?? parameter.DefaultNamespace) + "}.CombinationTemplate.cs";
                                 if (Coder.WriteFile(fileName, Coder.WarningCode + string.Concat(codes.getArray(code => code.ToArray()).getArray()) + Coder.FileEndCode))
                                 {
                                     Messages.Message(fileName + " 被修改");

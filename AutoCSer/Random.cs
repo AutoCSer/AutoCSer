@@ -70,7 +70,7 @@ namespace AutoCSer
             secureSeeds = (uint*)Unmanaged.GetStatic(64 * sizeof(uint) + 5 * 11 * sizeof(uint), false);
             seeds = secureSeeds + 64;
             current64 = 5 * 11 - 2;
-            ulong tick = (ulong)Pub.StartTime.Ticks ^ (ulong)Environment.TickCount ^ ((ulong)Pub.Identity32 << 8) ^ ((ulong)Date.NowTimerInterval << 24);
+            ulong tick = (ulong)AutoCSer.Date.StartTime.Ticks ^ (ulong)System.Diagnostics.Stopwatch.GetTimestamp() ^ (ulong)Environment.TickCount ^ ((ulong)Pub.Identity32 << 8) ^ ((ulong)Date.NowTimerInterval << 24);
             int isSeedArray = 0;
             FieldInfo seedField = typeof(Random).GetField("SeedArray", BindingFlags.Instance | BindingFlags.NonPublic);
             if (seedField != null)

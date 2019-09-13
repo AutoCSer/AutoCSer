@@ -12,15 +12,15 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// HTTP 套接字数据发送完成后的任务处理
         /// </summary>
-        /// <param name="taskTicks">线程切换超时时钟周期</param>
-        private OnSendTask(long taskTicks) : base(taskTicks) { }
+        /// <param name="taskTimestamp">线程切换超时时钟周期</param>
+        private OnSendTask(long taskTimestamp) : base(taskTimestamp) { }
         /// <summary>
         /// 添加任务
         /// </summary>
         /// <param name="value"></param>
         internal void Add(Socket value)
         {
-            value.TaskTicks = AutoCSer.Pub.Stopwatch.ElapsedTicks;
+            value.TaskTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             Socket headValue;
             do
             {
@@ -49,12 +49,12 @@ namespace AutoCSer.Net.Http
         {
             do
             {
-                currentTaskTicks = taskTicks;
+                currentTaskTimestamp = taskTimestamp;
                 waitHandle.Wait();
                 Socket value = Interlocked.Exchange(ref head, null);
                 do
                 {
-                    value = value.SingleRunTask(ref currentTaskTicks);
+                    value = value.SingleRunTask(ref currentTaskTimestamp);
                 }
                 while (value != null);
             }
@@ -74,7 +74,7 @@ namespace AutoCSer.Net.Http
         /// </summary>
         private static void check()
         {
-            if (TcpServer.TaskConfig.Default.IsCheck(Task.currentTaskTicks))
+            if (TcpServer.TaskConfig.Default.IsCheck(Task.currentTaskTimestamp))
             {
                 if (isAllTask)
                 {
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.Http
                 {
                     try
                     {
-                        Task = new OnSendTask(TcpServer.TaskConfig.Default.TaskTicks);
+                        Task = new OnSendTask(TcpServer.TaskConfig.Default.TaskTimestamp);
                         tasks[++taskIndex] = Task;
                         if (taskIndex + 1 == tasks.Length) isAllTask = true;
                     }
@@ -104,7 +104,7 @@ namespace AutoCSer.Net.Http
             else
             {
                 tasks = new OnSendTask[config.ThreadCount];
-                tasks[0] = Task = new OnSendTask(config.TaskTicks);
+                tasks[0] = Task = new OnSendTask(config.TaskTimestamp);
                 config.OnCheck(check);
             }
         }

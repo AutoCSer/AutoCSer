@@ -37,11 +37,13 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <summary>
         /// TCP 服务端套接字任务处理
         /// </summary>
+        /// <param name="currentTaskTimestamp"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerSocket RunTask()
+        internal ServerSocket RunTask(ref long currentTaskTimestamp)
         {
             ServerSocket value = NextTask;
+            currentTaskTimestamp = TaskTimestamp;
             runTask();
             NextTask = null;
             return value;

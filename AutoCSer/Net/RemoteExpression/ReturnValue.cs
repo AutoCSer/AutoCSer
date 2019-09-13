@@ -116,7 +116,7 @@ namespace AutoCSer.Net.RemoteExpression
             {
                 CharStream jsonStream = serializer.CharStream;
                 jsonStream.Write('[');
-                serializer.Serialize(value.ClientNodeId);
+                serializer.CallSerialize(value.ClientNodeId);
                 jsonStream.Write(',');
                 value.serialize(serializer);
                 jsonStream.Write(']');
@@ -144,7 +144,7 @@ namespace AutoCSer.Net.RemoteExpression
                     return;
                 }
                 int clientNodeId = 0;
-                parser.Parse(ref clientNodeId);
+                parser.CallParse(ref clientNodeId);
                 if (parser.State == Json.ParseState.Success)
                 {
                     value = createReturnValues.Array[clientNodeId]();

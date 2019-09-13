@@ -1488,7 +1488,7 @@ namespace AutoCSer.Xml
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool CustomParse(ref uint value)
         {
-            Parse(ref value);
+            CallParse(ref value);
             return State == ParseState.Success;
         }
         /// <summary>
@@ -1499,7 +1499,7 @@ namespace AutoCSer.Xml
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool CustomParse(ref uint? value)
         {
-            Parse(ref value);
+            CallParse(ref value);
             return State == ParseState.Success;
         }
         /// <summary>
@@ -1510,7 +1510,7 @@ namespace AutoCSer.Xml
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool CustomParse(ref string value)
         {
-            Parse(ref value);
+            CallParse(ref value);
             return State == ParseState.Success;
         }
         /// <summary>

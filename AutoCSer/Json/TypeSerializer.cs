@@ -234,18 +234,14 @@ namespace AutoCSer.Json
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             byte* data = (byte*)jsonStream.GetPrepSizeCurrent(21);
-            *(int*)data = '{' + ('"' << 16);
-            *(int*)(data + sizeof(char) * 2) = 'K' + ('e' << 16);
-            *(int*)(data + sizeof(char) * 4) = 'y' + ('"' << 16);
-            *(char*)(data + sizeof(char) * 6) = ':';
+            *(long*)data = '{' + ('"' << 16) + ((long)'K' << 32) + ((long)'e' << 48);
+            *(long*)(data + sizeof(long)) = 'y' + ('"' << 16) + ((long)':' << 32);
             jsonStream.ByteSize += 7 * sizeof(char);
             TypeSerializer<valueType>.Serialize(jsonSerializer, value.Key);
             data = (byte*)jsonStream.GetPrepSizeCurrent(12);
-            *(int*)data = ',' + ('"' << 16);
-            *(int*)(data + sizeof(char) * 2) = 'V' + ('a' << 16);
-            *(int*)(data + sizeof(char) * 4) = 'l' + ('u' << 16);
-            *(int*)(data + sizeof(char) * 6) = 'e' + ('"' << 16);
-            *(char*)(data + sizeof(char) * 8) = ':';
+            *(long*)data = ',' + ('"' << 16) + ((long)'V' << 32) + ((long)'a' << 48);
+            *(long*)(data + sizeof(long)) = 'l' + ('u' << 16) + ((long)'e' << 32) + ((long)'"' << 48);
+            *(char*)(data + sizeof(long) * 2) = ':';
             jsonStream.ByteSize += 9 * sizeof(char);
             TypeSerializer<dictionaryValueType>.Serialize(jsonSerializer, value.Value);
             jsonStream.Write('}');

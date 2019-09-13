@@ -261,7 +261,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (ServerType serverType in server.Types) methods.Add(serverType.Methods);
                         methodIndexs = methods.ToArray();
                         methods.Length = 0;
-                        methodIndexs = TcpMethod.CheckIdentity(methodIndexs, getRememberIdentityName(), method => method.Method.MethodKeyFullName);
+                        methodIndexs = TcpMethod.CheckIdentity(methodIndexs, null, getRememberIdentityName(), method => method.Method.MethodKeyFullName);
                         if (methodIndexs == null) return;
                         int index = 0;
                         IsVerifyMethod = IsCallQueue = false;
