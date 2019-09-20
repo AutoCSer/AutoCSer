@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>AutoCSer.Json.DotNet2</id>
+    <version>1.1.42</version>
+    <authors>肖进</authors>
+    <owners>肖进</owners>
+    <projectUrl>http://www.autocser.com/Serialize/Json.html</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>AutoCSer.Json is a high-performance JSON framework.
+AutoCSer.Json 是一个高性能的 JSON 序列化组件。</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright © 肖进 2017</copyright>
+    <tags>JSON</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>

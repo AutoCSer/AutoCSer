@@ -28,16 +28,16 @@ namespace AutoCSer.OpenAPI.Weixin
             serializer.CustomWriteFirstName("action_name");
             if (expire_seconds == 0)
             {
-                serializer.CustomSerialize(action_info.scene.scene_str == null ? "QR_LIMIT_SCENE" : "QR_LIMIT_STR_SCENE");
+                serializer.CallSerialize(action_info.scene.scene_str == null ? "QR_LIMIT_SCENE" : "QR_LIMIT_STR_SCENE");
             }
             else
             {
-                serializer.CustomSerialize("QR_SCENE");
+                serializer.CallSerialize("QR_SCENE");
                 serializer.CustomWriteNextName("expire_seconds");
-                serializer.CustomSerialize(expire_seconds);
+                serializer.CallSerialize(expire_seconds);
             }
             serializer.CustomWriteNextName("action_info");
-            serializer.CustomSerialize(action_info);
+            serializer.TypeSerialize(ref action_info);
             serializer.CustomObjectEnd();
         }
     }

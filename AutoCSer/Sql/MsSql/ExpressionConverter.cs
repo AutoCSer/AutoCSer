@@ -358,11 +358,34 @@ namespace AutoCSer.Sql.MsSql
                     case "In": convertCall(expression, true); break;
                     case "NotIn": convertCall(expression, false); break;
                     case "Like":
-                        System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
-                        convertIsSimple(arguments[0]);
-                        SqlStream.SimpleWriteNotNull(" like ");
-                        convertIsSimple(expression.Object);
-                        ConstantConverter.ConvertLike(SqlStream, arguments[1].GetConstant(), true, true);
+                        {
+                            System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
+                            convertIsSimple(arguments[0]);
+                            SqlStream.SimpleWriteNotNull(" like ");
+                            //convertIsSimple(expression.Object);
+                            ConstantConverter.ConvertLike(SqlStream, arguments[1].GetConstant(), true, true);
+                        }
+                        break;
+                    case "Count":
+                        SqlStream.SimpleWriteNotNull("count(");
+                        Convert(expression.Arguments[0]);
+                        SqlStream.Write(')');
+                        break;
+                    case "Sum":
+                        SqlStream.SimpleWriteNotNull("sum(");
+                        Convert(expression.Arguments[0]);
+                        SqlStream.Write(')');
+                        break;
+                    case "GetDate": SqlStream.SimpleWriteNotNull("getdate()"); break;
+                    case "IsNull":
+                        {
+                            System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;
+                            SqlStream.SimpleWriteNotNull("isnull(");
+                            convertIsSimple(arguments[0]);
+                            SqlStream.Write(',');
+                            convertConstant(arguments[1].GetConstant());
+                            SqlStream.Write(')');
+                        }
                         break;
                     default:
                         SqlStream.SimpleWriteNotNull(method.Name);

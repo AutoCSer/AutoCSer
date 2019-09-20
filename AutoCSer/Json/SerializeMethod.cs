@@ -333,8 +333,8 @@ namespace AutoCSer.Json
             }
             switch (Config.DateTimeType)
             {
-                case DateTimeType.Default: CharStream.WriteJsonSqlString(value); return;
-                case DateTimeType.ISO: CharStream.WriteJsonString(value); return;
+                case DateTimeType.Default: CharStream.WriteJsonString(value); return;
+                case DateTimeType.Sql: CharStream.WriteJsonSqlString(value); return;
                 case DateTimeType.Javascript: CharStream.WriteJson(value, Config.IsIntegerToHex); return;
                 case DateTimeType.ThirdParty: CharStream.WriteJsonOther(value); return;
                 case DateTimeType.CustomFormat:
@@ -440,7 +440,7 @@ namespace AutoCSer.Json
             else
             {
                 RemoteType remoteType = new RemoteType(type);
-                TypeSerializer<RemoteType>.Serialize(this, ref remoteType);
+                TypeSerializer<RemoteType>.MemberSerialize(this, ref remoteType);
             }
         }
         /// <summary>

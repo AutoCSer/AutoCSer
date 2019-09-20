@@ -393,7 +393,7 @@ namespace AutoCSer.Net.TcpRegister
                 foreach (KeyValuePair<HashString, ServerSet> ServerSet in serverSets) serverCache[index++].Set(ServerSet.Key.String, ServerSet.Value);
                 index = 0;
                 foreach (KeyValuePair<HashString, Ports> ipPort in ipPorts) portCache[index++].Set(ipPort.Key.String, ipPort.Value.Current);
-                File.WriteAllBytes(cacheFile, AutoCSer.BinarySerialize.Serializer.Serialize(new Cache { ServerSets = serverCache, IpPorts = portCache }).Data);
+                File.WriteAllBytes(cacheFile, AutoCSer.BinarySerialize.Serializer.Serialize(new Cache { ServerSets = serverCache, IpPorts = portCache }));
                 isNew = false;
             }
             catch (Exception error)

@@ -2761,7 +2761,7 @@ namespace AutoCSer.Json
             if (*Current == '{')
             {
                 RemoteType remoteType = default(RemoteType);
-                TypeParser<RemoteType>.Parse(this, ref remoteType);
+                TypeParser<RemoteType>.ParseValue(this, ref remoteType);
                 if (ParseState != ParseState.Success) return;
                 if (!remoteType.TryGet(out type)) ParseState = ParseState.ErrorType;
                 return;

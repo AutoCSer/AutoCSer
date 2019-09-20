@@ -102,11 +102,22 @@ namespace AutoCSer.BinarySerialize
         /// <param name="serializer">二进制数据序列化</param>
         /// <param name="value">数据对象</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void Serialize(Serializer serializer, valueType value)
+        internal static void Serialize(Serializer serializer, ref valueType value)
         {
-            if (isValueType) StructSerialize(serializer, value);
+            if (isValueType) StructSerialize(serializer, ref value);
             else ClassSerialize(serializer, value);
         }
+        ///// <summary>
+        ///// 对象序列化
+        ///// </summary>
+        ///// <param name="serializer">二进制数据序列化</param>
+        ///// <param name="value">数据对象</param>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal static void Serialize(Serializer serializer, valueType value)
+        //{
+        //    if (isValueType) StructSerialize(serializer, ref value);
+        //    else ClassSerialize(serializer, value);
+        //}
         /// <summary>
         /// 对象序列化
         /// </summary>
@@ -115,7 +126,18 @@ namespace AutoCSer.BinarySerialize
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void StructSerialize(Serializer serializer, valueType value)
         {
-            if (DefaultSerializer == null) MemberSerialize(serializer, value);
+            if (DefaultSerializer == null) MemberSerialize(serializer, ref value);
+            else DefaultSerializer(serializer, value);
+        }
+        /// <summary>
+        /// 对象序列化
+        /// </summary>
+        /// <param name="serializer">二进制数据序列化</param>
+        /// <param name="value">数据对象</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void StructSerialize(Serializer serializer, ref valueType value)
+        {
+            if (DefaultSerializer == null) MemberSerialize(serializer, ref value);
             else DefaultSerializer(serializer, value);
         }
         /// <summary>
@@ -144,7 +166,7 @@ namespace AutoCSer.BinarySerialize
                         }
                     }
                     if (Emit.Constructor<valueType>.New == null) serializer.Stream.Write(Serializer.NullValue);
-                    else MemberSerialize(serializer, value);
+                    else MemberSerialize(serializer, ref value);
                 }
             }
             else DefaultSerializer(serializer, value);
@@ -154,7 +176,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <param name="serializer">二进制数据序列化</param>
         /// <param name="value">数据对象</param>
-        internal static void MemberSerialize(Serializer serializer, valueType value)
+        internal static void MemberSerialize(Serializer serializer, ref valueType value)
         {
             MemberMap memberMap = isMemberMap ? serializer.SerializeMemberMap<valueType>() : null;
             UnmanagedStream stream = serializer.Stream;
@@ -170,7 +192,7 @@ namespace AutoCSer.BinarySerialize
                 {
                     if (isJson) stream.Write(0);
                 }
-                else AutoCSer.Json.Serializer.Serialize(value, stream, serializer.GetJsonConfig(jsonMemberMap));
+                else AutoCSer.Json.Serializer.Serialize(ref value, stream, serializer.GetJsonConfig(jsonMemberMap));
             }
             else
             {
@@ -187,7 +209,7 @@ namespace AutoCSer.BinarySerialize
                 {
                     if (isJson) stream.Write(0);
                 }
-                else AutoCSer.Json.Serializer.Serialize(value, stream, serializer.GetJsonConfig(memberMap));
+                else AutoCSer.Json.Serializer.Serialize(ref value, stream, serializer.GetJsonConfig(memberMap));
             }
         }
         /// <summary>
@@ -199,7 +221,8 @@ namespace AutoCSer.BinarySerialize
         {
             if (isValueType)
             {
-                TypeSerializer<RemoteType>.StructSerialize(serializer, typeof(valueType));
+                RemoteType remoteType = typeof(valueType);
+                TypeSerializer<RemoteType>.MemberSerialize(serializer, ref remoteType);
                 StructSerialize(serializer, (valueType)value);
             }
             else
@@ -207,11 +230,13 @@ namespace AutoCSer.BinarySerialize
                 if (Emit.Constructor<valueType>.New == null) serializer.Stream.Write(Serializer.NullValue);
                 else
                 {
-                    TypeSerializer<RemoteType>.StructSerialize(serializer, typeof(valueType));
+                    RemoteType remoteType = typeof(valueType);
+                    TypeSerializer<RemoteType>.MemberSerialize(serializer, ref remoteType);
                     if (DefaultSerializer == null)
                     {
                         //if (serializer.CheckPoint(value)) MemberSerialize(serializer, (valueType)value);
-                        MemberSerialize(serializer, (valueType)value);
+                        valueType newValue = (valueType)value;
+                        MemberSerialize(serializer, ref newValue);
                     }
                     else DefaultSerializer(serializer, (valueType)value);
                 }

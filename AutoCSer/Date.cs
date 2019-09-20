@@ -297,11 +297,11 @@ namespace AutoCSer
         {
             long dayTiks = time.Ticks % TimeSpan.TicksPerDay;
             toString(time, chars, DateSplitChar);
-            long seconds = dayTiks / (1000 * 10000);
+            long seconds = dayTiks / TimeSpan.TicksPerSecond;
             *(chars + 19) = '.';
             *(chars + 10) = ' ';
             toString((int)seconds, chars + 11);
-            int data0 = (int)(((ulong)(dayTiks - seconds * (1000 * 10000)) * AutoCSer.Extension.Number.Div10000Mul) >> AutoCSer.Extension.Number.Div10000Shift);
+            int data0 = (int)(((ulong)(dayTiks - seconds * TimeSpan.TicksPerSecond) * AutoCSer.Extension.Number.Div10000Mul) >> AutoCSer.Extension.Number.Div10000Shift);
             int data1 = (data0 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
             int data2 = (data1 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
             *(chars + 22) = (char)(data0 - data1 * 10 + '0');
@@ -382,7 +382,7 @@ namespace AutoCSer
             {
                 toString(time, timeFixed, dateSplit);
                 *(timeFixed + 10) = ' ';
-                toString((int)((time.Ticks % TimeSpan.TicksPerDay) / (1000 * 10000)), timeFixed + 11);
+                toString((int)((time.Ticks % TimeSpan.TicksPerDay) / TimeSpan.TicksPerSecond), timeFixed + 11);
             }
             return timeString;
         }
@@ -398,20 +398,33 @@ namespace AutoCSer
             char* timeFixed = charStream.GetPrepSizeCurrent(19);
             toString(time, timeFixed, dateSplit);
             *(timeFixed + 10) = ' ';
-            toString((int)((time.Ticks % TimeSpan.TicksPerDay) / (1000 * 10000)), timeFixed + 11);
+            toString((int)((time.Ticks % TimeSpan.TicksPerDay) / TimeSpan.TicksPerSecond), timeFixed + 11);
             charStream.ByteSize += 19 * sizeof(char);
         }
         /// <summary>
-        /// 时间转换成字符串 yyyy-MM-ddTHH:mm:ss
+        /// 时间转换成字符串 yyyy-MM-ddTHH:mm:ss.XXXXXXX
         /// </summary>
         /// <param name="time"></param>
         /// <param name="timeFixed"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void ToString(this DateTime time, char* timeFixed)
+        /// <returns>字符串长度</returns>
+        internal static int ToString(this DateTime time, char* timeFixed)
         {
             toString(time, timeFixed, '-');
             *(timeFixed + 10) = 'T';
-            toString((int)((time.Ticks % TimeSpan.TicksPerDay) / (1000 * 10000)), timeFixed + 11);
+            long ticks = time.Ticks % TimeSpan.TicksPerDay, seconds = ticks / TimeSpan.TicksPerSecond;
+            toString((int)seconds, timeFixed + 11);
+            ticks -= seconds * TimeSpan.TicksPerSecond;
+            if (ticks == 0) return 19;
+            int low = (int)(uint)ticks, high = (int)(((uint)low * Number.Div10000Mul) >> Number.Div10000Shift);
+            int data1 = (high * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            int data2 = (data1 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            *(long*)(timeFixed + 19) = '.' + (data2 << 16) + ((long)(data1 - data2 * 10) << 32) + ((long)(high - data1 * 10) << 48) + 0x30003000300000L;
+            if ((low -= high * 10000) == 0) return 23;
+            high = (low * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            data1 = (high * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            data2 = (data1 * (int)AutoCSer.Extension.Number.Div10_16Mul) >> AutoCSer.Extension.Number.Div10_16Shift;
+            *(long*)(timeFixed + 23) = data2 + ((data1 - data2 * 10) << 16) + ((long)(high - data1 * 10) << 32) + ((long)(low - high * 10) << 48) + 0x30003000300030L;
+            return 27;
         }
         /// <summary>
         /// 时间转换
@@ -436,8 +449,11 @@ namespace AutoCSer
                 StartTime = DateTime.UtcNow;
                 startTimestamp = StartTime.Ticks;
             }
-            //LocalTimeTicks = StartTime.ToLocalTime().Ticks - StartTime.Ticks;
+#if DOTNET2
+            LocalTimeTicks = StartTime.ToLocalTime().Ticks - StartTime.Ticks;
+#else
             LocalTimeTicks = TimeZoneInfo.Local.BaseUtcOffset.Ticks;
+#endif
 
             long zoneChar0, localTimeTicks;
             if (LocalTimeTicks >= 0)

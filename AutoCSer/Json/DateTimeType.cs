@@ -8,13 +8,13 @@ namespace AutoCSer.Json
     public enum DateTimeType : byte
     {
         /// <summary>
-        /// 默认格式 yyyy/MM/dd HH:mm:ss.fff
+        /// yyyy-MM-ddTHH:mm:ss...
         /// </summary>
         Default,
         /// <summary>
-        /// yyyy-MM-ddTHH:mm:ss...
+        /// yyyy/MM/dd HH:mm:ss.fff
         /// </summary>
-        ISO,
+        Sql,
         /// <summary>
         /// 第三方格式 /Date(xxx)/
         /// </summary>

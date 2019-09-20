@@ -57,7 +57,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientConfig.cs" />
     <Compile Include="ClientDeploy.cs" />
-    <Compile Include="ClientIdentity.cs" />
+    <Compile Include="ClientObject.cs" />
     <Compile Include="ClientTask.cs" />
     <Compile Include="ClientTaskInfo.cs" />
     <Compile Include="ConfigLoader.cs" />

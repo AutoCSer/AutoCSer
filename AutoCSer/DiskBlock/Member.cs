@@ -196,7 +196,7 @@ namespace AutoCSer.DiskBlock
             fixed (byte* bufferFixed = buffer.Buffer)
             {
                 byte* start = bufferFixed + buffer.StartIndex;
-                serializer.SerializeNotNull(value, start, buffer.PoolBuffer.Pool.Size, ClientConfig.BinarySerializeConfig);
+                serializer.SerializeNotNull(ref value, start, buffer.PoolBuffer.Pool.Size, ClientConfig.BinarySerializeConfig);
                 size = serializer.Stream.ByteSize;
                 if (serializer.Stream.Data.Data == start) return new AppendBuffer { Buffer = new SubArray<byte> { Array = buffer.Buffer, Start = buffer.StartIndex, Length = size }, Index = size == Size ? Index : 0 };
                 else return new AppendBuffer { Buffer = new SubArray<byte> { Array = serializer.Stream.GetArray(), Length = size }, Index = size == Size ? Index : 0 };

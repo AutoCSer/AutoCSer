@@ -75,7 +75,15 @@ namespace AutoCSer.Json
             MethodInfo methodInfo = Serializer.GetSerializeMethod(type);
             if (methodInfo != null) return methodInfo;
             //if (type.IsArray) return GetArray(type.GetElementType());
-            if (type.IsArray) return GenericType.Get(type.GetElementType()).JsonSerializeArrayMethod;
+            if (type.IsArray)
+            {
+                Type elementType = type.GetElementType();
+                if (elementType.IsValueType && (!elementType.IsGenericType || elementType.GetGenericTypeDefinition() != typeof(Nullable<>)))
+                {
+                    return StructGenericType.Get(elementType).JsonSerializeStructArrayMethod;
+                }
+                return GenericType.Get(elementType).JsonSerializeArrayMethod;
+            }
             //if (type.IsEnum) return GetEnum(type);
             if (type.IsEnum) return GenericType.Get(type).JsonSerializeEnumToStringMethod;
             if (type.IsGenericType)

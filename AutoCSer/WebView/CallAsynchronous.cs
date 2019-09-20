@@ -193,7 +193,17 @@ namespace AutoCSer.WebView
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void RepsonseEndJsonSerialize<valueType>(valueType value)
         {
-            AutoCSer.Json.Serializer.Serialize(value, RepsonseEnd);
+            AutoCSer.Json.Serializer.Serialize(ref value, RepsonseEnd);
+        }
+        /// <summary>
+        /// 结束异步输出 JSON 字符串
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="value">数据对象</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void RepsonseEndJsonSerialize<valueType>(ref valueType value)
+        {
+            AutoCSer.Json.Serializer.Serialize(ref value, RepsonseEnd);
         }
         /// <summary>
         /// 结束异步输出

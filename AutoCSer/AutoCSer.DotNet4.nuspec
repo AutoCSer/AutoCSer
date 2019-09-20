@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>AutoCSer.DotNet4</id>
+    <version>1.1.42</version>
+    <authors>肖进</authors>
+    <owners>肖进</owners>
+    <projectUrl>http://www.autocser.com/Index.html</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>AutoCSer is a high-performance RPC framework.
+AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP / RPC 接口服务框架、TCP / RPC 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、日志流内存数据库缓存组件、消息队列组件、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright © 肖进 2017</copyright>
+    <tags>RPC TCP Socket JSON Serialization</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>

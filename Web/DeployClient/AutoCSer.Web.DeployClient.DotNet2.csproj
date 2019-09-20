@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{022A175A-D2AD-469A-9368-3B2329274ED9}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoCSer.Web.DeployClient</RootNamespace>
     <AssemblyName>AutoCSer.Web.DeployClient</AssemblyName>
@@ -43,9 +43,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeployForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeployForm.Designer.cs">
+      <DependentUpon>DeployForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Nuget\Metadata.cs" />
+    <Compile Include="Nuget\Package.cs" />
+    <Compile Include="Nuget\Project.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Project\Config.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Project\Project.cs" />
+    <Compile Include="Project\PropertyGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -57,10 +77,19 @@
       <Project>{7B97EF4D-B898-4A06-822A-632EF70B20F7}</Project>
       <Name>AutoCSer.Deploy.DotNet2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\Expand\AutoCSer.Expand.DotNet2.csproj">
+      <Project>{5FA8B2B7-985A-4C1E-9DFB-4B1CD69D0D06}</Project>
+      <Name>AutoCSer.Expand.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Config\AutoCSer.Web.Config.DotNet2.csproj">
       <Project>{F8ED4A63-5C04-4EBE-8840-B14E1C82BFA9}</Project>
       <Name>AutoCSer.Web.Config.DotNet2</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DeployForm.resx">
+      <DependentUpon>DeployForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

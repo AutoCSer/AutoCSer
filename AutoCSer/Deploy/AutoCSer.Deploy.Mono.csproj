@@ -50,7 +50,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientConfig.cs" />
     <Compile Include="ClientDeploy.cs" />
-    <Compile Include="ClientIdentity.cs" />
+    <Compile Include="ClientObject.cs" />
     <Compile Include="ClientTask.cs" />
     <Compile Include="ClientTaskInfo.cs" />
     <Compile Include="ConfigLoader.cs" />
@@ -72,4 +72,5 @@
     <Compile Include="NET4.5\ClientDeploy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>ath)\Microsoft.CSharp.targets" />
 </Project>

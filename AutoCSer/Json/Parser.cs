@@ -12,6 +12,10 @@ namespace AutoCSer.Json
     public unsafe sealed partial class Parser : AutoCSer.Threading.Link<Parser>
     {
         /// <summary>
+        /// 字符串缓存区大小
+        /// </summary>
+        private const int stringBufferSize = 33;
+        /// <summary>
         /// JSON 转换时间差
         /// </summary>
         internal static readonly DateTime JavascriptLocalMinTime;
@@ -1066,17 +1070,19 @@ namespace AutoCSer.Json
                                                                         if (second >= 60 || Current >= end) return 2;
                                                                     }
                                                                     else second = 0;
-                                                                    uint millisecond;
+
+                                                                    long ticks;
                                                                     switch (*Current)
                                                                     {
                                                                         case ' ':
                                                                         case '.':
                                                                             if ((int)((byte*)end - (byte*)Current) < 3 * sizeof(char)) return 2;
-                                                                            millisecond = parseDateTimeMillisecond();
-                                                                            if (Current >= end) return 2;
+                                                                            ticks = parseDateTimeTicks();
+                                                                            if (Current >= end && ticks < 0) return 2;
                                                                             break;
-                                                                        default: millisecond = 0; break;
+                                                                        default: ticks = 0; break;
                                                                     }
+
                                                                     bool zone;
                                                                     switch (*Current & 3)
                                                                     {
@@ -1084,10 +1090,10 @@ namespace AutoCSer.Json
                                                                             if (*Current == 'Z')
                                                                             {
                                                                                 ++Current;
-                                                                                value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)millisecond, DateTimeKind.Utc);
+                                                                                value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, DateTimeKind.Utc).AddTicks(ticks);
                                                                                 return 0;
                                                                             }
-                                                                            goto MILLISECOND;
+                                                                            goto TICKS;
                                                                         case '+' & 3:
                                                                             if (*Current == '+')
                                                                             {
@@ -1095,7 +1101,7 @@ namespace AutoCSer.Json
                                                                                 zone = true;
                                                                                 break;
                                                                             }
-                                                                            goto MILLISECOND;
+                                                                            goto TICKS;
                                                                         case '-' & 3:
                                                                             if (*Current == '-')
                                                                             {
@@ -1103,10 +1109,10 @@ namespace AutoCSer.Json
                                                                                 zone = false;
                                                                                 break;
                                                                             }
-                                                                            goto MILLISECOND;
+                                                                            goto TICKS;
                                                                         default:
-                                                                            MILLISECOND:
-                                                                            value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)millisecond);
+                                                                            TICKS:
+                                                                            value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second).AddTicks(ticks);
                                                                             return 0;
                                                                     }
                                                                     uint zoneHour = parseDateTime();
@@ -1117,8 +1123,8 @@ namespace AutoCSer.Json
                                                                         {
                                                                             long zoneTicks = (int)(zoneHour * 60 + zoneMinute) * TimeSpan.TicksPerMinute;
                                                                             if (zone) zoneTicks = -zoneTicks;
-                                                                             value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)millisecond, DateTimeKind.Local)
-                                                                                .AddTicks(zoneTicks + Date.LocalTimeTicks);
+                                                                             value = new DateTime((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second, DateTimeKind.Local)
+                                                                                .AddTicks(zoneTicks + ticks + Date.LocalTimeTicks);
                                                                             return 0;
                                                                         }
                                                                     }
@@ -1175,11 +1181,11 @@ namespace AutoCSer.Json
             return uint.MinValue;
         }
         /// <summary>
-        /// 时间毫秒解析
+        /// 时间时钟周期解析
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private uint parseDateTimeMillisecond()
+        private long parseDateTimeTicks()
         {
             uint high = (uint)(*(Current + 1) - '0');
             if (high < 10)
@@ -1187,18 +1193,44 @@ namespace AutoCSer.Json
                 uint low = (uint)(*(Current + 2) - '0');
                 if (low < 10)
                 {
+                    int size = (int)(end - Current);
                     high = high * 10 + low;
-                    if ((low = (uint)(*(Current + 3) - '0')) < 10)
+                    if (size > 4 && (low = (uint)(*(Current + 3) - '0')) < 10)
                     {
-                        Current += 4;
-                        return high * 10 + low;
+                        high = high * 10 + low;
+                        if (size > 5 && (low = (uint)(*(Current + 4) - '0')) < 10)
+                        {
+                            high = high * 10 + low;
+                            if (size > 6 && (low = (uint)(*(Current + 5) - '0')) < 10)
+                            {
+                                high = high * 10 + low;
+                                if (size > 7 && (low = (uint)(*(Current + 6) - '0')) < 10)
+                                {
+                                    high = high * 10 + low;
+                                    if (size > 8 && (low = (uint)(*(Current + 7) - '0')) < 10)
+                                    {
+                                        Current += 8;
+                                        return high * 10 + low;
+                                    }
+                                    else Current += 7;
+                                    return high * 10;
+                                }
+                                else Current += 6;
+                                return high * 100;
+                            }
+                            else Current += 5;
+                            return high * 1000;
+                        }
+                        else Current += 4;
+                        return high * 10000;
                     }
                     else Current += 3;
+                    return high * 100000;
                 }
                 else Current += 2;
-                return high;
+                return high * 1000000;
             }
-            return uint.MinValue;
+            return long.MinValue;
         }
         ///// <summary>
         ///// 时间解析 /Date(xxx)/
@@ -1316,7 +1348,7 @@ namespace AutoCSer.Json
             Quote = *Current;
             if (++Current != end)
             {
-                if (stringBuffer == null) stringBuffer = new string((char)0, 32);
+                if (stringBuffer == null) stringBuffer = new string((char)0, stringBufferSize);
                 int length = 0;
                 fixed (char* bufferFixed = stringBuffer)
                 {
@@ -1324,7 +1356,7 @@ namespace AutoCSer.Json
                     {
                         while (*Current != Quote)
                         {
-                            if (length == 32) return 0;
+                            if (length == stringBufferSize) return 0;
                             *(bufferFixed + length) = *Current++;
                             ++length;
                         }
@@ -1335,7 +1367,7 @@ namespace AutoCSer.Json
                         {
                             if (Current == end) return 0;
                             if (*Current == Quote) break;
-                            if (length == 32) return 0;
+                            if (length == stringBufferSize) return 0;
                             *(bufferFixed + length) = *Current++;
                             ++length;
                         }
@@ -1344,7 +1376,11 @@ namespace AutoCSer.Json
                     if (length != 0)
                     {
                         ++Current;
-                        fillStringBuffer(bufferFixed, length);
+                        if (length != stringBufferSize)
+                        {
+                            fillStringBuffer(bufferFixed, length);
+                            *(bufferFixed + 32) = (char)0;
+                        }
                         return length;
                     }
                 }
@@ -1358,7 +1394,7 @@ namespace AutoCSer.Json
         /// <param name="length"></param>
         private void fillStringBuffer(char* bufferFixed, int length)
         {
-            if (length <= 28)
+            if (length <= 29)
             {
                 if ((length & 3) != 0)
                 {
@@ -1389,7 +1425,7 @@ namespace AutoCSer.Json
             int length = (int)(end - Current);
             if ((uint)(length - 1) <= (32U - 1))
             {
-                if (stringBuffer == null) stringBuffer = new string((char)0, 32);
+                if (stringBuffer == null) stringBuffer = new string((char)0, stringBufferSize);
                 fixed (char* bufferFixed = stringBuffer)
                 {
                     byte* read = (byte*)Current, write = (byte*)bufferFixed, writeEnd = write + (((length << 1) + 6) & (127 - 7));
@@ -1401,6 +1437,7 @@ namespace AutoCSer.Json
                     }
                     while (write != writeEnd);
                     fillStringBuffer(bufferFixed, length);
+                    *(bufferFixed + 32) = (char)0;
                 }
                 return length;
             }
@@ -2723,30 +2760,86 @@ namespace AutoCSer.Json
             value = (valueType)newValue;
         }
         /// <summary>
+        /// 获取数组长度
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        private bool searchArraySize<valueType>(ref valueType[] array)
+        {
+            if (SearchArray(ref array) == 0)
+            {
+                int count = 1;
+                char* read = Current;
+                if (endChar == ']')
+                {
+                    do
+                    {
+                        if (*read == ',') ++count;
+                    }
+                    while (*++read != ']');
+                }
+                else
+                {
+                    do
+                    {
+                        if (*read == ',') ++count;
+                        if (++read == end)
+                        {
+                            ParseState = ParseState.CrashEnd;
+                            return false;
+                        }
+                    }
+                    while (*read != ']');
+                }
+                array = new valueType[count];
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
         /// 查找数组起始位置
         /// </summary>
         /// <typeparam name="valueType">数据类型</typeparam>
         /// <param name="value">目标数组</param>
-        internal void SearchArray<valueType>(ref valueType[] value)
+        /// <returns></returns>
+        internal int SearchArray<valueType>(ref valueType[] value)
         {
             byte isSpace = 0;
         START:
             if (*Current == '[')
             {
-                ++Current;
-                if (value == null) value = NullValue<valueType>.Array;
-                return;
+                if (*++Current == ']')
+                {
+                    ++Current;
+                    value = NullValue<valueType>.Array;
+                    return 1;
+                }
+                space();
+                if (ParseState != ParseState.Success) return -1;
+                if (Current >= end)
+                {
+                    ParseState = ParseState.CrashEnd;
+                    return -1;
+                }
+                if (*Current == ']')
+                {
+                    ++Current;
+                    value = NullValue<valueType>.Array;
+                    return 1;
+                }
+                return 0;
             }
-            if (*(long*)Current == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48) && (int)((byte*)end - (byte*)Current) >= 4 * sizeof(char))
+            if ((int)((byte*)end - (byte*)Current) >= 4 * sizeof(char) && *(long*)Current == 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48))
             {
                 value = null;
                 Current += 4;
-                return;
+                return -1;
             }
             if (isSpace == 0)
             {
                 space();
-                if (ParseState != ParseState.Success) return;
+                if (ParseState != ParseState.Success) return -1;
                 if (Current != end)
                 {
                     isSpace = 1;
@@ -2754,6 +2847,7 @@ namespace AutoCSer.Json
                 }
             }
             ParseState = ParseState.CrashEnd;
+            return -1;
         }
         /// <summary>
         /// 查找字符串引号并返回第一个字符

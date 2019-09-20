@@ -27,10 +27,10 @@ namespace AutoCSer.Deploy
         /// TCP 客户端套接字初始化处理
         /// </summary>
         private readonly AutoCSer.Net.TcpServer.CheckSocketVersion checkSocketVersion;
-        /// <summary>
-        /// 部署服务客户端标识
-        /// </summary>
-        internal AutoCSer.Net.IndexIdentity ClientId;
+        ///// <summary>
+        ///// 部署服务客户端标识
+        ///// </summary>
+        //internal AutoCSer.Net.IndexIdentity ClientId;
         /// <summary>
         /// 部署任务状态更新日志保持回调
         /// </summary>
@@ -77,8 +77,9 @@ namespace AutoCSer.Deploy
 #if NoAutoCSer
                         throw new Exception();
 #else
-                        ClientId = TcpInternalClient.register();
-                        logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
+                        //ClientId = TcpInternalClient.register();
+                        //logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
+                        logKeepCallback = TcpInternalClient.getLog(onLog);
 #endif
                         IsClient = true;
                         return;

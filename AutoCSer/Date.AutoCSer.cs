@@ -59,7 +59,7 @@ namespace AutoCSer
             int value1000 = (value100 * (int)Number.Div10_16Mul) >> Number.Div10_16Shift;
             *(int*)(data + sizeof(int) * 3) = (value1000 + ((value100 - value1000 * 10) << 8) + ((value10 - value100 * 10) << 16) + ((value - value10 * 10) << 24)) | 0x30303030;
 
-            value100 = (int)(date.Ticks % TimeSpan.TicksPerDay / (1000 * 10000));
+            value100 = (int)(date.Ticks % TimeSpan.TicksPerDay / TimeSpan.TicksPerSecond);
             value1000 = (int)(((ulong)value100 * Div60_32Mul) >> Div60_32Shift);
             value100 -= value1000 * 60;
             value = (value1000 * (int)Div60_16Mul) >> Div60_16Shift;
@@ -119,7 +119,7 @@ namespace AutoCSer
                 if (*(int*)(data + sizeof(int) * 3) != ((value1000 + ((value100 - value1000 * 10) << 8) + ((value10 - value100 * 10) << 16) + ((value - value10 * 10) << 24)) | 0x30303030)) return 1;
 
 
-                value100 = (int)(date.Ticks % TimeSpan.TicksPerDay / (1000 * 10000));
+                value100 = (int)(date.Ticks % TimeSpan.TicksPerDay / TimeSpan.TicksPerSecond);
                 value1000 = (int)(((ulong)value100 * Div60_32Mul) >> Div60_32Shift);
                 value100 -= value1000 * 60;
                 value = (value1000 * (int)Div60_16Mul) >> Div60_16Shift;

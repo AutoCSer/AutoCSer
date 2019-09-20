@@ -11,7 +11,6 @@ namespace AutoCSer.Web.Config
     /// </summary>
     public static class Pub
     {
-        #region AutoCSer.Web.ExamplePack.exe
         /// <summary>
         /// 是否本地模式
         /// </summary>
@@ -32,11 +31,10 @@ namespace AutoCSer.Web.Config
         /// nuget key
         /// </summary>
         public const string NugetKey = "XXX";
-        #endregion
         /// <summary>
         /// 服务器监听 IP 地址
         /// </summary>
-        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "XXX";
+        public static readonly string ServerListenIp = IsLocal ? "127.0.0.1" : "172.19.51.248";
         /// <summary>
         /// AutoCSer 根目录
         /// </summary>
@@ -44,16 +42,16 @@ namespace AutoCSer.Web.Config
         /// <summary>
         /// TCP 注册服务名称
         /// </summary>
-        public const string TcpRegister = "XXX";
+        public const string TcpRegister = "TcpRegister";
         /// <summary>
         /// TCP 注册服务名称
         /// </summary>
-        public const string TcpRegisterReader = TcpRegister + "XXX";
+        public const string TcpRegisterReader = TcpRegister + "Reader";
 
-        /// <summary>
-        /// VS 2017 devenv.exe
-        /// </summary>
-        public static readonly FileInfo VS2017IdeFile = new FileInfo(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe");
+        ///// <summary>
+        ///// VS 2017 devenv.exe
+        ///// </summary>
+        //public static readonly FileInfo VS2017IdeFile = new FileInfo(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe");
         /// <summary>
         /// dotnet.exe
         /// </summary>

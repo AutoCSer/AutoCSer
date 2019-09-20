@@ -20,7 +20,7 @@ namespace AutoCSer.Example.Json
         [AutoCSer.IOS.Preserve(Conditional = true)]
         internal void Serialize(AutoCSer.Json.Serializer serializer)
         {
-            serializer.TypeSerialize(Value == null ? 1 : 2);
+            serializer.CallSerialize(Value == null ? 1 : 2);
         }
         /// <summary>
         /// 自定义反序列化函数

@@ -15,9 +15,9 @@ namespace AutoCSer.Deploy
         /// </summary>
         internal int Identity;
         /// <summary>
-        /// 部署服务端标识
+        /// 客户端信息
         /// </summary>
-        internal IndexIdentity ClientId;
+        internal ClientObject Client;
         /// <summary>
         /// 文件数据源
         /// </summary>
@@ -31,14 +31,14 @@ namespace AutoCSer.Deploy
         /// </summary>
         internal LeftArray<Task> Tasks;
         /// <summary>
-        /// 设置部署服务端标识
+        /// 设置客户端
         /// </summary>
-        /// <param name="clientId">部署服务端标识</param>
+        /// <param name="client"></param>
         /// <returns>部署信息索引编号</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal int Set(ref IndexIdentity clientId)
+        internal int Set(ClientObject client)
         {
-            ClientId = clientId;
+            Client = client;
             return Identity;
         }
         /// <summary>
@@ -125,21 +125,21 @@ namespace AutoCSer.Deploy
             }
             return DeployState.IdentityError;
         }
-        /// <summary>
-        /// 获取部署服务端标识
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool GetClientId(int identity, ref IndexIdentity clientId)
-        {
-            if (Identity == identity)
-            {
-                clientId = ClientId;
-                return true;
-            }
-            return false;
-        }
+        ///// <summary>
+        ///// 获取部署服务端标识
+        ///// </summary>
+        ///// <param name="identity"></param>
+        ///// <param name="clientId"></param>
+        ///// <returns></returns>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal bool GetClientId(int identity, ref IndexIdentity clientId)
+        //{
+        //    if (Identity == identity)
+        //    {
+        //        clientId = ClientId;
+        //        return true;
+        //    }
+        //    return false;
+        //}
     }
 }

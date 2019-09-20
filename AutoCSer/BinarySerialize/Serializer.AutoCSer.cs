@@ -107,11 +107,11 @@ namespace AutoCSer.BinarySerialize
         /// <param name="config">序列化配置参数</param>
         /// <returns>警告提示状态</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal SerializeWarning SerializeNotNull<valueType>(valueType value, byte* data, int length, SerializeConfig config)
+        internal SerializeWarning SerializeNotNull<valueType>(ref valueType value, byte* data, int length, SerializeConfig config)
         {
             Stream.Reset(data, length);
             Config = config;
-            serialize(value);
+            serialize(ref value);
             return Warning;
         }
 
@@ -179,38 +179,34 @@ namespace AutoCSer.BinarySerialize
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
         /// <param name="stream"></param>
-        internal void SerializeTcpServer<valueType>(valueType value, UnmanagedStream stream)
+        internal void SerializeTcpServer<valueType>(ref valueType value, UnmanagedStream stream)
         {
-            if (value == null) stream.Write(NullValue);
+            //CurrentMemberMap = MemberMap = null;
+            //Warning = SerializeWarning.None;
+            if (isReferenceMember == TypeSerializer<valueType>.IsReferenceMember)
+            {
+                if (points != null) points.Clear();
+            }
+            else if (isReferenceMember) isReferenceMember = false;
             else
             {
-                //CurrentMemberMap = MemberMap = null;
-                //Warning = SerializeWarning.None;
-                if (isReferenceMember == TypeSerializer<valueType>.IsReferenceMember)
-                {
-                    if (points != null) points.Clear();
-                }
-                else if (isReferenceMember) isReferenceMember = false;
-                else
-                {
-                    isReferenceMember = true;
-                    if (points == null) points = ReusableDictionary<ObjectReference>.Create<int>();
-                    else points.Clear();
-                }
-                //streamStartIndex = Stream.OffsetLength;
-                streamStartIndex = stream.ByteSize;
-                isReferenceArray = true;
-                Config.UnsafeWriteHeader(stream);
-                Stream.From(stream);
-                try
-                {
-                    //Warning = SerializeWarning.None;
-                    TypeSerializer<valueType>.SerializeTcpServer(this, ref value);
-                }
-                finally { stream.From(Stream); }
-                //Stream.Write(Stream.OffsetLength - streamStartIndex);
-                stream.Write(stream.ByteSize - streamStartIndex);
+                isReferenceMember = true;
+                if (points == null) points = ReusableDictionary<ObjectReference>.Create<int>();
+                else points.Clear();
             }
+            //streamStartIndex = Stream.OffsetLength;
+            streamStartIndex = stream.ByteSize;
+            isReferenceArray = true;
+            Config.UnsafeWriteHeader(stream);
+            Stream.From(stream);
+            try
+            {
+                //Warning = SerializeWarning.None;
+                TypeSerializer<valueType>.SerializeTcpServer(this, ref value);
+            }
+            finally { stream.From(Stream); }
+            //Stream.Write(Stream.OffsetLength - streamStartIndex);
+            stream.Write(stream.ByteSize - streamStartIndex);
         }
 
         /// <summary>

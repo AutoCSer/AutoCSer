@@ -33,9 +33,9 @@ namespace AutoCSer.OpenAPI.Weixin
             else
             {
                 serializer.CustomWriteFirstName("card_id");
-                serializer.CustomSerialize(card_id);
+                serializer.CallSerialize(card_id);
                 serializer.CustomWriteNextName("card_ext");
-                serializer.CustomSerialize(AutoCSer.Json.Serializer.Serialize(card_ext));
+                serializer.CallSerialize(AutoCSer.Json.Serializer.Serialize(card_ext));
                 serializer.CustomObjectEnd();
             }
         }

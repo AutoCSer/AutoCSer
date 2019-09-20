@@ -4,13 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AutoCSer.Json</AssemblyName>
     <RootNamespace>AutoCSer</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.1.43</Version>
     <PackageId>AutoCSer.Json.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />
-    <Description>AutoCSer.Json 是一个高性能的 JSON 序列化组件。</Description>
+    <Description>AutoCSer.Json is a high-performance JSON framework.
+AutoCSer.Json 是一个高性能的 JSON 序列化组件。</Description>
     <Copyright>Copyright © 肖进 2017</Copyright>
     <PackageProjectUrl>http://www.autocser.com/Serialize/Json.html</PackageProjectUrl>
+    <PackageTags>JSON</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,6 +37,7 @@
     <Compile Include="Algorithm\QuickSort.cs" />
     <Compile Include="CharStream.cs" />
     <Compile Include="CharStream.Json.cs" />
+    <Compile Include="Json\CombinationTemplate\ParseMethod.cs" />
     <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />

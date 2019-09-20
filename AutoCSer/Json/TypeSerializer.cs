@@ -61,10 +61,10 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void Serialize(Serializer jsonSerializer, valueType value)
         {
-            Serialize(jsonSerializer, ref value);
+            if (isValueType) StructSerialize(jsonSerializer, ref value);
+            else serialize(jsonSerializer, value);
         }
         /// <summary>
         /// 对象转换JSON字符串
@@ -74,7 +74,7 @@ namespace AutoCSer.Json
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void StructSerialize(Serializer jsonSerializer, ref valueType value)
         {
-            if (defaultSerializer == null) MemberSerialize(jsonSerializer, value);
+            if (defaultSerializer == null) MemberSerialize(jsonSerializer, ref value);
             else defaultSerializer(jsonSerializer, value);
         }
         /// <summary>
@@ -85,7 +85,8 @@ namespace AutoCSer.Json
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void StructSerialize(Serializer jsonSerializer, valueType value)
         {
-            StructSerialize(jsonSerializer, ref value);
+            if (defaultSerializer == null) MemberSerialize(jsonSerializer, ref value);
+            else defaultSerializer(jsonSerializer, value);
         }
         /// <summary>
         /// 引用类型对象转换JSON字符串
@@ -109,7 +110,7 @@ namespace AutoCSer.Json
             {
                 if (jsonSerializer.Push(value))
                 {
-                    MemberSerialize(jsonSerializer, value);
+                    MemberSerialize(jsonSerializer, ref value);
                     jsonSerializer.Pop();
                 }
             }
@@ -120,7 +121,7 @@ namespace AutoCSer.Json
         /// </summary>
         /// <param name="jsonSerializer">对象转换JSON字符串</param>
         /// <param name="value">数据对象</param>
-        internal static void MemberSerialize(Serializer jsonSerializer, valueType value)
+        internal static void MemberSerialize(Serializer jsonSerializer, ref valueType value)
         {
             CharStream jsonStream = jsonSerializer.CharStream;
             SerializeConfig config = jsonSerializer.Config;
@@ -175,23 +176,27 @@ namespace AutoCSer.Json
             CharStream jsonStream = jsonSerializer.CharStream;
             jsonStream.Write('[');
             byte isFirst = 1;
-            if (isValueType)
+            foreach (valueType value in array)
             {
-                foreach (valueType value in array)
-                {
-                    if (isFirst == 0) jsonStream.Write(',');
-                    StructSerialize(jsonSerializer, value);
-                    isFirst = 0;
-                }
+                if (isFirst == 0) jsonStream.Write(',');
+                else isFirst = 0;
+                serialize(jsonSerializer, value);
             }
-            else
+            jsonStream.Write(']');
+        }
+        /// <summary>
+        /// 数组转换
+        /// </summary>
+        /// <param name="jsonSerializer">对象转换JSON字符串</param>
+        /// <param name="array">数组对象</param>
+        internal static void StructArray(Serializer jsonSerializer, valueType[] array)
+        {
+            CharStream jsonStream = jsonSerializer.CharStream;
+            jsonStream.Write('[');
+            for (int index = 0; index != array.Length; ++index)
             {
-                foreach (valueType value in array)
-                {
-                    if (isFirst == 0) jsonStream.Write(',');
-                    serialize(jsonSerializer, value);
-                    isFirst = 0;
-                }
+                if (index != 0) jsonStream.Write(',');
+                StructSerialize(jsonSerializer, ref array[index]);
             }
             jsonStream.Write(']');
         }
@@ -359,7 +364,15 @@ namespace AutoCSer.Json
             if (type.IsArray)
             {
                 //if (type.GetArrayRank() == 1) defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), SerializeMethodCache.GetArray(type.GetElementType()));
-                if (type.GetArrayRank() == 1) defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType.Get(type.GetElementType()).JsonSerializeArrayMethod);
+                if (type.GetArrayRank() == 1)
+                {
+                    Type elementType = type.GetElementType();
+                    if (elementType.IsValueType && (!elementType.IsGenericType || elementType.GetGenericTypeDefinition() != typeof(Nullable<>)))
+                    {
+                        defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), StructGenericType.Get(elementType).JsonSerializeStructArrayMethod);
+                    }
+                    else defaultSerializer = (Action<Serializer, valueType>)Delegate.CreateDelegate(typeof(Action<Serializer, valueType>), GenericType.Get(elementType).JsonSerializeArrayMethod);
+                }
                 else defaultSerializer = arrayManyRank;
                 isValueType = true;
                 return;

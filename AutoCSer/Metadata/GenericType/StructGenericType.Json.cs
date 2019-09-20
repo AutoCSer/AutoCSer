@@ -26,6 +26,11 @@ namespace AutoCSer.Metadata
         /// 获取 JSON 序列化函数信息
         /// </summary>
         internal abstract MethodInfo JsonSerializeNullableMethod { get; }
+
+        /// <summary>
+        /// 获取 JSON 序列化函数信息
+        /// </summary>
+        internal abstract MethodInfo JsonSerializeStructArrayMethod { get; }
     }
     /// <summary>
     /// 结构体泛型类型元数据
@@ -60,6 +65,14 @@ namespace AutoCSer.Metadata
         internal override MethodInfo JsonSerializeNullableMethod
         {
             get { return ((Action<Nullable<Type>>)GenericType.JsonSerializer.nullableSerialize<Type>).Method; }
+        }
+
+        /// <summary>
+        /// 获取 JSON 序列化函数信息
+        /// </summary>
+        internal override MethodInfo JsonSerializeStructArrayMethod
+        {
+            get { return ((Action<Type[]>)GenericType.JsonSerializer.structArray<Type>).Method; }
         }
     }
 }

@@ -48,7 +48,8 @@ namespace AutoCSer
             bool isFile = false, isJson = false;
             try
             {
-                if (File.Exists(fileName))
+                FileInfo file = new FileInfo(fileName);
+                if (file.Exists)
                 {
                     isFile = true;
                     if (AutoCSer.Json.Parser.Parse(File.ReadAllText(fileName, this.encoding), ref value))
@@ -56,6 +57,11 @@ namespace AutoCSer
                         Value = value;
                         isJson = true;
                     }
+                }
+                else
+                {
+                    DirectoryInfo directory = file.Directory;
+                    if (!directory.Exists) directory.Create();
                 }
             }
             catch (Exception error)
@@ -103,8 +109,12 @@ namespace AutoCSer
         {
             try
             {
-                if (File.Exists(fileName)) AutoCSer.IO.File.MoveBak(fileName);
-                File.WriteAllText(fileName, json, this.encoding);
+                if (File.Exists(fileName))
+                {
+                    if (File.ReadAllText(fileName, encoding) == json) return true;
+                    AutoCSer.IO.File.MoveBak(fileName);
+                }
+                File.WriteAllText(fileName, json, encoding);
                 return true;
             }
             catch (Exception error)

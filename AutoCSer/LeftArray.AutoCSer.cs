@@ -386,12 +386,12 @@ namespace AutoCSer
             }
         }
         /// <summary>
-        /// 移除数据，然后将最后一个数据移动到被删除数据位置
+        /// 移除第一个匹配数据，然后将最后一个数据移动到被删除数据位置
         /// </summary>
         /// <param name="value">数据</param>
         /// <returns>是否存在移除数据</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool RemoveToEnd(valueType value)
+        public bool RemoveToEnd(valueType value)
         {
             return removeAtToEnd(IndexOf(value));
         }

@@ -17,9 +17,9 @@ namespace AutoCSer.TestCase
         /// </summary>
         private static readonly AutoCSer.Json.SerializeConfig javascriptDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.Javascript, IsBoolToInt = true, IsIntegerToHex = true };
         /// <summary>
-        /// ISO 时间值JSON序列化参数配置
+        /// SQL 时间值JSON序列化参数配置
         /// </summary>
-        private static readonly AutoCSer.Json.SerializeConfig isoDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.ISO };
+        private static readonly AutoCSer.Json.SerializeConfig sqlDateTimeSerializeConfig = new AutoCSer.Json.SerializeConfig { DateTimeType = AutoCSer.Json.DateTimeType.Sql };
         /// <summary>
         /// 第三方时间值JSON序列化参数配置
         /// </summary>
@@ -119,7 +119,7 @@ namespace AutoCSer.TestCase
             {
                 return false;
             }
-            jsonString = AutoCSer.Json.Serializer.Serialize(memberClassData, isoDateTimeSerializeConfig);
+            jsonString = AutoCSer.Json.Serializer.Serialize(memberClassData, sqlDateTimeSerializeConfig);
             newMemberClassData = AutoCSer.Json.Parser.Parse<Data.MemberClass>(jsonString);
             if (!AutoCSer.FieldEquals.Comparor<Data.MemberClass>.Equals(memberClassData, newMemberClassData))
             {

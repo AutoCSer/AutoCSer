@@ -48,26 +48,26 @@ namespace AutoCSer.OpenAPI.Weixin
         private void toJson(AutoCSer.Json.Serializer serializer)
         {
             serializer.CustomWriteFirstName("name");
-            serializer.CustomSerialize(name);
+            serializer.CallSerialize(name);
             if (type != MenuType.none)
             {
                 serializer.CustomWriteNextName("type");
-                serializer.CustomSerialize(type);
+                serializer.TypeSerialize(ref type);
             }
             if (!string.IsNullOrEmpty(key))
             {
                 serializer.CustomWriteNextName("key");
-                serializer.CustomSerialize(key);
+                serializer.CallSerialize(key);
             }
             if (!string.IsNullOrEmpty(url))
             {
                 serializer.CustomWriteNextName("url");
-                serializer.CustomSerialize(url);
+                serializer.CallSerialize(url);
             }
             if (!string.IsNullOrEmpty(media_id))
             {
                 serializer.CustomWriteNextName("media_id");
-                serializer.CustomSerialize(media_id);
+                serializer.CallSerialize(media_id);
             }
             serializer.CustomObjectEnd();
         }

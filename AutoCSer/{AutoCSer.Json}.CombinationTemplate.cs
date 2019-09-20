@@ -9,6 +9,267 @@ using AutoCSer;
 namespace AutoCSer.Json
 {
     /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref long[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref uint[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref int[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref ushort[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref short[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref byte[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref sbyte[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref bool[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
+    /// JSON 解析
+    /// </summary>
+    public unsafe sealed partial class Parser
+    {
+        /// <summary>
+        /// 数组解析
+        /// </summary>
+        /// <param name="array"></param>
+        [ParseMethod]
+        [AutoCSer.IOS.Preserve(Conditional = true)]
+        public void CallParse(ref DateTime[] array)
+        {
+            if (searchArraySize(ref array))
+            {
+                int index = 0;
+                do
+                {
+                    CallParse(ref array[index]);
+                    if (ParseState != ParseState.Success) return;
+                    ++index;
+                }
+                while (IsNextArrayValue());
+            }
+        }
+    }
+}
+namespace AutoCSer.Json
+{
+    /// <summary>
     /// JSON 序列化
     /// </summary>
     public unsafe sealed partial class Serializer

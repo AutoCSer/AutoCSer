@@ -1251,7 +1251,7 @@ namespace AutoCSer.BinarySerialize
             {
                 RemoteType remoteType = default(RemoteType);
                 int point = (int)(start - Read);
-                TypeDeSerializer<RemoteType>.DeSerialize(this, ref remoteType);
+                TypeDeSerializer<RemoteType>.GetDeSerializer(GlobalVersion).MemberDeSerialize(this, ref remoteType);
                 if (State == DeSerializeState.Success)
                 {
                     if (remoteType.TryGet(out value))

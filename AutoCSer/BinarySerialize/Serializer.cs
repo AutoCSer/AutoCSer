@@ -98,7 +98,19 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
         /// <returns>序列化数据</returns>
-        private SerializeResult serialize<valueType>(valueType value, SerializeConfig config)
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private SerializeResult serializeResult<valueType>(ref valueType value, SerializeConfig config)
+        {
+            return new SerializeResult { Data = serialize(ref value, config), Warning = Warning };
+        }
+        /// <summary>
+        /// 对象序列化
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>序列化数据</returns>
+        private byte[] serialize<valueType>(ref valueType value, SerializeConfig config)
         {
             Config = config ?? DefaultConfig;
             byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
@@ -107,8 +119,8 @@ namespace AutoCSer.BinarySerialize
                 Stream.Reset(buffer, AutoCSer.UnmanagedPool.DefaultSize);
                 using (Stream)
                 {
-                    serialize(value);
-                    return new SerializeResult { Data = Stream.GetArray(), Warning = Warning };
+                    serialize(ref value);
+                    return Stream.GetArray();
                 }
             }
             finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }
@@ -118,7 +130,7 @@ namespace AutoCSer.BinarySerialize
         /// </summary>
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
-        private void serialize<valueType>(valueType value)
+        private void serialize<valueType>(ref valueType value)
         {
             Warning = SerializeWarning.None;
             if (isReferenceMember != TypeSerializer<valueType>.IsReferenceMember)
@@ -135,7 +147,7 @@ namespace AutoCSer.BinarySerialize
             //streamStartIndex = Stream.OffsetLength;
             streamStartIndex = Stream.ByteSize;
             Config.WriteHeader(Stream);
-            TypeSerializer<valueType>.Serialize(this, value);
+            TypeSerializer<valueType>.Serialize(this, ref value);
             //Stream.Write(Stream.OffsetLength - streamStartIndex);
             Stream.Write(Stream.ByteSize - streamStartIndex);
         }
@@ -148,7 +160,17 @@ namespace AutoCSer.BinarySerialize
         public void TypeSerialize<valueType>(valueType value)
         {
             if (value == null) Stream.Write(NullValue);
-            else TypeSerializer<valueType>.Serialize(this, value);
+            else TypeSerializer<valueType>.Serialize(this, ref value);
+        }
+        /// <summary>
+        /// 自定义序列化调用
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="value"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void TypeSerialize<valueType>(ref valueType value) where valueType : struct
+        {
+            TypeSerializer<valueType>.StructSerialize(this, ref value);
         }
         /// <summary>
         /// 释放资源
@@ -1191,7 +1213,8 @@ namespace AutoCSer.BinarySerialize
             if (checkPoint(array))
             {
                 Stream.Write(array.Length);
-                foreach (valueType value in array) TypeSerializer<valueType>.StructSerialize(this, value);
+                for (int index = 0; index != array.Length; TypeSerializer<valueType>.StructSerialize(this, ref array[index++]));
+                //foreach (valueType value in array) TypeSerializer<valueType>.StructSerialize(this, value);
             }
         }
         /// <summary>
@@ -1267,7 +1290,8 @@ namespace AutoCSer.BinarySerialize
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void keyValuePairSerialize<keyType, valueType>(KeyValuePair<keyType, valueType> value)
         {
-            TypeSerializer<KeyValue<keyType, valueType>>.MemberSerialize(this, new KeyValue<keyType, valueType>(value.Key, value.Value));
+            KeyValue<keyType, valueType> keyValue = new KeyValue<keyType, valueType>(value.Key, value.Value);
+            TypeSerializer<KeyValue<keyType, valueType>>.MemberSerialize(this, ref keyValue);
         }
         /// <summary>
         /// 集合转换
@@ -1579,7 +1603,7 @@ namespace AutoCSer.BinarySerialize
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void structSerialize<valueType>(valueType value) where valueType : struct
         {
-            TypeSerializer<valueType>.StructSerialize(this, value);
+            TypeSerializer<valueType>.StructSerialize(this, ref value);
         }
         /// <summary>
         /// 引用类型成员序列化
@@ -1828,13 +1852,64 @@ namespace AutoCSer.BinarySerialize
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
         /// <returns>序列化数据</returns>
-        public static SerializeResult Serialize<valueType>(valueType value, SerializeConfig config = null)
+        public static byte[] Serialize<valueType>(valueType value, SerializeConfig config = null)
+        {
+            if (value == null) return BitConverter.GetBytes(NullValue);
+            Serializer serializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return serializer.serialize<valueType>(ref value, config);
+            }
+            finally { serializer.Free(); }
+        }
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>序列化数据</returns>
+        public static SerializeResult SerializeResult<valueType>(valueType value, SerializeConfig config = null)
         {
             if (value == null) return new SerializeResult { Data = BitConverter.GetBytes(NullValue), Warning = SerializeWarning.None };
             Serializer serializer = YieldPool.Default.Pop() ?? new Serializer();
             try
             {
-                return serializer.serialize<valueType>(value, config);
+                return serializer.serializeResult<valueType>(ref value, config);
+            }
+            finally { serializer.Free(); }
+        }
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>序列化数据</returns>
+        public static byte[] Serialize<valueType>(ref valueType value, SerializeConfig config = null)
+        {
+            if (value == null) return BitConverter.GetBytes(NullValue);
+            Serializer serializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return serializer.serialize<valueType>(ref value, config);
+            }
+            finally { serializer.Free(); }
+        }
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>序列化数据</returns>
+        public static SerializeResult SerializeResult<valueType>(ref valueType value, SerializeConfig config = null)
+        {
+            if (value == null) return new SerializeResult { Data = BitConverter.GetBytes(NullValue), Warning = SerializeWarning.None };
+            Serializer serializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return serializer.serializeResult<valueType>(ref value, config);
             }
             finally { serializer.Free(); }
         }

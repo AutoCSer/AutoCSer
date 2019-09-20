@@ -88,6 +88,7 @@
     <Compile Include="CharStream.AutoCSer.cs" />
     <Compile Include="CharStream.Json.cs" />
     <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Json\CombinationTemplate\ParseMethod.cs" />
     <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />

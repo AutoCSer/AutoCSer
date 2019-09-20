@@ -15,21 +15,10 @@ namespace AutoCSer.Extension
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
-        /// <returns>JSON 序列化结果</returns>
-        public static SerializeResult toJsonResult<valueType>(this valueType value, SerializeConfig config = null)
-        {
-            return Serializer.Serialize(value, config);
-        }
-        /// <summary>
-        /// 对象转换 JSON 字符串
-        /// </summary>
-        /// <typeparam name="valueType">目标数据类型</typeparam>
-        /// <param name="value">数据对象</param>
-        /// <param name="config">配置参数</param>
         /// <returns>JSON 字符串</returns>
         public static string toJson<valueType>(this valueType value, SerializeConfig config = null)
         {
-            return Serializer.Serialize(value, config).Json;
+            return Serializer.Serialize(ref value, config);
         }
         /// <summary>
         /// 对象转换 JSON 字符串
@@ -41,7 +30,18 @@ namespace AutoCSer.Extension
         /// <returns></returns>
         public static SerializeWarning toJson<valueType>(this valueType value, CharStream jsonStream, SerializeConfig config = null)
         {
-            return Serializer.Serialize(value, jsonStream, config);
+            return Serializer.Serialize(ref value, jsonStream, config);
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 字符串</returns>
+        public static string toJsonThread<valueType>(this valueType value, SerializeConfig config = null)
+        {
+            return Serializer.SerializeThread(ref value, config);
         }
 
         /// <summary>

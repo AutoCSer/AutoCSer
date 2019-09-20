@@ -210,7 +210,7 @@ namespace AutoCSer.Net.RemoteExpression
         protected override void serialize(AutoCSer.BinarySerialize.Serializer serializer)
         {
             serializer.Stream.Write(ClientNodeId);
-            AutoCSer.BinarySerialize.TypeSerializer<returnType>.Serialize(serializer, Value);
+            AutoCSer.BinarySerialize.TypeSerializer<returnType>.Serialize(serializer, ref Value);
         }
         /// <summary>
         /// 客户端反序列化返回值

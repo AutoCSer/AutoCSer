@@ -755,7 +755,7 @@ namespace AutoCSer.BinarySerialize
         [AutoCSer.IOS.Preserve(Conditional = true)]
         public void CallSerialize(Type value)
         {
-            if (CheckPoint(value)) TypeSerializer<RemoteType>.Serialize(this, new RemoteType(value));
+            if (CheckPoint(value)) TypeSerializer<RemoteType>.StructSerialize(this, new RemoteType(value));
         }
 
         /// <summary>

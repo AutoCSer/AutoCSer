@@ -216,7 +216,7 @@ namespace AutoCSer.Sql
         /// <param name="value"></param>
         private static void serializeByteArray(AutoCSer.Json.Serializer serializer, object value)
         {
-            serializer.CustomSerialize((byte[])value);
+            serializer.CallSerialize((byte[])value);
         }
         /// <summary>
         /// 序列化数据值

@@ -37,14 +37,22 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="stream"></param>
         internal override unsafe void Serialize(UnmanagedStream stream)
         {
-            AutoCSer.Json.Serializer jsonSerializer = Interlocked.Exchange(ref JsonSerializer.Serializer, null);
-            if (jsonSerializer == null)
+            if (Value == null)
             {
-                jsonSerializer = AutoCSer.Json.Serializer.YieldPool.Default.Pop() ?? new AutoCSer.Json.Serializer();
-                jsonSerializer.SetTcpServer();
+                *(long*)stream.GetPrepSizeCurrent(8) = 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48);
+                stream.ByteSize += 4 * sizeof(char);
             }
-            jsonSerializer.SerializeTcpServer(Value, stream);
-            if (Interlocked.CompareExchange(ref JsonSerializer.Serializer, jsonSerializer, null) != null) jsonSerializer.Free();
+            else
+            {
+                AutoCSer.Json.Serializer jsonSerializer = Interlocked.Exchange(ref JsonSerializer.Serializer, null);
+                if (jsonSerializer == null)
+                {
+                    jsonSerializer = AutoCSer.Json.Serializer.YieldPool.Default.Pop() ?? new AutoCSer.Json.Serializer();
+                    jsonSerializer.SetTcpServer();
+                }
+                jsonSerializer.SerializeTcpServer(ref Value, stream);
+                if (Interlocked.CompareExchange(ref JsonSerializer.Serializer, jsonSerializer, null) != null) jsonSerializer.Free();
+            }
         }
     }
 }

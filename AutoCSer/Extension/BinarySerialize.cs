@@ -16,9 +16,9 @@ namespace AutoCSer.Extension
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
         /// <returns>序列化数据</returns>
-        public static SerializeResult serialize<valueType>(this valueType value, SerializeConfig config = null)
+        public static byte[] serialize<valueType>(this valueType value, SerializeConfig config = null)
         {
-            return Serializer.Serialize(value, config);
+            return Serializer.Serialize(ref value, config);
         }
 
         /// <summary>

@@ -39,7 +39,8 @@ namespace AutoCSer.Deploy
 #else
             if (TcpClient.IsClient)
             {
-                AutoCSer.Net.IndexIdentity identity = TcpClient.TcpInternalClient.create(TcpClient.ClientId);
+                //AutoCSer.Net.IndexIdentity identity = TcpClient.TcpInternalClient.create(TcpClient.ClientId);
+                AutoCSer.Net.IndexIdentity identity = TcpClient.TcpInternalClient.create();
                 bool isClear = false;
                 try
                 {

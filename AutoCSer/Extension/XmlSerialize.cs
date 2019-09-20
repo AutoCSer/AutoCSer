@@ -15,8 +15,8 @@ namespace AutoCSer.Extension
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
-        /// <returns>序列化结果</returns>
-        public static SerializeResult toXml<valueType>(this valueType value, SerializeConfig config = null)
+        /// <returns>Xml 字符串</returns>
+        public static string toXml<valueType>(this valueType value, SerializeConfig config = null)
         {
             return Serializer.Serialize(value, config);
         }

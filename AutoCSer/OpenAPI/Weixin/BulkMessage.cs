@@ -21,7 +21,7 @@ namespace AutoCSer.OpenAPI.Weixin
         private static void toJson(AutoCSer.Json.Serializer serializer, BulkMessage value)
         {
             serializer.CustomWriteFirstName("filter");
-            serializer.CustomSerialize(value.filter);
+            serializer.TypeSerialize(ref value.filter);
             value.toJson(serializer);
         }
     }

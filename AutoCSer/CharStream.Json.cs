@@ -499,21 +499,27 @@ namespace AutoCSer
             switch(time.Kind)
             {
                 case DateTimeKind.Utc:
-                    char* utcFixed = GetPrepSizeCurrent(19 + 3);
+                    char* utcFixed = GetPrepSizeCurrent(19 + 8 + 3);
                     *utcFixed = '"';
-                    AutoCSer.Date.ToString(time, utcFixed + 1);
-                    *(int*)(utcFixed + 20) = 'Z' + ('"' << 16);
-                    ByteSize += (19 + 3) << 1;
+                    int utcSize = AutoCSer.Date.ToString(time, utcFixed + 1);
+                    *(int*)(utcFixed + (utcSize + 1)) = 'Z' + ('"' << 16);
+                    ByteSize += (utcSize + 3) << 1;
                     return;
                 case DateTimeKind.Local:
-                    char* localFixed = GetPrepSizeCurrent(20 + 8);
+                    char* localFixed = GetPrepSizeCurrent(20 + 8 + 8);
                     *localFixed = '"';
-                    AutoCSer.Date.ToString(time, localFixed + 1);
-                    *(long*)(localFixed + 20) = Date.ZoneHourString;
-                    *(long*)(localFixed + 24) = Date.ZoneMinuteString;
-                    ByteSize += (19 + 6 + 2) << 1;
+                    int localSize = AutoCSer.Date.ToString(time, localFixed + 1);
+                    *(long*)(localFixed + (localSize + 1)) = Date.ZoneHourString;
+                    *(long*)(localFixed + (localSize + 5)) = Date.ZoneMinuteString;
+                    ByteSize += (localSize + 6 + 2) << 1;
                     return;
-                default: WriteJsonSqlString(time); return;
+                default:
+                    char* timeFixed = GetPrepSizeCurrent(19 + 8 + 2);
+                    *timeFixed = '"';
+                    int size = AutoCSer.Date.ToString(time, timeFixed + 1);
+                    *(timeFixed + (size + 1)) = '"';
+                    ByteSize += (size + 2) << 1;
+                    return;
             }
         }
         /// <summary>

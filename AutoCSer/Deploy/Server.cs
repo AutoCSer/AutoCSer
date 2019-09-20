@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using AutoCSer.Extension;
 using System.Diagnostics;
+using AutoCSer.Net.TcpInternalServer;
 
 namespace AutoCSer.Deploy
 {
@@ -30,9 +31,13 @@ namespace AutoCSer.Deploy
             /// </summary>
             addAssemblyFiles = 0,
             /// <summary>
+            /// 时间验证函数
+            /// </summary>
+            verify,
+            /// <summary>
             /// 添加自定义任务
             /// </summary>
-            addCustom = 2,
+            addCustom,
             /// <summary>
             /// 添加web任务(css/js/html)
             /// </summary>
@@ -72,7 +77,7 @@ namespace AutoCSer.Deploy
             /// <summary>
             /// 注册客户端
             /// </summary>
-            register,
+            register_X,
             /// <summary>
             /// 设置文件数据源
             /// </summary>
@@ -91,39 +96,43 @@ namespace AutoCSer.Deploy
         /// 切换服务前的调用
         /// </summary>
         public event Action BeforeSwitch;
-        /// <summary>
-        /// 客户端信息池
-        /// </summary>
-        private AutoCSer.Threading.IndexValuePool<ClientIdentity> clientPool;
+        ///// <summary>
+        ///// 客户端信息池
+        ///// </summary>
+        //private AutoCSer.Threading.IndexValuePool<ClientIdentity> clientPool;
         /// <summary>
         /// 部署信息池
         /// </summary>
         private AutoCSer.Threading.IndexValuePool<DeployInfo> deployPool;
-        /// <summary>
-        /// 服务端推送委托
-        /// </summary>
-        private Dictionary<int, Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>> onPushs = DictionaryCreator.CreateInt<Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>>();
-        /// <summary>
-        /// 服务端推送委托编号
-        /// </summary>
-        private int onPushIdentity;
-        /// <summary>
-        /// 服务端推送委托数量
-        /// </summary>
-        public int OnPushCount
-        {
-            get { return onPushs.Count; }
-        }
+        ///// <summary>
+        ///// 服务端推送委托
+        ///// </summary>
+        //private Dictionary<int, Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>> onPushs = DictionaryCreator.CreateInt<Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>>();
+        ///// <summary>
+        ///// 服务端推送委托编号
+        ///// </summary>
+        //private int onPushIdentity;
+        ///// <summary>
+        ///// 服务端推送委托数量
+        ///// </summary>
+        //public int OnPushCount
+        //{
+        //    get { return onPushs.Count; }
+        //}
+        ///// <summary>
+        ///// 新的获取服务端推送委托
+        ///// </summary>
+        //public event Action<Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>, int> OnGetPush;
         /// <summary>
         /// 新的获取服务端推送委托
         /// </summary>
-        public event Action<Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>, int> OnGetPush;
+        public event Action<ClientObject> OnGetPush;
         /// <summary>
         /// 部署服务
         /// </summary>
         public Server()
         {
-            clientPool.Reset(16);
+            //clientPool.Reset(16);
             deployPool.Reset(4);
         }
         /// <summary>
@@ -157,69 +166,97 @@ namespace AutoCSer.Deploy
             CustomTask = new ServerCustomTask<valueType>(value);
         }
         /// <summary>
-        /// 注册客户端
+        /// 时间验证函数
         /// </summary>
-        /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
-        private IndexIdentity register()
+        /// <param name="sender"></param>
+        /// <param name="userID">用户ID</param>
+        /// <param name="randomPrefix">随机前缀</param>
+        /// <param name="md5Data">MD5 数据</param>
+        /// <param name="ticks">验证时钟周期</param>
+        /// <returns>是否验证成功</returns>
+        [AutoCSer.Net.TcpServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        protected override bool verify(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
-            int index, identity;
-            object arrayLock = clientPool.ArrayLock;
-            Monitor.Enter(arrayLock);
-            try
+            if (base.verify(sender, userID, randomPrefix, md5Data, ref ticks))
             {
-                index = clientPool.GetIndexContinue();//不能写成一行，可能造成Pool先入栈然后被修改，导致索引溢出
-                identity = clientPool.Array[index].Identity;
+                sender.ClientObject = createClientObject();
+                return true;
             }
-            finally { Monitor.Exit(arrayLock); }
-            return new IndexIdentity { Index = index, Identity = identity };
+            return false;
         }
         /// <summary>
-        /// 清除客户端信息
+        /// 创建客户端对象
         /// </summary>
-        /// <param name="clientId"></param>
-        internal void ClearClient(ref IndexIdentity clientId)
+        /// <returns></returns>
+        protected virtual ClientObject createClientObject()
         {
-            object arrayLock = clientPool.ArrayLock;
-            Monitor.Enter(arrayLock);
-            clientPool.Array[clientId.Index].Clear(clientId.Identity);
-            Monitor.Exit(arrayLock);
+            return new ClientObject();
         }
+        ///// <summary>
+        ///// 注册客户端
+        ///// </summary>
+        ///// <returns></returns>
+        //[AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
+        //private IndexIdentity register()
+        //{
+        //    int index, identity;
+        //    object arrayLock = clientPool.ArrayLock;
+        //    Monitor.Enter(arrayLock);
+        //    try
+        //    {
+        //        index = clientPool.GetIndexContinue();//不能写成一行，可能造成Pool先入栈然后被修改，导致索引溢出
+        //        identity = clientPool.Array[index].Identity;
+        //    }
+        //    finally { Monitor.Exit(arrayLock); }
+        //    return new IndexIdentity { Index = index, Identity = identity };
+        //}
+        ///// <summary>
+        ///// 清除客户端信息
+        ///// </summary>
+        ///// <param name="clientId"></param>
+        //internal void ClearClient(ref IndexIdentity clientId)
+        //{
+        //    object arrayLock = clientPool.ArrayLock;
+        //    Monitor.Enter(arrayLock);
+        //    clientPool.Array[clientId.Index].Clear(clientId.Identity);
+        //    Monitor.Exit(arrayLock);
+        //}
         /// <summary>
         /// 部署任务状态轮询
         /// </summary>
-        /// <param name="clientId">服务端标识</param>
+        /// <param name="sender"></param>
         /// <param name="onLog">部署任务状态更新回调</param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private void getLog(IndexIdentity clientId, Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog)
+        private void getLog(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog)
         {
-            object arrayLock = clientPool.ArrayLock;
-            Monitor.Enter(arrayLock);
-            clientPool.Array[clientId.Index].Set(clientId.Identity, onLog);
-            Monitor.Exit(arrayLock);
+            //object arrayLock = clientPool.ArrayLock;
+            //Monitor.Enter(arrayLock);
+            //clientPool.Array[clientId.Index].Set(clientId.Identity, onLog);
+            //Monitor.Exit(arrayLock);
+            ((ClientObject)sender.ClientObject).OnLog = onLog;
         }
-        /// <summary>
-        /// 获取部署任务状态更新回调
-        /// </summary>
-        /// <param name="deployIdentity"></param>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> GetLog(ref IndexIdentity deployIdentity, ref IndexIdentity clientId)
-        {
-            object arrayLock = deployPool.ArrayLock;
-            Monitor.Enter(arrayLock);
-            if (deployPool.Array[deployIdentity.Index].GetClientId(deployIdentity.Identity, ref clientId))
-            {
-                Monitor.Exit(arrayLock);
-                arrayLock = clientPool.ArrayLock;
-                Monitor.Enter(arrayLock);
-                Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = clientPool.Array[clientId.Index].GetLog(clientId.Identity);
-                Monitor.Exit(arrayLock);
-                return onLog;
-            }
-            else Monitor.Exit(arrayLock);
-            return null;
-        }
+        ///// <summary>
+        ///// 获取部署任务状态更新回调
+        ///// </summary>
+        ///// <param name="deployIdentity"></param>
+        ///// <param name="clientId"></param>
+        ///// <returns></returns>
+        //internal Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> GetLog(ref IndexIdentity deployIdentity, ref IndexIdentity clientId)
+        //{
+        //    object arrayLock = deployPool.ArrayLock;
+        //    Monitor.Enter(arrayLock);
+        //    if (deployPool.Array[deployIdentity.Index].GetClientId(deployIdentity.Identity, ref clientId))
+        //    {
+        //        Monitor.Exit(arrayLock);
+        //        arrayLock = clientPool.ArrayLock;
+        //        Monitor.Enter(arrayLock);
+        //        Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = clientPool.Array[clientId.Index].GetLog(clientId.Identity);
+        //        Monitor.Exit(arrayLock);
+        //        return onLog;
+        //    }
+        //    else Monitor.Exit(arrayLock);
+        //    return null;
+        //}
         /// <summary>
         /// 清除所有部署任务
         /// </summary>
@@ -246,20 +283,20 @@ namespace AutoCSer.Deploy
         /// 创建部署
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="clientId">部署服务端标识</param>
         /// <returns>部署信息索引标识</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private IndexIdentity create(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, IndexIdentity clientId)
+        private IndexIdentity create(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
         {
             if (checkCommand(sender, Command.create))
             {
+                ClientObject client = (ClientObject)sender.ClientObject;
                 int index, identity;
                 object arrayLock = deployPool.ArrayLock;
                 Monitor.Enter(arrayLock);
                 try
                 {
                     index = deployPool.GetIndexContinue();
-                    identity = deployPool.Array[index].Set(ref clientId);
+                    identity = deployPool.Array[index].Set(client);
                 }
                 finally { Monitor.Exit(arrayLock); }
                 return new IndexIdentity { Index = index, Identity = identity };
@@ -485,48 +522,52 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 自定义服务端推送
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="onPush">推送委托</param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void customPush(Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> onPush)
+        private void customPush(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> onPush)
         {
-            onPushs.Add(++onPushIdentity, onPush);
-            if (OnGetPush != null) OnGetPush(onPush, onPushIdentity);
+            //onPushs.Add(++onPushIdentity, onPush);
+            //if (OnGetPush != null) OnGetPush(onPush, onPushIdentity);
+            ClientObject client = (ClientObject)sender.ClientObject;
+            client.OnCustomPush = onPush;
+            if (OnGetPush != null) OnGetPush(client);
         }
-        /// <summary>
-        /// 服务端推送
-        /// </summary>
-        /// <param name="customData"></param>
-        /// <param name="onPushIdentity">0 表示所有客户端</param>
-        public void CustomPush(byte[] customData, int onPushIdentity = 0)
-        {
-            TcpServer.CallQueue.Add(new CustomPushServerCall(this, customData, onPushIdentity));
-        }
-        /// <summary>
-        /// 服务端推送
-        /// </summary>
-        /// <param name="customData"></param>
-        /// <param name="onPushIdentity"></param>
-        internal void CallCustomPush(byte[] customData, int onPushIdentity)
-        {
-            if (onPushIdentity == 0)
-            {
-                LeftArray<int> removeIdentitys = default(LeftArray<int>);
-                foreach (KeyValuePair<int, Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>> onPush in onPushs)
-                {
-                    if (!onPush.Value(customData)) removeIdentitys.Add(onPush.Key);
-                }
-                foreach (int removeIdentity in removeIdentitys) onPushs.Remove(removeIdentity);
-            }
-            else
-            {
-                Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> onPush;
-                if (onPushs.TryGetValue(onPushIdentity, out onPush))
-                {
-                    if (!onPush(customData)) onPushs.Remove(onPushIdentity);
-                }
-            }
-        }
+        ///// <summary>
+        ///// 服务端推送
+        ///// </summary>
+        ///// <param name="customData"></param>
+        ///// <param name="onPushIdentity">0 表示所有客户端</param>
+        //public void CustomPush(byte[] customData, int onPushIdentity = 0)
+        //{
+        //    TcpServer.CallQueue.Add(new CustomPushServerCall(this, customData, onPushIdentity));
+        //}
+        ///// <summary>
+        ///// 服务端推送
+        ///// </summary>
+        ///// <param name="customData"></param>
+        ///// <param name="onPushIdentity"></param>
+        //internal void CallCustomPush(byte[] customData, int onPushIdentity)
+        //{
+        //    if (onPushIdentity == 0)
+        //    {
+        //        LeftArray<int> removeIdentitys = default(LeftArray<int>);
+        //        foreach (KeyValuePair<int, Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool>> onPush in onPushs)
+        //        {
+        //            if (!onPush.Value(customData)) removeIdentitys.Add(onPush.Key);
+        //        }
+        //        foreach (int removeIdentity in removeIdentitys) onPushs.Remove(removeIdentity);
+        //    }
+        //    else
+        //    {
+        //        Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> onPush;
+        //        if (onPushs.TryGetValue(onPushIdentity, out onPush))
+        //        {
+        //            if (!onPush(customData)) onPushs.Remove(onPushIdentity);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// 默认切换服务相对目录名称

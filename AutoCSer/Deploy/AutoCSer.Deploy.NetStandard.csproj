@@ -41,7 +41,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientConfig.cs" />
     <Compile Include="ClientDeploy.cs" />
-    <Compile Include="ClientIdentity.cs" />
+    <Compile Include="ClientObject.cs" />
     <Compile Include="ClientTaskInfo.cs" />
     <Compile Include="ClientTask\AssemblyFile.cs" />
     <Compile Include="ClientTask\Custom.cs" />
@@ -53,7 +53,6 @@
     <Compile Include="ConfigLoader.cs" />
     <Compile Include="CustomAttribute.cs" />
     <Compile Include="CustomPushResult.cs" />
-    <Compile Include="CustomPushServerCall.cs" />
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
     <Compile Include="DeployState.cs" />
@@ -83,6 +82,15 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if exist &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; dotnet &quot;$(ProjectDir)..\..\Packet\NetCore\netcoreapp2.0\AutoCSer.CodeGenerator.dll&quot; &quot;$(ProjectName)&quot; &quot;$(ProjectDir) &quot; &quot;$(TargetPath) &quot; &quot;$(TargetName)&quot;" />
+  </Target>
+
+</Project>
+tName)&quot;" />
+  </Target>
+
+</Project>
+ect>
+tName)&quot;" />
   </Target>
 
 </Project>

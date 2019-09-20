@@ -1000,41 +1000,43 @@ namespace AutoCSer.Json
         internal static void Array(Parser parser, ref valueType[] values)
         {
             int count = ArrayIndex(parser, ref values);
-            if (count != -1 && count != values.Length) System.Array.Resize(ref values, count);
+            if (count >= 0 && count != values.Length) System.Array.Resize(ref values, count);
         }
         /// <summary>
         /// 数组解析
         /// </summary>
         /// <param name="parser">Json解析器</param>
-        /// <param name="values">目标数据</param>
+        /// <param name="array">目标数据</param>
         /// <returns>数据数量,-1表示失败</returns>
-        internal static int ArrayIndex(Parser parser, ref valueType[] values)
+        internal static int ArrayIndex(Parser parser, ref valueType[] array)
         {
-            parser.SearchArray(ref values);
-            if (parser.ParseState != ParseState.Success || values == null) return -1;
-            int index = 0;
-            if (parser.IsFirstArrayValue())
+            switch (parser.SearchArray(ref array))
             {
-                do
-                {
-                    if (index == values.Length)
+                case 0:
+                    array = new valueType[parser.Config.NewArraySize];
+                    int index = 0;
+                    do
                     {
-                        valueType value = default(valueType);
-                        Parse(parser, ref value);
-                        if (parser.ParseState != ParseState.Success) return -1;
-                        values = values.copyNew(index == 0 ? parser.Config.NewArraySize : (index << 1));
-                        values[index++] = value;
+                        if (index != array.Length)
+                        {
+                            Parse(parser, ref array[index]);
+                            if (parser.ParseState != ParseState.Success) return -1;
+                            ++index;
+                        }
+                        else
+                        {
+                            valueType value = default(valueType);
+                            Parse(parser, ref value);
+                            if (parser.ParseState != ParseState.Success) return -1;
+                            array = array.copyNew(index == 0 ? parser.Config.NewArraySize : (index << 1));
+                            array[index++] = value;
+                        }
                     }
-                    else
-                    {
-                        Parse(parser, ref values[index]);
-                        if (parser.ParseState != ParseState.Success) return -1;
-                        ++index;
-                    }
-                }
-                while (parser.IsNextArrayValue());
+                    while (parser.IsNextArrayValue());
+                    return parser.ParseState == ParseState.Success ? index : -1;
+                case 1: return 0;
+                default: return -1;
             }
-            return parser.ParseState == ParseState.Success ? index : -1;
         }
 
         /// <summary>

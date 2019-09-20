@@ -40,35 +40,35 @@ namespace AutoCSer.OpenAPI.Weixin
             if (string.IsNullOrEmpty(towxname))
             {
                 serializer.CustomWriteFirstName("touser");
-                serializer.CustomSerialize(touser);
+                serializer.CallSerialize(touser);
             }
             else
             {
                 serializer.CustomWriteFirstName("towxname");
-                serializer.CustomSerialize(towxname);
+                serializer.CallSerialize(towxname);
             }
             serializer.CustomWriteNextName("msgtype");
-            serializer.CustomSerialize(msgtype.ToString());
+            serializer.CallSerialize(msgtype.ToString());
             serializer.CustomWriteNextName(msgtype.ToString());
             switch (msgtype)
             {
                 case BulkMessageType.text:
-                    serializer.CustomSerialize(text);
+                    serializer.TypeSerialize(ref text);
                     break;
                 case BulkMessageType.image:
-                    serializer.CustomSerialize(image);
+                    serializer.TypeSerialize(ref image);
                     break;
                 case BulkMessageType.voice:
-                    serializer.CustomSerialize(voice);
+                    serializer.TypeSerialize(ref voice);
                     break;
                 case BulkMessageType.mpvideo:
-                    serializer.CustomSerialize(mpvideo);
+                    serializer.TypeSerialize(ref mpvideo);
                     break;
                 case BulkMessageType.mpnews:
-                    serializer.CustomSerialize(mpnews);
+                    serializer.TypeSerialize(ref mpnews);
                     break;
                 case BulkMessageType.wxcard:
-                    serializer.CustomSerialize(wxcard);
+                    serializer.TypeSerialize(ref wxcard);
                     break;
             }
             serializer.CustomObjectEnd();

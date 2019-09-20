@@ -73,7 +73,7 @@ namespace AutoCSer.Net.RemoteExpression
         protected void serializeParameter<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, parameterType parameter)
         {
             if (parameter == null) serializer.Stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
-            else AutoCSer.BinarySerialize.TypeSerializer<parameterType>.Serialize(serializer, parameter);
+            else AutoCSer.BinarySerialize.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
         }
         /// <summary>
         /// 参数序列化
@@ -84,7 +84,7 @@ namespace AutoCSer.Net.RemoteExpression
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void serializeParameterStruct<parameterType>(AutoCSer.BinarySerialize.Serializer serializer, ref parameterType parameter)
         {
-            AutoCSer.BinarySerialize.TypeSerializer<parameterType>.StructSerialize(serializer, parameter);
+            AutoCSer.BinarySerialize.TypeSerializer<parameterType>.StructSerialize(serializer, ref parameter);
         }
         /// <summary>
         /// 服务端反序列化
@@ -193,7 +193,7 @@ namespace AutoCSer.Net.RemoteExpression
         protected void serializeParameter<parameterType>(AutoCSer.Json.Serializer serializer, parameterType parameter)
         {
             if (parameter == null) serializer.CharStream.WriteJsonNull();
-            else AutoCSer.Json.TypeSerializer<parameterType>.Serialize(serializer, ref parameter);
+            else AutoCSer.Json.TypeSerializer<parameterType>.ClassSerialize(serializer, parameter);
         }
         /// <summary>
         /// 参数序列化

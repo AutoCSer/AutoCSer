@@ -272,8 +272,8 @@ namespace AutoCSer.Tool.OpenPack
                                     using (Stream entryStream = zipArchive.CreateEntry(path + fileName).Open())
                                     {
                                         string code = File.ReadAllText(file.FullName).Replace(@" public static readonly bool IsLocal = false;", @" public static readonly bool IsLocal = true;");
-                                        code = new Regex(@" ""[^""]+"";").Replace(code, match => @" ""XXX"";");
-                                        code = new Regex(@" 0x[0-9A-Za-z]+UL;").Replace(code, match => " 1UL;");
+                                        code = new Regex(@" ""[^""]+""; *//SECRET").Replace(code, match => @" ""XXX"";");
+                                        code = new Regex(@" 0x[0-9A-Za-z]+UL; *//SECRET").Replace(code, match => " 1UL;");
                                         byte[] data = System.Text.Encoding.UTF8.GetBytes("000" + code);
                                         data[0] = 0xef;
                                         data[1] = 0xbb;

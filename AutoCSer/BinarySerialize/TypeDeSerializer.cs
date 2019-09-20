@@ -136,7 +136,7 @@ namespace AutoCSer.BinarySerialize
         private static void realType(DeSerializer deSerializer, ref valueType value)
         {
             RemoteType remoteType = default(RemoteType);
-            TypeDeSerializer<RemoteType>.StructDeSerialize(deSerializer, ref remoteType);
+            TypeDeSerializer<RemoteType>.GetDeSerializer(deSerializer.GlobalVersion).MemberDeSerialize(deSerializer, ref remoteType);
             if (deSerializer.State == DeSerializeState.Success)
             {
                 Type type;

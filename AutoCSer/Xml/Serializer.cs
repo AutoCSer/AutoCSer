@@ -85,8 +85,20 @@ namespace AutoCSer.Xml
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
-        /// <returns>Xml字符串</returns>
-        private SerializeResult serialize<valueType>(valueType value, SerializeConfig config)
+        /// <returns>Xml 序列化结果</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private SerializeResult serializeResult<valueType>(valueType value, SerializeConfig config)
+        {
+            return new SerializeResult { Xml = serialize(value, config), Warning = Warning };
+        }
+        /// <summary>
+        /// 对象转换XML字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>Xml 字符串</returns>
+        private string serialize<valueType>(valueType value, SerializeConfig config)
         {
             Config = config ?? DefaultConfig;
             byte* buffer = AutoCSer.UnmanagedPool.Default.Get();
@@ -96,7 +108,7 @@ namespace AutoCSer.Xml
                 using (CharStream)
                 {
                     serialize(value);
-                    return new SerializeResult { Xml = CharStream.ToString(), Warning = Warning };
+                    return CharStream.ToString();
                 }
             }
             finally { AutoCSer.UnmanagedPool.Default.Push(buffer); }
@@ -682,7 +694,23 @@ namespace AutoCSer.Xml
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
         /// <returns>序列化结果</returns>
-        public static SerializeResult Serialize<valueType>(valueType value, SerializeConfig config = null)
+        public static SerializeResult SerializeResult<valueType>(valueType value, SerializeConfig config = null)
+        {
+            Serializer xmlSerializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return xmlSerializer.serializeResult<valueType>(value, config);
+            }
+            finally { xmlSerializer.free(); }
+        }
+        /// <summary>
+        /// 对象转换 XML 字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>Xml 字符串</returns>
+        public static string Serialize<valueType>(valueType value, SerializeConfig config = null)
         {
             Serializer xmlSerializer = YieldPool.Default.Pop() ?? new Serializer();
             try

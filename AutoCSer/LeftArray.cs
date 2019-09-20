@@ -366,7 +366,7 @@ namespace AutoCSer
             return false;
         }
         /// <summary>
-        /// 移除数据，然后将最后一个数据移动到被删除数据位置
+        /// 移除第一个匹配数据，然后将最后一个数据移动到被删除数据位置
         /// </summary>
         /// <param name="isValue">数据匹配器</param>
         /// <returns>是否存在移除数据</returns>

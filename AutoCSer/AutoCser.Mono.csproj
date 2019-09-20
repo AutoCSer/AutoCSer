@@ -75,6 +75,7 @@
     <Compile Include="BinarySerialize\TypeSerializer.cs" />
     <Compile Include="BinarySerialize\UnionType.cs" />
     <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Json\CombinationTemplate\ParseMethod.cs" />
     <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />

@@ -90,5 +90,16 @@ namespace AutoCSer.Sql
         {
             return false;
         }
+        /// <summary>
+        /// 空值判断函数支持
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="nullValue"></param>
+        /// <returns></returns>
+        public static valueType IsNull<valueType>(valueType value, valueType nullValue)
+        {
+            return value;
+        }
     }
 }

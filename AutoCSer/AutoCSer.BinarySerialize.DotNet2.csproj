@@ -265,6 +265,7 @@
     <Compile Include="Memory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Json\CombinationTemplate\ParseMethod.cs" />
     <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="MemoryMap.cs" />
     <Compile Include="Metadata\AttributeMethod.cs" />

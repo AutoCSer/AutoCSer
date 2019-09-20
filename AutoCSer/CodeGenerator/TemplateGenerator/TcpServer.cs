@@ -733,7 +733,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 get
                 {
-                    return AutoCSer.Json.Serializer.Serialize(Attribute).Json.Replace(@"""", @"""""");
+                    return AutoCSer.Json.Serializer.Serialize(Attribute).Replace(@"""", @"""""");
                 }
             }
             /// <summary>

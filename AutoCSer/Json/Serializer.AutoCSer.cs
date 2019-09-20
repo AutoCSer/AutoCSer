@@ -41,7 +41,7 @@ namespace AutoCSer.Json
         /// <param name="value">数据对象</param>
         /// <param name="onSerializeStream">序列化以后的数据流处理事件</param>
         /// <param name="config">配置参数</param>
-        public static SerializeWarning Serialize<valueType>(valueType value, Action<CharStream> onSerializeStream, SerializeConfig config = null)
+        public static SerializeWarning Serialize<valueType>(ref valueType value, Action<CharStream> onSerializeStream, SerializeConfig config = null)
         {
             if (onSerializeStream == null) throw new ArgumentNullException();
             Serializer jsonSerializer = YieldPool.Default.Pop() ?? new Serializer();
@@ -90,7 +90,7 @@ namespace AutoCSer.Json
         /// <param name="stream"></param>
         /// <param name="value"></param>
         internal void SerializeTcpServer<valueType>(ref valueType value, UnmanagedStream stream)
-            where valueType : struct
+            //where valueType : struct
         {
             int index = stream.ByteSize;
             if (forefatherCount != 0)
@@ -106,37 +106,6 @@ namespace AutoCSer.Json
             }
             finally { stream.From(CharStream); }
             if (((stream.ByteSize - index) & 2) != 0) stream.Write(' ');
-        }
-        /// <summary>
-        /// 序列化
-        /// </summary>
-        /// <typeparam name="valueType"></typeparam>
-        /// <param name="stream"></param>
-        /// <param name="value"></param>
-        internal void SerializeTcpServer<valueType>(valueType value, UnmanagedStream stream)
-        {
-            if (value == null)
-            {
-                *(long*)stream.GetPrepSizeCurrent(8) = 'n' + ('u' << 16) + ((long)'l' << 32) + ((long)'l' << 48);
-                stream.ByteSize += 4 * sizeof(char);
-            }
-            else
-            {
-                int index = stream.ByteSize;
-                if (forefatherCount != 0)
-                {
-                    System.Array.Clear(forefather, 0, forefatherCount);
-                    forefatherCount = 0;
-                }
-                CharStream.From(stream);
-                try
-                {
-                    //Warning = SerializeWarning.None;
-                    TypeSerializer<valueType>.SerializeTcpServer(this, ref value);
-                }
-                finally { stream.From(CharStream); }
-                if (((stream.ByteSize - index) & 2) != 0) stream.Write(' ');
-            }
         }
 
         /// <summary>

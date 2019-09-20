@@ -4,11 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AutoCSer</AssemblyName>
     <RootNamespace>AutoCSer</RootNamespace>
-    <Version>1.1.42</Version>
+    <Version>1.1.43</Version>
     <PackageId>AutoCSer.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />
-    <Description>AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP / RPC 接口服务框架、TCP / RPC 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、日志流内存数据库缓存组件、消息队列组件、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。</Description>
+    <Description>AutoCSer is a high-performance RPC framework.
+AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包括 TCP / RPC 接口服务框架、TCP / RPC 函数服务框架、前后端一体 WEB 视图框架、ORM 内存索引缓存框架、日志流内存数据库缓存组件、消息队列组件、二进制 / JSON / XML 数据序列化 等一系列无缝集成的高性能组件。</Description>
     <Copyright>Copyright © 肖进 2017</Copyright>
     <PackageProjectUrl>http://www.autocser.com/Index.html</PackageProjectUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -78,6 +79,7 @@
     <Compile Include="CharStream.cs" />
     <Compile Include="CharStream.Json.cs" />
     <Compile Include="CodeGenerator\CombinationTemplateConfig.cs" />
+    <Compile Include="Json\CombinationTemplate\ParseMethod.cs" />
     <Compile Include="Json\CombinationTemplate\SerializeMethod.cs" />
     <Compile Include="Config\Creator.cs" />
     <Compile Include="Config\Loader.cs" />

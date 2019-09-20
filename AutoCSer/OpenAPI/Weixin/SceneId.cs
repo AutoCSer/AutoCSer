@@ -28,12 +28,12 @@ namespace AutoCSer.OpenAPI.Weixin
             if (scene_str == null)
             {
                 serializer.CustomWriteFirstName("scene_id");
-                serializer.CustomSerialize(scene_id);
+                serializer.CallSerialize(scene_id);
             }
             else
             {
                 serializer.CustomWriteFirstName("scene_str");
-                serializer.CustomSerialize(scene_str);
+                serializer.CallSerialize(scene_str);
             }
             serializer.CustomObjectEnd();
         }

@@ -79,6 +79,18 @@ namespace AutoCSer.Json
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
+        /// <returns>Json序列化结果</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        private SerializeResult serializeResult<valueType>(ref valueType value, SerializeConfig config)
+        {
+            return new SerializeResult { Json = serialize(ref value, config), Warning = Warning };
+        }
+        /// <summary>
+        /// 对象转换JSON字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
         /// <returns>Json字符串</returns>
         private string serialize<valueType>(ref valueType value, SerializeConfig config)
         {
@@ -210,10 +222,9 @@ namespace AutoCSer.Json
         /// <typeparam name="valueType"></typeparam>
         /// <param name="value"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void TypeSerialize<valueType>(ref valueType value)
+        public void TypeSerialize<valueType>(ref valueType value) where valueType : struct
         {
-            if (value == null) CharStream.WriteJsonNull();
-            else TypeSerializer<valueType>.Serialize(this, ref value);
+            TypeSerializer<valueType>.StructSerialize(this, ref value);
         }
         /// <summary>
         /// 获取并设置自定义序列化成员位图
@@ -376,17 +387,6 @@ namespace AutoCSer.Json
         }
 
         /// <summary>
-        /// 对象转换JSON字符串
-        /// </summary>
-        /// <typeparam name="valueType"></typeparam>
-        /// <param name="value"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void CustomSerialize<valueType>(valueType value)
-        {
-            if (value == null) CharStream.WriteJsonNull();
-            else TypeSerializer<valueType>.Serialize(this, ref value);
-        }
-        /// <summary>
         /// 写入对象名称
         /// </summary>
         /// <param name="name"></param>
@@ -456,7 +456,7 @@ namespace AutoCSer.Json
         //[AutoCSer.IOS.Preserve(Conditional = true)]
         internal void structSerialize<valueType>(valueType value)
         {
-            TypeSerializer<valueType>.StructSerialize(this, value);
+            TypeSerializer<valueType>.StructSerialize(this, ref value);
         }
         /// <summary>
         /// 基类转换
@@ -491,6 +491,20 @@ namespace AutoCSer.Json
             else if (Push(array))
             {
                 TypeSerializer<valueType>.Array(this, array);
+                Pop();
+            }
+        }
+        /// <summary>
+        /// 数组转换
+        /// </summary>
+        /// <param name="array">数组对象</param>
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
+        internal void structArray<valueType>(valueType[] array) where valueType : struct
+        {
+            if (array == null) CharStream.WriteJsonNull();
+            else if (Push(array))
+            {
+                TypeSerializer<valueType>.StructArray(this, array);
                 Pop();
             }
         }
@@ -593,14 +607,61 @@ namespace AutoCSer.Json
         /// <typeparam name="valueType">目标数据类型</typeparam>
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
-        /// <returns>JSON 字符串</returns>
-        public static SerializeResult Serialize<valueType>(valueType value, SerializeConfig config = null)
+        /// <returns>JSON 序列化结果</returns>
+        public static SerializeResult SerializeResult<valueType>(valueType value, SerializeConfig config = null)
         {
             Serializer jsonSerializer = YieldPool.Default.Pop() ?? new Serializer();
             try
             {
-                string json = jsonSerializer.serialize<valueType>(ref value, config);
-                return new SerializeResult { Json = json, Warning = jsonSerializer.Warning };
+                return jsonSerializer.serializeResult<valueType>(ref value, config);
+            }
+            finally { jsonSerializer.Free(); }
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 字符串</returns>
+        public static string Serialize<valueType>(valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return jsonSerializer.serialize<valueType>(ref value, config);
+            }
+            finally { jsonSerializer.Free(); }
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 序列化结果</returns>
+        public static SerializeResult SerializeResult<valueType>(ref valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return jsonSerializer.serializeResult<valueType>(ref value, config);
+            }
+            finally { jsonSerializer.Free(); }
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 字符串</returns>
+        public static string Serialize<valueType>(ref valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = YieldPool.Default.Pop() ?? new Serializer();
+            try
+            {
+                return jsonSerializer.serialize<valueType>(ref value, config);
             }
             finally { jsonSerializer.Free(); }
         }
@@ -645,7 +706,7 @@ namespace AutoCSer.Json
         /// <param name="value"></param>
         /// <param name="stream"></param>
         /// <param name="config"></param>
-        internal static void Serialize<valueType>(valueType value, UnmanagedStream stream, SerializeConfig config)
+        internal static void Serialize<valueType>(ref valueType value, UnmanagedStream stream, SerializeConfig config)
         {
             int index = stream.AddSize(sizeof(int));
             Serializer jsonSerializer = YieldPool.Default.Pop() ?? new Serializer();
@@ -658,6 +719,24 @@ namespace AutoCSer.Json
             *(int*)(stream.Data.Byte + index - sizeof(int)) = length;
             if ((length & 2) != 0) stream.Write(' ');
         }
+
+        /// <summary>
+        /// 对象转换 JSON 字符串（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 序列化结果</returns>
+        public static SerializeResult SerializeResultThread<valueType>(valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = ThreadStatic.Get().Serializer;
+            try
+            {
+                string json = jsonSerializer.serializeThread<valueType>(ref value, config);
+                return new SerializeResult { Json = json, Warning = jsonSerializer.Warning };
+            }
+            finally { jsonSerializer.freeThread(); }
+        }
         /// <summary>
         /// 对象转换 JSON 字符串（单线程模式）
         /// </summary>
@@ -665,13 +744,45 @@ namespace AutoCSer.Json
         /// <param name="value">数据对象</param>
         /// <param name="config">配置参数</param>
         /// <returns>JSON 字符串</returns>
-        public static SerializeResult SerializeThread<valueType>(valueType value, SerializeConfig config = null)
+        public static string SerializeThread<valueType>(valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = ThreadStatic.Get().Serializer;
+            try
+            {
+                return jsonSerializer.serializeThread<valueType>(ref value, config);
+            }
+            finally { jsonSerializer.freeThread(); }
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 序列化结果</returns>
+        public static SerializeResult SerializeResultThread<valueType>(ref valueType value, SerializeConfig config = null)
         {
             Serializer jsonSerializer = ThreadStatic.Get().Serializer;
             try
             {
                 string json = jsonSerializer.serializeThread<valueType>(ref value, config);
                 return new SerializeResult { Json = json, Warning = jsonSerializer.Warning };
+            }
+            finally { jsonSerializer.freeThread(); }
+        }
+        /// <summary>
+        /// 对象转换 JSON 字符串（单线程模式）
+        /// </summary>
+        /// <typeparam name="valueType">目标数据类型</typeparam>
+        /// <param name="value">数据对象</param>
+        /// <param name="config">配置参数</param>
+        /// <returns>JSON 字符串</returns>
+        public static string SerializeThread<valueType>(ref valueType value, SerializeConfig config = null)
+        {
+            Serializer jsonSerializer = ThreadStatic.Get().Serializer;
+            try
+            {
+                return jsonSerializer.serializeThread<valueType>(ref value, config);
             }
             finally { jsonSerializer.freeThread(); }
         }

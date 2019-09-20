@@ -21,7 +21,7 @@ namespace AutoCSer.OpenAPI.Weixin
         private static void toJson(AutoCSer.Json.Serializer serializer, OpenIdMessage value)
         {
             serializer.CustomWriteFirstName("touser");
-            serializer.CustomSerialize(value.touser);
+            serializer.TypeSerialize(value.touser);
             value.toJson(serializer);
         }
     }

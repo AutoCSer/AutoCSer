@@ -51,12 +51,14 @@ namespace AutoCSer.Deploy
         internal DeployState Start()
         {
             if (IsCancel) return DeployState.Canceled;
-            IndexIdentity clientId = new IndexIdentity();
+            //IndexIdentity clientId = new IndexIdentity();
+            ClientObject client = DeployInfo.Client;
             Log log = new Log { Identity = Identity };
             bool isLog = true;
             try
             {
-                Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = Server.GetLog(ref Identity, ref clientId) ?? Timer.onLog;
+                //Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = Server.GetLog(ref Identity, ref clientId) ?? Timer.onLog;
+                Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = client.OnLog ?? Timer.onLog;
                 log.Type = LogType.CreateBakDirectory;
                 isLog |= onLog(log);
                 (BakDirectory = new DirectoryInfo(Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + Identity.Index.toString() + "_" + Identity.Identity.toString()))).Create();
@@ -89,7 +91,7 @@ namespace AutoCSer.Deploy
                     AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, Error);
                     log.Type = LogType.Error;
                 }
-                if (!(isLog |= onLog(log))) Server.ClearClient(ref clientId);
+                //if (!(isLog |= onLog(log))) Server.ClearClient(ref clientId);
             }
             return DeployState.Exception;
         }

@@ -42,38 +42,38 @@ namespace AutoCSer.OpenAPI.Weixin
         private void toJson(AutoCSer.Json.Serializer serializer)
         {
             serializer.CustomWriteFirstName("touser");
-            serializer.CustomSerialize(touser);
+            serializer.CallSerialize(touser);
             serializer.CustomWriteNextName("msgtype");
-            serializer.CustomSerialize(msgtype.ToString());
+            serializer.CallSerialize(msgtype.ToString());
             serializer.CustomWriteNextName(msgtype.ToString());
             switch (msgtype)
             {
                 case MessageType.news:
-                    serializer.CustomSerialize(news);
+                    serializer.TypeSerialize(ref news);
                     break;
                 case MessageType.text:
-                    serializer.CustomSerialize(text);
+                    serializer.TypeSerialize(ref text);
                     break;
                 case MessageType.image:
-                    serializer.CustomSerialize(image);
+                    serializer.TypeSerialize(ref image);
                     break;
                 case MessageType.voice:
-                    serializer.CustomSerialize(voice);
+                    serializer.TypeSerialize(ref voice);
                     break;
                 case MessageType.video:
-                    serializer.CustomSerialize(video);
+                    serializer.TypeSerialize(ref video);
                     break;
                 case MessageType.music:
-                    serializer.CustomSerialize(music);
+                    serializer.TypeSerialize(ref music);
                     break;
                 case MessageType.wxcard:
-                    serializer.CustomSerialize(wxcard);
+                    serializer.TypeSerialize(ref wxcard);
                     break;
             }
             if (customservice.kf_account != null)
             {
                 serializer.CustomWriteNextName("customservice");
-                serializer.CustomSerialize(customservice);
+                serializer.TypeSerialize(ref customservice);
             }
             serializer.CustomObjectEnd();
         }

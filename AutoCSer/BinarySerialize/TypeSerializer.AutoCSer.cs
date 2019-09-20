@@ -29,7 +29,7 @@ namespace AutoCSer.BinarySerialize
                 {
                     if (isJson) stream.Write(0);
                 }
-                else AutoCSer.Json.Serializer.Serialize(value, stream, serializer.GetJsonConfig(jsonMemberMap));
+                else AutoCSer.Json.Serializer.Serialize(ref value, stream, serializer.GetJsonConfig(jsonMemberMap));
             }
             else DefaultSerializer(serializer, value);
         }

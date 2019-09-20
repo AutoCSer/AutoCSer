@@ -42,14 +42,18 @@ namespace AutoCSer.CacheServer.ValueData
         /// <param name="stream"></param>
         internal override void Serialize(UnmanagedStream stream)
         {
-            AutoCSer.BinarySerialize.Serializer binarySerializer = Interlocked.Exchange(ref Serializer, null);
-            if (binarySerializer == null)
+            if (Value == null) stream.Write(AutoCSer.BinarySerialize.Serializer.NullValue);
+            else
             {
-                binarySerializer = AutoCSer.BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new AutoCSer.BinarySerialize.Serializer();
-                binarySerializer.SetTcpServer();
+                AutoCSer.BinarySerialize.Serializer binarySerializer = Interlocked.Exchange(ref Serializer, null);
+                if (binarySerializer == null)
+                {
+                    binarySerializer = AutoCSer.BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new AutoCSer.BinarySerialize.Serializer();
+                    binarySerializer.SetTcpServer();
+                }
+                binarySerializer.SerializeTcpServer(ref Value, stream);
+                if (Interlocked.CompareExchange(ref Serializer, binarySerializer, null) != null) binarySerializer.Free();
             }
-            binarySerializer.SerializeTcpServer(Value, stream);
-            if (Interlocked.CompareExchange(ref Serializer, binarySerializer, null) != null) binarySerializer.Free();
         }
     }
 }
