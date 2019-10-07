@@ -15,7 +15,7 @@ namespace AutoCSer.TestCase.TcpStaticServer
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpStaticServer.Method(IsVerifyMethod = true)]
+        [AutoCSer.Net.TcpStaticServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
         private static bool login(AutoCSer.Net.TcpInternalServer.ServerSocketSender client, string user, string password)
         {
             return Login(client, user, password);

@@ -523,10 +523,13 @@
     <Compile Include="Net\TcpServer\Emit\ParameterHash.cs" />
     <Compile Include="Net\TcpServer\Emit\ParameterType.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerCallback.cs" />
+    <Compile Include="Net\TcpServer\Emit\ServerCallQueue.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerMetadata.cs" />
     <Compile Include="Net\TcpServer\Emit\ReturnParameterGenericType.cs" />
     <Compile Include="Net\TcpServer\Emit\ParameterGenericType2.cs" />
     <Compile Include="Net\TcpServer\Emit\ParameterGenericType.cs" />
+    <Compile Include="Net\TcpServer\IServerCallQueue.cs" />
+    <Compile Include="Net\TcpServer\IServerCallQueueSet.cs" />
     <Compile Include="Threading\QueueTaskThread.cs" />
     <Compile Include="Net\TcpServer\ClientCommand\CallKeepCommand.cs" />
     <Compile Include="Net\TcpServer\ClientCommand\InputKeepCommand.cs" />

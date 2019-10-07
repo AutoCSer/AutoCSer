@@ -276,11 +276,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 else if (method.IsVerifyMethod)
                                 {
                                     IsVerifyMethod = true;
+                                    IsVerifyMethodAsynchronousCallback = method.IsAsynchronousCallback;
                                     if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
                                 }
                                 parameterBuilder.Add(method);
-
-                                IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
                             }
                         }
                         ParameterTypes = parameterBuilder.Get();

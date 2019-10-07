@@ -200,26 +200,52 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 添加自定义 TCP 服务器端同步调用任务
         /// </summary>
-        /// <param name="task">任务委托</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void AddTask(Action task)
+        /// <param name="serverCall">TCP 服务器端同步调用任务</param>
+        /// <param name="taskType">任务类型</param>
+        /// <returns>是否添加成功</returns>
+        private bool addTask(ServerCall serverCall, TcpServer.ServerTaskType taskType)
         {
-            if (task != null) ServerCallTask.Task.Add(new CustomServerCall { Sender = this, Task = task });
+            switch (taskType)
+            {
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(serverCall.ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.Queue: ServerSocket.CallQueue.Add(serverCall); return true;
+            }
+            return false;
         }
         /// <summary>
         /// 添加自定义 TCP 服务器端同步调用任务
         /// </summary>
         /// <param name="task">任务委托</param>
+        /// <param name="taskType">任务类型</param>
+        /// <returns>是否添加成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void AddWaitTask(Action task)
+        public bool AddTask(Action task, TcpServer.ServerTaskType taskType)
+        {
+            return task != null && addTask(new CustomServerCall { Sender = this, Task = task }, taskType);
+        }
+        /// <summary>
+        /// 添加自定义 TCP 服务器端同步调用任务
+        /// </summary>
+        /// <param name="task">任务委托</param>
+        /// <param name="taskType">任务类型</param>
+        /// <returns>是否添加成功</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool AddWaitTask(Action task, TcpServer.ServerTaskType taskType)
         {
             if (task != null)
             {
                 CustomWaitServerCall serverCall = new CustomWaitServerCall { Sender = this, Task = task };
                 serverCall.Wait.Set(0);
-                ServerCallTask.Task.Add(serverCall);
-                serverCall.Wait.Wait();
+                if (addTask(serverCall, taskType))
+                {
+                    serverCall.Wait.Wait();
+                    return true;
+                }
             }
+            return false;
         }
         /// <summary>
         /// 序列化

@@ -76,10 +76,6 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
         /// </summary>
         internal static System.Threading.EventWaitHandle WaitHandle = new System.Threading.EventWaitHandle(false, System.Threading.EventResetMode.AutoReset);
         /// <summary>
-        /// 服务端任务类型
-        /// </summary>
-        internal static AutoCSer.Net.TcpStreamServer.ServerTaskType ServerTaskType;
-        /// <summary>
         /// 随机左值
         /// </summary>
         internal static int Left;

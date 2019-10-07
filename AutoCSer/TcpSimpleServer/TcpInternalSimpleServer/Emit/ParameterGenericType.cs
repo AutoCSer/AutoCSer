@@ -105,12 +105,5 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
         /// <param name="outputParameter"></param>
         /// <returns></returns>
         internal delegate bool SendAsync(TcpSimpleServer.OutputInfo outputInfo, ref TcpServer.ReturnValue<parameterType> outputParameter);
-        /// <summary>
-        /// 发送数据
-        /// </summary>
-        internal override MethodInfo ServerSocketSendAsyncMethod
-        {
-            get { return ((SendAsync)ServerSocket.SendAsync<parameterType>).Method; }
-        }
     }
 }

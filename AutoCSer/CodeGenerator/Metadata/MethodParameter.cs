@@ -140,6 +140,10 @@ namespace AutoCSer.CodeGenerator.Metadata
         /// </summary>
         public bool IsPropertyValue;
         /// <summary>
+        /// 空参数
+        /// </summary>
+        private MethodParameter() { }
+        /// <summary>
         /// 参数信息
         /// </summary>
         /// <param name="method">函数信息</param>
@@ -249,5 +253,10 @@ namespace AutoCSer.CodeGenerator.Metadata
             }
             return parameters;
         }
+
+        /// <summary>
+        /// 空参数 
+        /// </summary>
+        internal static readonly MethodParameter Null = new MethodParameter();
     }
 }

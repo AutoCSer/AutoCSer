@@ -12,19 +12,19 @@ namespace AutoCSer
         /// <summary>
         /// 程序集名称
         /// </summary>
-        private string assemblyName;
+        public string AssemblyName;
         /// <summary>
         /// 类型名称
         /// </summary>
-        private string name;
+        public string Name;
         /// <summary>
         /// 远程类型
         /// </summary>
         /// <param name="type">类型</param>
         public RemoteType(Type type)
         {
-            name = type.FullName;
-            assemblyName = type.Assembly.FullName;
+            Name = type.FullName;
+            AssemblyName = type.Assembly.FullName;
         }
         /// <summary>
         /// 类型隐式转换
@@ -39,10 +39,10 @@ namespace AutoCSer
         /// <returns>是否成功</returns>
         public bool TryGet(out Type type)
         {
-            Assembly assembly = Reflection.Assembly.Get(assemblyName);
+            Assembly assembly = Reflection.Assembly.Get(AssemblyName);
             if (assembly != null)
             {
-                if ((type = assembly.GetType(name)) != null) return true;
+                if ((type = assembly.GetType(Name)) != null) return true;
             }
             else type = null;
             return false;
@@ -79,7 +79,7 @@ namespace AutoCSer
         /// <returns></returns>
         public override string ToString()
         {
-            return assemblyName + " + " + name;
+            return AssemblyName + " + " + Name;
         }
     }
 }

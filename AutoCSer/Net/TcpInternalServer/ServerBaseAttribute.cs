@@ -191,5 +191,14 @@ namespace AutoCSer.Net.TcpInternalServer
         /// 默认为 true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
         /// </summary>
         public bool IsSingleRegister = true;
+        /// <summary>
+        /// 服务端自定义队列类型，需要继承自 AutoCSer.Net.TcpServer.IServerCallQueueSet
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        public Type ServerCallQueueType;
+        /// <summary>
+        /// 服务端自定义队列类型
+        /// </summary>
+        internal override Type GetServerCallQueueType { get { return ServerCallQueueType; } }
     }
 }

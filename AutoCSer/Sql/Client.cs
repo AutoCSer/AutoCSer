@@ -104,7 +104,8 @@ namespace AutoCSer.Sql
             if (connection != null)
             {
                 connection.Dispose();
-                connection = GetConnection();
+                connection = null;
+                if (ConnectionPool.IsPool) connection = GetConnection();
             }
         }
         /// <summary>

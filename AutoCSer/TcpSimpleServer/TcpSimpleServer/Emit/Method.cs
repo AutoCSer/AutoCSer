@@ -14,10 +14,10 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         where methodAttributeType : TcpServer.MethodBaseAttribute
         where serverSocketType : TcpSimpleServer.ServerSocket
     {
-        /// <summary>
-        /// 验证方法是否支持异步
-        /// </summary>
-        internal override bool IsVerifyMethodAsynchronous { get { return true; } }
+        ///// <summary>
+        ///// 验证方法是否支持异步
+        ///// </summary>
+        //internal override bool IsVerifyMethodAsynchronous { get { return false; } }
         /// <summary>
         /// TCP 函数信息
         /// </summary>

@@ -20,7 +20,12 @@ namespace AutoCSer.Net.TcpServer
         /// 服务端任务类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal abstract ServerTaskType ServerTaskType { get; set; }
+        internal virtual ServerTaskType ServerTaskType { get { return ServerTaskType.Synchronous; } }
+        /// <summary>
+        /// 设置服务端任务类型
+        /// </summary>
+        /// <param name="taskType"></param>
+        internal virtual void SetServerTaskType(ServerTaskType taskType) { }
         /// <summary>
         /// 客户端异步任务类型
         /// </summary>
@@ -125,6 +130,10 @@ namespace AutoCSer.Net.TcpServer
         /// 默认为 false 表示可能不会对输入输出参数进行初始化操作从而导致错误时出现随机数据，仅 Emit 模式有效
         /// </summary>
         public bool IsInitobj;
+        /// <summary>
+        /// 是否默认空属性，仅 Emit 模式有效
+        /// </summary>
+        internal bool IsDefault;
 #endif
     }
 }

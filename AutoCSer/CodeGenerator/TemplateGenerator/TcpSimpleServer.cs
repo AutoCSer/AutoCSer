@@ -25,10 +25,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             public new sealed class TcpMethod : TcpMethod<TcpMethod>
             {
                 /// <summary>
-                /// 验证方法是否支持异步
-                /// </summary>
-                public override bool IsVerifyMethodAsynchronous { get { return true; } }
-                /// <summary>
                 /// 空方法索引信息
                 /// </summary>
                 private static readonly TcpMethod nullMethod = new TcpMethod { IsNullMethod = true };

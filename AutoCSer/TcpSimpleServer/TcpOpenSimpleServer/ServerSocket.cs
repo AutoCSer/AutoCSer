@@ -273,6 +273,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <returns></returns>
         private bool isVerifyCommand()
         {
+            if (IsVerifyMethod) return isCommand();
 #if DOTNET2
             Socket socket = new Net.UnionType { Value = asyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)

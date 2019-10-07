@@ -477,7 +477,13 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, ref inputParameter);
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.Add(inputParameter.p0, inputParameter.p1);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -490,40 +496,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.ClientAsynchronous, _p1>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-
-                            
-                            Return = serverValue.Add(inputParameter.p0, inputParameter.p1);
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
@@ -755,7 +727,13 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, ref inputParameter);
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.Add(inputParameter.p0, inputParameter.p1);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -768,40 +746,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.ClientTaskAsync, _p1>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-
-                            
-                            Return = serverValue.Add(inputParameter.p0, inputParameter.p1);
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
@@ -1035,7 +979,12 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             try
                             {
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value);
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.GetField;
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                             }
@@ -1051,7 +1000,12 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             try
                             {
                                 {
-                                    (_s1/**/.Pop() ?? new _s1()).Set(sender, Value);
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.SetField;
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c1, ref _outputParameter_);
                                     return;
                                 }
                             }
@@ -1069,7 +1023,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, ref inputParameter);
+                                    
+                                    Value.SetField = inputParameter.p0;
+                                    sender.Push();
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1084,105 +1040,8 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                         default: return;
                     }
                 }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.Field>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p1> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-                            Return = serverValue.GetField;
-
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
-                sealed class _s1 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s1, AutoCSer.Example.TcpInternalStreamServer.Field>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p1> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-                            Return = serverValue.SetField;
-
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c1, ref value);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
-                sealed class _s2 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s2, AutoCSer.Example.TcpInternalStreamServer.Field, _p2>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
-                    {
-                        try
-                        {
-                            
-                            serverValue.SetField = inputParameter.p0;
-
-
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(value.Type);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0 };
                 static TcpInternalStreamServer()
                 {
@@ -1398,7 +1257,13 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, ref inputParameter);
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.Add(inputParameter.p0, inputParameter.p1);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1411,40 +1276,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.NoAttribute, _p1>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-
-                            
-                            Return = serverValue.Add(inputParameter.p0, inputParameter.p1);
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
@@ -1648,7 +1479,12 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             try
                             {
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value);
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.GetProperty;
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                             }
@@ -1666,7 +1502,12 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s1/**/.Pop() ?? new _s1()).Set(sender, Value, ref inputParameter);
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value[inputParameter.p0];
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c1, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1685,7 +1526,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, ref inputParameter);
+                                    
+                                    Value[inputParameter.p0] = inputParameter.p1;
+                                    sender.Push();
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1702,7 +1545,12 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             try
                             {
                                 {
-                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value);
+                                    _p1 _outputParameter_ = new _p1();
+                                    
+                                    int Return;
+                                    Return = Value.SetProperty;
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c3, ref _outputParameter_);
                                     return;
                                 }
                             }
@@ -1720,7 +1568,9 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p2 inputParameter = new _p2();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s4/**/.Pop() ?? new _s4()).Set(sender, Value, ref inputParameter);
+                                    
+                                    Value.SetProperty = inputParameter.p0;
+                                    sender.Push();
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1735,171 +1585,10 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                         default: return;
                     }
                 }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.Property>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p1> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-                            Return = serverValue.GetProperty;
-
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
-                sealed class _s1 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s1, AutoCSer.Example.TcpInternalStreamServer.Property, _p2>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p1> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-                            Return = serverValue[inputParameter.p0];
-
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c1, ref value);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
-                sealed class _s2 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s2, AutoCSer.Example.TcpInternalStreamServer.Property, _p3>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
-                    {
-                        try
-                        {
-                            
-                            serverValue[inputParameter.p0] = inputParameter.p1;
-
-
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(value.Type);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0 };
-                sealed class _s3 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s3, AutoCSer.Example.TcpInternalStreamServer.Property>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p1> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-                            Return = serverValue.SetProperty;
-
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c3, ref value);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsSimpleSerializeOutputParamter = true };
-                sealed class _s4 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s4, AutoCSer.Example.TcpInternalStreamServer.Property, _p2>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
-                    {
-                        try
-                        {
-                            
-                            serverValue.SetProperty = inputParameter.p0;
-
-
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(value.Type);
-                        }
-                        else push(this);
-                    }
-                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0 };
                 static TcpInternalStreamServer()
                 {
@@ -2184,7 +1873,15 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, ref inputParameter);
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    AutoCSer.Net.TcpServer.ReturnValue<int> Return;
+                                    
+                                    Return = Value.Add(inputParameter.p0, ref inputParameter.p1, out _outputParameter_.p1);
+                                    
+                                    _outputParameter_.p0 = inputParameter.p1;
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2197,42 +1894,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.RefOut, _p1>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
-                    {
-                        try
-                        {
-                            
-                            AutoCSer.Net.TcpServer.ReturnValue<int> Return;
-
-                            
-                            Return = serverValue.Add(inputParameter.p0, ref inputParameter.p1, out value.Value.p1);
-
-                            
-                            value.Value.p0 = inputParameter.p1;
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2 };
@@ -2413,7 +2074,8 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, ref inputParameter);
+                                    
+                                    Value.SetSum(inputParameter.p0, inputParameter.p1);
                                     return;
                                 }
                             }
@@ -2423,31 +2085,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             }
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.SendOnly, _p1>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
-                    {
-                        try
-                        {
-                            
-
-                            serverValue.SetSum(inputParameter.p0, inputParameter.p1);
-
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
-                        if (Sender.IsSocket) get(ref value);
-                        push(this);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1 };
@@ -2574,7 +2211,13 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, ref inputParameter);
+                                    _p2 _outputParameter_ = new _p2();
+                                    
+                                    int Return;
+                                    
+                                    Return = Value.Add(inputParameter.p0, inputParameter.p1);
+                                    _outputParameter_.Return = Return;
+                                    sender.Push(_c0, ref _outputParameter_);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2587,40 +2230,6 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpInternalStreamServer.ServerCall<_s0, AutoCSer.Example.TcpInternalStreamServer.Static, _p1>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
-                    {
-                        try
-                        {
-                            
-                            int Return;
-
-                            
-                            Return = serverValue.Add(inputParameter.p0, inputParameter.p1);
-
-                            value.Value.Return = Return;
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);
-                            sender.Push(_c0, ref value);
-                        }
-                        else push(this);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };

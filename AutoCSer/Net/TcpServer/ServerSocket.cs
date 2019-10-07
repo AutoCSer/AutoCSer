@@ -11,14 +11,13 @@ namespace AutoCSer.Net.TcpServer
     public abstract unsafe class ServerSocket : SocketTimeoutLink
     {
         /// <summary>
-        /// 默认验证函数调用次数
-        /// </summary>
-        internal const byte DefaultVerifyMethodCount = 2;
-
-        /// <summary>
         /// 二进制反序列化配置参数
         /// </summary>
         private readonly AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig;
+        /// <summary>
+        /// TCP 服务器端同步调用队列
+        /// </summary>
+        internal readonly ServerCallCanDisposableQueue CallQueue;
         /// <summary>
         /// 命令位图
         /// </summary>
@@ -120,18 +119,22 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 验证函数调用次数
         /// </summary>
-        protected byte verifyMethodCount = DefaultVerifyMethodCount;
+        protected byte verifyMethodCount;
         /// <summary>
         /// 是否通过函数验证
         /// </summary>
-        internal bool IsVerifyMethod;
+        internal volatile bool IsVerifyMethod;
         /// <summary>
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="binaryDeSerializeConfig">二进制反序列化配置参数</param>
-        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig)
+        /// <param name="callQueue">TCP 服务器端同步调用队列</param>
+        /// <param name="verifyMethodCount">验证函数调用次数</param>
+        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig, ServerCallCanDisposableQueue callQueue, byte verifyMethodCount)
         {
             this.binaryDeSerializeConfig = binaryDeSerializeConfig;
+            CallQueue = callQueue;
+            this.verifyMethodCount = verifyMethodCount;
         }
         /// <summary>
         /// 设置命令索引信息
@@ -222,6 +225,14 @@ namespace AutoCSer.Net.TcpServer
             FreeReceiveDeSerializer();
             Unmanaged.Free(ref commandData);
         }
+        /// <summary>
+        /// 超时释放套接字
+        /// </summary>
+        /// <param name="socket"></param>
+        internal override void TimeoutDisposeSocket(Socket socket)
+        {
+            if (!IsVerifyMethod) base.TimeoutDisposeSocket(socket);
+        }
     }
     /// <summary>
     /// TCP 服务端套接字
@@ -253,7 +264,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
         internal ServerSocket(serverType server)
-            : base(server.BinaryDeSerializeConfig)
+            : base(server.BinaryDeSerializeConfig, server.CallQueue, server.VerifyMethodCount)
         {
             Server = server;
             //if (server.VerifyCommandIdentity == 0) IsVerifyMethod = true;

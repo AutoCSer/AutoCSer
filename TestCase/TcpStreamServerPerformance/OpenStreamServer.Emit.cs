@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.TcpStreamServerPerformance
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    partial class OpenStreamServer : IOpenStreamServer, ITcpQueueOpenStreamServer, IQueueOpenStreamServer
+    partial class OpenStreamServer : IOpenStreamServer
     {
         /// <summary>
         /// 客户端同步计算测试

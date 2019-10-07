@@ -179,10 +179,7 @@
     <Compile Include="OperationUpdater\Number.cs" />
     <Compile Include="ReturnArray.cs" />
     <Compile Include="ServerCall\CacheGetterGetQueue.cs" />
-    <Compile Include="ServerCall\GetCache.cs" />
-    <Compile Include="ServerCall\OperationAsynchronous.cs" />
     <Compile Include="ServerCall\SearchTreeDictionaryGetter.cs" />
-    <Compile Include="ServerCall\ShortPathOperationAsynchronous.cs" />
     <Compile Include="ShortPathIdentity.cs" />
     <Compile Include="ShortPathItem.cs" />
     <Compile Include="ShortPath\Array.cs" />

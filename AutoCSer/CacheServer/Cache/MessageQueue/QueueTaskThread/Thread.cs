@@ -20,7 +20,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
                 end = value;
                 head = value;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                waitHandle.Set();
+                WaitHandle.Set();
             }
             else
             {
@@ -42,7 +42,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
                 this.end = end;
                 this.head = head;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                waitHandle.Set();
+                WaitHandle.Set();
             }
             else
             {
@@ -58,7 +58,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         {
             do
             {
-                waitHandle.Wait();
+                WaitHandle.Wait();
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
                 Node value = head;
                 end = null;

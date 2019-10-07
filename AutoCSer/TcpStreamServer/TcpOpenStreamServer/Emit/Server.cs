@@ -12,7 +12,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer.Emit
         /// <summary>
         /// TCP 服务端元数据
         /// </summary>
-        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenStreamServer.Server), typeof(ServerAttribute), typeof(ServerSocketSender), typeof(ServerCall)
+        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpOpenStreamServer.Server), typeof(ServerAttribute), typeof(ServerSocketSender)
             , ParameterGenericType.Get
             , ((Func<bool>)ParameterGenericType.ServerSocketSender.Push).Method
             , ((Func<AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.Push).Method
@@ -92,7 +92,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer.Emit
 
                 Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Log.ILog) };
                 Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ServerBuilder serverBuilder = new Method<ServerAttribute, MethodAttribute, ServerSocketSender>.ServerBuilder { Metadata = Server.Metadata };
-                serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), typeof(ServerCall<>), constructorParameterTypes, methods);
+                serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), constructorParameterTypes, methods);
                 Outputs = serverBuilder.Outputs;
                 serverConstructorInfo = serverType.GetConstructor(constructorParameterTypes);
 

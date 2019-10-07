@@ -878,6 +878,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             int index = 0;
                             IsVerifyMethod = IsCallQueue = false;
                             parameterBuilder.Clear(ServiceAttribute.IsSimpleSerialize);
+                            QueueTypeBuilder queueTypeBuilder = new QueueTypeBuilder();
                             foreach (TcpMethod method in methodIndexs)
                             {
                                 method.MethodIndex = index++;
@@ -888,15 +889,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     else if (method.IsVerifyMethod)
                                     {
                                         IsVerifyMethod = true;
+                                        IsVerifyMethodAsynchronousCallback = method.IsAsynchronousCallback;
                                         if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
-                                        method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
+                                        //method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                                     }
                                     parameterBuilder.Add(method);
+                                    queueTypeBuilder.Add(method);
 
                                     IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
+
+                                    //if (method.IsAsynchronousCallback && method.Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous)
+                                    //{
+                                    //    Messages.Message("异步函数警告" + method.MemberFullName);
+                                    //}
                                 }
                             }
                             ParameterTypes = parameterBuilder.Get();
+                            ServerCallQueueTypes = queueTypeBuilder.Get();
                             foreach (ServerType serverType in server.Types)
                             {
                                 if (serverType.Methods.Length != 0)

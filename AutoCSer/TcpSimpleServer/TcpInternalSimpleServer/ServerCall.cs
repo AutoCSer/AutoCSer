@@ -40,7 +40,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             //CommandFlags = CommandIdentity.GetCommandFlags();
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
@@ -98,12 +98,28 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             this.inputParameter = inputParameter;
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
                 case TcpServer.ServerTaskType.Queue: socket.Server.CallQueue.Add(this); return;
             }
+        }
+        /// <summary>
+        /// 设置参数
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="serverValue">服务器目标对象</param>
+        /// <param name="queue">自定义队列</param>
+        /// <param name="inputParameter">输入参数</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Set(ServerSocket socket, serverType serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
+        {
+            this.Socket = socket;
+            this.serverValue = serverValue;
+            //CommandFlags = CommandIdentity.GetCommandFlags();
+            this.inputParameter = inputParameter;
+            queue.Add(this);
         }
         /// <summary>
         /// 服务器端调用入池

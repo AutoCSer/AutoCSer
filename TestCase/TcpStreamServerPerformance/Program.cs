@@ -24,10 +24,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
 ");
 #if !NoAutoCSer
                     using (InternalStreamServer.TcpInternalStreamServer synchronousServer = new InternalStreamServer.TcpInternalStreamServer())
-                    using (InternalStreamTcpQueueServer.TcpInternalStreamServer tcpQueueServer = new InternalStreamTcpQueueServer.TcpInternalStreamServer())
-                    using (InternalStreamQueueServer.TcpInternalStreamServer queueServer = new InternalStreamQueueServer.TcpInternalStreamServer())
                     {
-                        if (synchronousServer.IsListen && tcpQueueServer.IsListen && queueServer.IsListen)
+                        if (synchronousServer.IsListen)
                         {
                             if (!startProcess("TcpStreamClientPerformance", "AutoCSer.TestCase.TcpInternalStreamClientPerformance")) Console.WriteLine("未找到 TCP 内部服务性能测试服务 客户端程序");
                             Console.WriteLine("Press quit to exit.");

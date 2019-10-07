@@ -66,14 +66,22 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 是否异步回调方法
         /// </summary>
         internal readonly bool IsAsynchronousCallback;
-        /// <summary>
-        /// 验证方法是否支持异步
-        /// </summary>
-        internal virtual bool IsVerifyMethodAsynchronous { get { return false; } }
+        ///// <summary>
+        ///// 验证方法是否支持异步
+        ///// </summary>
+        //internal virtual bool IsVerifyMethodAsynchronous { get { return true; } }
         /// <summary>
         /// 是否客户端异步回调方法
         /// </summary>
         internal readonly bool IsClientAsynchronousCallback;
+        /// <summary>
+        /// 服务端自定义队列关键字参数
+        /// </summary>
+        internal ParameterInfo ServerCallQueueKeyParameter;
+        /// <summary>
+        /// 自定义队列
+        /// </summary>
+        internal ServerCallQueue ServerCallQueue;
         /// <summary>
         /// TCP 函数信息
         /// </summary>
@@ -138,8 +146,23 @@ namespace AutoCSer.Net.TcpServer.Emit
                 Attribute = methodAttribute;
                 break;
             }
-            if (Attribute == null) Attribute = AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
+            if (Attribute == null)
+            {
+                Attribute = AutoCSer.MemberCopy.Copyer<methodAttributeType>.MemberwiseClone(serverMethodAttribute);
+                if (!isClient && IsAsynchronousCallback && serverMethodAttribute.IsDefault) Attribute.SetServerTaskType(ServerTaskType.Synchronous);
+            }
             OutputParameters = Parameters.getFindArray(value => value.ParameterType.IsByRef);
+            if (!isClient && IsMethodServerCall && ServerAttribute.GetServerCallQueueType != null)
+            {
+                foreach (ParameterInfo inputParameter in Parameters)
+                {
+                    if (inputParameter.Name == AutoCSer.Net.TcpServer.Server.ServerCallQueueParameterName)
+                    {
+                        ServerCallQueueKeyParameter = inputParameter;
+                        break;
+                    }
+                }
+            }
         }
         /// <summary>
         /// 属性信息
@@ -212,8 +235,6 @@ namespace AutoCSer.Net.TcpServer.Emit
         {
             get
             {
-                //ServerTaskType taskType = Attribute.ServerTask;
-                //return taskType == ServerTaskType.Queue && !ServerAttribute.IsCallQueue ? ServerTaskType.TcpQueue : taskType;
                 return Attribute.ServerTaskType;
             }
         }
@@ -224,7 +245,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         {
             get
             {
-                return !IsAsynchronousCallback && Attribute.ServerTaskType != ServerTaskType.Synchronous;
+                return Attribute.ServerTaskType != ServerTaskType.Synchronous;
             }
         }
         /// <summary>
@@ -258,7 +279,7 @@ namespace AutoCSer.Net.TcpServer.Emit
             if (Attribute.IsVerifyMethod)
             {
                 if (PropertyInfo != null) errorString = "验证方法不支持属性 " + PropertyInfo.Name;
-                else if (IsAsynchronousCallback && !IsVerifyMethodAsynchronous) errorString = "方法 " + MethodInfo.Name + " 为异步回调方法,不符合验证方法要求";
+                //else if (IsAsynchronousCallback && !IsVerifyMethodAsynchronous) errorString = "方法 " + MethodInfo.Name + " 为异步回调方法,不符合验证方法要求";
                 else if (ReturnType != typeof(bool)) errorString = "方法 " + MethodInfo.Name + " 的返回值类型为 " + ReturnType.fullName() + " ,不符合验证方法要求";
                 else if (ParameterType == null) errorString = "方法 " + MethodInfo.Name + " 没有输入参数,不符合验证方法要求";
                 //else if (Parameters[0].ParameterType != typeof(clientSocketSenderType)) errorString = "方法 " + MethodInfo.Name + " 的第一个参数类型不是 " + typeof(clientSocketSenderType).fullName() + " ,不符合验证方法要求";

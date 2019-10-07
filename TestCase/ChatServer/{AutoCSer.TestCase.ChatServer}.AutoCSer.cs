@@ -33,10 +33,10 @@ namespace AutoCSer.TestCase.ChatServer
                 /// </summary>
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="value">TCP服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.TestCase.ChatServer.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.ChatServer.Server", typeof(AutoCSer.TestCase.ChatServer.Server))), verify, onCustomData, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.ChatServer.Server", typeof(AutoCSer.TestCase.ChatServer.Server))), verify, null, onCustomData, log, false, false)
                 {
                     Value = value ?? new AutoCSer.TestCase.ChatServer.Server();
                     setCommandData(5);
@@ -64,8 +64,9 @@ namespace AutoCSer.TestCase.ChatServer
                             {
                                 {
                                     _p1 outputParameter = new _p1();
-                                    
-                                    Value.getMessage(sender,  sender.GetCallback<_p1, AutoCSer.TestCase.ChatData.Message>(_c0, ref outputParameter));
+                                    _s0 serverCall = _s0/**/.Pop() ?? new _s0();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p1, AutoCSer.TestCase.ChatData.Message>(_c0, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue);
                                     return;
                                 }
                             }
@@ -82,8 +83,9 @@ namespace AutoCSer.TestCase.ChatServer
                             {
                                 {
                                     _p2 outputParameter = new _p2();
-                                    
-                                    Value.getUser(sender,  sender.GetCallback<_p2, AutoCSer.TestCase.ChatData.UserLogin>(_c1, ref outputParameter));
+                                    _s1 serverCall = _s1/**/.Pop() ?? new _s1();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p2, AutoCSer.TestCase.ChatData.UserLogin>(_c1, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue);
                                     return;
                                 }
                             }
@@ -101,14 +103,7 @@ namespace AutoCSer.TestCase.ChatServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p4 _outputParameter_ = new _p4();
-                                    
-                                    bool Return;
-                                    
-                                    Return = Value.login(sender, inputParameter.userName);
-                                    if (Return) sender.SetVerifyMethod();
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c2, ref _outputParameter_);
+                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -158,8 +153,59 @@ namespace AutoCSer.TestCase.ChatServer
                         default: return;
                     }
                 }
+                sealed class _s0 : AutoCSer.Net.TcpOpenServer.ServerCall<_s0, AutoCSer.TestCase.ChatServer.Server>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.getMessage(Sender, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsKeepCallback = 1, IsBuildOutputThread = true };
+                sealed class _s1 : AutoCSer.Net.TcpOpenServer.ServerCall<_s1, AutoCSer.TestCase.ChatServer.Server>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.getUser(Sender, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsKeepCallback = 1, IsBuildOutputThread = true };
+                sealed class _s2 : AutoCSer.Net.TcpOpenServer.ServerCall<_s2, AutoCSer.TestCase.ChatServer.Server, _p3>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
+                    {
+                        try
+                        {
+                            
+                            bool Return;
+
+                            
+                            Return = serverValue.login(Sender, inputParameter.userName);
+
+                            if (Return) Sender.SetVerifyMethod();
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void Call()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c2, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsBuildOutputThread = true };
                 sealed class _s3 : AutoCSer.Net.TcpOpenServer.ServerCall<_s3, AutoCSer.TestCase.ChatServer.Server>
                 {

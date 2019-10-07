@@ -21,32 +21,9 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
             Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> onAdd = TcpInternalStreamClientPerformance.Client.OnAdd;
             int left = TcpInternalStreamClientPerformance.Client.Left;
 
-            using (AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamTcpQueueServer.TcpOpenStreamClient client = new AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamTcpQueueServer.TcpOpenStreamClient())
-            {
-                TcpInternalStreamClientPerformance.Client.SendCount = TcpInternalStreamClientPerformance.Client.ReceiveCount = 0;
-                TcpInternalStreamClientPerformance.Client.ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.TcpQueue;
-
-                TcpInternalStreamClientPerformance.Client.Start(TcpInternalStreamClientPerformance.ClientTestType.Asynchronous, TcpInternalStreamClientPerformance.Client.Count);
-                for (int right = TcpInternalStreamClientPerformance.Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
-                Console.WriteLine("loop end " + TcpInternalStreamClientPerformance.Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
-                sleep();
-            }
-            using (AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamQueueServer.TcpOpenStreamClient client = new AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamQueueServer.TcpOpenStreamClient())
-            {
-                TcpInternalStreamClientPerformance.Client.SendCount = TcpInternalStreamClientPerformance.Client.ReceiveCount = 0;
-                TcpInternalStreamClientPerformance.Client.ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Queue;
-
-                TcpInternalStreamClientPerformance.Client.Start(TcpInternalStreamClientPerformance.ClientTestType.Asynchronous, TcpInternalStreamClientPerformance.Client.Count);
-                for (int right = TcpInternalStreamClientPerformance.Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
-                Console.WriteLine("loop end " + TcpInternalStreamClientPerformance.Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
-                sleep();
-            }
             using (AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamServer.TcpOpenStreamClient client = new AutoCSer.TestCase.TcpOpenStreamServerPerformance.OpenStreamServer.TcpOpenStreamClient())
             {
                 TcpInternalStreamClientPerformance.Client.SendCount = TcpInternalStreamClientPerformance.Client.ReceiveCount = 0;
-                TcpInternalStreamClientPerformance.Client.ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Synchronous;
 
                 TcpInternalStreamClientPerformance.Client.Start(TcpInternalStreamClientPerformance.ClientTestType.Asynchronous, TcpInternalStreamClientPerformance.Client.Count);
                 for (int right = TcpInternalStreamClientPerformance.Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
@@ -162,7 +139,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamClientPerformance
         {
             TcpInternalStreamClientPerformance.Client.WaitHandle.WaitOne();
             long milliseconds = Math.Max(TcpInternalStreamClientPerformance.Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(TcpInternalStreamClientPerformance.Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (TcpInternalStreamClientPerformance.Client.LoopCount / milliseconds) + "/ms send[" + TcpInternalStreamClientPerformance.Client.GetSendCount(sendCount).toString() + "] receive[" + TcpInternalStreamClientPerformance.Client.GetReceiveCount(receiveCount).toString() + "]" + (TcpInternalStreamClientPerformance.Client.ErrorCount == 0 ? null : (" ERROR[" + TcpInternalStreamClientPerformance.Client.ErrorCount.toString() + "]")) + " " + TcpInternalStreamClientPerformance.Client.ServerTaskType.ToString() + " + " + TcpInternalStreamClientPerformance.Client.TestType.ToString());
+            Console.WriteLine(TcpInternalStreamClientPerformance.Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (TcpInternalStreamClientPerformance.Client.LoopCount / milliseconds) + "/ms send[" + TcpInternalStreamClientPerformance.Client.GetSendCount(sendCount).toString() + "] receive[" + TcpInternalStreamClientPerformance.Client.GetReceiveCount(receiveCount).toString() + "]" + (TcpInternalStreamClientPerformance.Client.ErrorCount == 0 ? null : (" ERROR[" + TcpInternalStreamClientPerformance.Client.ErrorCount.toString() + "]")) + " " + TcpInternalStreamClientPerformance.Client.TestType.ToString());
         }
         /// <summary>
         /// 休息 3 秒

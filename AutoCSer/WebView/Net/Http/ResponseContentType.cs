@@ -143,5 +143,9 @@ namespace AutoCSer.Net.Http
         /// 
         /// </summary>
         _7z,
+        /// <summary>
+        /// 
+        /// </summary>
+        M4A,
     }
 }

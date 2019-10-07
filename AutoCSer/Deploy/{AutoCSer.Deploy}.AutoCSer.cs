@@ -35,10 +35,10 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Deploy.AssemblyEnvironment.CheckServer value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DeployAssemblyEnvironmentCheck", typeof(AutoCSer.Deploy.AssemblyEnvironment.CheckServer))), verify, onCustomData, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DeployAssemblyEnvironmentCheck", typeof(AutoCSer.Deploy.AssemblyEnvironment.CheckServer))), verify, null, onCustomData, log, false, false)
                 {
                     Value = value ?? new AutoCSer.Deploy.AssemblyEnvironment.CheckServer();
                     setCommandData(3);
@@ -419,10 +419,10 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Deploy.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("Deploy", typeof(AutoCSer.Deploy.Server))), verify, onCustomData, log, true)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("Deploy", typeof(AutoCSer.Deploy.Server))), verify, null, onCustomData, log, true, false)
                 {
                     Value = value ?? new AutoCSer.Deploy.Server();
                     setCommandData(15);
@@ -682,8 +682,9 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             {
                                 {
                                     _p13 outputParameter = new _p13();
-                                    
-                                    Value.customPush(sender, sender.GetCallback<_p13, byte[]>(_c9, ref outputParameter));
+                                    _s9 serverCall = _s9/**/.Pop() ?? new _s9();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p13, byte[]>(_c9, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue);
                                     return;
                                 }
                             }
@@ -787,6 +788,15 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 11, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 12, IsBuildOutputThread = true };
+                sealed class _s9 : AutoCSer.Net.TcpInternalServer.ServerCall<_s9, AutoCSer.Deploy.Server>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.customPush(Sender, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 13, IsKeepCallback = 1, IsBuildOutputThread = true };
                 sealed class _s10 : AutoCSer.Net.TcpInternalServer.ServerCall<_s10, AutoCSer.Deploy.Server, _p14>
                 {

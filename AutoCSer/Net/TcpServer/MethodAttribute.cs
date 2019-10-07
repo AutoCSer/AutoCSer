@@ -19,8 +19,12 @@ namespace AutoCSer.Net.TcpServer
         internal override ServerTaskType ServerTaskType
         {
             get { return ServerTask; }
-            set { ServerTask = value; }
         }
+        /// <summary>
+        /// 设置服务端任务类型
+        /// </summary>
+        /// <param name="taskType"></param>
+        internal override void SetServerTaskType(ServerTaskType taskType) { ServerTask = taskType; }
         /// <summary>
         /// 客户端异步任务类型，默认为 Timeout
         /// </summary>

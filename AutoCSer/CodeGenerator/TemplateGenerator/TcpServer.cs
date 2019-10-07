@@ -138,10 +138,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return "_a" + StaticMethodIndex.toString();
                     }
                 }
-                /// <summary>
-                /// 验证方法是否支持异步
-                /// </summary>
-                public virtual bool IsVerifyMethodAsynchronous { get { return false; } }
+                ///// <summary>
+                ///// 验证方法是否支持异步
+                ///// </summary>
+                //public virtual bool IsVerifyMethodAsynchronous { get { return true; } }
                 /// <summary>
                 /// 是否验证方法
                 /// </summary>
@@ -151,8 +151,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         if (Attribute.IsVerifyMethod)
                         {
-                            if (IsAsynchronousCallback && !IsVerifyMethodAsynchronous) Messages.Message("方法 " + MemberFullName + " 为异步回调方法,不符合验证方法要求");
-                            else if (MethodReturnType.Type != typeof(bool)) Messages.Message("方法 " + MemberFullName + " 的返回值类型为 " + MethodReturnType.Type.fullName() + " ,不符合验证方法要求");
+                            //if (IsAsynchronousCallback && !IsVerifyMethodAsynchronous) Messages.Message("方法 " + MemberFullName + " 为异步回调方法,不符合验证方法要求");
+                            //else 
+                            if (MethodReturnType.Type != typeof(bool)) Messages.Message("方法 " + MemberFullName + " 的返回值类型为 " + MethodReturnType.Type.fullName() + " ,不符合验证方法要求");
                             else if (MethodParameters.Length == 0) Messages.Message("方法 " + MemberFullName + " 没有输入参数,不符合验证方法要求");
                             else return true;
                         }
@@ -257,8 +258,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     get
                     {
                         AutoCSer.Net.TcpServer.ServerTaskType taskType = Attribute.ServerTaskType;
-                        //if (taskType == AutoCSer.Net.TcpServer.ServerTaskType.Queue && !ServiceAttribute.IsCallQueue) taskType = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue;
-                        //if (taskType == AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask) return "AutoCSer.Net.TcpServer.MethodAttribute.DefaultServerTask";
                         return serverTaskTypeName + "." + taskType.ToString();
                     }
                 }
@@ -269,8 +268,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     get
                     {
-                        return !IsAsynchronousCallback && Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous;
-                        //return !IsAsynchronousCallback && (Attribute.IsServerTask || MemberIndex != null || IsClientSendOnly == 0 || Method.Method.IsGenericMethod);
+                        return Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous;
                     }
                 }
 
@@ -470,6 +468,31 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 public bool IsAwaiterMethodIdentityCommand
                 {
                     get { return IsClientAwaiter || IsClientTaskAsync; }
+                }
+                /// <summary>
+                /// 服务端自定义队列关键字参数
+                /// </summary>
+                private MethodParameter serverCallQueueKeyParameter;
+                /// <summary>
+                /// 服务端自定义队列关键字参数
+                /// </summary>
+                public MethodParameter ServerCallQueueKeyParameter
+                {
+                    get
+                    {
+                        if (IsMethodServerCall && ServiceAttribute.GetServerCallQueueType != null && serverCallQueueKeyParameter == null)
+                        {
+                            foreach (MethodParameterPair inputParameter in InputParameters)
+                            {
+                                if (inputParameter.MethodParameter.ParameterName == AutoCSer.Net.TcpServer.Server.ServerCallQueueParameterName)
+                                {
+                                    return serverCallQueueKeyParameter = inputParameter.Parameter;
+                                }
+                            }
+                            serverCallQueueKeyParameter = MethodParameter.Null;
+                        }
+                        return serverCallQueueKeyParameter != MethodParameter.Null ? serverCallQueueKeyParameter : null;
+                    }
                 }
 
                 /// <summary>
@@ -727,13 +750,43 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public virtual string ServerRegisterName { get { return Attribute.ServerName; } }
             /// <summary>
+            /// 服务端自定义队列类型
+            /// </summary>
+            private ExtensionType serverCallQueueType;
+            /// <summary>
+            /// 服务端自定义队列类型
+            /// </summary>
+            public ExtensionType ServerCallQueueType
+            {
+                get
+                {
+                    if (serverCallQueueType == null && ServiceAttribute.GetServerCallQueueType != null)
+                    {
+                        if (typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(ServiceAttribute.GetServerCallQueueType))
+                        {
+                            return serverCallQueueType = ServiceAttribute.GetServerCallQueueType;
+                        }
+                        Messages.Add(ServiceAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).fullName());
+                    }
+                    return serverCallQueueType;
+                }
+            }
+            /// <summary>
             /// TCP服务调用配置JSON
             /// </summary>
             public string AttributeJson
             {
                 get
                 {
-                    return AutoCSer.Json.Serializer.Serialize(Attribute).Replace(@"""", @"""""");
+                    if (Attribute != null)
+                    {
+                        string clientSegmentationCopyPath = Attribute.ClientSegmentationCopyPath;
+                        Attribute.ClientSegmentationCopyPath = null;
+                        string json = AutoCSer.Json.Serializer.Serialize(Attribute).Replace(@"""", @"""""");
+                        Attribute.ClientSegmentationCopyPath = clientSegmentationCopyPath;
+                        return json;
+                    }
+                    return "null";
                 }
             }
             /// <summary>
@@ -744,6 +797,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 是否存在验证函数
             /// </summary>
             public bool IsVerifyMethod;
+            /// <summary>
+            /// 验证函数是否异步回调
+            /// </summary>
+            public bool IsVerifyMethodAsynchronousCallback;
             /// <summary>
             /// 命令序号记忆字段名称
             /// </summary>
@@ -1001,6 +1058,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return true;
                     }
                 }
+                /// <summary>
+                /// 自定义队列类型
+                /// </summary>
+                public QueueType QueueType;
                 ///// <summary>
                 ///// HTTP调用名称
                 ///// </summary>
@@ -1131,6 +1192,67 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         throw new Exception(type.fullName() + " 无法转换为 " + typeof(AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpOpenServer.ClientSocketSender>).fullName());
                     }
                     return null;
+                }
+            }
+            /// <summary>
+            /// 自定义队列类型
+            /// </summary>
+            public sealed class QueueType
+            {
+                /// <summary>
+                /// 队列编号
+                /// </summary>
+                public int QueueIndex;
+                /// <summary>
+                /// 队列名称
+                /// </summary>
+                public string QueueName
+                {
+                    get { return "_q" + QueueIndex.toString(); }
+                }
+                /// <summary>
+                /// 队列关键字类型
+                /// </summary>
+                public ExtensionType ServerCallQueueType;
+            }
+            /// <summary>
+            /// 自定义队列类型
+            /// </summary>
+            public QueueType[] ServerCallQueueTypes;
+            /// <summary>
+            /// 自定义队列类型创建
+            /// </summary>
+            internal struct QueueTypeBuilder
+            {
+                /// <summary>
+                /// 自定义队列集合
+                /// </summary>
+                private Dictionary<Type, QueueType> queueTypes;
+                /// <summary>
+                /// 添加方法
+                /// </summary>
+                /// <param name="method"></param>
+                public void Add(TcpMethod method)
+                {
+                    MethodParameter parameter = method.ServerCallQueueKeyParameter;
+                    if (parameter != null)
+                    {
+                        if (queueTypes == null) queueTypes = DictionaryCreator.CreateOnly<Type, QueueType>();
+                        QueueType queueType;
+                        if (!queueTypes.TryGetValue(parameter.ParameterType, out queueType))
+                        {
+                            queueTypes.Add(parameter.ParameterType, queueType = new QueueType { QueueIndex = queueTypes.Count, ServerCallQueueType = parameter.ParameterType });
+                        }
+                        method.QueueType = queueType;
+                    }
+                }
+                /// <summary>
+                /// 获取自定义队列类型
+                /// </summary>
+                /// <returns></returns>
+                public QueueType[] Get()
+                {
+                    return queueTypes == null ? null : queueTypes.Values.getArray();
                 }
             }
         }

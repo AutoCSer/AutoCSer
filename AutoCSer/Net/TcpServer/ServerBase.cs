@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务器端同步调用队列
         /// </summary>
-        internal ServerCallCanDisposableQueue CallQueue;
+        internal readonly ServerCallCanDisposableQueue CallQueue;
         /// <summary>
         /// 添加任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
         /// </summary>
@@ -77,6 +77,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal int VerifyCommandIdentity;
         /// <summary>
+        /// 验证函数调用次数
+        /// </summary>
+        internal readonly byte VerifyMethodCount;
+        /// <summary>
         /// 是否处于监听状态
         /// </summary>
         protected byte isListen;
@@ -94,7 +98,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        internal ServerBase(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue)
+        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
+        internal ServerBase(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
             : base(attribute, attribute.GetReceiveBufferSize, attribute.GetSendBufferSize, attribute.GetServerSendBufferMaxSize, log)
         {
             this.verify = verify;
@@ -103,23 +108,23 @@ namespace AutoCSer.Net.TcpServer
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
             int binaryDeSerializeMaxArraySize = attribute.GetBinaryDeSerializeMaxArraySize;
             BinaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
+            VerifyMethodCount = isVerifyMethodAsynchronousCallback? (byte)(Server.DefaultVerifyMethodCount + 1) : Server.DefaultVerifyMethodCount;
         }
         /// <summary>
         /// 停止服务
         /// </summary>
         public override void Dispose()
         {
-            if (Interlocked.CompareExchange(ref IsDisposed, 1, 0) == 0 && isListen != 0)
+            if (Interlocked.CompareExchange(ref IsDisposed, 1, 0) == 0)
             {
-                isListen = 0;
-                if (Log.IsAnyType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, "停止服务 " + ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
-                AutoCSer.DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
-                StopListen();
-                if (CallQueue != null)
+                if (isListen != 0)
                 {
-                    CallQueue.Dispose();
-                    CallQueue = null;
+                    isListen = 0;
+                    if (Log.IsAnyType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, "停止服务 " + ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
+                    AutoCSer.DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
+                    StopListen();
                 }
+                if (CallQueue != null) CallQueue.Dispose();
             }
         }
         /// <summary>

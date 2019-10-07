@@ -5,7 +5,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
     /// <summary>
     /// TCP 内部服务性能测试服务
     /// </summary>
-    sealed class InternalStreamServer : IStreamServer, ITcpQueueStreamServer, IQueueStreamServer
+    sealed class InternalStreamServer : IStreamServer
     {
         /// <summary>
         /// 客户端同步计算测试

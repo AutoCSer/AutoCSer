@@ -38,10 +38,10 @@ namespace AutoCSer.Net.HttpDomainServer
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.HttpDomainServer.Session<valueType> value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpSession", typeof(AutoCSer.Net.HttpDomainServer.Session<valueType>))), verify, onCustomData, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpSession", typeof(AutoCSer.Net.HttpDomainServer.Session<valueType>))), verify, null, onCustomData, log, false, false)
                 {
                     Value = value ?? new AutoCSer.Net.HttpDomainServer.Session<valueType>();
                     setCommandData(6);
@@ -721,10 +721,10 @@ namespace AutoCSer.Net.HttpDomainServer
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.HttpRegister.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpServerRegister", typeof(AutoCSer.Net.HttpRegister.Server))), verify, onCustomData, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpServerRegister", typeof(AutoCSer.Net.HttpRegister.Server))), verify, null, onCustomData, log, false, false)
                 {
                     Value = value ?? new AutoCSer.Net.HttpRegister.Server();
                     setCommandData(6);

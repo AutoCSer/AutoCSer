@@ -59,12 +59,10 @@
     <Compile Include="TcpInternalSimpleServer\Emit\MethodClient.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpInternalSimpleServer\Emit\Server.cs" />
-    <Compile Include="TcpInternalSimpleServer\Emit\ServerCall.cs" />
     <Compile Include="TcpInternalSimpleServer\MethodClient.cs" />
     <Compile Include="TcpInternalSimpleServer\Server.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerAttribute.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerBaseAttribute.cs" />
-    <Compile Include="TcpInternalSimpleServer\ServerCall.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerCallback.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerSocket.cs" />
     <Compile Include="TcpInternalSimpleServer\ServerSocketTask.cs" />
@@ -76,12 +74,10 @@
     <Compile Include="TcpOpenSimpleServer\Emit\MethodClient.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpOpenSimpleServer\Emit\Server.cs" />
-    <Compile Include="TcpOpenSimpleServer\Emit\ServerCall.cs" />
     <Compile Include="TcpOpenSimpleServer\MethodAttribute.cs" />
     <Compile Include="TcpOpenSimpleServer\MethodClient.cs" />
     <Compile Include="TcpOpenSimpleServer\Server.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerAttribute.cs" />
-    <Compile Include="TcpOpenSimpleServer\ServerCall.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerCallback.cs" />
     <Compile Include="TcpOpenSimpleServer\ServerSocket.cs" />
     <Compile Include="TcpOpenSimpleServer\TimeVerifyClient.cs" />
@@ -109,7 +105,6 @@
     <Compile Include="TcpStaticSimpleServer\Client.cs" />
     <Compile Include="TcpStaticSimpleServer\MethodAttribute.cs" />
     <Compile Include="TcpStaticSimpleServer\ServerAttribute.cs" />
-    <Compile Include="TcpStaticSimpleServer\ServerCall.cs" />
     <Compile Include="TcpStaticSimpleServer\TimeVerify.cs" />
   </ItemGroup>
   <ItemGroup>

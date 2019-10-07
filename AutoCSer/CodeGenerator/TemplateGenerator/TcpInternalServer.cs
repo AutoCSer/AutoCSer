@@ -133,6 +133,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     int methodIndex = 0;
                     IsVerifyMethod = IsCallQueue = false;
                     ParameterBuilder parameterBuilder = new ParameterBuilder { IsSimpleSerialize  = Attribute.IsSimpleSerialize };
+                    QueueTypeBuilder queueTypeBuilder = new QueueTypeBuilder();
                     foreach (TcpMethod method in MethodIndexs)
                     {
                         method.MethodIndex = methodIndex++;
@@ -142,14 +143,22 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else if (method.IsVerifyMethod)
                             {
                                 IsVerifyMethod = true;
-                                method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
+                                IsVerifyMethodAsynchronousCallback = method.IsAsynchronousCallback;
+                                //method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                             }
                             parameterBuilder.Add(method);
+                            queueTypeBuilder.Add(method);
 
                             IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
+
+                            //if (method.IsAsynchronousCallback && method.Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous)
+                            //{
+                            //    Messages.Message("异步函数警告" + method.MemberFullName);
+                            //}
                         }
                     }
                     ParameterTypes = parameterBuilder.Get();
+                    ServerCallQueueTypes = queueTypeBuilder.Get();
                     //TcpMethod[] methodIndexs = MethodIndexs.getFindArray(value => !value.IsNullMethod);
                     if (ServiceAttribute.IsSegmentation)
                     {

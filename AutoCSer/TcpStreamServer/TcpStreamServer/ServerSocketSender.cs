@@ -14,10 +14,6 @@ namespace AutoCSer.Net.TcpStreamServer
         /// TCP 服务端套接字输出信息链表
         /// </summary>
         internal ServerOutput.OutputLink.YieldQueue Outputs = new ServerOutput.OutputLink.YieldQueue(new ServerOutput.ReturnTypeOutput());
-        /// <summary>
-        /// 服务端任务类型
-        /// </summary>
-        public readonly ServerTaskType ServerTaskType;
 #if !NOJIT
         /// <summary>
         /// TCP 服务套接字数据发送
@@ -32,7 +28,6 @@ namespace AutoCSer.Net.TcpStreamServer
         internal ServerSocketSender(TcpServer.ServerSocket socket, ServerAttribute attribute)
             : base(socket, attribute.GetIsServerBuildOutputThread, attribute.GetServerOutputSleep)
         {
-            ServerTaskType = attribute.ServerTaskType;
         }
     }
     /// <summary>

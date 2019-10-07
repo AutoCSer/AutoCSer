@@ -32,57 +32,9 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpOpenSimpleServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
+        [AutoCSer.Net.TcpOpenSimpleServer.Method]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private int addSynchronous(int left, int right)
-        {
-            return left + right;
-        }
-        /// <summary>
-        /// 计算队列测试
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        [AutoCSer.Net.TcpOpenSimpleServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private int addQueue(int left, int right)
-        {
-            return left + right;
-        }
-        /// <summary>
-        /// 计算任务测试
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        [AutoCSer.Net.TcpOpenSimpleServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpTask)]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private int addTcpTask(int left, int right)
-        {
-            return left + right;
-        }
-        /// <summary>
-        /// 计算任务测试
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        [AutoCSer.Net.TcpOpenSimpleServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout)]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private int addTimeoutTask(int left, int right)
-        {
-            return left + right;
-        }
-        /// <summary>
-        /// 计算任务测试
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        [AutoCSer.Net.TcpOpenSimpleServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool)]
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private int addThreadPool(int left, int right)
         {
             return left + right;
         }

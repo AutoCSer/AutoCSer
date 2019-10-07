@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using AutoCSer.Extension;
+using System.Collections.Generic;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -26,6 +27,10 @@ namespace AutoCSer.Net.TcpServer.Emit
             /// TCP 函数集合
             /// </summary>
             internal methodType[] Methods;
+            /// <summary>
+            /// 自定义队列集合
+            /// </summary>
+            internal ServerCallQueue[] Queues;
             /// <summary>
             /// 是否 TCP 服务客户端
             /// </summary>
@@ -98,7 +103,11 @@ namespace AutoCSer.Net.TcpServer.Emit
                         methodAttribute = attribute;
                         break;
                     }
-                    if (methodAttribute == null) methodAttribute = AutoCSer.Emit.Constructor<methodAttributeType>.New();
+                    if (methodAttribute == null)
+                    {
+                        methodAttribute = AutoCSer.Emit.Constructor<methodAttributeType>.New();
+                        methodAttribute.IsDefault = true;
+                    }
 
                     LeftArray<methodType> tcpMethods = new LeftArray<methodType>();
                     if (!get(type, serverAttribute, methodAttribute, true, ref tcpMethods)) return false;
@@ -149,18 +158,40 @@ namespace AutoCSer.Net.TcpServer.Emit
                             else if (method.CheckIsVerifyMethod(ref ErrorString))
                             {
                                 isVerifyMethod = true;
-                                if (!method.IsVerifyMethodAsynchronous) method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
+                                //if (!method.IsVerifyMethodAsynchronous) method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                             }
                             else if (ErrorString != null) return false;
                         }
                     }
+                    Dictionary<Type, ServerCallQueue> queueTypes = null;
                     foreach (methodType method in Methods)
                     {
-                        if (method != null) method.SetParameterType();
+                        if (method != null)
+                        {
+                            method.SetParameterType();
+
+                            if (method.ServerCallQueueKeyParameter != null)
+                            {
+                                if (queueTypes == null) queueTypes = DictionaryCreator.CreateOnly<Type, ServerCallQueue>();
+                                Type parameterType = method.ServerCallQueueKeyParameter.ParameterType;
+                                ServerCallQueue queueType;
+                                if (!queueTypes.TryGetValue(parameterType, out queueType))
+                                {
+                                    queueTypes.Add(parameterType, queueType = new ServerCallQueue(queueTypes.Count, parameterType));
+                                }
+                                method.ServerCallQueue = queueType;
+                            }
+                        }
                     }
+                    Queues = queueTypes == null ? NullValue<ServerCallQueue>.Array : queueTypes.Values.getArray();
                     string serviceName = serverAttribute.ServerName ?? type.fullName();
                     DefaultServerAttribute = (attributeType)AutoCSer.Config.Loader.GetObject(typeof(attributeType), serviceName) ?? AutoCSer.MemberCopy.Copyer<attributeType>.MemberwiseClone(serverAttribute);
                     if (DefaultServerAttribute.Name == null) DefaultServerAttribute.Name = serviceName;
+                    if (DefaultServerAttribute.GetServerCallQueueType != null && !typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).IsAssignableFrom(DefaultServerAttribute.GetServerCallQueueType))
+                    {
+                        ErrorString = DefaultServerAttribute.GetServerCallQueueType.fullName() + @" 没有继承实现 " + typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet).fullName();
+                        return false;
+                    }
                     return true;
                 }
                 ErrorString = type.fullName() + " 不是接口类型";

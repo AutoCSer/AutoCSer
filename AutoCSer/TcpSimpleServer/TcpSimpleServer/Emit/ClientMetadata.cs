@@ -21,22 +21,10 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         /// TCP 客户端基类获取 TCP 客户端属性函数信息
         /// </summary>
         internal readonly MethodInfo MethodClientGetTcpClientMethod;
-        ///// <summary>
-        ///// TCP 服务客户端调用函数信息
-        ///// </summary>
-        //internal readonly MethodInfo ClientCallInputMethod;
         /// <summary>
         /// TCP 服务客户端调用函数信息
         /// </summary>
         internal readonly MethodInfo ClientCallMethod;
-        ///// <summary>
-        ///// TCP 服务客户端调用函数信息
-        ///// </summary>
-        //internal readonly MethodInfo ClientGetInputMethod;
-        ///// <summary>
-        ///// TCP 服务客户端调用函数信息
-        ///// </summary>
-        //internal readonly MethodInfo ClientGetMethod;
         /// <summary>
         /// 输出参数泛型类型元数据
         /// </summary>
@@ -63,26 +51,6 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
             GetParameterGenericType = getParameterGenericType;
             GetParameterGenericType2 = getParameterGenericType2;
             ClientCallMethod = clientCallMethod;
-            //foreach (MethodInfo method in clientType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            //{
-            //    switch (method.Name)
-            //    {
-            //        case "Call":
-            //            if (method.ReturnType == typeof(TcpServer.ReturnType))
-            //            {
-            //                if (method.IsGenericMethodDefinition) ClientCallInputMethod = method;
-            //                else ClientCallMethod = method;
-            //            }
-            //            break;
-            //        case "Get":
-            //            if (method.ReturnType == typeof(TcpServer.ReturnType) && method.IsGenericMethodDefinition)
-            //            {
-            //                if (method.GetParameters().Length == 2) ClientGetMethod = method; 
-            //                else ClientGetInputMethod = method;
-            //            }
-            //            break;
-            //    }
-            //}
         }
 
         /// <summary>

@@ -276,11 +276,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 {
                                     IsVerifyMethod = true;
                                     if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
-                                    method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
+                                    //method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                                 }
                                 parameterBuilder.Add(method);
-
-                                IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
                             }
                         }
                         ParameterTypes = parameterBuilder.Get();

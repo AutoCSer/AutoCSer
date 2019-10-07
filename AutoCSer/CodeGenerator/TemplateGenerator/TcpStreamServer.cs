@@ -27,17 +27,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             public new sealed class TcpMethod : TcpMethod<TcpMethod>
             {
                 /// <summary>
-                /// 是否定义服务器端调用
-                /// </summary>
-                public override bool IsMethodServerCall
-                {
-                    get
-                    {
-                        return ServiceAttribute.ServerTaskType != Net.TcpStreamServer.ServerTaskType.Synchronous && !Attribute.IsVerifyMethod;
-                    }
-                }
-
-                /// <summary>
                 /// 空方法索引信息
                 /// </summary>
                 private static readonly TcpMethod nullMethod = new TcpMethod { IsNullMethod = true };

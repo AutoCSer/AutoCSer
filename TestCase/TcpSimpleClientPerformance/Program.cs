@@ -34,34 +34,6 @@ namespace AutoCSer.TestCase.TcpInternalSimpleClientPerformance
                     if (client.addAsynchronous(left, --right).Value != left + right) ++Client.ErrorCount;
                 }
                 stop();
-
-                Client.Start(TestType.Queue, Client.Count);
-                for (int right = Client.Count; right != 0;)
-                {
-                    if (client.addQueue(left, --right).Value != left + right) ++Client.ErrorCount;
-                }
-                stop();
-
-                Client.Start(TestType.Timeout, Client.Count);
-                for (int right = Client.Count; right != 0;)
-                {
-                    if (client.addTimeoutTask(left, --right).Value != left + right) ++Client.ErrorCount;
-                }
-                stop();
-
-                Client.Start(TestType.TcpTask, Client.Count);
-                for (int right = Client.Count; right != 0;)
-                {
-                    if (client.addTcpTask(left, --right).Value != left + right) ++Client.ErrorCount;
-                }
-                stop();
-
-                Client.Start(TestType.ThreadPool, Client.Count);
-                for (int right = Client.Count; right != 0;)
-                {
-                    if (client.addThreadPool(left, --right).Value != left + right) ++Client.ErrorCount;
-                }
-                stop();
             }
             for (int threadCount = 2; threadCount <= 32; threadCount <<= 1)
             {

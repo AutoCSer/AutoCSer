@@ -139,7 +139,7 @@ namespace AutoCSer.Sql.MsSql
             return @"declare @id int
 set @id=object_id(N'[dbo].[" + tableName + @"]')
 if(select top 1 id from sysobjects where id=@id and objectproperty(id,N'IsUserTable')=1)is not null begin
- select columnproperty(id,name,'IsIdentity')as isidentity,id,xusertype,name,length,isnullable,colid,isnull((select top 1 text from syscomments where id=syscolumns.cdefault and colid=1),'')as defaultValue,isnull((select top 1 cast(value as varchar(256))from sysproperties where id=syscolumns.id and smallid=syscolumns.colid),'')as remark from syscolumns where id=@id order by colid
+ select columnproperty(id,name,'IsIdentity')as isidentity,id,xusertype,name,length,xprec,xscale,isnullable,colid,isnull((select top 1 text from syscomments where id=syscolumns.cdefault and colid=1),'')as defaultValue,isnull((select top 1 cast(value as varchar(256))from sysproperties where id=syscolumns.id and smallid=syscolumns.colid),'')as remark from syscolumns where id=@id order by colid
  if @@rowcount<>0 begin
   select a.indid,a.colid,b.name,(case when b.status=2 then 'UQ' else(select top 1 xtype from sysobjects where name=b.name)end)as type from sysindexkeys a left join sysindexes b on a.id=b.id and a.indid=b.indid where a.id=@id order by a.indid,a.keyno
  end
@@ -161,9 +161,18 @@ end";
                 while (reader.Read())
                 {
                     SqlDbType type = DbType.GetType((short)reader["xusertype"]);
-                    int size = (int)(short)reader["length"];
-                    if (type == SqlDbType.NChar || type == SqlDbType.NVarChar) size >>= 1;
-                    else if (type == SqlDbType.Text || type == SqlDbType.NText) size = int.MaxValue;
+                    int size;
+                    switch (type)
+                    {
+                        case SqlDbType.NChar: case SqlDbType.NVarChar: size = (int)(short)reader["length"] >> 1; break;
+                        case SqlDbType.Text: case SqlDbType.NText: size = int.MaxValue; break;
+                        case SqlDbType.Decimal:
+                        case SqlDbType.Money:
+                        case SqlDbType.SmallMoney:
+                            size = ((int)(byte)reader["xprec"] << 8) + (byte)reader["xscale"];
+                            break;
+                        default: size = (int)(short)reader["length"]; break;
+                    }
                     Column column = new Column
                     {
                         Name = reader["name"].ToString(),

@@ -12,11 +12,10 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
         /// <summary>
         /// TCP 服务端元数据
         /// </summary>
-        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpInternalSimpleServer.Server), typeof(ServerAttribute), typeof(ServerSocket), typeof(ServerCall)
+        internal static readonly ServerMetadata Metadata = new ServerMetadata(typeof(TcpInternalSimpleServer.Server), typeof(ServerAttribute), typeof(ServerSocket)
             , ParameterGenericType.Get
             , ((Func<bool>)ParameterGenericType.ServerSocket.Send).Method
             , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.Send).Method
-            , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.SendAsync).Method
             , ((Func<TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocket.SendOutput).Method
             , ((Action<Exception>)ParameterGenericType.ServerSocket.Log).Method);
     }
@@ -94,7 +93,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer.Emit
 
                 Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Log.ILog) };
                 Method<ServerAttribute, TcpSimpleServer.MethodAttribute, ServerSocket>.ServerBuilder serverBuilder = new Method<ServerAttribute, TcpSimpleServer.MethodAttribute, ServerSocket>.ServerBuilder { Metadata = Server.Metadata };
-                serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), typeof(ServerCall<>), constructorParameterTypes, methods);
+                serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), constructorParameterTypes, methods);
                 Outputs = serverBuilder.Outputs;
                 serverConstructorInfo = serverType.GetConstructor(constructorParameterTypes);
             }

@@ -32,11 +32,10 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
             /// <param name="type"></param>
             /// <param name="attribute"></param>
             /// <param name="serverInterfaceType"></param>
-            /// <param name="serverCallType"></param>
             /// <param name="constructorParameterTypes"></param>
             /// <param name="methods"></param>
             /// <returns></returns>
-            internal Type Build(Type type, ServerAttribute attribute, Type serverInterfaceType, Type serverCallType, Type[] constructorParameterTypes, Method<attributeType, methodAttributeType, serverSocketSenderType>[] methods)
+            internal Type Build(Type type, ServerAttribute attribute, Type serverInterfaceType, Type[] constructorParameterTypes, Method<attributeType, methodAttributeType, serverSocketSenderType>[] methods)
             {
                 string serverIdentity = Interlocked.Increment(ref Metadata.Identity).toString();
                 TypeBuilder typeBuilder = AutoCSer.Emit.Builder.Module.Builder.DefineType(Metadata.ServerTypeName + ".Emit." + type.FullName, TypeAttributes.Class | TypeAttributes.Sealed, Metadata.ServerType);
@@ -109,244 +108,8 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                             #endregion
                         }
                         ParameterInfo[] parameters = method.MethodInfo.GetParameters();
-                        TypeBuilder serverCallTypeBuilder;
                         FieldInfo returnTypeField = method.ReturnValueType == null ? null : (method.ReturnValueType == typeof(TcpServer.ReturnValue) ? TcpServer.Emit.ServerMetadata.ReturnValueTypeField : method.ReturnValueType.GetField(TcpServer.Emit.ServerMetadata.ReturnValueTypeField.Name, BindingFlags.Instance | BindingFlags.Public));
                         FieldInfo returnValueField = method.ReturnValueType == null ? null : method.ReturnValueType.GetField("Value", BindingFlags.Instance | BindingFlags.Public);
-                        if (method.IsMethodServerCall)
-                        {
-                            Type baseType = method.ParameterType == null ? Metadata.ServerCallType : serverCallType.MakeGenericType(method.ParameterType.Type);
-                            FieldInfo inputParameterField = method.ParameterType == null ? null : baseType.GetField("inputParameter", BindingFlags.Instance | BindingFlags.NonPublic);
-                            serverCallTypeBuilder = typeBuilder.DefineNestedType(Metadata.ServerCallTypeName + ".Emit." + serverIdentity + "_" + method.Attribute.CommandIdentity.toString(), TypeAttributes.Class | TypeAttributes.Sealed | TypeAttributes.NestedPublic, baseType);
-                            Type returnOutputType = method.OutputParameterType == null ? typeof(AutoCSer.Net.TcpServer.ReturnValue) : typeof(AutoCSer.Net.TcpServer.ReturnValue<>).MakeGenericType(method.OutputParameterType.Type);
-                            FieldInfo returnOutputValueField = method.OutputParameterType == null ? null : returnOutputType.GetField("Value", BindingFlags.Instance | BindingFlags.Public);
-                            Type returnOutputRefType = returnOutputType.MakeByRefType();
-                            #region private void get(ref AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName> value)
-                            MethodBuilder getMethodBuilder = serverCallTypeBuilder.DefineMethod("get", MethodAttributes.Private, typeof(void), new Type[] { returnOutputRefType });
-                            #endregion
-                            ILGenerator getGenerator = getMethodBuilder.GetILGenerator();
-                            Label getReturnLabel = getGenerator.DefineLabel();
-                            LocalBuilder exceptionErrorLocalBuilder = getGenerator.DeclareLocal(typeof(Exception));
-                            #region try
-                            getGenerator.BeginExceptionBlock();
-                            #endregion
-                            #region @MethodReturnType.FullName @ReturnName = serverValue.@MethodName(Sender, inputParameter.@ParameterName);
-                            LocalBuilder returnLocalBuilder = method.IsReturnType ? getGenerator.DeclareLocal(method.ReturnValueType ?? method.ReturnType) : null;
-                            getGenerator.Emit(OpCodes.Ldarg_0);
-                            getGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallServerValueField);
-                            foreach (ParameterInfo parameter in parameters)
-                            {
-                                if (StreamParameterType.IsInputParameter(parameter))
-                                {
-                                    getGenerator.Emit(OpCodes.Ldarg_0);
-                                    getGenerator.Emit(OpCodes.Ldflda, inputParameterField);
-                                    getGenerator.Emit(parameter.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, method.ParameterType.GetField(parameter.Name));
-                                }
-                                else if (parameter.IsOut)
-                                {
-                                    getGenerator.Emit(OpCodes.Ldarg_1);
-                                    getGenerator.Emit(OpCodes.Ldflda, returnOutputValueField);
-                                    getGenerator.Emit(OpCodes.Ldflda, method.OutputParameterType.GetField(parameter.Name));
-                                }
-                                else if (parameter.ParameterType == Metadata.SenderType)
-                                {
-                                    getGenerator.Emit(OpCodes.Ldarg_0);
-                                    getGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallSenderField);
-                                }
-                                else getGenerator.Emit(OpCodes.Ldnull);
-                            }
-                            getGenerator.call(method.MethodInfo);
-                            if (method.IsReturnType) getGenerator.Emit(OpCodes.Stloc_S, returnLocalBuilder);
-                            #endregion
-                            FieldInfo returnValueTypeField = method.OutputParameterType == null ? TcpServer.Emit.ServerMetadata.ReturnValueTypeField : returnOutputType.GetField(TcpServer.Emit.ServerMetadata.ReturnValueTypeField.Name, BindingFlags.Instance | BindingFlags.Public);
-                            if (method.OutputParameterType == null)
-                            {
-                                if (method.ReturnValueType != null)
-                                {
-                                    Label returnTypeErrorLabel = getGenerator.DefineLabel();
-                                    #region if(@ReturnName.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
-                                    getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                    getGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                    getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
-                                    getGenerator.Emit(OpCodes.Beq_S, returnTypeErrorLabel);
-                                    #endregion
-                                    #region value.Type = @ReturnName.Type;
-                                    getGenerator.Emit(OpCodes.Ldarg_1);
-                                    getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                    getGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                    getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
-                                    #endregion
-                                    getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
-                                    getGenerator.MarkLabel(returnTypeErrorLabel);
-                                }
-                                #region value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                                getGenerator.Emit(OpCodes.Ldarg_1);
-                                getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
-                                getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
-                                #endregion
-                                getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
-                            }
-                            else
-                            {
-                                Label returnTypeErrorLabel;
-                                if (method.ReturnValueType == null) returnTypeErrorLabel = default(Label);
-                                else
-                                {
-                                    #region if(@ReturnName.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
-                                    getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                    getGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                    getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
-                                    getGenerator.Emit(OpCodes.Bne_Un, returnTypeErrorLabel = getGenerator.DefineLabel());
-                                    #endregion
-                                }
-                                if (method.Attribute.IsVerifyMethod)
-                                {
-                                    Label verifyEndLabel = getGenerator.DefineLabel();
-                                    #region if (@ReturnName / @ReturnName.Value)
-                                    if (method.ReturnValueType == null) getGenerator.Emit(OpCodes.Ldloc_S, returnLocalBuilder);
-                                    else
-                                    {
-                                        getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                        getGenerator.Emit(OpCodes.Ldfld, returnValueField);
-                                    }
-                                    getGenerator.Emit(OpCodes.Brfalse_S, verifyEndLabel);
-                                    #endregion
-                                    #region Sender.SetVerifyMethod();
-                                    getGenerator.Emit(OpCodes.Ldarg_0);
-                                    getGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallSenderField);
-                                    getGenerator.call(TcpServer.Emit.ServerMetadata.ServerSocketSenderSetVerifyMethod);
-                                    #endregion
-                                    getGenerator.MarkLabel(verifyEndLabel);
-                                }
-                                LocalBuilder valueLocalBuilder = getGenerator.DeclareLocal(method.OutputParameterType.Type);
-                                #region value.Value.@ParameterName = inputParameter.@ParameterName;
-                                foreach (ParameterInfo parameter in method.OutputParameters)
-                                {
-                                    if (!parameter.IsOut)
-                                    {
-                                        getGenerator.Emit(OpCodes.Ldarg_1);
-                                        getGenerator.Emit(OpCodes.Ldflda, returnOutputValueField);
-                                        getGenerator.Emit(OpCodes.Ldarg_0);
-                                        getGenerator.Emit(OpCodes.Ldflda, inputParameterField);
-                                        getGenerator.Emit(OpCodes.Ldfld, method.ParameterType.GetField(parameter.Name));
-                                        getGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(parameter.Name));
-                                    }
-                                }
-                                #endregion
-                                if (method.ReturnType != typeof(void))
-                                {
-                                    #region value.Value.@ReturnName = @ReturnName / @ReturnName.Value;
-                                    getGenerator.Emit(OpCodes.Ldarg_1);
-                                    getGenerator.Emit(OpCodes.Ldflda, returnOutputValueField);
-                                    if (method.ReturnValueType == null) getGenerator.Emit(OpCodes.Ldloc_S, returnLocalBuilder);
-                                    else
-                                    {
-                                        getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                        getGenerator.Emit(OpCodes.Ldfld, returnValueField);
-                                    }
-                                    getGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(TcpServer.ReturnValue.RetParameterName));
-                                    #endregion
-                                }
-                                #region value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                                getGenerator.Emit(OpCodes.Ldarg_1);
-                                getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
-                                getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
-                                #endregion
-                                getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
-                                if (method.ReturnValueType != null)
-                                {
-                                    getGenerator.MarkLabel(returnTypeErrorLabel);
-                                    #region value.Type = @ReturnName.Type;
-                                    getGenerator.Emit(OpCodes.Ldarg_1);
-                                    getGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                    getGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                    getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
-                                    #endregion
-                                    getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
-                                }
-                            }
-                            #region catch (Exception error)
-                            getGenerator.BeginCatchBlock(typeof(Exception));
-                            getGenerator.Emit(OpCodes.Stloc_S, exceptionErrorLocalBuilder);
-                            #endregion
-                            #region value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            getGenerator.Emit(OpCodes.Ldarg_1);
-                            getGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ServerException);
-                            getGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
-                            #endregion
-                            #region Sender.Log(error);
-                            getGenerator.Emit(OpCodes.Ldarg_0);
-                            getGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallSenderField);
-                            getGenerator.Emit(OpCodes.Ldloc_S, exceptionErrorLocalBuilder);
-                            getGenerator.call(Metadata.ServerSocketSenderAddLogMethod);
-                            #endregion
-                            getGenerator.Emit(OpCodes.Leave_S, getReturnLabel);
-                            #region try end
-                            getGenerator.EndExceptionBlock();
-                            #endregion
-                            getGenerator.MarkLabel(getReturnLabel);
-                            getGenerator.Emit(OpCodes.Ret);
-
-                            #region public override void Call()
-                            MethodBuilder callMethodBuilder = serverCallTypeBuilder.DefineMethod("Call", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), null);
-                            #endregion
-                            ILGenerator callGenerator = callMethodBuilder.GetILGenerator();
-                            #region AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName> value = new AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName>();
-                            LocalBuilder valueBuilder = callGenerator.DeclareLocal(returnOutputType);
-                            if (method.OutputParameterType == null || method.Attribute.IsInitobj || method.OutputParameterType.IsInitobj)
-                            {
-                                callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
-                                callGenerator.Emit(OpCodes.Initobj, returnOutputType);
-                            }
-                            else
-                            {
-                                callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
-                                callGenerator.int32(0);
-                                callGenerator.Emit(OpCodes.Stfld, returnValueTypeField);
-                            }
-                            #endregion
-                            Label pushLabel = callGenerator.DefineLabel();
-                            #region if (Sender.IsSocket)
-                            callGenerator.Emit(OpCodes.Ldarg_0);
-                            callGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallSenderField);
-                            callGenerator.call(TcpServer.Emit.ServerMetadata.ServerSocketSenderGetIsSocketMethod);
-                            callGenerator.Emit(OpCodes.Brfalse_S, pushLabel);
-                            #endregion
-                            #region get(ref value);
-                            callGenerator.Emit(OpCodes.Ldarg_0);
-                            callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
-                            callGenerator.call(getMethodBuilder);
-                            #endregion
-                            if (!method.IsClientSendOnly)
-                            {
-                                #region Sender.Push(@MethodIdentityCommand, ref value);
-                                callGenerator.Emit(OpCodes.Ldarg_0);
-                                callGenerator.Emit(OpCodes.Ldfld, Metadata.ServerCallSenderField);
-                                if (method.OutputParameterType == null)
-                                {
-                                    callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
-                                    callGenerator.Emit(OpCodes.Ldfld, returnValueTypeField);
-                                    callGenerator.call(Metadata.ServerSocketSenderPushReturnTypeMethod);
-                                }
-                                else
-                                {
-                                    callGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
-                                    callGenerator.Emit(OpCodes.Ldloca_S, valueBuilder);
-                                    //callGenerator.call(Metadata.ServerSocketSenderPushOutputRefMethod.MakeGenericMethod(method.OutputParameterType.Type));
-                                    callGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSenderPushCommandMethod);
-                                }
-                                callGenerator.Emit(OpCodes.Pop);
-                                #endregion
-                            }
-                            callGenerator.MarkLabel(pushLabel);
-                            #region push(this);
-                            callGenerator.Emit(OpCodes.Ldarg_0);
-                            callGenerator.Emit(OpCodes.Ldarg_0);
-                            callGenerator.call((method.ParameterType == null ? Metadata.ServerCallPushMethod : serverCallType.MakeGenericType(method.ParameterType.Type).GetMethod("push", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)).MakeGenericMethod(serverCallTypeBuilder));
-                            #endregion
-                            callGenerator.Emit(OpCodes.Ret);
-                            serverCallTypeBuilder.CreateType();
-                        }
-                        else serverCallTypeBuilder = null;
 
                         #region private void @MethodIndexName(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ref SubArray<byte> data)
                         MethodBuilder methodBuilder = typeBuilder.DefineMethod("_m" + method.Attribute.CommandIdentity.toString(), MethodAttributes.Private, typeof(void), Metadata.MethodParameterTypes);
@@ -406,156 +169,140 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                 methodGenerator.Emit(OpCodes.Brfalse, serverDeSerializeErrorLabel = methodGenerator.DefineLabel());
                                 #endregion
                             }
-                            if (method.IsMethodServerCall)
+
+                            if (method.OutputParameterType != null)
                             {
-                                #region @MethodStreamName.Call(sender, _value_, ref inputParameter);
-                                methodGenerator.Emit(OpCodes.Ldarg_1);
-                                methodGenerator.Emit(OpCodes.Ldarg_0);
-                                methodGenerator.Emit(OpCodes.Ldfld, valueFieldBuilder);
-                                if (method.ParameterType == null) methodGenerator.call(Metadata.ServerCallCallMethod.MakeGenericMethod(serverCallTypeBuilder));
-                                else
+                                #region @OutputParameterTypeName outputParameter = new @OutputParameterTypeName();
+                                outputParameterLocalBuilder = methodGenerator.DeclareLocal(method.OutputParameterType.Type);
+                                if (method.Attribute.IsInitobj || method.OutputParameterType.IsInitobj)
                                 {
-                                    methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                    methodGenerator.call(serverCallType.MakeGenericType(method.ParameterType.Type).GetMethod("Call", BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly).MakeGenericMethod(serverCallTypeBuilder));
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Initobj, method.OutputParameterType.Type);
                                 }
                                 #endregion
                             }
-                            else
+                            #region @MethodReturnType.FullName @ReturnName = _value_.@MethodName(sender, inputParameter.@ParameterName);
+                            LocalBuilder returnLocalBuilder = method.IsReturnType ? methodGenerator.DeclareLocal(method.ReturnValueType ?? method.ReturnType) : null;
+                            methodGenerator.Emit(OpCodes.Ldarg_0);
+                            methodGenerator.Emit(OpCodes.Ldfld, valueFieldBuilder);
+                            foreach (ParameterInfo parameter in parameters)
                             {
-                                if (method.OutputParameterType != null)
+                                if (StreamParameterType.IsInputParameter(parameter))
                                 {
-                                    #region @OutputParameterTypeName outputParameter = new @OutputParameterTypeName();
-                                    outputParameterLocalBuilder = methodGenerator.DeclareLocal(method.OutputParameterType.Type);
-                                    if (method.Attribute.IsInitobj || method.OutputParameterType.IsInitobj)
-                                    {
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Initobj, method.OutputParameterType.Type);
-                                    }
-                                    #endregion
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
+                                    methodGenerator.Emit(parameter.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, method.ParameterType.GetField(parameter.Name));
                                 }
-                                #region @MethodReturnType.FullName @ReturnName = _value_.@MethodName(sender, inputParameter.@ParameterName);
-                                LocalBuilder returnLocalBuilder = method.IsReturnType ? methodGenerator.DeclareLocal(method.ReturnValueType ?? method.ReturnType) : null;
-                                methodGenerator.Emit(OpCodes.Ldarg_0);
-                                methodGenerator.Emit(OpCodes.Ldfld, valueFieldBuilder);
-                                foreach (ParameterInfo parameter in parameters)
+                                else if (parameter.IsOut)
                                 {
-                                    if (StreamParameterType.IsInputParameter(parameter))
-                                    {
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                        methodGenerator.Emit(parameter.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, method.ParameterType.GetField(parameter.Name));
-                                    }
-                                    else if (parameter.IsOut)
-                                    {
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Ldflda, method.OutputParameterType.GetField(parameter.Name));
-                                    }
-                                    else if (parameter.ParameterType == Metadata.SenderType) methodGenerator.Emit(OpCodes.Ldarg_1);
-                                    else methodGenerator.Emit(OpCodes.Ldnull);
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldflda, method.OutputParameterType.GetField(parameter.Name));
                                 }
-                                methodGenerator.call(method.MethodInfo);
-                                if (method.IsReturnType) methodGenerator.Emit(OpCodes.Stloc_S, returnLocalBuilder);
-                                #endregion
-                                if (method.OutputParameterType == null)
+                                else if (parameter.ParameterType == Metadata.SenderType) methodGenerator.Emit(OpCodes.Ldarg_1);
+                                else methodGenerator.Emit(OpCodes.Ldnull);
+                            }
+                            methodGenerator.call(method.MethodInfo);
+                            if (method.IsReturnType) methodGenerator.Emit(OpCodes.Stloc_S, returnLocalBuilder);
+                            #endregion
+                            if (method.OutputParameterType == null)
+                            {
+                                if (method.ReturnValueType == null)
                                 {
-                                    if (method.ReturnValueType == null)
+                                    if (!method.IsClientSendOnly)
                                     {
-                                        if (!method.IsClientSendOnly)
-                                        {
-                                            #region sender.Push();
-                                            methodGenerator.Emit(OpCodes.Ldarg_1);
-                                            methodGenerator.call(Metadata.ServerSocketSenderPushMethod);
-                                            methodGenerator.Emit(OpCodes.Pop);
-                                            #endregion
-                                        }
-                                    }
-                                    else
-                                    {
-                                        #region sender.Push(@ReturnName.Type);
+                                        #region sender.Push();
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                        methodGenerator.call(Metadata.ServerSocketSenderPushReturnTypeMethod);
+                                        methodGenerator.call(Metadata.ServerSocketSenderPushMethod);
                                         methodGenerator.Emit(OpCodes.Pop);
                                         #endregion
                                     }
                                 }
                                 else
                                 {
-                                    Label returnTypeErrorLabel;
-                                    if (method.ReturnValueType == null) returnTypeErrorLabel = default(Label);
-                                    else
-                                    {
-                                        #region if(@ReturnName.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                        methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
-                                        methodGenerator.Emit(OpCodes.Bne_Un, returnTypeErrorLabel = methodGenerator.DefineLabel());
-                                        #endregion
-                                    }
-                                    if (method.Attribute.IsVerifyMethod)
-                                    {
-                                        Label verifyEndLabel = methodGenerator.DefineLabel();
-                                        #region if (@ReturnName / @ReturnName.Value)
-                                        if (method.ReturnValueType == null) methodGenerator.Emit(OpCodes.Ldloc_S, returnLocalBuilder);
-                                        else
-                                        {
-                                            methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                            methodGenerator.Emit(OpCodes.Ldfld, returnValueField);
-                                        }
-                                        methodGenerator.Emit(OpCodes.Brfalse_S, verifyEndLabel);
-                                        #endregion
-                                        #region sender.SetVerifyMethod();
-                                        methodGenerator.Emit(OpCodes.Ldarg_1);
-                                        methodGenerator.call(TcpServer.Emit.ServerMetadata.ServerSocketSenderSetVerifyMethod);
-                                        #endregion
-                                        methodGenerator.MarkLabel(verifyEndLabel);
-                                    }
-                                    foreach (ParameterInfo parameter in method.OutputParameters)
-                                    {
-                                        if (!parameter.IsOut)
-                                        {
-                                            #region outputParameter.@ParameterName = inputParameter.@ParameterName
-                                            methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                            methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                            methodGenerator.Emit(OpCodes.Ldfld, method.ParameterType.GetField(parameter.Name));
-                                            methodGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(parameter.Name));
-                                            #endregion
-                                        }
-                                    }
-                                    if (method.ReturnType != typeof(void))
-                                    {
-                                        #region _outputParameter_.Ret = @ReturnName / @ReturnName.Value
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        if (method.ReturnValueType == null) methodGenerator.Emit(OpCodes.Ldloc_S, returnLocalBuilder);
-                                        else
-                                        {
-                                            methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                            methodGenerator.Emit(OpCodes.Ldfld, returnValueField);
-                                        }
-                                        methodGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(TcpServer.ReturnValue.RetParameterName));
-                                        #endregion
-                                    }
-
-                                    #region sender.Push(@MethodIdentityCommand, ref outputParameter)
+                                    #region sender.Push(@ReturnName.Type);
                                     methodGenerator.Emit(OpCodes.Ldarg_1);
-                                    methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
-                                    methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                    //methodGenerator.call(Metadata.ServerSocketSenderPushOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
-                                    methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSenderPushMethod);
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
+                                    methodGenerator.call(Metadata.ServerSocketSenderPushReturnTypeMethod);
                                     methodGenerator.Emit(OpCodes.Pop);
                                     #endregion
-                                    methodGenerator.Emit(OpCodes.Leave_S, returnLable);
-                                    if (method.ReturnValueType != null)
+                                }
+                            }
+                            else
+                            {
+                                Label returnTypeErrorLabel;
+                                if (method.ReturnValueType == null) returnTypeErrorLabel = default(Label);
+                                else
+                                {
+                                    #region if(@ReturnName.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
+                                    methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                    methodGenerator.Emit(OpCodes.Bne_Un, returnTypeErrorLabel = methodGenerator.DefineLabel());
+                                    #endregion
+                                }
+                                if (method.Attribute.IsVerifyMethod)
+                                {
+                                    Label verifyEndLabel = methodGenerator.DefineLabel();
+                                    #region if (@ReturnName / @ReturnName.Value)
+                                    if (method.ReturnValueType == null) methodGenerator.Emit(OpCodes.Ldloc_S, returnLocalBuilder);
+                                    else
                                     {
-                                        methodGenerator.MarkLabel(returnTypeErrorLabel);
-                                        #region sender.Push(@ReturnValue.Type);
-                                        methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
-                                        methodGenerator.call(Metadata.ServerSocketSenderPushReturnTypeMethod);
-                                        methodGenerator.Emit(OpCodes.Pop);
+                                        methodGenerator.Emit(OpCodes.Ldfld, returnValueField);
+                                    }
+                                    methodGenerator.Emit(OpCodes.Brfalse_S, verifyEndLabel);
+                                    #endregion
+                                    #region sender.SetVerifyMethod();
+                                    methodGenerator.Emit(OpCodes.Ldarg_1);
+                                    methodGenerator.call(TcpServer.Emit.ServerMetadata.ServerSocketSenderSetVerifyMethod);
+                                    #endregion
+                                    methodGenerator.MarkLabel(verifyEndLabel);
+                                }
+                                foreach (ParameterInfo parameter in method.OutputParameters)
+                                {
+                                    if (!parameter.IsOut)
+                                    {
+                                        #region outputParameter.@ParameterName = inputParameter.@ParameterName
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
+                                        methodGenerator.Emit(OpCodes.Ldfld, method.ParameterType.GetField(parameter.Name));
+                                        methodGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(parameter.Name));
                                         #endregion
                                     }
+                                }
+                                if (method.ReturnType != typeof(void))
+                                {
+                                    #region _outputParameter_.Ret = @ReturnName / @ReturnName.Value
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                    if (method.ReturnValueType == null) methodGenerator.Emit(OpCodes.Ldloc_S, returnLocalBuilder);
+                                    else
+                                    {
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
+                                        methodGenerator.Emit(OpCodes.Ldfld, returnValueField);
+                                    }
+                                    methodGenerator.Emit(OpCodes.Stfld, method.OutputParameterType.GetField(TcpServer.ReturnValue.RetParameterName));
+                                    #endregion
+                                }
+
+                                #region sender.Push(@MethodIdentityCommand, ref outputParameter)
+                                methodGenerator.Emit(OpCodes.Ldarg_1);
+                                methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
+                                methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                //methodGenerator.call(Metadata.ServerSocketSenderPushOutputMethod.MakeGenericMethod(method.OutputParameterType.Type));
+                                methodGenerator.call(Metadata.GetParameterGenericType(method.OutputParameterType.Type).ServerSocketSenderPushMethod);
+                                methodGenerator.Emit(OpCodes.Pop);
+                                #endregion
+                                methodGenerator.Emit(OpCodes.Leave_S, returnLable);
+                                if (method.ReturnValueType != null)
+                                {
+                                    methodGenerator.MarkLabel(returnTypeErrorLabel);
+                                    #region sender.Push(@ReturnValue.Type);
+                                    methodGenerator.Emit(OpCodes.Ldarg_1);
+                                    methodGenerator.Emit(OpCodes.Ldloca_S, returnLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldfld, returnTypeField);
+                                    methodGenerator.call(Metadata.ServerSocketSenderPushReturnTypeMethod);
+                                    methodGenerator.Emit(OpCodes.Pop);
+                                    #endregion
                                 }
                             }
                             methodGenerator.Emit(OpCodes.Leave_S, returnLable);

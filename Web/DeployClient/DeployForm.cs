@@ -203,57 +203,6 @@ namespace AutoCSer.Web.DeployClient
                 Deploys = deploys
             };
             client = new AutoCSer.Deploy.Client(config, context.GetPost<AutoCSer.Deploy.OnClientParameter>(onClient));
-            //do
-            //{
-            //    int index = 0;
-            //    foreach (AutoCSer.Deploy.ClientDeploy deployInfo in deploys)
-            //    {
-            //        Console.ForegroundColor = (index & 1) == 0 ? ConsoleColor.Red : ConsoleColor.White;
-            //        Console.WriteLine((index++).toString() + " -> " + toString(deployInfo));
-            //    }
-            //    Console.ForegroundColor = (index & 1) == 0 ? ConsoleColor.Red : ConsoleColor.White;
-            //    Console.WriteLine((index++).toString() + " -> create Open Example");
-            //    Console.ForegroundColor = (index & 1) == 0 ? ConsoleColor.Red : ConsoleColor.White;
-            //    Console.WriteLine((index++).toString() + " -> create AutoCSer.zip");
-            //    Console.ForegroundColor = (index & 1) == 0 ? ConsoleColor.Red : ConsoleColor.White;
-            //    Console.WriteLine((index++).toString() + " -> Push Nuget");
-
-            //    Console.ResetColor();
-            //    Console.WriteLine("press quit to exit.");
-            //    string command = Console.ReadLine();
-            //    if (command == "quit") return;
-            //    if (int.TryParse(command, out index))
-            //    {
-            //        if ((uint)index < (uint)deploys.Length)
-            //        {
-            //            try
-            //            {
-            //                Console.WriteLine("正在启动部署 " + toString(deploys[index]));
-            //                AutoCSer.Deploy.DeployResult result = client.Deploy(index);
-            //                if (result.State == AutoCSer.Deploy.DeployState.Success) Console.WriteLine("部署启动完毕 " + toString(deploys[index]) + " => " + result.Index.toString());
-            //                else Console.WriteLine("部署启动失败 [" + result.State.ToString() + "] " + toString(deploys[index]));
-            //            }
-            //            catch (Exception error)
-            //            {
-            //                Console.WriteLine(error.ToString());
-            //            }
-            //        }
-            //        else
-            //        {
-            //            switch (index - deploys.Length)
-            //            {
-            //                case 0: openExample(); break;
-            //                case 1: openProcess(@"..\..\..\..\Web\Pack\bin\Release\AutoCSer.Web.Pack.exe"); break;
-            //                case 2: pushNuget(); break;
-            //                default: index = -1; break;
-            //            }
-            //        }
-            //    }
-            //    else index = -1;
-            //    if (index == -1) Console.WriteLine("Error Command");
-            //    Console.WriteLine();
-            //}
-            //while (true);
         }
         /// <summary>
         /// 发布客户端套接字事件
@@ -424,7 +373,7 @@ namespace AutoCSer.Web.DeployClient
                     {
                         arguments = "push " + packFile.FullName + " " + AutoCSer.Web.Config.Pub.NugetKey + " -Source https://api.nuget.org/v3/index.json";
                         output = waitProcessDirectory(AutoCSer.Web.Config.Pub.NugetFile, arguments);
-                        if (output.IndexOf("Your package was pushed.") >= 0) appendMessage(packFile.FullName + " push 成功");
+                        if (isPushNuget(output)) appendMessage(packFile.FullName + " push 成功");
                         else
                         {
                             appendMessage(packFile.FullName + @" push 失败
@@ -477,7 +426,12 @@ namespace AutoCSer.Web.DeployClient
                     {
                         string arguments = " nuget push " + packFile.FullName + " -k " + AutoCSer.Web.Config.Pub.NugetKey + " -s https://api.nuget.org/v3/index.json";
                         string output = waitProcessDirectory(AutoCSer.Web.Config.Pub.DotnetExeFile, arguments);
-                        appendMessage(output);
+                        if (isPushNuget(output)) appendMessage(packFile.FullName + " push 成功");
+                        else
+                        {
+                            appendMessage(packFile.FullName + @" push 失败
+" + output);
+                        }
                     }
                     else appendMessage("没有找到 Nuget 包文件 " + packFile.FullName);
                 }
@@ -485,6 +439,15 @@ namespace AutoCSer.Web.DeployClient
             }
         }
 
+        /// <summary>
+        /// 判断 Nuget 是否推送成功
+        /// </summary>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        private static bool isPushNuget(string output)
+        {
+            return output.IndexOf("Your package was pushed.") >= 0 || output.IndexOf("已推送包") >= 0;
+        }
         /// <summary>
         /// 在文件当前目录启动进程并等待结束
         /// </summary>

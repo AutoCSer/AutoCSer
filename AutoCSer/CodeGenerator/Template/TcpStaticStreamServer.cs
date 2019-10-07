@@ -597,10 +597,6 @@ namespace AutoCSer.CodeGenerator.Template
                             if (sender.DeSerialize(ref data, ref inputParameter/*IF:IsSimpleSerializeInputParamter*/, true/*IF:IsSimpleSerializeInputParamter*/))
                             #endregion IF InputParameterIndex
                             {
-                                #region IF IsMethodServerCall
-                                (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
-                                #endregion IF IsMethodServerCall
-                                #region NOT IsMethodServerCall
                                 #region NOT IsClientSendOnly
                                 #region IF OutputParameterIndex
                                 @OutputParameterTypeName _outputParameter_ = new @OutputParameterTypeName();
@@ -640,7 +636,6 @@ namespace AutoCSer.CodeGenerator.Template
                                 sender.Push();
                                 #endregion NOT OutputParameterIndex
                                 #endregion NOT IsClientSendOnly
-                                #endregion NOT IsMethodServerCall
                                 return;
                             }
                             #region IF InputParameterIndex
@@ -668,78 +663,6 @@ namespace AutoCSer.CodeGenerator.Template
             }
             #region LOOP MethodIndexs
             #region NOT IsNullMethod
-            #region NOT IsAsynchronousCallback
-            #region IF IsMethodServerCall
-            sealed class @MethodStreamName : AutoCSer.Net.TcpStaticStreamServer.ServerCall<@MethodStreamName/*IF:InputParameterIndex*/, @InputParameterTypeName/*IF:InputParameterIndex*/>
-            {
-                private void get(ref AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value)
-                {
-                    try
-                    {
-                        /*IF:MethodIsReturn*/
-                        @MethodReturnType.FullName @ReturnName;/*IF:MethodIsReturn*/
-                        #region IF MemberIndex
-                        #region IF Method.IsGetMember
-                        @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*/@MethodType.FullName/**/.TcpStaticStreamServer.@StaticMethodIndexName();
-                        #endregion IF Method.IsGetMember
-                        #region NOT Method.IsGetMember
-                        @MethodType.FullName/**/.TcpStaticStreamServer.@StaticMethodIndexName(/*LOOP:InputParameters*/inputParameter./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*//*LOOP:InputParameters*/);
-                        #endregion NOT Method.IsGetMember
-                        #endregion IF MemberIndex
-
-                        #region NOT MemberIndex
-                        /*IF:MethodIsReturn*/
-                        @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*//*IF:MethodIsReturn*//*PUSH:Method*/@MethodType.FullName/**/.TcpStaticStreamServer.@StaticMethodIndexName/*PUSH:Method*/(/*IF:ClientParameterName*/Sender/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*IF:MethodParameter.IsOut*//*PUSH:InputParameter*/value.Value.@ParameterName/*PUSH:InputParameter*//*NOTE*/,/*NOTE*//*IF:MethodParameter.IsOut*//*NOT:MethodParameter.IsOut*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*NOT:MethodParameter.IsOut*//*AT:MethodParameter.ParameterJoin*//*LOOP:InputParameters*/);
-                        #endregion NOT MemberIndex
-
-                        #region IF OutputParameterIndex
-                        #region IF IsVerifyMethod
-                        if (/*NOTE*/(bool)(object)/*NOTE*/@ReturnName) Sender.SetVerifyMethod();
-                        #endregion IF IsVerifyMethod
-                        #region LOOP OutputParameters
-                        #region NOT InputMethodParameter.IsOut
-                        /*PUSH:Parameter*/
-                        value.Value.@ParameterName/*PUSH:Parameter*/ = inputParameter./*PUSH:InputParameter*/@ParameterName/*PUSH:InputParameter*/;
-                        #endregion NOT InputMethodParameter.IsOut
-                        #endregion LOOP OutputParameters
-                        #region IF MethodIsReturn
-                        value.Value.@ReturnName = @ReturnName;
-                        #endregion IF MethodIsReturn
-                        #endregion IF OutputParameterIndex
-                        value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                    }
-                    catch (Exception error)
-                    {
-                        value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.AddLog(error);
-                    }
-                }
-                public override void Call()
-                {
-                    AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value = new AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/();
-                    #region IF IsClientSendOnly
-                    if (Sender.IsSocket) get(ref value);
-                    push(this);
-                    #endregion IF IsClientSendOnly
-                    #region NOT IsClientSendOnly
-                    AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                    if (sender.IsSocket)
-                    {
-                        get(ref value);
-                        push(this);
-                        #region IF OutputParameterIndex
-                        sender.Push(@StaticMethodIdentityCommand, ref value);
-                        #endregion IF OutputParameterIndex
-                        #region NOT OutputParameterIndex
-                        sender.Push(value.Type);
-                        #endregion NOT OutputParameterIndex
-                    }
-                    else push(this);
-                    #endregion NOT IsClientSendOnly
-                }
-            }
-            #endregion IF IsMethodServerCall
-            #endregion NOT IsAsynchronousCallback
             private static readonly AutoCSer.Net.TcpServer.OutputInfo @StaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsJsonSerialize*/, IsKeepCallback = 1/*IF:IsJsonSerialize*//*IF:IsClientSendOnly*/, IsClientSendOnly = 1/*IF:IsClientSendOnly*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
             #endregion NOT IsNullMethod
             #endregion LOOP MethodIndexs

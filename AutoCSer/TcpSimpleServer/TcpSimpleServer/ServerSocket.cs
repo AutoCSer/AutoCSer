@@ -119,7 +119,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 验证函数调用次数
         /// </summary>
-        protected byte verifyMethodCount = TcpServer.ServerSocket.DefaultVerifyMethodCount;
+        protected byte verifyMethodCount;
         /// <summary>
         /// 是否通过函数验证
         /// </summary>
@@ -164,9 +164,11 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="binaryDeSerializeConfig">二进制反序列化配置参数</param>
-        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig)
+        /// <param name="verifyMethodCount">验证函数调用次数</param>
+        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig, byte verifyMethodCount)
         {
             this.binaryDeSerializeConfig = binaryDeSerializeConfig;
+            this.verifyMethodCount = verifyMethodCount;
         }
         /// <summary>
         /// 判断命令是否有效
@@ -288,7 +290,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
-        internal ServerSocket(serverType server): base(server.BinaryDeSerializeConfig)
+        internal ServerSocket(serverType server): base(server.BinaryDeSerializeConfig, server.VerifyMethodCount)
         {
             Server = server;
         }

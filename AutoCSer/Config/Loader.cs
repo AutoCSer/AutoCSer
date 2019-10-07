@@ -160,7 +160,21 @@ namespace AutoCSer.Config
         /// <returns></returns>
         private static IEnumerable<KeyValue<Key, Creator>> getConfigs(Assembly assembly, bool isMain)
         {
-            foreach (Type type in assembly.GetTypes())
+            Type[] types = null;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+#if AutoCSer
+            catch (Exception error)
+            {
+                AutoCSer.Log.ILog log = AutoCSer.Log.Pub.Log;
+                if (log != null) log.Wait(Log.LogType.Fatal, error);
+            }
+#else
+            catch { }
+#endif
+            foreach (Type type in types ?? NullValue<Type>.Array)
             {
                 foreach (TypeAttribute typeAttribute in type.GetCustomAttributes(typeof(TypeAttribute), false))
                 {

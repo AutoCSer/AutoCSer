@@ -429,6 +429,8 @@
     <Compile Include="Net\TcpServer\CommandFlags.cs" />
     <Compile Include="Net\TcpServer\CommandInfo.cs" />
     <Compile Include="Net\TcpServer\ConfigLoader.cs" />
+    <Compile Include="Net\TcpServer\IServerCallQueue.cs" />
+    <Compile Include="Net\TcpServer\IServerCallQueueSet.cs" />
     <Compile Include="Net\TcpServer\ISetTcpServer.cs" />
     <Compile Include="Net\TcpServer\KeepCallback.cs" />
     <Compile Include="Net\TcpServer\MethodAttribute.cs" />

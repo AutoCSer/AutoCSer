@@ -8,19 +8,6 @@ namespace AutoCSer.Net.TcpSimpleServer
     public class MethodAttribute : TcpServer.MethodBaseAttribute
     {
         /// <summary>
-        /// 服务端任务类型，默认为 Synchronous
-        /// </summary>
-        public TcpServer.ServerTaskType ServerTask = TcpServer.ServerTaskType.Synchronous;
-        /// <summary>
-        /// 服务端任务类型
-        /// </summary>
-        [AutoCSer.Metadata.Ignore]
-        internal override TcpServer.ServerTaskType ServerTaskType
-        {
-            get { return ServerTask; }
-            set { ServerTask = value; }
-        }
-        /// <summary>
         /// 客户端异步任务类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]

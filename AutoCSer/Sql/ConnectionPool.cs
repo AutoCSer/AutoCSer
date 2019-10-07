@@ -25,14 +25,14 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 是否启用连接池
         /// </summary>
-        private bool isPool;
+        internal bool IsPool;
         /// <summary>
         /// 连接池
         /// </summary>
         /// <param name="isPool">是否启用连接池</param>
         private ConnectionPool(bool isPool)
         {
-            if (this.isPool = isPool) array = new DbConnection[ConfigLoader.Config.ConnectionPoolSize];
+            if (this.IsPool = isPool) array = new DbConnection[ConfigLoader.Config.ConnectionPoolSize];
         }
         /// <summary>
         /// 获取连接
@@ -60,7 +60,7 @@ namespace AutoCSer.Sql
         {
             if (connection != null)
             {
-                if (isPool)
+                if (IsPool)
                 {
                     while (System.Threading.Interlocked.CompareExchange(ref arrayLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.SqlConnectionPoolPush);
                     if (index != array.Length)

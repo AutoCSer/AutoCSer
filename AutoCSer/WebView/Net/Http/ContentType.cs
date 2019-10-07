@@ -158,6 +158,8 @@ namespace AutoCSer.Net.Http
         m2v,
         [ContentType(ExtensionName = "m3u", Name = "audio/mpegurl")]
         m3u,
+        [ContentType(ExtensionName = "m4a", Name = "audio/mp4")]
+        m4a,
         [ContentType(ExtensionName = "m4e", Name = "video/mpeg4")]
         m4e,
         [ContentType(ExtensionName = "man", Name = "application/x-troff-man")]
@@ -493,6 +495,10 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 内容类型头部
         /// </summary>
+        internal static readonly byte[] M4A;
+        /// <summary>
+        /// 内容类型头部
+        /// </summary>
         internal static readonly byte[] Mp3;
         /// <summary>
         /// 内容类型头部
@@ -640,6 +646,7 @@ namespace AutoCSer.Net.Http
             {
                 case ResponseContentType.Html: return Html;
                 case ResponseContentType.Js: return Js;
+                case ResponseContentType.M4A: return M4A;
                 case ResponseContentType.Mp3: return Mp3;
                 case ResponseContentType.Mp4: return Mp4;
                 case ResponseContentType.Rmvb: return Rmvb;
@@ -681,6 +688,7 @@ namespace AutoCSer.Net.Http
                 .toArray<ContentType>().getArray(value => AutoCSer.EnumAttribute<ContentType, ContentTypeAttribute>.Array((int)value));
             contentTypes = new AutoCSer.StateSearcher.AsciiSearcher<byte[]>(types.getArray(value => value.ExtensionName), types.getArray(value => value.Name.getBytes()), true);
             unknownContentType = contentTypes.Get("*");
+            M4A = contentTypes.Get("m4a", unknownContentType);
             Mp3 = contentTypes.Get("mp3", unknownContentType);
             Mp4 = contentTypes.Get("mp4", unknownContentType);
             Rmvb = contentTypes.Get("rmvb", unknownContentType);

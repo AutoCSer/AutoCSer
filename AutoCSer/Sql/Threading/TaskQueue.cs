@@ -11,7 +11,7 @@ namespace AutoCSer.Sql.Threading
         /// SQL 队列处理
         /// </summary>
         /// <param name="isBackground">是否后台线程</param>
-        private TaskQueue(bool isBackground) : base(isBackground) { }
+        private TaskQueue(bool isBackground) : base(isBackground, true) { }
         /// <summary>
         /// 添加任务
         /// </summary>
@@ -24,7 +24,7 @@ namespace AutoCSer.Sql.Threading
                 end = value;
                 head = value;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                waitHandle.Set();
+                WaitHandle.Set();
             }
             else
             {
@@ -40,7 +40,7 @@ namespace AutoCSer.Sql.Threading
         {
             do
             {
-                waitHandle.Wait();
+                WaitHandle.Wait();
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
                 QueueTask value = head;
                 end = null;

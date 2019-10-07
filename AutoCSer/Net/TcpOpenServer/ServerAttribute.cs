@@ -200,6 +200,15 @@ namespace AutoCSer.Net.TcpOpenServer
         {
             get { return IsRememberCommand && CommandIdentityEnmuType == null; }
         }
+        /// <summary>
+        /// 服务端自定义队列类型，需要继承自 AutoCSer.Net.TcpServer.IServerCallQueueSet
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        public Type ServerCallQueueType;
+        /// <summary>
+        /// 服务端自定义队列类型
+        /// </summary>
+        internal override Type GetServerCallQueueType { get { return ServerCallQueueType; } }
 
         /// <summary>
         /// 获取配置信息

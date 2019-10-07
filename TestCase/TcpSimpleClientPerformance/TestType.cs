@@ -16,22 +16,6 @@ namespace AutoCSer.TestCase.TcpInternalSimpleClientPerformance
         /// </summary>
         Synchronous,
         /// <summary>
-        /// 服务端队列
-        /// </summary>
-        Queue,
-        /// <summary>
-        /// 服务端公共任务池超时切换线程
-        /// </summary>
-        Timeout,
-        /// <summary>
-        /// 服务端任务池
-        /// </summary>
-        TcpTask,
-        /// <summary>
-        /// 系统线程池
-        /// </summary>
-        ThreadPool,
-        /// <summary>
         /// 客户端多线程
         /// </summary>
         Multithreading,

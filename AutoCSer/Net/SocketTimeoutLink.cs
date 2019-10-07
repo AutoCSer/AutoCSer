@@ -120,25 +120,13 @@ namespace AutoCSer.Net
             }
         }
         /// <summary>
-        /// 释放套接字
+        /// 超时释放套接字
         /// </summary>
         /// <param name="socket"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void DisposeSocket(Socket socket)
+        internal virtual void TimeoutDisposeSocket(Socket socket)
         {
-            //bool isShutdown = this.isShutdown;
             if (Interlocked.CompareExchange(ref Socket, null, socket) == socket)
             {
-                //if (isShutdown)
-                //{
-                //    try
-                //    {
-                //        socket.Shutdown(SocketShutdown.Both);
-                //    }
-                //    catch { AutoCSer.Log.CatchCount.Add(Log.CatchCount.Type.SocketTimeoutLink_Dispose); }
-                //    finally { socket.Dispose(); }
-                //}
-                //else
 #if DotNetStandard
                 AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
 #else
@@ -332,7 +320,7 @@ namespace AutoCSer.Net
                                     Head.previousTimeout = null;
                                     System.Threading.Interlocked.Exchange(ref queueLock, 0);
                                 }
-                                value.DisposeSocket(socket);
+                                value.TimeoutDisposeSocket(socket);
                             }
                             else
                             {

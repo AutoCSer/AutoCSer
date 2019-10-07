@@ -20,32 +20,9 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
         {
             Action<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>> onAdd = Client.OnAdd;
             int left = Client.Left;
-            using (AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamTcpQueueServer.TcpInternalStreamClient client = new AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamTcpQueueServer.TcpInternalStreamClient())
-            {
-                Client.SendCount = Client.ReceiveCount = 0;
-                Client.ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.TcpQueue;
-
-                Client.Start(ClientTestType.Asynchronous, Client.Count);
-                for (int right = Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
-                Console.WriteLine("loop end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
-                sleep();
-            }
-            using (AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamQueueServer.TcpInternalStreamClient client = new AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamQueueServer.TcpInternalStreamClient())
-            {
-                Client.SendCount = Client.ReceiveCount = 0;
-                Client.ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Queue;
-
-                Client.Start(ClientTestType.Asynchronous, Client.Count);
-                for (int right = Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
-                Console.WriteLine("loop end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
-                sleep();
-            }
             using (AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamServer.TcpInternalStreamClient client = new AutoCSer.TestCase.TcpInternalStreamServerPerformance.InternalStreamServer.TcpInternalStreamClient())
             {
                 Client.SendCount = Client.ReceiveCount = 0;
-                Client.ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Synchronous;
 
                 Client.Start(ClientTestType.Asynchronous, Client.Count);
                 for (int right = Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
@@ -161,7 +138,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
         {
             Client.WaitHandle.WaitOne();
             long milliseconds = Math.Max(Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (Client.LoopCount / milliseconds) + "/ms send[" + Client.GetSendCount(sendCount).toString() + "] receive[" + Client.GetReceiveCount(receiveCount).toString() + "]" + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.ServerTaskType.ToString() + " + " + Client.TestType.ToString());
+            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (Client.LoopCount / milliseconds) + "/ms send[" + Client.GetSendCount(sendCount).toString() + "] receive[" + Client.GetReceiveCount(receiveCount).toString() + "]" + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
         }
         /// <summary>
         /// 休息 3 秒

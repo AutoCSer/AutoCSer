@@ -40,7 +40,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
         internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log)
-            : base(attribute, verify, log, attribute.ServerTaskType == ServerTaskType.Queue)
+            : base(attribute, verify, log, false, false)
         {
         }
         /// <summary>

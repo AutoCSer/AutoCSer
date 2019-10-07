@@ -23,10 +23,8 @@ namespace AutoCSer.TestCase.TcpStreamServerPerformance
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/InterfaceStreamServer.html
 ");
                     using (AutoCSer.Net.TcpOpenStreamServer.Server server = AutoCSer.Net.TcpOpenStreamServer.Emit.Server<IOpenStreamServer>.Create(new OpenStreamServer()))
-                    using (AutoCSer.Net.TcpOpenStreamServer.Server tcpQueueServer = AutoCSer.Net.TcpOpenStreamServer.Emit.Server<ITcpQueueOpenStreamServer>.Create(new OpenStreamServer()))
-                    using (AutoCSer.Net.TcpOpenStreamServer.Server queueServer = AutoCSer.Net.TcpOpenStreamServer.Emit.Server<IQueueOpenStreamServer>.Create(new OpenStreamServer()))
                     {
-                        if (server.IsListen && tcpQueueServer.IsListen && queueServer.IsListen)
+                        if (server.IsListen)
                         {
                             if (!startProcess("TcpStreamClientPerformance", "AutoCSer.TestCase.TcpOpenStreamClientPerformance.Emit")) Console.WriteLine("未找到 TCP 服务性能测试服务 客户端程序");
                             Console.WriteLine("Press quit to exit.");

@@ -7,7 +7,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
     /// <summary>
     /// TCP 内部服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalStreamServer.Server(Name = InternalStreamServer.ServerName, Host = "127.0.0.1", Port = 12108, ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Synchronous, SendBufferSize = SubBuffer.Size.Kilobyte64, ReceiveBufferSize = SubBuffer.Size.Kilobyte64, IsRememberCommand = false, CheckSeconds = 0)]
+    [AutoCSer.Net.TcpInternalStreamServer.Server(Name = InternalStreamServer.ServerName, Host = "127.0.0.1", Port = 12108, SendBufferSize = SubBuffer.Size.Kilobyte64, ReceiveBufferSize = SubBuffer.Size.Kilobyte64, IsRememberCommand = false, CheckSeconds = 0)]
     public partial class InternalStreamServer
     {
         /// <summary>
@@ -44,27 +44,5 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
         {
             return new Add(left, right);
         }
-    }
-    /// <summary>
-    /// TCP 内部服务性能测试服务
-    /// </summary>
-    [AutoCSer.Net.TcpInternalStreamServer.Server(Name = InternalStreamTcpQueueServer.ServerName, Host = "127.0.0.1", Port = 12109, ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.TcpQueue, SendBufferSize = SubBuffer.Size.Kilobyte64, ReceiveBufferSize = SubBuffer.Size.Kilobyte64, IsRememberCommand = false, CheckSeconds = 0)]
-    public partial class InternalStreamTcpQueueServer : InternalStreamServer
-    {
-        /// <summary>
-        /// 服务名称
-        /// </summary>
-        public new const string ServerName = "TcpInternalStreamTcpQueueServerPerformance";
-    }
-    /// <summary>
-    /// TCP 内部服务性能测试服务
-    /// </summary>
-    [AutoCSer.Net.TcpInternalStreamServer.Server(Name = InternalStreamQueueServer.ServerName, Host = "127.0.0.1", Port = 12110, ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Queue, SendBufferSize = SubBuffer.Size.Kilobyte64, ReceiveBufferSize = SubBuffer.Size.Kilobyte64, IsRememberCommand = false, CheckSeconds = 0)]
-    public partial class InternalStreamQueueServer : InternalStreamServer
-    {
-        /// <summary>
-        /// 服务名称
-        /// </summary>
-        public new const string ServerName = "TcpInternalStreamQueueServerPerformance";
     }
 }

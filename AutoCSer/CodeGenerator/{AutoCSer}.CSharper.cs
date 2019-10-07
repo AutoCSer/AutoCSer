@@ -8684,7 +8684,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.LogServerName);
                     }
                 }
-            _code_.Add(@""")]
+            _code_.Add(@""", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 protected static void onSqlLogQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
@@ -8740,7 +8740,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.LogServerName);
                     }
                 }
-            _code_.Add(@""")]
+            _code_.Add(@""", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, ");
                 {
@@ -11092,7 +11092,42 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@" Value;
+            _code_.Add(@" Value;");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType[] _value1_;
+                    _value1_ = ServerCallQueueTypes;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+#if NOJIT
+                private readonly AutoCSer.Net.TcpServer.IServerCallQueue ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@";
+#else
+                private readonly AutoCSer.Net.TcpServer.IServerCallQueue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.ServerCallQueueType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@";
+#endif");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"
                 /// <summary>
                 /// ");
             _code_.Add(ServerRegisterName);
@@ -11122,9 +11157,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 /// <param name=""value"">TCP 服务目标对象</param>");
             }
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"
-                /// <param name=""log"">日志接口</param>
+                /// <param name=""serverCallQueue"">自定义队列</param>");
+            }
+            _code_.Add(@"
                 /// <param name=""onCustomData"">自定义数据包处理</param>
+                /// <param name=""log"">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null");
             _if_ = false;
                 {
@@ -11155,6 +11200,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@" value = null");
             }
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = ServerCallQueueType;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@" serverCallQueue = null");
+            }
             _code_.Add(@", Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig(""");
             _code_.Add(ServerRegisterName);
@@ -11166,8 +11228,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@"))), verify, onCustomData, log, ");
+            _code_.Add(@"))), verify, ");
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"serverCallQueue ?? new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = ServerCallQueueType;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@"()");
+            }
+            _if_ = false;
+                if (ServerCallQueueType == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"null");
+            }
+            _code_.Add(@", onCustomData, log, ");
             _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(@", ");
+            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -11252,6 +11343,34 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@");");
             }
             }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType[] _value1_;
+                    _value1_ = ServerCallQueueTypes;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                    ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@" = getServerCallQueue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.ServerCallQueueType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">();");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -11401,7 +11520,134 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.OutputParameterTypeName);
             _code_.Add(@" outputParameter = new ");
             _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@"();
+            _code_.Add(@"();");
+            }
+            _if_ = false;
+                    if (_value2_.IsMethodServerCall)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@" serverCall = ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"/**/.Pop() ?? new ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"();");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.AsynchronousCallback = sender.GetCallback<");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(");
+            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(@", ref outputParameter);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MethodIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.AsynchronousCallback = sender.GetCallback(");
+            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(@");");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value3_ = default(AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType);
+                    _value3_ = _value2_.QueueType;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.Set(sender, Value, ");
+            _code_.Add(_value3_.QueueName);
+            _code_.Add(@"/**/.Get(sender, ref inputParameter.");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value4_ = _value2_.ServerCallQueueKeyParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value4_.ParameterName);
+            }
+                }
+            _code_.Add(@")");
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.QueueType == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.Set(sender, Value, ");
+            _code_.Add(_value2_.ServerTask);
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsMethodServerCall)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                                     ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
@@ -11545,6 +11791,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"));");
             }
             }
+            }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
                 {
@@ -11556,6 +11803,57 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (_value2_.IsMethodServerCall)
                     {
                         _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value3_ = default(AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpInternalServer.ServerAttribute,AutoCSer.Net.TcpServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType);
+                    _value3_ = _value2_.QueueType;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    (");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"/**/.Pop() ?? new ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"()).Set(sender, Value, ");
+            _code_.Add(_value3_.QueueName);
+            _code_.Add(@"/**/.Get(sender, ref inputParameter.");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value4_ = _value2_.ServerCallQueueKeyParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value4_.ParameterName);
+            }
+                }
+            _code_.Add(@")");
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.QueueType == null)
+                {
+                    _if_ = true;
                 }
             if (_if_)
             {
@@ -11576,6 +11874,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", ref inputParameter");
             }
             _code_.Add(@");");
+            }
             }
             _if_ = false;
                 if (!(bool)_value2_.IsMethodServerCall)
@@ -12273,13 +12572,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
                     if (_value2_.IsMethodServerCall)
                     {
                         _if_ = true;
@@ -12310,7 +12602,43 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.InputParameterTypeName);
             }
             _code_.Add(@">
+                {");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"<");
                 {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">");
+            }
+            _code_.Add(@", bool> AsynchronousCallback;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsAsynchronousCallback)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -12896,9 +13224,163 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                             Sender.AddLog(error);
                         }
-                    }
+                    }");
+            }
+            _code_.Add(@"
                     public override void Call()
+                    {");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
                     {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serverValue.");
+            _code_.Add(_value3_.MethodName);
+            }
+                }
+            _code_.Add(@"(");
+            _if_ = false;
+                    if (_value2_.ClientParameterName != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"Sender, ");
+            }
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
+                    _value3_ = _value2_.InputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterRef);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value5_ = _value4_.Parameter;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"inputParameter.");
+            _code_.Add(_value5_.ParameterName);
+            _code_.Add(@", ");
+            }
+                }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"AsynchronousCallback);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MethodIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serverValue.");
+            _code_.Add(_value3_.MethodName);
+            }
+                }
+            _code_.Add(@"(");
+            _if_ = false;
+                    if (_value2_.ClientParameterName != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"Sender, ");
+            }
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
+                    _value3_ = _value2_.InputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterRef);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value5_ = _value4_.Parameter;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"inputParameter.");
+            _code_.Add(_value5_.ParameterName);
+            _code_.Add(@", ");
+            }
+                }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"AsynchronousCallback);");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsAsynchronousCallback)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                         AutoCSer.Net.TcpServer.ReturnValue");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -12989,10 +13471,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }");
             }
             _code_.Add(@"
-                        push(this);
+                        push(this);");
+            }
+            _code_.Add(@"
                     }
                 }");
-            }
             }
             _code_.Add(@"
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo ");
@@ -18070,7 +18553,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"))), verify, log, ");
-            _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -18460,39 +18943,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                                    (");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop() ?? new ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"()).Set(socket, Value, ");
-            _code_.Add(_value2_.ServerTask);
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ref inputParameter");
-            }
-            _code_.Add(@");
-                                    return true;");
-            }
-            _if_ = false;
-                if (!(bool)_value2_.IsMethodServerCall)
                 {
                     _if_ = true;
                 }
@@ -19090,7 +19540,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     return socket.Send();");
             }
             }
-            }
             _code_.Add(@"
                                 }");
             _if_ = false;
@@ -19159,688 +19608,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                sealed class ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@" : AutoCSer.Net.TcpInternalSimpleServer.ServerCall<");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@", ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            _code_.Add(_value2_.InputParameterTypeName);
-            }
-            _code_.Add(@">
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value)
-                    {
-                        try
-                        {
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@" ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                    if (_value2_.MemberIndex != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.IsGetMember)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"];");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@";");
-            }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (!(bool)_value3_.IsGetMember)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket, ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsPropertyValue)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"] = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsPropertyValue)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@" = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(@"inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            }
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                if (_value2_.MemberIndex == null)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
-                    _value3_ = _value2_.Method;
-            _if_ = false;
-                    if (_value3_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"serverValue.");
-            _code_.Add(_value3_.MethodName);
-            }
-                }
-            _code_.Add(@"(");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsOut)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-            _code_.Add(_value5_.ParameterJoin);
-                    }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsVerifyMethod)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            if (");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@") Socket.SetVerifyMethod();");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.OutputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.InputMethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@" = inputParameter");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@".");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@";");
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            }
-            _code_.Add(@"
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Socket.Log(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket = Socket;
-                        AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value = new AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@"();
-                        get(ref value);
-                        push(this);");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        socket.SendAsync(");
-            _code_.Add(_value2_.MethodIdentityCommand);
-            _code_.Add(@", ref value);");
-            }
-            _if_ = false;
-                if (_value2_.OutputParameterIndex == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        socket.SendAsync(value.Type);");
-            }
-            _code_.Add(@"
-                    }
-                }");
-            }
-            }
             _code_.Add(@"
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo ");
             _code_.Add(_value2_.MethodIdentityCommand);
@@ -22400,37 +22167,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                                 {");
             _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                                    (");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop() ?? new ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"()).Set(sender, Value");
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ref inputParameter");
-            }
-            _code_.Add(@");");
-            }
-            _if_ = false;
-                if (!(bool)_value2_.IsMethodServerCall)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
                 if (_value2_.IsClientSendOnly == 0)
                 {
                     _if_ = true;
@@ -23037,7 +22773,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     sender.Push();");
             }
             }
-            }
             _code_.Add(@"
                                     return;
                                 }");
@@ -23117,705 +22852,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                sealed class ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@" : AutoCSer.Net.TcpInternalStreamServer.ServerCall<");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@", ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            _code_.Add(_value2_.InputParameterTypeName);
-            }
-            _code_.Add(@">
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value)
-                    {
-                        try
-                        {
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@" ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                    if (_value2_.MemberIndex != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.IsGetMember)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"];");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@";");
-            }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (!(bool)_value3_.IsGetMember)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender, ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsPropertyValue)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"] = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsPropertyValue)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@" = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(@"inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            }
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                if (_value2_.MemberIndex == null)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
-                    _value3_ = _value2_.Method;
-            _if_ = false;
-                    if (_value3_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"serverValue.");
-            _code_.Add(_value3_.MethodName);
-            }
-                }
-            _code_.Add(@"(");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsOut)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-            _code_.Add(_value5_.ParameterJoin);
-                    }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsVerifyMethod)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            if (");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@") Sender.SetVerifyMethod();");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.OutputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.InputMethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@" = inputParameter");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@".");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@";");
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            }
-            _code_.Add(@"
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value = new AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@"();");
-            _if_ = false;
-                    if (_value2_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        if (Sender.IsSocket) get(ref value);
-                        push(this);");
-            }
-            _if_ = false;
-                if (_value2_.IsClientSendOnly == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                        if (sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            sender.Push(");
-            _code_.Add(_value2_.MethodIdentityCommand);
-            _code_.Add(@", ref value);");
-            }
-            _if_ = false;
-                if (_value2_.OutputParameterIndex == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            sender.Push(value.Type);");
-            }
-            _code_.Add(@"
-                        }
-                        else push(this);");
-            }
-            _code_.Add(@"
-                    }
-                }");
-            }
             _code_.Add(@"
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo ");
             _code_.Add(_value2_.MethodIdentityCommand);
@@ -28687,7 +27723,42 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@" Value;
+            _code_.Add(@" Value;");
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType[] _value1_;
+                    _value1_ = ServerCallQueueTypes;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+#if NOJIT
+                private readonly AutoCSer.Net.TcpServer.IServerCallQueue ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@";
+#else
+                private readonly AutoCSer.Net.TcpServer.IServerCallQueue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.ServerCallQueueType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@";
+#endif");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+            _code_.Add(@"
                 /// <summary>
                 /// ");
             _code_.Add(ServerRegisterName);
@@ -28716,9 +27787,19 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 /// <param name=""value"">TCP服务目标对象</param>");
             }
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"
-                /// <param name=""log"">日志接口</param>
+                /// <param name=""serverCallQueue"">自定义队列</param>");
+            }
+            _code_.Add(@"
                 /// <param name=""onCustomData"">自定义数据包处理</param>
+                /// <param name=""log"">日志接口</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null");
             _if_ = false;
                 {
@@ -28749,6 +27830,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@" value = null");
             }
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = ServerCallQueueType;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@" serverCallQueue = null");
+            }
             _code_.Add(@", Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                     : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig(""");
             _code_.Add(ServerRegisterName);
@@ -28760,8 +27858,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@"))), verify, onCustomData, log, ");
+            _code_.Add(@"))), verify, ");
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"serverCallQueue ?? new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = ServerCallQueueType;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@"()");
+            }
+            _if_ = false;
+                if (ServerCallQueueType == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"null");
+            }
+            _code_.Add(@", onCustomData, log, ");
             _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(@", ");
+            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -28846,6 +27973,34 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@");");
             }
             }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType[] _value1_;
+                    _value1_ = ServerCallQueueTypes;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                    ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@" = getServerCallQueue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.ServerCallQueueType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">();");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -28995,7 +28150,134 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.OutputParameterTypeName);
             _code_.Add(@" outputParameter = new ");
             _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@"();
+            _code_.Add(@"();");
+            }
+            _if_ = false;
+                    if (_value2_.IsMethodServerCall)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@" serverCall = ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"/**/.Pop() ?? new ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"();");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.AsynchronousCallback = sender.GetCallback<");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(");
+            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(@", ref outputParameter);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MethodIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.AsynchronousCallback = sender.GetCallback(");
+            _code_.Add(_value2_.MethodIdentityCommand);
+            _code_.Add(@");");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType _value3_ = default(AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType);
+                    _value3_ = _value2_.QueueType;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.Set(sender, Value, ");
+            _code_.Add(_value3_.QueueName);
+            _code_.Add(@"/**/.Get(sender, ref inputParameter.");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value4_ = _value2_.ServerCallQueueKeyParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value4_.ParameterName);
+            }
+                }
+            _code_.Add(@")");
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.QueueType == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    serverCall.Set(sender, Value, ");
+            _code_.Add(_value2_.ServerTask);
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsMethodServerCall)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                                     ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
@@ -29139,6 +28421,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"));");
             }
             }
+            }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
                 {
@@ -29150,6 +28433,57 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (_value2_.IsMethodServerCall)
                     {
                         _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType _value3_ = default(AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpOpenServer.ServerAttribute,AutoCSer.Net.TcpOpenServer.MethodAttribute,AutoCSer.Net.TcpOpenServer.ServerSocketSender>.QueueType);
+                    _value3_ = _value2_.QueueType;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                    (");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"/**/.Pop() ?? new ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"()).Set(sender, Value, ");
+            _code_.Add(_value3_.QueueName);
+            _code_.Add(@"/**/.Get(sender, ref inputParameter.");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value4_ = _value2_.ServerCallQueueKeyParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value4_.ParameterName);
+            }
+                }
+            _code_.Add(@")");
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.QueueType == null)
+                {
+                    _if_ = true;
                 }
             if (_if_)
             {
@@ -29170,6 +28504,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", ref inputParameter");
             }
             _code_.Add(@");");
+            }
             }
             _if_ = false;
                 if (!(bool)_value2_.IsMethodServerCall)
@@ -29867,13 +29202,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
                     if (_value2_.IsMethodServerCall)
                     {
                         _if_ = true;
@@ -29904,7 +29232,43 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.InputParameterTypeName);
             }
             _code_.Add(@">
+                {");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"<");
                 {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">");
+            }
+            _code_.Add(@", bool> AsynchronousCallback;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsAsynchronousCallback)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                     private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -30489,9 +29853,163 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                             Sender.AddLog(error);
                         }
-                    }
+                    }");
+            }
+            _code_.Add(@"
                     public override void Call()
+                    {");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
                     {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serverValue.");
+            _code_.Add(_value3_.MethodName);
+            }
+                }
+            _code_.Add(@"(");
+            _if_ = false;
+                    if (_value2_.ClientParameterName != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"Sender, ");
+            }
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
+                    _value3_ = _value2_.InputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterRef);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value5_ = _value4_.Parameter;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"inputParameter.");
+            _code_.Add(_value5_.ParameterName);
+            _code_.Add(@", ");
+            }
+                }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"AsynchronousCallback);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MethodIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
+                    _value3_ = _value2_.Method;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        serverValue.");
+            _code_.Add(_value3_.MethodName);
+            }
+                }
+            _code_.Add(@"(");
+            _if_ = false;
+                    if (_value2_.ClientParameterName != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"Sender, ");
+            }
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
+                    _value3_ = _value2_.InputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterRef);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value5_ = _value4_.Parameter;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"inputParameter.");
+            _code_.Add(_value5_.ParameterName);
+            _code_.Add(@", ");
+            }
+                }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"AsynchronousCallback);");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsAsynchronousCallback)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                         AutoCSer.Net.TcpServer.ReturnValue");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -30582,10 +30100,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         }");
             }
             _code_.Add(@"
-                        push(this);
+                        push(this);");
+            }
+            _code_.Add(@"
                     }
                 }");
-            }
             }
             _code_.Add(@"
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo ");
@@ -35652,7 +35171,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"))), verify, log, ");
-            _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -36042,39 +35561,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                                    (");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop() ?? new ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"()).Set(socket, Value, ");
-            _code_.Add(_value2_.ServerTask);
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ref inputParameter");
-            }
-            _code_.Add(@");
-                                    return true;");
-            }
-            _if_ = false;
-                if (!(bool)_value2_.IsMethodServerCall)
                 {
                     _if_ = true;
                 }
@@ -36672,7 +36158,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     return socket.Send();");
             }
             }
-            }
             _code_.Add(@"
                                 }");
             _if_ = false;
@@ -36741,687 +36226,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                sealed class ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@" : AutoCSer.Net.TcpOpenSimpleServer.ServerCall<");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@", ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            _code_.Add(_value2_.InputParameterTypeName);
-            }
-            _code_.Add(@">
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value)
-                    {
-                        try
-                        {
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@" ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                    if (_value2_.MemberIndex != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.IsGetMember)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"];");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@";");
-            }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (!(bool)_value3_.IsGetMember)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket, ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsPropertyValue)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"] = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsPropertyValue)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@" = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(@"inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            }
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                if (_value2_.MemberIndex == null)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
-                    _value3_ = _value2_.Method;
-            _if_ = false;
-                    if (_value3_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"serverValue.");
-            _code_.Add(_value3_.MethodName);
-            }
-                }
-            _code_.Add(@"(");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsOut)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-            _code_.Add(_value5_.ParameterJoin);
-                    }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsVerifyMethod)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            if (");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@") Socket.SetVerifyMethod();");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.OutputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.InputMethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@" = inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@";");
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            }
-            _code_.Add(@"
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Socket.Log(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpOpenSimpleServer.ServerSocket socket = Socket;
-                        AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value = new AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@"();
-                        get(ref value);
-                        push(this);");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        socket.SendAsync(");
-            _code_.Add(_value2_.MethodIdentityCommand);
-            _code_.Add(@", ref value);");
-            }
-            _if_ = false;
-                if (_value2_.OutputParameterIndex == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        socket.SendAsync(value.Type);");
-            }
-            _code_.Add(@"
-                    }
-                }");
-            }
-            }
             _code_.Add(@"
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo ");
             _code_.Add(_value2_.MethodIdentityCommand);
@@ -39971,37 +38775,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                                 {");
             _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                                    (");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop() ?? new ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"()).Set(sender, Value");
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ref inputParameter");
-            }
-            _code_.Add(@");");
-            }
-            _if_ = false;
-                if (!(bool)_value2_.IsMethodServerCall)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
                 if (_value2_.IsClientSendOnly == 0)
                 {
                     _if_ = true;
@@ -40608,7 +39381,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     sender.Push();");
             }
             }
-            }
             _code_.Add(@"
                                     return;
                                 }");
@@ -40688,704 +39460,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                sealed class ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@" : AutoCSer.Net.TcpOpenStreamServer.ServerCall<");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@", ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = Type;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            _code_.Add(_value2_.InputParameterTypeName);
-            }
-            _code_.Add(@">
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value)
-                    {
-                        try
-                        {
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@" ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                    if (_value2_.MemberIndex != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.IsGetMember)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"];");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@";");
-            }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (!(bool)_value3_.IsGetMember)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.PropertyParameter != null)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue[");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender, ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsPropertyValue)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(_value4_.ParameterRef);
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            _code_.Add(_value5_.ParameterJoin);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@"] = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsPropertyValue)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (_value3_.PropertyParameter == null)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            serverValue.");
-            _code_.Add(_value2_.PropertyName);
-            _code_.Add(@" = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(@"inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@";");
-            }
-            }
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                if (_value2_.MemberIndex == null)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
-                    _value3_ = _value2_.Method;
-            _if_ = false;
-                    if (_value3_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"serverValue.");
-            _code_.Add(_value3_.MethodName);
-            }
-                }
-            _code_.Add(@"(");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsOut)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-            _code_.Add(_value5_.ParameterJoin);
-                    }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsVerifyMethod)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            if (");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@") Sender.SetVerifyMethod();");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.OutputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.InputMethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@" = inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@";");
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            value.Value.");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            }
-            _code_.Add(@"
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Sender.AddLog(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value = new AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@"();");
-            _if_ = false;
-                    if (_value2_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        if (Sender.IsSocket) get(ref value);
-                        push(this);");
-            }
-            _if_ = false;
-                if (_value2_.IsClientSendOnly == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        AutoCSer.Net.TcpOpenStreamServer.ServerSocketSender sender = Sender;
-                        if (Sender.IsSocket)
-                        {
-                            get(ref value);
-                            push(this);");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            sender.Push(");
-            _code_.Add(_value2_.MethodIdentityCommand);
-            _code_.Add(@", ref value);");
-            }
-            _if_ = false;
-                if (_value2_.OutputParameterIndex == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                            sender.Push(value.Type);");
-            }
-            _code_.Add(@"
-                        }
-                        else push(this);");
-            }
-            _code_.Add(@"
-                    }
-                }");
-            }
             _code_.Add(@"
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo ");
             _code_.Add(_value2_.MethodIdentityCommand);
@@ -51135,17 +49209,80 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 return names;
             }");
             }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType[] _value1_;
+                    _value1_ = ServerCallQueueTypes;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+#if NOJIT
+            private readonly AutoCSer.Net.TcpServer.IServerCallQueue ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@";
+#else
+            private readonly AutoCSer.Net.TcpServer.IServerCallQueue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.ServerCallQueueType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"> ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@";
+#endif");
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
             _code_.Add(@"
             /// <summary>
             /// TCP调用服务端
             /// </summary>
             /// <param name=""attribute"">TCP调用服务器端配置信息</param>
-            /// <param name=""verify"">TCP验证实例</param>
-            /// <param name=""log"">日志接口</param>
+            /// <param name=""verify"">TCP验证实例</param>");
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+            /// <param name=""serverCallQueue"">自定义队列</param>");
+            }
+            _code_.Add(@"
             /// <param name=""onCustomData"">自定义数据包处理</param>
+            /// <param name=""log"">日志接口</param>
             public ");
             _code_.Add(ServerName);
-            _code_.Add(@"(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+            _code_.Add(@"(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null");
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = ServerCallQueueType;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@" serverCallQueue = null");
+            }
+            _code_.Add(@", Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig(""");
             _code_.Add(ServerRegisterName);
             _code_.Add(@"""");
@@ -51160,8 +49297,37 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(TcpServerAttributeType);
             _code_.Add(@")");
             }
-            _code_.Add(@", true)), verify, onCustomData, log, ");
+            _code_.Add(@", true)), verify, ");
+            _if_ = false;
+                    if (ServerCallQueueType != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"serverCallQueue ?? new ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = ServerCallQueueType;
+                    if (_value1_ != null)
+                    {
+            _code_.Add(_value1_.FullName);
+                    }
+                }
+            _code_.Add(@"()");
+            }
+            _if_ = false;
+                if (ServerCallQueueType == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"null");
+            }
+            _code_.Add(@", onCustomData, log, ");
             _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(@", ");
+            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
             _code_.Add(@")
             {
                 setCommandData(");
@@ -51215,6 +49381,34 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@");");
             }
             }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex1_;
+                        _loopCount_ = _loopCount1_;
+                    }
+                }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType[] _value1_;
+                    _value1_ = ServerCallQueueTypes;
+                    if (_value1_ != null)
+                    {
+                        int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value1_.Length;
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value2_ in _value1_)
+                        {
+            _code_.Add(@"
+                ");
+            _code_.Add(_value2_.QueueName);
+            _code_.Add(@" = getServerCallQueue<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.ServerCallQueueType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">();");
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -51354,7 +49548,134 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.OutputParameterTypeName);
             _code_.Add(@" outputParameter = new ");
             _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@"();
+            _code_.Add(@"();");
+            }
+            _if_ = false;
+                    if (_value2_.IsMethodServerCall)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@" serverCall = ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"/**/.Pop() ?? new ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"();");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                serverCall.AsynchronousCallback = sender.GetCallback<");
+            _code_.Add(_value2_.OutputParameterTypeName);
+            _code_.Add(@", ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">(");
+            _code_.Add(_value2_.StaticMethodIdentityCommand);
+            _code_.Add(@", ref outputParameter);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MethodIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                serverCall.AsynchronousCallback = sender.GetCallback(");
+            _code_.Add(_value2_.StaticMethodIdentityCommand);
+            _code_.Add(@");");
+            }
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value3_ = default(AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType);
+                    _value3_ = _value2_.QueueType;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                serverCall.Set(sender, ");
+            _code_.Add(_value3_.QueueName);
+            _code_.Add(@"/**/.Get(sender, ref inputParameter.");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value4_ = _value2_.ServerCallQueueKeyParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value4_.ParameterName);
+            }
+                }
+            _code_.Add(@")");
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.QueueType == null)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                serverCall.Set(sender, ");
+            _code_.Add(_value2_.ServerTask);
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsMethodServerCall)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                                 ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
@@ -51486,6 +49807,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"));");
             }
             }
+            }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
                 {
@@ -51497,6 +49819,57 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (_value2_.IsMethodServerCall)
                     {
                         _if_ = true;
+                }
+            if (_if_)
+            {
+                {
+                    AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType _value3_ = default(AutoCSer.CodeGenerator.TemplateGenerator.TcpServer.Generator<AutoCSer.Net.TcpStaticServer.ServerAttribute,AutoCSer.Net.TcpStaticServer.MethodAttribute,AutoCSer.Net.TcpInternalServer.ServerSocketSender>.QueueType);
+                    _value3_ = _value2_.QueueType;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                                (");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"/**/.Pop() ?? new ");
+            _code_.Add(_value2_.MethodStreamName);
+            _code_.Add(@"()).Set(sender, ");
+            _code_.Add(_value3_.QueueName);
+            _code_.Add(@"/**/.Get(sender, ref inputParameter.");
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value4_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value4_ = _value2_.ServerCallQueueKeyParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(_value4_.ParameterName);
+            }
+                }
+            _code_.Add(@")");
+            _if_ = false;
+                    if (_value2_.InputParameterIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ref inputParameter");
+            }
+            _code_.Add(@");");
+            }
+                }
+            _if_ = false;
+                if (_value2_.QueueType == null)
+                {
+                    _if_ = true;
                 }
             if (_if_)
             {
@@ -51517,6 +49890,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", ref inputParameter");
             }
             _code_.Add(@");");
+            }
             }
             _if_ = false;
                 if (!(bool)_value2_.IsMethodServerCall)
@@ -52018,13 +50392,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
                     if (_value2_.IsMethodServerCall)
                     {
                         _if_ = true;
@@ -52047,7 +50414,43 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.InputParameterTypeName);
             }
             _code_.Add(@">
+            {");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
             {
+            _code_.Add(@"
+                internal Func<AutoCSer.Net.TcpServer.ReturnValue");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"<");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@">");
+            }
+            _code_.Add(@", bool> AsynchronousCallback;");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsAsynchronousCallback)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                 private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -52435,9 +50838,151 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                         Sender.AddLog(error);
                     }
-                }
+                }");
+            }
+            _code_.Add(@"
                 public override void Call()
+                {");
+            _if_ = false;
+                    if (_value2_.IsAsynchronousCallback)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    ");
                 {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.TcpStaticServer.");
+            _code_.Add(_value2_.StaticMethodIndexName);
+            _code_.Add(@"(");
+            _if_ = false;
+                    if (_value2_.ClientParameterName != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"Sender, ");
+            }
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
+                    _value3_ = _value2_.InputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterRef);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value5_ = _value4_.Parameter;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"inputParameter.");
+            _code_.Add(_value5_.ParameterName);
+            _code_.Add(@", ");
+            }
+                }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"AsynchronousCallback);");
+            }
+            _if_ = false;
+                if (!(bool)_value2_.MethodIsReturn)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                    ");
+                {
+                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
+                    if (_value3_ != null)
+                    {
+            _code_.Add(_value3_.FullName);
+                    }
+                }
+            _code_.Add(@"/**/.TcpStaticServer.");
+            _code_.Add(_value2_.StaticMethodIndexName);
+            _code_.Add(@"(");
+            _if_ = false;
+                    if (_value2_.ClientParameterName != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"Sender, ");
+            }
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
+                    _value3_ = _value2_.InputParameters;
+                    if (_value3_ != null)
+                    {
+                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
+                        _loopIndex_ = 0;
+                        _loopCount_ = _value3_.Length;
+                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
+                        {
+            _code_.Add(_value4_.ParameterRef);
+                {
+                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
+                    _value5_ = _value4_.Parameter;
+            _if_ = false;
+                    if (_value5_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"inputParameter.");
+            _code_.Add(_value5_.ParameterName);
+            _code_.Add(@", ");
+            }
+                }
+                            ++_loopIndex_;
+                        }
+                        _loopIndex_ = _loopIndex3_;
+                        _loopCount_ = _loopCount3_;
+                    }
+                }
+            _code_.Add(@"AsynchronousCallback);");
+            }
+            }
+            _if_ = false;
+                if (!(bool)_value2_.IsAsynchronousCallback)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
                     AutoCSer.Net.TcpServer.ReturnValue");
             _if_ = false;
                     if (_value2_.OutputParameterIndex != 0)
@@ -52528,10 +51073,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }");
             }
             _code_.Add(@"
-                    push(this);
+                    push(this);");
+            }
+            _code_.Add(@"
                 }
             }");
-            }
             }
             _code_.Add(@"
             private static readonly AutoCSer.Net.TcpServer.OutputInfo ");
@@ -59238,7 +57784,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@")");
             }
             _code_.Add(@", true)), verify, log, ");
-            _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
             _code_.Add(@")
             {
                 setCommandData(");
@@ -59575,39 +58121,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                                (");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop() ?? new ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"()).Set(socket, ");
-            _code_.Add(_value2_.ServerTask);
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ref inputParameter");
-            }
-            _code_.Add(@");
-                                return true;");
-            }
-            _if_ = false;
-                if (!(bool)_value2_.IsMethodServerCall)
                 {
                     _if_ = true;
                 }
@@ -60009,7 +58522,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 return socket.Send();");
             }
             }
-            }
             _code_.Add(@"
                             }");
             _if_ = false;
@@ -60078,482 +58590,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-            sealed class ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@" : AutoCSer.Net.TcpStaticSimpleServer.ServerCall<");
-            _code_.Add(_value2_.MethodStreamName);
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            _code_.Add(_value2_.InputParameterTypeName);
-            }
-            _code_.Add(@">
-            {
-                private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value)
-                {
-                    try
-                    {
-                        ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@" ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                    if (_value2_.MemberIndex != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.IsGetMember)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@"/**/.TcpStaticSimpleServer.");
-            _code_.Add(_value2_.StaticMethodIndexName);
-            _code_.Add(@"();");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (!(bool)_value3_.IsGetMember)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@"/**/.TcpStaticSimpleServer.");
-            _code_.Add(_value2_.StaticMethodIndexName);
-            _code_.Add(@"(");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(@"inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                if (_value2_.MemberIndex == null)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
-                    _value3_ = _value2_.Method;
-            _if_ = false;
-                    if (_value3_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = _value2_.MethodType;
-                    if (_value4_ != null)
-                    {
-            _code_.Add(_value4_.FullName);
-                    }
-                }
-            _code_.Add(@"/**/.TcpStaticSimpleServer.");
-            _code_.Add(_value2_.StaticMethodIndexName);
-            }
-                }
-            _code_.Add(@"(");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Socket");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsOut)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-            _code_.Add(_value5_.ParameterJoin);
-                    }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsVerifyMethod)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        if (");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@") Socket.SetVerifyMethod();");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.OutputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.InputMethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@" = inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@";");
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        value.Value.");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            }
-            _code_.Add(@"
-                        value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                    }
-                    catch (Exception error)
-                    {
-                        value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Socket.Log(error);
-                    }
-                }
-                public override void Call()
-                {
-                    AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket = Socket;
-                    AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value = new AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@"();
-                    get(ref value);
-                    push(this);");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                    socket.SendAsync(");
-            _code_.Add(_value2_.StaticMethodIdentityCommand);
-            _code_.Add(@", ref value);");
-            }
-            _if_ = false;
-                if (_value2_.OutputParameterIndex == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                    socket.SendAsync(value.Type);");
-            }
-            _code_.Add(@"
-                }
-            }");
-            }
-            }
             _code_.Add(@"
             private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo ");
             _code_.Add(_value2_.StaticMethodIdentityCommand);
@@ -66411,37 +64447,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                             {");
             _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                                (");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"/**/.Pop() ?? new ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@"()).Set(sender");
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ref inputParameter");
-            }
-            _code_.Add(@");");
-            }
-            _if_ = false;
-                if (!(bool)_value2_.IsMethodServerCall)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
                 if (_value2_.IsClientSendOnly == 0)
                 {
                     _if_ = true;
@@ -66852,7 +64857,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 sender.Push();");
             }
             }
-            }
             _code_.Add(@"
                                 return;
                             }");
@@ -66932,507 +64936,6 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
-            _if_ = false;
-                if (!(bool)_value2_.IsAsynchronousCallback)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsMethodServerCall)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-            sealed class ");
-            _code_.Add(_value2_.MethodStreamName);
-            _code_.Add(@" : AutoCSer.Net.TcpStaticStreamServer.ServerCall<");
-            _code_.Add(_value2_.MethodStreamName);
-            _if_ = false;
-                    if (_value2_.InputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            _code_.Add(_value2_.InputParameterTypeName);
-            }
-            _code_.Add(@">
-            {
-                private void get(ref AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value)
-                {
-                    try
-                    {
-                        ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodReturnType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@" ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            _if_ = false;
-                    if (_value2_.MemberIndex != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.IsGetMember)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@"/**/.TcpStaticStreamServer.");
-            _code_.Add(_value2_.StaticMethodIndexName);
-            _code_.Add(@"();");
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = _value2_.Method;
-                    if (_value3_ != null)
-                    {
-                if (!(bool)_value3_.IsGetMember)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value3_ = _value2_.MethodType;
-                    if (_value3_ != null)
-                    {
-            _code_.Add(_value3_.FullName);
-                    }
-                }
-            _code_.Add(@"/**/.TcpStaticStreamServer.");
-            _code_.Add(_value2_.StaticMethodIndexName);
-            _code_.Add(@"(");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(@"inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                if (_value2_.MemberIndex == null)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
-                    _value3_ = _value2_.Method;
-            _if_ = false;
-                    if (_value3_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.ExtensionType _value4_ = _value2_.MethodType;
-                    if (_value4_ != null)
-                    {
-            _code_.Add(_value4_.FullName);
-                    }
-                }
-            _code_.Add(@"/**/.TcpStaticStreamServer.");
-            _code_.Add(_value2_.StaticMethodIndexName);
-            }
-                }
-            _code_.Add(@"(");
-            _if_ = false;
-                    if (_value2_.ClientParameterName != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"Sender");
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                    if (_value3_.Length != 0)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-            _code_.Add(@", ");
-            }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.InputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _code_.Add(_value4_.ParameterRef);
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                    if (_value5_.IsOut)
-                    {
-                        _if_ = true;
-                    }
-                }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"inputParameter.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.MethodParameter;
-                    if (_value5_ != null)
-                    {
-            _code_.Add(_value5_.ParameterJoin);
-                    }
-                }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _code_.Add(@");");
-            }
-            _code_.Add(@"
-");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _if_ = false;
-                    if (_value2_.IsVerifyMethod)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        if (");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@") Sender.SetVerifyMethod();");
-            }
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
-                    _value3_ = _value2_.OutputParameters;
-                    if (_value3_ != null)
-                    {
-                        int _loopIndex3_ = _loopIndex_, _loopCount3_ = _loopCount_;
-                        _loopIndex_ = 0;
-                        _loopCount_ = _value3_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
-                        {
-            _if_ = false;
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = _value4_.InputMethodParameter;
-                    if (_value5_ != null)
-                    {
-                if (!(bool)_value5_.IsOut)
-                {
-                    _if_ = true;
-                }
-                    }
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        ");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.Parameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        value.Value.");
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@" = inputParameter.");
-                {
-                    AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
-                    _value5_ = _value4_.InputParameter;
-            _if_ = false;
-                    if (_value5_ != null)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(_value5_.ParameterName);
-            }
-                }
-            _code_.Add(@";");
-            }
-                            ++_loopIndex_;
-                        }
-                        _loopIndex_ = _loopIndex3_;
-                        _loopCount_ = _loopCount3_;
-                    }
-                }
-            _if_ = false;
-                    if (_value2_.MethodIsReturn)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        value.Value.");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@" = ");
-            _code_.Add(_value2_.ReturnName);
-            _code_.Add(@";");
-            }
-            }
-            _code_.Add(@"
-                        value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                    }
-                    catch (Exception error)
-                    {
-                        value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                        Sender.AddLog(error);
-                    }
-                }
-                public override void Call()
-                {
-                    AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@" value = new AutoCSer.Net.TcpServer.ReturnValue");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"<");
-            _code_.Add(_value2_.OutputParameterTypeName);
-            _code_.Add(@">");
-            }
-            _code_.Add(@"();");
-            _if_ = false;
-                    if (_value2_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                    if (Sender.IsSocket) get(ref value);
-                    push(this);");
-            }
-            _if_ = false;
-                if (_value2_.IsClientSendOnly == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                    AutoCSer.Net.TcpInternalStreamServer.ServerSocketSender sender = Sender;
-                    if (sender.IsSocket)
-                    {
-                        get(ref value);
-                        push(this);");
-            _if_ = false;
-                    if (_value2_.OutputParameterIndex != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        sender.Push(");
-            _code_.Add(_value2_.StaticMethodIdentityCommand);
-            _code_.Add(@", ref value);");
-            }
-            _if_ = false;
-                if (_value2_.OutputParameterIndex == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
-            _code_.Add(@"
-                        sender.Push(value.Type);");
-            }
-            _code_.Add(@"
-                    }
-                    else push(this);");
-            }
-            _code_.Add(@"
-                }
-            }");
-            }
-            }
             _code_.Add(@"
             private static readonly AutoCSer.Net.TcpServer.OutputInfo ");
             _code_.Add(_value2_.StaticMethodIdentityCommand);

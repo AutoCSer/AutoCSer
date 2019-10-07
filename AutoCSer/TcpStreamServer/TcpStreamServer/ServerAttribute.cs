@@ -16,9 +16,5 @@ namespace AutoCSer.Net.TcpStreamServer
         /// 命令池初始化二进制大小 2^n
         /// </summary>
         internal override byte GetCommandPoolBitSize { get { return 0; } }
-        /// <summary>
-        /// 服务端任务类型，默认为 Queue
-        /// </summary>
-        public ServerTaskType ServerTaskType = ServerTaskType.Queue;
     }
 }

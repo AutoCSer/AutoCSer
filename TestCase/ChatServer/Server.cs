@@ -28,23 +28,19 @@ namespace AutoCSer.TestCase.ChatServer
         /// <param name="socket">TCP 内部服务套接字数据发送</param>
         /// <param name="userName">用户名称</param>
         /// <returns>是否成功</returns>
-        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsVerifyMethod = true, IsClientAwaiter = false)]
+        [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsVerifyMethod = true, IsClientAwaiter = false, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
         private bool login(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, string userName)
         {
-            bool isLogin = false;
-            socket.AddWaitTask(() =>
+            HashString nameHash = userName;
+            if (!users.ContainsKey(nameHash))
             {
-                HashString nameHash = userName;
-                if (!users.ContainsKey(nameHash))
-                {
-                    users.Add(nameHash, new User { Name = userName });
-                    socket.ClientObject = userName;
-                    socket.OnCloseTask += () => logout(socket);
-                    login(userName, ChatData.UserLoginType.Login);
-                    isLogin = true;
-                }
-            });
-            return isLogin;
+                users.Add(nameHash, new User { Name = userName });
+                socket.ClientObject = userName;
+                socket.OnCloseTask += () => logout(socket);
+                login(userName, ChatData.UserLoginType.Login);
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// 用户退出
@@ -132,47 +128,41 @@ namespace AutoCSer.TestCase.ChatServer
         /// </summary>
         /// <param name="socket">TCP 内部服务套接字数据发送</param>
         /// <param name="getUser">用户信息推送回调委托</param>
-        [AutoCSer.Net.TcpOpenServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpOpenServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void getUser(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, Func<AutoCSer.Net.TcpServer.ReturnValue<ChatData.UserLogin>, bool> getUser)
         {
-            socket.AddTask(() =>
+            User currentUser = getCurrentUser(socket);
+            if (currentUser != null)
             {
-                User currentUser = getCurrentUser(socket);
-                if (currentUser != null)
-                {
-                    currentUser.GetUser = getUser;
+                currentUser.GetUser = getUser;
 
-                    bool isLoaded = true;
-                    removeUsers.ClearOnlyLength();
-                    foreach (var user in users)
+                bool isLoaded = true;
+                removeUsers.ClearOnlyLength();
+                foreach (var user in users)
+                {
+                    if (user.Value != currentUser && !getUser(new ChatData.UserLogin { Name = user.Value.Name, Type = ChatData.UserLoginType.Load }))
                     {
-                        if (user.Value != currentUser && !getUser(new ChatData.UserLogin { Name = user.Value.Name, Type = ChatData.UserLoginType.Load }))
-                        {
-                            isLoaded = false;
-                            removeUsers.Add(currentUser.Name);
-                            break;
-                        }
+                        isLoaded = false;
+                        removeUsers.Add(currentUser.Name);
+                        break;
                     }
-                    if (isLoaded) getUser(new ChatData.UserLogin { Type = ChatData.UserLoginType.Loaded });
-                    removeUser();
                 }
-            });
+                if (isLoaded) getUser(new ChatData.UserLogin { Type = ChatData.UserLoginType.Loaded });
+                removeUser();
+            }
         }
         /// <summary>
         /// 获取消息
         /// </summary>
         /// <param name="socket">TCP 内部服务套接字数据发送</param>
         /// <param name="getMessage">消息推送回调委托</param>
-        [AutoCSer.Net.TcpOpenServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpOpenServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void getMessage(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, Func<AutoCSer.Net.TcpServer.ReturnValue<ChatData.Message>, bool> getMessage)
         {
-            socket.AddTask(() =>
-            {
-                User currentUser = getCurrentUser(socket);
-                if (currentUser != null) currentUser.GetMessage = getMessage;
-            });
+            User currentUser = getCurrentUser(socket);
+            if (currentUser != null) currentUser.GetMessage = getMessage;
         }
     }
 }

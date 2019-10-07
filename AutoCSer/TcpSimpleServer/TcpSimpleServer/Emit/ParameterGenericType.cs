@@ -23,9 +23,5 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
         /// 发送数据
         /// </summary>
         internal abstract MethodInfo ServerSocketSendMethod { get; }
-        /// <summary>
-        /// 发送数据
-        /// </summary>
-        internal abstract MethodInfo ServerSocketSendAsyncMethod { get; }
     }
 }

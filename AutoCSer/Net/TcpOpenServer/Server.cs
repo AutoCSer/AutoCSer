@@ -25,12 +25,14 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">同步验证接口</param>
+        /// <param name="serverCallQueue">自定义队列</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
+        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, Action<SubArray<byte>> onCustomData, ILog log, bool isCallQueue)
-            : base(attribute, verify, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpOpenServerGetSocket, isCallQueue)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpOpenServerGetSocket, isCallQueue, isVerifyMethodAsynchronousCallback)
         {
         }
         /// <summary>

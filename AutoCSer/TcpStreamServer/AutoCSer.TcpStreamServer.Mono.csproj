@@ -48,7 +48,6 @@
     <Compile Include="TcpInternalStreamServer\Emit\MethodClient.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\Server.cs" />
-    <Compile Include="TcpInternalStreamServer\Emit\ServerCall.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\ClientMetadata.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\ParameterGenericType.cs" />
     <Compile Include="TcpInternalStreamServer\Emit\ParameterGenericType2.cs" />
@@ -57,7 +56,6 @@
     <Compile Include="TcpInternalStreamServer\Server.cs" />
     <Compile Include="TcpInternalStreamServer\ServerAttribute.cs" />
     <Compile Include="TcpInternalStreamServer\ServerBaseAttribute.cs" />
-    <Compile Include="TcpInternalStreamServer\ServerCall.cs" />
     <Compile Include="TcpInternalStreamServer\ServerSocket.cs" />
     <Compile Include="TcpInternalStreamServer\ServerSocketSender.cs" />
     <Compile Include="TcpInternalStreamServer\ServerSocketTask.cs" />
@@ -71,7 +69,6 @@
     <Compile Include="TcpOpenStreamServer\Emit\MethodClient.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\MethodGetter.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\Server.cs" />
-    <Compile Include="TcpOpenStreamServer\Emit\ServerCall.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\ClientMetadata.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\ParameterGenericType.cs" />
     <Compile Include="TcpOpenStreamServer\Emit\ParameterGenericType2.cs" />
@@ -80,7 +77,6 @@
     <Compile Include="TcpOpenStreamServer\MethodClient.cs" />
     <Compile Include="TcpOpenStreamServer\Server.cs" />
     <Compile Include="TcpOpenStreamServer\ServerAttribute.cs" />
-    <Compile Include="TcpOpenStreamServer\ServerCall.cs" />
     <Compile Include="TcpOpenStreamServer\ServerSocket.cs" />
     <Compile Include="TcpOpenStreamServer\ServerSocketSender.cs" />
     <Compile Include="TcpOpenStreamServer\ServerSocketTask.cs" />
@@ -91,7 +87,6 @@
     <Compile Include="TcpStaticStreamServer\Client.cs" />
     <Compile Include="TcpStaticStreamServer\MethodAttribute.cs" />
     <Compile Include="TcpStaticStreamServer\ServerAttribute.cs" />
-    <Compile Include="TcpStaticStreamServer\ServerCall.cs" />
     <Compile Include="TcpStaticStreamServer\TimeVerify.cs" />
     <Compile Include="TcpStreamServer\Client.cs" />
     <Compile Include="TcpStreamServer\ClientCommand\CallCommand.cs" />

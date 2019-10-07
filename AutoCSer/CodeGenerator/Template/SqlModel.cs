@@ -632,7 +632,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// 日志处理
                 /// </summary>
                 /// <param name="onLog"></param>
-                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
+                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 protected static void onSqlLogQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, @Type.FullName>.Data>, bool> onLog)
                 {
                     sqlStream.AddQueue(onLog);
@@ -643,7 +643,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// 日志处理
                 /// </summary>
                 /// <param name="onLog"></param>
-                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName")]
+                [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(/*NOT:Attribute.IsLogSerializeReferenceMember*/ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, /*NOT:Attribute.IsLogSerializeReferenceMember*/ServerName = "@Attribute.LogServerName", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, @Type.FullName>.Data>, bool> onLog)
                 {

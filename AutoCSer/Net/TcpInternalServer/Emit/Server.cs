@@ -49,6 +49,10 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// </summary>
         private static readonly ConstructorInfo serverConstructorInfo;
         /// <summary>
+        /// 自定义队列构造函数
+        /// </summary>
+        private static readonly ConstructorInfo serverCallQueueConstructorInfo;
+        /// <summary>
         /// 服务端输出信息集合
         /// </summary>
         [AutoCSer.IOS.Preserve]
@@ -59,15 +63,20 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <param name="value">接口对象</param>
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="verify">套接字验证委托</param>
-        /// <param name="log">日志接口</param>
+        /// <param name="serverCallQueue">自定义队列</param>
         /// <param name="onCustomData">自定义数据包处理</param>
+        /// <param name="log">日志接口</param>
         /// <returns>TCP 服务</returns>
-        public static TcpInternalServer.Server Create(interfaceType value, TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+        public static TcpInternalServer.Server Create(interfaceType value, TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
         {
             if (serverConstructorInfo == null) throw new InvalidOperationException();
             if (errorString != null) throw new Exception(errorString);
             if (value == null) throw new ArgumentNullException();
-            TcpInternalServer.Server server = (TcpInternalServer.Server)serverConstructorInfo.Invoke(new object[] { attribute = attribute ?? defaultServerAttribute, verify, value, onCustomData, log });
+            if (serverCallQueue == null && serverCallQueueConstructorInfo != null)
+            {
+                serverCallQueue = (AutoCSer.Net.TcpServer.IServerCallQueueSet)serverCallQueueConstructorInfo.Invoke(NullValue<object>.Array);
+            }
+            TcpInternalServer.Server server = (TcpInternalServer.Server)serverConstructorInfo.Invoke(new object[] { attribute = attribute ?? defaultServerAttribute, verify, value, serverCallQueue, onCustomData, log });
             server.setCommandData(methods.Length);
             foreach (Method<ServerAttribute, TcpServer.MethodAttribute, ServerSocketSender> method in methods)
             {
@@ -93,10 +102,14 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             {
                 defaultServerAttribute = builder.DefaultServerAttribute;
                 methods = builder.Methods;
+                if (defaultServerAttribute.ServerCallQueueType != null)
+                {
+                    serverCallQueueConstructorInfo = defaultServerAttribute.ServerCallQueueType.GetConstructor(NullValue<Type>.Array);
+                }
 
-                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog) };
+                Type[] constructorParameterTypes = new Type[] { typeof(ServerAttribute), typeof(Func<System.Net.Sockets.Socket, bool>), type, typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog) };
                 Method<ServerAttribute, TcpServer.MethodAttribute, ServerSocketSender>.ServerBuilder serverBuilder = new Method<ServerAttribute, TcpServer.MethodAttribute, ServerSocketSender>.ServerBuilder { Metadata = Server.Metadata };
-                serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), typeof(ServerCall<>), constructorParameterTypes, methods);
+                serverType = serverBuilder.Build(type, defaultServerAttribute, typeof(Server<interfaceType>), typeof(ServerCall<>), constructorParameterTypes, methods, builder.Queues);
                 Outputs = serverBuilder.Outputs;
                 serverConstructorInfo = serverType.GetConstructor(constructorParameterTypes);
             }

@@ -11,7 +11,7 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
     /// <summary>
     /// TCP 服务性能测试服务
     /// </summary>
-    [AutoCSer.Net.TcpOpenStreamServer.Server(Host = "127.0.0.1", Port = 12111, ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Synchronous, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
+    [AutoCSer.Net.TcpOpenStreamServer.Server(Host = "127.0.0.1", Port = 12111, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
     public partial class OpenStreamServer
     {
         /// <summary>
@@ -60,10 +60,8 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
 ");
 #if !NoAutoCSer
                     using (OpenStreamServer.TcpOpenStreamServer synchronousServer = new OpenStreamServer.TcpOpenStreamServer())
-                    using (OpenStreamTcpQueueServer.TcpOpenStreamServer tcpQueueServer = new OpenStreamTcpQueueServer.TcpOpenStreamServer())
-                    using (OpenStreamQueueServer.TcpOpenStreamServer queueServer = new OpenStreamQueueServer.TcpOpenStreamServer())
                     {
-                        if (synchronousServer.IsListen && tcpQueueServer.IsListen&& queueServer.IsListen)
+                        if (synchronousServer.IsListen)
                         {
                             if (!startProcess("TcpStreamClientPerformance", "AutoCSer.TestCase.TcpOpenStreamClientPerformance")) Console.WriteLine("未找到 TCP 服务性能测试服务 客户端程序");
                             Console.WriteLine("Press quit to exit.");
@@ -132,19 +130,5 @@ namespace AutoCSer.TestCase.TcpOpenStreamServerPerformance
 #endif
             return false;
         }
-    }
-    /// <summary>
-    /// TCP 服务性能测试服务
-    /// </summary>
-    [AutoCSer.Net.TcpOpenStreamServer.Server(Host = "127.0.0.1", Port = 12112, ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.TcpQueue, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
-    public partial class OpenStreamTcpQueueServer : OpenStreamServer
-    {
-    }
-    /// <summary>
-    /// TCP 服务性能测试服务
-    /// </summary>
-    [AutoCSer.Net.TcpOpenStreamServer.Server(Host = "127.0.0.1", Port = 12113, ServerTaskType = AutoCSer.Net.TcpStreamServer.ServerTaskType.Queue, SendBufferSize = SubBuffer.Size.Kilobyte8, ReceiveBufferSize = SubBuffer.Size.Kilobyte8, CheckSeconds = 0, IsAutoClient = true, IsSegmentation = false, MinCompressSize = 0, IsServerBuildOutputThread = true, IsJsonSerialize = true)]
-    public partial class OpenStreamQueueServer : OpenStreamServer
-    {
     }
 }

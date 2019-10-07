@@ -15,6 +15,7 @@ namespace AutoCSer.Example.TcpInterfaceServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <param name="onAdd">加法计算回调委托</param>
+        //[AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
         void Add(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> onAdd);
     }
     /// <summary>

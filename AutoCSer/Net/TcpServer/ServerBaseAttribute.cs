@@ -148,6 +148,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         public Type ClientRouteType;
         /// <summary>
+        /// 服务端自定义队列类型
+        /// </summary>
+        internal virtual Type GetServerCallQueueType { get { return null; } }
+        /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
         internal abstract int GetBinaryDeSerializeMaxArraySize { get; }

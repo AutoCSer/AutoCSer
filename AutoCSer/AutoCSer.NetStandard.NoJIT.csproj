@@ -410,6 +410,8 @@
     <Compile Include="Net\TcpServer\CustomServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomTaskAsyncServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomWaitServerCall.cs" />
+    <Compile Include="Net\TcpServer\IServerCallQueue.cs" />
+    <Compile Include="Net\TcpServer\IServerCallQueueSet.cs" />
     <Compile Include="Net\TcpServer\IServerKeepCallback.cs" />
     <Compile Include="Net\TcpServer\ISetTcpServer.cs" />
     <Compile Include="Net\TcpServer\KeepCallback.cs" />

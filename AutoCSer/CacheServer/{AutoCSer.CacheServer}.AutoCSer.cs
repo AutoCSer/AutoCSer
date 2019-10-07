@@ -64,10 +64,10 @@ namespace AutoCSer.CacheServer
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.CacheServer.MasterServer value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("MasterCache", typeof(AutoCSer.CacheServer.MasterServer))), verify, onCustomData, log, true)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("MasterCache", typeof(AutoCSer.CacheServer.MasterServer))), verify, null, onCustomData, log, true, false)
                 {
                     Value = value ?? new AutoCSer.CacheServer.MasterServer();
                     setCommandData(32);
@@ -123,8 +123,9 @@ namespace AutoCSer.CacheServer
                             {
                                 {
                                     _p1 outputParameter = new _p1();
-                                    
-                                    Value.GetCache(sender.GetCallback<_p1, AutoCSer.CacheServer.CacheReturnParameter>(_c0, ref outputParameter));
+                                    _s0 serverCall = _s0/**/.Pop() ?? new _s0();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p1, AutoCSer.CacheServer.CacheReturnParameter>(_c0, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue);
                                     return;
                                 }
                             }
@@ -266,8 +267,9 @@ namespace AutoCSer.CacheServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p9 outputParameter = new _p9();
-                                    
-                                    Value.OperationAsynchronous(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c7, ref outputParameter));
+                                    _s7 serverCall = _s7/**/.Pop() ?? new _s7();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c7, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -287,8 +289,9 @@ namespace AutoCSer.CacheServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p9 outputParameter = new _p9();
-                                    
-                                    Value.OperationAsynchronous(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c8, ref outputParameter));
+                                    _s8 serverCall = _s8/**/.Pop() ?? new _s8();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c8, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -323,8 +326,9 @@ namespace AutoCSer.CacheServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p9 outputParameter = new _p9();
-                                    
-                                    Value.OperationAsynchronousStream(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c10, ref outputParameter));
+                                    _s10 serverCall = _s10/**/.Pop() ?? new _s10();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c10, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -344,8 +348,9 @@ namespace AutoCSer.CacheServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p9 outputParameter = new _p9();
-                                    
-                                    Value.OperationAsynchronousStream(inputParameter.p0, sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c11, ref outputParameter));
+                                    _s11 serverCall = _s11/**/.Pop() ?? new _s11();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p9, AutoCSer.CacheServer.ReturnParameter>(_c11, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -772,6 +777,15 @@ namespace AutoCSer.CacheServer
                         default: return;
                     }
                 }
+                sealed class _s0 : AutoCSer.Net.TcpInternalServer.ServerCall<_s0, AutoCSer.CacheServer.MasterServer>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.GetCache(AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsKeepCallback = 1, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 3, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
@@ -907,7 +921,25 @@ namespace AutoCSer.CacheServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                sealed class _s7 : AutoCSer.Net.TcpInternalServer.ServerCall<_s7, AutoCSer.CacheServer.MasterServer, _p8>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.OperationAsynchronous(inputParameter.p0, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                sealed class _s8 : AutoCSer.Net.TcpInternalServer.ServerCall<_s8, AutoCSer.CacheServer.MasterServer, _p10>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.OperationAsynchronous(inputParameter.p0, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
                 sealed class _s9 : AutoCSer.Net.TcpInternalServer.ServerCall<_s9, AutoCSer.CacheServer.MasterServer, _p8>
                 {
@@ -935,7 +967,25 @@ namespace AutoCSer.CacheServer
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
+                sealed class _s10 : AutoCSer.Net.TcpInternalServer.ServerCall<_s10, AutoCSer.CacheServer.MasterServer, _p8>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.OperationAsynchronousStream(inputParameter.p0, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
+                sealed class _s11 : AutoCSer.Net.TcpInternalServer.ServerCall<_s11, AutoCSer.CacheServer.MasterServer, _p10>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.OperationAsynchronousStream(inputParameter.p0, AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c11 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
                 sealed class _s12 : AutoCSer.Net.TcpInternalServer.ServerCall<_s12, AutoCSer.CacheServer.MasterServer, _p8>
                 {
@@ -3173,10 +3223,10 @@ namespace AutoCSer.CacheServer
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="value">TCP 服务目标对象</param>
-                /// <param name="log">日志接口</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
+                /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.CacheServer.SlaveServer value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("SlaveCache", typeof(AutoCSer.CacheServer.SlaveServer))), verify, onCustomData, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("SlaveCache", typeof(AutoCSer.CacheServer.SlaveServer))), verify, null, onCustomData, log, true, false)
                 {
                     Value = value ?? new AutoCSer.CacheServer.SlaveServer();
                     setCommandData(14);
@@ -3267,8 +3317,9 @@ namespace AutoCSer.CacheServer
                             {
                                 {
                                     _p5 outputParameter = new _p5();
-                                    
-                                    Value.GetCache(sender.GetCallback<_p5, AutoCSer.CacheServer.CacheReturnParameter>(_c2, ref outputParameter));
+                                    _s2 serverCall = _s2/**/.Pop() ?? new _s2();
+                                    serverCall.AsynchronousCallback = sender.GetCallback<_p5, AutoCSer.CacheServer.CacheReturnParameter>(_c2, ref outputParameter);
+                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue);
                                     return;
                                 }
                             }
@@ -3526,6 +3577,15 @@ namespace AutoCSer.CacheServer
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                sealed class _s2 : AutoCSer.Net.TcpInternalServer.ServerCall<_s2, AutoCSer.CacheServer.SlaveServer>
+                {
+                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>, bool> AsynchronousCallback;
+                    public override void Call()
+                    {
+                        
+                        serverValue.GetCache(AsynchronousCallback);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 5, IsKeepCallback = 1, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };

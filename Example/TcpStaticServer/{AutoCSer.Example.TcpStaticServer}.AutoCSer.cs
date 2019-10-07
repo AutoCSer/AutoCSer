@@ -2315,10 +2315,10 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
             /// </summary>
             /// <param name="attribute">TCP调用服务器端配置信息</param>
             /// <param name="verify">TCP验证实例</param>
-            /// <param name="log">日志接口</param>
             /// <param name="onCustomData">自定义数据包处理</param>
+            /// <param name="log">日志接口</param>
             public Example1(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), true)), verify, onCustomData, log, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), true)), verify, null, onCustomData, log, false, false)
             {
                 setCommandData(24);
                 setCommand(0);
@@ -2419,7 +2419,9 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
                                 _p4 outputParameter = new _p4();
-                                AutoCSer.Example.TcpStaticServer.Asynchronous/**/.TcpStaticServer._M4(inputParameter.p0, inputParameter.p1, sender.GetCallback<_p4, int>(_c4, ref outputParameter));
+                                _s3 serverCall = _s3/**/.Pop() ?? new _s3();
+                                serverCall.AsynchronousCallback = sender.GetCallback<_p4, int>(_c4, ref outputParameter);
+                                serverCall.Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2439,7 +2441,9 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
                                 _p4 outputParameter = new _p4();
-                                AutoCSer.Example.TcpStaticServer.KeepCallback/**/.TcpStaticServer._M5(inputParameter.p0, inputParameter.p1, inputParameter.p2, sender.GetCallback<_p4, int>(_c5, ref outputParameter));
+                                _s4 serverCall = _s4/**/.Pop() ?? new _s4();
+                                serverCall.AsynchronousCallback = sender.GetCallback<_p4, int>(_c5, ref outputParameter);
+                                serverCall.Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2891,7 +2895,23 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                 }
             }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+            sealed class _s3 : AutoCSer.Net.TcpStaticServer.ServerCall<_s3, _p3>
+            {
+                internal Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> AsynchronousCallback;
+                public override void Call()
+                {
+                    AutoCSer.Example.TcpStaticServer.Asynchronous/**/.TcpStaticServer._M4(inputParameter.p0, inputParameter.p1, AsynchronousCallback);
+                }
+            }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+            sealed class _s4 : AutoCSer.Net.TcpStaticServer.ServerCall<_s4, _p1>
+            {
+                internal Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> AsynchronousCallback;
+                public override void Call()
+                {
+                    AutoCSer.Example.TcpStaticServer.KeepCallback/**/.TcpStaticServer._M5(inputParameter.p0, inputParameter.p1, inputParameter.p2, AsynchronousCallback);
+                }
+            }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
             sealed class _s5 : AutoCSer.Net.TcpStaticServer.ServerCall<_s5, _p3>
             {
@@ -3835,10 +3855,10 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
             /// </summary>
             /// <param name="attribute">TCP调用服务器端配置信息</param>
             /// <param name="verify">TCP验证实例</param>
-            /// <param name="log">日志接口</param>
             /// <param name="onCustomData">自定义数据包处理</param>
+            /// <param name="log">日志接口</param>
             public Example2(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example2", typeof(AutoCSer.Example.TcpStaticServer.SendOnly), true)), verify, onCustomData, log, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example2", typeof(AutoCSer.Example.TcpStaticServer.SendOnly), true)), verify, null, onCustomData, log, false, false)
             {
                 setCommandData(2);
                 setCommand(0);

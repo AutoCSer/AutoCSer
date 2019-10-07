@@ -34,34 +34,6 @@ namespace AutoCSer.TestCase.TcpOpenSimpleClientPerformance
                     if (client.addAsynchronous(left, --right).Value != left + right) ++TcpInternalSimpleClientPerformance.Client.ErrorCount;
                 }
                 stop();
-
-                TcpInternalSimpleClientPerformance.Client.Start(TcpInternalSimpleClientPerformance.TestType.Queue, TcpInternalSimpleClientPerformance.Client.Count);
-                for (int right = TcpInternalSimpleClientPerformance.Client.Count; right != 0;)
-                {
-                    if (client.addQueue(left, --right).Value != left + right) ++TcpInternalSimpleClientPerformance.Client.ErrorCount;
-                }
-                stop();
-
-                TcpInternalSimpleClientPerformance.Client.Start(TcpInternalSimpleClientPerformance.TestType.Timeout, TcpInternalSimpleClientPerformance.Client.Count);
-                for (int right = TcpInternalSimpleClientPerformance.Client.Count; right != 0;)
-                {
-                    if (client.addTimeoutTask(left, --right).Value != left + right) ++TcpInternalSimpleClientPerformance.Client.ErrorCount;
-                }
-                stop();
-
-                TcpInternalSimpleClientPerformance.Client.Start(TcpInternalSimpleClientPerformance.TestType.TcpTask, TcpInternalSimpleClientPerformance.Client.Count);
-                for (int right = TcpInternalSimpleClientPerformance.Client.Count; right != 0;)
-                {
-                    if (client.addTcpTask(left, --right).Value != left + right) ++TcpInternalSimpleClientPerformance.Client.ErrorCount;
-                }
-                stop();
-
-                TcpInternalSimpleClientPerformance.Client.Start(TcpInternalSimpleClientPerformance.TestType.ThreadPool, TcpInternalSimpleClientPerformance.Client.Count);
-                for (int right = TcpInternalSimpleClientPerformance.Client.Count; right != 0;)
-                {
-                    if (client.addThreadPool(left, --right).Value != left + right) ++TcpInternalSimpleClientPerformance.Client.ErrorCount;
-                }
-                stop();
             }
             for (int threadCount = 2; threadCount <= 32; threadCount <<= 1)
             {

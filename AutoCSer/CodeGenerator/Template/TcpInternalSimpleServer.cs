@@ -27,6 +27,7 @@ namespace AutoCSer.CodeGenerator.Template
             private const int InputParameterIndex = 0;
             private const int OutputParameterIndex = 0;
             private const bool IsCallQueue = false;
+            private const bool IsVerifyMethodAsynchronousCallback = false;
             public void SetTcpServer(AutoCSer.Net.TcpInternalSimpleServer.Server commandServer) { }
             #endregion NOTE
             #region IF IsServerCode
@@ -58,12 +59,12 @@ namespace AutoCSer.CodeGenerator.Template
                 /// </summary>
                 /// <param name="attribute">TCP 调用服务器端配置信息</param>
                 /// <param name="verify">套接字验证委托</param>
-#region IF Type.Type.IsPublic
+                #region IF Type.Type.IsPublic
                 /// <param name="value">TCP 服务目标对象</param>
-#endregion IF Type.Type.IsPublic
+                #endregion IF Type.Type.IsPublic
                 /// <param name="log">日志接口</param>
                 public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:Type.Type.IsPublic*/, @Type.FullName value = null/*IF:Type.Type.IsPublic*/, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, log, @IsCallQueue)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, log, @IsVerifyMethodAsynchronousCallback)
                 {
                     Value =/*IF:Type.Type.IsPublic*/ value ?? /*IF:Type.Type.IsPublic*/new @Type.FullName();
                     setCommandData(@MethodIndexs.Length);
@@ -127,11 +128,6 @@ namespace AutoCSer.CodeGenerator.Template
                                     return true;
                                     #endregion IF IsAsynchronousCallback
                                     #region NOT IsAsynchronousCallback
-                                    #region IF IsMethodServerCall
-                                    (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(socket, Value, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
-                                    return true;
-                                    #endregion IF IsMethodServerCall
-                                    #region NOT IsMethodServerCall
                                     #region IF OutputParameterIndex
                                     @OutputParameterTypeName _outputParameter_ = new @OutputParameterTypeName();
                                     #endregion IF OutputParameterIndex
@@ -177,7 +173,6 @@ namespace AutoCSer.CodeGenerator.Template
                                     #region NOT OutputParameterIndex
                                     return socket.Send();
                                     #endregion NOT OutputParameterIndex
-                                    #endregion NOT IsMethodServerCall
                                     #endregion NOT IsAsynchronousCallback
                                 }
                                 #region IF InputParameterIndex
@@ -203,78 +198,6 @@ namespace AutoCSer.CodeGenerator.Template
                 }
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
-                #region NOT IsAsynchronousCallback
-                #region IF IsMethodServerCall
-                sealed class @MethodStreamName : AutoCSer.Net.TcpInternalSimpleServer.ServerCall<@MethodStreamName, @Type.FullName/*IF:InputParameterIndex*/, @InputParameterTypeName/*IF:InputParameterIndex*/>
-                {
-                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value)
-                    {
-                        try
-                        {
-                            /*IF:MethodIsReturn*/
-                            @MethodReturnType.FullName @ReturnName;/*IF:MethodIsReturn*/
-                            #region IF MemberIndex
-                            #region IF Method.IsGetMember
-                            #region IF Method.PropertyParameter
-                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*/serverValue[/*IF:ClientParameterName*/Socket/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName/*AT:ParameterJoin*//*PUSH:Parameter*//*LOOP:InputParameters*/];
-                            #endregion IF Method.PropertyParameter
-                            #region NOT Method.PropertyParameter
-                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*/serverValue.@PropertyName;
-                            #endregion NOT Method.PropertyParameter
-                            #endregion IF Method.IsGetMember
-                            #region NOT Method.IsGetMember
-                            #region IF Method.PropertyParameter
-                            serverValue[/*IF:ClientParameterName*/Socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*NOT:MethodParameter.IsPropertyValue*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName/*AT:ParameterJoin*//*PUSH:Parameter*//*NOT:MethodParameter.IsPropertyValue*//*LOOP:InputParameters*/] = /*LOOP:InputParameters*//*IF:MethodParameter.IsPropertyValue*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*IF:MethodParameter.IsPropertyValue*//*LOOP:InputParameters*/;
-                            #endregion IF Method.PropertyParameter
-                            #region NOT Method.PropertyParameter
-                            serverValue.@PropertyName = /*LOOP:InputParameters*/inputParameter./*PUSH:Parameter*/@ParameterName/*PUSH:Parameter*//*LOOP:InputParameters*/;
-                            #endregion NOT Method.PropertyParameter
-                            #endregion NOT Method.IsGetMember
-                            #endregion IF MemberIndex
-
-                            #region NOT MemberIndex
-                            /*IF:MethodIsReturn*/
-                            @ReturnName = /*NOTE*/(MethodReturnType.FullName)/*NOTE*//*IF:MethodIsReturn*//*PUSH:Method*/serverValue.@MethodName/*PUSH:Method*/(/*IF:ClientParameterName*/Socket/*IF:InputParameters.Length*/, /*IF:InputParameters.Length*//*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*IF:MethodParameter.IsOut*//*PUSH:InputParameter*/value.Value.@ParameterName/*PUSH:InputParameter*//*NOTE*/,/*NOTE*//*IF:MethodParameter.IsOut*//*NOT:MethodParameter.IsOut*//*PUSH:Parameter*/inputParameter.@ParameterName/*PUSH:Parameter*//*NOT:MethodParameter.IsOut*//*AT:MethodParameter.ParameterJoin*//*LOOP:InputParameters*/);
-                            #endregion NOT MemberIndex
-
-                            #region IF OutputParameterIndex
-                            #region IF IsVerifyMethod
-                            if (/*NOTE*/(bool)(object)/*NOTE*/@ReturnName) Socket.SetVerifyMethod();
-                            #endregion IF IsVerifyMethod
-                            #region LOOP OutputParameters
-                            #region NOT InputMethodParameter.IsOut
-                            /*PUSH:Parameter*/
-                            value.Value.@ParameterName/*PUSH:Parameter*/ = inputParameter/*PUSH:InputParameter*/.@ParameterName/*PUSH:InputParameter*/;
-                            #endregion NOT InputMethodParameter.IsOut
-                            #endregion LOOP OutputParameters
-                            #region IF MethodIsReturn
-                            value.Value.@ReturnName = @ReturnName;
-                            #endregion IF MethodIsReturn
-                            #endregion IF OutputParameterIndex
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
-                        }
-                        catch (Exception error)
-                        {
-                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
-                            Socket.Log(error);
-                        }
-                    }
-                    public override void Call()
-                    {
-                        AutoCSer.Net.TcpInternalSimpleServer.ServerSocket socket = Socket;
-                        AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value = new AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/();
-                        get(ref value);
-                        push(this);
-                        #region IF OutputParameterIndex
-                        socket.SendAsync(@MethodIdentityCommand, ref value);
-                        #endregion IF OutputParameterIndex
-                        #region NOT OutputParameterIndex
-                        socket.SendAsync(value.Type);
-                        #endregion NOT OutputParameterIndex
-                    }
-                }
-                #endregion IF IsMethodServerCall
-                #endregion NOT IsAsynchronousCallback
                 private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo @MethodIdentityCommand = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs

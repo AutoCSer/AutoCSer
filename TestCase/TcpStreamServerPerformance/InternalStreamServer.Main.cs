@@ -23,10 +23,8 @@ namespace AutoCSer.TestCase.TcpInternalStreamServerPerformance
                     Console.WriteLine(@"http://www.AutoCSer.com/TcpServer/InterfaceStreamServer.html
 ");
                     using (AutoCSer.Net.TcpInternalStreamServer.Server server = AutoCSer.Net.TcpInternalStreamServer.Emit.Server<IStreamServer>.Create(new InternalStreamServer()))
-                    using (AutoCSer.Net.TcpInternalStreamServer.Server tcpQueueServer = AutoCSer.Net.TcpInternalStreamServer.Emit.Server<ITcpQueueStreamServer>.Create(new InternalStreamServer()))
-                    using (AutoCSer.Net.TcpInternalStreamServer.Server queueServer = AutoCSer.Net.TcpInternalStreamServer.Emit.Server<IQueueStreamServer>.Create(new InternalStreamServer()))
                     {
-                        if (server.IsListen && tcpQueueServer.IsListen && queueServer.IsListen)
+                        if (server.IsListen)
                         {
                             if (!startProcess("TcpStreamClientPerformance", "AutoCSer.TestCase.TcpInternalStreamClientPerformance.Emit")) Console.WriteLine("未找到 TCP 内部服务性能测试服务 客户端程序");
                             Console.WriteLine("Press quit to exit.");

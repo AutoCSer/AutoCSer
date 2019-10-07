@@ -66,10 +66,18 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal const int MinSocketSize = 512;
         /// <summary>
+        /// 自定义队列关键字名称
+        /// </summary>
+        internal const string ServerCallQueueParameterName = "AutoCSerTcpQueueKey";
+        /// <summary>
         /// JSON 序列化配置
         /// </summary>
         internal static readonly AutoCSer.Json.SerializeConfig JsonConfig;
 
+        /// <summary>
+        /// 默认验证函数调用次数
+        /// </summary>
+        internal const byte DefaultVerifyMethodCount = 2;
         /// <summary>
         /// 会话索引有效位
         /// </summary>
@@ -145,6 +153,10 @@ namespace AutoCSer.Net.TcpServer
         where attributeType : ServerAttribute
     {
         /// <summary>
+        /// 自定义队列
+        /// </summary>
+        private readonly AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue;
+        /// <summary>
         /// 自定义数据包处理
         /// </summary>
         private readonly Action<SubArray<byte>> onCustomData;
@@ -158,15 +170,26 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
+        /// <param name="serverCallQueue">自定义队列</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue)
-            : base(attribute, verify, log, isCallQueue)
+        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
+        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
+            : base(attribute, verify, log, isCallQueue, isVerifyMethodAsynchronousCallback)
         {
+            this.serverCallQueue = serverCallQueue;
             this.onCustomData = onCustomData;
             this.getSocketThreadCallType = getSocketThreadCallType;
+        }
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (serverCallQueue != null) serverCallQueue.Dispose();
         }
         /// <summary>
         /// 启动服务
@@ -211,6 +234,29 @@ namespace AutoCSer.Net.TcpServer
                 }
             }
         }
+#if NOJIT
+        /// <summary>
+        /// 自定义队列
+        /// </summary>
+        /// <typeparam name="queueKeyType">关键字类型</typeparam>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected IServerCallQueue getServerCallQueue<queueKeyType>()
+        {
+            return serverCallQueue.Get<queueKeyType>();
+        }
+#else
+        /// <summary>
+        /// 自定义队列
+        /// </summary>
+        /// <typeparam name="queueKeyType">关键字类型</typeparam>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected IServerCallQueue<queueKeyType> getServerCallQueue<queueKeyType>()
+        {
+            return serverCallQueue.Get<queueKeyType>();
+        }
+#endif
     }
     /// <summary>
     /// TCP 服务基类
@@ -228,12 +274,14 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
+        /// <param name="serverCallQueue">自定义队列</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue)
-            : base(attribute, verify, onCustomData, log, getSocketThreadCallType, isCallQueue)
+        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
+        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, getSocketThreadCallType, isCallQueue, isVerifyMethodAsynchronousCallback)
         {
         }
         /// <summary>

@@ -185,7 +185,7 @@ namespace AutoCSer.Sql.MsSql
             return @"declare @id int
 set @id=object_id(N'[dbo].[" + tableName + @"]')
 if(select top 1 id from sysobjects where id=@id and objectproperty(id,N'IsUserTable')=1)is not null begin
- select columnproperty(id,name,'IsIdentity')as isidentity,id,xusertype,name,length,isnullable,colid,isnull((select top 1 text from syscomments where id=syscolumns.cdefault and colid=1),'')as defaultValue
+ select columnproperty(id,name,'IsIdentity')as isidentity,id,xusertype,name,length,xprec,xscale,isnullable,colid,isnull((select top 1 text from syscomments where id=syscolumns.cdefault and colid=1),'')as defaultValue
   ,isnull((select value from ::fn_listextendedproperty(null,'user','dbo','table','" + tableName + @"','column',syscolumns.name)as property where property.name='MS_Description'),'')as remark
   from syscolumns where id=@id order by colid
  if @@rowcount<>0 begin

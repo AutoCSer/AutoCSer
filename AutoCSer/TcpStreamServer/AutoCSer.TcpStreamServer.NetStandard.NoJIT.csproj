@@ -40,7 +40,6 @@
     <Compile Include="TcpInternalStreamServer\Server.cs" />
     <Compile Include="TcpInternalStreamServer\ServerAttribute.cs" />
     <Compile Include="TcpInternalStreamServer\ServerBaseAttribute.cs" />
-    <Compile Include="TcpInternalStreamServer\ServerCall.cs" />
     <Compile Include="TcpInternalStreamServer\ServerSocket.cs" />
     <Compile Include="TcpInternalStreamServer\ServerSocketSender.cs" />
     <Compile Include="TcpInternalStreamServer\ServerSocketTask.cs" />
@@ -54,7 +53,6 @@
     <Compile Include="TcpOpenStreamServer\MethodClient.cs" />
     <Compile Include="TcpOpenStreamServer\Server.cs" />
     <Compile Include="TcpOpenStreamServer\ServerAttribute.cs" />
-    <Compile Include="TcpOpenStreamServer\ServerCall.cs" />
     <Compile Include="TcpOpenStreamServer\ServerSocket.cs" />
     <Compile Include="TcpOpenStreamServer\ServerSocketSender.cs" />
     <Compile Include="TcpOpenStreamServer\ServerSocketTask.cs" />
@@ -65,7 +63,6 @@
     <Compile Include="TcpStaticStreamServer\Client.cs" />
     <Compile Include="TcpStaticStreamServer\MethodAttribute.cs" />
     <Compile Include="TcpStaticStreamServer\ServerAttribute.cs" />
-    <Compile Include="TcpStaticStreamServer\ServerCall.cs" />
     <Compile Include="TcpStaticStreamServer\TimeVerify.cs" />
     <Compile Include="TcpStreamServer\Client.cs" />
     <Compile Include="TcpStreamServer\ClientCommand\CallCommand.cs" />

@@ -36,7 +36,7 @@ namespace AutoCSer.Net.RawSocketListener
         public void Dispose()
         {
             isDisposed = true;
-            waitHandle.Set();
+            WaitHandle.Set();
         }
         /// <summary>
         /// 添加队列任务
@@ -50,7 +50,7 @@ namespace AutoCSer.Net.RawSocketListener
                 end = value;
                 head = value;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                waitHandle.Set();
+                WaitHandle.Set();
             }
             else
             {
@@ -66,7 +66,7 @@ namespace AutoCSer.Net.RawSocketListener
         {
             do
             {
-                waitHandle.Wait();
+                WaitHandle.Wait();
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
                 Buffer value = head;
                 end = null;

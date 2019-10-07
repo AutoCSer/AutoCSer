@@ -8,11 +8,6 @@ namespace AutoCSer.Net.TcpStreamServer
     public partial class MethodAttribute : TcpServer.MethodBaseAttribute
     {
         /// <summary>
-        /// 服务端任务类型
-        /// </summary>
-        [AutoCSer.Metadata.Ignore]
-        internal override TcpServer.ServerTaskType ServerTaskType { get; set; }
-        /// <summary>
         /// 客户端异步任务类型，默认为 Timeout
         /// </summary>
         public TcpServer.ClientTaskType ClientTask = TcpServer.ClientTaskType.Timeout;

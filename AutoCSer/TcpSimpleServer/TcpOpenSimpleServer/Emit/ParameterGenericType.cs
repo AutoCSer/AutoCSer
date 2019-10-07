@@ -87,12 +87,5 @@ namespace AutoCSer.Net.TcpOpenSimpleServer.Emit
         {
             get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.Send)ServerSocket.Send<parameterType>).Method; }
         }
-        /// <summary>
-        /// 发送数据
-        /// </summary>
-        internal override MethodInfo ServerSocketSendAsyncMethod
-        {
-            get { return ((AutoCSer.Net.TcpInternalSimpleServer.Emit.ParameterGenericType<parameterType>.SendAsync)ServerSocket.SendAsync<parameterType>).Method; }
-        }
     }
 }

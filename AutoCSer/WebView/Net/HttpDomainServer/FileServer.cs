@@ -176,14 +176,28 @@ namespace AutoCSer.Net.HttpDomainServer
                                     for (byte* start = pathStart; start != pathEnd; ++start) *write++ = *start == '/' ? directorySeparatorChar : (char)*start;
                                 }
                                 FileInfo file = new FileInfo(cacheFileName);
-                                if (file.Exists)
+                                bool isFileExists = file.Exists, isCopyPath = true;
+                                if (!isFileExists && cacheFileName.IndexOf('%') >= WorkPath.Length)
+                                {
+                                    cacheKey.CopyPath();
+                                    isCopyPath = false;
+                                    string newPath = AutoCSer.Net.Http.Header.UnescapeUtf8(pathStart, cachePathLength, path.Array, (int)(pathStart - pathFixed));
+                                    if (Path.DirectorySeparatorChar != '/') newPath.replaceNotNull('/', Path.DirectorySeparatorChar);
+                                    FileInfo newFile = new FileInfo(WorkPath + newPath);
+                                    if (newFile.Exists)
+                                    {
+                                        file = newFile;
+                                        isFileExists = true;
+                                    }
+                                }
+                                if (isFileExists)
                                 {
                                     string fileName = file.FullName;
                                     if (fileName.Length > WorkPath.Length && WorkPath.equalCaseNotNull(fileName, WorkPath.Length))
                                     {
                                         if (fileName.Length <= AutoCSer.IO.File.MaxFullNameLength && file.Length <= FileCacheQueue.MaxFileSize)
                                         {
-                                            if (FileCacheQueue.Get(ref cacheKey, out fileCache, true) != 0)
+                                            if (FileCacheQueue.Get(ref cacheKey, out fileCache, isCopyPath) != 0)
                                             {
                                                 try
                                                 {
@@ -414,9 +428,16 @@ namespace AutoCSer.Net.HttpDomainServer
             }
             else
             {
-                switch (((code >> 24) | 0x20) - 'b')
+                switch (((code >> 24) | 0x20) - 'a')
                 {
-                    case 'b' - 'b':
+                    case 'a' - 'a':
+                        if ((code | 0x20002000) == '.' + ('m' << 8) + ('4' << 16) + ('a' << 24))
+                        {
+                            contentType = Http.ContentTypeAttribute.M4A;
+                            return 0;
+                        }
+                        return 1;
+                    case 'b' - 'a':
                         if ((((code | 0x20202020) ^ ('r' + ('m' << 8) + ('v' << 16) + ('b' << 24))) | (*(pathEnd - 5) ^ '.')) == 0)
                         {
                             contentType = Http.ContentTypeAttribute.Rmvb;
@@ -424,14 +445,14 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'c' - 'b':
+                    case 'c' - 'a':
                         if ((code | 0x20202000) == '.' + ('d' << 8) + ('o' << 16) + ('c' << 24))
                         {
                             contentType = Http.ContentTypeAttribute.Doc;
                             return 0;
                         }
                         return 1;
-                    case 'f' - 'b':
+                    case 'f' - 'a':
                         if (*(pathEnd - 5) == '.')
                         {
                             if ((code | 0x20202020) == 'w' + ('o' << 8) + ('f' << 16) + ('f' << 24))
@@ -465,7 +486,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'g' - 'b':
+                    case 'g' - 'a':
                         if (*(pathEnd - 5) == '.')
                         {
                             if ((code | 0x20202020) == 'j' + ('p' << 8) + ('e' << 16) + ('g' << 24))
@@ -500,7 +521,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'i' - 'b':
+                    case 'i' - 'a':
                         if ((code | 0x20202000) == '.' + ('a' << 8) + ('v' << 16) + ('i' << 24))
                         {
                             contentType = Http.ContentTypeAttribute.Avi;
@@ -508,7 +529,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'k' - 'b':
+                    case 'k' - 'a':
                         if ((code | 0x20202000) == '.' + ('a' << 8) + ('p' << 16) + ('k' << 24))
                         {
                             contentType = Http.ContentTypeAttribute.Apk;
@@ -516,7 +537,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'l' - 'b':
+                    case 'l' - 'a':
                         if ((code | 0x20202020) == ('h' + ('t' << 8) + ('m' << 16) + ('l' << 24)))
                         {
                             if (*(pathEnd - 5) == '.')
@@ -532,7 +553,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'm' - 'b':
+                    case 'm' - 'a':
                         if ((code | 0x20202000) == ('.' + ('h' << 8) + ('t' << 16) + ('m' << 24)))
                         {
                             contentType = HtmlContentType;
@@ -544,7 +565,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             isCompress = false;
                         }
                         return 1;
-                    case 'o' - 'b':
+                    case 'o' - 'a':
                         if ((code | 0x20202000) == '.' + ('i' << 8) + ('c' << 16) + ('o' << 24))
                         {
                             contentType = Http.ContentTypeAttribute.Ico;
@@ -552,7 +573,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'p' - 'b':
+                    case 'p' - 'a':
                         if ((code |= 0x20202000) == ('.' + ('z' << 8) + ('i' << 16) + ('p' << 24)))
                         {
                             contentType = Http.ContentTypeAttribute.Zip;
@@ -565,7 +586,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'r' - 'b':
+                    case 'r' - 'a':
                         if ((code |= 0x20202000) == ('.' + ('r' << 8) + ('a' << 16) + ('r' << 24)))
                         {
                             contentType = Http.ContentTypeAttribute.Rar;
@@ -579,7 +600,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 's' - 'b':
+                    case 's' - 'a':
                         if ((code | 0x202000ff) == (0xff + ('.' << 8) + ('j' << 16) + ('s' << 24)))
                         {
                             contentType = JsContentType;
@@ -596,7 +617,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 't' - 'b':
+                    case 't' - 'a':
                         if ((code |= 0x20202000) == ('.' + ('t' << 8) + ('x' << 16) + ('t' << 24)))
                         {
                             contentType = Http.ContentTypeAttribute.Txt;
@@ -609,7 +630,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'v' - 'b':
+                    case 'v' - 'a':
                         if ((code | 0x20202000) == '.' + ('w' << 8) + ('a' << 16) + ('v' << 24))
                         {
                             contentType = Http.ContentTypeAttribute.Wav;
@@ -623,7 +644,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             return 0;
                         }
                         return 1;
-                    case 'x' - 'b':
+                    case 'x' - 'a':
                         if (*(pathEnd - 5) == '.')
                         {
                             if ((code |= 0x20202020) == ('d' + ('o' << 8) + ('c' << 16) + ('x' << 24)))
@@ -638,7 +659,7 @@ namespace AutoCSer.Net.HttpDomainServer
                             }
                         }
                         return 1;
-                    case 'z' - 'b':
+                    case 'z' - 'a':
                         if ((code | 0x200000ff) == 0xff + ('.' << 8) + ('7' << 16) + ('z' << 24))
                         {
                             contentType = Http.ContentTypeAttribute._7z;
@@ -704,7 +725,21 @@ namespace AutoCSer.Net.HttpDomainServer
                                     for (byte* start = pathStart; start != pathEnd; ++start) *write++ = *start == '/' ? directorySeparatorChar : (char)*start;
                                 }
                                 FileInfo file = new FileInfo(cacheFileName);
-                                if (file.Exists)
+                                bool isFileExists = file.Exists;
+                                if (!isFileExists && cacheFileName.IndexOf('%') >= WorkPath.Length)
+                                {
+                                    cacheKey.CopyPath();
+                                    isCopyPath = false;
+                                    string newPath = AutoCSer.Net.Http.Header.UnescapeUtf8(pathStart, cachePathLength, path, (int)(pathStart - pathFixed));
+                                    if (Path.DirectorySeparatorChar != '/') newPath.replaceNotNull('/', Path.DirectorySeparatorChar);
+                                    FileInfo newFile = new FileInfo(WorkPath + newPath);
+                                    if (newFile.Exists)
+                                    {
+                                        file = newFile;
+                                        isFileExists = true;
+                                    }
+                                }
+                                if (isFileExists)
                                 {
                                     string fileName = file.FullName;
                                     if (fileName.Length > WorkPath.Length && WorkPath.equalCaseNotNull(fileName, WorkPath.Length))

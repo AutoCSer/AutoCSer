@@ -20,6 +20,7 @@ namespace AutoCSer.CodeGenerator.Template
         private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
         private const AutoCSer.Net.TcpServer.ClientTaskType ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Timeout;
         private const bool IsCallQueue = false;
+        private const bool IsVerifyMethodAsynchronousCallback = false;
         private static Type.FullName GetRemoteMethodName(MemberType.FullName MemberName) { return null; }
         #endregion NOTE
 
@@ -588,15 +589,25 @@ namespace AutoCSer.CodeGenerator.Template
                 return names;
             }
             #endregion IF ServiceAttribute.IsRememberCommand
+            #region LOOP ServerCallQueueTypes
+#if NOJIT
+            private readonly AutoCSer.Net.TcpServer.IServerCallQueue @QueueName;
+#else
+            private readonly AutoCSer.Net.TcpServer.IServerCallQueue<@ServerCallQueueType.FullName> @QueueName;
+#endif
+            #endregion LOOP ServerCallQueueTypes
             /// <summary>
             /// TCP调用服务端
             /// </summary>
             /// <param name="attribute">TCP调用服务器端配置信息</param>
             /// <param name="verify">TCP验证实例</param>
-            /// <param name="log">日志接口</param>
+            #region IF ServerCallQueueType
+            /// <param name="serverCallQueue">自定义队列</param>
+            #endregion IF ServerCallQueueType
             /// <param name="onCustomData">自定义数据包处理</param>
-            public @ServerName(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, onCustomData, log, @IsCallQueue)
+            /// <param name="log">日志接口</param>
+            public @ServerName(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:ServerCallQueueType*/, @ServerCallQueueType.FullName serverCallQueue = null/*IF:ServerCallQueueType*/, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, /*IF:ServerCallQueueType*/serverCallQueue ?? new @ServerCallQueueType.FullName()/*IF:ServerCallQueueType*//*NOTE*/ ?? /*NOTE*//*NOT:ServerCallQueueType*/null/*NOT:ServerCallQueueType*/, onCustomData, log, @IsCallQueue, @IsVerifyMethodAsynchronousCallback)
             {
                 setCommandData(@MethodIndexs.Length);
                 #region LOOP MethodIndexs
@@ -609,6 +620,9 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion NOT IsVerifyMethod
                 #endregion NOT IsNullMethod
                 #endregion LOOP MethodIndexs
+                #region LOOP ServerCallQueueTypes
+                @QueueName = getServerCallQueue<@ServerCallQueueType.FullName>();
+                #endregion LOOP ServerCallQueueTypes
                 if (attribute.IsAutoServer) Start();
             }
             /// <summary>
@@ -644,15 +658,39 @@ namespace AutoCSer.CodeGenerator.Template
                                 #region IF IsAsynchronousCallback
                                 #region IF MethodIsReturn
                                 @OutputParameterTypeName outputParameter = new @OutputParameterTypeName();
+                                #endregion IF MethodIsReturn
+                                #region IF IsMethodServerCall
+                                @MethodStreamName serverCall = @MethodStreamName/**/.Pop() ?? new @MethodStreamName();
+                                #region IF MethodIsReturn
+                                serverCall.AsynchronousCallback = sender.GetCallback<@OutputParameterTypeName, @MethodReturnType.FullName>(@StaticMethodIdentityCommand, ref outputParameter);
+                                #endregion IF MethodIsReturn
+                                #region NOT MethodIsReturn
+                                serverCall.AsynchronousCallback = /*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>)/*NOTE*/sender.GetCallback(@StaticMethodIdentityCommand);
+                                #endregion NOT MethodIsReturn
+                                #region PUSH QueueType
+                                serverCall.Set(sender, @QueueName/**/.Get(sender, ref inputParameter./*PUSH:ServerCallQueueKeyParameter*/@ParameterName/*PUSH:ServerCallQueueKeyParameter*/)/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                #endregion PUSH QueueType
+                                #region NOT QueueType
+                                serverCall.Set(sender, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                #endregion NOT QueueType
+                                #endregion IF IsMethodServerCall
+                                #region NOT IsMethodServerCall
+                                #region IF MethodIsReturn
                                 @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName>, bool>)/*NOTE*/sender.GetCallback<@OutputParameterTypeName, @MethodReturnType.FullName>(@StaticMethodIdentityCommand, ref outputParameter));
                                 #endregion IF MethodIsReturn
                                 #region NOT MethodIsReturn
                                 @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>)/*NOTE*/sender.GetCallback(@StaticMethodIdentityCommand));
                                 #endregion NOT MethodIsReturn
+                                #endregion NOT IsMethodServerCall
                                 #endregion IF IsAsynchronousCallback
                                 #region NOT IsAsynchronousCallback
                                 #region IF IsMethodServerCall
+                                #region PUSH QueueType
+                                (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, @QueueName/**/.Get(sender, ref inputParameter./*PUSH:ServerCallQueueKeyParameter*/@ParameterName/*PUSH:ServerCallQueueKeyParameter*/)/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                #endregion PUSH QueueType
+                                #region NOT QueueType
                                 (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                #endregion NOT QueueType
                                 #endregion IF IsMethodServerCall
                                 #region NOT IsMethodServerCall
                                 #region NOT IsClientSendOnly
@@ -723,10 +761,13 @@ namespace AutoCSer.CodeGenerator.Template
             }
             #region LOOP MethodIndexs
             #region NOT IsNullMethod
-            #region NOT IsAsynchronousCallback
             #region IF IsMethodServerCall
             sealed class @MethodStreamName : AutoCSer.Net.TcpStaticServer.ServerCall<@MethodStreamName/*IF:InputParameterIndex*/, @InputParameterTypeName/*IF:InputParameterIndex*/>
             {
+                #region IF IsAsynchronousCallback
+                internal Func<AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/, bool> AsynchronousCallback;
+                #endregion IF IsAsynchronousCallback
+                #region NOT IsAsynchronousCallback
                 private void get(ref AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value)
                 {
                     try
@@ -769,8 +810,18 @@ namespace AutoCSer.CodeGenerator.Template
                         Sender.AddLog(error);
                     }
                 }
+                #endregion NOT IsAsynchronousCallback
                 public override void Call()
                 {
+                    #region IF IsAsynchronousCallback
+                    #region IF MethodIsReturn
+                    @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/Sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*/AsynchronousCallback);
+                    #endregion IF MethodIsReturn
+                    #region NOT MethodIsReturn
+                    @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/Sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)/*NOTE*/AsynchronousCallback);
+                    #endregion NOT MethodIsReturn
+                    #endregion IF IsAsynchronousCallback
+                    #region NOT IsAsynchronousCallback
                     AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value = new AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/();
                     #region IF IsClientSendOnly
                     if (Sender.IsSocket) get(ref value);
@@ -793,10 +844,10 @@ namespace AutoCSer.CodeGenerator.Template
                     }
                     #endregion NOT IsClientSendOnly
                     push(this);
+                    #endregion NOT IsAsynchronousCallback
                 }
             }
             #endregion IF IsMethodServerCall
-            #endregion NOT IsAsynchronousCallback
             private static readonly AutoCSer.Net.TcpServer.OutputInfo @StaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = @OutputParameterIndex/*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsClientSendOnly*/, IsClientSendOnly = 1/*IF:IsClientSendOnly*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*//*IF:IsServerBuildOutputThread*/, IsBuildOutputThread = true/*IF:IsServerBuildOutputThread*/ };
             #endregion NOT IsNullMethod
             #endregion LOOP MethodIndexs

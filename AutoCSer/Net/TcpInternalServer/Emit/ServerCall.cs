@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <param name="serverValue">服务器目标对象</param>
         /// <param name="taskType"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void set(ServerSocketSender socket, object serverValue, TcpServer.ServerTaskType taskType)
+        public void Call(ServerSocketSender socket, object serverValue, TcpServer.ServerTaskType taskType)
         {
             this.Sender = socket;
             this.serverValue = serverValue;
@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             //CommandFlags = CommandIdentity.GetCommandFlags();
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
@@ -41,17 +41,19 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             }
         }
         /// <summary>
-        /// 获取服务器端调用
+        /// 设置参数
         /// </summary>
-        /// <typeparam name="callType">服务器端调用类型</typeparam>
-        /// <param name="socket"></param>
-        /// <param name="serverValue"></param>
-        /// <param name="taskType"></param>
+        /// <param name="socket">套接字</param>
+        /// <param name="serverValue">服务器目标对象</param>
+        /// <param name="queue">自定义队列</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void Call<callType>(ServerSocketSender socket, object serverValue, TcpServer.ServerTaskType taskType)
-            where callType : ServerCall
+        public void CallQueue(ServerSocketSender socket, object serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue)
         {
-            (AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Emit.Constructor<callType>.New()).set(socket, serverValue, taskType);
+            this.Sender = socket;
+            this.serverValue = serverValue;
+            CommandIndex = socket.ServerSocket.CommandIndex;
+            //CommandFlags = CommandIdentity.GetCommandFlags();
+            queue.Add(this);
         }
         /// <summary>
         /// 服务器端调用入池
@@ -65,6 +67,15 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             Sender = null;
             serverValue = null;
             AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+        }
+        /// <summary>
+        /// 获取服务器端调用
+        /// </summary>
+        /// <typeparam name="callType">服务器端调用类型</typeparam>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static callType PopNew<callType>() where callType : ServerCall
+        {
+            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Emit.Constructor<callType>.New();
         }
     }
     /// <summary>
@@ -86,7 +97,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <param name="taskType">任务类型</param>
         /// <param name="inputParameter">输入参数</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void set(ServerSocketSender sender, object serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
+        public void CallEmit(ServerSocketSender sender, object serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
         {
             this.Sender = sender;
             this.serverValue = serverValue;
@@ -95,7 +106,7 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             this.inputParameter = inputParameter;
             switch (taskType)
             {
-                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(threadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
+                case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
@@ -103,18 +114,21 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             }
         }
         /// <summary>
-        /// 获取服务器端调用
+        /// 设置参数
         /// </summary>
-        /// <typeparam name="callType">服务器端调用类型</typeparam>
-        /// <param name="socket"></param>
-        /// <param name="serverValue"></param>
-        /// <param name="taskType"></param>
-        /// <param name="inputParameter"></param>
+        /// <param name="sender">套接字</param>
+        /// <param name="serverValue">服务器目标对象</param>
+        /// <param name="queue">自定义队列</param>
+        /// <param name="inputParameter">输入参数</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void Call<callType>(ServerSocketSender socket, object serverValue, TcpServer.ServerTaskType taskType, ref inputParameterType inputParameter)
-            where callType : ServerCall<inputParameterType>
+        public void CallQueue(ServerSocketSender sender, object serverValue, AutoCSer.Net.TcpServer.ServerCallQueue queue, ref inputParameterType inputParameter)
         {
-            (AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Emit.Constructor<callType>.New()).set(socket, serverValue, taskType, ref inputParameter);
+            this.Sender = sender;
+            this.serverValue = serverValue;
+            CommandIndex = sender.ServerSocket.CommandIndex;
+            //CommandFlags = CommandIdentity.GetCommandFlags();
+            this.inputParameter = inputParameter;
+            queue.Add(this);
         }
         /// <summary>
         /// 服务器端调用入池
@@ -129,6 +143,15 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             serverValue = null;
             inputParameter = default(inputParameterType);
             AutoCSer.Threading.RingPool<callType>.Default.PushNotNull(call);
+        }
+        /// <summary>
+        /// 获取服务器端调用
+        /// </summary>
+        /// <typeparam name="callType">服务器端调用类型</typeparam>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static new callType PopNew<callType>() where callType : ServerCall<inputParameterType>
+        {
+            return AutoCSer.Threading.RingPool<callType>.Default.Pop() ?? AutoCSer.Emit.Constructor<callType>.New();
         }
     }
 }

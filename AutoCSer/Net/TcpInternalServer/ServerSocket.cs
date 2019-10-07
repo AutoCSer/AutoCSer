@@ -202,6 +202,11 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <returns></returns>
         private bool isVerifyCommand()
         {
+            if (IsVerifyMethod)
+            {
+                receiveIndex = receiveCount = 0;
+                return isCommand();
+            }
 #if DOTNET2
             Socket socket = new Net.UnionType { Value = receiveAsyncEventArgs.AsyncState }.Socket;
             if (socket == Socket)

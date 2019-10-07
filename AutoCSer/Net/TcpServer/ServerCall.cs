@@ -44,7 +44,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="state"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void threadPoolCall(object state)
+        internal void ThreadPoolCall(object state)
         {
             try
             {

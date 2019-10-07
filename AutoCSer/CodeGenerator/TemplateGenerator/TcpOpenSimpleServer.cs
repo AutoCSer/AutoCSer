@@ -138,10 +138,12 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         if (!method.IsNullMethod)
                         {
                             if (IsVerifyMethod) method.Attribute.IsVerifyMethod = false;
-                            else if (method.IsVerifyMethod) IsVerifyMethod = true;
+                            else if (method.IsVerifyMethod)
+                            {
+                                IsVerifyMethod = true;
+                                IsVerifyMethodAsynchronousCallback = method.IsAsynchronousCallback;
+                            }
                             parameterBuilder.Add(method);
-
-                            IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
                         }
                     }
                     ParameterTypes = parameterBuilder.Get();
