@@ -204,6 +204,7 @@ namespace AutoCSer.Search
                             if ((type & (byte)WordType.OtherLetter) == 0)
                             {
                                 char* word = start;
+                                bool isWord = false;
                                 for (nextType = charTypeData[*++start]; (nextType &= ((byte)WordType.Letter | (byte)WordType.Number | (byte)WordType.Keep)) != 0; nextType = charTypeData[*++start])
                                 {
                                     if (type != nextType)
@@ -211,6 +212,7 @@ namespace AutoCSer.Search
                                         if (type != (byte)WordType.Keep)
                                         {
                                             if (!checkAddWord((int)(word - textFixed), (int)(start - word)) && isAllMatch) return false;
+                                            isWord = true;
                                         }
                                         type = nextType;
                                         word = start;
@@ -219,8 +221,12 @@ namespace AutoCSer.Search
                                 if (word != segment && type != (byte)WordType.Keep)
                                 {
                                     if (!checkAddWord((int)(word - textFixed), (int)(start - word)) && isAllMatch) return false;
+                                    isWord = true;
                                 }
-                                if (!isAllMatch) checkAddWord((int)(segment - textFixed), (int)(start - segment));
+                                if (!isWord)
+                                {
+                                    if (!checkAddWord((int)(segment - textFixed), (int)(start - segment)) && isAllMatch) return false;
+                                }
                             }
                             else
                             {

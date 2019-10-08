@@ -421,15 +421,21 @@ namespace AutoCSer.Web.DeployClient
                 Project.PropertyGroup propertyGroup = project.PropertyGroup;
                 if (propertyGroup != null)
                 {
-                    FileInfo packFile = new FileInfo(project.PackagePath + propertyGroup.PackageId + "." + propertyGroup.Version + ".nupkg");
+                    string packFileName = propertyGroup.PackageId + "." + propertyGroup.Version + ".nupkg";
+                    FileInfo packFile = new FileInfo(project.PackagePath + packFileName), nugetPackFile = new FileInfo(AutoCSer.Web.Config.Deploy.NugetPath + packFileName);
                     if (packFile.Exists)
                     {
-                        string arguments = " nuget push " + packFile.FullName + " -k " + AutoCSer.Web.Config.Pub.NugetKey + " -s https://api.nuget.org/v3/index.json";
+                        System.IO.File.Copy(packFile.FullName, nugetPackFile.FullName, true);
+                        nugetPackFile = new FileInfo(nugetPackFile.FullName);
+                    }
+                    if (nugetPackFile.Exists)
+                    {
+                        string arguments = " nuget push " + nugetPackFile.FullName + " -k " + AutoCSer.Web.Config.Pub.NugetKey + " -s https://api.nuget.org/v3/index.json";
                         string output = waitProcessDirectory(AutoCSer.Web.Config.Pub.DotnetExeFile, arguments);
-                        if (isPushNuget(output)) appendMessage(packFile.FullName + " push 成功");
+                        if (isPushNuget(output)) appendMessage(nugetPackFile.FullName + " push 成功");
                         else
                         {
-                            appendMessage(packFile.FullName + @" push 失败
+                            appendMessage(nugetPackFile.FullName + @" push 失败
 " + output);
                         }
                     }

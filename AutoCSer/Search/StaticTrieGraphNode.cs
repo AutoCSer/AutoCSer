@@ -37,7 +37,7 @@ namespace AutoCSer.Search
             {
                 Nodes = nodes;
                 Value = value;
-                Link = 0;
+                //Link = 0;
             }
             /// <summary>
             /// 初始化重置数据

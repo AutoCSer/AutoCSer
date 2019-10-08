@@ -39,6 +39,7 @@ namespace AutoCSer.Search
                 try
                 {
                     staticGraph.setBoot(create(boot));
+                    createLink(boot);
                     isCreate = true;
                 }
                 finally
