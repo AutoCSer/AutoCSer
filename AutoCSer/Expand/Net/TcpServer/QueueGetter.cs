@@ -2,13 +2,17 @@
 
 namespace AutoCSer.Net.TcpServer
 {
+#if NOJIT
     /// <summary>
     /// 队列获取
     /// </summary>
     /// <typeparam name="queueType">队列类型</typeparam>
-#if NOJIT
     public class QueueGetter<queueType> : IServerCallQueue
 #else
+    /// <summary>
+    /// 队列获取
+    /// </summary>
+    /// <typeparam name="queueType">队列类型</typeparam>
     /// <typeparam name="queueKeyType">关键字类型</typeparam>
     public class QueueGetter<queueType, queueKeyType> : IServerCallQueue<queueKeyType>
 #endif

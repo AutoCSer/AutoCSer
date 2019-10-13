@@ -790,7 +790,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c8 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 12, IsBuildOutputThread = true };
                 sealed class _s9 : AutoCSer.Net.TcpInternalServer.ServerCall<_s9, AutoCSer.Deploy.Server>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<byte[]> AsynchronousCallback;
                     public override void Call()
                     {
                         

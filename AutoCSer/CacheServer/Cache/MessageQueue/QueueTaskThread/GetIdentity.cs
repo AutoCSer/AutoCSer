@@ -11,7 +11,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 返回调用委托
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn;
+        private AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onReturn;
         /// <summary>
         /// 队列数据 读取配置
         /// </summary>
@@ -55,7 +55,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
             }
             finally
             {
-                if (onReturn != null) onReturn(new ReturnParameter(ReturnType.MessageQueueCreateReaderError));
+                if (onReturn != null) onReturn.Callback(new ReturnParameter(ReturnType.MessageQueueCreateReaderError));
             }
             return LinkNext;
         }
@@ -68,7 +68,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         {
             ReturnParameter returnParameter = default(ReturnParameter);
             returnParameter.Parameter.ReturnParameterSet(identity);
-            onReturn(returnParameter);
+            onReturn.Callback(returnParameter);
             onReturn = null;
         }
         /// <summary>
@@ -78,7 +78,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CallOnReturn(ReturnType returnType)
         {
-            onReturn(new ReturnParameter(returnType));
+            onReturn.Callback(new ReturnParameter(returnType));
             onReturn = null;
         }
     }

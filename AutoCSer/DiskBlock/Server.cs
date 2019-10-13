@@ -48,10 +48,10 @@ namespace AutoCSer.DiskBlock
         /// <param name="onRead">获取数据回调委托</param>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox | AutoCSer.Net.TcpServer.ParameterFlags.ClientAsynchronousReturnInput)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void read(ClientBuffer buffer, ulong index, Func<AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer>, bool> onRead)
+        private void read(ClientBuffer buffer, ulong index, AutoCSer.Net.TcpServer.ServerCallback<ClientBuffer> onRead)
         {
             if ((int)(index >> IndexShift) == this.index) block.Read((long)(index & MaxIndex), buffer.Buffer.Start, onRead);
-            else onRead(new ClientBuffer { State = MemberState.BlockIndexError });
+            else onRead.Callback(new ClientBuffer { State = MemberState.BlockIndexError });
         }
         /// <summary>
         /// 添加数据
@@ -60,10 +60,10 @@ namespace AutoCSer.DiskBlock
         /// <param name="onWrite">添加数据回调委托</param>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void append(AppendBuffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>, bool> onWrite)
+        private void append(AppendBuffer buffer, AutoCSer.Net.TcpServer.ServerCallback<ulong> onWrite)
         {
             if (buffer.CheckBlockIndex(index)) block.Append(ref buffer, onWrite);
-            else onWrite(0);
+            else onWrite.Callback(0);
         }
         /// <summary>
         /// 创建磁盘块服务

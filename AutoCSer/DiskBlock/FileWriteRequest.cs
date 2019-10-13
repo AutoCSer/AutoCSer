@@ -17,7 +17,7 @@ namespace AutoCSer.DiskBlock
         /// <param name="buffer">数据</param>
         /// <param name="onWrite">添加数据回调委托</param>
         /// <param name="file">文件块</param>
-        internal FileWriteRequest(ref AppendBuffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>, bool> onWrite, File file)
+        internal FileWriteRequest(ref AppendBuffer buffer, AutoCSer.Net.TcpServer.ServerCallback<ulong> onWrite, File file)
             : base(ref buffer, onWrite)
         {
             this.file = file;

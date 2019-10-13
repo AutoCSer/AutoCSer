@@ -117,7 +117,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="onLog">TCP 服务注册通知委托</param>
         [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = (int)command.getLog)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void getLog(ClientId clientId, Func<TcpServer.ReturnValue<Log>, bool> onLog)
+        private void getLog(ClientId clientId, AutoCSer.Net.TcpServer.ServerCallback<Log> onLog)
         {
             if (clientId.Tick == ticks)
             {
@@ -128,14 +128,14 @@ namespace AutoCSer.Net.TcpRegister
                     try
                     {
                         foreach (ServerSet serverSet in serverSets.Values) serverSet.OnLog(onLog);
-                        onLog(Log.RegisterLoaded);
+                        onLog.Callback(Log.RegisterLoaded);
                     }
                     finally { Monitor.Exit(arrayLock); }
                     return;
                 }
                 Monitor.Exit(arrayLock);
             }
-            onLog(Log.ClientError);
+            onLog.Callback(Log.ClientError);
         }
         /// <summary>
         /// 设置只读模式

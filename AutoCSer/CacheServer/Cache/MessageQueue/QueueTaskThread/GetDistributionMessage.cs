@@ -19,7 +19,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 返回调用委托
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> OnReturn;
+        internal AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> OnReturn;
         /// <summary>
         /// 是否反序列化网络流，否则需要 Copy 数据
         /// </summary>
@@ -30,7 +30,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <param name="reader"></param>
         /// <param name="onReturn"></param>
         /// <param name="parser"></param>
-        internal GetDistributionMessage(DistributionFileReader reader, Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onReturn, ref OperationParameter.NodeParser parser) : base(reader.Node)
+        internal GetDistributionMessage(DistributionFileReader reader, AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> onReturn, ref OperationParameter.NodeParser parser) : base(reader.Node)
         {
             OnReturn = onReturn;
             sendCount = Math.Max(parser.ValueData.Int64.Int, 1);

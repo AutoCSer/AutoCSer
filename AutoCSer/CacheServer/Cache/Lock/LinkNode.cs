@@ -23,7 +23,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         /// <summary>
         /// 申请锁返回调用委托
         /// </summary>
-        internal readonly Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> OnReturn;
+        internal readonly AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> OnReturn;
         /// <summary>
         /// 锁链表节点
         /// </summary>
@@ -44,7 +44,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         {
             ReturnParameter returnParameter = new ReturnParameter();
             returnParameter.Parameter.ReturnParameterSet(++node.RandomNo);
-            if (OnReturn(returnParameter))
+            if (OnReturn.Callback(returnParameter))
             {
                 AutoCSer.Threading.TimerTask.Default.Add(onTimeout, Date.NowTime.Set().AddTicks(timeOutTicks));
                 return true;
@@ -65,7 +65,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal LinkNode DisposeLock()
         {
-            OnReturn(new ReturnParameter { Parameter = new ValueData.Data { ReturnType = ReturnType.Disposed } });
+            OnReturn.Callback(new ReturnParameter { Parameter = new ValueData.Data { ReturnType = ReturnType.Disposed } });
             return Next;
         }
     }

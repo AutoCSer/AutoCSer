@@ -2044,7 +2044,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     return AutoCSer.TestCase.SqlTableCacheServer.Class.getSqlCache(Id);
                 }
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M15(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data>, bool> _onReturn_)
+                public static void _M15(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Class,AutoCSer.TestCase.SqlModel.Class>.Data> _onReturn_)
                 {
                     AutoCSer.TestCase.SqlTableCacheServer.Class.onSqlLog(_onReturn_);
                 }
@@ -2225,7 +2225,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticClient
                     return AutoCSer.TestCase.SqlTableCacheServer.Student.getSqlCache(Id);
                 }
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M18(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data>, bool> _onReturn_)
+                public static void _M18(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Sql.LogStream.Log<AutoCSer.TestCase.SqlTableCacheServer.Student,AutoCSer.TestCase.SqlModel.Student>.Data> _onReturn_)
                 {
                     AutoCSer.TestCase.SqlTableCacheServer.Student.onSqlLog(_onReturn_);
                 }

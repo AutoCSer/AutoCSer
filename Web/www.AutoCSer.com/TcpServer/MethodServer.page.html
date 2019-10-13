@@ -35,7 +35,7 @@
             <!--Include:Include\GetCode[Example,6,,TcpStaticServer\SendOnly.cs]-->
         </p>
         <p>
-            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
+            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是抽象类型 <b>AutoCSer.Net.TcpServer.ServerCallback</b> 或者 <b>AutoCSer.Net.TcpServer.ServerCallback&lt;returnType&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
             <!--Include:Include\GetCode[Example,7,,TcpStaticServer\Asynchronous.cs]-->
         </p>
@@ -89,7 +89,7 @@
             <!--Include:Include\GetCode[Example,f,,TcpInternalServer\SendOnly.cs]-->
         </p>
         <p>
-            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
+            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是抽象类型 <b>AutoCSer.Net.TcpServer.ServerCallback</b> 或者 <b>AutoCSer.Net.TcpServer.ServerCallback&lt;returnType&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
             <!--Include:Include\GetCode[Example,g,,TcpInternalServer\Asynchronous.cs]-->
         </p>
@@ -139,7 +139,7 @@
             <!--Include:Include\GetCode[Example,o,,TcpOpenServer\SendOnly.cs]-->
         </p>
         <p>
-            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
+            . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是抽象类型 <b>AutoCSer.Net.TcpServer.ServerCallback</b> 或者 <b>AutoCSer.Net.TcpServer.ServerCallback&lt;returnType&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭。
             <!--Include:Include\GetCode[Example,p,,TcpOpenServer\Asynchronous.cs]-->
         </p>

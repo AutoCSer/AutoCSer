@@ -227,7 +227,7 @@ namespace AutoCSer.Deploy
         /// <param name="sender"></param>
         /// <param name="onLog">部署任务状态更新回调</param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private void getLog(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog)
+        private void getLog(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallback<Log> onLog)
         {
             //object arrayLock = clientPool.ArrayLock;
             //Monitor.Enter(arrayLock);
@@ -526,7 +526,7 @@ namespace AutoCSer.Deploy
         /// <param name="onPush">推送委托</param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void customPush(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> onPush)
+        private void customPush(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallback<byte[]> onPush)
         {
             //onPushs.Add(++onPushIdentity, onPush);
             //if (OnGetPush != null) OnGetPush(onPush, onPushIdentity);

@@ -145,7 +145,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
                     while (!head.Enter());
                 }
             }
-            finally { exit.OnReturn(returnParameter); }
+            finally { exit.OnReturn.Callback(returnParameter); }
         }
         /// <summary>
         /// 超时处理
@@ -183,7 +183,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
             {
                 if (node.Enter()) head = end = node;
             }
-            else node.OnReturn(new ReturnParameter(ReturnType.Locked));
+            else node.OnReturn.Callback(new ReturnParameter(ReturnType.Locked));
         }
 
         /// <summary>

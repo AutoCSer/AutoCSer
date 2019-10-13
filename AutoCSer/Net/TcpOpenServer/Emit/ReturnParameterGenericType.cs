@@ -72,7 +72,14 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// </summary>
         internal override MethodInfo ServerSocketSenderGetCallbackMethod
         {
-            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallback)ParameterGenericType.ServerSocketSender.GetCallback<outputParameterType, returnType>).Method; }
+            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallback)ParameterGenericType.ServerSocketSender.GetCallbackEmit<outputParameterType, returnType>).Method; }
+        }
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        internal override MethodInfo ServerSocketSenderGetCallbackReturnMethod
+        {
+            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ReturnParameterGenericType<returnType, outputParameterType>.ServerSocketSenderGetCallbackReturn)ParameterGenericType.ServerSocketSender.GetCallbackReturn<outputParameterType, returnType>).Method; }
         }
     }
 }

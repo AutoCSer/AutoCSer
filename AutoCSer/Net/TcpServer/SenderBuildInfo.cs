@@ -55,10 +55,10 @@ namespace AutoCSer.Net.TcpServer
         [System.Runtime.InteropServices.FieldOffset(14)]
         internal byte SendSizeLessCount;
         /// <summary>
-        /// 客户端是否更注重 await
+        /// 保留
         /// </summary>
         [System.Runtime.InteropServices.FieldOffset(15)]
-        internal bool IsClientAwaiter;
+        internal bool X;
         /// <summary>
         /// 清除数据
         /// </summary>

@@ -58,20 +58,20 @@ namespace AutoCSer.Deploy
             try
             {
                 //Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = Server.GetLog(ref Identity, ref clientId) ?? Timer.onLog;
-                Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> onLog = client.OnLog ?? Timer.onLog;
+                AutoCSer.Net.TcpServer.ServerCallback<Log> onLog = client.OnLog ?? AutoCSer.Net.TcpServer.ServerCallback<Log>.Null.Default;
                 log.Type = LogType.CreateBakDirectory;
-                isLog |= onLog(log);
+                isLog |= onLog.Callback(log);
                 (BakDirectory = new DirectoryInfo(Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + Identity.Index.toString() + "_" + Identity.Identity.toString()))).Create();
                 log.Type = LogType.OnCreateBakDirectory;
-                isLog |= onLog(log);
+                isLog |= onLog.Callback(log);
                 while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)
                 {
                     Task task = DeployInfo.Tasks.Array[TaskIndex];
                     log.Set(TaskIndex, task.Type);
-                    isLog |= onLog(log);
+                    isLog |= onLog.Callback(log);
                     DeployState state = task.Run(this);
                     log.Type = LogType.OnRun;
-                    isLog |= onLog(log);
+                    isLog |= onLog.Callback(log);
                     if (state != DeployState.Success) return state;
                     ++TaskIndex;
                 }
@@ -104,15 +104,6 @@ namespace AutoCSer.Deploy
             DirectoryInfo bakDirectory = new DirectoryInfo(BakDirectory.fullName() + TaskIndex.toString());
             bakDirectory.Create();
             return bakDirectory;
-        }
-        /// <summary>
-        /// 模拟部署任务状态更新回调
-        /// </summary>
-        /// <param name="log"></param>
-        /// <returns></returns>
-        private static bool onLog(AutoCSer.Net.TcpServer.ReturnValue<Log> log)
-        {
-            return true;
         }
     }
 }

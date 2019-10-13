@@ -103,7 +103,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                     }
                     return;
                 case OperationParameter.OperationType.MessageQueueDequeue:
-                    Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onReturn = parser.ReturnParameter.Value as Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool>;
+                    AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> onReturn = parser.ReturnParameter.Value as AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter>;
                     if (onReturn != null)
                     {
                         if (parser.ValueData.Type == ValueData.DataType.Int)

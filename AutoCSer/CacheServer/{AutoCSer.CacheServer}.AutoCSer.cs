@@ -18,35 +18,35 @@ namespace AutoCSer.CacheServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[32];
-                names[0].Set(@"(System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>,bool>)GetCache", 0);
+                names[0].Set(@"(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.CacheReturnParameter>)GetCache", 0);
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"()GetFileVersion", 2);
                 names[3].Set(@"(AutoCSer.CacheServer.OperationParameter.ClientDataStructure)GetOrCreate", 3);
                 names[4].Set(@"()NewFileStream", 4);
                 names[5].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)Operation", 5);
                 names[6].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathOperationNode)Operation", 6);
-                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)OperationAsynchronous", 7);
-                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathOperationNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)OperationAsynchronous", 8);
+                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)OperationAsynchronous", 7);
+                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathOperationNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)OperationAsynchronous", 8);
                 names[9].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationAsynchronousOnly", 9);
-                names[10].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)OperationAsynchronousStream", 10);
-                names[11].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathOperationNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)OperationAsynchronousStream", 11);
+                names[10].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)OperationAsynchronousStream", 10);
+                names[11].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathOperationNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)OperationAsynchronousStream", 11);
                 names[12].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationOnly", 12);
                 names[13].Set(@"(AutoCSer.CacheServer.OperationParameter.OperationNode)OperationStream", 13);
                 names[14].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathOperationNode)OperationStream", 14);
                 names[15].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)Query", 15);
                 names[16].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode)Query", 16);
-                names[17].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronous", 17);
-                names[18].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronous", 18);
-                names[19].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronousStream", 19);
-                names[20].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronousStream", 20);
-                names[21].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.IdentityReturnParameter>,bool>)QueryKeepCallback", 21);
-                names[22].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallback", 22);
-                names[23].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.IdentityReturnParameter>,bool>)QueryKeepCallbackStream", 23);
-                names[24].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallbackStream", 24);
+                names[17].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronous", 17);
+                names[18].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronous", 18);
+                names[19].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronousStream", 19);
+                names[20].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronousStream", 20);
+                names[21].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.IdentityReturnParameter>)QueryKeepCallback", 21);
+                names[22].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryKeepCallback", 22);
+                names[23].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.IdentityReturnParameter>)QueryKeepCallbackStream", 23);
+                names[24].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryKeepCallbackStream", 24);
                 names[25].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryOnly", 25);
                 names[26].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryStream", 26);
                 names[27].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode)QueryStream", 27);
-                names[28].Set(@"(ulong,long,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReadFileParameter>,bool>)ReadFile", 28);
+                names[28].Set(@"(ulong,long,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReadFileParameter>)ReadFile", 28);
                 names[29].Set(@"(AutoCSer.CacheServer.OperationParameter.RemoveDataStructure)Remove", 29);
                 names[30].Set(@"(bool)SetCanWrite", 30);
                 names[31].Set(@"()WriteFile", 31);
@@ -779,7 +779,7 @@ namespace AutoCSer.CacheServer
                 }
                 sealed class _s0 : AutoCSer.Net.TcpInternalServer.ServerCall<_s0, AutoCSer.CacheServer.MasterServer>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.CacheReturnParameter> AsynchronousCallback;
                     public override void Call()
                     {
                         
@@ -923,7 +923,7 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c6 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
                 sealed class _s7 : AutoCSer.Net.TcpInternalServer.ServerCall<_s7, AutoCSer.CacheServer.MasterServer, _p8>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
                     public override void Call()
                     {
                         
@@ -933,7 +933,7 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c7 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
                 sealed class _s8 : AutoCSer.Net.TcpInternalServer.ServerCall<_s8, AutoCSer.CacheServer.MasterServer, _p10>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
                     public override void Call()
                     {
                         
@@ -969,7 +969,7 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c9 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsClientSendOnly = 1, IsBuildOutputThread = true };
                 sealed class _s10 : AutoCSer.Net.TcpInternalServer.ServerCall<_s10, AutoCSer.CacheServer.MasterServer, _p8>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
                     public override void Call()
                     {
                         
@@ -979,7 +979,7 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c10 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 9, IsBuildOutputThread = true };
                 sealed class _s11 : AutoCSer.Net.TcpInternalServer.ServerCall<_s11, AutoCSer.CacheServer.MasterServer, _p10>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
                     public override void Call()
                     {
                         
@@ -3197,15 +3197,15 @@ namespace AutoCSer.CacheServer
                 KeyValue<string, int>[] names = new KeyValue<string, int>[14];
                 names[0].Set(@"(AutoCSer.CacheServer.OperationParameter.ClientDataStructure)Get", 0);
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
-                names[2].Set(@"(System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>,bool>)GetCache", 2);
+                names[2].Set(@"(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.CacheReturnParameter>)GetCache", 2);
                 names[3].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)Query", 3);
                 names[4].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode)Query", 4);
-                names[5].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronous", 5);
-                names[6].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronous", 6);
-                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronousStream", 7);
-                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryAsynchronousStream", 8);
-                names[9].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallback", 9);
-                names[10].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.ReturnParameter>,bool>)QueryKeepCallbackStream", 10);
+                names[5].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronous", 5);
+                names[6].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronous", 6);
+                names[7].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronousStream", 7);
+                names[8].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryAsynchronousStream", 8);
+                names[9].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryKeepCallback", 9);
+                names[10].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter>)QueryKeepCallbackStream", 10);
                 names[11].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryOnly", 11);
                 names[12].Set(@"(AutoCSer.CacheServer.OperationParameter.QueryNode)QueryStream", 12);
                 names[13].Set(@"(AutoCSer.CacheServer.OperationParameter.ShortPathQueryNode)QueryStream", 13);
@@ -3579,7 +3579,7 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 sealed class _s2 : AutoCSer.Net.TcpInternalServer.ServerCall<_s2, AutoCSer.CacheServer.SlaveServer>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.CacheServer.CacheReturnParameter>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.CacheReturnParameter> AsynchronousCallback;
                     public override void Call()
                     {
                         

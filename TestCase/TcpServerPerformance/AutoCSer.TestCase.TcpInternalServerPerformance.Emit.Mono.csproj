@@ -44,14 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Add.cs" />
-    <Compile Include="ClientCustomSerialize.cs" />
-    <Compile Include="ClientCustomSerializeOutput.cs" />
     <Compile Include="InternalServer.Main.cs" />
     <Compile Include="IServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerCustomSerialize.cs" />
-    <Compile Include="ServerCustomSerializeBuffer.cs" />
-    <Compile Include="ServerCustomSerializeOutput.cs" />
     <Compile Include="InternalServer.Emit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

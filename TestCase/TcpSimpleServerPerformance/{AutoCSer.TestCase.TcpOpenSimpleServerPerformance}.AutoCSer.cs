@@ -15,7 +15,7 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[2];
-                names[0].Set(@"(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)addAsynchronous", 0);
+                names[0].Set(@"(int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)addAsynchronous", 0);
                 names[1].Set(@"(int,int)addSynchronous", 1);
                 return names;
             }

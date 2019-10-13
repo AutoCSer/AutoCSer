@@ -74,7 +74,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
             if (IsSocket)
             {
                 TcpStreamServer.ServerOutput.OutputLink head = null, end;
-                TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = Server.SendBufferPool.Size, IsClientAwaiter = Server.Attribute.IsClientAwaiter };
+                TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = Server.SendBufferPool.Size };
                 UnmanagedStream outputStream;
                 SocketError socketError;
                 try
@@ -117,24 +117,9 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                     head = Outputs.GetClear(out end);
                                     goto LOOP;
                                 }
-                                if (!buildInfo.IsClientAwaiter)
+                                if (currentOutputSleep >= 0)
                                 {
-                                    if (currentOutputSleep >= 0)
-                                    {
-                                        Thread.Sleep(currentOutputSleep);
-                                        if (!Outputs.IsEmpty)
-                                        {
-                                            head = Outputs.GetClear(out end);
-                                            currentOutputSleep = 0;
-                                            goto LOOP;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (currentOutputSleep == int.MinValue) currentOutputSleep = outputSleep;
-                                    if (currentOutputSleep >= 0) Thread.Sleep(currentOutputSleep);
-                                    else AutoCSer.Threading.ThreadYield.YieldOnly();
+                                    Thread.Sleep(currentOutputSleep);
                                     if (!Outputs.IsEmpty)
                                     {
                                         head = Outputs.GetClear(out end);
@@ -142,7 +127,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                         goto LOOP;
                                     }
                                 }
-                                CHECK:
+                            CHECK:
                                 if (outputStream.ByteSize == 0) goto DISPOSE;
                                 SETDATA:
                                 buildInfo.IsNewBuffer = setSendData(start);

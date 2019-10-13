@@ -544,7 +544,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="buffer">数据缓冲区</param>
         /// <param name="onOperation"></param>
-        internal void Operation(Buffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        internal void Operation(Buffer buffer, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onOperation)
         {
             int isReturn = 0;
             try
@@ -573,14 +573,14 @@ namespace AutoCSer.CacheServer
                     }
                     buffer.FreeReference();
                     isReturn = 1;
-                    onOperation(new ReturnParameter(ReturnType.DataStructureIdentityError));
+                    onOperation.Callback(new ReturnParameter(ReturnType.DataStructureIdentityError));
                     return;
                 }
                 buffer.FreeReference();
             }
             finally
             {
-                if (isReturn == 0) onOperation(new ReturnParameter(ReturnType.CanNotWrite));
+                if (isReturn == 0) onOperation.Callback(new ReturnParameter(ReturnType.CanNotWrite));
             }
         }
         /// <summary>
@@ -609,7 +609,7 @@ namespace AutoCSer.CacheServer
         /// <param name="queryData">查询数据</param>
         /// <param name="onQuery"></param>
         /// <param name="isDeSerializeStream">是否反序列化网络流，否则需要 Copy 数据</param>
-        internal void Query(ref SubArray<byte> queryData, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery, bool isDeSerializeStream)
+        internal void Query(ref SubArray<byte> queryData, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery, bool isDeSerializeStream)
         {
             try
             {
@@ -635,7 +635,7 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (onQuery != null) onQuery(new ReturnParameter(ReturnType.DataStructureIdentityError));
+                if (onQuery != null) onQuery.Callback(new ReturnParameter(ReturnType.DataStructureIdentityError));
             }
         }
         /// <summary>
@@ -644,7 +644,7 @@ namespace AutoCSer.CacheServer
         /// <param name="queryData">查询数据</param>
         /// <param name="onQuery"></param>
         /// <param name="isDeSerializeStream">是否反序列化网络流，否则需要 Copy 数据</param>
-        internal void Query(ref SubArray<byte> queryData, Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onQuery, bool isDeSerializeStream)
+        internal void Query(ref SubArray<byte> queryData, AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> onQuery, bool isDeSerializeStream)
         {
             try
             {
@@ -670,7 +670,7 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (onQuery != null) onQuery(new IdentityReturnParameter(ReturnType.DataStructureIdentityError));
+                if (onQuery != null) onQuery.Callback(new IdentityReturnParameter(ReturnType.DataStructureIdentityError));
             }
         }
 
@@ -731,7 +731,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="parameter">短路径操作参数</param>
         /// <param name="onOperation"></param>
-        internal void Operation(ref OperationParameter.ShortPathOperationNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onOperation)
+        internal void Operation(ref OperationParameter.ShortPathOperationNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onOperation)
         {
             ReturnType returnType = ReturnType.CanNotWrite;
             try
@@ -780,7 +780,7 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (returnType != ReturnType.Success) onOperation(new ReturnParameter(returnType));
+                if (returnType != ReturnType.Success) onOperation.Callback(new ReturnParameter(returnType));
             }
         }
         /// <summary>
@@ -851,7 +851,7 @@ namespace AutoCSer.CacheServer
         /// <param name="queryData">查询数据</param>
         /// <param name="onQuery"></param>
         /// <param name="isDeSerializeStream">是否反序列化网络流，否则需要 Copy 数据</param>
-        internal void ShortPathQuery(ref SubArray<byte> queryData, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery, bool isDeSerializeStream)
+        internal void ShortPathQuery(ref SubArray<byte> queryData, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery, bool isDeSerializeStream)
         {
             byte[] data = queryData.Array;
             ReturnType returnType = ReturnType.ServerDeSerializeError;
@@ -928,7 +928,7 @@ namespace AutoCSer.CacheServer
             }
             finally
             {
-                if (onQuery != null) onQuery(new ReturnParameter(returnType));
+                if (onQuery != null) onQuery.Callback(new ReturnParameter(returnType));
             }
         }
 

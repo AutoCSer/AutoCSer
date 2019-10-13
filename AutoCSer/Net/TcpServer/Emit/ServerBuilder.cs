@@ -516,11 +516,13 @@ namespace AutoCSer.Net.TcpServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ServerSocketSenderGetCallbackMethod);
-                                        if (method.ReturnValueType == null)
-                                        {
-                                            methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
-                                        }
+                                        //methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ServerSocketSenderGetCallbackMethod);
+                                        //if (method.ReturnValueType == null)
+                                        //{
+                                        //    methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
+                                        //}
+                                        ReturnParameterGenericType returnParameterGenericType = Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type);
+                                        methodGenerator.call(method.ReturnValueType == null ? returnParameterGenericType.ServerSocketSenderGetCallbackReturnMethod : returnParameterGenericType.ServerSocketSenderGetCallbackMethod);
                                     }
                                     methodGenerator.Emit(OpCodes.Stfld, asynchronousCallbackFieldBuilder);
                                     #endregion
@@ -586,13 +588,13 @@ namespace AutoCSer.Net.TcpServer.Emit
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        //methodGenerator.call(Metadata.ServerSocketSenderGetCallbackReturnMethod.MakeGenericMethod(method.OutputParameterType.Type, method.ReturnType));
-                                        methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ServerSocketSenderGetCallbackMethod);
-                                        if (method.ReturnValueType == null)
-                                        {
-                                            //methodGenerator.call(typeof(ServerCallback<>).MakeGenericType(method.ReturnType).GetMethod("Get", BindingFlags.Static | BindingFlags.Public));
-                                            methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
-                                        }
+                                        //methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ServerSocketSenderGetCallbackMethod);
+                                        //if (method.ReturnValueType == null)
+                                        //{
+                                        //    methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
+                                        //}
+                                        ReturnParameterGenericType returnParameterGenericType = Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type);
+                                        methodGenerator.call(method.ReturnValueType == null ? returnParameterGenericType.ServerSocketSenderGetCallbackReturnMethod : returnParameterGenericType.ServerSocketSenderGetCallbackMethod);
                                     }
                                     methodGenerator.call(method.MethodInfo);
                                     if (method.IsKeepCallback) methodGenerator.Emit(OpCodes.Pop);

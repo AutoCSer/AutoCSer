@@ -22,7 +22,7 @@ namespace AutoCSer.Web.SearchServer
         /// <param name="key">字搜索</param>
         /// <param name="onSearch">搜索回调</param>
         [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
-        internal static void Search(string key, Func<AutoCSer.Net.TcpServer.ReturnValue<SearchItem[]>, bool> onSearch)
+        internal static void Search(string key, AutoCSer.Net.TcpServer.ServerCallback<SearchItem[]> onSearch)
         {
             Searcher.SearchTaskQueue.Add(new Queue.Search(key, onSearch));
         }

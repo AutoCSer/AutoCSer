@@ -15,8 +15,8 @@ namespace AutoCSer.TestCase.ChatServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[5];
-                names[0].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>,bool>)getMessage", 0);
-                names[1].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>,bool>)getUser", 1);
+                names[0].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.ChatData.Message>)getMessage", 0);
+                names[1].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.ChatData.UserLogin>)getUser", 1);
                 names[2].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,string)login", 2);
                 names[3].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender)logout", 3);
                 names[4].Set(@"(AutoCSer.Net.TcpOpenServer.ServerSocketSender,string)send", 4);
@@ -155,7 +155,7 @@ namespace AutoCSer.TestCase.ChatServer
                 }
                 sealed class _s0 : AutoCSer.Net.TcpOpenServer.ServerCall<_s0, AutoCSer.TestCase.ChatServer.Server>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.Message>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.ChatData.Message> AsynchronousCallback;
                     public override void Call()
                     {
                         
@@ -165,7 +165,7 @@ namespace AutoCSer.TestCase.ChatServer
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 1, IsKeepCallback = 1, IsBuildOutputThread = true };
                 sealed class _s1 : AutoCSer.Net.TcpOpenServer.ServerCall<_s1, AutoCSer.TestCase.ChatServer.Server>
                 {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.ChatData.UserLogin>, bool> AsynchronousCallback;
+                    internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.ChatData.UserLogin> AsynchronousCallback;
                     public override void Call()
                     {
                         

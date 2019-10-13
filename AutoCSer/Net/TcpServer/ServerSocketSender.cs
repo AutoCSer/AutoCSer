@@ -19,7 +19,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务器端异步保持调用集合
         /// </summary>
-        internal Dictionary<int, IServerKeepCallback> KeepCallbacks;
+        internal Dictionary<int, ServerCallbackBase> KeepCallbacks;
 
         /// <summary>
         /// TCP 服务端套接字输出信息链表
@@ -49,9 +49,9 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="commandIndex"></param>
         /// <param name="keepCallback"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void AddKeepCallback(uint commandIndex, IServerKeepCallback keepCallback)
+        internal void AddKeepCallback(uint commandIndex, ServerCallbackBase keepCallback)
         {
-            if (KeepCallbacks == null) KeepCallbacks = DictionaryCreator.CreateInt<IServerKeepCallback>();
+            if (KeepCallbacks == null) KeepCallbacks = DictionaryCreator.CreateInt<ServerCallbackBase>();
             KeepCallbacks[(int)commandIndex] = keepCallback;
         }
     }
@@ -574,7 +574,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CancelKeepCallback(int commandIndex)
         {
-            IServerKeepCallback keepCallback;
+            ServerCallbackBase keepCallback;
             if (KeepCallbacks != null && KeepCallbacks.TryGetValue(commandIndex, out keepCallback))
             {
                 KeepCallbacks.Remove(commandIndex);

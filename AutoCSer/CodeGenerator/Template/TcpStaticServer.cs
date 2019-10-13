@@ -36,7 +36,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region NOT IsNullMethod
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 #region IF IsAsynchronousCallback
-                public static void @StaticMethodIndexName(/*IF:ClientParameterName*/AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/Func<AutoCSer.Net.TcpServer.ReturnValue</*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/>, bool> _onReturn_)
+                public static void @StaticMethodIndexName(/*IF:ClientParameterName*/AutoCSer.Net.TcpInternalServer.ServerSocketSender _sender_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/AutoCSer.Net.TcpServer.ServerCallback/*IF:MethodIsReturn*/</*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/>/*IF:MethodIsReturn*/ _onReturn_)
                 {
                     @Type.FullName/*PUSH:Method*/.@StaticMethodName(/*IF:ClientParameterName*/_sender_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterRefName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/_onReturn_);/*PUSH:Method*/
                 }
@@ -665,7 +665,7 @@ namespace AutoCSer.CodeGenerator.Template
                                 serverCall.AsynchronousCallback = sender.GetCallback<@OutputParameterTypeName, @MethodReturnType.FullName>(@StaticMethodIdentityCommand, ref outputParameter);
                                 #endregion IF MethodIsReturn
                                 #region NOT MethodIsReturn
-                                serverCall.AsynchronousCallback = /*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>)/*NOTE*/sender.GetCallback(@StaticMethodIdentityCommand);
+                                serverCall.AsynchronousCallback = /*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/sender.GetCallback(@StaticMethodIdentityCommand);
                                 #endregion NOT MethodIsReturn
                                 #region PUSH QueueType
                                 serverCall.Set(sender, @QueueName/**/.Get(sender, ref inputParameter./*PUSH:ServerCallQueueKeyParameter*/@ParameterName/*PUSH:ServerCallQueueKeyParameter*/)/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
@@ -676,10 +676,10 @@ namespace AutoCSer.CodeGenerator.Template
                                 #endregion IF IsMethodServerCall
                                 #region NOT IsMethodServerCall
                                 #region IF MethodIsReturn
-                                @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName>, bool>)/*NOTE*/sender.GetCallback<@OutputParameterTypeName, @MethodReturnType.FullName>(@StaticMethodIdentityCommand, ref outputParameter));
+                                @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/sender.GetCallback<@OutputParameterTypeName, @MethodReturnType.FullName>(@StaticMethodIdentityCommand, ref outputParameter));
                                 #endregion IF MethodIsReturn
                                 #region NOT MethodIsReturn
-                                @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>)/*NOTE*/sender.GetCallback(@StaticMethodIdentityCommand));
+                                @MethodType.FullName/**/.TcpStaticServer.@StaticMethodIndexName(/*IF:ClientParameterName*/sender, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/sender.GetCallback(@StaticMethodIdentityCommand));
                                 #endregion NOT MethodIsReturn
                                 #endregion NOT IsMethodServerCall
                                 #endregion IF IsAsynchronousCallback
@@ -765,7 +765,7 @@ namespace AutoCSer.CodeGenerator.Template
             sealed class @MethodStreamName : AutoCSer.Net.TcpStaticServer.ServerCall<@MethodStreamName/*IF:InputParameterIndex*/, @InputParameterTypeName/*IF:InputParameterIndex*/>
             {
                 #region IF IsAsynchronousCallback
-                internal Func<AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/, bool> AsynchronousCallback;
+                internal AutoCSer.Net.TcpServer.ServerCallback/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ AsynchronousCallback;
                 #endregion IF IsAsynchronousCallback
                 #region NOT IsAsynchronousCallback
                 private void get(ref AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<@OutputParameterTypeName>/*IF:OutputParameterIndex*/ value)

@@ -21,9 +21,9 @@ namespace AutoCSer.TestCase.TcpOpenSimpleServerPerformance
         /// <param name="onAdd"></param>
         [AutoCSer.Net.TcpOpenSimpleServer.Method]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void addAsynchronous(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> onAdd)
+        private void addAsynchronous(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<int> onAdd)
         {
-            onAdd(left + right);
+            onAdd.Callback(left + right);
         }
 
         /// <summary>

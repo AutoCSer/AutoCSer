@@ -1074,9 +1074,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// </summary>
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Func<TcpServer.ReturnValue, bool> GetCallback()
+        public TcpServer.ServerCallback GetCallback()
         {
-            return (AutoCSer.Threading.RingPool<ServerCallback>.Default.Pop() ?? new ServerCallback()).Set(this);
+            return new ServerCallback(this);
         }
         /// <summary>
         /// 异步回调
@@ -1085,14 +1085,14 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="outputParameter">输出参数</param>
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Func<TcpServer.ReturnValue<returnType>, bool> GetCallback<outputParameterType, returnType>(TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+        public TcpServer.ServerCallback<returnType> GetCallback<outputParameterType, returnType>(TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
 #if NOJIT
             where outputParameterType : struct, IReturnParameter
 #else
             where outputParameterType : struct, IReturnParameter<returnType>
 #endif
         {
-            return (AutoCSer.Threading.RingPool<ServerCallback<outputParameterType, returnType>>.Default.Pop() ?? new ServerCallback<outputParameterType, returnType>()).Set(this, outputInfo, ref outputParameter);
+            return new ServerCallback<outputParameterType, returnType>(this, outputInfo, ref outputParameter);
         }
         /// <summary>
         /// 验证函数异步回调
@@ -1101,14 +1101,14 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="outputParameter">输出参数</param>
         /// <returns>验证函数异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public Func<TcpServer.ReturnValue<bool>, bool> GetCallback<outputParameterType>(TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+        public TcpServer.ServerCallback<bool> GetCallback<outputParameterType>(TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
 #if NOJIT
             where outputParameterType : struct, IReturnParameter
 #else
             where outputParameterType : struct, IReturnParameter<bool>
 #endif
         {
-            return (AutoCSer.Threading.RingPool<ServerCallback<outputParameterType>>.Default.Pop() ?? new ServerCallback<outputParameterType>()).Set(this, outputInfo, ref outputParameter);
+            return new ServerCallback<outputParameterType>(this, outputInfo, ref outputParameter);
         }
     }
 }

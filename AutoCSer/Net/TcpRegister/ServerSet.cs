@@ -98,10 +98,10 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         /// <param name="onLog"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnLog(Func<TcpServer.ReturnValue<Log>, bool> onLog)
+        internal void OnLog(AutoCSer.Net.TcpServer.ServerCallback<Log> onLog)
         {
-            foreach (Log log in Servers) onLog(log);
-            onLog(Server);
+            foreach (Log log in Servers) onLog.Callback(log);
+            onLog.Callback(Server);
         }
         /// <summary>
         /// 移除 TCP 服务注册信息

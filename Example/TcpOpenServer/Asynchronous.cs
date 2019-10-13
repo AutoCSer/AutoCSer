@@ -15,10 +15,10 @@ namespace AutoCSer.Example.TcpOpenServer
         /// <param name="left">加法左值</param>
         /// <param name="right">加法右值</param>
         /// <param name="onAdd">加法计算回调委托</param>
-        [AutoCSer.Net.TcpOpenServer.Method(IsClientAsynchronous = true, IsClientSynchronous = true)]
-        void Add(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> onAdd)
+        [AutoCSer.Net.TcpOpenServer.Method(IsClientAsynchronous = true, IsClientSynchronous = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
+        void Add(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<int> onAdd)
         {
-            onAdd(left + right);
+            onAdd.Callback(left + right);
         }
 
         /// <summary>

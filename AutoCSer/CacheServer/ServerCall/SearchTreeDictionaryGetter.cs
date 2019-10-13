@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 返回调用委托
         /// </summary>
-        private readonly Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> OnReturn;
+        private readonly AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> OnReturn;
         /// <summary>
         /// 跳过记录数
         /// </summary>
@@ -61,7 +61,7 @@ namespace AutoCSer.CacheServer.ServerCall
             {
                 cache.TcpServer.AddLog(error);
             }
-            finally { OnReturn(returnParameter); }
+            finally { OnReturn.Callback(returnParameter); }
         }
     }
 }

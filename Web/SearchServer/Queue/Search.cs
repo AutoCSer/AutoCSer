@@ -52,13 +52,13 @@ namespace AutoCSer.Web.SearchServer.Queue
         /// <summary>
         /// 搜索回调
         /// </summary>
-        private readonly Func<AutoCSer.Net.TcpServer.ReturnValue<SearchItem[]>, bool> onSearch;
+        private readonly AutoCSer.Net.TcpServer.ServerCallback<SearchItem[]> onSearch;
         /// <summary>
         /// 搜索
         /// </summary>
         /// <param name="key"></param>
         /// <param name="onSearch"></param>
-        internal Search(string key, Func<AutoCSer.Net.TcpServer.ReturnValue<SearchItem[]>, bool> onSearch)
+        internal Search(string key, AutoCSer.Net.TcpServer.ServerCallback<SearchItem[]> onSearch)
         {
             this.key = key;
             this.onSearch = onSearch;
@@ -103,7 +103,7 @@ namespace AutoCSer.Web.SearchServer.Queue
             }
             finally
             {
-                onSearch(result ?? NullValue<SearchItem>.Array);
+                onSearch.Callback(result ?? NullValue<SearchItem>.Array);
             }
         }
     }

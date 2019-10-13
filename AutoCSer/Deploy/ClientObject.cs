@@ -10,10 +10,10 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 部署任务状态更新回调
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<Log>, bool> OnLog;
+        internal AutoCSer.Net.TcpServer.ServerCallback<Log> OnLog;
         /// <summary>
         /// 自定义推送
         /// </summary>
-        public Func<AutoCSer.Net.TcpServer.ReturnValue<byte[]>, bool> OnCustomPush { get; internal set; }
+        public AutoCSer.Net.TcpServer.ServerCallback<byte[]> OnCustomPush { get; internal set; }
     }
 }

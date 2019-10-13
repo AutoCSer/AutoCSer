@@ -134,7 +134,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             if (IsSocket)
             {
                 TcpStreamServer.ServerOutput.OutputLink head = null, end;
-                TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = Server.SendBufferPool.Size, IsClientAwaiter = Server.Attribute.IsClientAwaiter };
+                TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = Server.SendBufferPool.Size };
                 UnmanagedStream outputStream;
                 try
                 {

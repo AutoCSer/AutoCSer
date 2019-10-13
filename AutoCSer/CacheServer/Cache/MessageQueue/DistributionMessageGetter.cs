@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 获取消息回调委托
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> OnGetMessage;
+        internal AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> OnGetMessage;
         /// <summary>
         /// 是否反序列化网络流，否则需要 Copy 数据
         /// </summary>
@@ -33,7 +33,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <param name="sendCount">当前可发送数量</param>
         /// <param name="isGetMessageStream">是否反序列化网络流，否则需要 Copy 数据</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set(Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onGetMessage, int sendCount, bool isGetMessageStream)
+        internal void Set(AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> onGetMessage, int sendCount, bool isGetMessageStream)
         {
             OnGetMessage = onGetMessage;
             maxSendCount = this.sendCount = sendCount;
@@ -50,7 +50,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         internal bool Send(ulong identity, ref ValueData.Data data, ref bool isNext)
         {
             data.IsReturnDeSerializeStream = isGetMessageStream;
-            if (OnGetMessage(new IdentityReturnParameter(identity, ref data)))
+            if (OnGetMessage.Callback(new IdentityReturnParameter(identity, ref data)))
             {
                 if (--sendCount == 0)
                 {
@@ -67,7 +67,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OnDispose()
         {
-            OnGetMessage(new IdentityReturnParameter(ReturnType.MessageQueueNotFoundReader));
+            OnGetMessage.Callback(new IdentityReturnParameter(ReturnType.MessageQueueNotFoundReader));
         }
     }
 }

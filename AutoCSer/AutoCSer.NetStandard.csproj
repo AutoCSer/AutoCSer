@@ -438,7 +438,6 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Net\TcpServer\Emit\ParameterHash.cs" />
     <Compile Include="Net\TcpServer\Emit\ParameterType.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerBuilder.cs" />
-    <Compile Include="Net\TcpServer\Emit\ServerCallback.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerCallQueue.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerMetadata.cs" />
     <Compile Include="Net\TcpServer\Emit\ReturnParameterGenericType.cs" />
@@ -446,7 +445,6 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Net\TcpServer\Emit\ParameterGenericType.cs" />
     <Compile Include="Net\TcpServer\IServerCallQueue.cs" />
     <Compile Include="Net\TcpServer\IServerCallQueueSet.cs" />
-    <Compile Include="Net\TcpServer\IServerKeepCallback.cs" />
     <Compile Include="Net\TcpServer\ISetTcpServer.cs" />
     <Compile Include="Net\TcpServer\KeepCallback.cs" />
     <Compile Include="Net\TcpServer\KeepCallbackMethodAttribute.cs" />

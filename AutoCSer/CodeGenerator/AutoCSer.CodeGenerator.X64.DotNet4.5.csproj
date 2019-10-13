@@ -54,6 +54,10 @@
       <Project>{7732520f-99b4-4069-a5a9-db87a0112d9f}</Project>
       <Name>AutoCSer.DotNet4.5</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sort\AutoCSer.Sort.DotNet4.5.csproj">
+      <Project>{f71355a6-87a6-44c2-a7f0-bad9de939758}</Project>
+      <Name>AutoCSer.Sort.DotNet4.5</Name>
+    </ProjectReference>
     <ProjectReference Include="AutoCSer.CodeGenerator.DotNet4.5.csproj">
       <Project>{a79334c9-31a7-4be3-84d7-c82018bc1716}</Project>
       <Name>AutoCSer.CodeGenerator.DotNet4.5</Name>

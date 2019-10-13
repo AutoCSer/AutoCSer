@@ -53,47 +53,5 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         {
             onAdd(new Add(left, right));
         }
-
-        /// <summary>
-        /// 计算回调
-        /// </summary>
-        private ServerCustomSerializeOutput customSerializeOutput;
-        /// <summary>
-        /// 计算回调测试
-        /// </summary>
-        /// <param name="onCustomSerialize"></param>
-        /// <returns></returns>
-        public AutoCSer.Net.TcpServer.KeepCallback AddCustomSerialize(Func<AutoCSer.Net.TcpServer.ReturnValue<ServerCustomSerialize>, bool> onCustomSerialize)
-        {
-            customSerializeOutput = new ServerCustomSerializeOutput(onCustomSerialize);
-            return null;
-        }
-        /// <summary>
-        /// 计算回调测试
-        /// </summary>
-        /// <param name="value"></param>
-        public void AddCustomSerialize(ClientCustomSerialize value)
-        {
-            customSerializeOutput.Append(ref value);
-        }
-        /// <summary>
-        /// 计算测试结束
-        /// </summary>
-        public void AddCustomSerializeFinally()
-        {
-            customSerializeOutput = null;
-        }
-
-        /// <summary>
-        /// 计算回调测试
-        /// </summary>
-        /// <param name="value"></param>
-        public unsafe void AddCustomSerializeRegister(ClientCustomSerialize value)
-        {
-            fixed (byte* bufferFixed = value.Buffer.BufferArray)
-            {
-                for (byte* read = bufferFixed + value.Buffer.StartIndex, end = read + value.Buffer.Count; read != end; read += sizeof(int) * 2) onAdd(new Add(*(int*)read, *(int*)(read + sizeof(int))));
-            }
-        }
     }
 }

@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 获取缓存数据回调委托
         /// </summary>
-        private readonly Func<AutoCSer.Net.TcpServer.ReturnValue<CacheReturnParameter>, bool> onCache;
+        private readonly AutoCSer.Net.TcpServer.ServerCallback<CacheReturnParameter> onCache;
         /// <summary>
         /// 初始化操作超时时钟周期
         /// </summary>
@@ -49,7 +49,7 @@ namespace AutoCSer.CacheServer
         /// </summary>
         /// <param name="cache">缓存管理</param>
         /// <param name="onCache"></param>
-        internal CacheGetter(CacheManager cache, Func<AutoCSer.Net.TcpServer.ReturnValue<CacheReturnParameter>, bool> onCache)
+        internal CacheGetter(CacheManager cache, AutoCSer.Net.TcpServer.ServerCallback<CacheReturnParameter> onCache)
         {
             this.Cache = cache;
             this.onCache = onCache;
@@ -66,7 +66,7 @@ namespace AutoCSer.CacheServer
         {
             if (step != CacheGetStep.Error)
             {
-                onCache(default(CacheReturnParameter));
+                onCache.Callback(default(CacheReturnParameter));
                 step = CacheGetStep.Error;
             }
             return LinkNext;
@@ -96,7 +96,7 @@ namespace AutoCSer.CacheServer
                 if (snapshotSize != 0)
                 {
                     step = CacheGetStep.Snapshot;
-                    if (onCache(new CacheReturnParameter { Getter = this })) isStart = true;
+                    if (onCache.Callback(new CacheReturnParameter { Getter = this })) isStart = true;
                 }
                 else
                 {
@@ -110,7 +110,7 @@ namespace AutoCSer.CacheServer
                 if (!isStart)
                 {
                     error();
-                    onCache(default(CacheReturnParameter));
+                    onCache.Callback(default(CacheReturnParameter));
                     Cache.NextGetter();
                 }
             }
@@ -136,7 +136,7 @@ namespace AutoCSer.CacheServer
                     *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.ByteSize - startIndex;
                     if (snapshotSize != 0)
                     {
-                        if (!onCache(new CacheReturnParameter { Getter = this }))
+                        if (!onCache.Callback(new CacheReturnParameter { Getter = this }))
                         {
                             error();
                             *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = AutoCSer.BinarySerialize.Serializer.NullValue;
@@ -160,7 +160,7 @@ namespace AutoCSer.CacheServer
                     *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = stream.ByteSize - startIndex;
                     if (currentQueue != null)
                     {
-                        if (!onCache(new CacheReturnParameter { Getter = this }))
+                        if (!onCache.Callback(new CacheReturnParameter { Getter = this }))
                         {
                             error();
                             *(int*)(stream.Data.Byte + (startIndex - sizeof(int))) = AutoCSer.BinarySerialize.Serializer.NullValue;
@@ -183,13 +183,13 @@ namespace AutoCSer.CacheServer
             if (queue.IsEmpty)
             {
                 step = CacheGetStep.Loaded;
-                if (!onCache(new CacheReturnParameter { Getter = this })) error();
+                if (!onCache.Callback(new CacheReturnParameter { Getter = this })) error();
             }
             else
             {
                 currentQueue = queue.GetClear();
                 timeout = Date.Now.AddTicks(timeoutTicks);
-                if (onCache(new CacheReturnParameter { Getter = this })) return;
+                if (onCache.Callback(new CacheReturnParameter { Getter = this })) return;
                 error();
             }
             Cache.NextGetter();
@@ -205,7 +205,7 @@ namespace AutoCSer.CacheServer
             {
                 case CacheGetStep.Loaded:
                     buffer.Reference();
-                    if (onCache(new CacheReturnParameter { Buffer = buffer })) return true;
+                    if (onCache.Callback(new CacheReturnParameter { Buffer = buffer })) return true;
                     buffer.FreeReference();
                     return false;
                 case CacheGetStep.Error: return false;

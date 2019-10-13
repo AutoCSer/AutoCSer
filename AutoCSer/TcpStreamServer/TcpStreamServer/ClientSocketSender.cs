@@ -740,7 +740,7 @@ namespace AutoCSer.Net.TcpStreamServer
         {
             TcpServer.ClientCommand.CommandBase head = ClientSocket.CommandQueue, currentCommand;
             SubBuffer.PoolBufferFull Buffer = default(SubBuffer.PoolBufferFull), CopyBuffer = default(SubBuffer.PoolBufferFull), CompressBuffer = default(SubBuffer.PoolBufferFull);
-            TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = clientCreator.CommandClient.SendBufferPool.Size, IsClientAwaiter = clientCreator.Attribute.IsClientAwaiter };
+            TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = clientCreator.CommandClient.SendBufferPool.Size };
             try
             {
                 clientCreator.CommandClient.SendBufferPool.Get(ref Buffer);
@@ -775,30 +775,16 @@ namespace AutoCSer.Net.TcpStreamServer
                                 if (buildInfo.IsSend != 0) goto SETDATA;
                             }
                             if (this.isNewCommand != 0) goto WAIT;
-                            if (!buildInfo.IsClientAwaiter)
+                            if (currentOutputSleep >= 0)
                             {
-                                if (currentOutputSleep >= 0)
-                                {
-                                    Thread.Sleep(currentOutputSleep);
-                                    if (this.isNewCommand != 0 || outputStream.ByteSize == 0)
-                                    {
-                                        currentOutputSleep = 0;
-                                        goto WAIT;
-                                    }
-                                }
-                                else if (outputStream.ByteSize == 0) goto WAIT;
-                            }
-                            else
-                            {
-                                if (currentOutputSleep == int.MinValue) currentOutputSleep = outputSleep;
-                                if (currentOutputSleep >= 0) Thread.Sleep(currentOutputSleep);
-                                else AutoCSer.Threading.ThreadYield.YieldOnly();
+                                Thread.Sleep(currentOutputSleep);
                                 if (this.isNewCommand != 0 || outputStream.ByteSize == 0)
                                 {
                                     currentOutputSleep = 0;
                                     goto WAIT;
                                 }
                             }
+                            else if (outputStream.ByteSize == 0) goto WAIT;
                             SETDATA:
                             //buildCommandCount += buildInfo.Count;
                             int outputLength = outputStream.ByteSize;

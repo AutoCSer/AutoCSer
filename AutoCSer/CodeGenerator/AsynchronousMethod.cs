@@ -32,7 +32,7 @@ namespace AutoCSer.CodeGenerator
         /// <summary>
         /// 返回值类型
         /// </summary>
-        public ExtensionType methodReturnType { get; private set; }
+        public ExtensionType methodReturnType { get; protected set; }
         /// <summary>
         /// 返回值类型
         /// </summary>

@@ -196,7 +196,7 @@ namespace AutoCSer.Sql.LogStream
             /// <summary>
             /// 日志处理委托
             /// </summary>
-            internal Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> OnLog;
+            internal AutoCSer.Net.TcpServer.ServerCallback<Data> OnLog;
             /// <summary>
             /// 是否仅队列处理
             /// </summary>
@@ -245,7 +245,7 @@ namespace AutoCSer.Sql.LogStream
         /// <summary>
         /// 日志回调委托集合
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool>[] onLogs;
+        private AutoCSer.Net.TcpServer.ServerCallback<Data>[] onLogs;
         /// <summary>
         /// 添加数据日志
         /// </summary>
@@ -270,7 +270,7 @@ namespace AutoCSer.Sql.LogStream
         public Log(Table<valueType, modelType> table, params int[] memberIndexs)
             : base(table, memberIndexs ?? NullValue<int>.Array)
         {
-            onLogs = new Func<Net.TcpServer.ReturnValue<Data>, bool>[table.Attribute.MaxLogStreamCount <= 0 ? TableAttribute.DefaultLogStreamCount : table.Attribute.MaxLogStreamCount];
+            onLogs = new Net.TcpServer.ServerCallback<Data>[table.Attribute.MaxLogStreamCount <= 0 ? TableAttribute.DefaultLogStreamCount : table.Attribute.MaxLogStreamCount];
             insertLog.Type = updateLog.Type = updateMemberMapLog.Type = deleteLog.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
             insertLog.Value.Type = LogType.Insert;
             updateLog.Value.Type = updateMemberMapLog.Value.Type = LogType.Update;
@@ -340,27 +340,27 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="onLog"></param>
         /// <returns></returns>
-        private bool start(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog)
+        private bool start(AutoCSer.Net.TcpServer.ServerCallback<Data> onLog)
         {
             int count = table.Attribute.OnLogStreamCount;
             foreach (valueType value in cache.Values)
             {
                 insertLog.Value.Value.Value = value;
-                if (!onLog(insertLog)) return false;
+                if (!onLog.Callback(insertLog)) return false;
                 if (--count == 0)
                 {
                     Thread.Sleep(1);
                     count = table.Attribute.OnLogStreamCount;
                 }
             }
-            return onLog(new Data { Type = LogType.Loaded });
+            return onLog.Callback(new Data { Type = LogType.Loaded });
         }
         /// <summary>
         /// 添加日志处理委托
         /// </summary>
         /// <param name="onLog"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void Add(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog)
+        public void Add(AutoCSer.Net.TcpServer.ServerCallback<Data> onLog)
         {
             if (onLog != null) table.AddQueue(new AddOnLogTask { Log = this, OnLog = onLog });
         }
@@ -369,7 +369,7 @@ namespace AutoCSer.Sql.LogStream
         /// </summary>
         /// <param name="onLog"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void AddQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog)
+        public void AddQueue(AutoCSer.Net.TcpServer.ServerCallback<Data> onLog)
         {
             if (onLog != null) table.AddQueue(new AddOnLogTask { Log = this, OnLog = onLog, IsQueue = true });
         }
@@ -379,9 +379,9 @@ namespace AutoCSer.Sql.LogStream
         /// <param name="onLog"></param>
         /// <param name="isQueue"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void add(Func<AutoCSer.Net.TcpServer.ReturnValue<Data>, bool> onLog, bool isQueue)
+        private void add(AutoCSer.Net.TcpServer.ServerCallback<Data> onLog, bool isQueue)
         {
-            if (onLogIndex == onLogs.Length) onLog(new Data { Type = LogType.CountError });
+            if (onLogIndex == onLogs.Length) onLog.Callback(new Data { Type = LogType.CountError });
             else if (isLoaded || isQueue || start(onLog)) onLogs[onLogIndex++] = onLog;
         }
         /// <summary>
@@ -439,12 +439,12 @@ namespace AutoCSer.Sql.LogStream
         {
             for (int writeIndex = 0; writeIndex != onLogIndex; )
             {
-                if (onLogs[writeIndex](data)) ++writeIndex;
+                if (onLogs[writeIndex].Callback(data)) ++writeIndex;
                 else
                 {
                     for (int readIndex = writeIndex + 1; readIndex != onLogIndex; ++readIndex)
                     {
-                        if (onLogs[readIndex](data)) onLogs[writeIndex++] = onLogs[readIndex];
+                        if (onLogs[readIndex].Callback(data)) onLogs[writeIndex++] = onLogs[readIndex];
                     }
                     for (int readIndex = writeIndex; readIndex != onLogIndex; onLogs[readIndex++] = null) ;
                     onLogIndex = writeIndex;

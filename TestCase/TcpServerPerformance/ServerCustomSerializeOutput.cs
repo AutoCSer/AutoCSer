@@ -11,7 +11,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <summary>
         /// 计算回调
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<ServerCustomSerialize>, bool> onCustomSerialize;
+        private AutoCSer.Net.TcpServer.ServerCallback<ServerCustomSerialize> onCustomSerialize;
         /// <summary>
         /// 第一个输出缓冲区
         /// </summary>
@@ -44,7 +44,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// 自定义序列化计算回调输出
         /// </summary>
         /// <param name="onCustomSerialize">计算回调</param>
-        internal ServerCustomSerializeOutput(Func<AutoCSer.Net.TcpServer.ReturnValue<ServerCustomSerialize>, bool> onCustomSerialize)
+        internal ServerCustomSerializeOutput(AutoCSer.Net.TcpServer.ServerCallback<ServerCustomSerialize> onCustomSerialize)
         {
             this.onCustomSerialize = onCustomSerialize;
         }
@@ -57,7 +57,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
             if (Interlocked.CompareExchange(ref isOutput, 1, 0) == 0)
             {
                 append(ref value);
-                onCustomSerialize(new ServerCustomSerialize { Output = this });
+                onCustomSerialize.Callback(new ServerCustomSerialize { Output = this });
             }
             else
             {
@@ -65,7 +65,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 if (Interlocked.CompareExchange(ref isOutput, 1, 0) == 0)
                 {
                     if (headBuffer == null && currentBuffer == null) Interlocked.Exchange(ref isOutput, 0);
-                    else onCustomSerialize(new ServerCustomSerialize { Output = this });
+                    else onCustomSerialize.Callback(new ServerCustomSerialize { Output = this });
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 int bufferCount = buffer.Size / (sizeof(int) * 2);
                 if (bufferCount > freeCount)
                 {
-                    onCustomSerialize(new ServerCustomSerialize { Output = this });
+                    onCustomSerialize.Callback(new ServerCustomSerialize { Output = this });
                     write = buffer.Serialize(write, freeCount);
                     AutoCSer.Threading.Interlocked.CompareExchangeYield(ref bufferLock);
                     if (headBuffer == null) endBuffer = buffer;
@@ -181,7 +181,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                         Interlocked.Exchange(ref isOutput, 0);
                         if ((headBuffer == null && currentBuffer == null) || Interlocked.CompareExchange(ref isOutput, 1, 0) != 0) return;
                     }
-                    onCustomSerialize(new ServerCustomSerialize { Output = this });
+                    onCustomSerialize.Callback(new ServerCustomSerialize { Output = this });
                     return;
                 }
             }

@@ -8685,7 +8685,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@""", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
-                protected static void onSqlLogQueue(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, ");
+                protected static void onSqlLogQueue(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Sql.LogStream.Log<tableType, ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
                     if (_value1_ != null)
@@ -8693,7 +8693,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@">.Data>, bool> onLog)
+            _code_.Add(@">.Data> onLog)
                 {
                     sqlStream.AddQueue(onLog);
                 }");
@@ -8742,7 +8742,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@""", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, ");
+                protected static void onSqlLog(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Sql.LogStream.Log<tableType, ");
                 {
                     AutoCSer.CodeGenerator.Metadata.ExtensionType _value1_ = Type;
                     if (_value1_ != null)
@@ -8750,7 +8750,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value1_.FullName);
                     }
                 }
-            _code_.Add(@">.Data>, bool> onLog)
+            _code_.Add(@">.Data> onLog)
                 {
                     sqlStream.Add(onLog);
                 }");
@@ -12611,7 +12611,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue");
+                    internal AutoCSer.Net.TcpServer.ServerCallback");
             _if_ = false;
                     if (_value2_.MethodIsReturn)
                     {
@@ -12629,7 +12629,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@">");
             }
-            _code_.Add(@", bool> AsynchronousCallback;");
+            _code_.Add(@" AsynchronousCallback;");
             }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
@@ -29241,7 +29241,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue");
+                    internal AutoCSer.Net.TcpServer.ServerCallback");
             _if_ = false;
                     if (_value2_.MethodIsReturn)
                     {
@@ -29259,7 +29259,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@">");
             }
-            _code_.Add(@", bool> AsynchronousCallback;");
+            _code_.Add(@" AsynchronousCallback;");
             }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
@@ -44259,7 +44259,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount3_;
                     }
                 }
-            _code_.Add(@"Func<AutoCSer.Net.TcpServer.ReturnValue<");
+            _code_.Add(@"AutoCSer.Net.TcpServer.ServerCallback");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"<");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
                     _value3_ = _value2_.Method;
@@ -44279,7 +44287,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 }
-            _code_.Add(@">, bool> _onReturn_)
+            _code_.Add(@">");
+            }
+            _code_.Add(@" _onReturn_)
                 {
                     ");
                 {
@@ -50423,7 +50433,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                internal Func<AutoCSer.Net.TcpServer.ReturnValue");
+                internal AutoCSer.Net.TcpServer.ServerCallback");
             _if_ = false;
                     if (_value2_.MethodIsReturn)
                     {
@@ -50441,7 +50451,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             _code_.Add(@">");
             }
-            _code_.Add(@", bool> AsynchronousCallback;");
+            _code_.Add(@" AsynchronousCallback;");
             }
             _if_ = false;
                 if (!(bool)_value2_.IsAsynchronousCallback)
@@ -56096,7 +56106,15 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         _loopCount_ = _loopCount3_;
                     }
                 }
-            _code_.Add(@"Func<AutoCSer.Net.TcpServer.ReturnValue<");
+            _code_.Add(@"AutoCSer.Net.TcpServer.ServerCallback");
+            _if_ = false;
+                    if (_value2_.MethodIsReturn)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"<");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MethodIndex);
                     _value3_ = _value2_.Method;
@@ -56116,7 +56134,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
                 }
-            _code_.Add(@">, bool> _onReturn_)
+            _code_.Add(@">");
+            }
+            _code_.Add(@" _onReturn_)
                 {
                     ");
                 {

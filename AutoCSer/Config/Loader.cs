@@ -168,8 +168,7 @@ namespace AutoCSer.Config
 #if AutoCSer
             catch (Exception error)
             {
-                AutoCSer.Log.ILog log = AutoCSer.Log.Pub.Log;
-                if (log != null) log.Wait(Log.LogType.Fatal, error);
+                AutoCSer.Log.Trace.Console(error.ToString());
             }
 #else
             catch { }

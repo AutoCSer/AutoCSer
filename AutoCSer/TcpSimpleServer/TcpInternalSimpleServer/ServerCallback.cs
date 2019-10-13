@@ -1,30 +1,28 @@
 ﻿using System;
+using AutoCSer.Net.TcpServer;
 
 namespace AutoCSer.Net.TcpInternalSimpleServer
 {
     /// <summary>
     /// TCP 服务器端异步调用
     /// </summary>
-    internal sealed class ServerCallback : TcpSimpleServer.ServerCallback<ServerCallback, ServerSocket>
+    internal sealed class ServerCallback : TcpSimpleServer.ServerCallback<ServerSocket>
     {
         /// <summary>
-        /// 异步回调
+        /// TCP 服务器端异步调用
         /// </summary>
-        internal ServerCallback()
-        {
-            onReturnHandle = onReturn;
-        }
+        /// <param name="socket">异步套接字</param>
+        internal ServerCallback(ServerSocket socket) : base(socket) { }
         /// <summary>
         /// 异步回调
         /// </summary>
         /// <param name="returnValue">返回值</param>
         /// <returns>是否成功加入回调队列</returns>
-        private bool onReturn(TcpServer.ReturnValue returnValue)
+        public override bool Callback(TcpServer.ReturnValue returnValue)
         {
             ServerSocket socket = this.socket;
             this.socket = null;
-            AutoCSer.Threading.RingPool<ServerCallback>.Default.PushNotNull(this);
-            return socket.SendAsync(returnValue.Type);
+            return socket != null && socket.SendAsync(returnValue.Type);
         }
     }
     /// <summary>
@@ -32,7 +30,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// </summary>
     /// <typeparam name="outputParameterType">输出参数类型</typeparam>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    internal sealed class ServerCallback<outputParameterType, returnType> : TcpSimpleServer.ServerCallback<ServerCallback<outputParameterType, returnType>, ServerSocket, outputParameterType, returnType>
+    internal sealed class ServerCallback<outputParameterType, returnType> : TcpSimpleServer.ServerCallback<ServerSocket, outputParameterType, returnType>
 #if NOJIT
         where outputParameterType : struct, IReturnParameter
 #else
@@ -42,16 +40,16 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <summary>
         /// 异步回调
         /// </summary>
-        internal ServerCallback()
-        {
-            onReturnHandle = onReturn;
-        }
+        /// <param name="socket"></param>
+        /// <param name="outputInfo">服务端输出信息</param>
+        /// <param name="outputParameter"></param>
+        internal ServerCallback(ServerSocket socket, TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter) : base(socket, outputInfo, ref outputParameter) { }
         /// <summary>
         /// 异步回调
         /// </summary>
         /// <param name="returnValue">返回值</param>
         /// <returns>是否成功加入回调队列</returns>
-        private bool onReturn(TcpServer.ReturnValue<returnType> returnValue)
+        public override bool Callback(TcpServer.ReturnValue<returnType> returnValue)
         {
             TcpServer.ReturnValue<outputParameterType> outputParameter = new TcpServer.ReturnValue<outputParameterType> { Type = returnValue.Type };
             if (returnValue.Type == TcpServer.ReturnType.Success)
@@ -60,15 +58,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 this.outputParameter.ReturnObject = returnValue.Value;
 #else
                 setReturn(ref this.outputParameter, returnValue.Value);
-                //this.outputParameter.Return = returnValue.Value;
 #endif
                 outputParameter.Value = this.outputParameter;
             }
-            ServerSocket socket = this.socket;
-            TcpSimpleServer.OutputInfo outputInfo = this.outputInfo;
-            this.outputParameter = default(outputParameterType);
-            this.socket = null;
-            AutoCSer.Threading.RingPool<ServerCallback<outputParameterType, returnType>>.Default.PushNotNull(this);
             return socket.SendAsync(outputInfo, ref outputParameter);
         }
 #if !NOJIT
@@ -82,7 +74,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// 验证函数异步回调
     /// </summary>
     /// <typeparam name="outputParameterType">输出参数类型</typeparam>
-    internal sealed class ServerCallback<outputParameterType> : TcpSimpleServer.ServerCallback<ServerCallback<outputParameterType>, ServerSocket, outputParameterType, bool>
+    internal sealed class ServerCallback<outputParameterType> : TcpSimpleServer.ServerCallback<ServerSocket, outputParameterType, bool>
 #if NOJIT
         where outputParameterType : struct, IReturnParameter
 #else
@@ -90,18 +82,18 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
 #endif
     {
         /// <summary>
-        /// 验证函数异步回调
+        /// 异步回调
         /// </summary>
-        internal ServerCallback()
-        {
-            onReturnHandle = onReturn;
-        }
+        /// <param name="socket"></param>
+        /// <param name="outputInfo">服务端输出信息</param>
+        /// <param name="outputParameter"></param>
+        internal ServerCallback(ServerSocket socket, TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter) : base(socket, outputInfo, ref outputParameter) { }
         /// <summary>
         /// 异步回调
         /// </summary>
         /// <param name="returnValue">返回值</param>
         /// <returns>是否成功加入回调队列</returns>
-        private bool onReturn(TcpServer.ReturnValue<bool> returnValue)
+        public override bool Callback(TcpServer.ReturnValue<bool> returnValue)
         {
             TcpServer.ReturnValue<outputParameterType> outputParameter = new TcpServer.ReturnValue<outputParameterType> { Type = returnValue.Type };
             if (returnValue.Type == TcpServer.ReturnType.Success)
@@ -110,15 +102,9 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 this.outputParameter.ReturnObject = returnValue.Value;
 #else
                 setReturn(ref this.outputParameter, returnValue.Value);
-                //this.outputParameter.Return = returnValue.Value;
 #endif
                 outputParameter.Value = this.outputParameter;
             }
-            ServerSocket socket = this.socket;
-            TcpSimpleServer.OutputInfo outputInfo = this.outputInfo;
-            this.outputParameter = default(outputParameterType);
-            this.socket = null;
-            AutoCSer.Threading.RingPool<ServerCallback<outputParameterType>>.Default.PushNotNull(this);
             if (returnValue.Value) socket.SetVerifyMethod();
             return socket.SendAsync(outputInfo, ref outputParameter);
         }

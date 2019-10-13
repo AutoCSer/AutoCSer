@@ -28,7 +28,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 返回调用委托
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn;
+        private AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onReturn;
         /// <summary>
         /// 数据缓冲区
         /// </summary>
@@ -52,7 +52,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <param name="node"></param>
         /// <param name="onReturn"></param>
         /// <param name="message"></param>
-        internal Buffer(Node node, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn, ref DistributionMessageItem message)
+        internal Buffer(Node node, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onReturn, ref DistributionMessageItem message)
         {
             Node = node;
             this.onReturn = onReturn;
@@ -65,7 +65,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         public void Dispose()
         {
             if (BufferCount != null) BufferCount.Free();
-            if (onReturn != null) onReturn(new ReturnParameter(ReturnType.MessageQueueBufferDisposed));
+            if (onReturn != null) onReturn.Callback(new ReturnParameter(ReturnType.MessageQueueBufferDisposed));
         }
         /// <summary>
         /// 释放数据缓冲区
@@ -86,11 +86,11 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         internal void Error(ReturnType returnType)
         {
             FreeBuffer();
-            Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn = this.onReturn;
+            AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onReturn = this.onReturn;
             if (onReturn != null)
             {
                 this.onReturn = null;
-                onReturn(new ReturnParameter(returnType));
+                onReturn.Callback(new ReturnParameter(returnType));
             }
         }
         /// <summary>
@@ -114,7 +114,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             {
                 ReturnParameter returnParameter = new ReturnParameter();
                 returnParameter.Parameter.ReturnParameterSet(true);
-                onReturn(returnParameter);
+                onReturn.Callback(returnParameter);
                 onReturn = null;
             }
             return LinkNext;

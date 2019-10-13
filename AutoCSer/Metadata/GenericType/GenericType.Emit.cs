@@ -25,11 +25,11 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <returns></returns>
         internal abstract MethodInfo TcpAutoWaitReturnValuePopMethod { get; }
-        /// <summary>
-        /// 获取服务端回调转换
-        /// </summary>
-        /// <returns></returns>
-        internal abstract MethodInfo TcpServerCallbackGetMethod { get; }
+        ///// <summary>
+        ///// 获取服务端回调转换
+        ///// </summary>
+        ///// <returns></returns>
+        //internal abstract MethodInfo TcpServerCallbackGetMethod { get; }
         /// <summary>
         /// 服务端回调委托返类型
         /// </summary>
@@ -64,14 +64,14 @@ namespace AutoCSer.Metadata
         {
             get { return ((Func<AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>>)AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>.Pop).Method; }
         }
-        /// <summary>
-        /// 获取服务端回调转换
-        /// </summary>
-        /// <returns></returns>
-        internal override MethodInfo TcpServerCallbackGetMethod
-        {
-            get { return ((Func<Func<AutoCSer.Net.TcpServer.ReturnValue<Type>, bool>, Func<Type, bool>>)AutoCSer.Net.TcpServer.Emit.ServerCallback<Type>.Get).Method; }
-        }
+        ///// <summary>
+        ///// 获取服务端回调转换
+        ///// </summary>
+        ///// <returns></returns>
+        //internal override MethodInfo TcpServerCallbackGetMethod
+        //{
+        //    get { return ((Func<Func<AutoCSer.Net.TcpServer.ReturnValue<Type>, bool>, Func<Type, bool>>)AutoCSer.Net.TcpServer.Emit.ServerCallback<Type>.Get).Method; }
+        //}
         /// <summary>
         /// 服务端回调委托返类型
         /// </summary>

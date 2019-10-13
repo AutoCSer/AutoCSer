@@ -471,7 +471,7 @@ namespace AutoCSer.Diagnostics
                 KeyValue<string, int>[] names = new KeyValue<string, int>[8];
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"()register", 2);
-                names[3].Set(@"(AutoCSer.Net.TcpRegister.ClientId,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpRegister.Log>,bool>)getLog", 3);
+                names[3].Set(@"(AutoCSer.Net.TcpRegister.ClientId,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Net.TcpRegister.Log>)getLog", 3);
                 names[4].Set(@"(AutoCSer.Net.TcpRegister.ClientId,string)getPort", 4);
                 names[5].Set(@"(long,AutoCSer.Net.TcpRegister.ServerInfo)register", 5);
                 names[6].Set(@"(long,AutoCSer.Net.TcpRegister.ServerInfo)checkRegister", 6);

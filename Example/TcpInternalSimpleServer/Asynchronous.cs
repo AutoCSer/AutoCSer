@@ -16,9 +16,9 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
         /// <param name="right">加法右值</param>
         /// <param name="onAdd">加法计算回调委托</param>
         [AutoCSer.Net.TcpSimpleServer.Method]
-        void Add(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> onAdd)
+        void Add(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<int> onAdd)
         {
-            onAdd(left + right);
+            onAdd.Callback(left + right);
         }
 
         /// <summary>

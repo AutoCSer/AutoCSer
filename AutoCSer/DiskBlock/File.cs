@@ -143,13 +143,13 @@ namespace AutoCSer.DiskBlock
         /// <param name="index">索引位置</param>
         /// <param name="size">字节数量</param>
         /// <param name="onRead">获取数据回调委托</param>
-        void IBlock.Read(long index, int size, Func<AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer>, bool> onRead)
+        void IBlock.Read(long index, int size, AutoCSer.Net.TcpServer.ServerCallback<ClientBuffer> onRead)
         {
             if (index + size + sizeof(int) <= fileLength)
             {
                 if (readRequests.IsPushHead(new ReadRequest { Index = index, Size = size, OnRead = onRead })) readWait.Set();
             }
-            else onRead(new ClientBuffer { State = MemberState.IndexError });
+            else onRead.Callback(new ClientBuffer { State = MemberState.IndexError });
         }
         /// <summary>
         /// 读取数据线程
@@ -190,7 +190,7 @@ namespace AutoCSer.DiskBlock
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <param name="onWrite">添加数据回调委托</param>
-        void IBlock.Append(ref AppendBuffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>, bool> onWrite)
+        void IBlock.Append(ref AppendBuffer buffer, AutoCSer.Net.TcpServer.ServerCallback<ulong> onWrite)
         {
             if (isDisposed == 0)
             {
@@ -215,7 +215,7 @@ namespace AutoCSer.DiskBlock
                     }
                 }
             }
-            else onWrite(0);
+            else onWrite.Callback(0);
         }
         /// <summary>
         /// 添加数据

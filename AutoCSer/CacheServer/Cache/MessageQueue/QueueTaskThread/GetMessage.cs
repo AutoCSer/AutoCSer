@@ -18,7 +18,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 返回调用委托
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> OnReturn;
+        internal AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> OnReturn;
         /// <summary>
         /// 是否反序列化网络流，否则需要 Copy 数据
         /// </summary>

@@ -130,7 +130,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// <param name="getUser">用户信息推送回调委托</param>
         [AutoCSer.Net.TcpOpenServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void getUser(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, Func<AutoCSer.Net.TcpServer.ReturnValue<ChatData.UserLogin>, bool> getUser)
+        private void getUser(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, AutoCSer.Net.TcpServer.ServerCallback<ChatData.UserLogin> getUser)
         {
             User currentUser = getCurrentUser(socket);
             if (currentUser != null)
@@ -141,14 +141,14 @@ namespace AutoCSer.TestCase.ChatServer
                 removeUsers.ClearOnlyLength();
                 foreach (var user in users)
                 {
-                    if (user.Value != currentUser && !getUser(new ChatData.UserLogin { Name = user.Value.Name, Type = ChatData.UserLoginType.Load }))
+                    if (user.Value != currentUser && !getUser.Callback(new ChatData.UserLogin { Name = user.Value.Name, Type = ChatData.UserLoginType.Load }))
                     {
                         isLoaded = false;
                         removeUsers.Add(currentUser.Name);
                         break;
                     }
                 }
-                if (isLoaded) getUser(new ChatData.UserLogin { Type = ChatData.UserLoginType.Loaded });
+                if (isLoaded) getUser.Callback(new ChatData.UserLogin { Type = ChatData.UserLoginType.Loaded });
                 removeUser();
             }
         }
@@ -159,7 +159,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// <param name="getMessage">消息推送回调委托</param>
         [AutoCSer.Net.TcpOpenServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.TcpQueue)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void getMessage(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, Func<AutoCSer.Net.TcpServer.ReturnValue<ChatData.Message>, bool> getMessage)
+        private void getMessage(AutoCSer.Net.TcpOpenServer.ServerSocketSender socket, AutoCSer.Net.TcpServer.ServerCallback<ChatData.Message> getMessage)
         {
             User currentUser = getCurrentUser(socket);
             if (currentUser != null) currentUser.GetMessage = getMessage;

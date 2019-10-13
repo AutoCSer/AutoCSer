@@ -436,7 +436,7 @@ namespace AutoCSer.Example.TcpOpenServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[1];
-                names[0].Set(@"(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 0);
+                names[0].Set(@"(int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 0);
                 return names;
             }
             /// <summary>
@@ -478,9 +478,8 @@ namespace AutoCSer.Example.TcpOpenServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p2 outputParameter = new _p2();
-                                    _s0 serverCall = _s0/**/.Pop() ?? new _s0();
-                                    serverCall.AsynchronousCallback = sender.GetCallback<_p2, int>(_c0, ref outputParameter);
-                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    
+                                    Value.Add(inputParameter.left, inputParameter.right,  sender.GetCallback<_p2, int>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -493,15 +492,6 @@ namespace AutoCSer.Example.TcpOpenServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpOpenServer.ServerCall<_s0, AutoCSer.Example.TcpOpenServer.Asynchronous, _p1>
-                {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> AsynchronousCallback;
-                    public override void Call()
-                    {
-                        
-                        serverValue.Add(inputParameter.left, inputParameter.right, AsynchronousCallback);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
@@ -1096,7 +1086,7 @@ namespace AutoCSer.Example.TcpOpenServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[1];
-                names[0].Set(@"(int,int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 0);
+                names[0].Set(@"(int,int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 0);
                 return names;
             }
             /// <summary>
@@ -1138,9 +1128,8 @@ namespace AutoCSer.Example.TcpOpenServer
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
                                     _p2 outputParameter = new _p2();
-                                    _s0 serverCall = _s0/**/.Pop() ?? new _s0();
-                                    serverCall.AsynchronousCallback = sender.GetCallback<_p2, int>(_c0, ref outputParameter);
-                                    serverCall.Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                    
+                                    Value.Add(inputParameter.left, inputParameter.right, inputParameter.count,  sender.GetCallback<_p2, int>(_c0, ref outputParameter));
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -1153,15 +1142,6 @@ namespace AutoCSer.Example.TcpOpenServer
                             sender.Push(returnType);
                             return;
                         default: return;
-                    }
-                }
-                sealed class _s0 : AutoCSer.Net.TcpOpenServer.ServerCall<_s0, AutoCSer.Example.TcpOpenServer.KeepCallback, _p1>
-                {
-                    internal Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> AsynchronousCallback;
-                    public override void Call()
-                    {
-                        
-                        serverValue.Add(inputParameter.left, inputParameter.right, inputParameter.count, AsynchronousCallback);
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsKeepCallback = 1, IsBuildOutputThread = true };

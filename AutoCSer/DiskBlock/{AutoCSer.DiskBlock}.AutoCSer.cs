@@ -18,9 +18,9 @@ namespace AutoCSer.DiskBlock
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[3];
-                names[0].Set(@"(AutoCSer.DiskBlock.AppendBuffer,System.Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>,bool>)append", 0);
+                names[0].Set(@"(AutoCSer.DiskBlock.AppendBuffer,AutoCSer.Net.TcpServer.ServerCallback<ulong>)append", 0);
                 names[1].Set(@"(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
-                names[2].Set(@"(AutoCSer.DiskBlock.ClientBuffer,ulong,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.DiskBlock.ClientBuffer>,bool>)read", 2);
+                names[2].Set(@"(AutoCSer.DiskBlock.ClientBuffer,ulong,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.DiskBlock.ClientBuffer>)read", 2);
                 return names;
             }
             /// <summary>

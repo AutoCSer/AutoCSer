@@ -17,7 +17,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP 内部注册服务更新日志回调
         /// </summary>
-        private Func<TcpServer.ReturnValue<Log>, bool> onLog;
+        private AutoCSer.Net.TcpServer.ServerCallback<Log> onLog;
         /// <summary>
         /// 设置 TCP 内部注册服务更新日志回调
         /// </summary>
@@ -25,7 +25,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="onLog"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool Set(int identity, Func<TcpServer.ReturnValue<Log>, bool> onLog)
+        internal bool Set(int identity, AutoCSer.Net.TcpServer.ServerCallback<Log> onLog)
         {
             if (Identity == identity)
             {
@@ -41,7 +41,7 @@ namespace AutoCSer.Net.TcpRegister
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OnLog(Log log)
         {
-            if (onLog != null && !onLog(log))
+            if (onLog != null && !onLog.Callback(log))
             {
                 ++Identity;
                 onLog = null;

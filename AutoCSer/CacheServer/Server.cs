@@ -68,7 +68,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onQuery"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
-        internal void QueryAsynchronous(OperationParameter.QueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        internal void QueryAsynchronous(OperationParameter.QueryNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery)
         {
             Cache.Query(ref parameter.QueryData, onQuery, false);
         }
@@ -79,7 +79,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onQuery"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
-        internal void QueryAsynchronousStream(OperationParameter.QueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        internal void QueryAsynchronousStream(OperationParameter.QueryNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery)
         {
             Cache.Query(ref parameter.QueryData, onQuery, true);
         }
@@ -91,7 +91,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onQuery"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        internal void QueryKeepCallback(OperationParameter.QueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        internal void QueryKeepCallback(OperationParameter.QueryNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery)
         {
             Cache.Query(ref parameter.QueryData, onQuery, false);
         }
@@ -102,7 +102,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onQuery"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
-        internal void QueryKeepCallbackStream(OperationParameter.QueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        internal void QueryKeepCallbackStream(OperationParameter.QueryNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery)
         {
             Cache.Query(ref parameter.QueryData, onQuery, true);
         }
@@ -139,7 +139,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onQuery"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAsynchronous = true)]
-        internal void QueryAsynchronous(OperationParameter.ShortPathQueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        internal void QueryAsynchronous(OperationParameter.ShortPathQueryNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery)
         {
             Cache.ShortPathQuery(ref parameter.QueryData, onQuery, false);
         }
@@ -150,7 +150,7 @@ namespace AutoCSer.CacheServer
         /// <param name="onQuery"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
-        internal void QueryAsynchronousStream(OperationParameter.ShortPathQueryNode parameter, Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onQuery)
+        internal void QueryAsynchronousStream(OperationParameter.ShortPathQueryNode parameter, AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onQuery)
         {
             Cache.ShortPathQuery(ref parameter.QueryData, onQuery, true);
         }

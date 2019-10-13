@@ -506,7 +506,27 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     if (methodParameters == null)
                     {
-                        base.checkAsynchronousReturn();
+                        methodParameters = Method.Parameters;
+                        methodReturnType = Method.ReturnType;
+                        if (Method.ReturnType.Type == typeof(void) && methodParameters.Length != 0)
+                        {
+                            Type type = methodParameters[methodParameters.Length - 1].ParameterType.Type;
+                            if (type.IsGenericType)
+                            {
+                                Type genericType = type.GetGenericTypeDefinition();
+                                if (genericType == typeof(AutoCSer.Net.TcpServer.ServerCallback<>))
+                                {
+                                    methodReturnType = type.GetGenericArguments()[0];
+                                    isAsynchronousCallback = true;
+                                }
+                                else if (genericType == typeof(Func<,>) || genericType == typeof(Action<>))
+                                {
+                                    Messages.Message(Method.MemberName + " 回调函数类型错误，请修改为 " + typeof(AutoCSer.Net.TcpServer.ServerCallback).fullName());
+                                }
+                            }
+                            else if (type == typeof(AutoCSer.Net.TcpServer.ServerCallback)) isAsynchronousCallback = true;
+                            if (isAsynchronousCallback) methodParameters = MethodParameter.Get(methodParameters.getSub(0, methodParameters.Length - 1));
+                        }
                         if (methodParameters.Length != 0)
                         {
                             if (!methodParameters[0].IsRefOrOut && methodParameters[0].ParameterType.Type == typeof(serverSocketType))

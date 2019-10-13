@@ -87,7 +87,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <param name="onLog"></param>
                 [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerName = "DataLog", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>.Data>, bool> onLog)
+                protected static void onSqlLog(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Class>.Data> onLog)
                 {
                     sqlStream.Add(onLog);
                 }
@@ -269,7 +269,7 @@ namespace AutoCSer.TestCase.SqlModel
                 /// <param name="onLog"></param>
                 [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerName = "DataLog", ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                protected static void onSqlLog(Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student>.Data>, bool> onLog)
+                protected static void onSqlLog(AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Sql.LogStream.Log<tableType, AutoCSer.TestCase.SqlModel.Student>.Data> onLog)
                 {
                     sqlStream.Add(onLog);
                 }

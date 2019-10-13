@@ -856,7 +856,7 @@ namespace AutoCSer.Example.TcpStaticServer
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M4(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> _onReturn_)
+                public static void _M4(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<int> _onReturn_)
                 {
                     AutoCSer.Example.TcpStaticServer.Asynchronous.Add(left, right, _onReturn_);
                 }
@@ -1367,7 +1367,7 @@ namespace AutoCSer.Example.TcpStaticServer
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M5(int left, int right, int count, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> _onReturn_)
+                public static void _M5(int left, int right, int count, AutoCSer.Net.TcpServer.ServerCallback<int> _onReturn_)
                 {
                     AutoCSer.Example.TcpStaticServer.KeepCallback.Add(left, right, count, _onReturn_);
                 }
@@ -2287,8 +2287,8 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                 names[0].Set(@"AutoCSer.Example.TcpStaticServer.RefOut(int,ref int,out int)Add1", 0);
                 names[1].Set(@"AutoCSer.Example.TcpStaticServer.SendOnly(int,int)SetSum1", 1);
                 names[2].Set(@"AutoCSer.Example.TcpStaticServer.ClientAsynchronous(int,int)Add", 2);
-                names[3].Set(@"AutoCSer.Example.TcpStaticServer.Asynchronous(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 3);
-                names[4].Set(@"AutoCSer.Example.TcpStaticServer.KeepCallback(int,int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 4);
+                names[3].Set(@"AutoCSer.Example.TcpStaticServer.Asynchronous(int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 3);
+                names[4].Set(@"AutoCSer.Example.TcpStaticServer.KeepCallback(int,int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 4);
                 names[5].Set(@"AutoCSer.Example.TcpStaticServer.NoAttribute(int,int)Add", 5);
                 names[6].Set(@"AutoCSer.Example.TcpStaticServer.NoAttribute()TestCase", 6);
                 names[7].Set(@"AutoCSer.Example.TcpStaticServer.Static(int,int)Add", 7);
@@ -2419,9 +2419,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
                                 _p4 outputParameter = new _p4();
-                                _s3 serverCall = _s3/**/.Pop() ?? new _s3();
-                                serverCall.AsynchronousCallback = sender.GetCallback<_p4, int>(_c4, ref outputParameter);
-                                serverCall.Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                AutoCSer.Example.TcpStaticServer.Asynchronous/**/.TcpStaticServer._M4(inputParameter.p0, inputParameter.p1, sender.GetCallback<_p4, int>(_c4, ref outputParameter));
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2441,9 +2439,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                             if (sender.DeSerialize(ref data, ref inputParameter, true))
                             {
                                 _p4 outputParameter = new _p4();
-                                _s4 serverCall = _s4/**/.Pop() ?? new _s4();
-                                serverCall.AsynchronousCallback = sender.GetCallback<_p4, int>(_c5, ref outputParameter);
-                                serverCall.Set(sender, AutoCSer.Net.TcpServer.ServerTaskType.Timeout, ref inputParameter);
+                                AutoCSer.Example.TcpStaticServer.KeepCallback/**/.TcpStaticServer._M5(inputParameter.p0, inputParameter.p1, inputParameter.p2, sender.GetCallback<_p4, int>(_c5, ref outputParameter));
                                 return;
                             }
                             returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -2895,23 +2891,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
                 }
             }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
-            sealed class _s3 : AutoCSer.Net.TcpStaticServer.ServerCall<_s3, _p3>
-            {
-                internal Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> AsynchronousCallback;
-                public override void Call()
-                {
-                    AutoCSer.Example.TcpStaticServer.Asynchronous/**/.TcpStaticServer._M4(inputParameter.p0, inputParameter.p1, AsynchronousCallback);
-                }
-            }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
-            sealed class _s4 : AutoCSer.Net.TcpStaticServer.ServerCall<_s4, _p1>
-            {
-                internal Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> AsynchronousCallback;
-                public override void Call()
-                {
-                    AutoCSer.Example.TcpStaticServer.KeepCallback/**/.TcpStaticServer._M5(inputParameter.p0, inputParameter.p1, inputParameter.p2, AsynchronousCallback);
-                }
-            }
             private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsKeepCallback = 1, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
             sealed class _s5 : AutoCSer.Net.TcpStaticServer.ServerCall<_s5, _p3>
             {

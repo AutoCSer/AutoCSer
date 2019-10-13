@@ -433,7 +433,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
             internal static partial class TcpStaticSimpleServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M1(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> _onReturn_)
+                public static void _M1(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<int> _onReturn_)
                 {
                     AutoCSer.Example.TcpStaticSimpleServer.Asynchronous.Add(left, right, _onReturn_);
                 }
@@ -555,7 +555,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[2];
-                names[0].Set(@"AutoCSer.Example.TcpStaticSimpleServer.Asynchronous(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 0);
+                names[0].Set(@"AutoCSer.Example.TcpStaticSimpleServer.Asynchronous(int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 0);
                 names[1].Set(@"AutoCSer.Example.TcpStaticSimpleServer.RefOut(int,ref int,out int)Add2", 1);
                 return names;
             }

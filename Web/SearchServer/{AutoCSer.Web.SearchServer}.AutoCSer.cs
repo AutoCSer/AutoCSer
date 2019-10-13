@@ -128,7 +128,7 @@ namespace AutoCSer.Web.SearchServer
             internal static partial class TcpStaticServer
             {
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public static void _M1(string key, Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Web.SearchServer.SearchItem[]>, bool> _onReturn_)
+                public static void _M1(string key, AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Web.SearchServer.SearchItem[]> _onReturn_)
                 {
                     AutoCSer.Web.SearchServer.Server.Search(key, _onReturn_);
                 }
@@ -271,7 +271,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[3];
-                names[0].Set(@"AutoCSer.Web.SearchServer.Server(string,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Web.SearchServer.SearchItem[]>,bool>)Search", 0);
+                names[0].Set(@"AutoCSer.Web.SearchServer.Server(string,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.Web.SearchServer.SearchItem[]>)Search", 0);
                 names[1].Set(@"AutoCSer.Net.TcpStaticServer.TimeVerify<AutoCSer.Web.SearchServer.Server>(AutoCSer.Net.TcpInternalServer.ServerSocketSender,string,ulong,byte[],ref long)verify", 1);
                 names[2].Set(@"AutoCSer.Web.SearchServer.SearchItem(AutoCSer.Web.SearchServer.DataKey)getImageUrl", 2);
                 return names;

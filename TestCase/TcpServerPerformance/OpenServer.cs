@@ -38,9 +38,9 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
         /// <param name="onAdd"></param>
         [AutoCSer.Net.TcpOpenServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void addAsynchronous(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<Add>, bool> onAdd)
+        private void addAsynchronous(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<Add> onAdd)
         {
-            onAdd(new Add(left, right));
+            onAdd.Callback(new Add(left, right));
         }
 
         /// <summary>

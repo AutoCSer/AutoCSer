@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using AutoCSer.Net.TcpServer;
 
 namespace AutoCSer.DiskBlock
 {
@@ -11,7 +12,7 @@ namespace AutoCSer.DiskBlock
         /// <summary>
         /// 添加数据回调委托
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>, bool> OnWrite;
+        internal AutoCSer.Net.TcpServer.ServerCallback<ulong> OnWrite;
         /// <summary>
         /// 写入数据
         /// </summary>
@@ -41,7 +42,7 @@ namespace AutoCSer.DiskBlock
         /// <param name="index"></param>
         internal WriteRequest(int index)
         {
-            this.OnWrite = onWriteHead;
+            this.OnWrite = AutoCSer.Net.TcpServer.ServerCallback<ulong>.Null.Default;
             SubBuffer.Pool.GetPool(SubBuffer.Size.Byte256).Get(ref Buffer);
             fixed (byte* bufferFixed = Buffer.Buffer)
             {
@@ -57,7 +58,7 @@ namespace AutoCSer.DiskBlock
         /// </summary>
         /// <param name="buffer">数据</param>
         /// <param name="onWrite">添加数据回调委托</param>
-        internal WriteRequest(ref AppendBuffer buffer, Func<AutoCSer.Net.TcpServer.ReturnValue<ulong>, bool> onWrite)
+        internal WriteRequest(ref AppendBuffer buffer, AutoCSer.Net.TcpServer.ServerCallback<ulong> onWrite)
         {
             this.OnWrite = onWrite;
             SubBuffer.Pool.GetBuffer(ref Buffer, (Size = buffer.Buffer.Length) + sizeof(int));
@@ -84,7 +85,7 @@ namespace AutoCSer.DiskBlock
         internal WriteRequest Error()
         {
             Buffer.Free();
-            OnWrite(0);
+            OnWrite.Callback(0);
             return LinkNext;
         }
         /// <summary>
@@ -94,7 +95,7 @@ namespace AutoCSer.DiskBlock
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal WriteRequest OnFlush()
         {
-            OnWrite(Index);
+            OnWrite.Callback(Index);
             return LinkNext;
         }
         /// <summary>
@@ -105,7 +106,7 @@ namespace AutoCSer.DiskBlock
         internal void OnCache(ulong index)
         {
             Buffer.Free();
-            OnWrite(index);
+            OnWrite.Callback(index);
         }
         /// <summary>
         /// 缓存处理
@@ -114,7 +115,7 @@ namespace AutoCSer.DiskBlock
         internal void OnCache()
         {
             Buffer.Free();
-            OnWrite(Index);
+            OnWrite.Callback(Index);
         }
         /// <summary>
         /// 缓存处理
@@ -129,7 +130,7 @@ namespace AutoCSer.DiskBlock
                 if (isCache)
                 {
                     Buffer.Free();
-                    OnWrite(Index);
+                    OnWrite.Callback(Index);
                     return;
                 }
             }
@@ -141,16 +142,6 @@ namespace AutoCSer.DiskBlock
         internal virtual void AppendWrite() 
         {
             throw new InvalidOperationException();
-        }
-
-        /// <summary>
-        /// 添加数据头部回调
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static bool onWriteHead(AutoCSer.Net.TcpServer.ReturnValue<ulong> value)
-        {
-            return true;
         }
     }
 }

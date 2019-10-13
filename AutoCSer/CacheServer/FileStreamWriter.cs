@@ -490,7 +490,7 @@ namespace AutoCSer.CacheServer
         /// <param name="index"></param>
         /// <param name="onRead"></param>
         /// <returns></returns>
-        internal bool Read(ulong version, long index, Func<AutoCSer.Net.TcpServer.ReturnValue<ReadFileParameter>, bool> onRead)
+        internal bool Read(ulong version, long index, AutoCSer.Net.TcpServer.ServerCallback<ReadFileParameter> onRead)
         {
             if (Version == version)
             {

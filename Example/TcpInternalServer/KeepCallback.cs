@@ -17,11 +17,11 @@ namespace AutoCSer.Example.TcpInternalServer
         /// <param name="count">回调次数</param>
         /// <param name="onAdd">加法计算回调委托</param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = Net.TcpServer.ServerTaskType.Synchronous)]
-        void Add(int left, int right, int count, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> onAdd)
+        void Add(int left, int right, int count, AutoCSer.Net.TcpServer.ServerCallback<int> onAdd)
         {
             while (count != 0)
             {
-                onAdd(left + right);
+                onAdd.Callback(left + right);
                 --count;
             }
         }

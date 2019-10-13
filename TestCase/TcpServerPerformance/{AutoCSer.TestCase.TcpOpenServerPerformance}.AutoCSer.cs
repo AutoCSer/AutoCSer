@@ -16,7 +16,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[8];
                 names[0].Set(@"(int,int)add", 0);
-                names[1].Set(@"(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>,bool>)addAsynchronous", 1);
+                names[1].Set(@"(int,int,AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.TcpServerPerformance.Add>)addAsynchronous", 1);
                 names[2].Set(@"(int,int)addQueue", 2);
                 names[3].Set(@"(int,int)addSynchronous", 3);
                 names[4].Set(@"(int,int)addTcpTask", 4);

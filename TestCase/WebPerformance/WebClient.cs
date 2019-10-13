@@ -458,7 +458,7 @@ Connection: Keep-Alive
 #else
             int clientCountPerCpu = 256, maxClientCount = 1024;
 #endif
-            bool isKeepAlive = false;
+            bool isKeepAlive = true;
 
             int cpuCount = AutoCSer.Threading.Pub.CpuCount, maxSocketCount = Math.Min(cpuCount * clientCountPerCpu, maxClientCount), count = maxSocketCount * 256;
             int keepAliveCount = isKeepAlive ? ((count <<= 2) + (maxSocketCount - 1)) / maxSocketCount : 1;

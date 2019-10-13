@@ -6,8 +6,34 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务器端异步调用
     /// </summary>
-    internal abstract class ServerCallback<callbackType, serverSocketSenderType> : AutoCSer.Threading.Link<callbackType>, IServerKeepCallback
-        where callbackType : ServerCallback<callbackType, serverSocketSenderType>
+    public abstract class ServerCallbackBase
+    {
+        /// <summary>
+        /// 套接字是否有效
+        /// </summary>
+        public virtual bool IsSocket { get { return false; } }
+        /// <summary>
+        /// 取消保持调用
+        /// </summary>
+        internal virtual void CancelKeep() { }
+    }
+    /// <summary>
+    /// TCP 服务器端异步调用
+    /// </summary>
+    public abstract class ServerCallback : ServerCallbackBase
+    {
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="returnValue">返回值</param>
+        /// <returns>是否成功加入回调队列</returns>
+        public abstract bool Callback(ReturnValue returnValue);
+    }
+    /// <summary>
+    /// TCP 服务器端异步调用
+    /// </summary>
+    /// <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送类型</typeparam>
+    internal abstract class ServerCallbackBase<serverSocketSenderType> : ServerCallback
         where serverSocketSenderType : ServerSocketSender
     {
         /// <summary>
@@ -15,81 +41,123 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected serverSocketSenderType socket;
         /// <summary>
-        /// 会话标识
+        /// 套接字是否有效
         /// </summary>
-        protected uint commandIndex;
+        public override bool IsSocket
+        {
+            get
+            {
+                serverSocketSenderType socket = this.socket;
+                return socket != null && socket.IsSocket;
+            }
+        }
         /// <summary>
         /// 保持回调访问锁
         /// </summary>
         protected int keepLock;
         /// <summary>
+        /// 会话标识
+        /// </summary>
+        protected readonly uint commandIndex;
+        /// <summary>
         /// 尝试启动创建输出线程
         /// </summary>
-        protected bool isBuildOutputThread;
-
+        protected bool isBuildOutputThread
+        {
+            get { return (commandIndex & (1U << 31)) != 0; }
+        }
         /// <summary>
-        /// 异步回调
+        /// TCP 服务器端异步调用
         /// </summary>
-        protected Func<ReturnValue, bool> onReturnHandle;
-        /// <summary>
-        /// 异步回调
-        /// </summary>
-        /// <param name="socket"></param>
+        /// <param name="socket">异步套接字</param>
         /// <param name="isBuildOutputThread">尝试启动创建输出线程</param>
+        protected ServerCallbackBase(serverSocketSenderType socket, bool isBuildOutputThread)
+        {
+            this.socket = socket;
+            commandIndex = socket.ServerSocket.CommandIndex & Server.CommandIndexAnd;
+            if (isBuildOutputThread) commandIndex |= 1U << 31;
+        }
+    }
+    /// <summary>
+    /// TCP 服务器端异步调用
+    /// </summary>
+    /// <typeparam name="returnType">返回值类型</typeparam>
+    public abstract class ServerCallback<returnType> : ServerCallbackBase
+    {
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="returnValue">返回值</param>
+        /// <returns>是否成功加入回调队列</returns>
+        public abstract bool Callback(ReturnValue<returnType> returnValue);
+#if !NOJIT
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="returnValue"></param>
         /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Func<ReturnValue, bool> Set(serverSocketSenderType socket, bool isBuildOutputThread)
+        internal bool CallbackReturn(returnType returnValue)
         {
-            this.socket = socket;
-            commandIndex = socket.ServerSocket.CommandIndex;
-            this.isBuildOutputThread = isBuildOutputThread;
-            return onReturnHandle;
+            return Callback(returnValue);
         }
+#endif
         /// <summary>
-        /// 异步回调
+        /// 空回调
         /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="isBuildOutputThread">尝试启动创建输出线程</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void setKeep(serverSocketSenderType socket, bool isBuildOutputThread)
+        public sealed class Null : ServerCallback<returnType>
         {
-            this.socket = socket;
-            this.isBuildOutputThread = isBuildOutputThread;
-            socket.AddKeepCallback((commandIndex = socket.ServerSocket.CommandIndex) & Server.CommandIndexAnd, this);
+            /// <summary>
+            /// 空回调
+            /// </summary>
+            /// <param name="returnValue"></param>
+            /// <returns></returns>
+            public override bool Callback(ReturnValue<returnType> returnValue)
+            {
+                return true;
+            }
+            /// <summary>
+            /// 空回调
+            /// </summary>
+            public static readonly Null Default = new Null();
         }
-        /// <summary>
-        /// 取消保持调用
-        /// </summary>
-        public abstract void CancelKeep();
     }
     /// <summary>
     /// 异步回调
     /// </summary>
-    /// <typeparam name="callbackType">异步回调类型</typeparam>
     /// <typeparam name="serverSocketSenderType">TCP 服务套接字数据发送类型</typeparam>
     /// <typeparam name="outputParameterType">输出参数类型</typeparam>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    internal abstract class ServerCallback<callbackType, serverSocketSenderType, outputParameterType, returnType> : AutoCSer.Threading.Link<callbackType>, IServerKeepCallback
-        where callbackType : ServerCallback<callbackType, serverSocketSenderType, outputParameterType, returnType>
+    internal abstract class ServerCallbackBase<serverSocketSenderType, outputParameterType, returnType> : ServerCallback<returnType>
         where serverSocketSenderType : ServerSocketSender
-//#if NOJIT
-//        where outputParameterType : IReturnParameter
-//#else
-//        where outputParameterType : IReturnParameter<returnType>
-//#endif
+        //#if NOJIT
+        //        where outputParameterType : IReturnParameter
+        //#else
+        //        where outputParameterType : IReturnParameter<returnType>
+        //#endif
     {
         /// <summary>
         /// 异步套接字
         /// </summary>
         protected serverSocketSenderType socket;
         /// <summary>
+        /// 套接字是否有效
+        /// </summary>
+        public override bool IsSocket
+        {
+            get
+            {
+                serverSocketSenderType socket = this.socket;
+                return socket != null && socket.IsSocket;
+            }
+        }
+        /// <summary>
         /// 服务端输出信息
         /// </summary>
-        protected OutputInfo outputInfo;
+        protected readonly OutputInfo outputInfo;
         /// <summary>
         /// 会话标识
         /// </summary>
-        protected uint commandIndex;
+        protected readonly uint commandIndex;
         /// <summary>
         /// 保持回调访问锁
         /// </summary>
@@ -98,45 +166,18 @@ namespace AutoCSer.Net.TcpServer
         /// 输出参数
         /// </summary>
         protected outputParameterType outputParameter;
-
         /// <summary>
-        /// 异步回调
-        /// </summary>
-        protected Func<ReturnValue<returnType>, bool> onReturnHandle;
-        /// <summary>
-        /// 异步回调
+        /// TCP 服务器端异步调用
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Func<ReturnValue<returnType>, bool> Set(serverSocketSenderType socket, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+        protected ServerCallbackBase(serverSocketSenderType socket, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
         {
             this.socket = socket;
             this.outputInfo = outputInfo;
             this.outputParameter = outputParameter;
             commandIndex = socket.ServerSocket.CommandIndex;
-            return onReturnHandle;
         }
-        /// <summary>
-        /// 异步回调
-        /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="outputInfo">服务端输出信息</param>
-        /// <param name="outputParameter"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void setKeep(serverSocketSenderType socket, TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
-        {
-            this.socket = socket;
-            this.outputInfo = outputInfo;
-            this.outputParameter = outputParameter;
-            socket.AddKeepCallback((commandIndex = socket.ServerSocket.CommandIndex) & Server.CommandIndexAnd, this);
-            //flags = socket.CommandServerSocket.CommandFlags;
-        }
-        /// <summary>
-        /// 取消保持调用
-        /// </summary>
-        public abstract void CancelKeep();
     }
 }

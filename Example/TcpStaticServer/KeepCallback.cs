@@ -16,12 +16,12 @@ namespace AutoCSer.Example.TcpStaticServer
         /// <param name="right">加法右值</param>
         /// <param name="count">回调次数</param>
         /// <param name="onAdd">加法计算回调委托</param>
-        [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod]
-        static void Add(int left, int right, int count, Func<AutoCSer.Net.TcpServer.ReturnValue<int>, bool> onAdd)
+        [AutoCSer.Net.TcpStaticServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
+        static void Add(int left, int right, int count, AutoCSer.Net.TcpServer.ServerCallback<int> onAdd)
         {
             while (count != 0)
             {
-                onAdd(left + right);
+                onAdd.Callback(left + right);
                 --count;
             }
         }

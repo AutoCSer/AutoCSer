@@ -436,7 +436,7 @@ namespace AutoCSer.Example.TcpInternalServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[1];
-                names[0].Set(@"(int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 0);
+                names[0].Set(@"(int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 0);
                 return names;
             }
             /// <summary>
@@ -1605,7 +1605,7 @@ namespace AutoCSer.Example.TcpInternalServer
             private static KeyValue<string, int>[] _identityCommandNames_()
             {
                 KeyValue<string, int>[] names = new KeyValue<string, int>[1];
-                names[0].Set(@"(int,int,int,System.Func<AutoCSer.Net.TcpServer.ReturnValue<int>,bool>)Add", 0);
+                names[0].Set(@"(int,int,int,AutoCSer.Net.TcpServer.ServerCallback<int>)Add", 0);
                 return names;
             }
             /// <summary>

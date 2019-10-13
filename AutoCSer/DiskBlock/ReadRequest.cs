@@ -20,7 +20,7 @@ namespace AutoCSer.DiskBlock
         /// <summary>
         /// 获取数据回调委托
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<ClientBuffer>, bool> OnRead;
+        internal AutoCSer.Net.TcpServer.ServerCallback<ClientBuffer> OnRead;
         /// <summary>
         /// 数据写入请求
         /// </summary>
@@ -32,7 +32,7 @@ namespace AutoCSer.DiskBlock
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal ReadRequest Error()
         {
-            if (WriteRequest == null) OnRead(new ClientBuffer { State = MemberState.ServerException });
+            if (WriteRequest == null) OnRead.Callback(new ClientBuffer { State = MemberState.ServerException });
             else WriteRequest.AppendWrite();
             return LinkNext;
         }
@@ -50,14 +50,14 @@ namespace AutoCSer.DiskBlock
                 if (block.IndexCache.TryGetValue(ref Index, out hashData))
                 {
                     byte[] data = hashData.SubArray.Array;
-                    if (data.Length == Size + sizeof(int)) OnRead(new ClientBuffer { Buffer = new SubArray<byte> { Array = data, Start = sizeof(int), Length = Size }, State = MemberState.Remote });
-                    else OnRead(new ClientBuffer { State = MemberState.SizeError });
+                    if (data.Length == Size + sizeof(int)) OnRead.Callback(new ClientBuffer { Buffer = new SubArray<byte> { Array = data, Start = sizeof(int), Length = Size }, State = MemberState.Remote });
+                    else OnRead.Callback(new ClientBuffer { State = MemberState.SizeError });
                 }
                 else
                 {
                     byte[] data = read(block, fileStream);
-                    if (data == null) OnRead(new ClientBuffer { State = MemberState.SizeError });
-                    else OnRead(new ClientBuffer { Buffer = new SubArray<byte> { Array = data, Start = sizeof(int), Length = Size }, State = MemberState.Remote });
+                    if (data == null) OnRead.Callback(new ClientBuffer { State = MemberState.SizeError });
+                    else OnRead.Callback(new ClientBuffer { Buffer = new SubArray<byte> { Array = data, Start = sizeof(int), Length = Size }, State = MemberState.Remote });
                 }
             }
             else if (block.IndexCache.TryGetValue(ref Index, out hashData)) WriteRequest.OnCache(hashData.SubArray.Array);

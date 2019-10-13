@@ -96,12 +96,12 @@ namespace AutoCSer.CacheServer
         /// <param name="onCache">缓存数据回调委托</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
-        internal void GetCache(Func<AutoCSer.Net.TcpServer.ReturnValue<CacheReturnParameter>, bool> onCache)
+        internal void GetCache(AutoCSer.Net.TcpServer.ServerCallback<CacheReturnParameter> onCache)
         {
             CacheManager cache = Cache;
             if (cache != null) new CacheGetter(cache, onCache);
             //if (cache != null) AutoCSer.Net.TcpServer.ServerCallQueue.Default.Add(new ServerCall.GetCache(cache, onCache));
-            else onCache(default(CacheReturnParameter));
+            else onCache.Callback(default(CacheReturnParameter));
         }
 
         /// <summary>

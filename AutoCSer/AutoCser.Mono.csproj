@@ -317,7 +317,6 @@
     <Compile Include="Net\TcpServer\ConfigLoader.cs" />
     <Compile Include="Net\TcpServer\CustomServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomWaitServerCall.cs" />
-    <Compile Include="Net\TcpServer\IServerKeepCallback.cs" />
     <Compile Include="Net\TcpServer\ISetTcpServer.cs" />
     <Compile Include="Net\TcpServer\KeepCallback.cs" />
     <Compile Include="Net\TcpServer\KeepCallbackMethodAttribute.cs" />
@@ -522,7 +521,6 @@
     <Compile Include="Net\TcpServer\Emit\ParameterFlag.cs" />
     <Compile Include="Net\TcpServer\Emit\ParameterHash.cs" />
     <Compile Include="Net\TcpServer\Emit\ParameterType.cs" />
-    <Compile Include="Net\TcpServer\Emit\ServerCallback.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerCallQueue.cs" />
     <Compile Include="Net\TcpServer\Emit\ServerMetadata.cs" />
     <Compile Include="Net\TcpServer\Emit\ReturnParameterGenericType.cs" />

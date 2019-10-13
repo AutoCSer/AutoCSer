@@ -6,8 +6,8 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// <summary>
     /// TCP 服务器端异步调用
     /// </summary>
-    internal abstract class ServerCallback<callbackType, serverSocketType> : AutoCSer.Threading.Link<callbackType>
-        where callbackType : ServerCallback<callbackType, serverSocketType>
+    /// <typeparam name="serverSocketType">TCP 服务套接字数据发送类型</typeparam>
+    internal abstract class ServerCallback<serverSocketType> : TcpServer.ServerCallback
         where serverSocketType : ServerSocket
     {
         /// <summary>
@@ -15,30 +15,32 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         protected serverSocketType socket;
         /// <summary>
-        /// 异步回调
+        /// 套接字是否有效
         /// </summary>
-        protected Func<TcpServer.ReturnValue, bool> onReturnHandle;
+        public override bool IsSocket
+        {
+            get
+            {
+                serverSocketType socket = this.socket;
+                return socket != null && socket.Socket != null;
+            }
+        }
         /// <summary>
-        /// 异步回调
-        /// </summary>
-        /// <param name="socket"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Func<TcpServer.ReturnValue, bool> Set(serverSocketType socket)
+                 /// TCP 服务器端异步调用
+                 /// </summary>
+                 /// <param name="socket">异步套接字</param>
+        protected ServerCallback(serverSocketType socket)
         {
             this.socket = socket;
-            return onReturnHandle;
         }
     }
     /// <summary>
     /// 异步回调
     /// </summary>
-    /// <typeparam name="callbackType">异步回调类型</typeparam>
     /// <typeparam name="serverSocketType">TCP 服务套接字数据发送类型</typeparam>
     /// <typeparam name="outputParameterType">输出参数类型</typeparam>
     /// <typeparam name="returnType">返回值类型</typeparam>
-    internal abstract class ServerCallback<callbackType, serverSocketType, outputParameterType, returnType> : AutoCSer.Threading.Link<callbackType>
-        where callbackType : ServerCallback<callbackType, serverSocketType, outputParameterType, returnType>
+    internal abstract class ServerCallback<serverSocketType, outputParameterType, returnType> : TcpServer.ServerCallback<returnType>
         where serverSocketType : ServerSocket
         //#if NOJIT
         //        where outputParameterType : IReturnParameter
@@ -49,34 +51,37 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 异步套接字
         /// </summary>
-        protected serverSocketType socket;
+        protected readonly serverSocketType socket;
         /// <summary>
-        /// 服务端输出信息
+        /// 套接字是否有效
         /// </summary>
-        protected TcpSimpleServer.OutputInfo outputInfo;
+        public override bool IsSocket
+        {
+            get
+            {
+                serverSocketType socket = this.socket;
+                return socket != null && socket.Socket != null;
+            }
+        }
+        /// <summary>
+                 /// 服务端输出信息
+                 /// </summary>
+        protected readonly TcpSimpleServer.OutputInfo outputInfo;
         /// <summary>
         /// 输出参数
         /// </summary>
         protected outputParameterType outputParameter;
-
-        /// <summary>
-        /// 异步回调
-        /// </summary>
-        protected Func<TcpServer.ReturnValue<returnType>, bool> onReturnHandle;
         /// <summary>
         /// 异步回调
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="outputInfo">服务端输出信息</param>
         /// <param name="outputParameter"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Func<TcpServer.ReturnValue<returnType>, bool> Set(serverSocketType socket, TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+        protected ServerCallback(serverSocketType socket, TcpSimpleServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
         {
             this.socket = socket;
             this.outputInfo = outputInfo;
             this.outputParameter = outputParameter;
-            return onReturnHandle;
         }
     }
 }

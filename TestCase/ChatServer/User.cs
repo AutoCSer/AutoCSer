@@ -19,7 +19,7 @@ namespace AutoCSer.TestCase.ChatServer
         /// <summary>
         /// 用户信息推送回调委托
         /// </summary>
-        public Func<AutoCSer.Net.TcpServer.ReturnValue<ChatData.UserLogin>, bool> GetUser;
+        public AutoCSer.Net.TcpServer.ServerCallback<ChatData.UserLogin> GetUser;
         /// <summary>
         /// 其它用户登录调用推送
         /// </summary>
@@ -29,12 +29,12 @@ namespace AutoCSer.TestCase.ChatServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool OnUser(string userName, ChatData.UserLoginType type)
         {
-            return GetUser == null || GetUser(new ChatData.UserLogin { Name = userName, Type = type });
+            return GetUser == null || GetUser.Callback(new ChatData.UserLogin { Name = userName, Type = type });
         }
         /// <summary>
         /// 消息推送回调委托
         /// </summary>
-        public Func<AutoCSer.Net.TcpServer.ReturnValue<ChatData.Message>, bool> GetMessage;
+        public AutoCSer.Net.TcpServer.ServerCallback<ChatData.Message> GetMessage;
         /// <summary>
         /// 用户消息调用推送
         /// </summary>
@@ -43,7 +43,7 @@ namespace AutoCSer.TestCase.ChatServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public bool OnMessage(ref ChatData.Message message)
         {
-            return GetMessage == null || GetMessage(message);
+            return GetMessage == null || GetMessage.Callback(message);
         }
     }
 }

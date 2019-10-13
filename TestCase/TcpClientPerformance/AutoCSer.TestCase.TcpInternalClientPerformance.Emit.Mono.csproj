@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Client.TcpInternal.cs" />
     <Compile Include="TcpInternalClient.Emit.cs" />
     <Compile Include="TestType.cs" />
     <Compile Include="ClientSynchronous.Emit.cs" />

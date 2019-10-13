@@ -53,7 +53,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 获取消息回调委托
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onGetMessage;
+        private AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onGetMessage;
         /// <summary>
         /// 是否反序列化网络流，否则需要 Copy 数据
         /// </summary>
@@ -105,7 +105,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 }
                 if (onGetMessage != null)
                 {
-                    onGetMessage(new ReturnParameter(ReturnType.MessageQueueNotFoundReader));
+                    onGetMessage.Callback(new ReturnParameter(ReturnType.MessageQueueNotFoundReader));
                     onGetMessage = null;
                 }
             }
@@ -301,7 +301,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 nextWriteIndex();
                 if (onGetMessage != null && (uint)(sendIdentity - Identity) != Config.SendClientCount)
                 {
-                    if (onGetMessage(new ReturnParameter(messages[sendMessageIndex].Data, isGetMessageStream))) nextSendIndex();
+                    if (onGetMessage.Callback(new ReturnParameter(messages[sendMessageIndex].Data, isGetMessageStream))) nextSendIndex();
                     else onGetMessage = null;
                 }
                 return;
@@ -321,7 +321,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 nextWriteIndex();
                 if (onGetMessage != null && (uint)(sendIdentity - Identity) != Config.SendClientCount)
                 {
-                    if (onGetMessage(new ReturnParameter(messages[sendMessageIndex].Data, isGetMessageStream))) nextSendIndex();
+                    if (onGetMessage.Callback(new ReturnParameter(messages[sendMessageIndex].Data, isGetMessageStream))) nextSendIndex();
                     else onGetMessage = null;
                 }
             }
@@ -339,7 +339,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 {
                     if (getMessage.Identity == Identity)
                     {
-                        if (onGetMessage == null || !onGetMessage(new ReturnParameter(ReturnType.Success)))
+                        if (onGetMessage == null || !onGetMessage.Callback(new ReturnParameter(ReturnType.Success)))
                         {
                             onGetMessage = getMessage.OnReturn;
                             isGetMessageStream = getMessage.IsReturnStream;
@@ -351,7 +351,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                             while (sendIdentity != endIdentity)
                             {
                                 returnParameter.Set(messages[sendMessageIndex].Data, isGetMessageStream);
-                                if (onGetMessage(returnParameter)) nextSendIndex();
+                                if (onGetMessage.Callback(returnParameter)) nextSendIndex();
                                 else
                                 {
                                     onGetMessage = null;
@@ -367,7 +367,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             }
             finally
             {
-                if (getMessage != null) getMessage.OnReturn(new ReturnParameter(returnType));
+                if (getMessage != null) getMessage.OnReturn.Callback(new ReturnParameter(returnType));
             }
         }
         /// <summary>
@@ -436,7 +436,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                         while (sendIdentity != endIdentity)
                         {
                             returnParameter.Set(messages[sendMessageIndex].Data, isGetMessageStream);
-                            if (onGetMessage(returnParameter)) nextSendIndex();
+                            if (onGetMessage.Callback(returnParameter)) nextSendIndex();
                             else
                             {
                                 onGetMessage = null;

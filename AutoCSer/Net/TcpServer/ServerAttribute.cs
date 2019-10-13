@@ -46,9 +46,5 @@ namespace AutoCSer.Net.TcpServer
         /// 命令池初始化二进制大小 2^n
         /// </summary>
         internal abstract byte GetCommandPoolBitSize { get; }
-        /// <summary>
-        /// 默认为 false 表示更注重客户端异步吞吐性能，否则更注重客户端 await 吞吐性能
-        /// </summary>
-        public bool IsClientAwaiter;
     }
 }

@@ -31,8 +31,6 @@ namespace AutoCSer.TestCase
                     using (AutoCSer.CacheServer.MasterServer.TcpInternalServer cacheMasterServer = new AutoCSer.CacheServer.MasterServer.TcpInternalServer())
                     using (AutoCSer.CacheServer.SlaveServer.TcpInternalServer cacheSlaveServer = new AutoCSer.CacheServer.SlaveServer.TcpInternalServer())
                     using (AutoCSer.DiskBlock.Server.TcpInternalServer fileBlockServer = AutoCSer.DiskBlock.Server.Create(new AutoCSer.DiskBlock.File(new FileInfo(Path.Combine(AutoCSer.PubPath.ApplicationPath, "blockFile" + AutoCSer.DiskBlock.File.ExtensionName)).FullName, 0)))
-                    //using (AutoCSer.RemoteDictionaryStreamServer.MasterServer.TcpInternalServer keyValueStreamMasterServer = new RemoteDictionaryStreamServer.MasterServer.TcpInternalServer())
-                    //using (AutoCSer.RemoteDictionaryStreamServer.SlaveServer.TcpInternalServer keyValueStreamSlaveServer = new RemoteDictionaryStreamServer.SlaveServer.TcpInternalServer())
                     using (AutoCSer.TestCase.TcpStaticServer.JsonServer jsonServer = new AutoCSer.TestCase.TcpStaticServer.JsonServer())
                     using (AutoCSer.TestCase.TcpStaticServer.MemberServer memberServer = new AutoCSer.TestCase.TcpStaticServer.MemberServer())
                     using (AutoCSer.TestCase.TcpStaticServer.SessionServer sessionServer = new AutoCSer.TestCase.TcpStaticServer.SessionServer())
@@ -45,7 +43,6 @@ namespace AutoCSer.TestCase
                     {
                         if (
                             cacheMasterServer.IsListen && cacheSlaveServer.IsListen
-                            //&& keyValueStreamMasterServer.IsListen && keyValueStreamSlaveServer.IsListen
                             && fileBlockServer.IsListen && jsonServer.IsListen && memberServer.IsListen && sessionServer.IsListen
                             && jsonStreamServer.IsListen && memberStreamServer.IsListen && sessionStreamServer.IsListen
                             && jsonSimpleServer.IsListen && memberSimpleServer.IsListen && sessionSimpleServer.IsListen
@@ -98,8 +95,6 @@ namespace AutoCSer.TestCase
                                 if (!TcpOpenSimpleServer.Json.TestCase()) { errorType = typeof(TcpOpenSimpleServer.Json); break; }
 
                                 if (!CacheServer.Cache.TestCase()) { errorType = typeof(CacheServer.Cache); break; }
-
-                                //if (!KeyValueStream.TestCase()) { errorType = typeof(KeyValueStream); break; }
                                 if (!DiskBlock.File.TestCase()) { errorType = typeof(DiskBlock.File); break; }
 #endif
                                 Console.Write('.');

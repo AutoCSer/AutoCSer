@@ -17,7 +17,6 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
         private static void test()
         {
             Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpServerPerformance.Add>, bool> onAdd = Client.OnAddEmit;
-            Func<AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.TestCase.TcpInternalServerPerformance.ServerCustomSerialize>, bool> onCustomSerialize = Client.OnAddEmit;
             int left = Client.Left;
             AutoCSer.TestCase.TcpInternalServerPerformance.IServer client = AutoCSer.Net.TcpInternalServer.Emit.Client<AutoCSer.TestCase.TcpInternalServerPerformance.IServer>.Create();
             using (AutoCSer.Net.TcpInternalServer.Emit.MethodClient methodClient = client as AutoCSer.Net.TcpInternalServer.Emit.MethodClient)
@@ -27,16 +26,6 @@ namespace AutoCSer.TestCase.TcpInternalClientPerformance
 
                 if (Client.IsCreatedProcessWait)
                 {
-                    Client.Start(TestType.CustomSerialize, Client.Count);
-                    using (AutoCSer.Net.TcpServer.KeepCallback customSerializeKeep = client.AddCustomSerialize(onCustomSerialize))
-                    {
-                        new AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerializeOutput(left, Client.Count, client.AddCustomSerialize).Wait();
-                        client.AddCustomSerializeFinally();
-                        Console.WriteLine("loop end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                        wait();
-                    }
-                    sleep();
-
                     Client.Start(TestType.Register, Client.Count);
                     using (AutoCSer.Net.TcpServer.KeepCallback sendKeep = client.AddRegister(onAdd))
                     {

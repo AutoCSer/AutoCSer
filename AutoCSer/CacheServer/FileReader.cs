@@ -21,7 +21,7 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 读取文件回调委托
         /// </summary>
-        private readonly Func<AutoCSer.Net.TcpServer.ReturnValue<ReadFileParameter>, bool> onRead;
+        private readonly AutoCSer.Net.TcpServer.ServerCallback<ReadFileParameter> onRead;
         /// <summary>
         /// 压缩数据缓冲区
         /// </summary>
@@ -48,7 +48,7 @@ namespace AutoCSer.CacheServer
         /// <param name="file">文件流写入器</param>
         /// <param name="index">当前读取位置</param>
         /// <param name="onRead">读取文件回调委托</param>
-        internal FileReader(FileStreamWriter file, long index, Func<AutoCSer.Net.TcpServer.ReturnValue<ReadFileParameter>, bool> onRead)
+        internal FileReader(FileStreamWriter file, long index, AutoCSer.Net.TcpServer.ServerCallback<ReadFileParameter> onRead)
         {
             this.file = file;
             this.index = index;
@@ -89,7 +89,7 @@ namespace AutoCSer.CacheServer
             if (!isOnReadError)
             {
                 isOnReadError = true;
-                onRead(default(ReadFileParameter));
+                onRead.Callback(default(ReadFileParameter));
             }
         }
         /// <summary>
@@ -106,7 +106,7 @@ namespace AutoCSer.CacheServer
                     index += count;
                     ReadFileParameter parameter = new ReadFileParameter { Reader = this };
                     parameter.Data.Set(buffer, 0, count);
-                    if (onRead(parameter)) isFree = false;
+                    if (onRead.Callback(parameter)) isFree = false;
                     else isOnReadError = true;
                 }
                 else

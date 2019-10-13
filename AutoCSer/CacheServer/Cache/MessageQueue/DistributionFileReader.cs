@@ -355,7 +355,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             }
             finally
             {
-                if (getMessage != null) getMessage.OnReturn(new IdentityReturnParameter(ReturnType.MessageQueueNotFoundReader));
+                if (getMessage != null) getMessage.OnReturn.Callback(new IdentityReturnParameter(ReturnType.MessageQueueNotFoundReader));
             }
         }
         /// <summary>
@@ -477,7 +477,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 {
                     if (++messageIndex == messages.Length) messageIndex = 0;
                     if (messageIndex == endMessageIndex || messages[messageIndex].DistributionTime > time) break;
-                    if (messages[messageIndex].State == DistributionMessageState.Sended) Writer.Append(new Buffer(Node, new QueueTaskThread.SetDistributionIdentity(this, identity).OnAppendFile, ref messages[messageIndex]));
+                    if (messages[messageIndex].State == DistributionMessageState.Sended) Writer.Append(new Buffer(Node, new QueueTaskThread.SetDistributionIdentity(this, identity).ServerCallback, ref messages[messageIndex]));
                     ++identity;
                 }
                 while (true);

@@ -32,7 +32,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #region NOT IsNullMethod
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 #region IF IsAsynchronousCallback
-                public static void @StaticMethodIndexName(/*IF:ClientParameterName*/AutoCSer.Net.TcpInternalSimpleServer.ServerSocket _socket_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/Func<AutoCSer.Net.TcpServer.ReturnValue</*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/>, bool> _onReturn_)
+                public static void @StaticMethodIndexName(/*IF:ClientParameterName*/AutoCSer.Net.TcpInternalSimpleServer.ServerSocket _socket_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/AutoCSer.Net.TcpServer.ServerCallback/*IF:MethodIsReturn*/</*PUSH:Method*/@MethodReturnType.FullName/*PUSH:Method*/>/*IF:MethodIsReturn*/ _onReturn_)
                 {
                     @Type.FullName/*PUSH:Method*/.@StaticMethodName(/*IF:ClientParameterName*/_socket_, /*IF:ClientParameterName*//*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterRefName, /*PUSH:MethodParameter*//*LOOP:InputParameters*/_onReturn_);/*PUSH:Method*/
                 }
@@ -282,10 +282,10 @@ namespace AutoCSer.CodeGenerator.Template
                                 #region IF IsAsynchronousCallback
                                 #region IF MethodIsReturn
                                 @OutputParameterTypeName outputParameter = new @OutputParameterTypeName();
-                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName>, bool>)/*NOTE*/socket.GetCallback<@OutputParameterTypeName/*NOT:IsVerifyMethod*/, @MethodReturnType.FullName/*NOT:IsVerifyMethod*/>(@StaticMethodIdentityCommand, ref outputParameter));
+                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/socket.GetCallback<@OutputParameterTypeName/*NOT:IsVerifyMethod*/, @MethodReturnType.FullName/*NOT:IsVerifyMethod*/>(@StaticMethodIdentityCommand, ref outputParameter));
                                 #endregion IF MethodIsReturn
                                 #region NOT MethodIsReturn
-                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(Func<AutoCSer.Net.TcpServer.ReturnValue<MethodReturnType.FullName>, bool>)(object)(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>)/*NOTE*/socket.GetCallback());
+                                @MethodType.FullName/**/.TcpStaticSimpleServer.@StaticMethodIndexName(/*IF:ClientParameterName*/socket, /*IF:ClientParameterName*//*LOOP:InputParameters*//*AT:ParameterRef*//*PUSH:Parameter*/inputParameter.@ParameterName, /*PUSH:Parameter*//*LOOP:InputParameters*//*NOTE*/(AutoCSer.Net.TcpServer.ServerCallback<MethodReturnType.FullName>)(object)/*NOTE*/socket.GetCallback());
                                 #endregion NOT MethodIsReturn
                                 return true;
                                 #endregion IF IsAsynchronousCallback

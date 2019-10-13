@@ -76,8 +76,17 @@ namespace AutoCSer.OpenAPI
             }
             finally
             {
-                form.Clear();
-                AutoCSer.Threading.RingPool<NameValueCollection>.Default.PushNotNull(form);
+                switch (form.Count)
+                {
+                    case 0:
+                    PUSH: AutoCSer.Threading.RingPool<NameValueCollection>.Default.PushNotNull(form); break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        form.Clear();
+                        goto PUSH;
+                }
             }
             return parseJson<valueType>(json, url);
         }

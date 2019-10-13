@@ -38,9 +38,9 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <param name="onAdd"></param>
         [AutoCSer.Net.TcpServer.Method(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsClientAsynchronous = true, IsClientSynchronous = false, IsClientAwaiter = false)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void addAsynchronous(int left, int right, Func<AutoCSer.Net.TcpServer.ReturnValue<Add>, bool> onAdd)
+        private void addAsynchronous(int left, int right, AutoCSer.Net.TcpServer.ServerCallback<Add> onAdd)
         {
-            onAdd(new Add(left, right));
+            onAdd.Callback(new Add(left, right));
         }
 
         /// <summary>
@@ -107,14 +107,14 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <summary>
         /// 计算回调
         /// </summary>
-        private Func<AutoCSer.Net.TcpServer.ReturnValue<Add>, bool> onAdd;
+        private AutoCSer.Net.TcpServer.ServerCallback<Add> onAdd;
         /// <summary>
         /// 计算回调测试
         /// </summary>
         /// <param name="onAdd"></param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void addRegister(Func<AutoCSer.Net.TcpServer.ReturnValue<Add>, bool> onAdd)
+        private void addRegister(AutoCSer.Net.TcpServer.ServerCallback<Add> onAdd)
         {
             this.onAdd = onAdd;
         }
@@ -127,7 +127,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void addRegister(int left, int right)
         {
-            onAdd(new Add(left, right));
+            onAdd.Callback(new Add(left, right));
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         /// <param name="onCustomSerialize"></param>
         [AutoCSer.Net.TcpServer.KeepCallbackMethod(ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void addCustomSerialize(Func<AutoCSer.Net.TcpServer.ReturnValue<ServerCustomSerialize>, bool> onCustomSerialize)
+        private void addCustomSerialize(AutoCSer.Net.TcpServer.ServerCallback<ServerCustomSerialize> onCustomSerialize)
         {
             customSerializeOutput = new ServerCustomSerializeOutput(onCustomSerialize);
         }
@@ -174,7 +174,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
         {
             fixed (byte* bufferFixed = value.Buffer.BufferArray)
             {
-                for (byte* read = bufferFixed + value.Buffer.StartIndex, end = read + value.Buffer.Count; read != end; read += sizeof(int) * 2) onAdd(new Add(*(int*)read, *(int*)(read + sizeof(int))));
+                for (byte* read = bufferFixed + value.Buffer.StartIndex, end = read + value.Buffer.Count; read != end; read += sizeof(int) * 2) onAdd.Callback(new Add(*(int*)read, *(int*)(read + sizeof(int))));
             }
         }
 

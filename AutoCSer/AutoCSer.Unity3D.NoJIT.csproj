@@ -359,7 +359,6 @@
     <Compile Include="Net\TcpServer\CommandPool.cs" />
     <Compile Include="Net\TcpServer\CustomServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomWaitServerCall.cs" />
-    <Compile Include="Net\TcpServer\IServerKeepCallback.cs" />
     <Compile Include="Net\TcpServer\KeepCallbackMethodAttribute.cs" />
     <Compile Include="Net\TcpServer\MethodBaseAttribute.cs" />
     <Compile Include="Net\TcpServer\MethodClient.cs" />

@@ -16,6 +16,43 @@ namespace AutoCSer.Net.TcpInternalServer
         /// TCP 内部服务套接字数据发送
         /// </summary>
         internal ServerSocketSender() : base() { }
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="outputInfo">服务端输出信息</param>
+        /// <returns>异步回调</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public Func<TcpServer.ReturnValue, bool> GetCallbackEmit(TcpServer.OutputInfo outputInfo)
+        {
+            if (outputInfo.IsKeepCallback == 0) return new ServerCallback(this, outputInfo.IsBuildOutputThread).Callback;
+            return new ServerCallbackKeep(this, outputInfo.IsBuildOutputThread).Callback;
+        }
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="outputInfo">服务端输出信息</param>
+        /// <param name="outputParameter">输出参数</param>
+        /// <returns>异步回调</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public Func<TcpServer.ReturnValue<returnType>, bool> GetCallbackEmit<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+            where outputParameterType : struct, IReturnParameter<returnType>
+        {
+            if (outputInfo.IsKeepCallback == 0) return new ServerCallback<outputParameterType, returnType>(this, outputInfo, ref outputParameter).Callback;
+            return new ServerCallbackKeep<outputParameterType, returnType>(this, outputInfo, ref outputParameter).Callback;
+        }
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="outputInfo">服务端输出信息</param>
+        /// <param name="outputParameter">输出参数</param>
+        /// <returns>异步回调</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public Func<returnType, bool> GetCallbackReturn<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+            where outputParameterType : struct, IReturnParameter<returnType>
+        {
+            if (outputInfo.IsKeepCallback == 0) return new ServerCallback<outputParameterType, returnType>(this, outputInfo, ref outputParameter).CallbackReturn;
+            return new ServerCallbackKeep<outputParameterType, returnType>(this, outputInfo, ref outputParameter).CallbackReturn;
+        }
 #endif
         /// <summary>
         /// TCP 内部服务套接字数据发送
@@ -32,9 +69,10 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         //[AutoCSer.IOS.Preserve(Conditional = true)]
-        public Func<TcpServer.ReturnValue, bool> GetCallback(TcpServer.OutputInfo outputInfo)
+        public TcpServer.ServerCallback GetCallback(TcpServer.OutputInfo outputInfo)
         {
-            return outputInfo.IsKeepCallback == 0 ? (AutoCSer.Threading.RingPool<ServerCallback>.Default.Pop() ?? new ServerCallback(0)).Set(this, outputInfo.IsBuildOutputThread) : (new ServerCallback(1)).SetKeep(this, outputInfo.IsBuildOutputThread);
+            if (outputInfo.IsKeepCallback == 0) return new ServerCallback(this, outputInfo.IsBuildOutputThread);
+            return new ServerCallbackKeep(this, outputInfo.IsBuildOutputThread);
         }
         /// <summary>
         /// 异步回调
@@ -44,18 +82,15 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <returns>异步回调</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         //[AutoCSer.IOS.Preserve(Conditional = true)]
-        public Func<TcpServer.ReturnValue<returnType>, bool> GetCallback<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
+        public TcpServer.ServerCallback<returnType> GetCallback<outputParameterType, returnType>(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter)
 #if NOJIT
             where outputParameterType : struct, IReturnParameter
 #else
             where outputParameterType : struct, IReturnParameter<returnType>
 #endif
         {
-            if (outputInfo.IsKeepCallback == 0)
-            {
-                return (AutoCSer.Threading.RingPool<ServerCallback<outputParameterType, returnType>>.Default.Pop() ?? new ServerCallback<outputParameterType, returnType>(0)).Set(this, outputInfo, ref outputParameter);
-            }
-            return (new ServerCallback<outputParameterType, returnType>(1)).SetKeep(this, outputInfo, ref outputParameter);
+            if (outputInfo.IsKeepCallback == 0) return new ServerCallback<outputParameterType, returnType>(this, outputInfo, ref outputParameter);
+            return new ServerCallbackKeep<outputParameterType, returnType>(this, outputInfo, ref outputParameter);
         }
         /// <summary>
         /// 释放资源
@@ -102,7 +137,7 @@ namespace AutoCSer.Net.TcpInternalServer
             if (IsSocket)
             {
                 TcpServer.ServerOutput.OutputLink head = null, end;
-                TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = Server.SendBufferPool.Size, IsClientAwaiter = Server.Attribute.IsClientAwaiter };
+                TcpServer.SenderBuildInfo buildInfo = new TcpServer.SenderBuildInfo { SendBufferSize = Server.SendBufferPool.Size };
                 UnmanagedStream outputStream;
                 SocketError socketError;
                 try
@@ -145,24 +180,9 @@ namespace AutoCSer.Net.TcpInternalServer
                                     head = Outputs.GetClear(out end);
                                     goto LOOP;
                                 }
-                                if (!buildInfo.IsClientAwaiter)
+                                if (currentOutputSleep >= 0)
                                 {
-                                    if (currentOutputSleep >= 0)
-                                    {
-                                        Thread.Sleep(currentOutputSleep);
-                                        if (!Outputs.IsEmpty)
-                                        {
-                                            head = Outputs.GetClear(out end);
-                                            currentOutputSleep = 0;
-                                            goto LOOP;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (currentOutputSleep == int.MinValue) currentOutputSleep = outputSleep;
-                                    if (currentOutputSleep >= 0) Thread.Sleep(currentOutputSleep);
-                                    else AutoCSer.Threading.ThreadYield.YieldOnly();
+                                    Thread.Sleep(currentOutputSleep);
                                     if (!Outputs.IsEmpty)
                                     {
                                         head = Outputs.GetClear(out end);

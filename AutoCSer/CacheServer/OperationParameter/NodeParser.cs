@@ -25,7 +25,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// <summary>
         /// 返回调用委托
         /// </summary>
-        internal Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> OnReturn;
+        internal AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> OnReturn;
         /// <summary>
         /// 当前读取位置
         /// </summary>
@@ -253,7 +253,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         {
             if (OnReturn != null)
             {
-                OnReturn(new ReturnParameter(ref ReturnParameter));
+                OnReturn.Callback(new ReturnParameter(ref ReturnParameter));
                 OnReturn = null;
             }
         }
@@ -263,7 +263,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// <param name="onReturn"></param>
         /// <param name="isReturnStream"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetOnReturn(Func<AutoCSer.Net.TcpServer.ReturnValue<ReturnParameter>, bool> onReturn, bool isReturnStream)
+        internal void SetOnReturn(AutoCSer.Net.TcpServer.ServerCallback<ReturnParameter> onReturn, bool isReturnStream)
         {
             OnReturn = onReturn;
             ReturnParameter.IsReturnDeSerializeStream = isReturnStream;
@@ -274,10 +274,10 @@ namespace AutoCSer.CacheServer.OperationParameter
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CallOnReturnDistributionMessage()
         {
-            Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onReturn = ReturnParameter.Value as Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool>;
+            AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> onReturn = ReturnParameter.Value as AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter>;
             if (onReturn != null)
             {
-                onReturn(new IdentityReturnParameter(ref ReturnParameter));
+                onReturn.Callback(new IdentityReturnParameter(ref ReturnParameter));
                 ReturnParameter.Value = null;
             }
         }
@@ -287,7 +287,7 @@ namespace AutoCSer.CacheServer.OperationParameter
         /// <param name="onReturn"></param>
         /// <param name="isReturnStream"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void SetOnReturn(Func<AutoCSer.Net.TcpServer.ReturnValue<IdentityReturnParameter>, bool> onReturn, bool isReturnStream)
+        internal void SetOnReturn(AutoCSer.Net.TcpServer.ServerCallback<IdentityReturnParameter> onReturn, bool isReturnStream)
         {
             ReturnParameter.Value = onReturn;
             ReturnParameter.IsReturnDeSerializeStream = isReturnStream;
