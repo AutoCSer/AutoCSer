@@ -28,6 +28,45 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="returnValue">返回值</param>
         /// <returns>是否成功加入回调队列</returns>
         public abstract bool Callback(ReturnValue returnValue);
+#if !NOJIT
+        /// <summary>
+        /// 回调委托隐式转换为客户端异步回调
+        /// </summary>
+        /// <param name="callback">回调委托</param>
+        /// <returns>客户端异步回调</returns>
+        public static implicit operator ServerCallback(Action<ReturnValue> callback)
+        {
+            return new Client(callback);
+        }
+        /// <summary>
+        /// 客户端异步回调
+        /// </summary>
+        internal sealed class Client : ServerCallback
+        {
+            /// <summary>
+            /// 回调委托
+            /// </summary>
+            private readonly Action<ReturnValue> callback;
+            /// <summary>
+            /// 客户端异步回调
+            /// </summary>
+            /// <param name="callback">回调委托</param>
+            internal Client(Action<ReturnValue> callback)
+            {
+                this.callback = callback;
+            }
+            /// <summary>
+            /// 回调
+            /// </summary>
+            /// <param name="returnValue"></param>
+            /// <returns></returns>
+            public override bool Callback(ReturnValue returnValue)
+            {
+                callback(returnValue);
+                return true;
+            }
+        }
+#endif
     }
     /// <summary>
     /// TCP 服务器端异步调用
@@ -120,6 +159,82 @@ namespace AutoCSer.Net.TcpServer
             /// </summary>
             public static readonly Null Default = new Null();
         }
+        /// <summary>
+        /// TCP 服务器端异步调用委托包装
+        /// </summary>
+        public sealed class Func : ServerCallback<returnType>
+        {
+            /// <summary>
+            /// 回调委托
+            /// </summary>
+            private readonly Func<ReturnValue<returnType>, bool> callback;
+            /// <summary>
+            /// TCP 服务器端异步调用委托包装
+            /// </summary>
+            /// <param name="callback">回调委托</param>
+            public Func(Func<ReturnValue<returnType>, bool> callback)
+            {
+                this.callback = callback;
+            }
+            /// <summary>
+            /// 异步回调
+            /// </summary>
+            /// <param name="returnValue">返回值</param>
+            /// <returns>是否成功加入回调队列</returns>
+            public override bool Callback(ReturnValue<returnType> returnValue)
+            {
+                return callback(returnValue);
+            }
+            /// <summary>
+            /// 回调委托隐式转换为 TCP 服务器端异步调用委托包装
+            /// </summary>
+            /// <param name="callback">回调委托</param>
+            /// <returns>TCP 服务器端异步调用委托包装</returns>
+            public static implicit operator Func(Func<ReturnValue<returnType>, bool> callback)
+            {
+                return new Func(callback);
+            }
+        }
+
+#if !NOJIT
+        /// <summary>
+        /// 回调委托隐式转换为客户端异步回调
+        /// </summary>
+        /// <param name="callback">回调委托</param>
+        /// <returns>客户端异步回调</returns>
+        public static implicit operator ServerCallback<returnType>(Action<ReturnValue<returnType>> callback)
+        {
+            return new Client(callback);
+        }
+        /// <summary>
+        /// 客户端异步回调
+        /// </summary>
+        internal sealed class Client : ServerCallback<returnType>
+        {
+            /// <summary>
+            /// 回调委托
+            /// </summary>
+            private readonly Action<ReturnValue<returnType>> callback;
+            /// <summary>
+            /// 客户端异步回调
+            /// </summary>
+            /// <param name="callback">回调委托</param>
+            internal Client(Action<ReturnValue<returnType>> callback)
+            {
+                this.callback = callback;
+            }
+            /// <summary>
+            /// 回调
+            /// </summary>
+            /// <param name="returnValue"></param>
+            /// <returns></returns>
+            public override bool Callback(ReturnValue<returnType> returnValue)
+            {
+                callback(returnValue);
+                return true;
+            }
+        }
+#endif
     }
     /// <summary>
     /// 异步回调

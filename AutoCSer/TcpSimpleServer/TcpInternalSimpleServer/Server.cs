@@ -40,10 +40,10 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">同步验证接口</param>
         /// <param name="log">日志接口</param>
-        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
+        /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isVerifyMethodAsynchronousCallback)
-            : base(attribute, log, verify, isVerifyMethodAsynchronousCallback)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isSynchronousVerifyMethod)
+            : base(attribute, log, verify, isSynchronousVerifyMethod)
         {
             if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + attribute.ServerName);
         }

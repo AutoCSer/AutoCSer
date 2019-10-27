@@ -818,9 +818,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public bool IsVerifyMethod;
             /// <summary>
-            /// 验证函数是否异步回调
+            /// 验证函数是否同步调用
             /// </summary>
-            public bool IsVerifyMethodAsynchronousCallback;
+            public bool IsSynchronousVerifyMethod;
             /// <summary>
             /// 命令序号记忆字段名称
             /// </summary>

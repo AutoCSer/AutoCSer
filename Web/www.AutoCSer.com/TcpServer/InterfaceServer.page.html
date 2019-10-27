@@ -4,7 +4,7 @@
 <body>
     <p>
         高性能的 TCP 服务框架是 AutoCSer 的核心组件，支持若干<a href="/Config/Index.html">全局默认配置</a>，需要引用 <a href="/Index.html" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll。
-        <br />TCP 接口服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html">静态代码生成</a>的 <a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>上手简单，但功能支持相对简单，<b>服务端与客户端的同异步模式只能保持一致</b>。
+        <br />TCP 接口服务基于 Emit 动态生成代理类型，相对于使用<a href="/CodeGenerator.html">静态代码生成</a>的 <a href="/TcpServer/MethodServer.html">TCP 函数服务框架</a>上手简单，但功能支持相对简单，如果客户端与服务端共用同一个接口定义那么<b>同异步模式只能保持一致</b>。
         <!--Include:Include\InterfaceInternalOpenDifference-->
     </p>
     <div><h1>内部服务</h1></div>
@@ -21,6 +21,10 @@
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭；对于客户端而言该返回值没有意义。
             <!--Include:Include\GetCode[Example,2,,TcpInterfaceServer\Asynchronous.cs]-->
+            <br />客户端与服务端采用不同的同异步模式需要<b>分别定义接口</b>，并通过配置 <b>CommandIdentityEnmuType</b> 建立映射关系，要求接口名称与枚举<b>名称一一对应</b>。
+            <br /><b>注意</b>：服务端异步回调最后一个参数可以是抽象类型 <b>AutoCSer.Net.TcpServer.ServerCallbak</b> 或者 <b>AutoCSer.Net.TcpServer.ServerCallbak&lt;returnType&gt;</b>，该抽象类型<b>不能用于客户端</b>。
+            <!--Include:Include\GetCode[Example,b,,TcpInterfaceServer\ServerAsynchronous.cs]-->
+            <!--Include:Include\GetCode[Example,c,,TcpInterfaceServer\ClientAsynchronous.cs]-->
         </p>
         <p>
             . 支持异步回调注册，也就是说客户端一个请求，服务器端可以任意多次回调回应，服务端被动推送是典型的应用场景。
@@ -59,6 +63,7 @@
             . 支持异步回调，返回值类型必须为 void，不支持 ref / out 参数，最后一个参数类型必须是委托 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue, bool&gt;</b> 或者 <b>Func&lt;AutoCSer.Net.TcpServer.ReturnValue&lt;returnType&gt;, bool&gt;</b>
             <br />服务端必须保证该回调委托被执行，该委托的返回值表示回调数据是否成功添加到发送队列中，失败可能意味着该连接已经关闭；对于客户端而言该返回值没有意义。
             <!--Include:Include\GetCode[Example,7,,TcpInterfaceOpenServer\Asynchronous.cs]-->
+            <br />客户端与服务端采用不同的同异步模式需要<b>分别定义接口</b>，并通过配置 <b>CommandIdentityEnmuType</b> 建立映射关系，要求接口名称与枚举<b>名称一一对应</b>，参考内部服务。
         </p>
         <p>
             . 支持异步回调注册，也就是说客户端一个请求，服务器端可以任意多次回调回应，服务端被动推送是典型的应用场景。
@@ -71,7 +76,7 @@
         </p>
         <p>
             . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
-            <!--Include:Include\GetCode[Example,b,,TcpInterfaceOpenServer\Expression.cs]-->
+            <!--Include:Include\GetCode[Example,d,,TcpInterfaceOpenServer\Expression.cs]-->
         </p>
         <!--Include:Include\SimpleSerialize-->
         <p>

@@ -42,24 +42,21 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                 ConstructorBuilder constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, constructorParameterTypes);
                 ILGenerator constructorGenerator = constructorBuilder.GetILGenerator();
                 Label serverAttributeNotNull = constructorGenerator.DefineLabel();
-                bool isVerifyMethodAsynchronousCallback = false;
+                bool isSynchronousVerifyMethod = false;
                 foreach (Method<attributeType, methodAttributeType, serverSocketType> method in methods)
                 {
-                    if (method != null)
+                    if (method != null && method.Attribute.IsVerifyMethod)
                     {
-                        if (method.Attribute.IsVerifyMethod && method.IsAsynchronousCallback)
-                        {
-                            isVerifyMethodAsynchronousCallback = true;
-                            break;
-                        }
+                        if (method.Attribute.ServerTaskType == TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback) isSynchronousVerifyMethod = true;
+                        break;
                     }
                 }
-                #region base(attribute, verify, log, isCallQueue, isVerifyMethodAsynchronousCallback)
+                #region base(attribute, verify, log, isCallQueue, isSynchronousVerifyMethod)
                 constructorGenerator.Emit(OpCodes.Ldarg_0);
                 constructorGenerator.Emit(OpCodes.Ldarg_1);
                 constructorGenerator.Emit(OpCodes.Ldarg_2);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 4);
-                constructorGenerator.int32(isVerifyMethodAsynchronousCallback ? 1 : 0);
+                constructorGenerator.int32(isSynchronousVerifyMethod ? 1 : 0);
                 constructorGenerator.Emit(OpCodes.Call, Metadata.ServerConstructorInfo);
                 #endregion
                 #region _value_ = value;

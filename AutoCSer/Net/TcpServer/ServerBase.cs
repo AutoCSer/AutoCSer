@@ -98,8 +98,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
-        internal ServerBase(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
+        /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
+        internal ServerBase(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
             : base(attribute, attribute.GetReceiveBufferSize, attribute.GetSendBufferSize, attribute.GetServerSendBufferMaxSize, log)
         {
             this.verify = verify;
@@ -108,7 +108,7 @@ namespace AutoCSer.Net.TcpServer
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
             int binaryDeSerializeMaxArraySize = attribute.GetBinaryDeSerializeMaxArraySize;
             BinaryDeSerializeConfig = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetBinaryDeSerializeConfig(binaryDeSerializeMaxArraySize <= 0 ? AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize : binaryDeSerializeMaxArraySize);
-            VerifyMethodCount = isVerifyMethodAsynchronousCallback? (byte)(Server.DefaultVerifyMethodCount + 1) : Server.DefaultVerifyMethodCount;
+            VerifyMethodCount = isSynchronousVerifyMethod ? Server.DefaultVerifyMethodCount : (byte)(Server.DefaultVerifyMethodCount + 1);
         }
         /// <summary>
         /// 停止服务

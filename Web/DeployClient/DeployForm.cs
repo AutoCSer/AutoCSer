@@ -368,22 +368,25 @@ namespace AutoCSer.Web.DeployClient
                     if (packFile.Exists) packFile.Delete();
 
                     string arguments = "pack " + project.File + " -Build -Version " + metadata.version + @" -Properties Configuration=Release";
-                    string output = waitProcessDirectory(AutoCSer.Web.Config.Pub.NugetFile, arguments);
+                    string error, output = waitProcessDirectory(AutoCSer.Web.Config.Pub.NugetFile, out error, arguments);
                     if (new FileInfo(packFile.FullName).Exists)
                     {
                         arguments = "push " + packFile.FullName + " " + AutoCSer.Web.Config.Pub.NugetKey + " -Source https://api.nuget.org/v3/index.json";
-                        output = waitProcessDirectory(AutoCSer.Web.Config.Pub.NugetFile, arguments);
+                        output = waitProcessDirectory(AutoCSer.Web.Config.Pub.NugetFile, out error, arguments);
                         if (isPushNuget(output)) appendMessage(packFile.FullName + " push 成功");
                         else
                         {
                             appendMessage(packFile.FullName + @" push 失败
-" + output);
+" + AutoCSer.Web.Config.Pub.NugetFile + " " + arguments + @"
+" + output + @"
+" + error);
                         }
                     }
                     else
                     {
-                        appendMessage(metadata.id + " Nuget 打包失败");
-                        if (!string.IsNullOrEmpty(output)) appendMessage(output);
+                        appendMessage(metadata.id + @" Nuget 打包失败
+" + output + @"
+" + error);
                     }
                 }
                 else appendMessage("配置文件 " + project.MetadataFile + " 读取失败");
@@ -431,12 +434,13 @@ namespace AutoCSer.Web.DeployClient
                     if (nugetPackFile.Exists)
                     {
                         string arguments = " nuget push " + nugetPackFile.FullName + " -k " + AutoCSer.Web.Config.Pub.NugetKey + " -s https://api.nuget.org/v3/index.json";
-                        string output = waitProcessDirectory(AutoCSer.Web.Config.Pub.DotnetExeFile, arguments);
+                        string error, output = waitProcessDirectory(AutoCSer.Web.Config.Pub.DotnetExeFile, out error, arguments);
                         if (isPushNuget(output)) appendMessage(nugetPackFile.FullName + " push 成功");
                         else
                         {
                             appendMessage(nugetPackFile.FullName + @" push 失败
-" + output);
+" + output + @"
+" + error);
                         }
                     }
                     else appendMessage("没有找到 Nuget 包文件 " + packFile.FullName);
@@ -458,9 +462,10 @@ namespace AutoCSer.Web.DeployClient
         /// 在文件当前目录启动进程并等待结束
         /// </summary>
         /// <param name="file">文件信息</param>
+        /// <param name="error">错误输出</param>
         /// <param name="arguments">执行参数</param>
-        /// <returns>是否成功</returns>
-        private static string waitProcessDirectory(FileInfo file, string arguments = null)
+        /// <returns>输出</returns>
+        private static string waitProcessDirectory(FileInfo file, out string error, string arguments = null)
         {
             using (Process process = new Process())
             {
@@ -469,9 +474,11 @@ namespace AutoCSer.Web.DeployClient
                 info.UseShellExecute = false;
                 info.WorkingDirectory = file.DirectoryName;
                 info.RedirectStandardOutput = true;
+                info.RedirectStandardError = true;
                 process.StartInfo = info;
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
+                error = process.StandardError.ReadToEnd();
                 process.WaitForExit();
                 return output;
             }

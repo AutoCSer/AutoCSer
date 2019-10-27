@@ -175,9 +175,9 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="log">日志接口</param>
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
-            : base(attribute, verify, log, isCallQueue, isVerifyMethodAsynchronousCallback)
+        /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
+        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, log, isCallQueue, isSynchronousVerifyMethod)
         {
             this.serverCallQueue = serverCallQueue;
             this.onCustomData = onCustomData;
@@ -279,9 +279,9 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="log">日志接口</param>
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, getSocketThreadCallType, isCallQueue, isVerifyMethodAsynchronousCallback)
+        /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
+        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, getSocketThreadCallType, isCallQueue, isSynchronousVerifyMethod)
         {
         }
         /// <summary>

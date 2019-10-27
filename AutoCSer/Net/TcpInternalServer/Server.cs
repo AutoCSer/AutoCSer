@@ -47,10 +47,10 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
-        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
+        /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, bool isCallQueue, bool isVerifyMethodAsynchronousCallback)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, isCallQueue, isVerifyMethodAsynchronousCallback)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, isCallQueue, isSynchronousVerifyMethod)
         {
             if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + attribute.ServerName);
         }

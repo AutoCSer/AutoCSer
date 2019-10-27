@@ -38,7 +38,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Deploy.AssemblyEnvironment.CheckServer value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DeployAssemblyEnvironmentCheck", typeof(AutoCSer.Deploy.AssemblyEnvironment.CheckServer))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DeployAssemblyEnvironmentCheck", typeof(AutoCSer.Deploy.AssemblyEnvironment.CheckServer))), verify, null, onCustomData, log, false, true)
                 {
                     Value = value ?? new AutoCSer.Deploy.AssemblyEnvironment.CheckServer();
                     setCommandData(3);
@@ -422,7 +422,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Deploy.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("Deploy", typeof(AutoCSer.Deploy.Server))), verify, null, onCustomData, log, true, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("Deploy", typeof(AutoCSer.Deploy.Server))), verify, null, onCustomData, log, true, true)
                 {
                     Value = value ?? new AutoCSer.Deploy.Server();
                     setCommandData(15);

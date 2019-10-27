@@ -17,7 +17,7 @@ namespace AutoCSer.CodeGenerator.Template
         private const int OutputParameterIndex = 0;
         private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
         private const bool IsCallQueue = false;
-        private const bool IsVerifyMethodAsynchronousCallback = false;
+        private const bool IsSynchronousVerifyMethod = false;
         #endregion NOTE
 
         #region PART CLASS
@@ -232,7 +232,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <param name="verify">TCP验证实例</param>
             /// <param name="log">日志接口</param>
             public @ServerName(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, log, @IsVerifyMethodAsynchronousCallback)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, log, @IsSynchronousVerifyMethod)
             {
                 setCommandData(@MethodIndexs.Length);
                 #region LOOP MethodIndexs

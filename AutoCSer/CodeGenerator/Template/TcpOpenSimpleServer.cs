@@ -28,7 +28,7 @@ namespace AutoCSer.CodeGenerator.Template
             private const int InputParameterIndex = 0;
             private const int OutputParameterIndex = 0;
             private const bool IsCallQueue = false;
-            private const bool IsVerifyMethodAsynchronousCallback = false;
+            private const bool IsSynchronousVerifyMethod = false;
             public void SetTcpServer(AutoCSer.Net.TcpOpenSimpleServer.Server commandServer) { }
             #endregion NOTE
             #region IF IsServerCode
@@ -64,7 +64,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF Type.Type.IsPublic
                 /// <param name="log">日志接口</param>
                 public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:Type.Type.IsPublic*/, @Type.FullName value = null/*IF:Type.Type.IsPublic*/, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, log, @IsVerifyMethodAsynchronousCallback)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, log, @IsSynchronousVerifyMethod)
                 {
                     Value =/*IF:Type.Type.IsPublic*/ value ?? /*IF:Type.Type.IsPublic*/new @Type.FullName();
                     setCommandData(@MethodIndexs.Length);

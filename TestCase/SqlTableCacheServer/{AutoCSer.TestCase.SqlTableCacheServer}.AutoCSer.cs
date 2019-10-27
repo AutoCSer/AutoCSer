@@ -1048,7 +1048,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public DataReader(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataReader", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataReader", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataReaderTcpVerify), true)), verify, null, onCustomData, log, false, true)
             {
                 setCommandData(13);
                 setCommand(0);
@@ -2339,7 +2339,7 @@ namespace AutoCSer.TestCase.SqlTableCacheServer.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public DataLog(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataLog", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("DataLog", typeof(AutoCSer.TestCase.SqlTableCacheServer.DataLogTcpVerify), true)), verify, null, onCustomData, log, false, true)
             {
                 setCommandData(5);
                 setCommand(0);

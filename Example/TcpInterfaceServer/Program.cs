@@ -22,6 +22,8 @@ namespace AutoCSer.Example.TcpInterfaceServer
                     Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(SendOnly.TestCase());
                     Console.WriteLine(Asynchronous.TestCase());
+                    Console.WriteLine(ServerAsynchronous.TestCase());
+                    Console.WriteLine(ClientAsynchronous.TestCase());
                     Console.WriteLine(KeepCallback.TestCase());
                     Console.WriteLine(Inherit.TestCase());
                     Console.WriteLine(Expression.TestCase());

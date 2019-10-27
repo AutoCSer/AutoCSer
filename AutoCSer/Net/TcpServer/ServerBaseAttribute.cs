@@ -102,8 +102,13 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal abstract int GetCheckSeconds { get; }
         /// <summary>
-        /// 提供当前类型的一个泛型实例类型，用于获取命令序号记忆数据
+        /// 客户端最大未处理命令数量
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetQueueCommandSize { get { return 1; } }
+        /// <summary>
+                                                                  /// 提供当前类型的一个泛型实例类型，用于获取命令序号记忆数据
+                                                                  /// </summary>
         public Type GenericType;
         /// <summary>
         /// 是否使用 JSON 序列化

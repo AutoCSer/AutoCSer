@@ -149,6 +149,15 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         internal override byte GetCommandPoolBitSize { get { return CommandPoolBitSize; } }
         /// <summary>
+        /// 客户端最大未处理命令数量，默认为 1024
+        /// </summary>
+        public int QueueCommandSize = 1 << 10;
+        /// <summary>
+        /// 客户端最大未处理命令数量
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetQueueCommandSize { get { return QueueCommandSize; } }
+        /// <summary>
         /// 当需要将客户端提供给第三方使用的时候，可能不希望 dll 中同时包含服务端，默认为 true 会将客户端代码单独剥离出来生成一个代码文件 {项目名称}.tcpServer.服务名称.client.cs，当然你需要将服务中所有参数与返回值及其依赖的数据类型剥离出来。
         /// </summary>
         public bool IsSegmentation = true;

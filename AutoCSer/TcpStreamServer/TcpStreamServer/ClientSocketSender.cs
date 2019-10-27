@@ -44,8 +44,9 @@ namespace AutoCSer.Net.TcpStreamServer
         /// TCP 服务客户端套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
-        internal ClientSocketSender(ClientSocket socket)
-            : base(socket)
+        /// <param name="queueCommandSize">客户端最大未处理命令数量</param>
+        internal ClientSocketSender(ClientSocket socket, int queueCommandSize)
+            : base(socket, queueCommandSize)
         {
             ClientSocket = socket;
             CommandEnd = socket.CommandQueue;
@@ -77,7 +78,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
         internal ClientSocketSender(ClientSocket<attributeType> socket)
-            : base(socket)
+            : base(socket, socket.ClientCreator.Attribute.GetQueueCommandSize)
         {
             clientCreator = socket.ClientCreator;
             if (clientCreator.Attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Sender = this };
@@ -102,6 +103,7 @@ namespace AutoCSer.Net.TcpStreamServer
                             CommandEnd = command;
                             System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
                             OutputWaitHandle.Set();
+                            Interlocked.Increment(ref commandCount);
                         }
                         else
                         {
@@ -120,7 +122,8 @@ namespace AutoCSer.Net.TcpStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void push(ClientCommand.Command command)
         {
-            //Interlocked.Increment(ref commandCount);
+            if (commandCount - buildCommandCount >= queueCommandSize) Thread.Sleep(1);
+            Interlocked.Increment(ref commandCount);
             while (System.Threading.Interlocked.CompareExchange(ref commandQueueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
             int isNewCommand = this.isNewCommand;
             CommandEnd.LinkNext = command;
@@ -745,7 +748,7 @@ namespace AutoCSer.Net.TcpStreamServer
             {
                 clientCreator.CommandClient.SendBufferPool.Get(ref Buffer);
                 SubArray<byte> sendData = default(SubArray<byte>);
-                int bufferLength = Buffer.Length, outputSleep = clientCreator.CommandClient.OutputSleep, currentOutputSleep, minCompressSize = clientCreator.CommandClient.MinCompressSize, isNewCommand;
+                int bufferLength = Buffer.Length, outputSleep = clientCreator.CommandClient.OutputSleep, currentOutputSleep, minCompressSize = clientCreator.CommandClient.MinCompressSize, isNewCommand, buildCount;
                 SocketError socketError;
                 using (UnmanagedStream outputStream = (ClientSocket.OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer())
                 {
@@ -769,11 +772,20 @@ namespace AutoCSer.Net.TcpStreamServer
                             System.Threading.Interlocked.Exchange(ref commandQueueLock, 0);
                             if (isNewCommand == 0) return;
                             LOOP:
+                            buildCount = 0;
                             while ((currentCommand = head.LinkNext) != null)
                             {
                                 if (currentCommand.Build(ref buildInfo) != currentCommand) head = currentCommand;
-                                if (buildInfo.IsSend != 0) goto SETDATA;
+                                ++buildCount;
+                                if (buildInfo.IsSend != 0)
+                                {
+                                    addBuildCommandCount(buildCount);
+                                    buildCount = 0;
+                                    goto SETDATA;
+                                }
                             }
+                            addBuildCommandCount(buildCount);
+                            buildCount = 0;
                             if (this.isNewCommand != 0) goto WAIT;
                             if (currentOutputSleep >= 0)
                             {
@@ -820,7 +832,7 @@ namespace AutoCSer.Net.TcpStreamServer
                             {
                                 int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError);
                                 sendData.MoveStart(count);
-                                ++SendCount;
+                                ++OutputWaitHandle.Reserved;
                                 if (sendData.Length == 0)
                                 {
                                     if (buildInfo.IsNewBuffer == 0)

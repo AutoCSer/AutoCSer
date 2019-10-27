@@ -27,7 +27,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                 Client.Start(ClientTestType.Asynchronous, Client.Count);
                 for (int right = Client.Count; right != 0; client.addAsynchronous(left, --right, onAdd)) ;
                 Console.WriteLine("loop end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
 #if DOTNET2 || DOTNET4
@@ -50,7 +50,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
 #endif
                 }
                 Console.WriteLine("await start " + threadCount.toString() + " end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
                 //在同步上下文环境中的测试吞吐不如普通的同步应答模式
@@ -62,7 +62,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                 Client.Time.Stop();
                 Client.WaitHandle.Set();
                 Console.WriteLine("await Result");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
 #if !DOTNET2 && !DOTNET4
@@ -70,7 +70,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                 Client.Start(ClientTestType.Awaiter, Client.Count / 100);
                 new ClientAwaiter { Client = client, Left = left, Right = Client.Count / 100 }.Run();
                 Console.WriteLine("await 1");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
                 //并发线程较多的时候测试吞吐性能可能高于单纯的同步模式
@@ -81,7 +81,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                     new ClientTaskAsync { Client = client, Left = left, Right = right }.Run();
                 }
                 Console.WriteLine("task start " + threadCount.toString() + " end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
                 //在同步上下文环境中的测试吞吐不如普通的同步应答模式
@@ -93,14 +93,14 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                 Client.Time.Stop();
                 Client.WaitHandle.Set();
                 Console.WriteLine("task Result");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
                 Client.ThreadCount = 1;
                 Client.Start(ClientTestType.TaskAsync, Client.Count / 100);
                 new ClientTaskAsync { Client = client, Left = left, Right = Client.Count / 100 }.Run();
                 Console.WriteLine("task 1");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 #endif
                 //该框架是为高吞吐的内部服务设计的，所以性能设计上对于客户端异步模式友好，而不利于客户端同步应答模式。
@@ -113,7 +113,7 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                     AutoCSer.Threading.ThreadPool.TinyBackground.Start(new ClientSynchronous { Client = client, Left = left, Right = right }.Run);
                 }
                 Console.WriteLine("thread start " + threadCount.toString() + " end " + Client.Time.ElapsedMilliseconds.toString() + "ms");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
 
                 //客户端单线程同步应答模式，会完全退化为普通的应答请求
@@ -125,20 +125,19 @@ namespace AutoCSer.TestCase.TcpInternalStreamClientPerformance
                 Client.Time.Stop();
                 Client.WaitHandle.Set();
                 Console.WriteLine("thread 1");
-                wait(client._TcpClient_.SendCount, client._TcpClient_.ReceiveCount);
+                wait(client._TcpClient_);
                 sleep();
             }
         }
         /// <summary>
         /// 等待测试结束
         /// </summary>
-        /// <param name="sendCount"></param>
-        /// <param name="receiveCount"></param>
-        private static void wait(int sendCount, int receiveCount)
+        /// <param name="client"></param>
+        private static void wait(AutoCSer.Net.TcpInternalStreamServer.Client client)
         {
             Client.WaitHandle.WaitOne();
             long milliseconds = Math.Max(Client.Time.ElapsedMilliseconds, 1);
-            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (Client.LoopCount / milliseconds) + "/ms send[" + Client.GetSendCount(sendCount).toString() + "] receive[" + Client.GetReceiveCount(receiveCount).toString() + "]" + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
+            Console.WriteLine(Client.LoopCount.toString() + " / " + milliseconds.toString() + "ms = " + (Client.LoopCount / milliseconds) + "/ms send[" + Client.GetSendCount(client.SendCount).toString() + "] receive[" + Client.GetReceiveCount(client.ReceiveCount).toString() + "]" + (Client.ErrorCount == 0 ? null : (" ERROR[" + Client.ErrorCount.toString() + "]")) + " " + Client.TestType.ToString());
         }
         /// <summary>
         /// 休息 3 秒

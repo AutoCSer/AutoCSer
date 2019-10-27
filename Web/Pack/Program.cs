@@ -310,7 +310,11 @@ namespace AutoCSer.Tool.OpenPack
                     switch (nextDircectory.Name.ToLower())
                     {
                         case "bin":
-                        case "obj": break;
+                        case "obj":
+                        case "remotecontrol":
+                        case "remotecontrolclient":
+                        case "remotecontrolserver":
+                            break;
                         default: copy(nextDircectory, path + nextDircectory.Name + @"\", githubPath); break;
                     }
                 }

@@ -19,6 +19,10 @@ namespace AutoCSer.Threading
         /// </summary>
         private volatile int isWait;
         /// <summary>
+        /// 保留
+        /// </summary>
+        internal int Reserved;
+        /// <summary>
         /// 初始化数据
         /// </summary>
         /// <param name="isWait">是否等待中</param>

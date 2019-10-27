@@ -374,6 +374,24 @@ namespace AutoCSer.Threading
                 return head == end;
             }
             /// <summary>
+            /// 添加首节点
+            /// </summary>
+            /// <param name="value"></param>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            internal bool TryPushHead(valueType value)
+            {
+                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldQueuePush);
+                if (Head == end)
+                {
+                    Head.LinkNext = value;
+                    end = value;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    return true;
+                }
+                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                return false;
+            }
+            /// <summary>
             /// 添加链表
             /// </summary>
             /// <param name="head"></param>

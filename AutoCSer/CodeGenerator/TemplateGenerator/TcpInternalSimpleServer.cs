@@ -141,7 +141,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             else if (method.IsVerifyMethod)
                             {
                                 IsVerifyMethod = true;
-                                IsVerifyMethodAsynchronousCallback = method.IsAsynchronousCallback;
+                                IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == AutoCSer.Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
                             }
                             parameterBuilder.Add(method);
                         }

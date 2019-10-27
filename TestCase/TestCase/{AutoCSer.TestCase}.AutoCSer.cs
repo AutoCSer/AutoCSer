@@ -1901,7 +1901,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalServer.Session", typeof(AutoCSer.TestCase.TcpInternalServer.Session))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalServer.Session", typeof(AutoCSer.TestCase.TcpInternalServer.Session))), verify, null, onCustomData, log, false, true)
                 {
                     Value =new AutoCSer.TestCase.TcpInternalServer.Session();
                     setCommandData(2);
@@ -3331,7 +3331,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <param name="verify">套接字验证委托</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalSimpleServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Session", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Session))), verify, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpInternalSimpleServer.Session", typeof(AutoCSer.TestCase.TcpInternalSimpleServer.Session))), verify, log, true)
                 {
                     Value =new AutoCSer.TestCase.TcpInternalSimpleServer.Session();
                     setCommandData(2);
@@ -7144,7 +7144,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServer.Session", typeof(AutoCSer.TestCase.TcpOpenServer.Session))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenServer.Session", typeof(AutoCSer.TestCase.TcpOpenServer.Session))), verify, null, onCustomData, log, false, true)
                 {
                     Value =new AutoCSer.TestCase.TcpOpenServer.Session();
                     setCommandData(2);
@@ -8566,7 +8566,7 @@ namespace AutoCSer.TestCase.TcpInternalServer
                 /// <param name="attribute">TCP调用服务器端配置信息</param>
                 /// <param name="log">日志接口</param>
                 public TcpOpenSimpleServer(AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Session", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Session))), verify, log, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute.GetConfig("AutoCSer.TestCase.TcpOpenSimpleServer.Session", typeof(AutoCSer.TestCase.TcpOpenSimpleServer.Session))), verify, log, true)
                 {
                     Value =new AutoCSer.TestCase.TcpOpenSimpleServer.Session();
                     setCommandData(2);
@@ -10662,7 +10662,7 @@ namespace AutoCSer.TestCase.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public SessionServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SessionServer", typeof(AutoCSer.TestCase.TcpStaticServer.Session), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SessionServer", typeof(AutoCSer.TestCase.TcpStaticServer.Session), true)), verify, null, onCustomData, log, false, true)
             {
                 setCommandData(2);
                 setCommand(0);
@@ -11451,7 +11451,7 @@ namespace AutoCSer.TestCase.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public JsonServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("JsonServer", typeof(AutoCSer.TestCase.TcpStaticServer.JsonOut), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("JsonServer", typeof(AutoCSer.TestCase.TcpStaticServer.JsonOut), true)), verify, null, onCustomData, log, false, true)
             {
                 setCommandData(9);
                 setCommand(0);
@@ -12367,7 +12367,7 @@ namespace AutoCSer.TestCase.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public MemberServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("MemberServer", typeof(AutoCSer.TestCase.TcpStaticServer.Member), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("MemberServer", typeof(AutoCSer.TestCase.TcpStaticServer.Member), true)), verify, null, onCustomData, log, false, true)
             {
                 setCommandData(5);
                 setCommand(0);
@@ -12846,7 +12846,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleServer
             /// <param name="verify">TCP验证实例</param>
             /// <param name="log">日志接口</param>
             public SimpleSessionServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleSessionServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Session), true)), verify, log, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleSessionServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Session), true)), verify, log, true)
             {
                 setCommandData(2);
                 setCommand(0);
@@ -13344,7 +13344,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleServer
             /// <param name="verify">TCP验证实例</param>
             /// <param name="log">日志接口</param>
             public SimpleJsonServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleJsonServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut), true)), verify, log, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleJsonServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.JsonOut), true)), verify, log, true)
             {
                 setCommandData(9);
                 setCommand(0);
@@ -13933,7 +13933,7 @@ namespace AutoCSer.TestCase.TcpStaticSimpleServer
             /// <param name="verify">TCP验证实例</param>
             /// <param name="log">日志接口</param>
             public SimpleMemberServer(AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleMemberServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Member), true)), verify, log, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute.GetConfig("SimpleMemberServer", typeof(AutoCSer.TestCase.TcpStaticSimpleServer.Member), true)), verify, log, true)
             {
                 setCommandData(5);
                 setCommand(0);

@@ -9,22 +9,30 @@ namespace AutoCSer.Net.TcpServer
     /// </summary>
     public abstract class ClientSocketSenderBase : Sender
     {
-        ///// <summary>
-        ///// TCP 服务客户端套接字
-        ///// </summary>
-        //internal readonly ClientSocketBase ClientSocket;
-        /// <summary>
-        /// 等待事件
-        /// </summary>
-        internal AutoCSer.Threading.AutoWaitHandle OutputWaitHandle;
         /// <summary>
         /// 发送变换数据
         /// </summary>
         internal ulong SendMarkData;
         /// <summary>
+        /// 客户端最大未处理命令数量
+        /// </summary>
+        protected readonly int queueCommandSize;
+        /// <summary>
+        /// 当前发送命令数量
+        /// </summary>
+        protected volatile int buildCommandCount;
+        /// <summary>
+        /// 等待事件
+        /// </summary>
+        internal AutoCSer.Threading.AutoWaitHandle OutputWaitHandle;
+        /// <summary>
         /// 套接字发送数据次数
         /// </summary>
-        internal int SendCount;
+        internal int SendCount { get { return OutputWaitHandle.Reserved; } }
+        /// <summary>
+        /// 当前队列命令数量
+        /// </summary>
+        protected int commandCount;
 #if !NOJIT
         /// <summary>
         /// TCP 服务客户端套接字数据发送
@@ -35,10 +43,11 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务客户端套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
-        internal ClientSocketSenderBase(ClientSocketBase socket)
+        /// <param name="queueCommandSize">客户端最大未处理命令数量</param>
+        internal ClientSocketSenderBase(ClientSocketBase socket, int queueCommandSize)
             : base(socket.Socket)
         {
-            //ClientSocket = socket;
+            this.queueCommandSize = Math.Max(queueCommandSize, 1);
             OutputWaitHandle.Set(0);
         }
         /// <summary>
@@ -63,6 +72,37 @@ namespace AutoCSer.Net.TcpServer
         internal virtual void VirtualBuildOutput()
         {
             throw new InvalidOperationException();
+        }
+        /// <summary>
+        /// 增加当前发送命令数量
+        /// </summary>
+        /// <param name="buildCount"></param>
+        protected void addBuildCommandCount(int buildCount)
+        {
+            if (buildCount < queueCommandSize)
+            {
+                if ((buildCommandCount += buildCount) >= queueCommandSize)
+                {
+                    Interlocked.Add(ref commandCount, -queueCommandSize);
+                    buildCommandCount -= queueCommandSize;
+                }
+            }
+            else
+            {
+                int oldBuildCount = buildCount;
+                do
+                {
+                    buildCount -= queueCommandSize;
+                }
+                while (buildCount >= queueCommandSize);
+
+                if ((buildCommandCount += buildCount) < queueCommandSize) Interlocked.Add(ref commandCount, buildCount - oldBuildCount);
+                else
+                {
+                    Interlocked.Add(ref commandCount, buildCount - oldBuildCount - queueCommandSize);
+                    buildCommandCount -= queueCommandSize;
+                }
+            }
         }
 
         /// <summary>

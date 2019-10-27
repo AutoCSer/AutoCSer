@@ -20,6 +20,10 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// 异步回调
         /// </summary>
+        internal abstract MethodInfo ServerSocketSenderGetCallbackEmitMethod { get; }
+        /// <summary>
+        /// 异步回调
+        /// </summary>
         internal abstract MethodInfo ServerSocketSenderGetCallbackReturnMethod { get; }
     }
 }

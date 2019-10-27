@@ -66,10 +66,10 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 是否异步回调方法
         /// </summary>
         internal readonly bool IsAsynchronousCallback;
-        ///// <summary>
-        ///// 验证方法是否支持异步
-        ///// </summary>
-        //internal virtual bool IsVerifyMethodAsynchronous { get { return true; } }
+        /// <summary>
+        /// 服务端异步回调是否委托模式
+        /// </summary>
+        internal readonly bool IsAsynchronousCallbackEmit;
         /// <summary>
         /// 是否客户端异步回调方法
         /// </summary>
@@ -97,6 +97,7 @@ namespace AutoCSer.Net.TcpServer.Emit
             ServerAttribute = attribute;
             Parameters = method.GetParameters();
             ReturnType = method.ReturnType;
+
             if (ReturnType == typeof(KeepCallback)) ReturnType = typeof(void);
             if (ReturnType == typeof(void) && Parameters.Length != 0)
             {
@@ -110,14 +111,30 @@ namespace AutoCSer.Net.TcpServer.Emit
                         if (types[1] == typeof(bool))
                         {
                             ReturnType = types[0];
+                            IsAsynchronousCallback = IsAsynchronousCallbackEmit = true;
+                        }
+                    }
+                    else if (isClient)
+                    {
+                        if (genericType == typeof(Action<>))
+                        {
+                            ReturnType = parameterType.GetGenericArguments()[0];
+                            IsAsynchronousCallback = IsClientAsynchronousCallback = true;
+                        }
+                    }
+                    else
+                    {
+                        if (genericType == typeof(TcpServer.ServerCallback<>))
+                        {
+                            ReturnType = typeof(ReturnValue<>).MakeGenericType(parameterType.GetGenericArguments());
                             IsAsynchronousCallback = true;
                         }
                     }
-                    else if (isClient && genericType == typeof(Action<>))
-                    {
-                        ReturnType = parameterType.GetGenericArguments()[0];
-                        IsAsynchronousCallback = IsClientAsynchronousCallback = true;
-                    }
+                }
+                else if (!isClient && parameterType == typeof(TcpServer.ServerCallback))
+                {
+                    ReturnType = typeof(ReturnValue);
+                    IsAsynchronousCallback = true;
                 }
             }
             if (ReturnType == typeof(ReturnValue))
@@ -490,7 +507,12 @@ namespace AutoCSer.Net.TcpServer.Emit
         {
             get
             {
-                return IsAsynchronousCallback && !Attribute.IsVerifyMethod && MethodInfo.ReturnType == typeof(KeepCallback);
+                if (IsAsynchronousCallback && !Attribute.IsVerifyMethod)
+                {
+                    if (MethodInfo.ReturnType == typeof(KeepCallback)) return true;
+                    if (!IsAsynchronousCallbackEmit && Attribute.GetIsKeepCallback) return true;
+                }
+                return false;
             }
         }
         /// <summary>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=04A8B5BF"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=04BB6476"></script>
     <title>ORM 内存索引缓存框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -32,61 +32,61 @@
         </p>
         <p>
             抛弃了关系模型的 ORM 只存在单表格操作，可以真正的抛弃 SQL 及其相关理念。
-            <br />因为应用层没有 SQL 语句，所以不存在不可控的数据更新，从而做到简单可控的数据同步，可以与数据源缓存自然的融合到一起，进而可以为实现<b>统一规划全局数据定义</b>的<a href="/Global.html?v=4A8B5BF">整体开发框架</a>提供基础支持。
+            <br />因为应用层没有 SQL 语句，所以不存在不可控的数据更新，从而做到简单可控的数据同步，可以与数据源缓存自然的融合到一起，进而可以为实现<b>统一规划全局数据定义</b>的<a href="/Global.html?v=4BB6476">整体开发框架</a>提供基础支持。
             <br />由于 ORM 内存索引缓存框架 的实现依赖 LambdaExpression，所以暂时<b>不支持 .NET Framework 2.0</b> 。
-            <br />该功能需要引用 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sql.dll<b>，需要在工程项目中配置<a href="/CodeGenerator.html?v=4A8B5BF">静态代码生成</a>。</b>
+            <br />该功能需要引用 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.Sql.dll<b>，需要在工程项目中配置<a href="/CodeGenerator.html?v=4BB6476">静态代码生成</a>。</b>
         </p>
     </div>
     <div>
         <p>
-            该框架将 ORM 分成<b>表格数据模型</b>与<b>数据表格</b>两层，<b>表格数据模型</b>主要用于定义映射到物理存储的表格<a href="/OrmCache/Column.html?v=4A8B5BF">数据列</a>，<b>数据表格</b>主要用于定义表格名称与数据库连接信息。
+            该框架将 ORM 分成<b>表格数据模型</b>与<b>数据表格</b>两层，<b>表格数据模型</b>主要用于定义映射到物理存储的表格<a href="/OrmCache/Column.html?v=4BB6476">数据列</a>，<b>数据表格</b>主要用于定义表格名称与数据库连接信息。
         </p>
         <p>
-            1. 为<b>表格数据模型</b>创建一个类库项目，根据需求添加<b>表格数据模型</b> class，这个类型必须是非密封的 <b>public partial</b>，因为<a href="/CodeGenerator.html?v=4A8B5BF">静态代码生成</a>需要生成一个继承自该类型的<b>表格模型中间层</b>用于生成各种基础相关配置的中间层代码。
+            1. 为<b>表格数据模型</b>创建一个类库项目，根据需求添加<b>表格数据模型</b> class，这个类型必须是非密封的 <b>public partial</b>，因为<a href="/CodeGenerator.html?v=4BB6476">静态代码生成</a>需要生成一个继承自该类型的<b>表格模型中间层</b>用于生成各种基础相关配置的中间层代码。
         </p>
         <p>
-            2. 给<b>表格数据模型</b>添加以<b>字段</b>表示的<a href="/OrmCache/Column.html?v=4A8B5BF">数据列</a>，并根据需求为这些字段添加 <b>[AutoCSer.Sql.Member]</b> 以配置数据列信息。
-            <br />为了在全局角度规范数据定义，AutoCSer 需要合理规划字段与属性的作用。在默认规则中，字段用于表示原始数据，属性则用于表示原始数据经过某种计算以后的结果，所以<a href="/OrmCache/Column.html?v=4A8B5BF">数据列</a>只支持字段而不支持属性。
+            2. 给<b>表格数据模型</b>添加以<b>字段</b>表示的<a href="/OrmCache/Column.html?v=4BB6476">数据列</a>，并根据需求为这些字段添加 <b>[AutoCSer.Sql.Member]</b> 以配置数据列信息。
+            <br />为了在全局角度规范数据定义，AutoCSer 需要合理规划字段与属性的作用。在默认规则中，字段用于表示原始数据，属性则用于表示原始数据经过某种计算以后的结果，所以<a href="/OrmCache/Column.html?v=4BB6476">数据列</a>只支持字段而不支持属性。
         </p>
         <p>
-            3. 给<b>表格数据模型</b> class 添加表格模型申明配置 <b>[AutoCSer.Sql.Model]</b> 通知<a href="/CodeGenerator.html?v=4A8B5BF">静态代码生成</a>为该类型生成<b>表格模型中间层</b>代码。
+            3. 给<b>表格数据模型</b> class 添加表格模型申明配置 <b>[AutoCSer.Sql.Model]</b> 通知<a href="/CodeGenerator.html?v=4BB6476">静态代码生成</a>为该类型生成<b>表格模型中间层</b>代码。
         </p>
         <p>
-            4. 给该项目配置<a href="/CodeGenerator.html?v=4A8B5BF">静态代码生成</a>并编译项目，然后将生成的<b>表格模型中间层</b>代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
+            4. 给该项目配置<a href="/CodeGenerator.html?v=4BB6476">静态代码生成</a>并编译项目，然后将生成的<b>表格模型中间层</b>代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
             <br /><b>表格模型中间层</b>是一个名为 <b>SqlModel</b> 继承自<b>表格数据模型</b>的泛型类型，第一个泛型参数类型 <b>tableType</b> 用于申明<b>数据表格</b>类型，多个<b>数据表格</b>可以继承自同一个<b>表格模型中间层</b>。
             <br />如果申明了 <b>[AutoCSer.Sql.Model(IsMemberCache = true)]</b> 则会有第二个泛型参数类型 <b>memberCacheType</b> 用于申明缓存扩展类型，正常情况下会同时指定整表缓存类型 <b>CacheType</b>。
-            <div>表格数据模型 参考示例 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">OrmModel\MemberCache.cs</a></div>
-            <div>数据表格 参考示例 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">OrmTable\MemberCache.cs</a></div>
+            <div>表格数据模型 参考示例 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">OrmModel\MemberCache.cs</a></div>
+            <div>数据表格 参考示例 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">OrmTable\MemberCache.cs</a></div>
         </p>
         <p>
             5. 为<b>数据表格</b>创建一个项目并引用<b>表格数据模型</b>类库项目，在这个项目中添加继承自<b>表格模型中间层</b>的<b>数据表格</b> class，在 AutoCSer 的规划中这个项目是默认的数据访问业务逻辑服务层。
         </p>
         <p>
-            6. 给<b>数据表格</b> class 添加表格模型申明配置 <b>[AutoCSer.Sql.Table]</b>，必须指定 <b>ConnectionName</b> 用于配置数据库连接配置名称，该名称必须匹配<a href="/Config/Index.html?v=4A8B5BF">代码配置</a>中的配置名称。
-            <div>代码配置 参考示例 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">OrmTable\Config.cs</a></div>
+            6. 给<b>数据表格</b> class 添加表格模型申明配置 <b>[AutoCSer.Sql.Table]</b>，必须指定 <b>ConnectionName</b> 用于配置数据库连接配置名称，该名称必须匹配<a href="/Config/Index.html?v=4BB6476">代码配置</a>中的配置名称。
+            <div>代码配置 参考示例 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode2" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','2');">OrmTable\Config.cs</a></div>
         </p>
         <p>
             7. 在<b>数据表格</b>继承的<b>表格模型中间层</b>中有一个名称为 <b>sqlTable</b> 的静态字段，它继承自 <b>AutoCSer.Sql.Table&lt;tableType, modelType&gt;</b>，提供<b>数据表格</b>的操作 API。
-            <br />在 <b>sqlTable</b> 初始化的时候会根据<b>表格数据模型</b>与<b>数据表格</b>信息自动创建数据库表格，对于已经存在的表格缺少<a href="/OrmCache/Column.html?v=4A8B5BF">数据列</a>的情况会自动补全。
-            <br />由于数据安全问题，初始化过程不会对已经存在的<a href="/OrmCache/Column.html?v=4A8B5BF">数据列</a>进行修改操作，请在程序运行前自行维护数据库表格。
-            <br />由于某些<a href="/OrmCache/Column.html?v=4A8B5BF">数据列</a>可能存在被依赖关系而不能被简单删除，初始化也不保证能够删除 <b>[AutoCSer.Sql.Model]</b> 中指定的 <b>DeleteColumnNames</b>，请在程序运行前自行维护数据库表格。
-            <div>写操作 Insert / Update / Delete 参考示例 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">OrmTable\NowTime.Write.cs</a></div>
-            <div>写操作事件 参考示例 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">OrmTable\NowTime.Events.cs</a></div>
+            <br />在 <b>sqlTable</b> 初始化的时候会根据<b>表格数据模型</b>与<b>数据表格</b>信息自动创建数据库表格，对于已经存在的表格缺少<a href="/OrmCache/Column.html?v=4BB6476">数据列</a>的情况会自动补全。
+            <br />由于数据安全问题，初始化过程不会对已经存在的<a href="/OrmCache/Column.html?v=4BB6476">数据列</a>进行修改操作，请在程序运行前自行维护数据库表格。
+            <br />由于某些<a href="/OrmCache/Column.html?v=4BB6476">数据列</a>可能存在被依赖关系而不能被简单删除，初始化也不保证能够删除 <b>[AutoCSer.Sql.Model]</b> 中指定的 <b>DeleteColumnNames</b>，请在程序运行前自行维护数据库表格。
+            <div>写操作 Insert / Update / Delete 参考示例 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode4" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','4');">OrmTable\NowTime.Write.cs</a></div>
+            <div>写操作事件 参考示例 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode3" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','3');">OrmTable\NowTime.Events.cs</a></div>
         </p>
         <p>
-            8. 如果在 <b>[AutoCSer.Sql.Model]</b> 中指定了 <b>CacheType</b>，<b>表格模型中间层</b>中会生成一个名称为 <b>sqlCache</b> 的静态字段，用于指定<b>数据表格</b>的主索引<a href="/OrmCache/Cache.html?v=4A8B5BF"><b>缓存</b></a>。
-            <br />在无法确定创建缓存参数的情况下会生成一个名称为 <b>createCache</b> 的静态方法，用于初始化创建<b>数据表格</b>的主索引<a href="/OrmCache/Cache.html?v=4A8B5BF"><b>缓存</b></a>。
+            8. 如果在 <b>[AutoCSer.Sql.Model]</b> 中指定了 <b>CacheType</b>，<b>表格模型中间层</b>中会生成一个名称为 <b>sqlCache</b> 的静态字段，用于指定<b>数据表格</b>的主索引<a href="/OrmCache/Cache.html?v=4BB6476"><b>缓存</b></a>。
+            <br />在无法确定创建缓存参数的情况下会生成一个名称为 <b>createCache</b> 的静态方法，用于初始化创建<b>数据表格</b>的主索引<a href="/OrmCache/Cache.html?v=4BB6476"><b>缓存</b></a>。
         </p>
         <!--
         <p>
-            9. 给该项目配置<a href="/CodeGenerator.html?v=4A8B5BF">静态代码生成</a>并编译项目，然后将生成的<a href="/TcpServer/MethodServer.html?v=4A8B5BF">内部静态数据服务 API 代理</a>代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
+            9. 给该项目配置<a href="/CodeGenerator.html?v=4BB6476">静态代码生成</a>并编译项目，然后将生成的<a href="/TcpServer/MethodServer.html?v=4BB6476">内部静态数据服务 API 代理</a>代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中。
         </p>
         -->
     </div>
     <div>
         <p>
-            对于临时性需求，该框架也可以当成简单的单表格 ORM 使用而无需<a href="/CodeGenerator.html?v=4A8B5BF">静态代码生成</a>。
-            <div> 参考示例 <a href="/Index.html?v=4A8B5BF" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">OrmTable\OrmOnly.cs</a></div>
+            对于临时性需求，该框架也可以当成简单的单表格 ORM 使用而无需<a href="/CodeGenerator.html?v=4BB6476">静态代码生成</a>。
+            <div> 参考示例 <a href="/Index.html?v=4BB6476" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode5" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','5');">OrmTable\OrmOnly.cs</a></div>
         </p>
     </div>
     <p>

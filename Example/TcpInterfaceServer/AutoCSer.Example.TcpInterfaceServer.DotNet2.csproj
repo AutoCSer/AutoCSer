@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asynchronous.cs" />
+    <Compile Include="ClientAsynchronous.cs" />
+    <Compile Include="ServerAsynchronous.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Inherit.cs" />
     <Compile Include="KeepCallback.cs" />

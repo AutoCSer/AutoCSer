@@ -293,6 +293,15 @@ namespace AutoCSer.Sql.MsSql
             if (expression.TryGetConstantConvert(ref value)) convertConstant(value);
             else
             {
+                if (expression.Type == typeof(int))
+                {
+                    Type operandType = expression.Operand.Type;
+                    if (operandType == typeof(byte) || operandType == typeof(sbyte) || operandType == typeof(short) || operandType == typeof(ushort))
+                    {
+                        Convert(expression.Operand);
+                        return;
+                    }
+                }
                 SqlStream.SimpleWriteNotNull("cast(");
                 Convert(expression.Operand);
                 SqlStream.SimpleWriteNotNull(" as ");

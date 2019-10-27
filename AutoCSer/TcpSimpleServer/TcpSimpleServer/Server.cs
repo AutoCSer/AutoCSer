@@ -46,9 +46,9 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
-        /// <param name="isVerifyMethodAsynchronousCallback">验证函数是否异步回调</param>
-        internal Server(attributeType attribute, ILog log, Func<System.Net.Sockets.Socket, bool> verify, bool isVerifyMethodAsynchronousCallback)
-            : base(attribute, verify, log, false, isVerifyMethodAsynchronousCallback)
+        /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
+        internal Server(attributeType attribute, ILog log, Func<System.Net.Sockets.Socket, bool> verify, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, log, false, isSynchronousVerifyMethod)
         {
         }
         /// <summary>

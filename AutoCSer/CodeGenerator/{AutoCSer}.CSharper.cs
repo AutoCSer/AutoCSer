@@ -11258,7 +11258,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", onCustomData, log, ");
             _code_.Add(IsCallQueue ? "true" : "false");
             _code_.Add(@", ");
-            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
+            _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -18553,7 +18553,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"))), verify, log, ");
-            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
+            _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -27888,7 +27888,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", onCustomData, log, ");
             _code_.Add(IsCallQueue ? "true" : "false");
             _code_.Add(@", ");
-            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
+            _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -35171,7 +35171,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"))), verify, log, ");
-            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
+            _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
                 {
                     Value =");
@@ -49337,7 +49337,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", onCustomData, log, ");
             _code_.Add(IsCallQueue ? "true" : "false");
             _code_.Add(@", ");
-            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
+            _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
             {
                 setCommandData(");
@@ -57804,7 +57804,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@")");
             }
             _code_.Add(@", true)), verify, log, ");
-            _code_.Add(IsVerifyMethodAsynchronousCallback ? "true" : "false");
+            _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
             {
                 setCommandData(");

@@ -73,13 +73,27 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         /// <param name="outputInfo"></param>
         /// <param name="outputParameter"></param>
         /// <returns></returns>
-        internal delegate Func<TcpServer.ReturnValue<returnType>, bool> ServerSocketSenderGetCallback(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter);
+        internal delegate TcpServer.ServerCallback<returnType> ServerSocketSenderGetCallback(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter);
         /// <summary>
         /// 异步回调
         /// </summary>
         internal override MethodInfo ServerSocketSenderGetCallbackMethod
         {
-            get { return ((ServerSocketSenderGetCallback)ParameterGenericType.ServerSocketSender.GetCallbackEmit<outputParameterType, returnType>).Method; }
+            get { return ((ServerSocketSenderGetCallback)ParameterGenericType.ServerSocketSender.GetCallback<outputParameterType, returnType>).Method; }
+        }
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        /// <param name="outputInfo"></param>
+        /// <param name="outputParameter"></param>
+        /// <returns></returns>
+        internal delegate Func<TcpServer.ReturnValue<returnType>, bool> ServerSocketSenderGetCallbackEmit(TcpServer.OutputInfo outputInfo, ref outputParameterType outputParameter);
+        /// <summary>
+        /// 异步回调
+        /// </summary>
+        internal override MethodInfo ServerSocketSenderGetCallbackEmitMethod
+        {
+            get { return ((ServerSocketSenderGetCallbackEmit)ParameterGenericType.ServerSocketSender.GetCallbackEmit<outputParameterType, returnType>).Method; }
         }
         /// <summary>
         /// 异步回调

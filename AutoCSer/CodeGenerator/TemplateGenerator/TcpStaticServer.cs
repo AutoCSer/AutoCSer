@@ -889,7 +889,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     else if (method.IsVerifyMethod)
                                     {
                                         IsVerifyMethod = true;
-                                        IsVerifyMethodAsynchronousCallback = method.IsAsynchronousCallback;
+                                        IsSynchronousVerifyMethod = method.Attribute.ServerTaskType == AutoCSer.Net.TcpServer.ServerTaskType.Synchronous && !method.IsAsynchronousCallback;
                                         if (method.MethodType == server.AttributeType && server.IsTimeVerify) TimeVerifyMethod = method;
                                         //method.Attribute.ServerTaskType = Net.TcpServer.ServerTaskType.Synchronous;
                                     }

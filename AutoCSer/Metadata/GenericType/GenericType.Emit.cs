@@ -34,6 +34,10 @@ namespace AutoCSer.Metadata
         /// 服务端回调委托返类型
         /// </summary>
         internal abstract System.Type TcpServerCallbackType { get; }
+        /// <summary>
+        /// 服务端回调委托返类型
+        /// </summary>
+        internal abstract System.Type TcpServerCallbackEmitType { get; }
     }
     /// <summary>
     /// 泛型类型元数据
@@ -76,6 +80,13 @@ namespace AutoCSer.Metadata
         /// 服务端回调委托返类型
         /// </summary>
         internal override System.Type TcpServerCallbackType
+        {
+            get { return typeof(AutoCSer.Net.TcpServer.ServerCallback<Type>); }
+        }
+        /// <summary>
+        /// 服务端回调委托返类型
+        /// </summary>
+        internal override System.Type TcpServerCallbackEmitType
         {
             get { return typeof(Func<AutoCSer.Net.TcpServer.ReturnValue<Type>, bool>); }
         }

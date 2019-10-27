@@ -81,6 +81,10 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// </summary>
         internal readonly MethodInfo ServerSocketSenderGetCallbackMethod;
         /// <summary>
+        /// TCP 服务器端同步调用套接字获取异步回调函数信息
+        /// </summary>
+        internal readonly MethodInfo ServerSocketSenderGetCallbackEmitMethod;
+        /// <summary>
         /// TCP 服务器端同步调用类型
         /// </summary>
         internal readonly Type ServerCallType;
@@ -134,11 +138,13 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="serverSocketSenderPushReturnValueMethod">TCP 服务器端同步调用套接字发送数据函数信息</param>
         /// <param name="serverSocketSenderPushNoThreadMethod">TCP 服务器端同步调用套接字发送数据函数信息</param>
         /// <param name="serverSocketSenderGetCallbackMethod">TCP 服务器端同步调用套接字获取异步回调函数信息</param>
+        /// <param name="serverSocketSenderGetCallbackEmitMethod">TCP 服务器端同步调用套接字获取异步回调函数信息</param>
         /// <param name="serverSocketSenderAddLogMethod">TCP 服务器端同步调用套接字错误日志处理函数信息</param>
         internal ServerMetadata(Type serverType, Type serverAttributeType, Type senderType, Type serverCallType
             , Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ReturnParameterGenericType> getOutputParameterGenericType
             , MethodInfo serverSocketSenderPushMethod, MethodInfo serverSocketSenderPushReturnTypeMethod, MethodInfo serverSocketSenderPushReturnValueMethod
-            , MethodInfo serverSocketSenderPushNoThreadMethod, MethodInfo serverSocketSenderGetCallbackMethod, MethodInfo serverSocketSenderAddLogMethod)
+            , MethodInfo serverSocketSenderPushNoThreadMethod, MethodInfo serverSocketSenderGetCallbackMethod, MethodInfo serverSocketSenderGetCallbackEmitMethod
+            , MethodInfo serverSocketSenderAddLogMethod)
             : base(serverType, senderType)
         {
             ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog), typeof(bool), typeof(bool) });
@@ -150,6 +156,7 @@ namespace AutoCSer.Net.TcpServer.Emit
             ServerSocketSenderPushReturnValueMethod = serverSocketSenderPushReturnValueMethod;
             ServerSocketSenderPushNoThreadMethod = serverSocketSenderPushNoThreadMethod;
             ServerSocketSenderGetCallbackMethod = serverSocketSenderGetCallbackMethod;
+            ServerSocketSenderGetCallbackEmitMethod = serverSocketSenderGetCallbackEmitMethod;
             ServerSocketSenderAddLogMethod = serverSocketSenderAddLogMethod;
 
             ServerCallType = serverCallType;

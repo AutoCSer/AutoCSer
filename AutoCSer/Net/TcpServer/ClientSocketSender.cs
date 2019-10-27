@@ -54,8 +54,9 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务客户端套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
-        internal ClientSocketSender(ClientSocket socket)
-            : base(socket)
+        /// <param name="queueCommandSize">客户端最大未处理命令数量</param>
+        internal ClientSocketSender(ClientSocket socket, int queueCommandSize)
+            : base(socket, queueCommandSize)
         {
             ClientSocket = socket;
             Outputs = new ClientCommand.Command.YieldQueue(new ClientCommand.MergeCommand { Socket = socket, CommandInfo = ClientCommand.KeepCommand.KeepCallbackCommandInfo });
@@ -87,7 +88,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
         internal ClientSocketSender(ClientSocket<attributeType> socket)
-            : base(socket)
+            : base(socket, socket.ClientCreator.Attribute.GetQueueCommandSize)
         {
             clientCreator = socket.ClientCreator;
             if (clientCreator.Attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker {  Sender = this };
@@ -605,13 +606,14 @@ namespace AutoCSer.Net.TcpServer
             return ReturnType.ClientDisposed;
         }
         /// <summary>
-                 /// 添加命令
-                 /// </summary>
-                 /// <param name="command">当前命令</param>
+        /// 添加命令
+        /// </summary>
+        /// <param name="command">当前命令</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private void push(ClientCommand.Command command)
         {
-            //Interlocked.Increment(ref commandCount);
+            if (commandCount - buildCommandCount >= queueCommandSize) Thread.Sleep(1);
+            Interlocked.Increment(ref commandCount);
             if (Outputs.IsPushHead(command)) OutputWaitHandle.Set();
             ClientSocket.ResetCheck();
         }
@@ -625,7 +627,15 @@ namespace AutoCSer.Net.TcpServer
                 if (Outputs.IsEmpty)
                 {
                     ClientCommand.CheckCommand command = ClientCommand.CheckCommand.Get(ClientSocket);
-                    if (command != null && Outputs.IsPushHead(command)) OutputWaitHandle.Set();
+                    if (command != null)
+                    {
+                        if (Outputs.TryPushHead(command))
+                        {
+                            OutputWaitHandle.Set();
+                            Interlocked.Increment(ref commandCount);
+                        }
+                        else AutoCSer.Threading.RingPool<ClientCommand.CheckCommand>.Default.PushNotNull(command);
+                    }
                 }
                 ClientSocket.CheckTimer.Reset(ClientSocket);
             }
@@ -900,7 +910,7 @@ namespace AutoCSer.Net.TcpServer
             {
                 clientCreator.CommandClient.SendBufferPool.Get(ref Buffer);
                 SubArray<byte> sendData = default(SubArray<byte>);
-                int bufferLength = Buffer.Length, outputSleep = clientCreator.CommandClient.OutputSleep, currentOutputSleep, minCompressSize = clientCreator.CommandClient.MinCompressSize;
+                int bufferLength = Buffer.Length, outputSleep = clientCreator.CommandClient.OutputSleep, currentOutputSleep, minCompressSize = clientCreator.CommandClient.MinCompressSize, buildCount;
                 SocketError socketError;
                 using (UnmanagedStream outputStream = (ClientSocket.OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer())
                 {
@@ -919,12 +929,21 @@ namespace AutoCSer.Net.TcpServer
                             OutputWaitHandle.Wait();
                             if (isClose || (head = Outputs.GetClear(out end)) == null) return;
                             LOOP:
+                            buildCount = 0;
                             do
                             {
                                 head = head.Build(ref buildInfo);
-                                if (buildInfo.IsSend != 0) goto SETDATA;
+                                ++buildCount;
+                                if (buildInfo.IsSend != 0)
+                                {
+                                    addBuildCommandCount(buildCount);
+                                    buildCount = 0;
+                                    goto SETDATA;
+                                }
                             }
                             while (head != null);
+                            addBuildCommandCount(buildCount);
+                            buildCount = 0;
                             if (!Outputs.IsEmpty) goto WAIT;
                             if (currentOutputSleep >= 0)
                             {
@@ -1029,7 +1048,7 @@ namespace AutoCSer.Net.TcpServer
                                 //int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None);
                                 int count = Socket.Send(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError);
                                 sendData.MoveStart(count);
-                                ++SendCount;
+                                ++OutputWaitHandle.Reserved;
                                 if (sendData.Length == 0)
                                 {
                                     if (buildInfo.IsNewBuffer == 0)

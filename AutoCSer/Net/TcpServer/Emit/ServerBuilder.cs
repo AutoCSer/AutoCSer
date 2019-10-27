@@ -45,7 +45,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                 ConstructorBuilder constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, constructorParameterTypes);
                 ILGenerator constructorGenerator = constructorBuilder.GetILGenerator();
                 Label serverAttributeNotNull = constructorGenerator.DefineLabel();
-                bool isCallQueue = false, isVerifyMethodAsynchronousCallback = false;
+                bool isCallQueue = false, isSynchronousVerifyMethod = false, isVerifyMethod = false;
                 foreach (Method<attributeType, methodAttributeType, serverSocketSenderType> method in methods)
                 {
                     if (method != null)
@@ -53,16 +53,17 @@ namespace AutoCSer.Net.TcpServer.Emit
                         if (method.Attribute.ServerTaskType == ServerTaskType.Queue)
                         {
                             isCallQueue = true;
-                            if (isVerifyMethodAsynchronousCallback) break;
+                            if (isVerifyMethod) break;
                         }
-                        else if (method.Attribute.IsVerifyMethod && method.IsAsynchronousCallback)
+                        if (method.Attribute.IsVerifyMethod)
                         {
-                            isVerifyMethodAsynchronousCallback = true;
+                            isVerifyMethod = true;
+                            if (method.Attribute.ServerTaskType == ServerTaskType.Synchronous && !method.IsAsynchronousCallback) isSynchronousVerifyMethod = true;
                             if (isCallQueue) break;
                         }
                     }
                 }
-                #region base(attribute, verify, serverCallQueue, onCustomData, log, isCallQueue, isVerifyMethodAsynchronousCallback)
+                #region base(attribute, verify, serverCallQueue, onCustomData, log, isCallQueue, isSynchronousVerifyMethod)
                 constructorGenerator.Emit(OpCodes.Ldarg_0);
                 constructorGenerator.Emit(OpCodes.Ldarg_1);
                 constructorGenerator.Emit(OpCodes.Ldarg_2);
@@ -70,7 +71,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 5);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 6);
                 constructorGenerator.int32(isCallQueue ? 1 : 0);
-                constructorGenerator.int32(isVerifyMethodAsynchronousCallback ? 1 : 0);
+                constructorGenerator.int32(isSynchronousVerifyMethod ? 1 : 0);
                 constructorGenerator.Emit(OpCodes.Call, Metadata.ServerConstructorInfo);
                 #endregion
                 #region _value_ = value;
@@ -154,8 +155,12 @@ namespace AutoCSer.Net.TcpServer.Emit
                             {
                                 #region AsynchronousCallback
                                 Type asynchronousCallbackFieldType;
-                                if (method.ReturnType == typeof(void)) asynchronousCallbackFieldType = typeof(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>);
-                                else asynchronousCallbackFieldType = AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackType;
+                                if (method.ReturnType == typeof(void)) asynchronousCallbackFieldType = method.IsAsynchronousCallbackEmit ? typeof(Func<AutoCSer.Net.TcpServer.ReturnValue, bool>) : typeof(AutoCSer.Net.TcpServer.ServerCallback);
+                                else
+                                {
+                                    AutoCSer.Metadata.GenericType callbackGenericType = AutoCSer.Metadata.GenericType.Get(method.ReturnType);
+                                    asynchronousCallbackFieldType = method.IsAsynchronousCallbackEmit ? callbackGenericType.TcpServerCallbackEmitType : callbackGenericType.TcpServerCallbackType;
+                                }
                                 asynchronousCallbackFieldBuilder = serverCallTypeBuilder.DefineField("AsynchronousCallback", asynchronousCallbackFieldType, FieldAttributes.Public);
                                 #endregion
                                 #region public override void Call()
@@ -509,20 +514,19 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     {
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
-                                        methodGenerator.call(Metadata.ServerSocketSenderGetCallbackMethod);
+                                        methodGenerator.call(method.IsAsynchronousCallbackEmit ? Metadata.ServerSocketSenderGetCallbackEmitMethod : Metadata.ServerSocketSenderGetCallbackMethod);
                                     }
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        //methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ServerSocketSenderGetCallbackMethod);
-                                        //if (method.ReturnValueType == null)
-                                        //{
-                                        //    methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
-                                        //}
                                         ReturnParameterGenericType returnParameterGenericType = Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type);
-                                        methodGenerator.call(method.ReturnValueType == null ? returnParameterGenericType.ServerSocketSenderGetCallbackReturnMethod : returnParameterGenericType.ServerSocketSenderGetCallbackMethod);
+                                        if (method.IsAsynchronousCallbackEmit)
+                                        {
+                                            methodGenerator.call(method.ReturnValueType == null ? returnParameterGenericType.ServerSocketSenderGetCallbackReturnMethod : returnParameterGenericType.ServerSocketSenderGetCallbackEmitMethod);
+                                        }
+                                        else methodGenerator.call(returnParameterGenericType.ServerSocketSenderGetCallbackMethod);
                                     }
                                     methodGenerator.Emit(OpCodes.Stfld, asynchronousCallbackFieldBuilder);
                                     #endregion
@@ -581,20 +585,19 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     {
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
-                                        methodGenerator.call(Metadata.ServerSocketSenderGetCallbackMethod);
+                                        methodGenerator.call(method.IsAsynchronousCallbackEmit ? Metadata.ServerSocketSenderGetCallbackEmitMethod : Metadata.ServerSocketSenderGetCallbackMethod);
                                     }
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldarg_1);
                                         methodGenerator.Emit(OpCodes.Ldsfld, outputInfoFieldBuilder);
                                         methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
-                                        //methodGenerator.call(Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type).ServerSocketSenderGetCallbackMethod);
-                                        //if (method.ReturnValueType == null)
-                                        //{
-                                        //    methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpServerCallbackGetMethod);
-                                        //}
                                         ReturnParameterGenericType returnParameterGenericType = Metadata.GetOutputParameterGenericType(method.ReturnType, method.OutputParameterType.Type);
-                                        methodGenerator.call(method.ReturnValueType == null ? returnParameterGenericType.ServerSocketSenderGetCallbackReturnMethod : returnParameterGenericType.ServerSocketSenderGetCallbackMethod);
+                                        if (method.IsAsynchronousCallbackEmit)
+                                        {
+                                            methodGenerator.call(method.ReturnValueType == null ? returnParameterGenericType.ServerSocketSenderGetCallbackReturnMethod : returnParameterGenericType.ServerSocketSenderGetCallbackEmitMethod);
+                                        }
+                                        else methodGenerator.call(returnParameterGenericType.ServerSocketSenderGetCallbackMethod);
                                     }
                                     methodGenerator.call(method.MethodInfo);
                                     if (method.IsKeepCallback) methodGenerator.Emit(OpCodes.Pop);

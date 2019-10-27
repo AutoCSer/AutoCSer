@@ -25,28 +25,10 @@ namespace AutoCSer.Net.TcpServer
         /// 是否已经释放资源
         /// </summary>
         private int isDisposed;
-        ///// <summary>
-        ///// 保持回调序号
-        ///// </summary>
-        //private int identity;
-        ///// <summary>
-        ///// 客户端是否已经强制终止回调
-        ///// </summary>
-        //private int isCancel;
-        ///// <summary>
-        ///// 客户端命令
-        ///// </summary>
-        ///// <param name="command"></param>
-        ///// <param name="identity"></param>
-        //internal KeepCallback(ClientCommand.Command command, int identity)
-        //{
-        //    this.command = command;
-        //    this.identity = identity;
-        //}
         /// <summary>
-        /// 客户端命令
+        /// TCP 调用客户端回调保持
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="command">客户端命令</param>
         internal KeepCallback(ClientCommand.Command command)
         {
             this.command = command;
@@ -72,23 +54,13 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 取消回调
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void BuildCancel()
         {
             isDisposed = 1;
         }
-        ///// <summary>
-        ///// 客户端强制终止回调（不通知服务端）
-        ///// </summary>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //internal void Cancel()
-        //{
-        //    if (Interlocked.CompareExchange(ref isCancel, 1, 0) == 0) command.Socket.FreeKeep(command);
-        //}
         /// <summary>
         /// 客户端强制终止回调（不通知服务端）
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Cancel()
         {
             if (isDisposed == 0)

@@ -10,21 +10,27 @@
 </head>
 <body>
     <div>
+        <b>1.1.46</b>
+        <br />. <a href="/TcpServer/InterfaceServer.html?v=4BB6476">TCP 接口服务</a> 服务端异步回调定义增加抽象类模式。
+        <br />. <a href="/TcpServer/MethodServer.html?v=4BB6476">TCP 服务</a> 增加客户端未发送命令数量控制，用于优化高压环境下服务端内存占用。
+    </div>
+    <div>
         <b>1.1.45</b>
+        <br />. <a href="/TcpServer/MethodServer.html?v=4BB6476">TCP 服务</a> 服务端异步回调定义由委托模式修改为抽象类模式。
         <br />. 修复搜索组件静态 Trie 图失败节点未初始化的 BUG.
     </div>
     <div>
         <b>1.1.44</b>
-        <br />. <a href="/TcpServer/MethodServer.html?v=4A8B5BF">TCP 服务</a> 增加服务端自定义关键字队列支持，验证函数支持服务端异步模式，服务端异步回调函数支持非同步任务模式。
+        <br />. <a href="/TcpServer/MethodServer.html?v=4BB6476">TCP 服务</a> 增加服务端自定义关键字队列支持，验证函数支持服务端异步模式，服务端异步回调函数支持非同步任务模式。
     </div>
     <div>
         <b>1.1.43</b>
-        <br />. <a href="/Serialize/Json.html?v=4A8B5BF">JSON 序列化</a> 序列化函数名称与返回值细节修改，时间值默认修改为 ISO 8601 格式。
+        <br />. <a href="/Serialize/Json.html?v=4BB6476">JSON 序列化</a> 序列化函数名称与返回值细节修改，时间值默认修改为 ISO 8601 格式。
     </div>
     <div>
         <b>1.1.42</b>
-        <br />. <a href="/Serialize/Json.html?v=4A8B5BF">JSON 序列化</a> 增加 ThreadStatic 支持，时间值增加 ISO 8601 与自定义格式字符串支持。
-        <br />. <a href="/TcpServer/MethodServer.html?v=4A8B5BF">TCP 服务</a> 增加命令序号映射枚举类型支持。
+        <br />. <a href="/Serialize/Json.html?v=4BB6476">JSON 序列化</a> 增加 ThreadStatic 支持，时间值增加 ISO 8601 与自定义格式字符串支持。
+        <br />. <a href="/TcpServer/MethodServer.html?v=4BB6476">TCP 服务</a> 增加命令序号映射枚举类型支持。
         <br />. 发布工具 AutoCSer.Deploy 接口与自定义任务增加自定义扩展验证权限机制。
         <br />. 小工具整合项目 AutoCSer.Expand 增加 64b 分布式毫秒计数的 ID 生成工具。
         <br />. 修复框架中使用 Stopwatch 与 DateTime 时钟周期未做适配处理造成 TCP 队列切换频率高于预期值的 BUG。
@@ -32,9 +38,9 @@
     </div>
     <div>
         <b>1.1.41</b>
-        <br />. <a href="/Config/Index.html?v=4A8B5BF">代码配置</a>支持实例化，用于兼容文件配置反序列化。
-        <br />. <a href="/TcpServer/Register.html?v=4A8B5BF">TCP 注册服务</a>读写服务合并，通过设置只读权限来兼容旧的读取服务。
-        <br />. <a href="/TcpServer/MethodServer.html?v=4A8B5BF">TCP 服务</a>时间验证函数增加 用户ID 参数，用于适配常规用户认证模式。
+        <br />. <a href="/Config/Index.html?v=4BB6476">代码配置</a>支持实例化，用于兼容文件配置反序列化。
+        <br />. <a href="/TcpServer/Register.html?v=4BB6476">TCP 注册服务</a>读写服务合并，通过设置只读权限来兼容旧的读取服务。
+        <br />. <a href="/TcpServer/MethodServer.html?v=4BB6476">TCP 服务</a>时间验证函数增加 用户ID 参数，用于适配常规用户认证模式。
         <br />. 修复 ASCII 状态机没有判断匹配数据超出范围可能造成野指针读操作的 BUG。
     </div>
     <div>
@@ -45,13 +51,13 @@
         <b>1.1.39</b>
         <br />. TCP 服务增加接口级权限设置，服务端数组二进制反序列化增加最大长度配置增加内存资源攻击防御能力。
         <br />. 小工具整合项目 AutoCSer.Expand 增加简单的定时器时间生成工具。
-        <br />. <a href="/OrmCache/Index.html?v=4A8B5BF">ORM 内存索引缓存框架</a> decimal 类型映射增加整数 / 小数位数配置，LambdaExpression 转 SQL 为非缓存场景增加 Like 查询支持。
+        <br />. <a href="/OrmCache/Index.html?v=4BB6476">ORM 内存索引缓存框架</a> decimal 类型映射增加整数 / 小数位数配置，LambdaExpression 转 SQL 为非缓存场景增加 Like 查询支持。
         <br />. 应用程序卸载增加退出操作配置，用于非控制台环境提供相对可靠的退出机制。
         <br />. 发布工具 AutoCSer.Deploy 任务提交操作返回枚举状态，提供明确的同步状态。
     </div>
     <div>
         <b>1.1.38</b>
-        <br />. <a href="/Serialize/Json.html?v=4A8B5BF">JSON 序列化</a> 整数值默认由十六进制修改为十进制字符串，时间值默认由 new Date(x) 修改为字符串，用于默认兼容其他 JSON 反序列化组件。
+        <br />. <a href="/Serialize/Json.html?v=4BB6476">JSON 序列化</a> 整数值默认由十六进制修改为十进制字符串，时间值默认由 new Date(x) 修改为字符串，用于默认兼容其他 JSON 反序列化组件。
         <br />. Emit 模式的 TCP 服务生成获取泛型函数元数据，由反射模式修改为通过委托获取。
         <br />. 发布工具 AutoCSer.Deploy 增加独立的程序集环境检测服务，采用一次性检测模式防止程序集不加载造成二次检测结果错误的问题。
     </div>
@@ -62,57 +68,57 @@
     </div>
     <div>
         <b>1.1.36</b>
-        <br />. <a href="/OrmCache/Index.html?v=4A8B5BF">ORM</a> 生成 SQL 字段名称绑定到解析器处理不同 SQL 关键字转义操作不同的问题。
+        <br />. <a href="/OrmCache/Index.html?v=4BB6476">ORM</a> 生成 SQL 字段名称绑定到解析器处理不同 SQL 关键字转义操作不同的问题。
     </div>
     <div>
         <b>1.1.35</b>
-        <br />. <a href="/OrmCache/Index.html?v=4A8B5BF">ORM</a> 添加 SQL 语句支持传入委托自行处理 DbDataReader，同步操作不捕获异常，由外部调用程序自行处理。
+        <br />. <a href="/OrmCache/Index.html?v=4BB6476">ORM</a> 添加 SQL 语句支持传入委托自行处理 DbDataReader，同步操作不捕获异常，由外部调用程序自行处理。
     </div>
     <div>
         <b>1.1.34</b>
         <br />. 核心代码开源
         <br />. 修复 Socket.ReceiveAsync 与 Socket.SendAsync 操作因为 .NET 底层实现存在线程安全 BUG 造成内存数据错误与进程崩溃的问题
         <br />. 修复缓存对象池资源对象抛弃时未调用 Dispose() 可能造成的非托管内存与资源泄露的 BUG
-        <br />. 修复<a href="/Serialize/Json.html?v=4A8B5BF">JSON 序列化</a>对于未知数据反序列化可能产生堆栈溢出的 BUG
-        <br />. <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 增加简单的静态路由映射集群组件
-        <br />. <a href="/Serialize/Binary.html?v=4A8B5BF">二进制数据序列化</a> 全局版本更新增加历史版本成员位图支持
-        <br />. 修复 <a href="/OrmCache/Index.html?v=4A8B5BF">ORM 内存索引缓存框架</a> ORM 使用 LambdaExpression 查询转换成 SQL 语句的 BUG
-        <br />. <a href="/OrmCache/Index.html?v=4A8B5BF">ORM 内存索引缓存框架</a> 提供非队列操作 API 用于非缓存绑定的 ORM 操作 
+        <br />. 修复<a href="/Serialize/Json.html?v=4BB6476">JSON 序列化</a>对于未知数据反序列化可能产生堆栈溢出的 BUG
+        <br />. <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 增加简单的静态路由映射集群组件
+        <br />. <a href="/Serialize/Binary.html?v=4BB6476">二进制数据序列化</a> 全局版本更新增加历史版本成员位图支持
+        <br />. 修复 <a href="/OrmCache/Index.html?v=4BB6476">ORM 内存索引缓存框架</a> ORM 使用 LambdaExpression 查询转换成 SQL 语句的 BUG
+        <br />. <a href="/OrmCache/Index.html?v=4BB6476">ORM 内存索引缓存框架</a> 提供非队列操作 API 用于非缓存绑定的 ORM 操作 
         <br />. 发布工具 AutoCSer.Deploy 规范更新升级操作，增加自定义映射扩展
         <br />. 小工具整合项目 AutoCSer.Expand 增加 Hosts 文件操作、Csv 文件解析、非安全的 MessagePack 数据包解析工具 
     </div>
     <div>
         <b>1.1.33</b>
-        <br />. <a href="/Serialize/Binary.html?v=4A8B5BF">二进制数据序列化</a> 支持全局版本更新，用于兼容数据定义的变化
+        <br />. <a href="/Serialize/Binary.html?v=4BB6476">二进制数据序列化</a> 支持全局版本更新，用于兼容数据定义的变化
     </div>
     <div>
         <b>1.1.32</b>
-        <br />. <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 增加消息分发组件
+        <br />. <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 增加消息分发组件
     </div>
     <div>
         <b>1.1.31</b>
-        <br />. <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 为数字类型增加简单的更新逻辑组件
-        <br />. <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 增加最小堆
+        <br />. <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 为数字类型增加简单的更新逻辑组件
+        <br />. <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 增加最小堆
     </div>
     <div>
         <b>1.1.30</b>
         <br />. 修复 TCP 服务框架客户端组件在 .NET Core 环境中可能产生的堆栈溢出问题的 BUG
-        <br />. <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 增加短路径支持，用于降低深度嵌套的数据节点服务端解析开销
-        <br />. <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 增加分布式锁支持 与 二进制位图数据结构
+        <br />. <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 增加短路径支持，用于降低深度嵌套的数据节点服务端解析开销
+        <br />. <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 增加分布式锁支持 与 二进制位图数据结构
     </div>
     <div>
         <b>1.1.29</b>
-        <br />. 增加 支持日志流持久化的 <a href="/CacheServer/Index.html?v=4A8B5BF">内存数据库缓存服务组件</a> 与 <a href="/CacheServer/MessageQueue.html?v=4A8B5BF">消息队列组件</a>
+        <br />. 增加 支持日志流持久化的 <a href="/CacheServer/Index.html?v=4BB6476">内存数据库缓存服务组件</a> 与 <a href="/CacheServer/MessageQueue.html?v=4BB6476">消息队列组件</a>
         <br />. 增加 Unity3D 支持
-        <br />. 修复 <a href="/OrmCache/Index.html?v=4A8B5BF">ORM</a> MySql 的 SQL 语句生成的 BUG
+        <br />. 修复 <a href="/OrmCache/Index.html?v=4BB6476">ORM</a> MySql 的 SQL 语句生成的 BUG
     </div>
     <div>
         <b>1.1.28</b>
-        <br />. <a href="/TcpServer/RemoteExpression.html?v=4A8B5BF">远程表达式链</a>支持泛型节点实例化，解决泛型节点断链需要开发者手动转换表达式类型的问题
-        <br />. 修复 <a href="/TcpServer/MethodServer.html?v=4A8B5BF">TCP 函数</a>没有返回值无法生成异步客户端代理的 BUG
-        <br />. 修复 <a href="/TcpServer/InterfaceStreamServer.html?v=4A8B5BF">TCP 接口应答流服务框架</a> 与 <a href="/TcpServer/MethodStreamServer.html?v=4A8B5BF">TCP 函数应答流服务框架</a> 客户端启用压缩时压缩数据处理的 BUG
-        <br />. <a href="/OrmCache/Index.html?v=4A8B5BF">ORM</a> 添加表格缓存扩展成员的申明与自动识别功能，减少主缓存手工初始化的需求；添加程序级事务队列任务；添加简单的日志流回调组件；缓存组件增加若干 API
-        <br />. 修复 <a href="/Serialize/Binary.html?v=4A8B5BF">二进制序列化</a>真实类型处理的 BUG
+        <br />. <a href="/TcpServer/RemoteExpression.html?v=4BB6476">远程表达式链</a>支持泛型节点实例化，解决泛型节点断链需要开发者手动转换表达式类型的问题
+        <br />. 修复 <a href="/TcpServer/MethodServer.html?v=4BB6476">TCP 函数</a>没有返回值无法生成异步客户端代理的 BUG
+        <br />. 修复 <a href="/TcpServer/InterfaceStreamServer.html?v=4BB6476">TCP 接口应答流服务框架</a> 与 <a href="/TcpServer/MethodStreamServer.html?v=4BB6476">TCP 函数应答流服务框架</a> 客户端启用压缩时压缩数据处理的 BUG
+        <br />. <a href="/OrmCache/Index.html?v=4BB6476">ORM</a> 添加表格缓存扩展成员的申明与自动识别功能，减少主缓存手工初始化的需求；添加程序级事务队列任务；添加简单的日志流回调组件；缓存组件增加若干 API
+        <br />. 修复 <a href="/Serialize/Binary.html?v=4BB6476">二进制序列化</a>真实类型处理的 BUG
     </div>
 </body>
 <script language="javascript" type="text/javascript">
