@@ -65,6 +65,19 @@ namespace AutoCSer.Net.TcpSimpleServer.Emit
                 errorString = "TCP 应答服务不支持异步方法 " + MethodInfo.Name;
                 return false;
             }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+            if (IsClientAwaiter)
+            {
+                foreach (ParameterInfo parameter in Parameters)
+                {
+                    if (parameter.ParameterType.IsByRef)
+                    {
+                        errorString = "异步方法 " + MethodInfo.Name + " 不支持 ref / out 参数 " + parameter.Name;
+                        return false;
+                    }
+                }
+            }
+#endif
             return true;
         }
     }

@@ -24,6 +24,9 @@ namespace AutoCSer.Example.TcpInterfaceServer
                     Console.WriteLine(Asynchronous.TestCase());
                     Console.WriteLine(ServerAsynchronous.TestCase());
                     Console.WriteLine(ClientAsynchronous.TestCase());
+#if !DOTNET2 && !DOTNET4
+                    Console.WriteLine(ClientAwaiter.TestCase());
+#endif
                     Console.WriteLine(KeepCallback.TestCase());
                     Console.WriteLine(Inherit.TestCase());
                     Console.WriteLine(Expression.TestCase());

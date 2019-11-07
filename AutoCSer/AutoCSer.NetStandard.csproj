@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AutoCSer</AssemblyName>
     <RootNamespace>AutoCSer</RootNamespace>
-    <Version>1.1.45</Version>
+    <Version>1.1.47</Version>
     <PackageId>AutoCSer.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />
@@ -26,6 +26,7 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <DefineConstants>TRACE;MONO;AutoCSer;DotNetStandard;RELEASE;NETSTANDARD2_0;RELEASE;NETSTANDARD2_0</DefineConstants>
     <OutputPath>bin\Release\NetStandard\</OutputPath>
     <DocumentationFile>bin\Release\NetStandard\AutoCSer.xml</DocumentationFile>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -428,6 +429,8 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Net\TcpServer\CustomServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomTaskAsyncServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomWaitServerCall.cs" />
+    <Compile Include="Net\TcpServer\Emit\Awaiter.cs" />
+    <Compile Include="Net\TcpServer\Emit\AwaiterReturnValue.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientBuilder.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientCallback.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientMetadata.cs" />

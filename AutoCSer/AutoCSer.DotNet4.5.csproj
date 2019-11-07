@@ -430,6 +430,8 @@
     <Compile Include="Net\TcpServer\CustomServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomTaskAsyncServerCall.cs" />
     <Compile Include="Net\TcpServer\CustomWaitServerCall.cs" />
+    <Compile Include="Net\TcpServer\Emit\Awaiter.cs" />
+    <Compile Include="Net\TcpServer\Emit\AwaiterReturnValue.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientBuilder.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientCallback.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientMetadata.cs" />

@@ -9,22 +9,26 @@ namespace AutoCSer.Net.TcpServer
     public sealed partial class Awaiter
     {
         /// <summary>
-        /// 返回值
+        /// 返回值类型
         /// </summary>
-        private ReturnValue returnValue;
+        private ReturnType returnType;
     }
     /// <summary>
-    /// 异步等待
-    /// </summary>
-    /// <typeparam name="returnType"></typeparam>
-    /// <typeparam name="awaiterReturnValueType"></typeparam>
+         /// 异步等待
+         /// </summary>
+         /// <typeparam name="returnType"></typeparam>
+         /// <typeparam name="awaiterReturnValueType"></typeparam>
     public abstract partial class Awaiter<returnType, awaiterReturnValueType> : Callback<ReturnValue<awaiterReturnValueType>>
         where awaiterReturnValueType : struct
     {
         /// <summary>
         /// 返回值
         /// </summary>
-        private ReturnValue<returnType> returnValue;
+        private returnType returnValue;
+        /// <summary>
+        /// 返回值类型
+        /// </summary>
+        private ReturnType returnValueType;
     }
     /// <summary>
     /// 异步等待

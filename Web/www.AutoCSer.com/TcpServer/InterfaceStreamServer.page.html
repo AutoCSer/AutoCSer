@@ -14,6 +14,10 @@
             <!--Include:Include\GetCode[Example,0,,TcpInterfaceStreamServer\RefOut.cs]-->
         </p>
         <p>
+            . 客户端（<b>不支持服务端</b>）支持 await 异步模型，返回值参数类型必须为 <b>AutoCSer.Net.TcpServer.Awaiter</b> 或者 <b>AutoCSer.Net.TcpServer.Emit.Awaite&lt;returnType&gt;</b>。
+            <!--Include:Include\GetCode[Example,8,,TcpInterfaceStreamServer\ClientAwaiter.cs]-->
+        </p>
+        <p>
             . 对于没有返回值且可靠性要求不高的需求，支持仅发送请求模式（无需服务端响应），返回值类型必须为 void，不支持 ref / out 参数。
             <!--Include:Include\GetCode[Example,1,,TcpInterfaceStreamServer\SendOnly.cs]-->
         </p>
@@ -51,7 +55,7 @@
         </p>
         <p>
             . 集成支持<a href="/TcpServer/RemoteExpression.html">远程表达式链</a>
-            <!--Include:Include\GetCode[Example,8,,TcpInterfaceOpenStreamServer\Expression.cs]-->
+            <!--Include:Include\GetCode[Example,9,,TcpInterfaceOpenStreamServer\Expression.cs]-->
         </p>
         <!--Include:Include\SimpleSerialize-->
         <p>

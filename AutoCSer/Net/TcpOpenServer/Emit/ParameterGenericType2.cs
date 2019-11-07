@@ -79,5 +79,15 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         {
             get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGetKeep)ParameterGenericType.ClientSocketSender.GetKeep<inputParameterType, outputParameterType>).Method; }
         }
+
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal override MethodInfo ClientSocketSenderGetAwaiterMethod
+        {
+            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType2<inputParameterType, outputParameterType>.ClientSocketSenderGetAwaiter)ParameterGenericType.ClientSocketSender.GetAwaiter).Method; }
+        }
+#endif
     }
 }

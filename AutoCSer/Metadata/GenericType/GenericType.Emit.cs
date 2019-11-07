@@ -25,6 +25,16 @@ namespace AutoCSer.Metadata
         /// </summary>
         /// <returns></returns>
         internal abstract MethodInfo TcpAutoWaitReturnValuePopMethod { get; }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// 设置错误返回值类型
+        /// </summary>
+        internal abstract MethodInfo TcpAwaiterCallReturnTypeMethod { get; }
+        /// <summary>
+        /// await 返回值类型
+        /// </summary>
+        internal abstract Type AwaiterReturnValueType { get; }
+#endif
         ///// <summary>
         ///// 获取服务端回调转换
         ///// </summary>
@@ -68,6 +78,27 @@ namespace AutoCSer.Metadata
         {
             get { return ((Func<AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>>)AutoCSer.Net.TcpServer.AutoWaitReturnValue<Type>.Pop).Method; }
         }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// 异步等待
+        /// </summary>
+        private AutoCSer.Net.TcpServer.Emit.Awaiter<Type> tcpAwaiter;
+        /// <summary>
+        /// 设置错误返回值类型
+        /// </summary>
+        internal override MethodInfo TcpAwaiterCallReturnTypeMethod
+        {
+            get
+            {
+                if (tcpAwaiter == null) tcpAwaiter = new AutoCSer.Net.TcpServer.Emit.Awaiter<Type>();
+                return ((Action<AutoCSer.Net.TcpServer.ReturnType>)tcpAwaiter.Call).Method;
+            }
+        }
+        /// <summary>
+        /// await 返回值类型
+        /// </summary>
+        internal override System.Type AwaiterReturnValueType { get { return typeof(AutoCSer.Net.TcpServer.Emit.AwaiterReturnValue<Type>); } }
+#endif
         ///// <summary>
         ///// 获取服务端回调转换
         ///// </summary>

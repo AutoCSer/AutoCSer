@@ -21,6 +21,9 @@ namespace AutoCSer.Example.TcpInterfaceStreamServer
 ");
                     Console.WriteLine(RefOut.TestCase());
                     Console.WriteLine(SendOnly.TestCase());
+#if !DOTNET2 && !DOTNET4
+                    Console.WriteLine(ClientAwaiter.TestCase());
+#endif
                     Console.WriteLine(Inherit.TestCase());
                     Console.WriteLine(Expression.TestCase());
                     Console.WriteLine("Over");

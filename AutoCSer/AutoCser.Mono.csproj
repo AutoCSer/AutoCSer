@@ -515,6 +515,8 @@
     <Compile Include="Net\TcpOpenServer\Emit\ParameterGenericType2.cs" />
     <Compile Include="Net\TcpOpenServer\Emit\ReturnParameterGenericType.cs" />
     <Compile Include="Net\TcpOpenServer\Emit\UnionType.cs" />
+    <Compile Include="Net\TcpServer\Emit\Awaiter.cs" />
+    <Compile Include="Net\TcpServer\Emit\AwaiterReturnValue.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientCallback.cs" />
     <Compile Include="Net\TcpServer\Emit\ClientMetadata.cs" />
     <Compile Include="Net\TcpServer\Emit\Method.cs" />

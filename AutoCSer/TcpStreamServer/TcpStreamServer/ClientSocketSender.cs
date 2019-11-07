@@ -348,15 +348,15 @@ namespace AutoCSer.Net.TcpStreamServer
             }
         }
         /// <summary>
-                 /// TCP调用并返回参数值
-                 /// </summary>
-                 /// <typeparam name="inputParameterType">输入参数类型</typeparam>
-                 /// <typeparam name="outputParameterType">输出参数类型</typeparam>
-                 /// <param name="identityCommand">命令信息</param>
-                 /// <param name="callback">异步回调</param>
-                 /// <param name="inputParameter">输入参数</param>
-                 /// <param name="outputParameter">输出参数</param>
-                 /// <returns>保持回调</returns>
+        /// TCP调用并返回参数值
+        /// </summary>
+        /// <typeparam name="inputParameterType">输入参数类型</typeparam>
+        /// <typeparam name="outputParameterType">输出参数类型</typeparam>
+        /// <param name="identityCommand">命令信息</param>
+        /// <param name="callback">异步回调</param>
+        /// <param name="inputParameter">输入参数</param>
+        /// <param name="outputParameter">输出参数</param>
+        /// <returns>保持回调</returns>
         public TcpServer.ReturnType GetAwaiter<inputParameterType, outputParameterType>(TcpServer.CommandInfo identityCommand, Callback<TcpServer.ReturnValue<outputParameterType>> callback
             , ref inputParameterType inputParameter, ref outputParameterType outputParameter)
             where inputParameterType : struct

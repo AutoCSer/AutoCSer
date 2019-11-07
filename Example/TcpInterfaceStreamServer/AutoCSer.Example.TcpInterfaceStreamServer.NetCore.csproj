@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="ClientAwaiter.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Inherit.cs" />
     <Compile Include="Program.cs" />

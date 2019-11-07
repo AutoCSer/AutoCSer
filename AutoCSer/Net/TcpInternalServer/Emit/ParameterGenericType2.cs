@@ -97,5 +97,18 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
         {
             get { return ((ClientSocketSenderGetKeep)ParameterGenericType.ClientSocketSender.GetKeep<inputParameterType, outputParameterType>).Method; }
         }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal delegate ReturnType ClientSocketSenderGetAwaiter(CommandInfo identityCommand, Callback<ReturnValue<outputParameterType>> callback , ref inputParameterType inputParameter, ref outputParameterType outputParameter);
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal override MethodInfo ClientSocketSenderGetAwaiterMethod
+        {
+            get { return ((ClientSocketSenderGetAwaiter)ParameterGenericType.ClientSocketSender.GetAwaiter).Method; }
+        }
+#endif
     }
 }

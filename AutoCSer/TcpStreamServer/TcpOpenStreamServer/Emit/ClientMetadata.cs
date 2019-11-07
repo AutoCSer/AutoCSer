@@ -15,7 +15,11 @@ namespace AutoCSer.Net.TcpOpenStreamServer.Emit
                 , ((Func<ClientSocketSender>)ParameterGenericType.Client.GetSender).Method
                 , ParameterGenericType.Get, ParameterGenericType2.Get
                 , ((AutoCSer.Net.TcpServer.Emit.ParameterGenericType.WaitCall)ParameterGenericType.ClientSocketSender.WaitCall).Method
-                , ((Action<AutoCSer.Net.TcpServer.CommandInfo>)ParameterGenericType.ClientSocketSender.CallOnly).Method)
+                , ((Action<AutoCSer.Net.TcpServer.CommandInfo>)ParameterGenericType.ClientSocketSender.CallOnly).Method
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                , ((Func<AutoCSer.Net.TcpServer.CommandInfo, AutoCSer.Net.TcpServer.Awaiter, AutoCSer.Net.TcpServer.ReturnType>)ParameterGenericType.ClientSocketSender.GetAwaiter).Method
+#endif
+                  )
         {
         }
         /// <summary>

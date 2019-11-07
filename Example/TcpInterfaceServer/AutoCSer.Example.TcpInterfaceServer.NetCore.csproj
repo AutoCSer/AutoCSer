@@ -22,6 +22,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>bin\Release\netcoreapp2.0\AutoCSer.Example.TcpInterfaceServer.xml</DocumentationFile>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -38,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Asynchronous.cs" />
     <Compile Include="ClientAsynchronous.cs" />
+    <Compile Include="ClientAwaiter.cs" />
     <Compile Include="ServerAsynchronous.cs" />
     <Compile Include="Expression.cs" />
     <Compile Include="Inherit.cs" />

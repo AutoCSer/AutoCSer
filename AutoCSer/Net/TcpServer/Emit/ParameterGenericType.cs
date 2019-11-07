@@ -44,6 +44,16 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// TCP调用
         /// </summary>
         internal abstract MethodInfo ClientSocketSenderCallKeepMethod { get; }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal abstract MethodInfo ClientSocketSenderGetAwaiterMethod { get; }
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal abstract MethodInfo ClientSocketSenderGetAwaiterOutputMethod { get; }
+#endif
 
         /// <summary>
         /// 发送数据

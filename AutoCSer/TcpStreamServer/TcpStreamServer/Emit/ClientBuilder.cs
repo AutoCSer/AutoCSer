@@ -75,8 +75,33 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                             MethodBuilder methodBuilder = typeBuilder.DefineMethod(method.MethodInfo.Name, MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final, method.MethodInfo.ReturnType, parameters.getArray(parameter => parameter.ParameterType));
                             typeBuilder.DefineMethodOverride(methodBuilder, method.MethodInfo);
                             ILGenerator methodGenerator = methodBuilder.GetILGenerator();
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                            LocalBuilder awaiterReturnLocalBuilder = null;
+                            Label awaiterReturnLabel = default(Label);
+                            if (method.IsClientAwaiter)
+                            {
+                                #region AutoCSer.Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName> _awaiter_ = new AutoCSer.Net.TcpServer.Emit.Awaiter<@MethodReturnType.FullName();
+                                awaiterReturnLocalBuilder = methodGenerator.DeclareLocal(method.MethodInfo.ReturnType);
+                                methodGenerator.Emit(OpCodes.Newobj, method.ReturnType == typeof(void) ? AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterConstructor : method.MethodInfo.ReturnType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null));
+                                methodGenerator.Emit(OpCodes.Stloc_S, awaiterReturnLocalBuilder);
+                                #endregion
+                                awaiterReturnLabel = methodGenerator.DefineLabel();
+                            }
+#endif
                             if (method.Attribute.IsExpired)
                             {
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                                if (method.IsClientAwaiter)
+                                {
+                                    #region _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                                    methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
+                                    methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
+                                    if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
+                                    else methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
+                                    #endregion
+                                }
+                                else
+#endif
                                 if (method.ReturnValueType == null)
                                 {
                                     #region throw new Exception(AutoCSer.Net.TcpServer.ReturnType.VersionExpired.ToString());
@@ -150,6 +175,75 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                 #endregion
                                 methodGenerator.Emit(OpCodes.Ret);
                             }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                            else if (method.IsClientAwaiter)
+                            {
+                                LocalBuilder senderLocalBuilder = getTcpClientSender(methodGenerator, method, parameters);
+                                Label callClientExceptionLable = methodGenerator.DefineLabel();
+                                #region if (_socket_ != null)
+                                methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
+                                methodGenerator.Emit(method.ParameterType == null ? OpCodes.Brfalse_S : OpCodes.Brfalse, callClientExceptionLable);
+                                #endregion
+                                LocalBuilder inputParameterLocalBuilder = getInputParameter(methodGenerator, method, parameters);
+                                LocalBuilder returnTypeLocalBuilder = methodGenerator.DeclareLocal(typeof(AutoCSer.Net.TcpServer.ReturnType));
+                                if (method.OutputParameterType == null)
+                                {
+                                    #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_, ref _inputParameter_);
+                                    methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldsfld, commandInfoFieldBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
+                                    if (method.ParameterType == null) methodGenerator.call(Metadata.ClientSocketSenderGetAwaiterMethod);
+                                    else
+                                    {
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
+                                        methodGenerator.call(Metadata.GetParameterGenericType(method.ParameterType.Type).ClientSocketSenderGetAwaiterMethod);
+                                    }
+                                    methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
+                                    #endregion
+                                }
+                                else
+                                {
+                                    #region AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName> _outputParameter_ = default(AutoCSer.Net.TcpServer.@AwaiterReturnValue<@MethodReturnType.FullName>);
+                                    Type outputParameterType = AutoCSer.Metadata.GenericType.Get(method.ReturnType).AwaiterReturnValueType;
+                                    LocalBuilder outputParameterLocalBuilder = methodGenerator.DeclareLocal(outputParameterType);
+                                    #endregion
+                                    #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.GetAwaiter(@AwaiterMethodIdentityCommand, _awaiter_, ref _inputParameter_, ref _outputParameter_);
+                                    methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldsfld, commandInfoFieldBuilder);
+                                    methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
+                                    if (method.ParameterType == null)
+                                    {
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                        methodGenerator.call(Metadata.GetParameterGenericType(outputParameterType).ClientSocketSenderGetAwaiterOutputMethod);
+                                    }
+                                    else
+                                    {
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, inputParameterLocalBuilder);
+                                        methodGenerator.Emit(OpCodes.Ldloca_S, outputParameterLocalBuilder);
+                                        methodGenerator.call(Metadata.GetParameterGenericType2(method.ParameterType.Type, outputParameterType).ClientSocketSenderGetAwaiterMethod);
+                                    }
+                                    methodGenerator.Emit(OpCodes.Stloc_S, returnTypeLocalBuilder);
+                                    #endregion
+                                }
+                                #region if (_returnType_ != AutoCSer.Net.TcpServer.ReturnType.Success) _awaiter_.Call(_returnType_);
+                                methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
+                                methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.Success);
+                                methodGenerator.Emit(OpCodes.Beq_S, awaiterReturnLabel);
+                                methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
+                                methodGenerator.Emit(OpCodes.Ldloc_S, returnTypeLocalBuilder);
+                                if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
+                                else methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
+                                methodGenerator.Emit(OpCodes.Br_S, awaiterReturnLabel);
+                                #endregion
+                                #region else _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                                methodGenerator.MarkLabel(callClientExceptionLable);
+                                methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
+                                methodGenerator.int32((byte)AutoCSer.Net.TcpServer.ReturnType.ClientException);
+                                if (method.ReturnType == typeof(void)) methodGenerator.call(AutoCSer.Net.TcpServer.Emit.ClientMetadataBase.AwaiterCallReturnTypeMethod);
+                                else methodGenerator.call(AutoCSer.Metadata.GenericType.Get(method.ReturnType).TcpAwaiterCallReturnTypeMethod);
+                                #endregion
+                            }
+#endif
                             else
                             {
                                 Label clientExceptionLabel = methodGenerator.DefineLabel(), returnLable = methodGenerator.DefineLabel(), returnReturnValueLable, returnValueLable;
@@ -184,62 +278,12 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                 methodGenerator.BeginExceptionBlock();
                                 #endregion
                                 Label leaveTryLabel = methodGenerator.DefineLabel();
-                                LocalBuilder senderLocalBuilder = methodGenerator.DeclareLocal(Metadata.SenderType);
-                                parameterIndex = 0;
-                                if (method.Attribute.IsVerifyMethod)
-                                {
-                                    foreach (ParameterInfo parameter in parameters)
-                                    {
-                                        ++parameterIndex;
-                                        if (parameter.ParameterType == Metadata.SenderType)
-                                        {
-                                            #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
-                                            methodGenerator.ldarg(parameterIndex);
-                                            methodGenerator.Emit(OpCodes.Stloc_S, senderLocalBuilder);
-                                            #endregion
-                                            parameterIndex = int.MinValue;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (parameterIndex != int.MinValue)
-                                {
-                                    #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
-                                    methodGenerator.Emit(OpCodes.Ldarg_0);
-                                    methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
-                                    methodGenerator.call(Metadata.ClientGetSenderMethod);
-                                    methodGenerator.Emit(OpCodes.Stloc_S, senderLocalBuilder);
-                                    #endregion
-                                }
+                                LocalBuilder senderLocalBuilder = getTcpClientSender(methodGenerator, method, parameters);
                                 #region if (_socket_ != null)
                                 methodGenerator.Emit(OpCodes.Ldloc_S, senderLocalBuilder);
                                 methodGenerator.Emit(method.ParameterType == null ? OpCodes.Brfalse_S : OpCodes.Brfalse, leaveTryLabel);
                                 #endregion
-                                LocalBuilder inputParameterLocalBuilder;
-                                if (method.ParameterType == null) inputParameterLocalBuilder = null;
-                                else
-                                {
-                                    #region TcpInternalServer.@InputParameterTypeName _inputParameter_ = new TcpInternalServer.@InputParameterTypeName { @ParameterName = @ParameterName };
-                                    inputParameterLocalBuilder = methodGenerator.DeclareLocal(method.ParameterType.Type);
-                                    LocalBuilder newInputParameterLocalBuilder = methodGenerator.DeclareLocal(method.ParameterType.Type);
-                                    if (method.Attribute.IsInitobj || method.ParameterType.IsInitobj)
-                                    {
-                                        methodGenerator.Emit(OpCodes.Ldloca_S, newInputParameterLocalBuilder);
-                                        methodGenerator.Emit(OpCodes.Initobj, method.ParameterType.Type);
-                                    }
-                                    parameterIndex = 0;
-                                    foreach (ParameterInfo parameter in parameters)
-                                    {
-                                        ++parameterIndex;
-                                        if (StreamParameterType.IsInputParameter(parameter))
-                                        {
-                                            methodGenerator.parameterToStructField(parameter, parameterIndex, newInputParameterLocalBuilder, method.ParameterType.GetField(parameter.Name));
-                                        }
-                                    }
-                                    methodGenerator.Emit(OpCodes.Ldloc_S, newInputParameterLocalBuilder);
-                                    methodGenerator.Emit(OpCodes.Stloc_S, inputParameterLocalBuilder);
-                                    #endregion
-                                }
+                                LocalBuilder inputParameterLocalBuilder = getInputParameter(methodGenerator, method, parameters);
                                 if (method.OutputParameterType == null)
                                 {
                                     #region AutoCSer.Net.TcpServer.ReturnType _returnType_ = _socket_.WaitCall(@MethodIdentityCommand, ref _wait_, ref _inputParameter_);
@@ -468,6 +512,16 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                                     #endregion
                                 }
                             }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                            if (method.IsClientAwaiter)
+                            {
+                                #region return _awaiter_;
+                                methodGenerator.MarkLabel(awaiterReturnLabel);
+                                methodGenerator.Emit(OpCodes.Ldloc_S, awaiterReturnLocalBuilder);
+                                methodGenerator.Emit(OpCodes.Ret);
+                                #endregion
+                            }
+#endif
                         }
                         else if (method.IsPropertySetMethod)
                         {
@@ -501,6 +555,76 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                 }
                 staticConstructorGenerator.Emit(OpCodes.Ret);
                 return typeBuilder.CreateType();
+            }
+            /// <summary>
+            /// 获取 TCP 服务客户端套接字数据发送
+            /// </summary>
+            /// <param name="methodGenerator"></param>
+            /// <param name="method"></param>
+            /// <param name="parameters"></param>
+            /// <returns></returns>
+            private LocalBuilder getTcpClientSender(ILGenerator methodGenerator, Method<attributeType, methodAttributeType, serverSocketSenderType> method, ParameterInfo[] parameters)
+            {
+                LocalBuilder senderLocalBuilder = methodGenerator.DeclareLocal(Metadata.SenderType);
+                int parameterIndex = 0;
+                if (method.Attribute.IsVerifyMethod)
+                {
+                    foreach (ParameterInfo parameter in parameters)
+                    {
+                        ++parameterIndex;
+                        if (parameter.ParameterType == Metadata.SenderType)
+                        {
+                            #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _sender_;
+                            methodGenerator.ldarg(parameterIndex);
+                            methodGenerator.Emit(OpCodes.Stloc_S, senderLocalBuilder);
+                            #endregion
+                            parameterIndex = int.MinValue;
+                            break;
+                        }
+                    }
+                }
+                if (parameterIndex != int.MinValue)
+                {
+                    #region AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
+                    methodGenerator.Emit(OpCodes.Ldarg_0);
+                    methodGenerator.call(Metadata.MethodClientGetTcpClientMethod);
+                    methodGenerator.call(Metadata.ClientGetSenderMethod);
+                    methodGenerator.Emit(OpCodes.Stloc_S, senderLocalBuilder);
+                    #endregion
+                }
+                return senderLocalBuilder;
+            }
+            /// <summary>
+            /// 获取输入参数
+            /// </summary>
+            /// <param name="methodGenerator"></param>
+            /// <param name="method"></param>
+            /// <param name="parameters"></param>
+            /// <returns></returns>
+            private LocalBuilder getInputParameter(ILGenerator methodGenerator, Method<attributeType, methodAttributeType, serverSocketSenderType> method, ParameterInfo[] parameters)
+            {
+                if (method.ParameterType == null) return null;
+                #region TcpInternalServer.@InputParameterTypeName _inputParameter_ = new TcpInternalServer.@InputParameterTypeName { @ParameterName = @ParameterName };
+                LocalBuilder inputParameterLocalBuilder = methodGenerator.DeclareLocal(method.ParameterType.Type);
+                LocalBuilder newInputParameterLocalBuilder = methodGenerator.DeclareLocal(method.ParameterType.Type);
+                if (method.Attribute.IsInitobj || method.ParameterType.IsInitobj)
+                {
+                    methodGenerator.Emit(OpCodes.Ldloca_S, newInputParameterLocalBuilder);
+                    methodGenerator.Emit(OpCodes.Initobj, method.ParameterType.Type);
+                }
+                int parameterIndex = 0;
+                foreach (ParameterInfo parameter in parameters)
+                {
+                    ++parameterIndex;
+                    if (StreamParameterType.IsInputParameter(parameter))
+                    {
+                        methodGenerator.parameterToStructField(parameter, parameterIndex, newInputParameterLocalBuilder, method.ParameterType.GetField(parameter.Name));
+                    }
+                }
+                methodGenerator.Emit(OpCodes.Ldloc_S, newInputParameterLocalBuilder);
+                methodGenerator.Emit(OpCodes.Stloc_S, inputParameterLocalBuilder);
+                #endregion
+                return inputParameterLocalBuilder;
             }
         }
     }

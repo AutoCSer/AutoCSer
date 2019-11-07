@@ -19,13 +19,13 @@ namespace AutoCSer.Net.TcpServer
             return await this;
         }
         /// <summary>
+        /// 完成状态
+        /// </summary>
+        public bool IsCompleted { get; set; }
+        /// <summary>
         /// 异步回调
         /// </summary>
         private Action continuation;
-        /// <summary>
-        /// 完成状态
-        /// </summary>
-        public bool IsCompleted { get { return false; } }
         /// <summary>
         /// 回调处理
         /// </summary>
@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Call(ReturnValue outputParameter)
         {
-            returnValue = outputParameter;
+            returnType = outputParameter.Type;
             if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
         }
         /// <summary>
@@ -43,8 +43,9 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Call(ReturnType type)
         {
-            returnValue.Type = type;
+            returnType = type;
             continuation = Pub.EmptyAction;
+            IsCompleted = true;
         }
         /// <summary>
         /// 获取返回值
@@ -53,7 +54,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ReturnValue GetResult()
         {
-            return returnValue;
+            return new ReturnValue { Type = returnType };
         }
         /// <summary>
         /// 设置异步回调
@@ -89,13 +90,13 @@ namespace AutoCSer.Net.TcpServer
             return await this;
         }
         /// <summary>
+        /// 完成状态
+        /// </summary>
+        public bool IsCompleted { get; set; }
+        /// <summary>
         /// 异步回调
         /// </summary>
         private Action continuation;
-        /// <summary>
-        /// 完成状态
-        /// </summary>
-        public bool IsCompleted { get { return false; } }
         /// <summary>
         /// 设置错误返回值类型
         /// </summary>
@@ -103,8 +104,9 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Call(ReturnType type)
         {
-            returnValue.Type = type;
+            returnValueType = type;
             continuation = Pub.EmptyAction;
+            IsCompleted = true;
         }
         /// <summary>
         /// 异步回调返回值
@@ -114,8 +116,8 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void call(ReturnType returnType, ref returnType returnValue)
         {
-            this.returnValue.Type = returnType;
-            this.returnValue.Value = returnValue;
+            returnValueType = returnType;
+            this.returnValue = returnValue;
             if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();
         }
         /// <summary>
@@ -125,7 +127,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public ReturnValue<returnType> GetResult()
         {
-            return returnValue;
+            return new ReturnValue<returnType> { Type = returnValueType, Value = returnValue };
         }
         /// <summary>
         /// 设置异步回调

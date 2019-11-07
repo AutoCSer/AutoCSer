@@ -77,9 +77,16 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="getParameterGenericType2">输入+输出参数泛型类型元数据</param>
         /// <param name="clientSocketSenderWaitCallMethod">TCP 服务客户端调用函数信息</param>
         /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <param name="clientSocketSenderGetAwaiterMethod">TCP 调用函数信息</param>
+#endif
         internal ClientMetadataBase(Type clientType, Type senderType, Type methodClientType
             , MethodInfo clientGetSenderMethod, Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
-            , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod)
+            , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+            , MethodInfo clientSocketSenderGetAwaiterMethod
+#endif
+            )
         {
             SenderType = senderType;
             MethodClientType = methodClientType;
@@ -91,57 +98,30 @@ namespace AutoCSer.Net.TcpServer.Emit
             GetParameterGenericType2 = getParameterGenericType2;
             ClientSocketSenderWaitCallMethod = clientSocketSenderWaitCallMethod;
             ClientSocketSenderCallOnlyMethod = clientSocketSenderCallOnlyMethod;
-            //Type autoWaitReturnValueRefType = typeof(AutoWaitReturnValue).MakeByRefType();
-            //foreach (MethodInfo method in senderType.GetMethods(BindingFlags.Instance | BindingFlags.Public))
-            //{
-            //    switch (method.Name)
-            //    {
-            //        case "WaitGet":
-            //            if (method.ReturnType == typeof(ReturnType))
-            //            {
-            //                ParameterInfo[] types = method.GetParameters();
-            //                if (types.Length >= 3 && types[0].ParameterType == typeof(CommandInfo))
-            //                {
-            //                    switch (types.Length)
-            //                    {
-            //                        case 3: ClientSocketSenderWaitGetMethod = method; break;
-            //                        case 4: ClientSocketSenderWaitGetInputMethod = method; break;
-            //                    }
-            //                }
-            //            }
-            //            break;
-            //        case "WaitCall":
-            //            if (method.ReturnType == typeof(ReturnType))
-            //            {
-            //                ParameterInfo[] types = method.GetParameters();
-            //                if (types.Length >= 2 && types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType == autoWaitReturnValueRefType)
-            //                {
-            //                    switch (types.Length)
-            //                    {
-            //                        case 2: ClientSocketSenderWaitCallMethod = method; break;
-            //                        case 3: ClientSocketSenderWaitCallInputMethod = method; break;
-            //                    }
-            //                }
-            //            }
-            //            break;
-            //        case "CallOnly":
-            //            if (method.ReturnType == typeof(void))
-            //            {
-            //                ParameterInfo[] types = method.GetParameters();
-            //                switch (types.Length)
-            //                {
-            //                    case 1:
-            //                        if (types[0].ParameterType == typeof(CommandInfo)) ClientSocketSenderCallOnlyMethod = method;
-            //                        break;
-            //                    case 2:
-            //                        if (types[0].ParameterType == typeof(CommandInfo) && types[1].ParameterType.IsByRef) ClientSocketSenderCallOnlyInputMethod = method;
-            //                        break;
-            //                }
-            //            }
-            //            break;
-            //    }
-            //}
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+            ClientSocketSenderGetAwaiterMethod = clientSocketSenderGetAwaiterMethod;
+#endif
         }
+
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// TCP 调用函数信息
+        /// </summary>
+        internal readonly MethodInfo ClientSocketSenderGetAwaiterMethod;
+
+        /// <summary>
+        /// 异步等待
+        /// </summary>
+        internal static readonly Awaiter Awaiter = new Awaiter();
+        /// <summary>
+        /// 异步等待构造函数
+        /// </summary>
+        internal static readonly ConstructorInfo AwaiterConstructor = typeof(Awaiter).GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, NullValue<Type>.Array, null);
+        /// <summary>
+        /// 设置错误返回值类型
+        /// </summary>
+        internal static readonly MethodInfo AwaiterCallReturnTypeMethod = ((Action<ReturnType>)Awaiter.Call).Method;
+#endif
     }
     /// <summary>
     /// TCP 客户端元数据
@@ -203,14 +183,25 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
         /// <param name="clientSocketSenderCallMethod">TCP 服务客户端调用函数信息</param>
         /// <param name="clientSocketSenderCallKeepMethod">TCP 服务客户端调用函数信息</param>
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <param name="clientSocketSenderGetAwaiterMethod">TCP 调用函数信息</param>
+#endif
         internal ClientMetadata(Type clientType, Type senderType, Type methodClientType
             , MethodInfo clientGetSenderMethod, Func<Type, Type, ReturnParameterGenericType> getOutputParameterGenericType
             , Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
             , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
-            , MethodInfo clientSocketSenderCallMethod, MethodInfo clientSocketSenderCallKeepMethod)
+            , MethodInfo clientSocketSenderCallMethod, MethodInfo clientSocketSenderCallKeepMethod
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+            , MethodInfo clientSocketSenderGetAwaiterMethod
+#endif
+            )
             : base(clientType, senderType, methodClientType
             , clientGetSenderMethod, getParameterGenericType, getParameterGenericType2
-            , clientSocketSenderWaitCallMethod, clientSocketSenderCallOnlyMethod)
+            , clientSocketSenderWaitCallMethod, clientSocketSenderCallOnlyMethod
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+            , clientSocketSenderGetAwaiterMethod
+#endif
+                  )
         {
             GetOutputParameterGenericType = getOutputParameterGenericType;
             ClientSocketSenderCallMethod = clientSocketSenderCallMethod;

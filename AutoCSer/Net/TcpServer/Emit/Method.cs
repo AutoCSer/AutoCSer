@@ -74,6 +74,12 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 是否客户端异步回调方法
         /// </summary>
         internal readonly bool IsClientAsynchronousCallback;
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// 客户端是否 await 异步模式
+        /// </summary>
+        internal readonly bool IsClientAwaiter;
+#endif
         /// <summary>
         /// 服务端自定义队列关键字参数
         /// </summary>
@@ -137,6 +143,21 @@ namespace AutoCSer.Net.TcpServer.Emit
                     IsAsynchronousCallback = true;
                 }
             }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+            if (!IsAsynchronousCallback && isClient)
+            {
+                if (ReturnType == typeof(AutoCSer.Net.TcpServer.Awaiter))
+                {
+                    ReturnType = typeof(ReturnValue);
+                    IsClientAwaiter = true;
+                }
+                else if (ReturnType.IsGenericType && ReturnType.GetGenericTypeDefinition() == typeof(AutoCSer.Net.TcpServer.Emit.Awaiter<>))
+                {
+                    ReturnType = typeof(ReturnValue<>).MakeGenericType(ReturnType.GetGenericArguments());
+                    IsClientAwaiter = true;
+                }
+            }
+#endif
             if (ReturnType == typeof(ReturnValue))
             {
                 ReturnValueType = ReturnType;
@@ -537,7 +558,11 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <returns></returns>
         internal override bool CheckRef(ref string errorString)
         {
-            if (IsAsynchronousCallback || IsClientSendOnly)
+            if (IsAsynchronousCallback || IsClientSendOnly
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                 || IsClientAwaiter
+#endif
+             )
             {
                 foreach (ParameterInfo parameter in Parameters)
                 {

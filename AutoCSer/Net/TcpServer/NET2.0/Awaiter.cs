@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Call(ReturnValue outputParameter)
         {
-            returnValue = outputParameter;
+            returnType = outputParameter.Type;
             waitHandle.Set();
         }
         /// <summary>
@@ -36,7 +36,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Call(ReturnType type)
         {
-            returnValue.Type = type;
+            returnType = type;
             waitHandle.Set();
         }
         /// <summary>
@@ -47,7 +47,7 @@ namespace AutoCSer.Net.TcpServer
         public AwaiterResult<ReturnValue> Wait()
         {
             waitHandle.Wait();
-            return new AwaiterResult<ReturnValue> { Result = returnValue };
+            return new AwaiterResult<ReturnValue> { Result = new ReturnValue { Type = returnType } };
         }
     }
     /// <summary>
@@ -74,8 +74,8 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         protected void call(ReturnType returnType, ref returnType returnValue)
         {
-            this.returnValue.Type = returnType;
-            this.returnValue.Value = returnValue;
+            returnValueType = returnType;
+            this.returnValue = returnValue;
             waitHandle.Set();
         }
         /// <summary>
@@ -85,7 +85,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Call(ReturnType type)
         {
-            returnValue.Type = type;
+            returnValueType = type;
             waitHandle.Set();
         }
         /// <summary>
@@ -96,7 +96,7 @@ namespace AutoCSer.Net.TcpServer
         public AwaiterResult<ReturnValue<returnType>> Wait()
         {
             waitHandle.Wait();
-            return new AwaiterResult<ReturnValue<returnType>> { Result = returnValue };
+            return new AwaiterResult<ReturnValue<returnType>> { Result = new ReturnValue<returnType> { Type = returnValueType, Value = returnValue } };
         }
 	}
 }

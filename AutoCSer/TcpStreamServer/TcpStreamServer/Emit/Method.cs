@@ -67,7 +67,11 @@ namespace AutoCSer.Net.TcpStreamServer.Emit
                 errorString = "TCP 应答流服务不支持异步方法 " + MethodInfo.Name;
                 return false;
             }
-            if (IsClientSendOnly)
+            if (IsClientSendOnly
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+                 || IsClientAwaiter
+#endif
+                )
             {
                 foreach (ParameterInfo parameter in Parameters)
                 {

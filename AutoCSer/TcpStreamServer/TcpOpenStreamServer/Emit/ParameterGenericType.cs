@@ -118,6 +118,22 @@ namespace AutoCSer.Net.TcpOpenStreamServer.Emit
         {
             get { throw new NotImplementedException(); }
         }
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal override MethodInfo ClientSocketSenderGetAwaiterMethod
+        {
+            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetAwaiter)ClientSocketSender.GetAwaiter<parameterType>).Method; }
+        }
+        /// <summary>
+        /// TCP调用
+        /// </summary>
+        internal override MethodInfo ClientSocketSenderGetAwaiterOutputMethod
+        {
+            get { return ((AutoCSer.Net.TcpInternalServer.Emit.ParameterGenericType<parameterType>.ClientSocketSenderGetAwaiterOutput)ClientSocketSender.GetAwaiter<parameterType>).Method; }
+        }
+#endif
 
         /// <summary>
         /// 发送数据

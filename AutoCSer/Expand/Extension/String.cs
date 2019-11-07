@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoCSer.Extension
 {
@@ -85,6 +86,55 @@ namespace AutoCSer.Extension
                 }
             }
             return url;
+        }
+        /// <summary>
+        /// 获取宽字符数量集合 https://www.cnblogs.com/sdflysha/p/20191026-split-string-to-character-list.html
+        /// </summary>
+        /// <param name="value">字符串</param>
+        /// <returns>宽字符数量</returns>
+        public static IEnumerable<int> getWideCharSize(this string value)
+        {
+            if (value != null)
+            {
+                int size = 0, step = 0;
+                foreach (char code in value)
+                {
+                    switch (step)
+                    {
+                        case 0:
+                            if (char.IsHighSurrogate(code)) size = step = 1;
+                            else yield return 1;
+                            break;
+                        case 1: size = step = 2; break;
+                        case 2:
+                            if (code != 0x200D)
+                            {
+                                yield return size;
+                                if (char.IsHighSurrogate(code)) size = step = 1;
+                                else
+                                {
+                                    yield return 1;
+                                    step = size = 0;
+                                }
+                            }
+                            else
+                            {
+                                ++size;
+                                step = 3;
+                            }
+                            break;
+                        case 3:
+                            ++size;
+                            step = 4;
+                            break;
+                        case 4:
+                            ++size;
+                            step = 2;
+                            break;
+                    }
+                }
+                if (size != 0) yield return size;
+            }
         }
     }
 }
