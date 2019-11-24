@@ -87,7 +87,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
                     else server.setCommand(method.Attribute.CommandIdentity);
                 }
             }
-            TcpServer.ISetTcpServer<TcpOpenServer.Server, ServerAttribute> setTcpServer = value as TcpServer.ISetTcpServer<TcpOpenServer.Server, ServerAttribute>;
+            TcpServer.ISetTcpServer<TcpOpenServer.Server> setTcpServer = value as TcpServer.ISetTcpServer<TcpOpenServer.Server>;
             if (setTcpServer != null) setTcpServer.SetTcpServer(server);
             if (attribute.IsAutoServer) server.Start();
             return server;

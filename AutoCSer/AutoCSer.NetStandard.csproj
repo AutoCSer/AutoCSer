@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AutoCSer</AssemblyName>
     <RootNamespace>AutoCSer</RootNamespace>
-    <Version>1.1.47</Version>
+    <Version>1.1.48</Version>
     <PackageId>AutoCSer.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />
@@ -373,7 +373,6 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Net\TcpRegister\ConfigLoader.cs" />
     <Compile Include="Net\TcpRegister\IClient.cs" />
     <Compile Include="Net\TcpRegister\IServer.cs" />
-    <Compile Include="Net\TcpRegister\IServerAttribute.cs" />
     <Compile Include="Net\TcpRegister\Log.cs" />
     <Compile Include="Net\TcpRegister\LogType.cs" />
     <Compile Include="Net\TcpRegister\PortCache.cs" />
@@ -467,6 +466,7 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Net\TcpServer\SenderBuildInfo.cs" />
     <Compile Include="Net\TcpServer\Server.cs" />
     <Compile Include="Net\TcpServer\ServerAttribute.cs" />
+    <Compile Include="Net\TcpServer\ServerAttributeCache.cs" />
     <Compile Include="Net\TcpServer\ServerBase.cs" />
     <Compile Include="Net\TcpServer\ServerBaseAttribute.cs" />
     <Compile Include="Net\TcpServer\ServerCall.cs" />
@@ -563,6 +563,7 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Threading\TimerTaskThreadType.cs" />
     <Compile Include="Threading\UnionType.cs" />
     <Compile Include="Threading\WaitHandle.cs" />
+    <Compile Include="TimeoutCount.cs" />
     <Compile Include="UniqueDictionary.cs" />
     <Compile Include="UniqueHashSet.cs" />
     <Compile Include="Unmanaged.AutoCSer.cs" />

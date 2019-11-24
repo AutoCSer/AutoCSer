@@ -270,11 +270,6 @@ namespace AutoCSer.Net
                 }
             }
             /// <summary>
-            /// 激活计时器
-            /// </summary>
-            [AutoCSer.IOS.Preserve(Conditional = true)]
-            private static readonly DateTime timer = Date.NowTime.Now;
-            /// <summary>
             /// 定时器触发
             /// </summary>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -376,8 +371,11 @@ namespace AutoCSer.Net
                     timeout = new TimerLink(seconds);
                 }
                 finally { Monitor.Exit(timeoutLock); }
-                Date.NowTime.Flag |= Date.NowTime.OnTimeFlag.TcpServerSocketTimerLink;
                 return timeout;
+            }
+            static TimerLink()
+            {
+                ++Date.NowTime.Count;
             }
         }
     }

@@ -18,9 +18,8 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP命令服务接口
     /// </summary>
-    public interface ISetTcpServer<serverType, attributeType>
-        where serverType : ServerBase<attributeType>
-        where attributeType : ServerAttribute
+    public interface ISetTcpServer<serverType>
+        where serverType : ServerBase
     {
         /// <summary>
         /// 设置 TCP 命令服务端

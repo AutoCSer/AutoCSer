@@ -71,7 +71,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>("AutoCSer.Example.TcpOpenServer.KeepCallback") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = "AutoCSer.Example.TcpOpenServer.KeepCallback";
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
                 /// <summary>
@@ -83,7 +83,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 }
 
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsKeepCallback = 1 };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _ac0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, IsKeepCallback = 1 };
                 /// <summary>
                 /// 异步回调注册测试
                 /// </summary>

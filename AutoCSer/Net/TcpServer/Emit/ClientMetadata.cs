@@ -66,6 +66,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 输入+输出参数泛型类型元数据
         /// </summary>
         internal readonly Func<Type, Type, ParameterGenericType2> GetParameterGenericType2;
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <summary>
         /// TCP 客户端元数据
         /// </summary>
@@ -77,16 +78,29 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="getParameterGenericType2">输入+输出参数泛型类型元数据</param>
         /// <param name="clientSocketSenderWaitCallMethod">TCP 服务客户端调用函数信息</param>
         /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
-#if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <param name="clientSocketSenderGetAwaiterMethod">TCP 调用函数信息</param>
-#endif
         internal ClientMetadataBase(Type clientType, Type senderType, Type methodClientType
             , MethodInfo clientGetSenderMethod, Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
             , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
-#if !DOTNET2 && !DOTNET4 && !UNITY3D
             , MethodInfo clientSocketSenderGetAwaiterMethod
-#endif
             )
+#else
+        /// <summary>
+        /// TCP 客户端元数据
+        /// </summary>
+        /// <param name="clientType">TCP 客户端类型</param>
+        /// <param name="senderType">TCP 客户端套接字发送数据类型</param>
+        /// <param name="methodClientType">TCP 客户端基类类型</param>
+        /// <param name="clientGetSenderMethod">TCP 服务客户端同步调用套接字发送对象函数信息</param>
+        /// <param name="getParameterGenericType">输出参数泛型类型元数据</param>
+        /// <param name="getParameterGenericType2">输入+输出参数泛型类型元数据</param>
+        /// <param name="clientSocketSenderWaitCallMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
+        internal ClientMetadataBase(Type clientType, Type senderType, Type methodClientType
+            , MethodInfo clientGetSenderMethod, Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
+            , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
+            )
+#endif
         {
             SenderType = senderType;
             MethodClientType = methodClientType;
@@ -169,6 +183,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// 获取输出参数泛型类型元数据
         /// </summary>
         internal readonly Func<Type, Type, ReturnParameterGenericType> GetOutputParameterGenericType;
+#if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <summary>
         /// TCP 客户端元数据
         /// </summary>
@@ -183,18 +198,36 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
         /// <param name="clientSocketSenderCallMethod">TCP 服务客户端调用函数信息</param>
         /// <param name="clientSocketSenderCallKeepMethod">TCP 服务客户端调用函数信息</param>
-#if !DOTNET2 && !DOTNET4 && !UNITY3D
         /// <param name="clientSocketSenderGetAwaiterMethod">TCP 调用函数信息</param>
-#endif
         internal ClientMetadata(Type clientType, Type senderType, Type methodClientType
             , MethodInfo clientGetSenderMethod, Func<Type, Type, ReturnParameterGenericType> getOutputParameterGenericType
             , Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
             , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
             , MethodInfo clientSocketSenderCallMethod, MethodInfo clientSocketSenderCallKeepMethod
-#if !DOTNET2 && !DOTNET4 && !UNITY3D
             , MethodInfo clientSocketSenderGetAwaiterMethod
-#endif
             )
+#else
+        /// <summary>
+        /// TCP 客户端元数据
+        /// </summary>
+        /// <param name="clientType">TCP 客户端类型</param>
+        /// <param name="senderType">TCP 客户端套接字发送数据类型</param>
+        /// <param name="methodClientType">TCP 客户端基类类型</param>
+        /// <param name="clientGetSenderMethod">TCP 服务客户端同步调用套接字发送对象函数信息</param>
+        /// <param name="getOutputParameterGenericType">获取输出参数泛型类型元数据</param>
+        /// <param name="getParameterGenericType">输出参数泛型类型元数据</param>
+        /// <param name="getParameterGenericType2">输入+输出参数泛型类型元数据</param>
+        /// <param name="clientSocketSenderWaitCallMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallOnlyMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallMethod">TCP 服务客户端调用函数信息</param>
+        /// <param name="clientSocketSenderCallKeepMethod">TCP 服务客户端调用函数信息</param>
+        internal ClientMetadata(Type clientType, Type senderType, Type methodClientType
+            , MethodInfo clientGetSenderMethod, Func<Type, Type, ReturnParameterGenericType> getOutputParameterGenericType
+            , Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ParameterGenericType2> getParameterGenericType2
+            , MethodInfo clientSocketSenderWaitCallMethod, MethodInfo clientSocketSenderCallOnlyMethod
+            , MethodInfo clientSocketSenderCallMethod, MethodInfo clientSocketSenderCallKeepMethod
+            )
+#endif
             : base(clientType, senderType, methodClientType
             , clientGetSenderMethod, getParameterGenericType, getParameterGenericType2
             , clientSocketSenderWaitCallMethod, clientSocketSenderCallOnlyMethod

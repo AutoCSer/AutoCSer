@@ -10,6 +10,10 @@ namespace AutoCSer.Net.TcpServer
     public abstract class ClientSocketSenderBase : Sender
     {
         /// <summary>
+        /// TCP 服务客户端创建器
+        /// </summary>
+        protected readonly ClientSocketCreator clientCreator;
+        /// <summary>
         /// 发送变换数据
         /// </summary>
         internal ulong SendMarkData;
@@ -43,11 +47,12 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务客户端套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
-        /// <param name="queueCommandSize">客户端最大未处理命令数量</param>
-        internal ClientSocketSenderBase(ClientSocketBase socket, int queueCommandSize)
+        internal ClientSocketSenderBase(ClientSocketBase socket)
             : base(socket.Socket)
         {
-            this.queueCommandSize = Math.Max(queueCommandSize, 1);
+            clientCreator = socket.ClientCreator;
+
+            this.queueCommandSize = Math.Max(socket.ClientCreator.Attribute.GetQueueCommandSize, 1);
             OutputWaitHandle.Set(0);
         }
         /// <summary>

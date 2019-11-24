@@ -8,12 +8,16 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 客户端套接字初始化处理
     /// </summary>
-    public abstract class CheckSocketVersion
+    public sealed class CheckSocketVersion : IDisposable
     {
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        private readonly ClientBase client;
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
-        protected readonly Action<ClientSocketEventParameter> onClientSocketHandle;
+        private readonly Action<ClientSocketEventParameter> onClientSocketHandle;
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
@@ -36,12 +40,22 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 客户端套接字初始化处理
         /// </summary>
+        /// <param name="client">TCP 服务客户端</param>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
-        protected CheckSocketVersion(Action<ClientSocketEventParameter> onCheckSocketVersion)
+        internal CheckSocketVersion(ClientBase client, Action<ClientSocketEventParameter> onCheckSocketVersion)
         {
             if (onCheckSocketVersion == null) throw new ArgumentNullException();
+            this.client = client;
             this.onCheckSocketVersion = onCheckSocketVersion;
             onClientSocketHandle = onClientSocket;
+            client.OnSocket(onClientSocketHandle);
+        }
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            client.RemoveOnSetSocket(onClientSocketHandle);
         }
         /// <summary>
         /// TCP 客户端套接字初始化处理
@@ -65,35 +79,6 @@ namespace AutoCSer.Net.TcpServer
 #else
             socket.Socket.Dispose();
 #endif
-        }
-    }
-    /// <summary>
-    /// TCP 客户端套接字初始化处理
-    /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    internal sealed class CheckSocketVersion<attributeType> : CheckSocketVersion, IDisposable
-        where attributeType : ServerAttribute
-    {
-        /// <summary>
-        /// TCP 服务客户端
-        /// </summary>
-        private readonly ClientBase<attributeType> client;
-        /// <summary>
-        /// TCP 客户端套接字初始化处理
-        /// </summary>
-        /// <param name="client">TCP 服务客户端</param>
-        /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
-        public CheckSocketVersion(ClientBase<attributeType> client, Action<ClientSocketEventParameter> onCheckSocketVersion) : base(onCheckSocketVersion)
-        {
-            this.client = client;
-            client.OnSocket(onClientSocketHandle);
-        }
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            client.RemoveOnSetSocket(onClientSocketHandle);
         }
     }
 }

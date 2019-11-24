@@ -16,6 +16,7 @@ namespace AutoCSer.Net.TcpStaticStreamServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 是否 TCP 服务配置。一个静态服务只能存在一个 class 配置 IsServer = true，并且必须指定 Service，用于这个服务名称绑定 TCP 服务配置。

@@ -55,7 +55,11 @@ namespace AutoCSer.Email
             //send.Headers.Add("X-Website", "http://www.showjim.com/");//自定义邮件头
             //send.Headers.Add("ReturnReceipt", "1");//针对 LOTUS DOMINO SERVER，插入回执头
             //send.Priority = MailPriority.Normal;//优先级
-            message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(content.Body, null, "text/plain"));//普通文本邮件内容，如果对方的收件客户端不支持HTML，这是必需的
+            if (content.IsHtml)
+            {
+                if (content.IsHtmlView) message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(content.Body, null, "text/html"));
+                if (!string.IsNullOrEmpty(content.TextBody)) message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(content.TextBody, null, "text/plain"));//普通文本邮件内容，如果对方的收件客户端不支持HTML，这是必需的
+            }
             #region 嵌入图片资源
             //AlternateView htmlBody = AlternateView.CreateAlternateViewFromString(@"<img src=""cid:weblogo"">", null, "text/html");
             //LinkedResource lrImage = new LinkedResource(@"d:\logo.gif", "image/gif");

@@ -26,6 +26,10 @@ namespace AutoCSer.Net.TcpServer.Emit
             /// </summary>
             internal CommandInfo[] Commands;
             /// <summary>
+            /// 最大超时秒数
+            /// </summary>
+            internal ushort MaxTimeoutSeconds;
+            /// <summary>
             /// 创建 TCP 客户端
             /// </summary>
             /// <param name="type"></param>
@@ -56,6 +60,11 @@ namespace AutoCSer.Net.TcpServer.Emit
                             CommandInfo commandInfo = new CommandInfo { Command = method.Attribute.CommandIdentity + TcpServer.Server.CommandStartIndex, TaskType = method.IsAsynchronousCallback ? method.Attribute.ClientTaskType : AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsVerifyMethod = method.Attribute.IsVerifyMethod };
                             Commands[method.Attribute.CommandIdentity] = commandInfo;
                             if (method.IsKeepCallback) commandInfo.IsKeepCallback = 1;
+                            else
+                            {
+                                commandInfo.TimeoutSeconds = method.Attribute.GetClientTimeoutSeconds;
+                                if (commandInfo.TimeoutSeconds > MaxTimeoutSeconds) MaxTimeoutSeconds = commandInfo.TimeoutSeconds;
+                            }
                             if (method.IsClientSendOnly) commandInfo.IsSendOnly = 1;
                             if (method.IsJsonSerialize) commandInfo.CommandFlags = CommandFlags.JsonSerialize;
                             if (method.ParameterType != null)

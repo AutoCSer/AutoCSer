@@ -41,6 +41,32 @@ namespace AutoCSer.Sql
             return formCSharpTypes.TryGetValue(type.nullableType() ?? type, out value) ? value : SqlDbType.NVarChar;
         }
         /// <summary>
+        /// 根据C#类型获取SQL数据类型
+        /// </summary>
+        /// <param name="type">C#类型</param>
+        /// <param name="memberAttribute">数据列配置</param>
+        /// <returns>SQL数据类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static SqlDbType formCSharpType(this Type type, MemberAttribute memberAttribute)
+        {
+            SqlDbType value;
+            if (formCSharpTypes.TryGetValue(type.nullableType() ?? type, out value))
+            {
+                return value != SqlDbType.DateTime && memberAttribute.NowTimeType != NowTimeType.DateTime2 ? value : SqlDbType.DateTime2;
+            }
+            return SqlDbType.NVarChar;
+        }
+        /// <summary>
+        /// 根据SQL数据类型获取序列化类型
+        /// </summary>
+        /// <param name="type">C#类型</param>
+        /// <returns>序列化类型</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static Type toDataType(this Type type)
+        {
+            return toCSharpType(formCSharpType(type));
+        }
+        /// <summary>
         /// 判断是否字符串类型
         /// </summary>
         /// <param name="type">数据类型</param>
@@ -139,6 +165,7 @@ namespace AutoCSer.Sql
             toCSharpTypes[(int)SqlDbType.Bit] = typeof(bool);
             toCSharpTypes[(int)SqlDbType.Char] = typeof(string);
             toCSharpTypes[(int)SqlDbType.DateTime] = typeof(DateTime);
+            toCSharpTypes[(int)SqlDbType.DateTime2] = typeof(DateTime);
             toCSharpTypes[(int)SqlDbType.Decimal] = typeof(decimal);
             toCSharpTypes[(int)SqlDbType.Float] = typeof(double);
             toCSharpTypes[(int)SqlDbType.Image] = typeof(byte[]);
@@ -163,7 +190,6 @@ namespace AutoCSer.Sql
             //CSharpType[(int)SqlDbType.Structured] = typeof();
             //CSharpType[(int)SqlDbType.Date] = typeof();
             //CSharpType[(int)SqlDbType.Time] = typeof();
-            //CSharpType[(int)SqlDbType.DateTime2] = typeof();
             //CSharpType[(int)SqlDbType.DateTimeOffset] = typeof();
             #endregion
 
@@ -198,7 +224,7 @@ namespace AutoCSer.Sql
             sizeData[(int)SqlDbType.Char] = 8000;
             //TypeSize[(int)SqlDbType.Date] = sizeof(long);
             sizeData[(int)SqlDbType.DateTime] = sizeof(long);
-            //TypeSize[(int)SqlDbType.DateTime2] = sizeof(long);
+            sizeData[(int)SqlDbType.DateTime2] = sizeof(long);
             //TypeSize[(int)SqlDbType.DateTimeOffset] = sizeof(long);
             //sizeData[(int)SqlDbType.Decimal] = sizeof(decimal);
             sizeData[(int)SqlDbType.Float] = sizeof(double);

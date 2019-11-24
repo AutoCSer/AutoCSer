@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// <summary>
     /// TCP 内部服务客户端套接字
     /// </summary>
-    public sealed class ClientSocket : TcpStreamServer.ClientSocket<ServerAttribute>
+    public sealed class ClientSocket : TcpStreamServer.ClientSocket
     {
         /// <summary>
         /// TCP 调用客户端套接字
@@ -19,7 +19,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
         /// <param name="createVersion"></param>
-        internal ClientSocket(TcpServer.ClientSocketCreator<ServerAttribute> clientCreator, IPAddress ipAddress, int port, int createVersion)
+        internal ClientSocket(TcpServer.ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int createVersion)
             : base(clientCreator, ipAddress, port, createVersion, int.MaxValue)
         {
         }

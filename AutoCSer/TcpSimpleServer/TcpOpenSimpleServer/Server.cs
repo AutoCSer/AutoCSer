@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
     /// <summary>
     /// TCP 服务端
     /// </summary>
-    public abstract unsafe class Server : TcpSimpleServer.Server<ServerAttribute, Server, ServerSocket>
+    public abstract unsafe class Server : TcpSimpleServer.Server<Server, ServerSocket>
     {
         /// <summary>
         /// 套接字等待事件
@@ -37,7 +37,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         internal override void GetSocket()
         {
             //ThreadPriority priority = Thread.CurrentThread.Priority;
-            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
             socketHandle.Set(0);
             AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(OnSocket);
             //Thread.CurrentThread.Priority = ThreadPriority.Highest;

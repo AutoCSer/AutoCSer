@@ -27,7 +27,7 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务客户端套接字数据发送
     /// </summary>
-    public abstract partial class ClientSocketSender<attributeType>
+    public abstract partial class ClientSocketSender
     {
         /// <summary>
         /// TCP调用并返回参数值

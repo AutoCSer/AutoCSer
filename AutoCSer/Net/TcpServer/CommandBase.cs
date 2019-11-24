@@ -13,9 +13,13 @@ namespace AutoCSer.Net.TcpServer
     public abstract class CommandBase : IDisposable
     {
         /// <summary>
+        /// TCP 服务调用配置
+        /// </summary>
+        internal readonly ServerBaseAttribute Attribute;
+        /// <summary>
         /// 服务名称
         /// </summary>
-        internal readonly string ServerName;
+        public string ServerName { get { return Attribute.ServerName; } }
         /// <summary>
         /// 日志接口
         /// </summary>
@@ -50,16 +54,16 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
-        /// <param name="serviceName">服务名称</param>
+        /// <param name="attribute">TCP 服务调用配置</param>
         /// <param name="sendBufferMaxSize">发送数据缓存区最大字节大小</param>
-        /// <param name="minCompressSize">压缩启用最低字节数量</param>
         /// <param name="log">日志接口</param>
-        internal CommandBase(string serviceName, int sendBufferMaxSize, int minCompressSize, ILog log)
+        internal CommandBase(ServerBaseAttribute attribute, int sendBufferMaxSize, ILog log)
         {
-            MinCompressSize = minCompressSize <= 0 ? int.MaxValue : minCompressSize;
-            Log = log ?? AutoCSer.Log.Pub.Log;
+            Attribute = attribute;
+            MinCompressSize = attribute.GetMinCompressSize;
+             Log = log ?? AutoCSer.Log.Pub.Log;
             SendBufferMaxSize = sendBufferMaxSize;
-            this.ServerName = serviceName ?? string.Empty;
+            if (MinCompressSize <= 0) MinCompressSize = int.MaxValue;
         }
         /// <summary>
         /// 释放资源

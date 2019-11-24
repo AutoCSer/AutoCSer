@@ -79,7 +79,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer.TcpSimpleClient
                     get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>(@"{""BinaryDeSerializeMaxArraySize"":1024,""CheckSeconds"":59,""ClientRouteType"":null,""ClientSegmentationCopyPath"":null,""ClientSendBufferMaxSize"":1048576,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":false,""IsAutoClient"":false,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsCompileSerialize"":true,""IsJsonSerialize"":true,""IsMarkData"":false,""IsRememberCommand"":true,""IsRemoteExpression"":false,""IsSegmentation"":true,""IsSimpleSerialize"":true,""MaxInputSize"":16372,""MaxVerifyDataSize"":256,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":13300,""ReceiveVerifyCommandSeconds"":9,""SendBufferSize"":""Kilobyte8"",""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}"); }
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize };
 
                 /// <summary>
                 /// 无需 TCP 远程函数申明配置测试

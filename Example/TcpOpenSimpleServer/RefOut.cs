@@ -16,7 +16,7 @@ namespace AutoCSer.Example.TcpOpenSimpleServer
         /// <param name="product">乘积</param>
         /// <returns>和</returns>
         [AutoCSer.Net.TcpOpenSimpleServer.Method]
-        AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, ref int right, out int product)
+        int Add(int left, ref int right, out int product)
         {
             product = left * right;
             int sum = left + right;

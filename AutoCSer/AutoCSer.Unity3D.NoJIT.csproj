@@ -321,7 +321,6 @@
     <Compile Include="Net\TcpRegister\ConfigLoader.cs" />
     <Compile Include="Net\TcpRegister\IClient.cs" />
     <Compile Include="Net\TcpRegister\IServer.cs" />
-    <Compile Include="Net\TcpRegister\IServerAttribute.cs" />
     <Compile Include="Net\TcpRegister\Log.cs" />
     <Compile Include="Net\TcpRegister\LogType.cs" />
     <Compile Include="Net\TcpRegister\PortCache.cs" />
@@ -440,6 +439,7 @@
     <Compile Include="Net\TcpOpenServer\SendState.cs" />
     <Compile Include="Net\TcpServer\Server.cs" />
     <Compile Include="Net\TcpServer\ServerAttribute.cs" />
+    <Compile Include="Net\TcpServer\ServerAttributeCache.cs" />
     <Compile Include="Net\TcpServer\ServerCall.cs" />
     <Compile Include="Net\TcpServer\ServerCallback.cs" />
     <Compile Include="Net\TcpServer\ServerCallTask.cs" />
@@ -535,6 +535,7 @@
     <Compile Include="Threading\WaitHandle.cs" />
     <Compile Include="Threading\Link.AutoCSer.cs" />
     <Compile Include="Threading\ThreadYield.AutoCSer.cs" />
+    <Compile Include="TimeoutCount.cs" />
     <Compile Include="UniqueDictionary.cs" />
     <Compile Include="UniqueHashSet.cs" />
     <Compile Include="Unmanaged.cs" />

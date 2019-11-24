@@ -1875,7 +1875,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                                 {
                                     _p2 _outputParameter_ = new _p2();
                                     
-                                    AutoCSer.Net.TcpServer.ReturnValue<int> Return;
+                                    int Return;
                                     
                                     Return = Value.Add(inputParameter.p0, ref inputParameter.p1, out _outputParameter_.p1);
                                     
@@ -1896,13 +1896,13 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                         default: return;
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2 };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
                 static TcpInternalStreamServer()
                 {
                     CompileSerialize(new System.Type[] { typeof(_p1), null }
-                        , new System.Type[] { null }
-                        , new System.Type[] { null }
                         , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
                         , new System.Type[] { null }
                         , new System.Type[] { null });
                 }
@@ -1923,15 +1923,15 @@ namespace AutoCSer.Example.TcpInternalStreamServer
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
                 {
                     public int p0;
                     public int p1;
                     [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                    public int Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                    public int Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -1941,7 +1941,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                        set { Ret = (int)value; }
                     }
 #endif
                 }
@@ -1967,7 +1967,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// ref / out 参数测试
@@ -1977,7 +1977,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                 /// <param name="product">乘积</param>
                 /// <returns>和</returns>
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add(int left, ref int right, out int product)
+                AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, ref int right, out int product)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.Pop();
                     try
@@ -2002,7 +2002,7 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                             right = _outputParameter_.p0;
                             
                             product = _outputParameter_.p1;
-                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnType_, Value = _outputParameter_.Return };
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
@@ -2010,15 +2010,15 @@ namespace AutoCSer.Example.TcpInternalStreamServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalStreamServer._p2>.PushNotNull(_wait_);
                     }
                     product = default(int);
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
                 static TcpInternalStreamClient()
                 {
                     _compileSerialize_(new System.Type[] { typeof(TcpInternalStreamServer._p1), null }
-                        , new System.Type[] { null }
-                        , new System.Type[] { null }
                         , new System.Type[] { typeof(TcpInternalStreamServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
                         , new System.Type[] { null }
                         , new System.Type[] { null });
                 }

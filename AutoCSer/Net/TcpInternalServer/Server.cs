@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// TCP 内部服务端
     /// </summary>
-    public abstract unsafe partial class Server : TcpServer.Server<ServerAttribute, Server, ServerSocketSender>, TcpRegister.IServer
+    public abstract unsafe partial class Server : TcpServer.Server<Server, ServerSocketSender>, TcpRegister.IServer
     {
         ///// <summary>
         ///// 读取服务名称后缀
@@ -32,10 +32,10 @@ namespace AutoCSer.Net.TcpInternalServer
         {
             return new TcpRegister.ServerInfo
             {
-                Host = Attribute.RegisterHost,
-                Port = Attribute.RegisterPort,
-                IsSingle = Attribute.IsSingleRegister,
-                Name = Attribute.ServerName,
+                Host = Attribute.ClientRegisterHost,
+                Port = Attribute.ClientRegisterPort,
+                IsSingle = Attribute.GetIsSingleRegister,
+                Name = ServerAttribute.ServerName,
             };
         }
         /// <summary>
@@ -52,7 +52,7 @@ namespace AutoCSer.Net.TcpInternalServer
         public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
             : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, isCallQueue, isSynchronousVerifyMethod)
         {
-            if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + attribute.ServerName);
+            if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + ServerAttribute.ServerName);
         }
         /// <summary>
         /// 停止服务监听
@@ -79,9 +79,9 @@ namespace AutoCSer.Net.TcpInternalServer
                     {
                         if (tcpRegisterClient.Register(this)) 
                         {
-                            Log.Add(AutoCSer.Log.LogType.Info, Attribute.ServerName + " 注册 " + Attribute.Host + ":" + Port.toString() + " => " + Attribute.RegisterHost + ":" + Attribute.RegisterPort.toString());
+                            Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 注册 " + Attribute.Host + ":" + Port.toString() + " => " + Attribute.ClientRegisterHost + ":" + Attribute.ClientRegisterPort.toString());
                         }
-                        else Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + Attribute.ServerName + " 失败 ");
+                        else Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务注册 " + ServerAttribute.ServerName + " 失败 ");
                     }
                     return true;
                 }
@@ -94,7 +94,7 @@ namespace AutoCSer.Net.TcpInternalServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void GetSocket()
         {
-            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpInternalServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
             if (verify == null) getSocket();
             else getSocketVerify();
             SocketTimeoutLink.TimerLink.Free(ref ReceiveVerifyCommandTimeout);

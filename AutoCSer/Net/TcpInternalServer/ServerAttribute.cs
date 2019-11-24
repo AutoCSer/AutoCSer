@@ -15,6 +15,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 用于在配置文件中标识当前程序是否服务端，当在标识为服务端的环境中使用客户端调用时会输出警告日志，提示用户判断是否混淆了客户端与服务端。
@@ -38,7 +39,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        public override bool GetIsRememberCommand
+        internal override bool GetIsRememberCommand
         {
             get { return IsRememberCommand && CommandIdentityEnmuType == null; }
         }

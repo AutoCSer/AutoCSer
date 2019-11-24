@@ -7,7 +7,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// TCP 内部服务配置
     /// </summary>
-    public abstract class ServerBaseAttribute : TcpServer.ServerAttribute, TcpRegister.IServerAttribute
+    public abstract class ServerBaseAttribute : TcpServer.ServerAttribute
     {
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称。
@@ -16,7 +16,8 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称。
         /// </summary>
-        internal virtual string TcpRegisterName
+        [AutoCSer.Metadata.Ignore]
+        internal override string TcpRegisterName
         {
             get { return TcpRegister; }
         }
@@ -27,7 +28,8 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 客户端访问的主机名称或者 IP 地址，用于需要使用端口映射服务。
         /// </summary>
-        string TcpRegister.IServerAttribute.ClientRegisterHost
+        [AutoCSer.Metadata.Ignore]
+        internal override string ClientRegisterHost
         {
             get { return RegisterHost; }
             set { RegisterHost = value; }
@@ -39,7 +41,8 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 客户端访问的监听端口，用于需要使用端口映射服务。
         /// </summary>
-        int TcpRegister.IServerAttribute.ClientRegisterPort
+        [AutoCSer.Metadata.Ignore]
+        internal override int ClientRegisterPort
         {
             get { return RegisterPort; }
             set { RegisterPort = value; }
@@ -88,6 +91,11 @@ namespace AutoCSer.Net.TcpInternalServer
         /// 客户端接收命令超时为 4 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
         public int ReceiveVerifyCommandSeconds = DefaultReceiveVerifyCommandSeconds;
+        /// <summary>
+        /// 客户端接收命令超时
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetReceiveVerifyCommandSeconds { get { return ReceiveVerifyCommandSeconds; } }
         /// <summary>
         /// 客户端最大自定义数据包字节大小，默认为 0 表示不限
         /// </summary>
@@ -176,6 +184,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 命令池初始化二进制大小 2^n
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override byte GetCommandPoolBitSize { get { return CommandPoolBitSize; } }
         /// <summary>
         /// 二进制反序列化数组最大长度
@@ -184,6 +193,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
         /// <summary>
         /// 默认为 true 表示在创建客户端对象的时候自动启动连接，否则需要第一次调用触发
@@ -201,6 +211,14 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         public bool IsSingleRegister = true;
         /// <summary>
+        /// true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override bool GetIsSingleRegister
+        {
+            get { return IsSingleRegister; }
+        }
+        /// <summary>
         /// 服务端自定义队列类型，需要继承自 AutoCSer.Net.TcpServer.IServerCallQueueSet
         /// </summary>
         [AutoCSer.Metadata.Ignore]
@@ -208,6 +226,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 服务端自定义队列类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override Type GetServerCallQueueType { get { return ServerCallQueueType; } }
     }
 }

@@ -38,7 +38,7 @@ namespace AutoCSer.DiskBlock
         {
             ClientConfig config = ConfigLoader.GetUnion(typeof(ClientConfig)).ClientConfig ?? new ClientConfig();
             (clients = new Server.TcpInternalClient[Math.Max(config.Count, 1)])[0] = new Server.TcpInternalClient();
-            Net.TcpInternalServer.ServerAttribute attribute = clients[0]._TcpClient_.Attribute;
+            AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = (AutoCSer.Net.TcpInternalServer.ServerAttribute)clients[0]._TcpClient_.Attribute;
             for (var index = clients.Length; index != 1; )
             {
                 Net.TcpInternalServer.ServerAttribute copyAttribute = AutoCSer.MemberCopy.Copyer<Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(attribute);

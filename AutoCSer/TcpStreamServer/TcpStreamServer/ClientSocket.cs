@@ -24,15 +24,32 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
+        /// <param name="clientCreator">TCP 服务客户端创建器</param>
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
-        /// <param name="log"></param>
+        /// <param name="createVersion"></param>
         /// <param name="maxInputSize"></param>
-        internal ClientSocket(IPAddress ipAddress, int port, ILog log, int maxInputSize) : base(ipAddress, port, log, maxInputSize)
+        internal ClientSocket(TcpServer.ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int createVersion, int maxInputSize)
+            : base(clientCreator, ipAddress, port, maxInputSize)
         {
             ClientCommand.Command command = ClientCommand.CheckCommand.Get(this);
             Interlocked.Exchange(ref command.FreeLock, 1);
             CommandQueue = command;
+
+            CreateVersion = createVersion;
+            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
+        }
+        /// <summary>
+        /// TCP 服务客户端套接字
+        /// </summary>
+        /// <param name="socket">TCP 内部服务客户端套接字</param>
+        internal ClientSocket(ClientSocket socket)
+            : base(socket.ClientCreator, socket.ipAddress, socket.port, socket.MaxInputSize)
+        {
+            isSleep = true;
+
+            CreateVersion = socket.CreateVersion + 1;
+            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
         }
         /// <summary>
         /// 设置 TCP 服务客户端套接字数据发送
@@ -41,14 +58,14 @@ namespace AutoCSer.Net.TcpStreamServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void SetSender(ClientSocketSender sender)
         {
-            base.Sender = Sender = sender;
+            base.Sender = sender;
         }
         /// <summary>
         /// 接收数据处理
         /// </summary>
         /// <param name="type"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void onReceive(TcpServer.ReturnType type)
+        private void onReceive(TcpServer.ReturnType type)
         {
             SubArray<byte> data = new SubArray<byte> { Start = (int)(byte)type };
             onReceive(ref data);
@@ -57,7 +74,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// 接收数据处理
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void onReceive()
+        private void onReceive()
         {
             SubArray<byte> data = new SubArray<byte> { Array = ReceiveBuffer.Buffer, Start = ReceiveBuffer.StartIndex + receiveIndex, Length = compressionDataSize };
             onReceive(ref data);
@@ -67,7 +84,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         /// <param name="data"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void onReceive(ref SubArray<byte> data)
+        private void onReceive(ref SubArray<byte> data)
         {
             getCurrentCommand().OnReceive(ref data);
             freeCommand();
@@ -133,92 +150,7 @@ namespace AutoCSer.Net.TcpStreamServer
             CommandQueue = null;
             if ((head = head.LinkNext) != null) TcpServer.ClientCommand.CommandBase.CancelLink(head);
         }
-    }
-    /// <summary>
-    /// TCP 服务客户端套接字
-    /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    public unsafe abstract class ClientSocket<attributeType> : ClientSocket
-        where attributeType : ServerAttribute
-    {
-        /// <summary>
-        /// TCP 服务客户端创建器
-        /// </summary>
-        internal readonly TcpServer.ClientSocketCreator<attributeType> ClientCreator;
-        /// <summary>
-        /// TCP 服务客户端套接字
-        /// </summary>
-        /// <param name="clientCreator">TCP 服务客户端创建器</param>
-        /// <param name="ipAddress"></param>
-        /// <param name="port"></param>
-        /// <param name="createVersion"></param>
-        /// <param name="maxInputSize">最大输入数据字节数</param>
-        internal ClientSocket(TcpServer.ClientSocketCreator<attributeType> clientCreator, IPAddress ipAddress, int port, int createVersion, int maxInputSize)
-            : base(ipAddress, port, clientCreator.CommandClient.Log, maxInputSize)
-        {
-            ClientCreator = clientCreator;
-
-            CreateVersion = createVersion;
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
-        }
-        /// <summary>
-        /// TCP 服务客户端套接字
-        /// </summary>
-        /// <param name="socket">TCP 内部服务客户端套接字</param>
-        internal ClientSocket(ClientSocket<attributeType> socket)
-            : base(socket.ipAddress, socket.port, socket.ClientCreator.CommandClient.Log, socket.MaxInputSize)
-        {
-            isSleep = true;
-            this.ClientCreator = socket.ClientCreator;
-
-            CreateVersion = socket.CreateVersion + 1;
-            AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, Threading.Thread.CallType.TcpClientSocketBaseCreate);
-        }
-        /// <summary>
-        /// 释放套接字
-        /// </summary>
-        internal override void DisposeSocket()
-        {
-            Socket socket = Socket;
-            Socket = null;
-            if (socket != null)
-            {
-                ClientCreator.OnDisposeSocket(this);
-                AutoCSer.Net.TcpServer.CommandBuffer.CloseClientNotNull(socket);
-            }
-        }
-        /// <summary>
-        /// 套接字操作失败重新创建版本检测
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool CheckCreateVersion()
-        {
-            return (ClientCreator.CommandClient.IsDisposed | (CreateVersion ^ ClientCreator.CreateVersion)) == 0
-                && Interlocked.CompareExchange(ref ClientCreator.CreateVersion, CreateVersion + 1, CreateVersion) == CreateVersion;
-        }
-        /// <summary>
-        /// 创建 TCP 服务客户端套接字
-        /// </summary>
-        internal abstract void CreateNew();
-        /// <summary>
-        /// 创建 TCP 服务客户端套接字失败休眠
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void CreateSleep()
-        {
-            //ClientCreator.CommandClient.SocketWait.PulseReset();
-            if (Socket != null)
-            {
-#if DotNetStandard
-                    AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
-#else
-                Socket.Dispose();
-#endif
-                Socket = null;
-            }
-            Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
-        }
+   
         /// <summary>
         /// 获取数据大小
         /// </summary>

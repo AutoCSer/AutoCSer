@@ -13,6 +13,11 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         public int CommandIdentity = int.MinValue;
         /// <summary>
+        /// 客户端超时秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual ushort GetClientTimeoutSeconds { get { return 0; } }
+        /// <summary>
         /// 申明验证方法，客户端只有通过了验证才能调用其它函数。一个 TCP 服务只能指定一个验证方法（对于跨类型单例服务只能定义在 AutoCSer.Net.TcpStaticServer.ServerAttribute.IsServer = true 的 class 中），且返回值类型必须为 bool。从安全的角度考虑，实际项目中的服务都应该定义验证方法，除非你能保证该服务绝对不会被其它人建立非法连接。比如参考 AutoCSer.net.tcp.timeVerifyServer。
         /// </summary>
         public bool IsVerifyMethod;

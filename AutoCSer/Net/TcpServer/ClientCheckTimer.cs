@@ -153,11 +153,6 @@ namespace AutoCSer.Net.TcpServer
             }
         }
         /// <summary>
-        /// 激活计时器
-        /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly DateTime timer = Date.NowTime.Now;
-        /// <summary>
         /// 定时器触发
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -206,8 +201,11 @@ namespace AutoCSer.Net.TcpServer
                 timeout = new ClientCheckTimer(seconds);
             }
             finally { Monitor.Exit(timeoutLock); }
-            Date.NowTime.Flag |= Date.NowTime.OnTimeFlag.TcpClientCheckTimer;
             return timeout;
+        }
+        static ClientCheckTimer()
+        {
+            ++Date.NowTime.Count;
         }
     }
 }

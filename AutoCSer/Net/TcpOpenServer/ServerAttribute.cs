@@ -37,6 +37,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 8KB。
@@ -68,7 +69,12 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 最大输入数据字节数，默认为 16 KB，小于等于 0 表示不限
         /// </summary>
-        public int MaxInputSize = (16 << 10) - (sizeof(uint) + sizeof(int) * 2);
+        public int MaxInputSize = DefaultMaxInputSize;
+        /// <summary>
+        /// 最大输入数据字节数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetMaxInputSize { get { return MaxInputSize; } }
         ///// <summary>
         ///// 压缩启用最低字节数量，默认为 512 字节（压缩数据需要消耗一定的 CPU 资源降低带宽使用，在简单测试中可能降低 60% 的性能），设置为 0 表示不压缩数据（适合内网服务）。
         ///// </summary>
@@ -95,6 +101,11 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 客户端接收命令超时为 9 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
         public int ReceiveVerifyCommandSeconds = DefaultReceiveVerifyCommandSeconds;
+        /// <summary>
+        /// 客户端接收命令超时
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetReceiveVerifyCommandSeconds { get { return ReceiveVerifyCommandSeconds; } }
         /// <summary>
         /// 客户端最大自定义数据包字节大小，默认为 16KB，设置为 0 表示不限
         /// </summary>
@@ -147,6 +158,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 命令池初始化二进制大小 2^n
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override byte GetCommandPoolBitSize { get { return CommandPoolBitSize; } }
         /// <summary>
         /// 客户端最大未处理命令数量，默认为 1024
@@ -191,6 +203,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
         /// <summary>
         /// 默认为 false 需要第一次调用触发，否则在创建客户端对象的时候自动启动连接
@@ -205,7 +218,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        public override bool GetIsRememberCommand
+        internal override bool GetIsRememberCommand
         {
             get { return IsRememberCommand && CommandIdentityEnmuType == null; }
         }
@@ -217,6 +230,7 @@ namespace AutoCSer.Net.TcpOpenServer
         /// <summary>
         /// 服务端自定义队列类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override Type GetServerCallQueueType { get { return ServerCallQueueType; } }
 
         /// <summary>

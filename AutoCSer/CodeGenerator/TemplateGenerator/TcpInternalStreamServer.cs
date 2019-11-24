@@ -46,7 +46,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
 #if NOJIT
                     return isSetTcpServer
 #else
-                    return typeof(AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalStreamServer.Server, AutoCSer.Net.TcpInternalStreamServer.ServerAttribute>).IsAssignableFrom(Type.Type)
+                    return typeof(AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalStreamServer.Server>).IsAssignableFrom(Type.Type)
 #endif
                         || Type.Type.GetMethod("SetTcpServer", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(AutoCSer.Net.TcpInternalStreamServer.Server) }, null) != null;
                 }
@@ -58,7 +58,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
                 if (Type.Type.IsClass && !Type.Type.IsAbstract)
                 {
-                    LeftArray<TcpMethod> methodArray = new LeftArray<TcpMethod>(Metadata.MethodIndex.GetMethods<AutoCSer.Net.TcpStreamServer.MethodAttribute>(Type, Attribute.MemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
+                    LeftArray<TcpMethod> methodArray = new LeftArray<TcpMethod>(Metadata.MethodIndex.GetMethods<AutoCSer.Net.TcpStreamServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute)
                         .getFind(value => !value.Method.IsGenericMethod)
                         .getArray(value => new TcpMethod
                         {
@@ -66,7 +66,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             MethodType = Type,
                             ServiceAttribute = Attribute
                         }));
-                    foreach (MemberIndexInfo member in MemberIndexGroup.Get<AutoCSer.Net.TcpStreamServer.MethodAttribute>(Type, Attribute.MemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                    foreach (MemberIndexInfo member in MemberIndexGroup.Get<AutoCSer.Net.TcpStreamServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         if (member.IsField)
                         {
@@ -121,7 +121,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                     ParameterTypes = parameterBuilder.Get();
                     //TcpMethod[] methodIndexs = MethodIndexs.getFindArray(value => !value.IsNullMethod);
-                    if (ServiceAttribute.IsSegmentation)
+                    if (ServiceAttribute.GetIsSegmentation)
                     {
                         IsClientCode = false;
                         create(IsServerCode = true);

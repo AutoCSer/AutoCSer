@@ -5,16 +5,19 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
 using System.Net;
+using System.Diagnostics;
 
 namespace AutoCSer.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务基类
     /// </summary>
-    /// <typeparam name="attributeType"></typeparam>
-    public abstract unsafe class ServerBase<attributeType> : CommandBuffer<attributeType>
-        where attributeType : ServerBaseAttribute
+    public abstract unsafe class ServerBase : CommandBuffer
     {
+        /// <summary>
+        /// TCP 服务配置副本
+        /// </summary>
+        internal ServerAttributeCache ServerAttribute;
         /// <summary>
         /// 同步验证接口
         /// </summary>
@@ -99,11 +102,12 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="log">日志接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal ServerBase(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
+        internal ServerBase(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
             : base(attribute, attribute.GetReceiveBufferSize, attribute.GetSendBufferSize, attribute.GetServerSendBufferMaxSize, log)
         {
             this.verify = verify;
             if (isCallQueue) CallQueue = new ServerCallCanDisposableQueue();
+            ServerAttribute.Set(attribute);
             Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
             int binaryDeSerializeMaxArraySize = attribute.GetBinaryDeSerializeMaxArraySize;
@@ -120,7 +124,7 @@ namespace AutoCSer.Net.TcpServer
                 if (isListen != 0)
                 {
                     isListen = 0;
-                    if (Log.IsAnyType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, "停止服务 " + ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
+                    if (Log.IsAnyType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, "停止服务 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString());
                     AutoCSer.DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
                     StopListen();
                 }
@@ -169,20 +173,18 @@ namespace AutoCSer.Net.TcpServer
             catch (Exception error)
             {
                 Dispose();
-                Log.Add(AutoCSer.Log.LogType.Error, error, GetType().FullName + "服务器端口 " + ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString() + " TCP连接失败)");
+                Log.Add(AutoCSer.Log.LogType.Error, error, GetType().FullName + "服务器端口 " + Attribute.ServerName + " " + IpAddress.ToString() + "[" + Attribute.Host + "]:" + Port.toString() + " TCP连接失败)");
             }
             return isListen != 0;
         }
         /// <summary>
         /// 获取 TCP 内部注册服务客户端
         /// </summary>
-        /// <typeparam name="serverAttributeType"></typeparam>
         /// <param name="attribute"></param>
         /// <param name="tcpRegisterName"></param>
         /// <param name="tcpRegisterClient"></param>
         /// <returns></returns>
-        internal bool GetRegisterClient<serverAttributeType>(serverAttributeType attribute, string tcpRegisterName, ref TcpRegister.Client tcpRegisterClient)
-            where serverAttributeType : ServerBaseAttribute, TcpRegister.IServerAttribute
+        internal bool GetRegisterClient(ServerBaseAttribute attribute, string tcpRegisterName, ref TcpRegister.Client tcpRegisterClient)
         {
             if (tcpRegisterName != null)
             {
@@ -298,7 +300,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 if (commandData.Data == null) return false;
             }
-            if (Log.IsAllType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, Attribute.ServerName + " 缺少命令处理委托 [" + index.toString() + "]");
+            if (Log.IsAllType(AutoCSer.Log.LogType.Info)) Log.Add(AutoCSer.Log.LogType.Info, ServerAttribute.ServerName + " 缺少命令处理委托 [" + index.toString() + "]");
             return false;
         }
         /// <summary>
@@ -336,6 +338,24 @@ namespace AutoCSer.Net.TcpServer
         {
             SocketTimeoutLink.TimerLink receiveVerifyCommandTimeout = this.ReceiveVerifyCommandTimeout;
             if (receiveVerifyCommandTimeout != null) receiveVerifyCommandTimeout.Cancel(socket);
+        }
+        /// <summary>
+        /// 检测默认验证字符串
+        /// </summary>
+        /// <returns></returns>
+        internal bool CheckVerifyString()
+        {
+            string verify = Attribute.VerifyString;
+            if (verify == null)
+            {
+                if (AutoCSer.Config.Pub.Default.IsDebug)
+                {
+                    Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, "警告：调试模式未启用服务验证 " + ServerAttribute.ServerName, (StackFrame)null, true);
+                    return true;
+                }
+                Log.Add(AutoCSer.Log.LogType.Error, "服务 " + ServerAttribute.ServerName + " 验证字符串不能为空", (StackFrame)null, true);
+            }
+            return false;
         }
     }
 }

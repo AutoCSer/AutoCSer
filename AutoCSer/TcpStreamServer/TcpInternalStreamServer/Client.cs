@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// <summary>
     /// TCP 内部服务客户端
     /// </summary>
-    public abstract class Client : TcpStreamServer.Client<ServerAttribute>, TcpRegister.IClient
+    public abstract class Client : TcpServer.ClientBase, TcpRegister.IClient
     {
         /// <summary>
         /// TCP 客户端路由
@@ -20,10 +20,6 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// TCP 内部注册服务客户端
         /// </summary>
         private TcpRegister.Client tcpRegisterClient;
-        /// <summary>
-        /// 服务名称
-        /// </summary>
-        string TcpRegister.IClient.ServerName { get { return base.ServerName; } }
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称
         /// </summary>
@@ -41,7 +37,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         internal Client(ServerAttribute attribute, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
-            : base(attribute, log)
+            : base(attribute, log, null)
         {
             this.clientRoute = clientRoute;
             if (attribute.TcpRegisterName != null)
@@ -148,7 +144,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
         /// <param name="createVersion"></param>
-        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator<ServerAttribute> clientCreator, IPAddress ipAddress, int port, int createVersion)
+        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int createVersion)
         {
             return new ClientSocket(clientCreator, ipAddress, port, createVersion);
         }

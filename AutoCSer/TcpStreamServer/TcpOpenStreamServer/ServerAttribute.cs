@@ -15,6 +15,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 8KB。
@@ -46,7 +47,12 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <summary>
         /// 最大输入数据字节数，默认为 16 KB，小于等于 0 表示不限
         /// </summary>
-        public int MaxInputSize = (16 << 10) - (sizeof(uint) + sizeof(int) * 2);
+        public int MaxInputSize = DefaultMaxInputSize;
+        /// <summary>
+        /// 最大输入数据字节数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetMaxInputSize { get { return MaxInputSize; } }
         /// <summary>
         /// 客户端保持连接心跳包间隔时间默认为 59 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
         /// </summary>
@@ -64,6 +70,11 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// 客户端接收命令超时为 9 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
         public int ReceiveVerifyCommandSeconds = DefaultReceiveVerifyCommandSeconds;
+        /// <summary>
+        /// 客户端接收命令超时
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetReceiveVerifyCommandSeconds { get { return ReceiveVerifyCommandSeconds; } }
         /// <summary>
         /// 客户端重建连接休眠毫秒数，默认为 1000
         /// </summary>
@@ -147,6 +158,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
         /// <summary>
         /// 命令映射枚举类型
@@ -157,7 +169,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        public override bool GetIsRememberCommand
+        internal override bool GetIsRememberCommand
         {
             get { return IsRememberCommand && CommandIdentityEnmuType == null; }
         }

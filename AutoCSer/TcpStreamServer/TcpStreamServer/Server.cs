@@ -8,9 +8,7 @@ namespace AutoCSer.Net.TcpStreamServer
     /// <summary>
     /// TCP 服务基类
     /// </summary>
-    /// <typeparam name="attributeType"></typeparam>
-    public abstract unsafe class Server<attributeType> : TcpServer.ServerBase<attributeType>
-        where attributeType : ServerAttribute
+    public abstract unsafe class Server : TcpServer.ServerBase
     {
         /// <summary>
         /// 是否支持自定义数据包
@@ -39,7 +37,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log)
+        internal Server(TcpServer.ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log)
             : base(attribute, verify, log, false, false)
         {
         }
@@ -74,12 +72,10 @@ namespace AutoCSer.Net.TcpStreamServer
     /// <summary>
     /// TCP 服务基类
     /// </summary>
-    /// <typeparam name="attributeType"></typeparam>
     /// <typeparam name="serverType"></typeparam>
     /// <typeparam name="serverSocketSenderType"></typeparam>
-    public abstract unsafe class Server<attributeType, serverType, serverSocketSenderType> : Server<attributeType>
-        where serverType : Server<attributeType, serverType, serverSocketSenderType>
-        where attributeType : ServerAttribute
+    public abstract unsafe class Server<serverType, serverSocketSenderType> : Server
+        where serverType : Server<serverType, serverSocketSenderType>
         where serverSocketSenderType : TcpServer.ServerSocketSenderBase
     {
         /// <summary>
@@ -88,7 +84,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log)
+        internal Server(TcpServer.ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log)
             : base(attribute, verify, log)
         {
         }

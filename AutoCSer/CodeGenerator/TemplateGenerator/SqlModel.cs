@@ -138,8 +138,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             }
             /// <summary>
-            /// WEB Path 类型
+            /// 当前时间成员信息
             /// </summary>
+            [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
+            internal struct NowTimeMember
+            {
+                /// <summary>
+                /// 成员信息
+                /// </summary>
+                public MemberIndex Member;
+                /// <summary>
+                /// 数据库成员信息
+                /// </summary>
+                public AutoCSer.Sql.MemberAttribute MemberAttribute;
+            }
+            /// <summary>
+                         /// WEB Path 类型
+                         /// </summary>
             [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
             internal struct WebPathType
             {
@@ -346,7 +361,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// 当前时间生成成员
             /// </summary>
-            internal MemberIndex[] NowTimeMembers;
+            internal NowTimeMember[] NowTimeMembers;
             /// <summary>
             /// 当前时间生成成员数组大小
             /// </summary>
@@ -727,7 +742,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 int isIdentityCase = SqlStreamTypeCount = NowTimeArraySize = 0;
                 LeftArray<MemberIndex> members = default(LeftArray<MemberIndex>), primaryKeys = default(LeftArray<MemberIndex>), indexMembers = default(LeftArray<MemberIndex>);
                 LeftArray<CountMember> counterMembers = default(LeftArray<CountMember>);
-                LeftArray<MemberIndex> nowTimeMembers = default(LeftArray<MemberIndex>);
+                LeftArray<NowTimeMember> nowTimeMembers = default(LeftArray<NowTimeMember>);
                 LeftArray<LogMember> logMembers = new LeftArray<LogMember>();
                 LeftArray<string> strings = default(LeftArray<string>);
                 IsLogProxyMember = false;
@@ -754,10 +769,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             if (attribute != null)
                             {
                                 if (attribute.IsMemberIndex) indexMembers.Add(member);
-                                if (attribute.IsNowTime && member.MemberSystemType == typeof(DateTime))
+                                switch (attribute.NowTimeType)
                                 {
-                                    nowTimeMembers.Add(member);
-                                    if (member.MemberIndex >= NowTimeArraySize) NowTimeArraySize = member.MemberIndex + 1;
+                                    case Sql.NowTimeType.DateTime:
+                                    case Sql.NowTimeType.DateTime2:
+                                        if (member.MemberSystemType == typeof(DateTime))
+                                        {
+                                            nowTimeMembers.Add(new NowTimeMember { Member = member, MemberAttribute = attribute });
+                                            if (member.MemberIndex >= NowTimeArraySize) NowTimeArraySize = member.MemberIndex + 1;
+                                        }
+                                        break;
                                 }
                                 if (attribute.PrimaryKeyIndex != 0) primaryKeys.Add(member);
                                 if (attribute.IsIdentity) Identity = member;

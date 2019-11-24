@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// TCP 内部服务套接字数据发送
     /// </summary>
-    public sealed class ServerSocketSender : TcpServer.ServerSocketSender<ServerAttribute, Server, ServerSocket, ServerSocketSender>
+    public sealed class ServerSocketSender : TcpServer.ServerSocketSender<Server, ServerSocket, ServerSocketSender>
     {
 #if !NOJIT
         /// <summary>
@@ -145,7 +145,7 @@ namespace AutoCSer.Net.TcpInternalServer
                     if (Buffer.Buffer == null) Server.SendBufferPool.Get(ref Buffer);
                     if (OutputSerializer == null) outputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
                     else outputStream = OutputSerializer.Stream;
-                    int outputSleep = OutputSleep, currentOutputSleep;
+                    int outputSleep = Server.ServerAttribute.OutputSleep, currentOutputSleep;
                     do
                     {
                         buildInfo.IsNewBuffer = 0;
@@ -278,12 +278,12 @@ namespace AutoCSer.Net.TcpInternalServer
                 RemoteExpression.ServerNodeIdChecker.Input inputParameter = default(RemoteExpression.ServerNodeIdChecker.Input);
                 if (DeSerialize(ref data, ref inputParameter, false))
                 {
-                    if (Server.Attribute.RemoteExpressionServerTask == TcpServer.ServerTaskType.Synchronous)
+                    if (Server.ServerAttribute.RemoteExpressionTask == TcpServer.ServerTaskType.Synchronous)
                     {
                         TcpServer.ReturnValue<RemoteExpression.ServerNodeIdChecker.Output> outputParameter = new RemoteExpression.ServerNodeIdChecker.Output { Return = RemoteExpression.Node.Get(inputParameter.Types) };
-                        Push<RemoteExpression.ServerNodeIdChecker.Output>(ServerSocket.CommandIndex, IsServerBuildOutputThread ? RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo : RemoteExpression.ServerNodeIdChecker.Output.OutputInfo, ref outputParameter);
+                        Push<RemoteExpression.ServerNodeIdChecker.Output>(ServerSocket.CommandIndex, IsBuildOutputThread ? RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo : RemoteExpression.ServerNodeIdChecker.Output.OutputInfo, ref outputParameter);
                     }
-                    else (GetRemoteExpressionNodeIdServerCall.Pop() ?? new GetRemoteExpressionNodeIdServerCall()).Set(this, Server.Attribute.RemoteExpressionServerTask, ref inputParameter.Types);
+                    else (GetRemoteExpressionNodeIdServerCall.Pop() ?? new GetRemoteExpressionNodeIdServerCall()).Set(this, Server.ServerAttribute.RemoteExpressionTask, ref inputParameter.Types);
                     return;
                 }
                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -307,12 +307,12 @@ namespace AutoCSer.Net.TcpInternalServer
                 RemoteExpression.ClientNode inputParameter = default(RemoteExpression.ClientNode);
                 if (DeSerialize(ref data, ref inputParameter, false))
                 {
-                    if (Server.Attribute.RemoteExpressionServerTask == TcpServer.ServerTaskType.Synchronous)
+                    if (Server.ServerAttribute.RemoteExpressionTask == TcpServer.ServerTaskType.Synchronous)
                     {
                         TcpServer.ReturnValue<RemoteExpression.ReturnValue.Output> outputParameter = new RemoteExpression.ReturnValue.Output { Return = inputParameter.GetReturnValue() };
-                        Push<RemoteExpression.ReturnValue.Output>(ServerSocket.CommandIndex, IsServerBuildOutputThread ? RemoteExpression.ReturnValue.Output.OutputThreadInfo : RemoteExpression.ReturnValue.Output.OutputInfo, ref outputParameter);
+                        Push<RemoteExpression.ReturnValue.Output>(ServerSocket.CommandIndex, IsBuildOutputThread ? RemoteExpression.ReturnValue.Output.OutputThreadInfo : RemoteExpression.ReturnValue.Output.OutputInfo, ref outputParameter);
                     }
-                    else (GetRemoteExpressionServerCall.Pop() ?? new GetRemoteExpressionServerCall()).Set(this, Server.Attribute.RemoteExpressionServerTask, ref inputParameter);
+                    else (GetRemoteExpressionServerCall.Pop() ?? new GetRemoteExpressionServerCall()).Set(this, Server.ServerAttribute.RemoteExpressionTask, ref inputParameter);
                     return;
                 }
                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;

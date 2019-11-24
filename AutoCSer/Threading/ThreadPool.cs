@@ -246,11 +246,6 @@ namespace AutoCSer.Threading
         /// </summary>
         private static volatile int isThreadPoolExit;
         /// <summary>
-        /// 激活计时器
-        /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly DateTime timer = Date.NowTime.Now;
-        /// <summary>
         /// 前台退出测试
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -299,6 +294,7 @@ namespace AutoCSer.Threading
         static ThreadPool()
         {
             AutoCSer.Pub.ClearCaches += clearCache;
+            ++Date.NowTime.Count;
         }
     }
 }

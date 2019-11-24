@@ -10,16 +10,12 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// <summary>
     /// TCP 内部服务客户端
     /// </summary>
-    public abstract class Client : TcpSimpleServer.Client<ServerAttribute>, TcpRegister.IClient
+    public abstract class Client : TcpSimpleServer.Client, TcpRegister.IClient
     {
         /// <summary>
         /// TCP 内部注册服务客户端
         /// </summary>
         private TcpRegister.Client tcpRegisterClient;
-        /// <summary>
-        /// 服务名称
-        /// </summary>
-        string TcpRegister.IClient.ServerName { get { return base.ServerName; } }
 #if !NOJIT
         /// <summary>
         /// TCP 内部服务客户端

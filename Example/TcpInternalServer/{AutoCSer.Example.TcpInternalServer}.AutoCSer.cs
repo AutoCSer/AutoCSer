@@ -561,7 +561,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Asynchronous", typeof(AutoCSer.Example.TcpInternalServer.Asynchronous));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -840,7 +840,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalServer.ClientAsynchronous));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1119,7 +1119,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalServer.ClientTaskAsync));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1494,7 +1494,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Field", typeof(AutoCSer.Example.TcpInternalServer.Field));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1731,7 +1731,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.KeepCallback", typeof(AutoCSer.Example.TcpInternalServer.KeepCallback));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -1952,7 +1952,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalServer.NoAttribute));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -2405,7 +2405,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Property", typeof(AutoCSer.Example.TcpInternalServer.Property));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -2641,7 +2641,7 @@ namespace AutoCSer.Example.TcpInternalServer
                         try
                         {
                             
-                            AutoCSer.Net.TcpServer.ReturnValue<int> Return;
+                            int Return;
 
                             
                             Return = serverValue.Add(inputParameter.p0, ref inputParameter.p1, out value.Value.p1);
@@ -2668,13 +2668,13 @@ namespace AutoCSer.Example.TcpInternalServer
                         push(this);
                     }
                 }
-                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
+                private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 static TcpInternalServer()
                 {
                     CompileSerialize(new System.Type[] { typeof(_p1), null }
-                        , new System.Type[] { null }
-                        , new System.Type[] { null }
                         , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
                         , new System.Type[] { null }
                         , new System.Type[] { null });
                 }
@@ -2695,15 +2695,15 @@ namespace AutoCSer.Example.TcpInternalServer
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
                 {
                     public int p0;
                     public int p1;
                     [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                    public int Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                    public int Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -2713,7 +2713,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                        set { Ret = (int)value; }
                     }
 #endif
                 }
@@ -2737,11 +2737,11 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.RefOut", typeof(AutoCSer.Example.TcpInternalServer.RefOut));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// ref / out 参数测试
@@ -2751,7 +2751,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="product">乘积</param>
                 /// <returns>和</returns>
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add(int left, ref int right, out int product)
+                AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, ref int right, out int product)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.Pop();
                     try
@@ -2776,7 +2776,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             right = _outputParameter_.p0;
                             
                             product = _outputParameter_.p1;
-                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnType_, Value = _outputParameter_.Return };
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
@@ -2784,15 +2784,15 @@ namespace AutoCSer.Example.TcpInternalServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p2>.PushNotNull(_wait_);
                     }
                     product = default(int);
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
                 static TcpInternalClient()
                 {
                     _compileSerialize_(new System.Type[] { typeof(TcpInternalServer._p1), null }
-                        , new System.Type[] { null }
-                        , new System.Type[] { null }
                         , new System.Type[] { typeof(TcpInternalServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
                         , new System.Type[] { null }
                         , new System.Type[] { null });
                 }
@@ -2925,7 +2925,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.SendOnly", typeof(AutoCSer.Example.TcpInternalServer.SendOnly));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -3125,7 +3125,7 @@ namespace AutoCSer.Example.TcpInternalServer
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Static", typeof(AutoCSer.Example.TcpInternalServer.Static));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 

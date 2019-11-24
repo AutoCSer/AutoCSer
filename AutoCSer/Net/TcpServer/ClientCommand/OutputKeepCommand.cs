@@ -71,7 +71,11 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                 outputParameter.Value = OutputParameter;
                 if ((CommandInfo.CommandFlags & CommandFlags.JsonSerialize) == 0)
                 {
-                    if (CommandInfo.IsSimpleSerializeOutputParamter)
+                    if (CommandInfo.SimpleSerializeOutputParamter == 0)
+                    {
+                        if (Socket.DeSerialize(ref data, ref outputParameter.Value)) outputParameter.Type = ReturnType.Success;
+                    }
+                    else
                     {
                         fixed (byte* dataFixed = data.Array)
                         {
@@ -79,7 +83,6 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                             if (SimpleSerialize.TypeDeSerializer<outputParameterType>.DeSerialize(start, ref outputParameter.Value, end) == end) outputParameter.Type = ReturnType.Success;
                         }
                     }
-                    else if (Socket.DeSerialize(ref data, ref outputParameter.Value)) outputParameter.Type = ReturnType.Success;
                 }
                 else
                 {

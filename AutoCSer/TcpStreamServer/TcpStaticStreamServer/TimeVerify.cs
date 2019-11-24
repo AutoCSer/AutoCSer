@@ -28,9 +28,8 @@ namespace AutoCSer.Net.TcpStaticStreamServer
         [Method(IsVerifyMethod = true, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         protected static bool verify(TcpInternalStreamServer.ServerSocketSender sender, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
-            TcpServer.ServerBase<TcpInternalStreamServer.ServerAttribute> server = sender.Server;
-            TcpServer.ServerBaseAttribute attribute = server.Attribute;
-            if (TcpServer.TimeVerifyServer.CheckVerifyString(server, attribute)) return true;
+            TcpServer.ServerBase server = sender.Server;
+            if (server.CheckVerifyString()) return true;
             if (md5Data != null && md5Data.Length == 16)
             {
                 if (ticks <= lastVerifyTicks && ticks != sender.TimeVerifyTicks)
@@ -44,6 +43,7 @@ namespace AutoCSer.Net.TcpStaticStreamServer
                     ticks = sender.TimeVerifyTicks;
                     return false;
                 }
+                TcpServer.ServerBaseAttribute attribute = server.Attribute;
                 if (TcpServer.TimeVerifyServer.IsMd5(TcpServer.TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     if (ticks > lastVerifyTicks)
@@ -52,7 +52,7 @@ namespace AutoCSer.Net.TcpStaticStreamServer
                         if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
                         System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                     }
-                    if (!attribute.IsMarkData || sender.SetMarkData(attribute.VerifyHashCode ^ randomPrefix)) return true;
+                    if (!attribute.IsMarkData || sender.SetMarkData(server.ServerAttribute.VerifyHashCode ^ randomPrefix)) return true;
                 }
             }
             ticks = 0;

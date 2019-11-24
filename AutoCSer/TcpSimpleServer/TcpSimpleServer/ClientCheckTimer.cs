@@ -29,7 +29,6 @@ namespace AutoCSer.Net.TcpSimpleServer
             : base(seconds)
         {
             set(this);
-            OnTime.Set(Date.NowTime.OnTimeFlag.TcpSimpleClientCheckTimer);
         }
         /// <summary>
         /// 添加心跳检测
@@ -194,8 +193,12 @@ namespace AutoCSer.Net.TcpSimpleServer
                 timeout = new ClientCheckTimer(seconds);
             }
             finally { Monitor.Exit(timeoutLock); }
-            Date.NowTime.Flag |= Date.NowTime.OnTimeFlag.TcpSimpleClientCheckTimer;
             return timeout;
+        }
+
+        static ClientCheckTimer()
+        {
+            OnTime.Default.Set();
         }
     }
 }

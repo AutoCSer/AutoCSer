@@ -386,6 +386,7 @@ namespace AutoCSer.Sql.MsSql
                         SqlStream.Write(')');
                         break;
                     case "GetDate": SqlStream.SimpleWriteNotNull("getdate()"); break;
+                    case "SysDateTime": SqlStream.SimpleWriteNotNull("sysdatetime()"); break;
                     case "IsNull":
                         {
                             System.Collections.ObjectModel.ReadOnlyCollection<System.Linq.Expressions.Expression> arguments = expression.Arguments;

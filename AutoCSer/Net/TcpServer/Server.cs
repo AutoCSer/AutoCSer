@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 namespace AutoCSer.Net.TcpServer
 {
     /// <summary>
-    /// TCP 服务
+    /// TCP 服务基类
     /// </summary>
-    public static class Server
+    public abstract unsafe class Server : ServerBase
     {
         /// <summary>
         /// 用户命令起始位置
@@ -144,14 +144,7 @@ namespace AutoCSer.Net.TcpServer
             else JsonConfig = AutoCSer.MemberCopy.Copyer<AutoCSer.Json.SerializeConfig>.MemberwiseClone(JsonConfig);
             JsonConfig.IsInfinityToNaN = false;
         }
-    }
-    /// <summary>
-    /// TCP 服务基类
-    /// </summary>
-    /// <typeparam name="attributeType"></typeparam>
-    public abstract unsafe class Server<attributeType> : ServerBase<attributeType>
-        where attributeType : ServerAttribute
-    {
+
         /// <summary>
         /// 自定义队列
         /// </summary>
@@ -176,7 +169,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isSynchronousVerifyMethod)
+        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isSynchronousVerifyMethod)
             : base(attribute, verify, log, isCallQueue, isSynchronousVerifyMethod)
         {
             this.serverCallQueue = serverCallQueue;
@@ -261,12 +254,10 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务基类
     /// </summary>
-    /// <typeparam name="attributeType"></typeparam>
     /// <typeparam name="serverType"></typeparam>
     /// <typeparam name="serverSocketSenderType"></typeparam>
-    public abstract unsafe class Server<attributeType, serverType, serverSocketSenderType> : Server<attributeType>
-        where serverType : Server<attributeType, serverType, serverSocketSenderType>
-        where attributeType : ServerAttribute
+    public abstract unsafe class Server<serverType, serverSocketSenderType> : Server
+        where serverType : Server<serverType, serverSocketSenderType>
         where serverSocketSenderType : ServerSocketSender
     {
         /// <summary>
@@ -280,7 +271,7 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="getSocketThreadCallType">同步验证接口</param>
         /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(attributeType attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isSynchronousVerifyMethod)
+        internal Server(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Threading.Thread.CallType getSocketThreadCallType, bool isCallQueue, bool isSynchronousVerifyMethod)
             : base(attribute, verify, serverCallQueue, onCustomData, log, getSocketThreadCallType, isCallQueue, isSynchronousVerifyMethod)
         {
         }

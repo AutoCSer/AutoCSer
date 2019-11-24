@@ -251,7 +251,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="client">TCP 客户端</param>
         internal void Register(IClient client)
         {
-            HashString name = client.ServerName;
+            HashString name = client.ServerName ?? string.Empty;
             ClientServerSet serverSet;
             Monitor.Enter(serverSetLock);
             try
@@ -271,7 +271,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="client">TCP 客户端</param>
         internal void Remove(IClient client)
         {
-            HashString name = client.ServerName;
+            HashString name = client.ServerName ?? string.Empty;
             ClientServerSet serverSet;
             Monitor.Enter(serverSetLock);
             try
@@ -288,7 +288,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="attribute"></param>
         /// <returns></returns>
         internal bool GetPort<serverAttributeType>(serverAttributeType attribute)
-            where serverAttributeType : TcpServer.ServerBaseAttribute, TcpRegister.IServerAttribute
+            where serverAttributeType : TcpServer.ServerBaseAttribute
         {
             if (clientId.Tick != 0)
             {

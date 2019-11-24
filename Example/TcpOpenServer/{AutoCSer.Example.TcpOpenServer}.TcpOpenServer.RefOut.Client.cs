@@ -31,15 +31,15 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
                 {
                     public int product;
                     public int right;
                     [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                    public int Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                    public int Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -49,7 +49,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                        set { Ret = (int)value; }
                     }
 #endif
                 }
@@ -73,7 +73,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                         attribute = AutoCSer.Config.Loader.Get<AutoCSer.Net.TcpOpenServer.ServerAttribute>("AutoCSer.Example.TcpOpenServer.RefOut") ?? _DefaultServerAttribute_;
                         if (attribute.Name == null) attribute.Name = "AutoCSer.Example.TcpOpenServer.RefOut";
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
                 }
                 /// <summary>
@@ -84,7 +84,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                     get { return AutoCSer.Json.Parser.Parse<AutoCSer.Net.TcpOpenServer.ServerAttribute>(@"{""BinaryDeSerializeMaxArraySize"":1024,""CheckSeconds"":59,""ClientFirstTryCreateSleep"":1000,""ClientOutputSleep"":-1,""ClientRouteType"":null,""ClientSegmentationCopyPath"":null,""ClientSendBufferMaxSize"":1048576,""ClientTryCreateSleep"":1000,""CommandPoolBitSize"":3,""GenericType"":null,""Host"":""127.0.0.1"",""IsAttribute"":true,""IsAutoClient"":false,""IsAutoServer"":true,""IsBaseTypeAttribute"":false,""IsCompileSerialize"":true,""IsJsonSerialize"":true,""IsMarkData"":false,""IsRememberCommand"":true,""IsRemoteExpression"":true,""IsSegmentation"":true,""IsServerBuildOutputThread"":false,""IsSimpleSerialize"":true,""MaxCustomDataSize"":16372,""MaxInputSize"":16372,""MaxVerifyDataSize"":256,""MemberFilters"":""Instance"",""MinCompressSize"":0,""Name"":null,""Port"":13004,""QueueCommandSize"":1024,""ReceiveBufferSize"":""Kilobyte8"",""ReceiveVerifyCommandSeconds"":9,""RemoteExpressionServerTask"":""Timeout"",""SendBufferSize"":""Kilobyte8"",""ServerOutputSleep"":-1,""ServerSendBufferMaxSize"":0,""VerifyString"":null,""TypeId"":{}}"); }
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1 , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c0 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
                 /// <summary>
                 /// ref / out 参数测试
@@ -93,7 +93,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 /// <param name="right">加法右值</param>
                 /// <param name="product">乘积</param>
                 /// <returns>和</returns>
-                public AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add(int left, ref int right, out int product)
+                public AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, ref int right, out int product)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2>.Pop();
                     try
@@ -118,7 +118,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                             right = _outputParameter_.right;
                             
                             product = _outputParameter_.product;
-                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnType_, Value = _outputParameter_.Return };
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
@@ -126,7 +126,7 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpOpenServer._p2>.PushNotNull(_wait_);
                     }
                     product = default(int);
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
                 static TcpOpenClient()

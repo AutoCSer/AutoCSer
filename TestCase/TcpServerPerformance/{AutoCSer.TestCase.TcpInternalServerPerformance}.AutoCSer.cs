@@ -606,7 +606,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("TcpInternalServerPerformance", typeof(AutoCSer.TestCase.TcpInternalServerPerformance.InternalServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 

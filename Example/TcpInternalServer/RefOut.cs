@@ -16,8 +16,9 @@ namespace AutoCSer.Example.TcpInternalServer
         /// <param name="product">乘积</param>
         /// <returns>和</returns>
         [AutoCSer.Net.TcpServer.Method]
-        AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, ref int right, out int product)
+        int Add(int left, ref int right, out int product)
         {
+            System.Threading.Thread.Sleep(3000);
             product = left * right;
             int sum = left + right;
             right <<= 1;

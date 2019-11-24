@@ -330,6 +330,7 @@
     <Compile Include="Net\TcpServer\SenderBuildInfo.cs" />
     <Compile Include="Net\TcpServer\Server.cs" />
     <Compile Include="Net\TcpServer\ServerAttribute.cs" />
+    <Compile Include="Net\TcpServer\ServerAttributeCache.cs" />
     <Compile Include="Net\TcpServer\ServerCall.cs" />
     <Compile Include="Net\TcpServer\ServerCallback.cs" />
     <Compile Include="Net\TcpServer\ServerCallCanDisposableQueue.cs" />
@@ -399,6 +400,7 @@
     <Compile Include="Threading\TimerTaskThreadType.cs" />
     <Compile Include="Threading\UnionType.cs" />
     <Compile Include="Threading\WaitHandle.cs" />
+    <Compile Include="TimeoutCount.cs" />
     <Compile Include="WebView\ClientTypeAttribute.cs" />
     <Compile Include="WebView\HashUrl.cs" />
     <Compile Include="WebView\OutputAjaxAttribute.cs" />
@@ -573,7 +575,6 @@
     <Compile Include="Net\TcpServer\Awaiter.cs" />
     <Compile Include="Net\TcpServer\AwaiterReturnValue.cs" />
     <Compile Include="Net\TcpServer\NET4.5\Awaiter.cs" />
-    <Compile Include="Net\TcpRegister\IServerAttribute.cs" />
     <Compile Include="Net\TcpServer\CommandBuffer.cs" />
     <Compile Include="Net\TcpServer\CommandInfoBase.cs" />
     <Compile Include="Net\TcpServer\ServerBase.cs" />

@@ -57,10 +57,10 @@ namespace AutoCSer.Sql.DataModel
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldind_I4);
-                    if (field.IsNowTime) generator.Emit(OpCodes.Ldarg_3);
+                    if (field.NowTimeType != NowTimeType.None) generator.Emit(OpCodes.Ldarg_3);
                     generator.Emit(OpCodes.Ldarg_0);
                     generator.Emit(OpCodes.Ldfld, field.FieldInfo);
-                    if (field.IsNowTime)
+                    if (field.NowTimeType != NowTimeType.None)
                     {
                         generator.int32(field.MemberMapIndex);
                         generator.call(AutoCSer.Extension.EmitGenerator_Sql.TableGetNowTimeMethod);

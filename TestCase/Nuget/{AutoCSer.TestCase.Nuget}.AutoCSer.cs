@@ -170,7 +170,7 @@ namespace AutoCSer.TestCase.Nuget
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.TestCase.Nuget.Server", typeof(AutoCSer.TestCase.Nuget.Server));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 

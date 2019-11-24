@@ -1420,7 +1420,7 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                                 {
                                     _p2 _outputParameter_ = new _p2();
                                     
-                                    AutoCSer.Net.TcpServer.ReturnValue<int> Return;
+                                    int Return;
                                     
                                     Return = Value.Add(inputParameter.p0, ref inputParameter.p1, out _outputParameter_.p1);
                                     
@@ -1439,13 +1439,13 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                         default: return false;
                     }
                 }
-                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2 };
+                private static readonly AutoCSer.Net.TcpSimpleServer.OutputInfo _c0 = new AutoCSer.Net.TcpSimpleServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true };
                 static TcpInternalSimpleServer()
                 {
                     CompileSerialize(new System.Type[] { typeof(_p1), null }
-                        , new System.Type[] { null }
-                        , new System.Type[] { null }
                         , new System.Type[] { typeof(_p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
                         , new System.Type[] { null }
                         , new System.Type[] { null });
                 }
@@ -1466,15 +1466,15 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
                 {
                     public int p0;
                     public int p1;
                     [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                    public int Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                    public int Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -1484,7 +1484,7 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                        set { Ret = (int)value; }
                     }
 #endif
                 }
@@ -1509,7 +1509,7 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
-                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c0 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 0 + 128, InputParameterIndex = 1, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// ref / out 参数测试
@@ -1519,7 +1519,7 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                 /// <param name="product">乘积</param>
                 /// <returns>和</returns>
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add(int left, ref int right, out int product)
+                AutoCSer.Net.TcpServer.ReturnValue<int> Add(int left, ref int right, out int product)
                 {
                     if (_isDisposed_ == 0)
                     {
@@ -1540,18 +1540,18 @@ namespace AutoCSer.Example.TcpInternalSimpleServer
                         right = _outputParameter_.p0;
                         
                         product = _outputParameter_.p1;
-                        return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnType_, Value = _outputParameter_.Return };
+                        return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                     }
                     product = default(int);
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
                 static TcpInternalSimpleClient()
                 {
                     _compileSerialize_(new System.Type[] { typeof(TcpInternalSimpleServer._p1), null }
-                        , new System.Type[] { null }
-                        , new System.Type[] { null }
                         , new System.Type[] { typeof(TcpInternalSimpleServer._p2), null }
+                        , new System.Type[] { null }
+                        , new System.Type[] { null }
                         , new System.Type[] { null }
                         , new System.Type[] { null });
                 }

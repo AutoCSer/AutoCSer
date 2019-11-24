@@ -34,7 +34,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 /// <summary>
                 /// TCP 服务器端配置
                 /// </summary>
-                public attributeType ServiceAttribute;
+                public AutoCSer.Net.TcpServer.ServerBaseAttribute ServiceAttribute;
                 /// <summary>
                 /// TCP调用配置
                 /// </summary>
@@ -494,6 +494,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return serverCallQueueKeyParameter != MethodParameter.Null ? serverCallQueueKeyParameter : null;
                     }
                 }
+                /// <summary>
+                /// 客户端超时秒数
+                /// </summary>
+                public ushort TimeoutSeconds
+                {
+                    get
+                    {
+                        return IsKeepCallback == 0 ? Attribute.GetClientTimeoutSeconds : (ushort)0;
+                    }
+                }
 
                 /// <summary>
                 /// 是否空方法
@@ -752,10 +762,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// <summary>
             /// TCP 服务器端配置
             /// </summary>
-            public attributeType ServiceAttribute
+            public AutoCSer.Net.TcpServer.ServerBaseAttribute ServiceAttribute
             {
                 get { return Attribute; }
-                set { Attribute = value; }
+            }
+            /// <summary>
+            /// 分割客户端文件
+            /// </summary>
+            public bool IsSegmentation
+            {
+                get { return Attribute.GetIsSegmentation; }
+            }
+            /// <summary>
+            /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
+            /// </summary>
+            public bool IsRememberCommand
+            {
+                get { return ServiceAttribute.GetIsRememberCommand; }
             }
             /// <summary>
             /// 服务类名称
@@ -849,6 +872,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     return Attribute.GetIsInternalClient ? "internal " : "public ";
                 }
             }
+            /// <summary>
+            /// 客户端最大超时秒数
+            /// </summary>
+            public ushort MaxTimeoutSeconds;
 #if NOJIT
             /// <summary>
             /// 是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数

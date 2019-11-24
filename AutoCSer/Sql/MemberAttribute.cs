@@ -56,9 +56,9 @@ namespace AutoCSer.Sql
         /// </summary>
         public bool IsMemberIndex;
         /// <summary>
-        /// 是否生成当前时间
+        /// 生成当前时间类型
         /// </summary>
-        public bool IsNowTime;
+        public NowTimeType NowTimeType;
         /// <summary>
         /// decimal 整数位数
         /// </summary>
@@ -106,7 +106,7 @@ namespace AutoCSer.Sql
                 {
                     if (TypeAttribute.GetAttribute<ColumnAttribute>(member.MemberSystemType, false) == null)
                     {
-                        Type dataType = member.MemberSystemType.formCSharpType().toCSharpType();
+                        Type dataType = member.MemberSystemType.toDataType();
                         if (dataType != member.MemberSystemType)
                         {
                             value = new MemberAttribute();
@@ -118,7 +118,7 @@ namespace AutoCSer.Sql
                 {
                     value = new MemberAttribute();
                     value.IsNull = true;
-                    Type dataType = nullableType.formCSharpType().toCSharpType();
+                    Type dataType = nullableType.toDataType();
                     if (dataType != nullableType) value.DataType = dataType.toNullableType();
                 }
             }

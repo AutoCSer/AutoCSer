@@ -70,7 +70,7 @@ namespace AutoCSer.Net.TcpServer
                 {
                     isDisposed = 1;
                     System.Threading.Interlocked.Exchange(ref keepLock, 0);
-                    if (commandIndex != 0) command.Socket.CommandPool.Cancel(commandIndex, command);
+                    if (commandIndex != 0) command.Socket.CommandPool.CancelKeep(commandIndex, command);
                 }
                 else System.Threading.Interlocked.Exchange(ref keepLock, 0);
             }

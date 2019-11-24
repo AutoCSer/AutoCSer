@@ -92,7 +92,7 @@ namespace AutoCSer.Net.HttpRegister
         public override void SetTcpServer(AutoCSer.Net.TcpInternalServer.Server tcpServer)
         {
             base.SetTcpServer(tcpServer);
-            cacheFileName = AutoCSer.Config.Pub.Default.CachePath + ServerName + (ServerName == tcpServer.Attribute.ServerName ? null : ("_" + tcpServer.Attribute.ServerName)) + ".cache";
+            cacheFileName = AutoCSer.Config.Pub.Default.CachePath + ServerName + (ServerName == tcpServer.ServerAttribute.ServerName ? null : ("_" + tcpServer.ServerAttribute.ServerName)) + ".cache";
             FileWatcher = new AutoCSer.IO.CreateFlieTimeoutWatcher(ProcessCopyer.Config.CheckTimeoutSeconds, this, AutoCSer.IO.CreateFlieTimeoutType.HttpServerRegister, tcpServer.Log);
             if (!AutoCSer.Config.Pub.Default.IsService && ProcessCopyer.Config.WatcherPath != null)
             {

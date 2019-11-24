@@ -75,6 +75,10 @@ namespace AutoCSer.Net.TcpServer
         /// 远程表达式客户端检测服务端映射标识不匹配
         /// </summary>
         RemoteExpressionCheckerError,
+        /// <summary>
+        /// 超时
+        /// </summary>
+        Timeout,
         ///// <summary>
         ///// 日志流过期
         ///// </summary>

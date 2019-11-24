@@ -12,10 +12,10 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务套接字
         /// </summary>
         internal readonly ServerSocket ServerSocket;
-        /// <summary>
-        /// 等待输出休眠时间
-        /// </summary>
-        internal readonly int OutputSleep;
+        ///// <summary>
+        ///// 等待输出休眠时间
+        ///// </summary>
+        //internal readonly int OutputSleep;
         /// <summary>
         /// 创建输出是否开启线程
         /// </summary>
@@ -90,14 +90,13 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
-        /// <param name="isBuildOutputThread">创建输出是否开启线程</param>
-        /// <param name="outputSleep">等待输出休眠时间</param>
-        internal ServerSocketSenderBase(ServerSocket socket, bool isBuildOutputThread, int outputSleep)
+        /// <param name="isBuildOutputThread"></param>
+        internal ServerSocketSenderBase(ServerSocket socket, bool isBuildOutputThread)
             : base(socket.Socket)
         {
             this.ServerSocket = socket;
             IsBuildOutputThread = isBuildOutputThread;
-            OutputSleep = outputSleep;
+            //OutputSleep = attribute.OutputSleep;
         }
         /// <summary>
         /// 设置命令索引信息

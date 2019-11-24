@@ -112,5 +112,14 @@ namespace AutoCSer.Threading
             }
             while (!isDisposed);
         }
+
+        /// <summary>
+        /// 创建任务队列链表
+        /// </summary>
+        /// <returns></returns>
+        public TaskQueueLink CreateLink()
+        {
+            return new TaskQueueLink(this);
+        }
     }
 }

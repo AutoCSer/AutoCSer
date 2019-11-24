@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
     /// <summary>
     /// TCP 开放服务客户端
     /// </summary>
-    public abstract class Client : TcpStreamServer.Client<ServerAttribute>
+    public abstract class Client : TcpServer.ClientBase
     {
         /// <summary>
         /// TCP 客户端路由
@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         internal Client(ServerAttribute attribute, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
-            : base(attribute, log)
+            : base(attribute, log, null)
         {
             this.clientRoute = clientRoute;
         }
@@ -109,7 +109,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
         /// <param name="createVersion"></param>
-        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator<ServerAttribute> clientCreator, IPAddress ipAddress, int port, int createVersion)
+        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int createVersion)
         {
             return new ClientSocket(clientCreator, ipAddress, port, createVersion);
         }

@@ -34,7 +34,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public string StreamParameterPart
             {
-                get { return ServiceAttribute.IsSegmentation ? StreamClientPart : serverPart; }
+                get { return ServiceAttribute.GetIsSegmentation ? StreamClientPart : serverPart; }
             }
             /// <summary>
             /// TCP 静态服务
@@ -147,13 +147,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             defaultServer.Attribute.CopyFrom(Attribute);
                         }
                     }
-                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticStreamServer.MethodAttribute>(Type, Attribute.MemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticStreamServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         next(new TcpMethod { Method = method, MethodType = Type });
                     }
                     if (!Type.Type.IsGenericType)
                     {
-                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<AutoCSer.Net.TcpStaticStreamServer.MethodAttribute>(Type, Attribute.MemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<AutoCSer.Net.TcpStaticStreamServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                         {
                             if (member.IsField)
                             {
@@ -256,7 +256,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     {
                         IsAllType = false;
                         TcpServerAttributeType = server.AttributeType == null || server.AttributeType.Type == null ? null : server.AttributeType.FullName;
-                        ServiceAttribute = server.Attribute;
+                        Attribute = server.Attribute;
                         foreach (ServerType serverType in server.Types) methods.Add(serverType.Methods);
                         methodIndexs = methods.ToArray();
                         methods.Length = 0;
@@ -294,7 +294,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 _code_.Length = 0;
                                 create(false);
                                 Coder.Add(definition.Start + _partCodes_["SERVERCALL"] + definition.End);
-                                if (ServiceAttribute.IsSegmentation)
+                                if (ServiceAttribute.GetIsSegmentation)
                                 {
                                     clientCallCode.Add(definition.Start + _partCodes_["CLIENTCALL"] + definition.End);
                                 }
@@ -318,7 +318,7 @@ namespace " + AutoParameter.DefaultNamespace + "." + StreamClientPart + @"
 {
 " + _partCodes_["CLIENT"] + @"
 }";
-                        if (ServiceAttribute.IsSegmentation)
+                        if (ServiceAttribute.GetIsSegmentation)
                         {
                             clientCallCode.Add(clientCode);
                             string fileName = AutoParameter.ProjectPath + "{" + AutoParameter.DefaultNamespace + "}.TcpStaticStreamServer." + ServiceAttribute.ServerName + ".Client.cs";

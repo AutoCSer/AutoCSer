@@ -35,11 +35,10 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
+        /// <param name="isBuildOutputThread"></param>
         /// <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
-        /// <param name="isBuildOutputThread">创建输出是否开启线程</param>
-        /// <param name="outputSleep">等待输出休眠时间</param>
-        internal ServerSocketSender(ServerSocket socket, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType, bool isBuildOutputThread, int outputSleep)
-            : base(socket, isBuildOutputThread, outputSleep)
+        internal ServerSocketSender(ServerSocket socket, bool isBuildOutputThread, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
+            : base(socket, isBuildOutputThread)
         {
             BuildOutputThreadCallType = buildOutputThreadCallType;
         }
@@ -58,24 +57,22 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务套接字数据发送
     /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
     /// <typeparam name="serverType">TCP 服务类型</typeparam>
     /// <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
     /// <typeparam name="socketSenderType">TCP 服务套接字数据发送类型</typeparam>
-    public abstract class ServerSocketSender<attributeType, serverType, socketType, socketSenderType> : ServerSocketSender
-        where attributeType : ServerAttribute
-        where serverType : Server<attributeType, serverType, socketSenderType>
-        where socketType : ServerSocket<attributeType, serverType, socketType, socketSenderType>
-        where socketSenderType : ServerSocketSender<attributeType, serverType, socketType, socketSenderType>
+    public abstract class ServerSocketSender<serverType, socketType, socketSenderType> : ServerSocketSender
+        where serverType : Server<serverType, socketSenderType>
+        where socketType : ServerSocket<serverType, socketType, socketSenderType>
+        where socketSenderType : ServerSocketSender<serverType, socketType, socketSenderType>
     {
         /// <summary>
         /// TCP 服务
         /// </summary>
         internal readonly serverType Server;
-        /// <summary>
-        /// 服务端创建输出是否开启线程
-        /// </summary>
-        internal readonly bool IsServerBuildOutputThread;
+        ///// <summary>
+        ///// 服务端创建输出是否开启线程
+        ///// </summary>
+        //internal readonly bool IsServerBuildOutputThread;
 #if !NOJIT
         /// <summary>
         /// TCP 服务套接字数据发送
@@ -87,11 +84,11 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
         /// <param name="buildOutputThreadCallType">创建输出线程调用类型</param>
-        internal ServerSocketSender(ServerSocket<attributeType, serverType, socketType, socketSenderType> socket, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
-            : base(socket, buildOutputThreadCallType, socket.Server.Attribute.GetIsServerBuildOutputThread, socket.Server.Attribute.GetServerOutputSleep)
+        internal ServerSocketSender(ServerSocket<serverType, socketType, socketSenderType> socket, AutoCSer.Threading.Thread.CallType buildOutputThreadCallType)
+            : base(socket, socket.Server.ServerAttribute.IsBuildOutputThread, buildOutputThreadCallType)
         {
             Server = socket.Server;
-            IsServerBuildOutputThread = Server.Attribute.GetIsServerBuildOutputThread;
+            //IsBuildOutputThread = Server.ServerAttribute.IsBuildOutputThread;
         }
         /// <summary>
         /// 释放接收数据缓冲区

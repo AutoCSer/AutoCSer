@@ -11,7 +11,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// TCP 内部服务客户端
     /// </summary>
-    public abstract class Client : TcpServer.Client<ServerAttribute>, TcpRegister.IClient
+    public abstract class Client : TcpServer.Client, TcpRegister.IClient
     {
         /// <summary>
         /// TCP 客户端路由
@@ -21,10 +21,6 @@ namespace AutoCSer.Net.TcpInternalServer
         /// TCP 内部注册服务客户端
         /// </summary>
         private TcpRegister.Client tcpRegisterClient;
-        /// <summary>
-        /// 服务名称
-        /// </summary>
-        string TcpRegister.IClient.ServerName { get { return base.ServerName; } }
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称
         /// </summary>
@@ -39,11 +35,12 @@ namespace AutoCSer.Net.TcpInternalServer
         /// TCP 内部服务客户端
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
+        /// <param name="maxTimeoutSeconds">最大超时秒数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
-        internal Client(ServerAttribute attribute, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
-            : base(attribute, onCustomData, log)
+        internal Client(ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute)
+            : base(attribute, maxTimeoutSeconds, onCustomData, log)
         {
             this.clientRoute = clientRoute;
             if (attribute.TcpRegisterName != null)
@@ -150,7 +147,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
         /// <param name="createVersion"></param>
-        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator<ServerAttribute> clientCreator, IPAddress ipAddress, int port, int createVersion)
+        internal override TcpServer.ClientSocketBase CreateSocketByCreator(TcpServer.ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int createVersion)
         {
             return new ClientSocket(clientCreator, ipAddress, port, createVersion);
         }
@@ -301,12 +298,13 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         /// <param name="client">TCP 服务客户端对象</param>
         /// <param name="attribute">TCP服务调用配置</param>
+        /// <param name="maxTimeoutSeconds">最大超时秒数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(clientType client, ServerAttribute attribute, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
-            : base(attribute, onCustomData, log, clientRoute)
+        public Client(clientType client, ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Func<clientType, ClientSocketSender, bool> verifyMethod = null)
+            : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
             this.client = client;
             this.verifyMethod = verifyMethod;

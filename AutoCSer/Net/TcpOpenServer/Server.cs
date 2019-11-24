@@ -10,7 +10,7 @@ namespace AutoCSer.Net.TcpOpenServer
     /// <summary>
     /// TCP 服务端
     /// </summary>
-    public abstract unsafe class Server : TcpServer.Server<ServerAttribute, Server, ServerSocketSender>
+    public abstract unsafe class Server : TcpServer.Server<Server, ServerSocketSender>
     {
         /// <summary>
         /// 套接字等待事件
@@ -42,7 +42,7 @@ namespace AutoCSer.Net.TcpOpenServer
         internal void GetSocket()
         {
             //ThreadPriority priority = Thread.CurrentThread.Priority;
-            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(Attribute.ReceiveVerifyCommandSeconds > 0 ? Attribute.ReceiveVerifyCommandSeconds : ServerAttribute.DefaultReceiveVerifyCommandSeconds);
+            ReceiveVerifyCommandTimeout = SocketTimeoutLink.TimerLink.Get(ServerAttribute.ReceiveVerifyCommandSeconds > 0 ? ServerAttribute.ReceiveVerifyCommandSeconds : TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds);
             socketHandle.Set(0);
             AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(this, AutoCSer.Threading.Thread.CallType.TcpOpenServerOnSocket);
             //Thread.CurrentThread.Priority = ThreadPriority.Highest;

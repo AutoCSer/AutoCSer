@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpInternalServer
                     value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                     Sender.AddLog(error);
                 }
-                Sender.Push(CommandIndex, Sender.IsServerBuildOutputThread ? RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo : RemoteExpression.ServerNodeIdChecker.Output.OutputInfo, ref value);
+                Sender.Push(CommandIndex, Sender.IsBuildOutputThread ? RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo : RemoteExpression.ServerNodeIdChecker.Output.OutputInfo, ref value);
             }
             push(this);
         }

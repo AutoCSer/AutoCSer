@@ -88,7 +88,6 @@
     <Compile Include="TcpStaticStreamServer\MethodAttribute.cs" />
     <Compile Include="TcpStaticStreamServer\ServerAttribute.cs" />
     <Compile Include="TcpStaticStreamServer\TimeVerify.cs" />
-    <Compile Include="TcpStreamServer\Client.cs" />
     <Compile Include="TcpStreamServer\ClientCommand\CallCommand.cs" />
     <Compile Include="TcpStreamServer\ClientCommand\CheckCommand.cs" />
     <Compile Include="TcpStreamServer\ClientCommand\Command.cs" />

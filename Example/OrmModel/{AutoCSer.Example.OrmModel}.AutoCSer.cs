@@ -638,7 +638,7 @@ namespace AutoCSer.Example.OrmModel
                     /// <summary>
                     /// 生成当前时间精度 当前时间
                     /// </summary>
-                    public static readonly AutoCSer.Sql.NowTime AppendTime = sqlTable == null ? null : new AutoCSer.Sql.NowTime(sqlTable.NowTimeMilliseconds);
+                    public static readonly AutoCSer.Sql.NowTime AppendTime = sqlTable == null ? null : new AutoCSer.Sql.NowTime(1L);
                     /// <summary>
                     /// 初始化当前时间
                     /// </summary>

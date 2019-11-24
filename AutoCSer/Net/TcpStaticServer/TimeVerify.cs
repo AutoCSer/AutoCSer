@@ -31,10 +31,8 @@ namespace AutoCSer.Net.TcpStaticServer
         [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         protected static bool verify(TcpInternalServer.ServerSocketSender sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
-            TcpServer.ServerBase<TcpInternalServer.ServerAttribute> server = sender.Server;
-            TcpServer.ServerBaseAttribute attribute = server.Attribute;
-            if (TcpServer.TimeVerifyServer.CheckVerifyString(server, attribute)) return true;
-            return verify(sender, randomPrefix, attribute.VerifyString, md5Data, ref ticks);
+            TcpServer.ServerBase server = sender.Server;
+            return server.CheckVerifyString() || verify(sender, randomPrefix, server.Attribute.VerifyString, md5Data, ref ticks);
         }
         /// <summary>
         /// 时间验证函数
@@ -68,8 +66,7 @@ namespace AutoCSer.Net.TcpStaticServer
                         if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
                         System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                     }
-                    TcpServer.ServerBaseAttribute attribute = sender.Server.Attribute;
-                    if (!attribute.IsMarkData || sender.SetMarkData(attribute.VerifyHashCode ^ randomPrefix)) return true;
+                    if (!sender.Server.Attribute.IsMarkData || sender.SetMarkData(sender.Server.ServerAttribute.VerifyHashCode ^ randomPrefix)) return true;
                 }
             }
             ticks = 0;

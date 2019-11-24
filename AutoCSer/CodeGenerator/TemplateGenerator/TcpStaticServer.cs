@@ -38,7 +38,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// </summary>
             public string ParameterPart
             {
-                get { return ServiceAttribute.IsSegmentation ? ClientPart : serverPart; }
+                get { return ServiceAttribute.GetIsSegmentation ? ClientPart : serverPart; }
             }
             /// <summary>
             /// 生成部分
@@ -682,7 +682,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         else if (Attribute.IsRemoteLink) remoteLinkType = GetRemoteLinkType(Type);
                     }
                     LeftArray<RemoteMethod> remoteMethods = new LeftArray<RemoteMethod>();
-                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.MemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                    foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                     {
                         next(new TcpMethod { Method = method, MethodType = Type });
                         if (remoteLinkType != null && !method.Method.IsGenericMethodDefinition)
@@ -732,7 +732,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                     if (!Type.Type.IsGenericType)
                     {
-                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.MemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
+                        foreach (MemberIndexInfo member in StaticMemberIndexGroup.Get<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, Attribute.GetMemberFilters, false, Attribute.IsAttribute, Attribute.IsBaseTypeAttribute))
                         {
                             if (member.IsField)
                             {
@@ -829,7 +829,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     Server server;
                     if (servers.TryGetValue(code.Attribute.ServerName, out server))
                     {
-                        if (server.Attribute.IsSegmentation) server.ClientCodes.Add(code.SegmentationCode);
+                        if (server.Attribute.GetIsSegmentation) server.ClientCodes.Add(code.SegmentationCode);
                         else Coder.Add(code.Code);
                     }
                 }
@@ -844,7 +844,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 {
                     if (server.IsMethod || server.RemoteLinkTypes.Length != 0 || server.ClientCodes.Length != 0)
                     {
-                        ServiceAttribute = server.Attribute;
+                        Attribute = server.Attribute;
                         TcpServerAttributeType = server.AttributeType == null || server.AttributeType.Type == null ? null : server.AttributeType.FullName;
 
                         Part = PartType.RemoteLink;
@@ -859,7 +859,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 _code_.Length = 0;
                                 create(false);
                                 Coder.Add(definition.Start + _partCodes_["SERVERREMOTE"] + definition.End);
-                                if (ServiceAttribute.IsSegmentation)
+                                if (ServiceAttribute.GetIsSegmentation)
                                 {
                                     clientCallCode.Add(definition.Start + _partCodes_["CLIENTREMOTE"] + definition.End);
                                 }
@@ -897,6 +897,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     queueTypeBuilder.Add(method);
 
                                     IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
+                                    MaxTimeoutSeconds = Math.Max(MaxTimeoutSeconds, method.Attribute.GetClientTimeoutSeconds);
 
                                     //if (method.IsAsynchronousCallback && method.Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous)
                                     //{
@@ -918,7 +919,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     _code_.Length = 0;
                                     create(false);
                                     Coder.Add(definition.Start + _partCodes_["SERVERCALL"] + definition.End);
-                                    if (ServiceAttribute.IsSegmentation)
+                                    if (ServiceAttribute.GetIsSegmentation)
                                     {
                                         clientCallCode.Add(definition.Start + _partCodes_["CLIENTCALL"] + definition.End);
                                     }
@@ -944,7 +945,7 @@ namespace " + AutoParameter.DefaultNamespace + "." + ClientPart + @"
 " + _partCodes_["CLIENT"] + @"
 }";
                         }
-                        if (ServiceAttribute.IsSegmentation)
+                        if (ServiceAttribute.GetIsSegmentation)
                         {
                             if (clientCode != null) clientCallCode.Add(clientCode);
                             clientCallCode.Append(ref server.ClientCodes);

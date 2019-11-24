@@ -1225,7 +1225,7 @@ namespace AutoCSer.Example.TcpOpenStreamServer
                                 {
                                     _p2 _outputParameter_ = new _p2();
                                     
-                                    AutoCSer.Net.TcpServer.ReturnValue<int> Return;
+                                    int Return;
                                     
                                     Return = Value.Add(inputParameter.left, ref inputParameter.right, out _outputParameter_.product);
                                     
@@ -1273,15 +1273,15 @@ namespace AutoCSer.Example.TcpOpenStreamServer
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
                 {
                     public int product;
                     public int right;
                     [AutoCSer.Json.IgnoreMember]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                    public int Ret;
                     [AutoCSer.IOS.Preserve(Conditional = true)]
-                    public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                    public int Return
                     {
                         get { return Ret; }
                         set { Ret = value; }
@@ -1291,7 +1291,7 @@ namespace AutoCSer.Example.TcpOpenStreamServer
                     public object ReturnObject
                     {
                         get { return Ret; }
-                        set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                        set { Ret = (int)value; }
                     }
 #endif
                 }

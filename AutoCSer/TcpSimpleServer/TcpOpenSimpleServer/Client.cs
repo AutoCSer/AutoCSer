@@ -6,7 +6,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
     /// <summary>
     /// TCP 开放服务客户端
     /// </summary>
-    public abstract class Client : TcpSimpleServer.Client<ServerAttribute>
+    public abstract class Client : TcpSimpleServer.Client
     {
 #if !NOJIT
         /// <summary>
@@ -20,7 +20,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="log">日志接口</param>
         public Client(ServerAttribute attribute, ILog log)
-            : base(attribute, log, attribute.MaxInputSize)
+            : base(attribute, log, attribute.GetMaxInputSize)
         {
         }
     }

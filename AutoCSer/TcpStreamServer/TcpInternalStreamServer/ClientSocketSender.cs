@@ -5,7 +5,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// <summary>
     /// TCP 内部服务客户端套接字数据发送
     /// </summary>
-    public sealed class ClientSocketSender : TcpStreamServer.ClientSocketSender<ServerAttribute>
+    public sealed class ClientSocketSender : TcpStreamServer.ClientSocketSender
     {
 #if !NOJIT
         /// <summary>

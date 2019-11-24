@@ -5704,7 +5704,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -5776,7 +5776,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(IsCreateEventCache ? "true" : "false");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -6498,7 +6498,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     sqlTable.CacheCreated();");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -6807,7 +6807,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     sqlTable.CacheCreated();");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -6962,7 +6962,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     sqlTable.CacheCreated();");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -7091,7 +7091,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     sqlTable.CacheCreated();");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -7261,7 +7261,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     sqlTable.CacheCreated();");
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -9376,7 +9376,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _if_ = false;
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_ = NowTimeMembers;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                     if (_value1_.Length != 0)
@@ -9395,17 +9395,27 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 protected static class NowTimes
                 {");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_;
                     _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MemberIndex _value2_ in _value1_)
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember _value2_ in _value1_)
                         {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
             _if_ = false;
-                    if (_value2_.XmlDocument != null)
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value3_.XmlDocument != null)
                     {
                         _if_ = true;
                 }
@@ -9414,14 +9424,47 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                     /// <summary>
                     /// ");
-            _code_.Add(_value2_.XmlDocument);
+            _code_.Add(_value3_.XmlDocument);
             _code_.Add(@" 当前时间
                     /// </summary>");
             }
             _code_.Add(@"
                     public static readonly AutoCSer.Sql.NowTime ");
-            _code_.Add(_value2_.MemberName);
-            _code_.Add(@" = sqlTable == null ? null : new AutoCSer.Sql.NowTime(sqlTable.NowTimeMilliseconds);");
+            _code_.Add(_value3_.MemberName);
+            _code_.Add(@" = sqlTable == null ? null :");
+            _if_ = false;
+                {
+                    AutoCSer.Sql.MemberAttribute _value4_ = _value2_.MemberAttribute;
+                    if (_value4_ != null)
+                    {
+                if (_value4_.NowTimeType.ToString() == @"DateTime2")
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@" new AutoCSer.Sql.NowTime(1L)");
+            }
+            _if_ = false;
+                {
+                    AutoCSer.Sql.MemberAttribute _value4_ = _value2_.MemberAttribute;
+                    if (_value4_ != null)
+                    {
+                if (_value4_.NowTimeType.ToString() != @"DateTime2")
+                {
+                    _if_ = true;
+                }
+                    }
+                }
+            if (_if_)
+            {
+            _code_.Add(@" new AutoCSer.Sql.NowTime(sqlTable.NowTimeMilliseconds)");
+            }
+            _code_.Add(@";");
+            }
+                }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -9438,21 +9481,17 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (tableType value in values)
                         {");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_;
                     _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MemberIndex _value2_ in _value1_)
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember _value2_ in _value1_)
                         {
-            _code_.Add(@"
-                            ");
-            _code_.Add(_value2_.MemberName);
-            _code_.Add(@"/**/.SetMaxTime(");
                 {
-                    System.Reflection.MemberInfo _value3_ = default(System.Reflection.MemberInfo);
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
                     _value3_ = _value2_.Member;
             _if_ = false;
                     if (_value3_ != null)
@@ -9461,11 +9500,27 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _code_.Add(@"
+                            ");
+            _code_.Add(_value3_.MemberName);
+            _code_.Add(@"/**/.SetMaxTime(");
+                {
+                    System.Reflection.MemberInfo _value4_ = default(System.Reflection.MemberInfo);
+                    _value4_ = _value3_.Member;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"value.");
-            _code_.Add(_value2_.MemberName);
+            _code_.Add(_value3_.MemberName);
             }
                 }
             _code_.Add(@");");
+            }
+                }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -9475,19 +9530,31 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                         }");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_;
                     _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MemberIndex _value2_ in _value1_)
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember _value2_ in _value1_)
                         {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"
                         ");
-            _code_.Add(_value2_.MemberName);
+            _code_.Add(_value3_.MemberName);
             _code_.Add(@"/**/.SetMaxTime();");
+            }
+                }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -9500,21 +9567,33 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 static SqlModel()
                 {");
                 {
-                    AutoCSer.CodeGenerator.Metadata.MemberIndex[] _value1_;
+                    AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember[] _value1_;
                     _value1_ = NowTimeMembers;
                     if (_value1_ != null)
                     {
                         int _loopIndex1_ = _loopIndex_, _loopCount1_ = _loopCount_;
                         _loopIndex_ = 0;
                         _loopCount_ = _value1_.Length;
-                        foreach (AutoCSer.CodeGenerator.Metadata.MemberIndex _value2_ in _value1_)
+                        foreach (AutoCSer.CodeGenerator.TemplateGenerator.SqlModel.Generator.NowTimeMember _value2_ in _value1_)
                         {
+                {
+                    AutoCSer.CodeGenerator.Metadata.MemberIndex _value3_ = default(AutoCSer.CodeGenerator.Metadata.MemberIndex);
+                    _value3_ = _value2_.Member;
+            _if_ = false;
+                    if (_value3_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
             _code_.Add(@"
                     nowTimeArray[");
-            _code_.Add(_value2_.MemberIndex.ToString());
+            _code_.Add(_value3_.MemberIndex.ToString());
             _code_.Add(@"] = NowTimes.");
-            _code_.Add(_value2_.MemberName);
+            _code_.Add(_value3_.MemberName);
             _code_.Add(@";");
+            }
+                }
                             ++_loopIndex_;
                         }
                         _loopIndex_ = _loopIndex1_;
@@ -10962,7 +11041,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
 #if !NOJIT
-             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
+             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server>
 #endif");
             }
             }
@@ -10976,15 +11055,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpInternalServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.GetIsRememberCommand)
+                    if (IsRememberCommand)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -13929,7 +14002,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute");
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, ");
+            _code_.Add(MaxTimeoutSeconds.ToString());
+            _code_.Add(@", onCustomData, log, clientRoute");
             _if_ = false;
                     if (ClientRouteType != null)
                     {
@@ -14016,13 +14091,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -14080,13 +14165,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
@@ -16398,13 +16493,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
@@ -18349,7 +18454,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
 #if !NOJIT
-             : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server, AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>
+             : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server>
 #endif");
             }
             }
@@ -18363,15 +18468,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.GetIsRememberCommand)
+                    if (IsRememberCommand)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -20099,13 +20198,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -21749,7 +21858,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
 #if !NOJIT
-             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalStreamServer.Server, AutoCSer.Net.TcpInternalStreamServer.ServerAttribute>
+             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalStreamServer.Server>
 #endif");
             }
             }
@@ -21763,15 +21872,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpInternalStreamServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.GetIsRememberCommand)
+                    if (IsRememberCommand)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -23380,13 +23483,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -23444,13 +23557,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
@@ -25763,13 +25886,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -27593,7 +27726,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
 #if !NOJIT
-              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpOpenServer.Server, AutoCSer.Net.TcpOpenServer.ServerAttribute>
+              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpOpenServer.Server>
 #endif");
             }
             }
@@ -27607,15 +27740,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpOpenServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.GetIsRememberCommand)
+                    if (IsRememberCommand)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -30557,7 +30684,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             }
             _code_.Add(@"
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, onCustomData, log, clientRoute");
+                    _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, ");
+            _code_.Add(MaxTimeoutSeconds.ToString());
+            _code_.Add(@", onCustomData, log, clientRoute");
             _if_ = false;
                     if (OpenClientRouteType != null)
                     {
@@ -30644,13 +30773,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -30708,13 +30847,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
@@ -33029,13 +33178,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
@@ -34968,7 +35127,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
 #if !NOJIT
-              : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server, AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute>
+              : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpOpenSimpleServer.Server>
 #endif");
             }
             }
@@ -34982,15 +35141,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpOpenSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.GetIsRememberCommand)
+                    if (IsRememberCommand)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -36717,13 +36870,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -38358,7 +38521,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@"
 #if !NOJIT
-              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpOpenStreamServer.Server, AutoCSer.Net.TcpOpenStreamServer.ServerAttribute>
+              : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpOpenStreamServer.Server>
 #endif");
             }
             }
@@ -38372,15 +38535,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpOpenStreamServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.GetIsRememberCommand)
+                    if (IsRememberCommand)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -39988,13 +40145,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -40052,13 +40219,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
@@ -42373,13 +42550,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -44716,13 +44903,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -44780,13 +44977,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
@@ -47533,13 +47740,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsKeepCallback != 0)
@@ -49149,7 +49366,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         {");
             _if_ = false;
                 {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = ServiceAttribute;
+                    AutoCSer.Net.TcpServer.ServerBaseAttribute _value1_ = ServiceAttribute;
                     if (_value1_ != null)
                     {
                     if (_value1_.IsRememberCommand)
@@ -51459,15 +51676,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
         {");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -51714,15 +51925,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (config.ServerAttribute == null)
                 {");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -51744,15 +51949,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", false);");
             }
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                if (!(bool)_value1_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {
@@ -51776,15 +51975,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 }");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                if (!(bool)_value1_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {
@@ -51794,7 +51987,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@" 服务器端是否本地调用"", AutoCSer.Log.CacheType.None);");
             }
             _code_.Add(@"
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);");
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, ");
+            _code_.Add(MaxTimeoutSeconds.ToString());
+            _code_.Add(@", config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);");
             _if_ = false;
                 {
                     AutoCSer.Net.TcpStaticServer.ServerAttribute _value1_ = Attribute;
@@ -54557,15 +54752,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value2_ = ServiceAttribute;
-                    if (_value2_ != null)
-                    {
-                    if (_value2_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -55358,15 +55547,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         }");
             }
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticServer.ServerAttribute _value2_ = ServiceAttribute;
-                    if (_value2_ != null)
-                    {
-                if (!(bool)_value2_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {
@@ -56556,13 +56739,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -57709,7 +57902,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         {");
             _if_ = false;
                 {
-                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
+                    AutoCSer.Net.TcpServer.ServerBaseAttribute _value1_ = ServiceAttribute;
                     if (_value1_ != null)
                     {
                     if (_value1_.IsRememberCommand)
@@ -58953,15 +59146,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
         {");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -59188,15 +59375,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (config.ServerAttribute == null)
                 {");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -59218,15 +59399,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", false);");
             }
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                if (!(bool)_value1_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {
@@ -59250,15 +59425,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 }");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticSimpleServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                if (!(bool)_value1_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {
@@ -59931,13 +60100,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsClientSendOnly != 0)
@@ -59995,13 +60174,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", InputParameterIndex = ");
             _code_.Add(_value2_.InputParameterIndex.ToString());
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
@@ -62744,13 +62933,23 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", TaskType = ");
             _code_.Add(_value2_.ClientTask);
             _if_ = false;
+                    if (_value2_.TimeoutSeconds != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", TimeoutSeconds = ");
+            _code_.Add(_value2_.TimeoutSeconds.ToString());
+            }
+            _if_ = false;
                     if (_value2_.IsJsonSerialize)
                     {
                         _if_ = true;
                 }
             if (_if_)
             {
-            _code_.Add(@" , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
+            _code_.Add(@", CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize");
             }
             _if_ = false;
                     if (_value2_.IsVerifyMethod)
@@ -64199,7 +64398,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
         {");
             _if_ = false;
                 {
-                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = ServiceAttribute;
+                    AutoCSer.Net.TcpServer.ServerBaseAttribute _value1_ = ServiceAttribute;
                     if (_value1_ != null)
                     {
                     if (_value1_.IsRememberCommand)
@@ -65317,15 +65516,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
         {");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -65568,15 +65761,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 if (config.ServerAttribute == null)
                 {");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                    if (_value1_.IsSegmentation)
+                    if (IsSegmentation)
                     {
                         _if_ = true;
-                    }
-                }
                 }
             if (_if_)
             {
@@ -65598,15 +65785,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@", false);");
             }
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                if (!(bool)_value1_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {
@@ -65630,15 +65811,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"
                 }");
             _if_ = false;
-                {
-                    AutoCSer.Net.TcpStaticStreamServer.ServerAttribute _value1_ = ServiceAttribute;
-                    if (_value1_ != null)
-                    {
-                if (!(bool)_value1_.IsSegmentation)
+                if (!(bool)IsSegmentation)
                 {
                     _if_ = true;
-                }
-                    }
                 }
             if (_if_)
             {

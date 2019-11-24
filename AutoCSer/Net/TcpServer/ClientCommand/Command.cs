@@ -12,6 +12,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// 输出流起始位置
         /// </summary>
         internal const int StreamStartIndex = sizeof(uint) + sizeof(int);
+
         /// <summary>
         /// TCP调用命令
         /// </summary>
@@ -88,6 +89,16 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             throw new InvalidOperationException();
         }
         /// <summary>
+        /// 超时处理
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void Timeout()
+        {
+            SubArray<byte> data = new SubArray<byte> { Start = (int)(byte)ReturnType.Timeout };
+            OnReceive(ref data);
+        }
+
+        /// <summary>
         /// 获取返回值类型
         /// </summary>
         /// <param name="data"></param>
@@ -107,14 +118,14 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             }
             return ReturnType.ClientDeSerializeError;
         }
-
         /// <summary>
         /// 取消命令调用
         /// </summary>
         /// <param name="head"></param>
-        internal static void CancelLink(CommandBase head)
+        /// <param name="returnType"></param>
+        internal static void CancelLink(CommandBase head, ReturnType returnType = ReturnType.ClientDisposed)
         {
-            SubArray<byte> data = new SubArray<byte> { Start = (int)(byte)ReturnType.ClientDisposed };
+            SubArray<byte> data = new SubArray<byte> { Start = (int)(byte)returnType };
             CommandBase next = null;
             do
             {

@@ -55,7 +55,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
                     Sender.AddLog(error);
                 }
-                Sender.Push(CommandIndex, Sender.IsServerBuildOutputThread ? RemoteExpression.ReturnValue.Output.OutputThreadInfo : RemoteExpression.ReturnValue.Output.OutputInfo, ref value);
+                Sender.Push(CommandIndex, Sender.IsBuildOutputThread ? RemoteExpression.ReturnValue.Output.OutputThreadInfo : RemoteExpression.ReturnValue.Output.OutputInfo, ref value);
             }
             Sender = null;
             inputParameter.SetNull();

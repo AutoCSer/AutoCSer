@@ -15,6 +15,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override MemberFilters GetMemberFilters { get { return MemberFilters; } }
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数，默认为 8KB。
@@ -37,7 +38,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 最大输入数据字节数，默认为 16 KB，小于等于 0 表示不限
         /// </summary>
-        public int MaxInputSize = (16 << 10) - (sizeof(uint) + sizeof(int) * 2);
+        public int MaxInputSize = DefaultMaxInputSize;
+        /// <summary>
+        /// 最大输入数据字节数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetMaxInputSize { get { return MaxInputSize; } }
         /// <summary>
         /// 客户端保持连接心跳包间隔时间默认为 59 秒，对于频率稳定可靠的服务类型可以设置为 0 禁用心跳包。
         /// </summary>
@@ -51,6 +57,11 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// 客户端接收命令超时为 9 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
         public int ReceiveVerifyCommandSeconds = TcpOpenServer.ServerAttribute.DefaultReceiveVerifyCommandSeconds;
+        /// <summary>
+        /// 客户端接收命令超时
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetReceiveVerifyCommandSeconds { get { return ReceiveVerifyCommandSeconds; } }
         /// <summary>
         /// 当需要将客户端提供给第三方使用的时候，可能不希望 dll 中同时包含服务端，默认为 true 会将客户端代码单独剥离出来生成一个代码文件 {项目名称}.tcpServer.服务名称.client.cs，当然你需要将服务中所有参数与返回值及其依赖的数据类型剥离出来。
         /// </summary>
@@ -80,6 +91,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
         /// <summary>
         /// 命令映射枚举类型
@@ -90,7 +102,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
         /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        public override bool GetIsRememberCommand
+        internal override bool GetIsRememberCommand
         {
             get { return IsRememberCommand && CommandIdentityEnmuType == null; }
         }

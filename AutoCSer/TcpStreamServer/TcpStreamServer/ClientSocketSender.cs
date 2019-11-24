@@ -9,8 +9,12 @@ namespace AutoCSer.Net.TcpStreamServer
     /// <summary>
     /// TCP 服务客户端套接字数据发送
     /// </summary>
-    public abstract class ClientSocketSender : TcpServer.ClientSocketSenderBase
+    public abstract partial class ClientSocketSender : TcpServer.ClientSocketSenderBase
     {
+        /// <summary>
+        /// 远程表达式客户端检测服务端映射标识
+        /// </summary>
+        private readonly RemoteExpressionServerNodeIdChecker remoteExpressionServerNodeIdChecker;
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
@@ -29,11 +33,11 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <summary>
         /// 是否有新的 TCP 客户端输出信息
         /// </summary>
-        protected volatile int isNewCommand;
+        private volatile int isNewCommand;
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
-        protected int commandQueueLock;
+        private int commandQueueLock;
 #if !NOJIT
         /// <summary>
         /// TCP 服务客户端套接字数据发送
@@ -44,45 +48,15 @@ namespace AutoCSer.Net.TcpStreamServer
         /// TCP 服务客户端套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务客户端套接字</param>
-        /// <param name="queueCommandSize">客户端最大未处理命令数量</param>
-        internal ClientSocketSender(ClientSocket socket, int queueCommandSize)
-            : base(socket, queueCommandSize)
+        internal ClientSocketSender(ClientSocket socket)
+            : base(socket)
         {
             ClientSocket = socket;
             CommandEnd = socket.CommandQueue;
-        }
-    }
-    /// <summary>
-    /// TCP 服务客户端套接字数据发送
-    /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    public abstract partial class ClientSocketSender<attributeType> : ClientSocketSender
-        where attributeType : ServerAttribute
-    {
-        /// <summary>
-        /// TCP 服务客户端创建器
-        /// </summary>
-        private readonly TcpServer.ClientSocketCreator<attributeType> clientCreator;
-        /// <summary>
-        /// 远程表达式客户端检测服务端映射标识
-        /// </summary>
-        private readonly RemoteExpressionServerNodeIdChecker remoteExpressionServerNodeIdChecker;
-#if !NOJIT
-        /// <summary>
-        /// TCP 服务客户端套接字数据发送
-        /// </summary>
-        internal ClientSocketSender() : base() { }
-#endif
-        /// <summary>
-        /// TCP 服务客户端套接字数据发送
-        /// </summary>
-        /// <param name="socket">TCP 服务客户端套接字</param>
-        internal ClientSocketSender(ClientSocket<attributeType> socket)
-            : base(socket, socket.ClientCreator.Attribute.GetQueueCommandSize)
-        {
-            clientCreator = socket.ClientCreator;
+
             if (clientCreator.Attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Sender = this };
         }
+   
         /// <summary>
         /// 心跳检测
         /// </summary>
@@ -878,7 +852,7 @@ namespace AutoCSer.Net.TcpStreamServer
             }
             finally
             {
-                if (buildInfo.IsError) (ClientSocket as ClientSocket<attributeType>).DisposeSocket();
+                if (buildInfo.IsError) ClientSocket.DisposeSocket();
                 Buffer.Free();
                 CopyBuffer.TryFree();
                 CompressBuffer.TryFree();

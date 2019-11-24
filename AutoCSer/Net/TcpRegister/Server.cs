@@ -337,7 +337,7 @@ namespace AutoCSer.Net.TcpRegister
         public override void SetTcpServer(AutoCSer.Net.TcpInternalServer.Server tcpServer)
         {
             base.SetTcpServer(tcpServer);
-            cacheFile = AutoCSer.Config.Pub.Default.CachePath + ServerName + (ServerName == tcpServer.ServerName ? null : ("_" + tcpServer.ServerName)) + ".cache";
+            cacheFile = AutoCSer.Config.Pub.Default.CachePath + ServerName + (ServerName == tcpServer.Attribute.ServerName ? null : ("_" + tcpServer.Attribute.ServerName)) + ".cache";
             fromCacheFile();
             PushNotNull(this);
         }
@@ -407,11 +407,6 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary> 
         private int isTimer = config.SaveSeconds;
         /// <summary>
-        /// 激活计时器
-        /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly DateTime timer = Date.NowTime.Now;
-        /// <summary>
         /// 定时器触发日志写入
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -444,7 +439,6 @@ namespace AutoCSer.Net.TcpRegister
             {
                 ServerEnd = value;
                 System.Threading.Interlocked.Exchange(ref serverLinkLock, 0);
-                Date.NowTime.Flag |= Date.NowTime.OnTimeFlag.TcpRegister;
             }
             else
             {
@@ -492,6 +486,7 @@ namespace AutoCSer.Net.TcpRegister
         {
             config = ConfigLoader.GetUnion(typeof(Config)).Config ?? new Config();
             config.CheckPort();
+            ++Date.NowTime.Count;
         }
     }
 }

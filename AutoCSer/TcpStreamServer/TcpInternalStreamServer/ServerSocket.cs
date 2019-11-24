@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// <summary>
     /// TCP 内部服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpStreamServer.ServerSocket<ServerAttribute, Server, ServerSocket, ServerSocketSender>
+    public sealed unsafe class ServerSocket : TcpStreamServer.ServerSocket<Server, ServerSocket, ServerSocketSender>
     {
         /// <summary>
         /// TCP 内部服务套接字数据发送
@@ -145,7 +145,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
             if (socket != null)
             {
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
                 if (socketError == SocketError.Success)
@@ -861,8 +861,8 @@ namespace AutoCSer.Net.TcpInternalStreamServer
             if (MarkData != 0) TcpServer.CommandBuffer.Mark(ref data, MarkData);
             switch (command - TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
             {
-                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpressionNodeId(ref data, Server.Attribute.IsServerBuildOutputThread); return;
-                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpression(ref data, Server.Attribute.IsServerBuildOutputThread); return;
+                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpressionNodeId(ref data, Server.ServerAttribute.IsBuildOutputThread); return;
+                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpression(ref data, Server.ServerAttribute.IsBuildOutputThread); return;
                 default: Server.DoCommand(command, Sender, ref data); return;
             }
         }
@@ -1169,8 +1169,8 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                     {
                                         if (MarkData != 0) TcpServer.CommandBuffer.Mark(start, MarkData, compressionDataSize);
                                         data.Set((int)(start - dataFixed), compressionDataSize);
-                                        if (command == TcpServer.Server.RemoteExpressionCommandIndex) Sender.GetRemoteExpression(ref data, Server.Attribute.IsServerBuildOutputThread);
-                                        else Sender.GetRemoteExpressionNodeId(ref data, Server.Attribute.IsServerBuildOutputThread);
+                                        if (command == TcpServer.Server.RemoteExpressionCommandIndex) Sender.GetRemoteExpression(ref data, Server.ServerAttribute.IsBuildOutputThread);
+                                        else Sender.GetRemoteExpressionNodeId(ref data, Server.ServerAttribute.IsBuildOutputThread);
                                         start += compressionDataSize;
                                         break;
                                     }

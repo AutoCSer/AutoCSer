@@ -107,7 +107,6 @@ namespace AutoCSer.Log
                 if (isFieStream)
                 {
                     Files.PushNotNull(this);
-                    Date.NowTime.Flag |= Date.NowTime.OnTimeFlag.LogFile;
                     isPushFiles = 1;
                     AutoCSer.DomainUnload.Unloader.AddLast(this, DomainUnload.Type.LogFileDispose);
                 }
@@ -451,11 +450,6 @@ namespace AutoCSer.Log
         }
 
         /// <summary>
-        /// 激活计时器
-        /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly DateTime timer = Date.NowTime.Now;
-        /// <summary>
         /// 定时器触发日志写入
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
@@ -560,6 +554,11 @@ namespace AutoCSer.Log
                 Monitor.PulseAll(waitLock);
                 Monitor.Exit(waitLock);
             }
+        }
+
+        static File()
+        {
+            ++Date.NowTime.Count;
         }
     }
 }

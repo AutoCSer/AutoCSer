@@ -114,7 +114,7 @@ namespace AutoCSer.CsvFile
         public bool GetValue(string Name, out string Value, ref string Message)
         {
             if (TryGetValue(Name, out Value)) return true;
-            Message = "第 "+Row.toString()+" 行没有找到 {Name}";
+            Message = "第 " + Row.toString() + " 行没有找到 " + Name;
             return false;
         }
         /// <summary>

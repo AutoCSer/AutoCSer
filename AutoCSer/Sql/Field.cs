@@ -57,9 +57,9 @@ namespace AutoCSer.Sql
         /// </summary>
         internal bool IsUnknownJson;
         /// <summary>
-        /// 是否当前时间
+        /// 当前时间类型
         /// </summary>
-        internal bool IsNowTime;
+        internal NowTimeType NowTimeType;
         /// <summary>
         /// 是否需要验证
         /// </summary>
@@ -121,7 +121,7 @@ namespace AutoCSer.Sql
                 ToSqlCastMethod = AutoCSer.Emit.CastType.GetMethod(FieldInfo.FieldType, DataType);
                 ToModelCastMethod = AutoCSer.Emit.CastType.GetMethod(DataType, FieldInfo.FieldType);
             }
-            if (attribute != null && attribute.IsNowTime && FieldInfo.FieldType == typeof(DateTime)) IsNowTime = true;
+            if (attribute != null && attribute.NowTimeType != NowTimeType.None && FieldInfo.FieldType == typeof(DateTime)) NowTimeType = attribute.NowTimeType;
             ToSqlMethod = ConstantConverter.GetMethod(DataType);
         }
         /// <summary>
@@ -189,13 +189,13 @@ namespace AutoCSer.Sql
             {
                 if (nullableType == null)
                 {
-                    Type dataType = type.formCSharpType().toCSharpType();
+                    Type dataType = type.toDataType();
                     if (dataType != type) value = new MemberAttribute { DataType = dataType };
                 }
                 else
                 {
                     value = new MemberAttribute { IsNull = true };
-                    Type dataType = nullableType.formCSharpType().toCSharpType();
+                    Type dataType = nullableType.toDataType();
                     if (dataType != nullableType) value.DataType = dataType.toNullableType();
                 }
             }
@@ -287,7 +287,7 @@ namespace AutoCSer.Sql
                         LogAttribute logAttribute = isColumn ? null : field.GetAttribute<LogAttribute>(false);
                         if (logAttribute == null || logAttribute.IsMember)
                         {
-                            if (attribute != null && attribute.IsNowTime && type != typeof(DateTime)) attribute.IsNowTime = false;
+                            if (attribute != null && attribute.NowTimeType != NowTimeType.None && type != typeof(DateTime)) attribute.NowTimeType = NowTimeType.None;
                             values.Add(new Field(field, attribute));
                         }
                     }

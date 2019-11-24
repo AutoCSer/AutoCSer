@@ -237,15 +237,13 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
     /// <typeparam name="serverType">TCP 服务类型</typeparam>
     /// <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
     /// <typeparam name="socketSenderType">TCP 服务套接字数据发送</typeparam>
-    public abstract class ServerSocket<attributeType, serverType, socketType, socketSenderType> : ServerSocket
-        where attributeType : ServerAttribute
-        where serverType : Server<attributeType, serverType, socketSenderType>
-        where socketType : ServerSocket<attributeType, serverType, socketType, socketSenderType>
-        where socketSenderType : ServerSocketSender<attributeType, serverType, socketType, socketSenderType>
+    public abstract class ServerSocket<serverType, socketType, socketSenderType> : ServerSocket
+        where serverType : Server<serverType, socketSenderType>
+        where socketType : ServerSocket<serverType, socketType, socketSenderType>
+        where socketSenderType : ServerSocketSender<serverType, socketType, socketSenderType>
     {
         /// <summary>
         /// 线程切换检测时间

@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     /// <summary>
     /// TCP 内部服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, Server, ServerSocket>
+    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<Server, ServerSocket>
     {
 #if !NOJIT
         /// <summary>
@@ -106,7 +106,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             else
             {
                 IsVerifyMethod = false;
-                Socket.SendTimeout = Server.Attribute.ReceiveVerifyCommandSeconds * 1000;
+                Socket.SendTimeout = Server.ServerAttribute.ReceiveVerifyCommandSeconds * 1000;
                 if (isReceiveVerifyCommand()) return;
             }
             close();
@@ -157,7 +157,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             if (socket != null)
             {
                 SocketType = TcpSimpleServer.ServerSocketType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex, bufferSize, SocketFlags.None, out socketError, asyncCallback, socket);
                 if (socketError == SocketError.Success)

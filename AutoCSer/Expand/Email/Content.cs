@@ -20,9 +20,17 @@ namespace AutoCSer.Email
         /// </summary>
         public string Body;
         /// <summary>
+        /// HTML 邮件的文本内容，IsHtml 为 true 时有效
+        /// </summary>
+        public string TextBody;
+        /// <summary>
         /// 邮件内容是否HTML代码
         /// </summary>
         public bool IsHtml;
+        /// <summary>
+        /// HTML 是否增加视图附件
+        /// </summary>
+        public bool IsHtmlView;
         /// <summary>
         /// 附件文件名集合
         /// </summary>

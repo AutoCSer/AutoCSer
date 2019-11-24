@@ -251,7 +251,8 @@ namespace AutoCSer.CodeGenerator
                 }
                 catch (Exception error)
                 {
-                    Messages.Add(error);
+                    if (CustomConfig.Assembly == null) Messages.Add(error);
+                    else Messages.Add(CustomConfig.Assembly.FullName + "\r\n" + error.ToString());
                 }
                 finally { Coder.Output(this); }
             }

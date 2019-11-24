@@ -45,7 +45,7 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         {
             long ticks;
             ulong markData = 0;
-            ServerAttribute attribute = client.Attribute;
+            TcpServer.ServerBaseAttribute attribute = client.Attribute;
             if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
             ticks = Date.NowTime.SetUtc().Ticks;
             do

@@ -92,7 +92,7 @@ namespace AutoCSer.Sql.Excel
             }
             else
             {
-                sqlType = memberType.formCSharpType();
+                sqlType = memberType.formCSharpType(memberAttribute);
                 size = sqlType.getSize(memberAttribute); 
             }
             return new Column

@@ -9,14 +9,16 @@ namespace AutoCSer.Net.TcpStreamServer
     /// <summary>
     /// 时间验证服务
     /// </summary>
-    public abstract unsafe class TimeVerifyServer<attributeType, serverType, serverSocketType, serverSocketSenderType>
+    /// <typeparam name="serverType"></typeparam>
+    /// <typeparam name="serverSocketType"></typeparam>
+    /// <typeparam name="serverSocketSenderType"></typeparam>
+    public abstract unsafe class TimeVerifyServer<serverType, serverSocketType, serverSocketSenderType>
 #if !NOJIT
-        :  TcpServer.ISetTcpServer<serverType, attributeType>
+        :  TcpServer.ISetTcpServer<serverType>
 #endif
-        where serverType : Server<attributeType, serverType, serverSocketSenderType>
-        where attributeType : ServerAttribute
-        where serverSocketType : ServerSocket<attributeType, serverType, serverSocketType, serverSocketSenderType>
-        where serverSocketSenderType : ServerSocketSender<attributeType, serverType, serverSocketType, serverSocketSenderType>
+        where serverType : Server<serverType, serverSocketSenderType>
+        where serverSocketType : ServerSocket<serverType, serverSocketType, serverSocketSenderType>
+        where serverSocketSenderType : ServerSocketSender<serverType, serverSocketType, serverSocketSenderType>
     {
         /// <summary>
         /// TCP 服务端
@@ -56,8 +58,7 @@ namespace AutoCSer.Net.TcpStreamServer
         [Method(IsVerifyMethod = true, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = AutoCSer.Net.TcpServer.TimeVerifyServer.CommandIdentity)]
         protected virtual bool verify(serverSocketSenderType sender, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
-            TcpServer.ServerBaseAttribute attribute = server.Attribute;
-            if (AutoCSer.Net.TcpServer.TimeVerifyServer.CheckVerifyString(server, attribute)) return true;
+            if (server.CheckVerifyString()) return true;
             if (md5Data != null && md5Data.Length == 16)
             {
                 if (ticks <= lastVerifyTicks && ticks != sender.TimeVerifyTicks)
@@ -71,6 +72,7 @@ namespace AutoCSer.Net.TcpStreamServer
                     ticks = sender.TimeVerifyTicks;
                     return false;
                 }
+                TcpServer.ServerBaseAttribute attribute = server.Attribute;
                 if (AutoCSer.Net.TcpServer.TimeVerifyServer.IsMd5(AutoCSer.Net.TcpServer.TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     if (ticks > lastVerifyTicks)
@@ -79,7 +81,7 @@ namespace AutoCSer.Net.TcpStreamServer
                         if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
                         System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                     }
-                    if (!attribute.IsMarkData || sender.SetMarkData(attribute.VerifyHashCode ^ randomPrefix)) return true;
+                    if (!attribute.IsMarkData || sender.SetMarkData(server.ServerAttribute.VerifyHashCode ^ randomPrefix)) return true;
                 }
             }
             ticks = 0;

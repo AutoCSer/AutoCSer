@@ -84,7 +84,6 @@ namespace AutoCSer.IO
             }
             watchers = DictionaryCreator.CreateHashString<CreateFlieTimeoutCounter>();
             Watchers.PushNotNull(this);
-            WebView.OnTime.Set(Date.NowTime.OnTimeFlag.CreateFlieTimeoutWatcher);
         }
         /// <summary>
         /// 释放资源
@@ -303,5 +302,10 @@ namespace AutoCSer.IO
         /// 新建文件监视链表
         /// </summary>
         internal static YieldLink Watchers;
+
+        static CreateFlieTimeoutWatcher()
+        {
+            AutoCSer.WebView.OnTime.Default.Set();
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
         /// <param name="product">乘积</param>
         /// <returns>和</returns>
         [AutoCSer.Net.TcpStaticSimpleServer.Method]
-        static AutoCSer.Net.TcpServer.ReturnValue<int> Add1(int left, ref int right, out int product)
+        static int Add1(int left, ref int right, out int product)
         {
             product = left * right;
             int sum = left + right;
@@ -31,7 +31,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
         /// <param name="product">乘积</param>
         /// <returns>和</returns>
         [AutoCSer.Net.TcpStaticSimpleServer.Method(ServerName = ServerName.Example2)]
-        static AutoCSer.Net.TcpServer.ReturnValue<int> Add2(int left, ref int right, out int product)
+        static int Add2(int left, ref int right, out int product)
         {
             product = left * right;
             int sum = left + right;

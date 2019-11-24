@@ -256,7 +256,6 @@ namespace AutoCSer.CacheServer
                 {
                     fileFlushSeconds = config.FileFlushSeconds;
                     Writers.PushNotNull(this);
-                    OnTime.Set(Date.NowTime.OnTimeFlag.CacheFile);
                 }
                 else if (fileStream != null) fileStream.Dispose();
             }
@@ -679,7 +678,6 @@ namespace AutoCSer.CacheServer
                     cache.OnCreatedNewFileStream();
                     isError = false;
                     Writers.PushNotNull(this);
-                    OnTime.Set(Date.NowTime.OnTimeFlag.CacheFile);
                 }
                 finally
                 {
@@ -692,6 +690,11 @@ namespace AutoCSer.CacheServer
                 }
             }
             else AutoCSer.Threading.ThreadPool.TinyBackground.Start(writeQueue);
+        }
+
+        static FileStreamWriter()
+        {
+            OnTime.Default.Set();
         }
     }
 }

@@ -33,6 +33,7 @@ namespace AutoCSer.Sql.Excel
             sqlTypeNames[(int)SqlDbType.Bit] = "BOOLEAN";
             sqlTypeNames[(int)SqlDbType.Char] = "VARCHAR";
             sqlTypeNames[(int)SqlDbType.DateTime] = "DATETIME";
+            sqlTypeNames[(int)SqlDbType.DateTime2] = "DATETIME2";
             sqlTypeNames[(int)SqlDbType.Decimal] = "DECIMAL";
             sqlTypeNames[(int)SqlDbType.Float] = "DECIMAL";
             //SqlTypeNames[(int)SqlDbType.Image] = typeof(byte[]);

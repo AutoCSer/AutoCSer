@@ -9,8 +9,16 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务客户端创建器
     /// </summary>
-    public abstract class ClientSocketCreator
+    public sealed class ClientSocketCreator
     {
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal readonly ClientBase CommandClient;
+        /// <summary>
+        /// TCP 服务调用配置
+        /// </summary>
+        internal ServerBaseAttribute Attribute { get { return CommandClient.Attribute; } }
         /// <summary>
         /// 服务主机名称
         /// </summary>
@@ -35,49 +43,18 @@ namespace AutoCSer.Net.TcpServer
         /// 服务更新版本号
         /// </summary>
         internal volatile int CreateVersion;
-    }
-    /// <summary>
-    /// TCP 服务客户端创建器
-    /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    public class ClientSocketCreator<attributeType> : ClientSocketCreator
-        where attributeType : ServerAttribute
-    {
-        /// <summary>
-        /// TCP 服务客户端
-        /// </summary>
-        internal readonly ClientBase<attributeType> CommandClient;
-        /// <summary>
-        /// TCP 服务调用配置
-        /// </summary>
-        internal readonly attributeType Attribute;
         /// <summary>
         /// TCP 服务客户端创建器
         /// </summary>
         /// <param name="commandClient">TCP 服务客户端</param>
-        internal ClientSocketCreator(ClientBase<attributeType> commandClient) : this(commandClient, commandClient.Attribute) { }
-        /// <summary>
-        /// TCP 服务客户端创建器
-        /// </summary>
-        /// <param name="commandClient">TCP 服务客户端</param>
-        /// <param name="attribute">TCP 服务调用配置</param>
-        public ClientSocketCreator(ClientBase<attributeType> commandClient, attributeType attribute)
+        internal ClientSocketCreator(ClientBase commandClient)
         {
             this.CommandClient = commandClient;
-            Attribute = attribute;
+            Host = Attribute.Host;
+            Port = Attribute.Port;
 
-            this.Host = attribute.Host;
-            this.Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(this.Host, CommandClient.Log);
         }
-        ///// <summary>
-        ///// 套接字关闭事件
-        ///// </summary>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //internal void OnSocketClosed()
-        //{
-        //    CommandClient.OnSocketClosed(this, Socket);
-        //}
         /// <summary>
         /// 释放套接字
         /// </summary>
@@ -86,6 +63,7 @@ namespace AutoCSer.Net.TcpServer
         {
             if (CreateSocket != null) CreateSocket.DisposeSocket();
         }
+
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
@@ -127,7 +105,7 @@ namespace AutoCSer.Net.TcpServer
             }
             if (port == 0)
             {
-                CommandClient.Log.Add(AutoCSer.Log.LogType.Error, CommandClient.ServerName + " 端口号不能为 0");
+                CommandClient.Log.Add(AutoCSer.Log.LogType.Error, CommandClient.Attribute.ServerName + " 端口号不能为 0");
                 return false;
             }
             return true;

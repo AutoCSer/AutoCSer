@@ -826,12 +826,14 @@ namespace AutoCSer.CodeGenerator.Template
                 protected static class NowTimes
                 {
                     #region LOOP NowTimeMembers
+                    #region PUSH Member
                     #region IF XmlDocument
                     /// <summary>
                     /// @XmlDocument 当前时间
                     /// </summary>
                     #endregion IF XmlDocument
-                    public static readonly AutoCSer.Sql.NowTime @MemberName = sqlTable == null ? null : new AutoCSer.Sql.NowTime(sqlTable.NowTimeMilliseconds);
+                    public static readonly AutoCSer.Sql.NowTime @MemberName = sqlTable == null ? null :/*IF:MemberAttribute.NowTimeType=DateTime2*/ new AutoCSer.Sql.NowTime(1L)/*IF:MemberAttribute.NowTimeType=DateTime2*//*NOTE*/ ??/*NOTE*//*NOT:MemberAttribute.NowTimeType=DateTime2*/ new AutoCSer.Sql.NowTime(sqlTable.NowTimeMilliseconds)/*NOT:MemberAttribute.NowTimeType=DateTime2*/;
+                    #endregion PUSH Member
                     #endregion LOOP NowTimeMembers
                     /// <summary>
                     /// 初始化当前时间
@@ -842,18 +844,24 @@ namespace AutoCSer.CodeGenerator.Template
                         foreach (tableType value in values)
                         {
                             #region LOOP NowTimeMembers
+                            #region PUSH Member
                             @MemberName/**/.SetMaxTime(/*NOTE*/(DateTime)(object)/*NOTE*//*PUSH:Member*/value.@MemberName/*PUSH:Member*/);
+                            #endregion PUSH Member
                             #endregion LOOP NowTimeMembers
                         }
                         #region LOOP NowTimeMembers
+                        #region PUSH Member
                         @MemberName/**/.SetMaxTime();
+                        #endregion PUSH Member
                         #endregion LOOP NowTimeMembers
                     }
                 }
                 static SqlModel()
                 {
                     #region LOOP NowTimeMembers
+                    #region PUSH Member
                     nowTimeArray[@MemberIndex] = NowTimes.@MemberName;
+                    #endregion PUSH Member
                     #endregion LOOP NowTimeMembers
                     #region IF IsLoadNowTimeCache
                     if (@IdentityArrayCacheName != null) NowTimes.Load(@IdentityArrayCacheName/**/.Values);

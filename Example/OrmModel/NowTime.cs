@@ -15,7 +15,7 @@ namespace AutoCSer.Example.OrmModel
         /// <summary>
         /// 生成当前时间精度
         /// </summary>
-        [AutoCSer.Sql.Member(IsNowTime = true)]
+        [AutoCSer.Sql.Member(NowTimeType = AutoCSer.Sql.NowTimeType.DateTime2)]
         public DateTime AppendTime;
     }
 }

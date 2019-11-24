@@ -308,7 +308,6 @@
     <Compile Include="Net\TcpRegister\ConfigLoader.cs" />
     <Compile Include="Net\TcpRegister\IClient.cs" />
     <Compile Include="Net\TcpRegister\IServer.cs" />
-    <Compile Include="Net\TcpRegister\IServerAttribute.cs" />
     <Compile Include="Net\TcpRegister\Log.cs" />
     <Compile Include="Net\TcpRegister\LogType.cs" />
     <Compile Include="Net\TcpRegister\PortCache.cs" />
@@ -462,6 +461,7 @@
     <Compile Include="Net\TcpServer\OutputInfo.cs" />
     <Compile Include="Net\TcpServer\ParameterFlags.cs" />
     <Compile Include="Net\TcpServer\RemoteExpressionServerNodeIdChecker.cs" />
+    <Compile Include="Net\TcpServer\ServerAttributeCache.cs" />
     <Compile Include="Net\TcpServer\TimeVerifyTick.cs" />
     <Compile Include="Net\TcpStaticServer\NET4.5\RemoteMemberAttribute.cs" />
     <Compile Include="Net\TcpStaticServer\RemoteLinkAttribute.cs" />
@@ -566,6 +566,7 @@
     <Compile Include="Threading\TimerTaskThreadType.cs" />
     <Compile Include="Threading\UnionType.cs" />
     <Compile Include="Threading\WaitHandle.cs" />
+    <Compile Include="TimeoutCount.cs" />
     <Compile Include="UniqueDictionary.cs" />
     <Compile Include="UniqueHashSet.cs" />
     <Compile Include="Unmanaged.cs" />

@@ -16,12 +16,13 @@ namespace AutoCSer.Net.TcpStaticServer
         /// TCP 内部服务客户端
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
+        /// <param name="maxTimeoutSeconds">最大超时秒数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="verifyMethod">验证委托</param>
-        public Client(TcpInternalServer.ServerAttribute attribute, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Func<TcpInternalServer.ClientSocketSender, bool> verifyMethod = null)
-            : base(attribute, onCustomData, log, clientRoute)
+        public Client(TcpInternalServer.ServerAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Func<TcpInternalServer.ClientSocketSender, bool> verifyMethod = null)
+            : base(attribute, maxTimeoutSeconds, onCustomData, log, clientRoute)
         {
             this.verifyMethod = verifyMethod;
         }

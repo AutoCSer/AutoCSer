@@ -156,7 +156,7 @@ namespace AutoCSer.Example.TcpStaticServer
             /// </summary>
             public partial class RefOut
             {
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo _c1 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 0 + 128, InputParameterIndex = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// ref / out 参数测试
@@ -165,7 +165,7 @@ namespace AutoCSer.Example.TcpStaticServer
                 /// <param name="right">加法右值</param>
                 /// <param name="product">乘积</param>
                 /// <returns>和</returns>
-                public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add1(int left, ref int right, out int product)
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> Add1(int left, ref int right, out int product)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p2> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p2>.Pop();
                     try
@@ -192,7 +192,7 @@ namespace AutoCSer.Example.TcpStaticServer
                             right = _outputParameter_.p0;
                             
                             product = _outputParameter_.p1;
-                            return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnType_, Value = _outputParameter_.Return };
+                            return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                         }
                     }
                     finally
@@ -200,7 +200,7 @@ namespace AutoCSer.Example.TcpStaticServer
                         if (_wait_ != null) AutoCSer.Net.TcpServer.AutoWaitReturnValue<AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p2>.PushNotNull(_wait_);
                     }
                     product = default(int);
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
 
             }
@@ -266,15 +266,15 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
             {
                 public int p0;
                 public int p1;
                 [AutoCSer.Json.IgnoreMember]
-                public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                public int Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
-                public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                public int Return
                 {
                     get { return Ret; }
                     set { Ret = value; }
@@ -284,7 +284,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
                 public object ReturnObject
                 {
                     get { return Ret; }
-                    set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                    set { Ret = (int)value; }
                 }
 #endif
             }
@@ -451,11 +451,11 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
                 {
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), false);
                 }
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, 0, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p1), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p6), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p7), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p9), null }
-                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p4), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p5), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p8), null }
+                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p2), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p4), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p5), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p8), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p10), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p11), null }
-                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p2), null }
+                    , new System.Type[] { null }
                     , new System.Type[] { null }
                     , new System.Type[] { null });
             }

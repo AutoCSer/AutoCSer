@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpInternalServer
     /// <summary>
     /// TCP 内部服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpServer.ServerSocket<ServerAttribute, Server, ServerSocket, ServerSocketSender>
+    public sealed unsafe class ServerSocket : TcpServer.ServerSocket<Server, ServerSocket, ServerSocketSender>
     {
         /// <summary>
         /// 自定义数据字节长度
@@ -146,7 +146,7 @@ namespace AutoCSer.Net.TcpInternalServer
             if (socket != null)
             {
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
                 if (socketError == SocketError.Success)

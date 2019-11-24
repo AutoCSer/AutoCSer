@@ -9,6 +9,15 @@ namespace AutoCSer.Net.TcpServer
     public partial class MethodAttribute : MethodBaseAttribute
     {
         /// <summary>
+        /// 客户端超时秒数，默认为 0 表示不超时，保持回调模式不支持
+        /// </summary>
+        public ushort ClientTimeoutSeconds;
+        /// <summary>
+        /// 客户端超时秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override ushort GetClientTimeoutSeconds { get { return ClientTimeoutSeconds; } }
+        /// <summary>
         /// 服务端任务类型，默认为 Timeout
         /// </summary>
         public ServerTaskType ServerTask = ServerTaskType.Timeout;

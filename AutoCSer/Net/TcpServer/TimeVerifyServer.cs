@@ -54,38 +54,17 @@ namespace AutoCSer.Net.TcpServer
                 return (*(ulong*)leftFixed ^ *(ulong*)rightRixed) | (*(ulong*)(leftFixed + sizeof(ulong)) ^ *(ulong*)(rightRixed + sizeof(ulong)));
             }
         }
-        /// <summary>
-        /// 检测默认验证字符串
-        /// </summary>
-        /// <param name="server"></param>
-        /// <param name="attribute"></param>
-        /// <returns></returns>
-        internal static bool CheckVerifyString(CommandBase server, ServerBaseAttribute attribute)
-        {
-            string verify = attribute.VerifyString;
-            if (verify == null)
-            {
-                if (AutoCSer.Config.Pub.Default.IsDebug)
-                {
-                    server.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, "警告：调试模式未启用服务验证 " + attribute.ServerName, (StackFrame)null, true);
-                    return true;
-                }
-                server.Log.Add(AutoCSer.Log.LogType.Error, "服务 " + attribute.ServerName + " 验证字符串不能为空", (StackFrame)null, true);
-            }
-            return false;
-        }
     }
     /// <summary>
     /// 时间验证服务
     /// </summary>
-    public abstract unsafe class TimeVerifyServer<attributeType, serverType, serverSocketType, serverSocketSenderType>
+    public abstract unsafe class TimeVerifyServer<serverType, serverSocketType, serverSocketSenderType>
 #if !NOJIT
-        : ISetTcpServer<serverType, attributeType>
+        : ISetTcpServer<serverType>
 #endif
-        where serverType : Server<attributeType, serverType, serverSocketSenderType>
-        where attributeType : ServerAttribute
-        where serverSocketType : ServerSocket<attributeType, serverType, serverSocketType, serverSocketSenderType>
-        where serverSocketSenderType : ServerSocketSender<attributeType, serverType, serverSocketType, serverSocketSenderType>
+        where serverType : Server<serverType, serverSocketSenderType>
+        where serverSocketType : ServerSocket<serverType, serverSocketType, serverSocketSenderType>
+        where serverSocketSenderType : ServerSocketSender<serverType, serverSocketType, serverSocketSenderType>
     {
         /// <summary>
         /// TCP 服务端
@@ -123,9 +102,7 @@ namespace AutoCSer.Net.TcpServer
         [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
         protected virtual bool verify(serverSocketSenderType sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
-            ServerBaseAttribute attribute = server.Attribute;
-            if (TimeVerifyServer.CheckVerifyString(server, attribute)) return true;
-            return verify(sender, randomPrefix, attribute.VerifyString, md5Data, ref ticks);
+            return server.CheckVerifyString() || verify(sender, randomPrefix, server.Attribute.VerifyString, md5Data, ref ticks);
         }
         /// <summary>
         /// 时间验证函数
@@ -144,8 +121,7 @@ namespace AutoCSer.Net.TcpServer
                 if (TimeVerifyServer.IsMd5(TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     timeVerifyTick.Set(ticks);
-                    ServerBaseAttribute attribute = server.Attribute;
-                    if (!attribute.IsMarkData || sender.SetMarkData(attribute.VerifyHashCode ^ randomPrefix)) return true;
+                    if (!server.Attribute.IsMarkData || sender.SetMarkData(server.ServerAttribute.VerifyHashCode ^ randomPrefix)) return true;
                 }
             }
             ticks = 0;

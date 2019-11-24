@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using AutoCSer.Log;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -12,6 +13,10 @@ namespace AutoCSer.Net.TcpServer
     /// </summary>
     public abstract unsafe class ClientSocketBase
     {
+        /// <summary>
+        /// TCP 服务客户端
+        /// </summary>
+        internal readonly ClientSocketCreator ClientCreator;
         /// <summary>
         /// 服务 IP 地址
         /// </summary>
@@ -170,15 +175,16 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务客户端套接字
         /// </summary>
+        /// <param name="clientCreator">TCP 服务客户端创建器</param>
         /// <param name="ipAddress"></param>
         /// <param name="port"></param>
-        /// <param name="log"></param>
         /// <param name="maxInputSize"></param>
-        internal ClientSocketBase(IPAddress ipAddress, int port, ILog log, int maxInputSize)
+        internal ClientSocketBase(ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int maxInputSize)
         {
+            ClientCreator = clientCreator;
             this.ipAddress = ipAddress;
             this.port = port;
-            Log = log;
+            Log = clientCreator.CommandClient.Log;
             MaxInputSize = maxInputSize > 0 ? maxInputSize : int.MaxValue;
         }
         /// <summary>
@@ -188,15 +194,22 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 释放套接字
         /// </summary>
-        internal abstract void DisposeSocket();
+        internal void DisposeSocket()
+        {
+            Socket socket = Socket;
+            Socket = null;
+            if (socket != null)
+            {
+                ClientCreator.OnDisposeSocket(this);
+                AutoCSer.Net.TcpServer.CommandBuffer.CloseClientNotNull(socket);
+            }
+        }
         /// <summary>
         /// 验证函数调用
         /// </summary>
-        /// <typeparam name="attributeType"></typeparam>
         /// <param name="client"></param>
         /// <returns></returns>
-        protected bool verifyMethod<attributeType>(ClientBase<attributeType> client)
-            where attributeType : ServerAttribute
+        protected bool verifyMethod(ClientBase client)
         {
             if (isVerifyMethod = client.SocketVerifyMethod(Sender))
             {
@@ -228,6 +241,46 @@ namespace AutoCSer.Net.TcpServer
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// 套接字操作失败重新创建版本检测
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal bool CheckCreateVersion()
+        {
+            return (ClientCreator.CommandClient.IsDisposed | (CreateVersion ^ ClientCreator.CreateVersion)) == 0
+                && Interlocked.CompareExchange(ref ClientCreator.CreateVersion, CreateVersion + 1, CreateVersion) == CreateVersion;
+        }
+        /// <summary>
+        /// 创建 TCP 服务客户端套接字
+        /// </summary>
+        internal abstract void CreateNew();
+        /// <summary>
+        /// 创建 TCP 服务客户端套接字失败休眠
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void CreateSleep()
+        {
+            //ClientCreator.CommandClient.SocketWait.PulseReset();
+            //Thread.Sleep(0);
+            //CommandClient.SocketWait.Reset();
+            if (Socket != null)
+            {
+                //try
+                //{
+                //    Socket.Shutdown(SocketShutdown.Both);
+                //}
+                //catch { AutoCSer.Log.CatchCount.Add(AutoCSer.Log.CatchCount.Type.TcpClientSocket_Dispose); }
+                //finally { Socket.Dispose(); }
+#if DotNetStandard
+                AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
+#else
+                Socket.Dispose();
+#endif
+                Socket = null;
+            }
+            Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
         }
         /// <summary>
         /// 重置心跳检测
@@ -286,8 +339,7 @@ namespace AutoCSer.Net.TcpServer
         internal void Serialize<valueType>(CommandInfo commandInfo, ref valueType value)
             where valueType : struct
         {
-            if (commandInfo.IsSimpleSerializeInputParamter) SimpleSerialize.TypeSerializer<valueType>.Serializer(OutputSerializer.Stream, ref value);
-            else
+            if (commandInfo.SimpleSerializeInputParamter == 0)
             {
                 int parameterIndex = commandInfo.InputParameterIndex;
                 if (serializeParameterIndex == parameterIndex) OutputSerializer.SerializeTcpServerNext(ref value);
@@ -297,6 +349,7 @@ namespace AutoCSer.Net.TcpServer
                     serializeParameterIndex = parameterIndex;
                 }
             }
+            else SimpleSerialize.TypeSerializer<valueType>.Serializer(OutputSerializer.Stream, ref value);
         }
         /// <summary>
         /// 序列化

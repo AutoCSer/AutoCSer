@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// <summary>
     /// TCP 内部服务套接字数据发送
     /// </summary>
-    public sealed class ServerSocketSender : TcpStreamServer.ServerSocketSender<ServerAttribute, Server, ServerSocket, ServerSocketSender>
+    public sealed class ServerSocketSender : TcpStreamServer.ServerSocketSender<Server, ServerSocket, ServerSocketSender>
     {
 #if !NOJIT
         /// <summary>
@@ -82,7 +82,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                     if (Buffer.Buffer == null) Server.SendBufferPool.Get(ref Buffer);
                     if (OutputSerializer == null) outputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
                     else outputStream = OutputSerializer.Stream;
-                    int outputSleep = OutputSleep, currentOutputSleep;
+                    int outputSleep = Server.ServerAttribute.OutputSleep, currentOutputSleep;
                     do
                     {
                         buildInfo.IsNewBuffer = 0;

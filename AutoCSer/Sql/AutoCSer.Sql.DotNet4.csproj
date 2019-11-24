@@ -223,6 +223,7 @@
     <Compile Include="MsSql\Sql2000.cs" />
     <Compile Include="MsSql\Sql2005.cs" />
     <Compile Include="NowTime.cs" />
+    <Compile Include="NowTimeType.cs" />
     <Compile Include="OnTime.cs" />
     <Compile Include="SelectQuery.cs" />
     <Compile Include="Table.cs" />

@@ -141,19 +141,13 @@ namespace AutoCSer.Net.HttpDomainServer
         internal static void PushNotNull(Session value)
         {
             while (System.Threading.Interlocked.CompareExchange(ref sessionLinkLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.YieldLinkDoublePush);
-            if (SessionEnd == null)
-            {
-                SessionEnd = value;
-                System.Threading.Interlocked.Exchange(ref sessionLinkLock, 0);
-                WebView.OnTime.Set(Date.NowTime.OnTimeFlag.HttpSession);
-            }
-            else
+            if (SessionEnd != null)
             {
                 SessionEnd.DoubleLinkNext = value;
                 value.DoubleLinkPrevious = SessionEnd;
-                SessionEnd = value;
-                System.Threading.Interlocked.Exchange(ref sessionLinkLock, 0);
             }
+            SessionEnd = value;
+            System.Threading.Interlocked.Exchange(ref sessionLinkLock, 0);
         }
         /// <summary>
         /// 弹出节点
@@ -187,6 +181,11 @@ namespace AutoCSer.Net.HttpDomainServer
                 DoubleLinkPrevious = null;
             }
             DoubleLinkNext = null;
+        }
+
+        static Session()
+        {
+            AutoCSer.WebView.OnTime.Default.Set();
         }
     }
     /// <summary>

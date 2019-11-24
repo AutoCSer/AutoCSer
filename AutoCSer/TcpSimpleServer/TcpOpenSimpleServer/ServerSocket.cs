@@ -9,12 +9,12 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<ServerAttribute, Server, ServerSocket>
+    public sealed unsafe class ServerSocket : TcpSimpleServer.ServerSocket<Server, ServerSocket>
     {
-        /// <summary>
-        /// 最大输入数据长度
-        /// </summary>
-        private int maxInputSize;
+        ///// <summary>
+        ///// 最大输入数据长度
+        ///// </summary>
+        //private int maxInputSize;
         /// <summary>
         /// 发送数据量过低次数
         /// </summary>
@@ -102,7 +102,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
 #if !MONO
             Socket.ReceiveBufferSize = Socket.SendBufferSize = bufferSize;
 #endif
-            if ((maxInputSize = Server.Attribute.MaxInputSize) <= 0) maxInputSize = int.MaxValue;
+            //maxInputSize = Server.ServerAttribute.MaxInputSize;
 #if !DOTNET2
             asyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
@@ -143,7 +143,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             {
                 IsVerifyMethod = false;
                 SocketType = TcpSimpleServer.ServerSocketType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = Socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex, bufferSize, SocketFlags.None, out socketError,asyncCallback, Socket);
                 if (socketError == SocketError.Success)
@@ -238,7 +238,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             if (socket != null)
             {
                 SocketType = TcpSimpleServer.ServerSocketType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(Buffer.Buffer, Buffer.StartIndex, bufferSize, SocketFlags.None, out socketError, asyncCallback, socket);
                 if (socketError == SocketError.Success)
@@ -1275,7 +1275,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                     {
                         isVerifyMethod = IsVerifyMethod;
                         SocketType = TcpSimpleServer.ServerSocketType.SendVerify;
-                        receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                        receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                         IAsyncResult async = socket.BeginSend(Buffer.Buffer, Buffer.StartIndex, OutputBuffer.Data.Length, SocketFlags.None, out socketError, asyncCallback, socket);
                         if (socketError == SocketError.Success)

@@ -60,7 +60,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     if (serverAttribute != null && serverAttribute.ServerName != null && !serverAttribute.IsRemoteLinkType && serverAttribute.IsRemoteLink && (RemoteLinkType = TcpStaticServer.Generator.GetRemoteLinkType(Type)) != null)
                     {
                         LeftArray<TcpStaticServer.Generator.RemoteMethod> remoteMethods = new LeftArray<TcpStaticServer.Generator.RemoteMethod>();
-                        foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, serverAttribute.MemberFilters, false, serverAttribute.IsAttribute, serverAttribute.IsBaseTypeAttribute))
+                        foreach (MethodIndex method in MethodIndex.GetMethods<AutoCSer.Net.TcpStaticServer.MethodAttribute>(Type, serverAttribute.GetMemberFilters, false, serverAttribute.IsAttribute, serverAttribute.IsBaseTypeAttribute))
                         {
                             if (!method.Method.IsGenericMethodDefinition)
                             {

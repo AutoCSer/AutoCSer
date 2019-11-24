@@ -260,13 +260,11 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
     /// <typeparam name="serverType">TCP 服务类型</typeparam>
     /// <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
-    public abstract class ServerSocket<attributeType, serverType, socketType> : ServerSocket
-        where attributeType : ServerAttribute
-        where serverType : Server<attributeType, serverType, socketType>
-        where socketType : ServerSocket<attributeType, serverType, socketType>
+    public abstract class ServerSocket<serverType, socketType> : ServerSocket
+        where serverType : Server<serverType, socketType>
+        where socketType : ServerSocket<serverType, socketType>
     {
         /// <summary>
         /// 线程切换检测时间

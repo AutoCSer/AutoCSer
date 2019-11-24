@@ -10,14 +10,12 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务客户端
     /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    public abstract class ClientBase<attributeType> : CommandBuffer<attributeType>
-        where attributeType : ServerAttribute
+    public abstract class ClientBase : CommandBuffer
     {
         /// <summary>
         /// TCP 服务客户端创建器
         /// </summary>
-        protected readonly ClientSocketCreator<attributeType> clientCreator;
+        protected readonly ClientSocketCreator clientCreator;
         /// <summary>
         /// 套接字是否可用
         /// </summary>
@@ -29,6 +27,10 @@ namespace AutoCSer.Net.TcpServer
                 return socket != null && !socket.IsClose;
             }
         }
+        /// <summary>
+        /// 客户端 TCP 套接字更新访问锁
+        /// </summary>
+        internal readonly object OnSocketLock = new object();
         /// <summary>
         /// 批量处理休眠毫秒数
         /// </summary>
@@ -45,10 +47,6 @@ namespace AutoCSer.Net.TcpServer
         /// 自定义数据包处理
         /// </summary>
         private readonly Action<SubArray<byte>> onCustomData;
-        /// <summary>
-        /// 客户端 TCP 套接字更新访问锁
-        /// </summary>
-        internal readonly object OnSocketLock = new object();
         /// <summary>
         /// 创建 TCP 客户端套接字等待锁
         /// </summary>
@@ -69,6 +67,11 @@ namespace AutoCSer.Net.TcpServer
         /// 套接字接收数据次数
         /// </summary>
         public abstract int ReceiveCount { get; }
+        /// <summary>
+        /// 最大超时秒数
+        /// </summary>
+        internal virtual ushort MaxTimeoutSeconds { get { return 0; } }
+
 #if !NOJIT
         /// <summary>
         /// TCP 组件基类
@@ -80,33 +83,42 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="log">日志接口</param>
-        public ClientBase(attributeType attribute, ILog log)
+        /// <param name="onCustomData">自定义数据包处理</param>
+        internal ClientBase(ServerBaseAttribute attribute, ILog log, Action<SubArray<byte>> onCustomData) 
             : base(attribute, attribute.GetSendBufferSize, attribute.GetReceiveBufferSize, attribute.ClientSendBufferMaxSize, log)
         {
             OutputSleep = attribute.GetClientOutputSleep;
             FristTryCreateSleep = Math.Max(attribute.GetClientFirstTryCreateSleep, 10);
             TryCreateSleep = Math.Max(attribute.GetClientTryCreateSleep, 10);
             SocketWait.Set(0);
-            clientCreator = new ClientSocketCreator<attributeType>(this);
-        }
-        /// <summary>
-        /// TCP 服务客户端
-        /// </summary>
-        /// <param name="attribute">TCP服务调用配置</param>
-        /// <param name="log">日志接口</param>
-        /// <param name="onCustomData">自定义数据包处理</param>
-        internal ClientBase(attributeType attribute, ILog log, Action<SubArray<byte>> onCustomData) : this(attribute, log)
-        {
+
             this.onCustomData = onCustomData;
+            clientCreator = new ClientSocketCreator(this);
         }
         /// <summary>
-        /// 创建套接字
+        /// 释放资源
         /// </summary>
-        /// <param name="clientCreator"></param>
-        /// <param name="ipAddress"></param>
-        /// <param name="port"></param>
-        /// <param name="createVersion"></param>
-        internal abstract ClientSocketBase CreateSocketByCreator(ClientSocketCreator<attributeType> clientCreator, IPAddress ipAddress, int port, int createVersion);
+        public override void Dispose()
+        {
+            if (IsDisposed == 0)
+            {
+                base.Dispose();
+                DisposeSocket();
+                SocketWait.Set();
+            }
+        }
+        /// <summary>
+        /// 释放套接字
+        /// </summary>
+        internal abstract void DisposeSocket();
+        /// <summary>
+                                                       /// 创建套接字
+                                                       /// </summary>
+                                                       /// <param name="clientCreator"></param>
+                                                       /// <param name="ipAddress"></param>
+                                                       /// <param name="port"></param>
+                                                       /// <param name="createVersion"></param>
+        internal abstract ClientSocketBase CreateSocketByCreator(ClientSocketCreator clientCreator, IPAddress ipAddress, int port, int createVersion);
         /// <summary>
         /// 套接字验证
         /// </summary>
@@ -123,6 +135,16 @@ namespace AutoCSer.Net.TcpServer
         //{
         //    if (onSocket != null) onSocket(new ClientSocketEventParameter( clientSocketCreator, clientSocket, ClientSocketEventParameter.EventType.SocketClosed));
         //}
+        /// <summary>
+        /// TCP 客户端套接字初始化处理
+        /// </summary>
+        /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
+        /// <returns>TCP 客户端套接字初始化处理</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public CheckSocketVersion CreateCheckSocketVersion(Action<ClientSocketEventParameter> onCheckSocketVersion)
+        {
+            return new CheckSocketVersion(this, onCheckSocketVersion);
+        }
         /// <summary>
         /// 设置 TCP 客户端套接字事件
         /// </summary>
@@ -160,16 +182,6 @@ namespace AutoCSer.Net.TcpServer
                 }
                 finally { Monitor.Exit(OnSocketLock); }
             }
-        }
-        /// <summary>
-        /// TCP 客户端套接字初始化处理
-        /// </summary>
-        /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
-        /// <returns>TCP 客户端套接字初始化处理</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public CheckSocketVersion CreateCheckSocketVersion(Action<ClientSocketEventParameter> onCheckSocketVersion)
-        {
-            return new CheckSocketVersion<attributeType>(this, onCheckSocketVersion);
         }
         /// <summary>
         /// 移除 TCP 服务客户端套接字

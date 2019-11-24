@@ -10,14 +10,20 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// TCP 服务客户端
     /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    public abstract class Client<attributeType> : ClientBase<attributeType>
-        where attributeType : ServerAttribute
+    public abstract class Client : ClientBase
     {
         /// <summary>
         /// 客户端最大自定义数据包字节大小
         /// </summary>
         protected readonly int maxCustomDataSize;
+        /// <summary>
+        /// 最大超时秒数
+        /// </summary>
+        private readonly ushort maxTimeoutSeconds;
+        /// <summary>
+        /// 最大超时秒数
+        /// </summary>
+        internal override ushort MaxTimeoutSeconds { get { return maxTimeoutSeconds; } }
         /// <summary>
         /// 自定义数据命令信息
         /// </summary>
@@ -43,29 +49,15 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务客户端
         /// </summary>
         /// <param name="attribute">TCP服务调用配置</param>
+        /// <param name="maxTimeoutSeconds">最大超时秒数</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
-        public Client(attributeType attribute, Action<SubArray<byte>> onCustomData, ILog log)
+        internal Client(ServerBaseAttribute attribute, ushort maxTimeoutSeconds, Action<SubArray<byte>> onCustomData, ILog log)
             : base(attribute, log, onCustomData)
         {
             maxCustomDataSize = attribute.GetMaxCustomDataSize <= 0 ? int.MaxValue : attribute.GetMaxCustomDataSize;
+            this.maxTimeoutSeconds = maxTimeoutSeconds;
         }
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public override void Dispose()
-        {
-            if (IsDisposed == 0)
-            {
-                base.Dispose();
-                DisposeSocket();
-                SocketWait.Set();
-            }
-        }
-        /// <summary>
-        /// 释放套接字
-        /// </summary>
-        internal abstract void DisposeSocket();
 
         ///// <summary>
         ///// 获取异步回调

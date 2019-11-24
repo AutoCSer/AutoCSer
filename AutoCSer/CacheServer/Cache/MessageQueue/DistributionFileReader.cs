@@ -509,7 +509,6 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             if (readerCount == readers.Length) readers = readers.copyNew(Math.Max(readerCount << 1, sizeof(int)));
             reader.readerIndex = readerCount;
             readers[readerCount++] = reader;
-            OnTime.Set(Date.NowTime.OnTimeFlag.CacheDistributionTimeout);
         }
         /// <summary>
         /// 删除消息分发
@@ -551,6 +550,11 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 }
             }
             finally { Interlocked.Exchange(ref isTimer, 0); }
+        }
+
+        static DistributionFileReader()
+        {
+            OnTime.Default.Set();
         }
     }
 }

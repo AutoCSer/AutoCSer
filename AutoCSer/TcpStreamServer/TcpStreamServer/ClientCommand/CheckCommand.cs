@@ -21,7 +21,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
             UnmanagedStream stream = Socket.OutputSerializer.Stream;
             if (stream.ByteSize == 0 && LinkNext == null)
             {
-                *(int*)stream.CurrentData = Server.CheckCommandIndex | (int)(uint)TcpServer.CommandFlags.NullData;
+                *(int*)stream.CurrentData = TcpServer.Server.CheckCommandIndex | (int)(uint)TcpServer.CommandFlags.NullData;
                 stream.ByteSize += sizeof(int);
             }
             Interlocked.Exchange(ref FreeLock, 1);

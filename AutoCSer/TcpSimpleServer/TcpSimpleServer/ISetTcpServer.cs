@@ -5,9 +5,9 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// <summary>
     /// TCP命令服务接口
     /// </summary>
-    public interface ISetTcpServer<serverType, attributeType>
-        where serverType : TcpServer.ServerBase<attributeType>
-        where attributeType : ServerAttribute
+    /// <typeparam name="serverType"></typeparam>
+    public interface ISetTcpServer<serverType>
+        where serverType : TcpServer.ServerBase
     {
         /// <summary>
         /// 设置 TCP 命令服务端

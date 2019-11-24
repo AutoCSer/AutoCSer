@@ -24,24 +24,22 @@ namespace AutoCSer.Net.TcpStreamServer
         /// TCP 服务套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
-        /// <param name="attribute"></param>
-        internal ServerSocketSender(TcpServer.ServerSocket socket, ServerAttribute attribute)
-            : base(socket, attribute.GetIsServerBuildOutputThread, attribute.GetServerOutputSleep)
+        /// <param name="isBuildOutputThread"></param>
+        internal ServerSocketSender(TcpServer.ServerSocket socket, bool isBuildOutputThread)
+            : base(socket, isBuildOutputThread)
         {
         }
     }
     /// <summary>
     /// TCP 服务套接字数据发送
     /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
     /// <typeparam name="serverType">TCP 服务类型</typeparam>
     /// <typeparam name="socketType">TCP 服务端套接字类型</typeparam>
     /// <typeparam name="socketSenderType">TCP 服务套接字数据发送类型</typeparam>
-    public abstract class ServerSocketSender<attributeType, serverType, socketType, socketSenderType> : ServerSocketSender
-        where attributeType : ServerAttribute
-        where serverType : Server<attributeType, serverType, socketSenderType>
-        where socketType : ServerSocket<attributeType, serverType, socketType, socketSenderType>
-        where socketSenderType : ServerSocketSender<attributeType, serverType, socketType, socketSenderType>
+    public abstract class ServerSocketSender<serverType, socketType, socketSenderType> : ServerSocketSender
+        where serverType : Server<serverType, socketSenderType>
+        where socketType : ServerSocket<serverType, socketType, socketSenderType>
+        where socketSenderType : ServerSocketSender<serverType, socketType, socketSenderType>
     {
         /// <summary>
         /// TCP 服务
@@ -57,8 +55,8 @@ namespace AutoCSer.Net.TcpStreamServer
         /// TCP 服务套接字数据发送
         /// </summary>
         /// <param name="socket">TCP 服务套接字</param>
-        internal ServerSocketSender(ServerSocket<attributeType, serverType, socketType, socketSenderType> socket)
-            : base(socket, socket.Server.Attribute)
+        internal ServerSocketSender(ServerSocket<serverType, socketType, socketSenderType> socket)
+            : base(socket, socket.Server.ServerAttribute.IsBuildOutputThread)
         {
             Server = socket.Server;
         }

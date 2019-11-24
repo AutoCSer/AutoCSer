@@ -38,13 +38,33 @@ namespace AutoCSer
         /// </summary>
         private ReusableDictionary<keyType, Node> dictionary;
         /// <summary>
+        /// 获取所有关键字
+        /// </summary>
+        public IEnumerable<keyType> Keys
+        {
+            get
+            {
+                for (Node node = header; node != null; node = node.Next) yield return node.Key;
+            }
+        }
+        /// <summary>
+        /// 获取所有数据
+        /// </summary>
+        public IEnumerable<valueType> Values
+        {
+            get
+            {
+                for (Node node = header; node != null; node = node.Next) yield return node.Value;
+            }
+        }
+        /// <summary>
         /// 获取所有数据
         /// </summary>
         public IEnumerable<KeyValue<keyType, valueType>> KeyValues
         {
             get
             {
-                foreach (KeyValue<keyType, Node> KeyValue in dictionary.KeyValues) yield return new KeyValue<keyType, valueType>(KeyValue.Key, KeyValue.Value.Value);
+                for (Node node = header; node != null; node = node.Next) yield return new KeyValue<keyType, valueType>(node.Key, node.Value);
             }
         }
         /// <summary>
@@ -280,5 +300,40 @@ namespace AutoCSer
             value = default(valueType);
             return false;
         }
+        /// <summary>
+        /// 尝试获取第一个节点数据
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryGetHeader(out valueType value)
+        {
+            Node node = header;
+            if (node != null)
+            {
+                value = node.Value;
+                return true;
+            }
+            value = default(valueType);
+            return false;
+        }
+        ///// <summary>
+        ///// 尝试获取第一个节点数据
+        ///// </summary>
+        ///// <param name="key"></param>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //public bool TryGetHeader(out keyType key, out valueType value)
+        //{
+        //    Node node = header;
+        //    if (node != null)
+        //    {
+        //        key = node.Key;
+        //        value = node.Value;
+        //        return true;
+        //    }
+        //    key = default(keyType);
+        //    value = default(valueType);
+        //    return false;
+        //}
     }
 }

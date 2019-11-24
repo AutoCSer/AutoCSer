@@ -46,14 +46,22 @@ namespace AutoCSer.Sql
         /// 当前时间
         /// </summary>
         /// <param name="milliseconds">间隔毫秒数</param>
-        public NowTime(int milliseconds = MsSql.Sql2000.DefaultNowTimeMilliseconds)
+        public NowTime(int milliseconds)// = MsSql.Sql2000.DefaultNowTimeMilliseconds
         {
             ticks = TimeSpan.TicksPerMillisecond * Math.Max(milliseconds, MsSql.Sql2000.DefaultNowTimeMilliseconds);
         }
         /// <summary>
-        /// 设置时间
+        /// 当前时间
         /// </summary>
-        /// <param name="time"></param>
+        /// <param name="ticks">间隔时钟周期</param>
+        public NowTime(long ticks)
+        {
+            ticks = Math.Max(ticks, 1);
+        }
+        /// <summary>
+                 /// 设置时间
+                 /// </summary>
+                 /// <param name="time"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public void Set(DateTime time)
         {

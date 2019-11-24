@@ -9,7 +9,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
 {
         public partial class CheckServer
 #if !NOJIT
-             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
+             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server>
 #endif
         {
             /// <summary>
@@ -281,7 +281,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DeployAssemblyEnvironmentCheck", typeof(AutoCSer.Deploy.AssemblyEnvironment.CheckServer));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute, verifyMethod ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute, verifyMethod ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 
@@ -404,7 +404,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
 {
         public partial class Server
 #if !NOJIT
-             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server, AutoCSer.Net.TcpInternalServer.ServerAttribute>
+             : AutoCSer.Net.TcpServer.ISetTcpServer<AutoCSer.Net.TcpInternalServer.Server>
 #endif
         {
             /// <summary>
@@ -1230,7 +1230,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                     {
                         attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("Deploy", typeof(AutoCSer.Deploy.Server));
                     }
-                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, onCustomData, log, clientRoute, verifyMethod ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_);
+                    _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, 0, onCustomData, log, clientRoute, verifyMethod ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_);
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
                 }
 

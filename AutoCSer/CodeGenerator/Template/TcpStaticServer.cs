@@ -17,6 +17,8 @@ namespace AutoCSer.CodeGenerator.Template
         private const int CommandStartIndex = 0;
         private const int InputParameterIndex = 0;
         private const int OutputParameterIndex = 0;
+        private const ushort TimeoutSeconds = 0;
+        private const ushort MaxTimeoutSeconds = 0;
         private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
         private const AutoCSer.Net.TcpServer.ClientTaskType ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Timeout;
         private const bool IsCallQueue = false;
@@ -83,10 +85,10 @@ namespace AutoCSer.CodeGenerator.Template
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
                 #region IF IsSynchronousMethodIdentityCommand
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo @StaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsClientSendOnly*/, IsSendOnly = 1/*IF:IsClientSendOnly*/, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo @StaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:TimeoutSeconds*/, TimeoutSeconds = @TimeoutSeconds/*IF:TimeoutSeconds*//*IF:IsJsonSerialize*/, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsClientSendOnly*/, IsSendOnly = 1/*IF:IsClientSendOnly*/, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion IF IsSynchronousMethodIdentityCommand
                 #region IF IsAwaiterMethodIdentityCommand
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo @StaticAwaiterMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*/, TaskType = @ClientTask/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo @StaticAwaiterMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:TimeoutSeconds*/, TimeoutSeconds = @TimeoutSeconds/*IF:TimeoutSeconds*//*IF:IsJsonSerialize*/, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*/, TaskType = @ClientTask/*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #endregion IF IsAwaiterMethodIdentityCommand
 
                 #region NOT MemberIndex
@@ -361,7 +363,7 @@ namespace AutoCSer.CodeGenerator.Template
 #endif
                 #endregion IF IsClientTaskAsync
                 #region IF IsClientAsynchronous
-                private static readonly AutoCSer.Net.TcpServer.CommandInfo @AsynchronousStaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex, TaskType = @ClientTask/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfo @AsynchronousStaticMethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfo { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex, TaskType = @ClientTask/*IF:TimeoutSeconds*/, TimeoutSeconds = @TimeoutSeconds/*IF:TimeoutSeconds*//*IF:IsJsonSerialize*/, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsKeepCallback*/, IsKeepCallback = 1/*IF:IsKeepCallback*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
                 #region IF Method.XmlDocument
                 /// <summary>
                 /// @Method.XmlDocument
@@ -932,10 +934,10 @@ namespace AutoCSer.CodeGenerator.Template
         /// </summary>
         public/*NOTE*/ partial/*NOTE*/ class @ServerName
         {
-            #region IF ServiceAttribute.IsSegmentation
+            #region IF IsSegmentation
             #region FROMNAME Parameter
             #endregion FROMNAME Parameter
-            #endregion IF ServiceAttribute.IsSegmentation
+            #endregion IF IsSegmentation
             /// <summary>
             /// TCP 静态调用客户端参数
             /// </summary>
@@ -977,17 +979,17 @@ namespace AutoCSer.CodeGenerator.Template
                 ClientConfig config = (ClientConfig)AutoCSer.Config.Loader.GetObject(typeof(ClientConfig)) ?? new ClientConfig();
                 if (config.ServerAttribute == null)
                 {
-                    #region IF ServiceAttribute.IsSegmentation
+                    #region IF IsSegmentation
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("@ServerName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, false);
-                    #endregion IF ServiceAttribute.IsSegmentation
-                    #region NOT ServiceAttribute.IsSegmentation
+                    #endregion IF IsSegmentation
+                    #region NOT IsSegmentation
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("@ServerName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/);
-                    #endregion NOT ServiceAttribute.IsSegmentation
+                    #endregion NOT IsSegmentation
                 }
-                #region NOT ServiceAttribute.IsSegmentation
+                #region NOT IsSegmentation
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 @ServerName 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
-                #endregion NOT ServiceAttribute.IsSegmentation
-                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
+                #endregion NOT IsSegmentation
+                TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, @MaxTimeoutSeconds, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 #region IF Attribute.IsCompileSerialize
                 TcpClient.ClientCompileSerialize(new System.Type[] { /*LOOP:SimpleSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName), /*LOOP:SimpleSerializeMethods*/null }
                     , new System.Type[] { /*LOOP:SimpleDeSerializeMethods*/typeof(/*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@OutputParameterTypeName), /*LOOP:SimpleDeSerializeMethods*/null }
@@ -1319,7 +1321,7 @@ namespace AutoCSer.CodeGenerator.Template
         #endregion PART SERVERREMOTE
         #region PART CLIENTREMOTE
         #region IF RemoteMethods.Length
-        #region IF ServiceAttribute.IsSegmentation
+        #region IF IsSegmentation
         /// <summary>
         /// TCP调用客户端
         /// </summary>
@@ -1450,8 +1452,8 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion IF IsRemoteMember
             }
         }
-        #endregion IF ServiceAttribute.IsSegmentation
-        #region NOT ServiceAttribute.IsSegmentation
+        #endregion IF IsSegmentation
+        #region NOT IsSegmentation
         /*NOTE*/
         public partial class /*NOTE*/@TypeNameDefinition
         {
@@ -1545,7 +1547,7 @@ namespace AutoCSer.CodeGenerator.Template
             }
             #endregion IF IsRemoteMember
         }
-        #endregion NOT ServiceAttribute.IsSegmentation
+        #endregion NOT IsSegmentation
         #endregion IF RemoteMethods.Length
         #endregion PART CLIENTREMOTE
         #endregion PUSH CurrentRemoteLinkType

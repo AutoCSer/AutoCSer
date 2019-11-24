@@ -5,7 +5,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
     /// <summary>
     /// TCP 内部服务配置
     /// </summary>
-    public abstract class ServerBaseAttribute : TcpStreamServer.ServerAttribute, TcpRegister.IServerAttribute
+    public abstract class ServerBaseAttribute : TcpStreamServer.ServerAttribute
     {
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称。
@@ -14,7 +14,8 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <summary>
         /// 注册当前服务的 TCP 注册服务名称。
         /// </summary>
-        internal virtual string TcpRegisterName
+        [AutoCSer.Metadata.Ignore]
+        internal override string TcpRegisterName
         {
             get { return TcpRegister; }
         }
@@ -25,7 +26,8 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <summary>
         /// 客户端访问的主机名称或者 IP 地址，用于需要使用端口映射服务。
         /// </summary>
-        string TcpRegister.IServerAttribute.ClientRegisterHost
+        [AutoCSer.Metadata.Ignore]
+        internal override string ClientRegisterHost
         {
             get { return RegisterHost; }
             set { RegisterHost = value; }
@@ -37,7 +39,8 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <summary>
         /// 客户端访问的监听端口，用于需要使用端口映射服务。
         /// </summary>
-        int TcpRegister.IServerAttribute.ClientRegisterPort
+        [AutoCSer.Metadata.Ignore]
+        internal override int ClientRegisterPort
         {
             get { return RegisterPort; }
             set { RegisterPort = value; }
@@ -86,6 +89,11 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// 客户端接收命令超时为 4 秒，超时客户端将被当作攻击者被抛弃。
         /// </summary>
         public int ReceiveVerifyCommandSeconds = DefaultReceiveVerifyCommandSeconds;
+        /// <summary>
+        /// 客户端接收命令超时
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override int GetReceiveVerifyCommandSeconds { get { return ReceiveVerifyCommandSeconds; } }
         /// <summary>
         /// 客户端重建连接休眠毫秒数，默认为 10
         /// </summary>
@@ -165,6 +173,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// <summary>
         /// 是否自动创建客户端对象
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         public bool IsAuto
         {
             get { return IsAutoClient && TcpRegisterName == null; }
@@ -175,12 +184,21 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// </summary>
         public bool IsSingleRegister = true;
         /// <summary>
+        /// true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override bool GetIsSingleRegister
+        {
+            get { return IsSingleRegister; }
+        }
+        /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
         public int BinaryDeSerializeMaxArraySize = AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize;
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal override int GetBinaryDeSerializeMaxArraySize { get { return BinaryDeSerializeMaxArraySize; } }
     }
 }

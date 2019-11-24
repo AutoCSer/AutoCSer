@@ -17,7 +17,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
             /// </summary>
             public partial class RefOut
             {
-                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c10 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 8, IsSimpleSerializeInputParamter = true };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase _c10 = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = 7 + 128, InputParameterIndex = 8, IsSimpleSerializeInputParamter = true, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
                 /// ref / out 参数测试
@@ -26,7 +26,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
                 /// <param name="right">加法右值</param>
                 /// <param name="product">乘积</param>
                 /// <returns>和</returns>
-                public static AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> Add1(int left, ref int right, out int product)
+                public static AutoCSer.Net.TcpServer.ReturnValue<int> Add1(int left, ref int right, out int product)
                 {
                     
                     AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p8 _inputParameter_ = new AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p8
@@ -47,7 +47,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer
                     right = _outputParameter_.p0;
                     
                     product = _outputParameter_.p1;
-                    return new AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Net.TcpServer.ReturnValue<int>> { Type = _returnType_, Value = _outputParameter_.Return };
+                    return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = _returnType_, Value = _outputParameter_.Return };
                 }
 
             }
@@ -119,15 +119,15 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
 #if NOJIT
                      : AutoCSer.Net.IReturnParameter
 #else
-                     : AutoCSer.Net.IReturnParameter<AutoCSer.Net.TcpServer.ReturnValue<int>>
+                     : AutoCSer.Net.IReturnParameter<int>
 #endif
             {
                 public int p0;
                 public int p1;
                 [AutoCSer.Json.IgnoreMember]
-                public AutoCSer.Net.TcpServer.ReturnValue<int> Ret;
+                public int Ret;
                 [AutoCSer.IOS.Preserve(Conditional = true)]
-                public AutoCSer.Net.TcpServer.ReturnValue<int> Return
+                public int Return
                 {
                     get { return Ret; }
                     set { Ret = value; }
@@ -137,7 +137,7 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                 public object ReturnObject
                 {
                     get { return Ret; }
-                    set { Ret = (AutoCSer.Net.TcpServer.ReturnValue<int>)value; }
+                    set { Ret = (int)value; }
                 }
 #endif
             }
@@ -199,9 +199,9 @@ namespace AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient
                 }
                 TcpClient = new AutoCSer.Net.TcpStaticSimpleServer.Client(config.ServerAttribute, config.Log, config.VerifyMethod);
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p6), typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p7), typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p8), null }
-                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p5), typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p10), null }
+                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p5), typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p9), typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p10), null }
                     , new System.Type[] { null }
-                    , new System.Type[] { typeof(AutoCSer.Example.TcpStaticSimpleServer.TcpStaticSimpleClient/**/.Example1/**/._p9), null }
+                    , new System.Type[] { null }
                     , new System.Type[] { null }
                     , new System.Type[] { null });
             }

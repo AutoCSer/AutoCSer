@@ -862,6 +862,9 @@ namespace AutoCSer.Json
                     else
                     {
                         Pointer.Size name;
+#if !Serialize
+                        name.CustomSize = 0;
+#endif
                         do
                         {
                             name.Data = parser.Current;
@@ -936,6 +939,9 @@ namespace AutoCSer.Json
                         else
                         {
                             Pointer.Size name;
+#if !Serialize
+                            name.CustomSize = 0;
+#endif
                             do
                             {
                                 name.Data = parser.Current;

@@ -21,13 +21,33 @@ namespace AutoCSer.Net.TcpServer
             get { return Name; }
         }
         /// <summary>
+        /// 注册当前服务的 TCP 注册服务名称。
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual string TcpRegisterName { get { return null; } }
+        /// <summary>
         /// 服务主机名称或者 IP 地址，无法解析时默认使用 IPAddress.Any，比如 "www.autocser.com" 或者 "127.0.0.1"
         /// </summary>
         public string Host;
         /// <summary>
+        /// 客户端访问的主机名称或者 IP 地址，用于需要使用端口映射服务。
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual string ClientRegisterHost { get; set; }
+        /// <summary>
         /// 服务监听端口(服务配置)
         /// </summary>
         public int Port;
+        /// <summary>
+        /// 客户端访问的监听端口，用于需要使用端口映射服务。
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int ClientRegisterPort { get; set; }
+        /// <summary>
+        /// true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual bool GetIsSingleRegister { get { return true; } }
         /// <summary>
         /// 服务默认验证字符串，AutoCSer.Net.Tcp.TimeVerifyServer 用到了该字符串。
         /// </summary>
@@ -36,20 +56,12 @@ namespace AutoCSer.Net.TcpServer
         /// 附加验证字符串信息哈希值
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        private ulong? verifyHashCode;
-        /// <summary>
-        /// 附加验证字符串信息哈希值
-        /// </summary>
-        [AutoCSer.Metadata.Ignore]
         internal unsafe ulong VerifyHashCode
         {
             get
             {
-                if (verifyHashCode == null)
-                {
-                    fixed (char* verifyFixed = VerifyString) verifyHashCode = (ulong)Memory.GetHashCode64((byte*)verifyFixed, VerifyString.Length << 1);
-                }
-                return verifyHashCode.Value;
+                if (string.IsNullOrEmpty(VerifyString)) return 0;
+                fixed (char* verifyFixed = VerifyString) return (ulong)Memory.GetHashCode64((byte*)verifyFixed, VerifyString.Length << 1);
             }
         }
         /// <summary>
@@ -59,6 +71,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 成员选择类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal abstract MemberFilters GetMemberFilters { get; }
         /// <summary>
         /// 当 IsSegmentation = true 时，对于剥离出来的客户端代码指定需要复制的目标路径，也就是你的客户端所在的项目路径。
@@ -69,6 +82,11 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal abstract bool GetIsSegmentation { get; }
+        /// <summary>
+        /// 客户端接收命令超时
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetReceiveVerifyCommandSeconds { get { return 0; } }
         /// <summary>
         /// 服务器端发送数据（包括客户端接受数据）缓冲区初始化字节数
         /// </summary>
@@ -85,6 +103,15 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal abstract int GetServerSendBufferMaxSize { get; }
         /// <summary>
+        /// 最大输入数据字节数
+        /// </summary>
+        internal const int DefaultMaxInputSize = (16 << 10) - (sizeof(uint) + sizeof(int) * 2);
+        /// <summary>
+        /// 最大输入数据字节数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetMaxInputSize { get { return DefaultMaxInputSize; } }
+        /// <summary>
         /// 客户端发送数据缓冲区最大字节数，默认为 1MB。
         /// </summary>
         public int ClientSendBufferMaxSize = 1 << 20;
@@ -100,6 +127,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 客户端保持连接心跳包间隔时间
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal abstract int GetCheckSeconds { get; }
         /// <summary>
         /// 客户端最大未处理命令数量
@@ -107,8 +135,33 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal virtual int GetQueueCommandSize { get { return 1; } }
         /// <summary>
-                                                                  /// 提供当前类型的一个泛型实例类型，用于获取命令序号记忆数据
-                                                                  /// </summary>
+        /// 命令池初始化二进制大小 2^n
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual byte GetCommandPoolBitSize { get { return 0; } }
+        /// <summary>
+        /// 服务端批量处理休眠毫秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetServerOutputSleep { get { return 0; } }
+        /// <summary>
+        /// 客户端批量处理休眠毫秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetClientOutputSleep { get { return 0; } }
+        /// <summary>
+        /// 客户端重建连接休眠毫秒数
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetClientTryCreateSleep { get { return 10; } }
+        /// <summary>
+        /// 客户端第一次重建连接休眠毫秒数（默认为客户端重建连接休眠毫秒数）
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetClientFirstTryCreateSleep { get { return GetClientTryCreateSleep; } }
+        /// <summary>
+                                                                                                             /// 提供当前类型的一个泛型实例类型，用于获取命令序号记忆数据
+                                                                                                             /// </summary>
         public Type GenericType;
         /// <summary>
         /// 是否使用 JSON 序列化
@@ -144,8 +197,18 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         public bool IsRemoteExpression;
         /// <summary>
-        /// 默认为 false 表示客户端 API 公共可见，设置为 true 表示仅程序集可见
+        /// 远程表达式服务端任务类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual ServerTaskType GetRemoteExpressionServerTask { get { return ServerTaskType.Timeout; } }
+        /// <summary>
+        /// 服务端创建输出是否开启线程
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual bool GetIsServerBuildOutputThread { get { return false; } }
+        /// <summary>
+                                                                            /// 默认为 false 表示客户端 API 公共可见，设置为 true 表示仅程序集可见
+                                                                            /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal virtual bool GetIsInternalClient { get { return false; } }
         /// <summary>
@@ -155,10 +218,12 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 服务端自定义队列类型
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal virtual Type GetServerCallQueueType { get { return null; } }
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
+        [AutoCSer.Metadata.Ignore]
         internal abstract int GetBinaryDeSerializeMaxArraySize { get; }
         /// <summary>
         /// 默认为 true 表示生成记忆数字编号标识与长字符串名称标识之间对应关系的代码，用于保持多次代码生成的命令序号（仅当没有设置命令映射枚举类型 CommandIdentityEnmuType 时有效）
@@ -168,11 +233,24 @@ namespace AutoCSer.Net.TcpServer
         /// 是否生成记忆数字编号标识与长字符串名称标识之间对应关系的代码
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        public virtual bool GetIsRememberCommand
+        internal virtual bool GetIsRememberCommand
         {
             get { return IsRememberCommand; }
         }
+        /// <summary>
+        /// 客户端最大自定义数据包字节大小，0 表示不限
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual int GetMaxCustomDataSize { get { return 0; } }
 
+        /// <summary>
+        /// 获取配置
+        /// </summary>
+        /// <typeparam name="attributeType"></typeparam>
+        /// <param name="serviceName"></param>
+        /// <param name="type"></param>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
         internal static attributeType GetConfig<attributeType>(string serviceName, Type type, attributeType attribute)
             where attributeType : ServerBaseAttribute
         {

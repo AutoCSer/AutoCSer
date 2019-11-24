@@ -16,7 +16,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 是否需要心跳检测
         /// </summary>
-        protected int isCheck;
+        private int isCheck;
         /// <summary>
         /// 套接字发送数据次数
         /// </summary>
@@ -28,7 +28,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 序列化参数编号
         /// </summary>
-        protected int serializeParameterIndex;
+        private int serializeParameterIndex;
         /// <summary>
         /// 服务主机名称
         /// </summary>
@@ -47,25 +47,33 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// </summary>
         internal SubBuffer.PoolBufferFull Buffer;
         /// <summary>
+        /// 远程表达式客户端检测服务端映射标识
+        /// </summary>
+        private readonly RemoteExpressionServerNodeIdChecker remoteExpressionServerNodeIdChecker;
+        /// <summary>
+        /// 套接字访问锁
+        /// </summary>
+        internal readonly object SocketLock = new object();
+        /// <summary>
         /// 输出数据流
         /// </summary>
-        protected readonly UnmanagedStream outputStream;
+        private readonly UnmanagedStream outputStream;
         /// <summary>
         /// 输出数据二进制序列化
         /// </summary>
-        protected readonly BinarySerialize.Serializer outputSerializer;
+        private readonly BinarySerialize.Serializer outputSerializer;
         /// <summary>
         /// 输出数据 JSON 序列化
         /// </summary>
-        protected Json.Serializer outputJsonSerializer;
+        private Json.Serializer outputJsonSerializer;
         /// <summary>
         /// 回调数据二进制反序列化
         /// </summary>
-        protected BinarySerialize.DeSerializer receiveDeSerializer;
+        private BinarySerialize.DeSerializer receiveDeSerializer;
         /// <summary>
         /// 回调数据 JSON 解析
         /// </summary>
-        protected Json.Parser receiveJsonParser;
+        private Json.Parser receiveJsonParser;
         /// <summary>
         /// 发送变换数据
         /// </summary>
@@ -81,7 +89,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 最大输入数据字节数
         /// </summary>
-        protected readonly int maxInputSize;
+        private readonly int maxInputSize;
         /// <summary>
         /// 下一个心跳检测
         /// </summary>
@@ -107,21 +115,21 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
-        /// <param name="host">监听主机名称</param>
-        /// <param name="port">监听端口</param>
-        /// <param name="serviceName">服务名称</param>
-        /// <param name="sendBufferMaxSize">发送数据缓存区最大字节大小</param>
-        /// <param name="minCompressSize">压缩启用最低字节数量</param>
+        /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="log">日志接口</param>
         /// <param name="maxInputSize">最大输入数据字节数</param>
-        internal Client(string host, int port, string serviceName, int sendBufferMaxSize, int minCompressSize, ILog log, int maxInputSize) : base(serviceName, sendBufferMaxSize, minCompressSize, log)
+        internal Client(TcpServer.ServerBaseAttribute attribute, ILog log, int maxInputSize)
+            : base(attribute, attribute.ClientSendBufferMaxSize, log)
         {
-            this.Host = host;
-            this.Port = port;
+            this.Host = attribute.Host;
+            this.Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(this.Host, Log);
 
             this.maxInputSize = maxInputSize <= 0 ? int.MaxValue : maxInputSize;
             outputStream = (outputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
+
+            SubBuffer.Pool.GetPool(attribute.GetSendBufferSize).Get(ref Buffer);
+            if (attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Client = this };
         }
         /// <summary>
         /// 检测主机名称是否可用
@@ -138,7 +146,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             }
             if (port == 0)
             {
-                Log.Add(AutoCSer.Log.LogType.Error, ServerName + " 端口号不能为 0");
+                Log.Add(AutoCSer.Log.LogType.Error, Attribute.ServerName + " 端口号不能为 0");
                 return false;
             }
             return true;
@@ -162,7 +170,40 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <summary>
         /// 心跳检测
         /// </summary>
-        protected abstract void check();
+        private unsafe void check()
+        {
+            SocketError socketError;
+            bool isError = false;
+            if (Monitor.TryEnter(SocketLock))
+            {
+                try
+                {
+                    if (Socket != null && isCheck != 0 && IsDisposed == 0)
+                    {
+                        byte[] buffer = Buffer.Buffer;
+                        fixed (byte* dataFixed = buffer)
+                        {
+                            byte* start = dataFixed + Buffer.StartIndex;
+                            *(uint*)start = (uint)TcpServer.Server.CheckCommandIndex | (uint)TcpServer.CommandFlags.NullData;
+                            isError = true;
+                            int size = Socket.Send(buffer, Buffer.StartIndex, sizeof(uint), SocketFlags.None, out socketError);
+                            ++SendCount;
+                            if (size == sizeof(uint))
+                            {
+                                size = Socket.Receive(buffer, Buffer.StartIndex, sizeof(int), SocketFlags.None, out socketError);
+                                ++ReceiveCount;
+                                if (size == sizeof(uint) && (TcpServer.ReturnType)(*start) == TcpServer.ReturnType.Success) isError = false;
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    if (isError) closeSocket();
+                    Monitor.Exit(SocketLock);
+                }
+            }
+        }
         /// <summary>
         /// 弹出节点
         /// </summary>
@@ -182,47 +223,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             CheckNext.CheckPrevious = CheckPrevious;
             CheckNext = null;
         }
-    }
-    /// <summary>
-    /// TCP 服务客户端
-    /// </summary>
-    /// <typeparam name="attributeType">TCP 服务配置类型</typeparam>
-    public abstract partial class Client<attributeType> : Client
-        where attributeType : ServerAttribute
-    {
-
-        /// <summary>
-        /// TCP 服务调用配置
-        /// </summary>
-        internal readonly attributeType Attribute;
-        /// <summary>
-        /// 远程表达式客户端检测服务端映射标识
-        /// </summary>
-        private readonly RemoteExpressionServerNodeIdChecker remoteExpressionServerNodeIdChecker;
-        /// <summary>
-        /// 套接字访问锁
-        /// </summary>
-        internal readonly object SocketLock = new object();
-
-#if !NOJIT
-        /// <summary>
-        /// TCP 服务客户端
-        /// </summary>
-        internal Client() : base() { }
-#endif
-        /// <summary>
-        /// TCP 服务客户端
-        /// </summary>
-        /// <param name="attribute">TCP服务调用配置</param>
-        /// <param name="log">日志接口</param>
-        /// <param name="maxInputSize">最大输入数据字节数</param>
-        public Client(attributeType attribute, ILog log, int maxInputSize)
-            : base(attribute.Host, attribute.Port, attribute.ServerName, attribute.ClientSendBufferMaxSize, attribute.GetMinCompressSize, log, maxInputSize)
-        {
-            Attribute = attribute;
-            SubBuffer.Pool.GetPool(attribute.GetSendBufferSize).Get(ref Buffer);
-            if (attribute.IsRemoteExpression) remoteExpressionServerNodeIdChecker = new RemoteExpressionServerNodeIdChecker { Client = this };
-        }
+   
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -332,8 +333,7 @@ namespace AutoCSer.Net.TcpSimpleServer
             outputStream.ByteSize = sizeof(uint) + sizeof(int);
             if ((commandInfo.CommandFlags & TcpServer.CommandFlags.JsonSerialize) == 0)
             {
-                if (commandInfo.IsSimpleSerializeInputParamter) SimpleSerialize.TypeSerializer<inputParameterType>.Serializer(outputStream, ref inputParameter);
-                else
+                if (commandInfo.SimpleSerializeInputParamter == 0)
                 {
                     int parameterIndex = commandInfo.InputParameterIndex;
                     if (serializeParameterIndex == parameterIndex) outputSerializer.SerializeTcpServerNext(ref inputParameter);
@@ -343,6 +343,7 @@ namespace AutoCSer.Net.TcpSimpleServer
                         serializeParameterIndex = parameterIndex;
                     }
                 }
+                else SimpleSerialize.TypeSerializer<inputParameterType>.Serializer(outputStream, ref inputParameter);
             }
             else
             {
@@ -519,19 +520,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         {
             if ((commandInfo.CommandFlags & TcpServer.CommandFlags.JsonSerialize) == 0)
             {
-                if (commandInfo.IsSimpleSerializeOutputParamter)
-                {
-                    fixed (byte* dataFixed = clientBuffer.Data.Array)
-                    {
-                        byte* start = dataFixed + clientBuffer.Data.Start, end = start + clientBuffer.Data.Length;
-                        if (SimpleSerialize.TypeDeSerializer<outputParameterType>.DeSerialize(start, ref outputParameter, end) == end)
-                        {
-                            clientBuffer.ReturnType = TcpServer.ReturnType.Success;
-                            return;
-                        }
-                    }
-                }
-                else
+                if (commandInfo.SimpleSerializeOutputParamter == 0)
                 {
                     if (receiveDeSerializer == null)
                     {
@@ -542,6 +531,18 @@ namespace AutoCSer.Net.TcpSimpleServer
                     {
                         clientBuffer.ReturnType = TcpServer.ReturnType.Success;
                         return;
+                    }
+                }
+                else
+                {
+                    fixed (byte* dataFixed = clientBuffer.Data.Array)
+                    {
+                        byte* start = dataFixed + clientBuffer.Data.Start, end = start + clientBuffer.Data.Length;
+                        if (SimpleSerialize.TypeDeSerializer<outputParameterType>.DeSerialize(start, ref outputParameter, end) == end)
+                        {
+                            clientBuffer.ReturnType = TcpServer.ReturnType.Success;
+                            return;
+                        }
                     }
                 }
             }
@@ -851,43 +852,6 @@ namespace AutoCSer.Net.TcpSimpleServer
                 return node.Checker != remoteExpressionServerNodeIdChecker ? getRemoteExpression(ref node) : new TcpServer.ReturnValue<RemoteExpression.ReturnValue> { Type = TcpServer.ReturnType.RemoteExpressionCheckerError };
             }
             return new TcpServer.ReturnValue<RemoteExpression.ReturnValue> { Type = TcpServer.ReturnType.RemoteExpressionNotSupport };
-        }
-        /// <summary>
-        /// 心跳检测
-        /// </summary>
-        protected unsafe override void check()
-        {
-            SocketError socketError;
-            bool isError = false;
-            if (Monitor.TryEnter(SocketLock))
-            {
-                try
-                {
-                    if (Socket != null && isCheck != 0 && IsDisposed == 0)
-                    {
-                        byte[] buffer = Buffer.Buffer;
-                        fixed (byte* dataFixed = buffer)
-                        {
-                            byte* start = dataFixed + Buffer.StartIndex;
-                            *(uint*)start = (uint)TcpServer.Server.CheckCommandIndex | (uint)TcpServer.CommandFlags.NullData;
-                            isError = true;
-                            int size = Socket.Send(buffer, Buffer.StartIndex, sizeof(uint), SocketFlags.None, out socketError);
-                            ++SendCount;
-                            if (size == sizeof(uint))
-                            {
-                                size = Socket.Receive(buffer, Buffer.StartIndex, sizeof(int), SocketFlags.None, out socketError);
-                                ++ReceiveCount;
-                                if (size == sizeof(uint) && (TcpServer.ReturnType)(*start) == TcpServer.ReturnType.Success) isError = false;
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    if (isError) closeSocket();
-                    Monitor.Exit(SocketLock);
-                }
-            }
         }
     }
 }

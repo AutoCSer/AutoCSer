@@ -116,7 +116,7 @@ namespace AutoCSer.Sql.MsSql
             }
             else
             {
-                sqlType = memberType.formCSharpType();
+                sqlType = memberType.formCSharpType(memberAttribute);
                 size = sqlType.getSize(memberAttribute); 
             }
             return new Column

@@ -37,6 +37,14 @@ namespace AutoCSer.Sql
             return AutoCSer.Date.NowTime.Now;
         }
         /// <summary>
+        /// 获取当前时间
+        /// </summary>
+        /// <returns>当前时间</returns>
+        public static DateTime SysDateTime()
+        {
+            return AutoCSer.Date.NowTime.Now;
+        }
+        /// <summary>
         /// IN 表达式
         /// </summary>
         /// <typeparam name="valueType"></typeparam>

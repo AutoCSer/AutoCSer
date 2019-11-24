@@ -9,16 +9,16 @@ namespace AutoCSer.Net.TcpOpenStreamServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpStreamServer.ServerSocket<ServerAttribute, Server, ServerSocket, ServerSocketSender>
+    public sealed unsafe class ServerSocket : TcpStreamServer.ServerSocket<Server, ServerSocket, ServerSocketSender>
     {
         /// <summary>
         /// TCP 内部服务套接字数据发送
         /// </summary>
         internal ServerSocketSender Sender;
-        /// <summary>
-        /// 最大输入数据长度
-        /// </summary>
-        private int maxInputSize;
+        ///// <summary>
+        ///// 最大输入数据长度
+        ///// </summary>
+        //private int maxInputSize;
         /// <summary>
         /// 最大合并输入数据长度
         /// </summary>
@@ -95,8 +95,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             Socket.ReceiveBufferSize = Server.ReceiveBufferPool.Size;
             Socket.SendBufferSize = Server.SendBufferPool.Size;
 #endif
-            if ((maxInputSize = Server.Attribute.MaxInputSize) <= 0) maxInputSize = int.MaxValue;
-            if ((maxMergeInputSize = maxInputSize + Server.ReceiveBufferPool.Size) < 0) maxMergeInputSize = int.MaxValue;
+            if ((maxMergeInputSize = Server.ServerAttribute.MaxInputSize + Server.ReceiveBufferPool.Size) < 0) maxMergeInputSize = int.MaxValue;
 #if !DOTNET2
             receiveAsyncEventArgs = SocketAsyncEventArgsPool.Get();
 #endif
@@ -138,7 +137,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             {
                 IsVerifyMethod = false;
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = Socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, Socket);
                 if (socketError == SocketError.Success)
@@ -231,7 +230,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             if (socket != null)
             {
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
                 if (socketError == SocketError.Success)
@@ -917,8 +916,8 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             if (MarkData != 0) TcpServer.CommandBuffer.Mark(ref data, MarkData);
             switch (command - TcpServer.Server.RemoteExpressionNodeIdCommandIndex)
             {
-                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpressionNodeId(ref data, Server.Attribute.IsServerBuildOutputThread); return;
-                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpression(ref data, Server.Attribute.IsServerBuildOutputThread); return;
+                case TcpServer.Server.RemoteExpressionNodeIdCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpressionNodeId(ref data, Server.ServerAttribute.IsBuildOutputThread); return;
+                case TcpServer.Server.RemoteExpressionCommandIndex - TcpServer.Server.RemoteExpressionNodeIdCommandIndex: Sender.GetRemoteExpression(ref data, Server.ServerAttribute.IsBuildOutputThread); return;
                 default: Server.DoCommand(command, Sender, ref data);return;
             }
         }
@@ -1238,8 +1237,8 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                                     {
                                         if (MarkData != 0) TcpServer.CommandBuffer.Mark(start, MarkData, compressionDataSize);
                                         data.Set((int)(start - dataFixed), compressionDataSize);
-                                        if(command== TcpServer.Server.RemoteExpressionCommandIndex) Sender.GetRemoteExpression(ref data, Server.Attribute.IsServerBuildOutputThread);
-                                        else Sender.GetRemoteExpressionNodeId(ref data, Server.Attribute.IsServerBuildOutputThread);
+                                        if(command== TcpServer.Server.RemoteExpressionCommandIndex) Sender.GetRemoteExpression(ref data, Server.ServerAttribute.IsBuildOutputThread);
+                                        else Sender.GetRemoteExpressionNodeId(ref data, Server.ServerAttribute.IsBuildOutputThread);
                                         start += compressionDataSize;
                                         break;
                                     }

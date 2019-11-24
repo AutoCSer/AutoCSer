@@ -11,12 +11,10 @@ namespace AutoCSer.Net.TcpSimpleServer
     /// <summary>
     /// TCP 服务基类
     /// </summary>
-    /// <typeparam name="attributeType"></typeparam>
     /// <typeparam name="serverType"></typeparam>
     /// <typeparam name="serverSocketType"></typeparam>
-    public abstract unsafe class Server<attributeType, serverType, serverSocketType> : TcpServer.ServerBase<attributeType>
-        where attributeType : ServerAttribute
-        where serverType : Server<attributeType, serverType, serverSocketType>
+    public abstract unsafe class Server<serverType, serverSocketType> : TcpServer.ServerBase
+        where serverType : Server<serverType, serverSocketType>
         where serverSocketType : ServerSocket
     {
         /// <summary>
@@ -47,7 +45,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal Server(attributeType attribute, ILog log, Func<System.Net.Sockets.Socket, bool> verify, bool isSynchronousVerifyMethod)
+        internal Server(TcpServer.ServerBaseAttribute attribute, ILog log, Func<System.Net.Sockets.Socket, bool> verify, bool isSynchronousVerifyMethod)
             : base(attribute, verify, log, false, isSynchronousVerifyMethod)
         {
         }

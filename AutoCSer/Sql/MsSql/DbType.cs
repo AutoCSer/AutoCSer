@@ -47,6 +47,7 @@ namespace AutoCSer.Sql.MsSql
             defaultValues[(int)SqlDbType.Bit] = "0";
             defaultValues[(int)SqlDbType.Char] = "''";
             defaultValues[(int)SqlDbType.DateTime] = "getdate()";
+            defaultValues[(int)SqlDbType.DateTime2] = "sysdatetime()";
             defaultValues[(int)SqlDbType.Decimal] = "0";
             defaultValues[(int)SqlDbType.Float] = "0";
             defaultValues[(int)SqlDbType.Int] = "0";

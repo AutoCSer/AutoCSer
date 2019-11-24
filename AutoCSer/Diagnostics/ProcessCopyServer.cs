@@ -38,7 +38,7 @@ namespace AutoCSer.Diagnostics
         {
             base.SetTcpServer(tcpServer);
             bool isError = false;
-            cacheFile = ServerName + (ServerName == tcpServer.Attribute.ServerName ? null : ("_" + tcpServer.Attribute.ServerName)) + ".cache";
+            cacheFile = ServerName + (ServerName == tcpServer.ServerAttribute.ServerName ? null : ("_" + tcpServer.ServerAttribute.ServerName)) + ".cache";
             if (File.Exists(cacheFile))
             {
                 try

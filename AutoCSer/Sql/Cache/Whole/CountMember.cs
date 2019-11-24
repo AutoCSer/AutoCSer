@@ -483,5 +483,10 @@ namespace AutoCSer.Sql.Cache.Whole
             }
             while (true);
         }
+
+        static CountMember()
+        {
+            OnTime.Default.Set();
+        }
     }
 }

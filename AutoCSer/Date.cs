@@ -103,78 +103,35 @@ namespace AutoCSer
             /// </summary>
             internal static long CurrentSeconds;
             /// <summary>
-            /// 定时触发类型
+            /// 内部项目定时器
             /// </summary>
-            [Flags]
-            internal enum OnTimeFlag
+            internal abstract class OnTime
             {
                 /// <summary>
-                /// 文件日志输出
+                /// 定时处理
                 /// </summary>
-                LogFile = 1,
-                /// <summary>
-                /// TCP 服务端套接字超时处理
-                /// </summary>
-                TcpServerSocketTimerLink = 2,
-                /// <summary>
-                /// TCP 客户端心跳检测处理
-                /// </summary>
-                TcpClientCheckTimer = 4,
-                /// <summary>
-                /// TCP 客户端心跳检测处理
-                /// </summary>
-                TcpSimpleClientCheckTimer = 8,
-                /// <summary>
-                /// TCP 注册服务保存信息
-                /// </summary>
-                TcpRegister = 0x10,
-
-                /// <summary>
-                /// HTTP 会话刷新
-                /// </summary>
-                HttpSession = 0x20,
-                /// <summary>
-                /// 新建文件监视处理
-                /// </summary>
-                CreateFlieTimeoutWatcher = 0x40,
-                /// <summary>
-                /// Sql 成员计数
-                /// </summary>
-                SqlCountMember = 0x80,
-
-                /// <summary>
-                /// 缓存文件刷新
-                /// </summary>
-                CacheFile = 0x100,
-                /// <summary>
-                /// 缓存消息分发超时处理
-                /// </summary>
-                CacheDistributionTimeout = 0x200,
-                /// <summary>
-                /// 缓存数据超时处理
-                /// </summary>
-                CacheTimeout = 0x400,
+                internal abstract void OnTimer();
             }
             /// <summary>
             /// 定时触发类型
             /// </summary>
-            internal static OnTimeFlag Flag;
+            internal static bool IsOnTime;
             /// <summary>
             /// 定时触发 TCP 应答服务扩展
             /// </summary>
-            internal static Action<OnTimeFlag> TcpSimpleServerOnTime;
+            internal static OnTime TcpSimpleServerOnTime;
             /// <summary>
             /// 定时触发 WEB 扩展
             /// </summary>
-            internal static Action<OnTimeFlag> WebViewOnTime;
+            internal static OnTime WebViewOnTime;
             /// <summary>
             /// 定时触发 Sql 扩展
             /// </summary>
-            internal static Action<OnTimeFlag> SqlOnTime;
+            internal static OnTime SqlOnTime;
             /// <summary>
             /// 定时触发 缓存 扩展
             /// </summary>
-            internal static Action<OnTimeFlag> CacheOnTime;
+            internal static OnTime CacheServerOnTime;
 #endif
             /// <summary>
             /// 刷新时间
@@ -197,30 +154,21 @@ namespace AutoCSer
                         try
                         {
                             AutoCSer.Threading.ThreadPool.CheckExit();
-                            if ((Flag & OnTimeFlag.LogFile) != 0)
+                            for (AutoCSer.Log.File fileLog = AutoCSer.Log.File.Files.End; fileLog != null; fileLog = fileLog.DoubleLinkPrevious) fileLog.OnTimer();
+                            for (AutoCSer.Net.SocketTimeoutLink.TimerLink timeout = AutoCSer.Net.SocketTimeoutLink.TimerLink.TimeoutEnd; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
+                            for (AutoCSer.Net.TcpServer.ClientCheckTimer timeout = AutoCSer.Net.TcpServer.ClientCheckTimer.TimeoutEnd; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
+                            for (AutoCSer.TimeoutCount timeout = AutoCSer.TimeoutCount.OnTimerLink.End; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
+                            if (IsOnTime)
                             {
-                                for (AutoCSer.Log.File fileLog = AutoCSer.Log.File.Files.End; fileLog != null; fileLog = fileLog.DoubleLinkPrevious) fileLog.OnTimer();
+                                if (TcpSimpleServerOnTime != null) TcpSimpleServerOnTime.OnTimer();
+                                if (CacheServerOnTime != null) CacheServerOnTime.OnTimer();
+                                if (SqlOnTime != null) SqlOnTime.OnTimer();
+                                if (WebViewOnTime != null) WebViewOnTime.OnTimer();
                             }
-                            if ((Flag & OnTimeFlag.TcpServerSocketTimerLink) != 0)
-                            {
-                                for (AutoCSer.Net.SocketTimeoutLink.TimerLink timeout = AutoCSer.Net.SocketTimeoutLink.TimerLink.TimeoutEnd; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
-                            }
-                            if ((Flag & OnTimeFlag.TcpClientCheckTimer) != 0)
-                            {
-                                for (AutoCSer.Net.TcpServer.ClientCheckTimer timeout = AutoCSer.Net.TcpServer.ClientCheckTimer.TimeoutEnd; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
-                            }
-                            if ((Flag & (OnTimeFlag.TcpSimpleClientCheckTimer)) != 0) TcpSimpleServerOnTime(Flag);
-
-                            if ((Flag & (OnTimeFlag.CacheFile | OnTimeFlag.CacheDistributionTimeout | OnTimeFlag.CacheTimeout)) != 0) CacheOnTime(Flag);
-                            if ((Flag & OnTimeFlag.SqlCountMember) != 0) SqlOnTime(Flag);
-                            if ((Flag & (OnTimeFlag.HttpSession | OnTimeFlag.CreateFlieTimeoutWatcher)) != 0) WebViewOnTime(Flag);
 
                             AutoCSer.Threading.TimerTask.Default.OnTimer(Now);
-                            if ((Flag & OnTimeFlag.TcpRegister) != 0)
-                            {
-                                for (AutoCSer.Net.TcpRegister.Server server = AutoCSer.Net.TcpRegister.Server.ServerEnd; server != null; server = server.DoubleLinkPrevious) server.OnTimer();
-                            }
-                            if (OnTime != null) OnTime();
+                            for (AutoCSer.Net.TcpRegister.Server server = AutoCSer.Net.TcpRegister.Server.ServerEnd; server != null; server = server.DoubleLinkPrevious) server.OnTimer();
+                            if (Date.OnTime != null) Date.OnTime();
                         }
                         catch (Exception error)
                         {
@@ -231,6 +179,11 @@ namespace AutoCSer
                 }
 #endif
             }
+            /// <summary>
+            /// 激活计时器
+            /// </summary>
+            [AutoCSer.IOS.Preserve(Conditional = true)]
+            internal static int Count;
 
             static NowTime()
             {

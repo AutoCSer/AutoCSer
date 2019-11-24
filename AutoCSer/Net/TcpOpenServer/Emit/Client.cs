@@ -59,6 +59,10 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
             return commands[index];
         }
         /// <summary>
+        /// 最大超时秒数
+        /// </summary>
+        private static readonly ushort maxTimeoutSeconds;
+        /// <summary>
         /// 创建 TCP 客户端
         /// </summary>
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
@@ -74,7 +78,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
             MethodClient client = (MethodClient)Activator.CreateInstance(clientType);
             interfaceType interfaceClient = (interfaceType)(object)client;
             if (attribute == null) attribute = defaultServerAttribute;
-            client._TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<interfaceType>(interfaceClient, attribute, onCustomData, log, clientRoute, verifyMethod);
+            client._TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<interfaceType>(interfaceClient, attribute, maxTimeoutSeconds, onCustomData, log, clientRoute, verifyMethod);
             if (attribute.IsAutoClient) client._TcpClient_.TryCreateSocket();
             return interfaceClient;
         }
@@ -93,6 +97,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
                 //clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, typeof(Client<interfaceType>).GetMethod("GetCommand", BindingFlags.Static | BindingFlags.Public));
                 clientType = clientBuilder.Build(type, defaultServerAttribute, builder.Methods, ((Func<int, TcpServer.CommandInfo>)Client<interfaceType>.GetCommand).Method);
                 commands = clientBuilder.Commands;
+                maxTimeoutSeconds = clientBuilder.MaxTimeoutSeconds;
             }
         }
     }

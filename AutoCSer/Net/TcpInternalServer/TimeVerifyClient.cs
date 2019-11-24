@@ -47,7 +47,7 @@ namespace AutoCSer.Net.TcpInternalServer
         public unsafe static bool Verify(Verifier verify, ClientSocketSender sender, AutoCSer.Net.TcpInternalServer.Client client, string userID, string verifyString)
         {
             long ticks;
-            ServerAttribute attribute = client.Attribute;
+            TcpServer.ServerBaseAttribute attribute = client.Attribute;
             ulong markData = 0;
             if (attribute.IsMarkData) markData = attribute.VerifyHashCode;
             ticks = Date.NowTime.SetUtc().Ticks;

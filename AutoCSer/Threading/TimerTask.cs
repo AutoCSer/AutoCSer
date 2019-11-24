@@ -72,11 +72,6 @@ namespace AutoCSer.Threading
             if (run != null) add(run, Thread.CallType.Action, threadType, runTime);
         }
         /// <summary>
-        /// 激活计时器
-        /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
-        private static readonly DateTime timer = Date.NowTime.Now;
-        /// <summary>
         /// 触发定时任务
         /// </summary>
         /// <param name="now"></param>
@@ -148,5 +143,10 @@ namespace AutoCSer.Threading
         /// 默认定时任务（不保证任务触发的及时性）
         /// </summary>
         public static readonly TimerTask Default = new TimerTask();
+
+        static TimerTask()
+        {
+            ++Date.NowTime.Count;
+        }
     }
 }

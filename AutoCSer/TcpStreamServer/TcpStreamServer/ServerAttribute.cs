@@ -12,9 +12,5 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal override int GetMaxCustomDataSize { get { return 0; } }
-        /// <summary>
-        /// 命令池初始化二进制大小 2^n
-        /// </summary>
-        internal override byte GetCommandPoolBitSize { get { return 0; } }
     }
 }

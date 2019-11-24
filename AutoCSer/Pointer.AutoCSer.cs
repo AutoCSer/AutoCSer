@@ -14,6 +14,10 @@ namespace AutoCSer
         public partial struct Size
         {
             /// <summary>
+            /// 自定义数据长度
+            /// </summary>
+            internal int CustomSize;
+            /// <summary>
             /// 字节长度
             /// </summary>
             /// <returns></returns>

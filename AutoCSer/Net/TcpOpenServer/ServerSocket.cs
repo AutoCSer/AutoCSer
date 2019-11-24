@@ -9,7 +9,7 @@ namespace AutoCSer.Net.TcpOpenServer
     /// <summary>
     /// TCP 服务端套接字
     /// </summary>
-    public sealed unsafe class ServerSocket : TcpServer.ServerSocket<ServerAttribute, Server, ServerSocket, ServerSocketSender>
+    public sealed unsafe class ServerSocket : TcpServer.ServerSocket<Server, ServerSocket, ServerSocketSender>
     {
         /// <summary>
         /// 自定义数据字节长度
@@ -99,7 +99,7 @@ namespace AutoCSer.Net.TcpOpenServer
             Socket.ReceiveBufferSize = Server.ReceiveBufferPool.Size;
             Socket.SendBufferSize = Server.SendBufferPool.Size;
 #endif
-            if ((maxInputSize = Server.Attribute.MaxInputSize) <= 0) maxInputSize = int.MaxValue;
+            maxInputSize = Server.ServerAttribute.MaxInputSize;
             if ((maxMergeInputSize = maxInputSize + Server.ReceiveBufferPool.Size) < 0) maxMergeInputSize = int.MaxValue;
 #if !DOTNET2
             receiveAsyncEventArgs = SocketAsyncEventArgsPool.Get();
@@ -142,7 +142,7 @@ namespace AutoCSer.Net.TcpOpenServer
             {
                 IsVerifyMethod = false;
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = Socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, Socket);
                 if (socketError == SocketError.Success)
@@ -233,7 +233,7 @@ namespace AutoCSer.Net.TcpOpenServer
             if (socket != null)
             {
                 ReceiveType = TcpServer.ServerSocketReceiveType.VerifyCommand;
-                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.Attribute.ReceiveVerifyCommandSeconds + 1);
+                receiveTimeout = Date.NowTime.Now.AddSeconds(Server.ServerAttribute.ReceiveVerifyCommandSeconds + 1);
 #if DOTNET2
                 IAsyncResult async = socket.BeginReceive(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize, SocketFlags.None, out socketError, onReceiveAsyncCallback, socket);
                 if (socketError == SocketError.Success)

@@ -13,7 +13,7 @@ namespace AutoCSer.CodeGenerator.Template
         #region IF IsSetTcpServer
         #region IF IsServerCode
 #if !NOJIT
-             : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server, AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>
+             : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server>
 #endif
         #endregion IF IsServerCode
         #endregion IF IsSetTcpServer
@@ -26,12 +26,13 @@ namespace AutoCSer.CodeGenerator.Template
             private const int CommandStartIndex = 0;
             private const int InputParameterIndex = 0;
             private const int OutputParameterIndex = 0;
+            private const ushort TimeoutSeconds = 0;
             private const bool IsCallQueue = false;
             private const bool IsSynchronousVerifyMethod = false;
             public void SetTcpServer(AutoCSer.Net.TcpInternalSimpleServer.Server commandServer) { }
             #endregion NOTE
             #region IF IsServerCode
-            #region IF ServiceAttribute.GetIsRememberCommand
+            #region IF IsRememberCommand
             /// <summary>
             /// 命令序号记忆数据
             /// </summary>
@@ -45,7 +46,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion LOOP MethodIndexs
                 return names;
             }
-            #endregion IF ServiceAttribute.GetIsRememberCommand
+            #endregion IF IsRememberCommand
             #endregion IF IsServerCode
             /// <summary>
             /// @ServerRegisterName TCP服务/*NOT:IsServerCode*/参数/*NOT:IsServerCode*/
@@ -324,7 +325,7 @@ namespace AutoCSer.CodeGenerator.Template
 
                 #region LOOP MethodIndexs
                 #region NOT IsNullMethod
-                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase @MethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:IsJsonSerialize*/ , CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
+                private static readonly AutoCSer.Net.TcpServer.CommandInfoBase @MethodIdentityCommand = new AutoCSer.Net.TcpServer.CommandInfoBase { Command = @MethodIndex + @CommandStartIndex, InputParameterIndex = @InputParameterIndex/*IF:TimeoutSeconds*/, TimeoutSeconds = @TimeoutSeconds/*IF:TimeoutSeconds*//*IF:IsJsonSerialize*/, CommandFlags = AutoCSer.Net.TcpServer.CommandFlags.JsonSerialize/*IF:IsJsonSerialize*//*IF:IsVerifyMethod*/, IsVerifyMethod = true/*IF:IsVerifyMethod*//*IF:IsSimpleSerializeInputParamter*/, IsSimpleSerializeInputParamter = true/*IF:IsSimpleSerializeInputParamter*//*IF:IsSimpleSerializeOutputParamter*/, IsSimpleSerializeOutputParamter = true/*IF:IsSimpleSerializeOutputParamter*/ };
 
                 #region NOT MemberIndex
                 #region IF Method.XmlDocument
@@ -531,7 +532,7 @@ namespace AutoCSer.CodeGenerator.Template
         /// </summary>
         public partial class FullName
 #if !NOJIT
-            : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server, AutoCSer.Net.TcpInternalSimpleServer.ServerAttribute>
+            : AutoCSer.Net.TcpSimpleServer.ISetTcpServer<AutoCSer.Net.TcpInternalSimpleServer.Server>
 #endif
         {
             /// <summary>
