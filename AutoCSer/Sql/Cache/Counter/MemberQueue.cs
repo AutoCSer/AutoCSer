@@ -343,7 +343,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// 获取数据
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 try
                 {
@@ -353,7 +353,6 @@ namespace AutoCSer.Sql.Cache.Counter
                 {
                     wait.Set();
                 }
-                return LinkNext;
             }
             /// <summary>
             /// 

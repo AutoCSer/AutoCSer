@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using System.Threading;
 using AutoCSer.Extension;
+#if !DotNetStandard
+using System.Threading;
+#endif
 
 namespace AutoCSer.TestCase.TcpInternalServerPerformance
 {

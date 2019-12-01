@@ -211,7 +211,7 @@ namespace AutoCSer
         {
             if (Array != null)
             {
-                System.Array.Clear(Array, 0, Length);
+                if (DynamicArray<valueType>.IsClearArray) System.Array.Clear(Array, 0, Length);
                 Length = 0;
             }
         }

@@ -577,6 +577,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 SearchServer 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, 0, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
+                if (config.ServerAttribute.IsAutoClient) TcpClient.TryCreateSocket();
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p1), null }
                     , new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p4), typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p6), null }
                     , new System.Type[] { typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p3), typeof(AutoCSer.Web.SearchServer.TcpStaticServer/**/.SearchServer/**/._p5), null }

@@ -4059,6 +4059,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
                 }
                 if (config.ServerAttribute.IsServer) AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Warn | AutoCSer.Log.LogType.Debug, null, "请确认 Example2 服务器端是否本地调用", AutoCSer.Log.CacheType.None);
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, 0, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
+                if (config.ServerAttribute.IsAutoClient) TcpClient.TryCreateSocket();
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticServer/**/.Example2/**/._p12), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticServer/**/.Example2/**/._p14), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticServer/**/.Example2/**/._p13), null }
                     , new System.Type[] { null }

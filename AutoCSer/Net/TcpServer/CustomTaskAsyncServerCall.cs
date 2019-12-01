@@ -44,10 +44,6 @@ namespace AutoCSer.Net.TcpServer
             {
                 task();
             }
-            catch (Exception error)
-            {
-                sender.VirtualAddLog(error);
-            }
             finally
             {
                 if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) continuation();

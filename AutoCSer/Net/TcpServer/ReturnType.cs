@@ -35,6 +35,7 @@ namespace AutoCSer.Net.TcpServer
         /// 成功，最大占用 3b，低端是服务端状态，用于 Identity 最高 3 位
         /// </summary>
         Success = 0x7,
+
         ///// <summary>
         ///// 终止保持回调
         ///// </summary>
@@ -79,6 +80,10 @@ namespace AutoCSer.Net.TcpServer
         /// 超时
         /// </summary>
         Timeout,
+        /// <summary>
+        /// 客户端等待连接超时
+        /// </summary>
+        WaitConnectedTimeout,
         ///// <summary>
         ///// 日志流过期
         ///// </summary>

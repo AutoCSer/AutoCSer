@@ -183,7 +183,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
                         }
                     }
                     while (++index != count);
-                    System.Array.Clear(outputParameterArray, 0, count);
+                    if(AutoCSer.DynamicArray<outputParameterType>.IsClearArray) System.Array.Clear(outputParameterArray, 0, count);
                     currentOutputParameters.Length = 0;
 
                     Monitor.Enter(OutputLock);
@@ -210,7 +210,14 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="state"></param>
         private void threadPoolOnReceive(object state)
         {
-            onReceive();
+            try
+            {
+                onReceive();
+            }
+            catch (Exception error)
+            {
+                Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+            }
         }
     }
     /// <summary>

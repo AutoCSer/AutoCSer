@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Extension;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -62,7 +63,8 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="maxDataCount">最大数据数量</param>
         /// <param name="isBackground">是否后台线程</param>
-        public ServerCallCanDisposableQueue(int maxDataCount, bool isBackground = true) : base(isBackground, false)    
+        /// <param name="log">日志接口</param>
+        public ServerCallCanDisposableQueue(int maxDataCount, bool isBackground = true, AutoCSer.Log.ILog log = null) : base(isBackground, false, log)    
         {
             if (maxDataCount <= 0) throw new IndexOutOfRangeException();
             this.maxDataCount = maxDataCount;
@@ -81,11 +83,23 @@ namespace AutoCSer.Net.TcpServer
                 end = null;
                 head = null;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                while (value != null)
+                do
                 {
-                    current = null;
-                    value = value.SingleRunTask();
+                    try
+                    {
+                        while (value != null)
+                        {
+                            current = null;
+                            value.SingleRunTask(ref value);
+                        }
+                        break;
+                    }
+                    catch (Exception error)
+                    {
+                        log.Add(Log.LogType.Error, error);
+                    }
                 }
+                while (true);
             }
             while (!isDisposed);
         }

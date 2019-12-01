@@ -422,6 +422,7 @@
     <Compile Include="Net\TcpServer\ClientSocketSender.cs" />
     <Compile Include="Net\TcpServer\ClientSocketSenderBase.cs" />
     <Compile Include="Net\TcpServer\ClientTaskType.cs" />
+    <Compile Include="Net\TcpServer\ClientWaitConnected.cs" />
     <Compile Include="Net\TcpServer\CommandBase.cs" />
     <Compile Include="Net\TcpServer\CommandBuffer.cs" />
     <Compile Include="Net\TcpServer\CommandFlags.cs" />

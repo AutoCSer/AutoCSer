@@ -22,14 +22,10 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 获取当前读取数据标识
         /// </summary>
-        /// <returns></returns>
-        internal override Node RunTask()
+        internal override void RunTask()
         {
-            Node next = LinkNext;
             reader.SaveIdentity();
-            LinkNext = null;
             System.Threading.Interlocked.Exchange(ref reader.SetIdentity, this);
-            return next;
         }
     }
 }

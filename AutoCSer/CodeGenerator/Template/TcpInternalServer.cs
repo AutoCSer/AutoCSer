@@ -449,10 +449,13 @@ namespace AutoCSer.CodeGenerator.Template
                 #region IF IsVerifyMethod
                 /// <param name="verifyMethod">TCP 验证方法</param>
                 #endregion IF IsVerifyMethod
+                #region IF IsCreateClientWaitConnected
+                /// <param name="waitConnectedOnCheckSocketVersion">等待连接套接字初始化处理</param>
+                #endregion IF IsCreateClientWaitConnected
                 /// <param name="clientRoute">TCP 客户端路由</param>
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
-                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null/*IF:IsVerifyMethod*/, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+                public TcpInternalClient(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null/*IF:IsVerifyMethod*/, Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool> verifyMethod = null/*IF:IsVerifyMethod*//*IF:IsCreateClientWaitConnected*/, Action<AutoCSer.Net.TcpServer.ClientSocketEventParameter> waitConnectedOnCheckSocketVersion = null/*IF:IsCreateClientWaitConnected*/, AutoCSer.Net.TcpServer.ClientLoadRoute<AutoCSer.Net.TcpInternalServer.ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
                 {
                     if (attribute == null)
                     {
@@ -465,7 +468,12 @@ namespace AutoCSer.CodeGenerator.Template
                         #endregion NOT IsServerCode
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpInternalServer.Client<TcpInternalClient>(this, attribute, @MaxTimeoutSeconds, onCustomData, log, clientRoute/*IF:ClientRouteType*/ ?? new @ClientRouteType()/*IF:ClientRouteType*//*IF:IsVerifyMethod*/, verifyMethod/*IF:IsTimeVerify*/ ?? (Func<TcpInternalClient, AutoCSer.Net.TcpInternalServer.ClientSocketSender, bool>)_timerVerify_/*IF:IsTimeVerify*//*IF:IsVerifyMethod*/);
+                    #region IF IsCreateClientWaitConnected
+                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(attribute.GetClientWaitConnectedMilliseconds, waitConnectedOnCheckSocketVersion);
+                    #endregion IF IsCreateClientWaitConnected
+                    #region NOT IsCreateClientWaitConnected
                     if (attribute.IsAuto) _TcpClient_.TryCreateSocket();
+                    #endregion NOT IsCreateClientWaitConnected
                 }
                 #region NOT IsServerCode
                 /// <summary>
@@ -501,12 +509,16 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion PUSH MethodParameter
                 #endregion LOOP InputParameters
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                /*AT:IsInternalClient*/void /*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
+                /*AT:IsInternalClient*/
+                void /*PUSH:Method*/@MethodName/*PUSH:Method*/(/*LOOP:InputParameters*//*PUSH:MethodParameter*/@ParameterTypeRefName @ParameterJoinName/*PUSH:MethodParameter*//*LOOP:InputParameters*/)
                 {
                     #region IF Attribute.IsExpired
                     throw new Exception(AutoCSer.Net.TcpServer.ReturnType.VersionExpired.ToString());
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
+                    #region IF IsClientWaitConnected
+                    if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
+                    #endregion IF IsClientWaitConnected
                     #region IF InputParameterIndex
                     TcpInternalServer.@InputParameterTypeName _inputParameter_ = new TcpInternalServer.@InputParameterTypeName
                     {
@@ -551,6 +563,19 @@ namespace AutoCSer.CodeGenerator.Template
                     return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired };
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
+                    #region IF IsClientWaitConnected
+                    if (!_WaitConnected_.WaitConnected())
+                    {
+                        #region LOOP InputParameters
+                        #region PUSH MethodParameter
+                        #region IF IsOut
+                        @ParameterName = default(@ParameterType.FullName);
+                        #endregion IF IsOut
+                        #endregion PUSH MethodParameter
+                        #endregion LOOP InputParameters
+                        return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout };
+                    }
+                    #endregion IF IsClientWaitConnected
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/<TcpInternalServer.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/<TcpInternalServer.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.Pop();
                     try
                     {
@@ -634,6 +659,9 @@ namespace AutoCSer.CodeGenerator.Template
                     _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.VersionExpired);
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
+                    #region IF IsClientWaitConnected
+                    if (!_WaitConnected_.WaitConnected()) _awaiter_.Call(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout);
+                    #endregion IF IsClientWaitConnected
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*NOT:IsVerifyMethod*/_TcpClient_.Sender/*NOT:IsVerifyMethod*//*NOTE*/ ?? /*NOTE*//*IF:IsVerifyMethod*/_sender_/*IF:IsVerifyMethod*/;
                     if (_socket_ != null)
                     {
@@ -692,6 +720,19 @@ namespace AutoCSer.CodeGenerator.Template
                     return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired };
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
+                    #region IF IsClientWaitConnected
+                    if (!_WaitConnected_.WaitConnected())
+                    {
+                        #region LOOP InputParameters
+                        #region PUSH MethodParameter
+                        #region IF IsOut
+                        @ParameterName = default(@ParameterType.FullName);
+                        #endregion IF IsOut
+                        #endregion PUSH MethodParameter
+                        #endregion LOOP InputParameters
+                        return new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/ { Type = AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout };
+                    }
+                    #endregion IF IsClientWaitConnected
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = /*NOT:IsVerifyMethod*/_TcpClient_.Sender/*NOT:IsVerifyMethod*//*NOTE*/ ?? /*NOTE*//*IF:IsVerifyMethod*/_sender_/*IF:IsVerifyMethod*/;
                     if (_socket_ != null)
                     {
@@ -780,6 +821,13 @@ namespace AutoCSer.CodeGenerator.Template
                     _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/{ Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired });
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
+                    #region IF IsClientWaitConnected
+                    if (!_WaitConnected_.WaitConnected())
+                    {
+                        if (_onReturn_ == null) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
+                        _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue/*IF:MethodIsReturn*/<@MethodReturnType.FullName>/*IF:MethodIsReturn*/{ Type = AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout });
+                    }
+                    #endregion IF IsClientWaitConnected
                     AutoCSer.Net.Callback<AutoCSer.Net.TcpServer.ReturnValue/*IF:OutputParameterIndex*/<TcpInternalServer.@OutputParameterTypeName>/*IF:OutputParameterIndex*/> _onOutput_ = _TcpClient_.GetCallback</*IF:MethodIsReturn*/@MethodReturnType.FullName, /*IF:MethodIsReturn*/TcpInternalServer.@OutputParameterTypeName>(_onReturn_);
                     try
                     {
@@ -828,6 +876,13 @@ namespace AutoCSer.CodeGenerator.Template
                     #region NOT Attribute.IsExpired
                     try
                     {
+                        #region IF IsClientWaitConnected
+                        if (!_WaitConnected_.WaitConnected())
+                        {
+                            if (_onReturn_ == null) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
+                            _onReturn_(new AutoCSer.Net.TcpServer.ReturnValue { Type = AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout });
+                        }
+                        #endregion IF IsClientWaitConnected
                         AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
                         if (_socket_ != null)
                         {
@@ -890,6 +945,12 @@ namespace AutoCSer.CodeGenerator.Template
                         return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = AutoCSer.Net.TcpServer.ReturnType.VersionExpired };
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
+                        #region IF IsClientWaitConnected
+                        if (!_WaitConnected_.WaitConnected())
+                        {
+                            return new AutoCSer.Net.TcpServer.ReturnValue<@MethodReturnType.FullName> { Type = AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout };
+                        }
+                        #endregion IF IsClientWaitConnected
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/<TcpInternalServer.@OutputParameterTypeName>/*IF:OutputParameterIndex*/ _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue/*IF:OutputParameterIndex*/<TcpInternalServer.@OutputParameterTypeName>/*IF:OutputParameterIndex*/.Pop();
                         try
                         {
@@ -925,6 +986,9 @@ namespace AutoCSer.CodeGenerator.Template
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.VersionExpired.ToString());
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
+                        #region IF IsClientWaitConnected
+                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
+                        #endregion IF IsClientWaitConnected
                         #region IF IsClientSendOnly
                         TcpInternalServer.@InputParameterTypeName _sendOnlyInputParameter_ = new TcpInternalServer.@InputParameterTypeName
                         {

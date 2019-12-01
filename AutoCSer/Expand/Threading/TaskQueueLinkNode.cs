@@ -10,21 +10,21 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 任务队列链表
         /// </summary>
-        private TaskQueueLink like;
+        private TaskQueueLink link;
         /// <summary>
         /// 任务队列链表节点
         /// </summary>
-        /// <param name="like">任务队列链表</param>
-        internal TaskQueueLinkNode(TaskQueueLink like)
+        /// <param name="link">任务队列链表</param>
+        internal TaskQueueLinkNode(TaskQueueLink link)
         {
-            this.like = like;
+            this.link = link;
         }
         /// <summary>
         /// 执行任务
         /// </summary>
         public override void RunTask()
         {
-            like.RunTask();
+            link.RunTask();
         }
     }
 }

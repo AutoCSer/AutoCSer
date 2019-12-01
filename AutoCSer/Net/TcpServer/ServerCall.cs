@@ -25,14 +25,14 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 下一个任务节点
         /// </summary>
-        internal AutoCSer.Threading.ILinkTask NextTask;
+        internal ServerCallBase NextTask;
         /// <summary>
         /// 下一个任务节点
         /// </summary>
         AutoCSer.Threading.ILinkTask AutoCSer.Threading.ILinkTask.NextLinkTask
         {
             get { return NextTask; }
-            set { NextTask = value; }
+            set { NextTask = new UnionType { Value = value }.ServerCallBase; }
         }
         /// <summary>
         /// 调用处理
@@ -58,39 +58,37 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// TCP 服务器端同步调用
         /// </summary>
-        /// <returns></returns>
+        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerCall SingleRunTask()
+        internal void SingleRunTask(ref ServerCallBase next)
         {
-            ServerCall value = new UnionType { Value = NextTask }.ServerCall;
+            next = NextTask;
             NextTask = null;
             Call();
-            return value;
         }
         /// <summary>
         /// TCP 服务器端同步调用
         /// </summary>
+        /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerCall SingleRunTask(ref long currentTaskTimestamp)
+        internal void SingleRunTask(ref ServerCallBase next, ref long currentTaskTimestamp)
         {
-            ServerCall value = new UnionType { Value = NextTask }.ServerCall;
+            next = NextTask;
             currentTaskTimestamp = TaskTimestamp;
             NextTask = null;
             Call();
-            return value;
         }
         /// <summary>
         /// 执行任务
         /// </summary>
+        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        AutoCSer.Threading.ILinkTask AutoCSer.Threading.ILinkTask.SingleRunLinkTask()
+        void AutoCSer.Threading.ILinkTask.SingleRunLinkTask(ref AutoCSer.Threading.ILinkTask next)
         {
-            AutoCSer.Threading.ILinkTask value = NextTask;
+            next = NextTask;
             NextTask = null;
             Call();
-            return value;
         }
     }
     /// <summary>

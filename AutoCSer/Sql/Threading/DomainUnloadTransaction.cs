@@ -32,11 +32,13 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        /// <returns>下一个 SQL 队列任务</returns>
-        internal override QueueTask RunTask()
+        internal override void RunTask()
         {
-            run();
-            return LinkNext;
+            try
+            {
+                action();
+            }
+            finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
         }
         /// <summary>
         /// 添加 SQL 队列任务
@@ -145,11 +147,13 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        /// <returns>下一个 SQL 队列任务</returns>
-        internal override QueueTask RunTask()
+        internal override void RunTask()
         {
-            Run();
-            return LinkNext;
+            try
+            {
+                Action(Parameter);
+            }
+            finally { AutoCSer.DomainUnload.Unloader.TransactionEnd(); }
         }
     }
 }

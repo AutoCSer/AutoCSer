@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer.Emit
 {
@@ -10,7 +11,7 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// 是否已经释放资源
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         protected volatile int _isDisposed_;
     }
     /// <summary>
@@ -23,8 +24,21 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <summary>
         /// TCP 服务客户端
         /// </summary>
-        [AutoCSer.IOS.Preserve(Conditional = true)]
+        //[AutoCSer.IOS.Preserve(Conditional = true)]
         public clientType _TcpClient_ { get; internal set; }
+        /// <summary>
+        /// 客户端等待连接
+        /// </summary>
+        public ClientWaitConnected _WaitConnected_ { get; internal set; }
+        /// <summary>
+        /// 等待连接初始化
+        /// </summary>
+        /// <returns>是否连接状态</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public bool _CheckWaitConnected_()
+        {
+            return _WaitConnected_.WaitConnected();
+        }
         /// <summary>
         /// 释放资源
         /// </summary>

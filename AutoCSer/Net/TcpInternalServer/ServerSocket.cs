@@ -53,28 +53,24 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// TCP 内部服务端套接字任务处理
         /// </summary>
+        /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerSocket RunTask(ref long currentTaskTimestamp)
+        internal void RunTask(ref ServerSocket next, ref long currentTaskTimestamp)
         {
-            ServerSocket value = NextTask;
+            next = NextTask;
             currentTaskTimestamp = TaskTimestamp;
-            Start();
+            int isStart = 0;
             NextTask = null;
-            return value;
-        }
-        /// <summary>
-        /// TCP 内部服务端套接字任务错误处理
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerSocket ErrorTask()
-        {
-            ServerSocket value = NextTask;
-            close();
-            NextTask = null;
-            return value;
+            try
+            {
+                Start();
+                isStart = 1;
+            }
+            finally
+            {
+                if (isStart == 0) close();
+            }
         }
         /// <summary>
         /// TCP 内部服务端套接字任务处理

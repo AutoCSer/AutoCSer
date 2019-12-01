@@ -324,16 +324,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     isSuccess = table.CustomReaderQueue(ref connection, sql, reader);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 释放对象
@@ -995,16 +992,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     Value = Table.SelectQueue(ref connection, ref Query);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 释放对象
@@ -1155,16 +1149,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     Value = table.SelectQueue(readValue, ref connection, ref Query);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 释放对象
@@ -1279,16 +1270,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     Value = table.SelectQueue(ref connection, sql, readValue);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 释放对象
@@ -1427,16 +1415,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     isValue = table.Client.Get(table, ref connection, Value, ref Query);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -1621,16 +1606,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     isValue = table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -1726,9 +1708,8 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     if (table.Client.Insert(table, ref connection, value, ref query, isIgnoreTransaction))
@@ -1745,13 +1726,11 @@ namespace AutoCSer.Sql
                 {
                     if (onInserted != null) onInserted(null);
                 }
-                LinkNext = null;
                 table = null;
                 value = null;
                 onInserted = null;
                 query.Clear();
                 YieldPool.Default.PushNotNull(this);
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -1940,16 +1919,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     isValue = table.Client.Insert(table, ref connection, ref array, isIgnoreTransaction);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -2055,9 +2031,8 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     array = table.Client.Insert(table, ref connection, ref array, isIgnoreTransaction);
@@ -2072,12 +2047,10 @@ namespace AutoCSer.Sql
                 {
                     if (onInserted != null) onInserted(default(SubArray<tableType>));
                 }
-                LinkNext = null;
                 table = null;
                 array.SetNull();
                 onInserted = null;
                 YieldPool.Default.PushNotNull(this);
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -2234,16 +2207,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     isValue = table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -2343,9 +2313,8 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     if (table.Client.Update(table, ref connection, value, memberMap, ref Query, isIgnoreTransaction))
@@ -2362,14 +2331,12 @@ namespace AutoCSer.Sql
                 {
                     if (onUpdated != null) onUpdated(null);
                 }
-                LinkNext = null;
                 table = null;
                 value = null;
                 onUpdated = null;
                 memberMap = null;
                 Query.Free();
                 YieldPool.Default.PushNotNull(this);
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -2552,16 +2519,13 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
-                LinkNext = null;
                 try
                 {
                     isValue = table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction);
                 }
                 finally { wait.Set(); }
-                return next;
             }
             /// <summary>
             /// 设置数据
@@ -2680,9 +2644,8 @@ namespace AutoCSer.Sql
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     if (table.Client.Delete(table, ref connection, value, ref query, isIgnoreTransaction))
@@ -2699,13 +2662,11 @@ namespace AutoCSer.Sql
                 {
                     if (onDeleted != null) onDeleted(null);
                 }
-                LinkNext = null;
                 table = null;
                 value = null;
                 onDeleted = null;
                 query.Clear();
                 YieldPool.Default.PushNotNull(this);
-                return next;
             }
             /// <summary>
             /// 设置数据

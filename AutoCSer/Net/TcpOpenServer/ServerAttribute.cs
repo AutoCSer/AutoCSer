@@ -107,6 +107,15 @@ namespace AutoCSer.Net.TcpOpenServer
         [AutoCSer.Metadata.Ignore]
         internal override int GetReceiveVerifyCommandSeconds { get { return ReceiveVerifyCommandSeconds; } }
         /// <summary>
+        /// 客户端等待连接毫秒数，默认为 0 表示等待直到成功或者失败
+        /// </summary>
+        public uint ClientWaitConnectedMilliseconds;
+        /// <summary>
+        /// 客户端等待连接毫秒数，默认为 0 表示等待直到成功或者失败
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override uint GetClientWaitConnectedMilliseconds { get { return ClientWaitConnectedMilliseconds; } }
+        /// <summary>
         /// 客户端最大自定义数据包字节大小，默认为 16KB，设置为 0 表示不限
         /// </summary>
         public int MaxCustomDataSize = (16 << 10) - (sizeof(uint) + sizeof(int) * 2);

@@ -67,7 +67,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             /// </summary>
             /// <param name="connection"></param>
             [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 try
                 {
@@ -78,7 +78,6 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                     exception = error;
                 }
                 finally { wait.Set(); }
-                return LinkNext;
             }
             /// <summary>
             /// 等待缓存加载

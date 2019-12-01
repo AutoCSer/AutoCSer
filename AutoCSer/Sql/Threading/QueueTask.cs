@@ -11,8 +11,18 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        /// <returns>下一个 SQL 队列任务</returns>
-        internal abstract QueueTask RunTask();
+        internal abstract void RunTask();
+        /// <summary>
+        /// 运行任务
+        /// </summary>
+        /// <param name="next">下一个 SQL 队列任务</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void RunTask(ref QueueTask next)
+        {
+            next = LinkNext;
+            LinkNext = null;
+            RunTask();
+        }
         /// <summary>
         /// 添加任务
         /// </summary>

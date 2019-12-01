@@ -144,7 +144,14 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="state"></param>
         private void threadPoolOnReceive(object state)
         {
-            onReceive();
+            try
+            {
+                onReceive();
+            }
+            catch (Exception error)
+            {
+                Socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+            }
         }
     }
     /// <summary>

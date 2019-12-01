@@ -729,24 +729,23 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 数据发送完成后的任务处理
         /// </summary>
+        /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Socket SingleRunTask(ref long currentTaskTimestamp)
+        internal void SingleRunTask(ref Socket next, ref long currentTaskTimestamp)
         {
-            Socket nextTask = NextTask;
+            next = NextTask;
             currentTaskTimestamp = TaskTimestamp;
+            bool isSend = false;
             NextTask = null;
             try
             {
-                if(onSend()) return nextTask;
+                isSend = onSend();
             }
-            catch (Exception error)
+            finally
             {
-                Server.RegisterServer.TcpServer.Log.Add(Log.LogType.Debug, error);
+                if (!isSend) HeaderError();
             }
-            HeaderError();
-            return nextTask;
         }
 #endif
 #if DOTNET2

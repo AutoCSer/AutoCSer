@@ -23,7 +23,17 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 读取任务操作
         /// </summary>
-        /// <returns></returns>
-        internal abstract Node RunTask();
+        internal abstract void RunTask();
+        /// <summary>
+        /// 读取任务操作
+        /// </summary>
+        /// <param name="next"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void RunTask(ref Node next)
+        {
+            next = LinkNext;
+            LinkNext = null;
+            RunTask();
+        }
     }
 }

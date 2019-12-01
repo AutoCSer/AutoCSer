@@ -504,6 +504,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         return IsKeepCallback == 0 ? Attribute.GetClientTimeoutSeconds : (ushort)0;
                     }
                 }
+                /// <summary>
+                /// 客户端是否等待连接
+                /// </summary>
+                public bool IsClientWaitConnected
+                {
+                    get { return ServiceAttribute.GetClientWaitConnectedMilliseconds != 0 && Attribute.GetClientWaitConnected && !IsVerifyMethod; }
+                }
 
                 /// <summary>
                 /// 是否空方法
@@ -876,6 +883,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             /// 客户端最大超时秒数
             /// </summary>
             public ushort MaxTimeoutSeconds;
+            /// <summary>
+            /// 客户端是否等待连接
+            /// </summary>
+            public bool IsCreateClientWaitConnected
+            {
+                get { return Attribute.GetClientWaitConnectedMilliseconds != 0; }
+            }
 #if NOJIT
             /// <summary>
             /// 是否存在 AutoCSer.Net.TcpServer.ISetTcpServer 接口函数

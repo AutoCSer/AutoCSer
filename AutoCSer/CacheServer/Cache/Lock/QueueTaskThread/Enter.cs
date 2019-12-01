@@ -19,11 +19,9 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
         /// <summary>
         /// 申请锁
         /// </summary>
-        /// <returns></returns>
-        internal override Node RunTask()
+        internal override void RunTask()
         {
             Lock.Enter(LinkNode);
-            return LinkNext;
         }
     }
 }

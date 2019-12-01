@@ -466,22 +466,23 @@ namespace AutoCSer.Net.Http
         /// <summary>
         /// 执行任务
         /// </summary>
-        public AutoCSer.Threading.ILinkTask SingleRunLinkTask()
+        /// <param name="next"></param>
+        public void SingleRunLinkTask(ref AutoCSer.Threading.ILinkTask next)
         {
-            AutoCSer.Threading.ILinkTask next = NextLinkTask;
+            next = NextLinkTask;
             NextLinkTask = null;
             try
             {
                 switch (linkTaskType)
                 {
                     case BoundaryReceiveLinkTaskType.WriteFile:
-                        if(writeFile()) return next;
+                        if(writeFile()) return;
                         break;
                     case BoundaryReceiveLinkTaskType.GetFile:
-                        if(getFile()) return next;
+                        if(getFile()) return;
                         break;
                     case BoundaryReceiveLinkTaskType.GetFileFinally:
-                        if(getFileFinally()) return next;
+                        if(getFileFinally()) return;
                         break;
                 }
             }
@@ -490,7 +491,6 @@ namespace AutoCSer.Net.Http
                 httpSocket.DomainServer.RegisterServer.TcpServer.Log.Add(AutoCSer.Log.LogType.Error, error);
             }
             this.error();
-            return next;
         }
         /// <summary>
         /// 写文件

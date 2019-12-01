@@ -152,9 +152,9 @@ namespace AutoCSer.Net.TcpServer
 
         private readonly ulong pad0, pad1, pad2, pad3, pad4, pad5, pad6;
         /// <summary>
-        /// 日志接口
+        /// 客户端
         /// </summary>
-        private readonly ILog log;
+        private readonly Client client;
         /// <summary>
         /// 超时计数
         /// </summary>
@@ -245,15 +245,14 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 客户端命令池
         /// </summary>
-        /// <param name="bitSize"></param>
+        /// <param name="client"></param>
         /// <param name="freeIndex"></param>
-        /// <param name="maxTimeoutSeconds">最大超时秒数</param>
-        /// <param name="log"></param>
-        internal CommandPool(int bitSize, int freeIndex, ushort maxTimeoutSeconds, ILog log) 
+        internal CommandPool(Client client, int freeIndex = ClientCommand.KeepCommand.CommandPoolIndex) 
         {
-            this.log = log;
-            this.bitSize = bitSize <= maxArrayBitSize ? (bitSize >= minArrayBitSize ? bitSize : minArrayBitSize) : maxArrayBitSize;
-            commandCount = 1 << this.bitSize;
+            this.client = client;
+            bitSize = client.Attribute.GetCommandPoolBitSize;
+            bitSize = bitSize <= maxArrayBitSize ? (bitSize >= minArrayBitSize ? bitSize : minArrayBitSize) : maxArrayBitSize;
+            commandCount = 1 << bitSize;
             if ((uint)freeIndex >= commandCount) throw new IndexOutOfRangeException();
             Array = new CommandLink[commandCount];
             arrays = new CommandLink[4][];
@@ -262,6 +261,7 @@ namespace AutoCSer.Net.TcpServer
             arrayCount = 1;
             for (int index = freeIndex; index != commandCount; ++index) Array[index].Next = index + 1;
             freeEndIndex = arraySizeAnd = commandCount - 1;
+            ushort maxTimeoutSeconds = client.MaxTimeoutSeconds;
             if (maxTimeoutSeconds != 0) timeout = new TimeoutCount(this, maxTimeoutSeconds);
         }
         /// <summary>
@@ -305,7 +305,7 @@ namespace AutoCSer.Net.TcpServer
                         if (isErrorLog == 0)
                         {
                             isErrorLog = 1;
-                            log.Add(LogType.Error, "TCP 客户端活动会话数量过多");
+                            client.Log.Add(LogType.Error, "TCP 客户端活动会话数量过多");
                         }
                         return 0;
                     }
@@ -567,6 +567,7 @@ namespace AutoCSer.Net.TcpServer
                 isTimeout = 0;
                 System.Threading.Interlocked.Exchange(ref freeEndIndexLock, 0);
                 if (head != null) ClientCommand.CommandBase.CancelLink(head, ReturnType.Timeout);
+                client.CallOnTimeout();
             }
         }
     }

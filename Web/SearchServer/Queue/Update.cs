@@ -39,8 +39,6 @@ namespace AutoCSer.Web.SearchServer.Queue
         public override void RunTask()
         {
             Searcher.DefaultThreadParameter.Update(ref key, text, oldText);
-
         }
     }
-
 }

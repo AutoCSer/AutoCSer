@@ -106,7 +106,7 @@ namespace AutoCSer.Net.TcpServer
             : base(attribute, attribute.GetReceiveBufferSize, attribute.GetSendBufferSize, attribute.GetServerSendBufferMaxSize, log)
         {
             this.verify = verify;
-            if (isCallQueue) CallQueue = new ServerCallCanDisposableQueue();
+            if (isCallQueue) CallQueue = new ServerCallCanDisposableQueue(true, Log);
             ServerAttribute.Set(attribute);
             Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);

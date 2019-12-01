@@ -451,6 +451,7 @@
     <Compile Include="Net\TcpServer\ClientSocket.cs" />
     <Compile Include="Net\TcpServer\ClientSocketReceiveType.cs" />
     <Compile Include="Net\TcpServer\ClientSocketSender.cs" />
+    <Compile Include="Net\TcpServer\ClientWaitConnected.cs" />
     <Compile Include="Net\TcpServer\CommandBase.cs" />
     <Compile Include="Net\TcpServer\CommandFlags.cs" />
     <Compile Include="Net\TcpServer\CommandInfo.cs" />

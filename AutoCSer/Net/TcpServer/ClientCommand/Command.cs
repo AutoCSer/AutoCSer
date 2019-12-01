@@ -41,25 +41,25 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 下一个任务
         /// </summary>
-        internal AutoCSer.Threading.ILinkTask NextTask;
+        internal CommandBase NextTask;
         /// <summary>
         /// 下一个任务节点
         /// </summary>
         AutoCSer.Threading.ILinkTask AutoCSer.Threading.ILinkTask.NextLinkTask
         {
             get { return NextTask; }
-            set { NextTask = value; }
+            set { NextTask = new UnionType { Value = value  }.ClientCommandBase; }
         }
         /// <summary>
         /// 执行任务
         /// </summary>
+        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public AutoCSer.Threading.ILinkTask SingleRunLinkTask()
+        public void SingleRunLinkTask(ref AutoCSer.Threading.ILinkTask next)
         {
-            AutoCSer.Threading.ILinkTask next = NextTask;
+            next = NextTask;
             NextTask = null;
             onReceiveTask();
-            return next;
         }
         /// <summary>
         /// 接收数据回调处理
@@ -72,14 +72,26 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <summary>
         /// 接收数据回调处理任务
         /// </summary>
-        /// <returns></returns>
+        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal CommandBase OnReceiveTask()
+        internal void OnReceiveTask(ref CommandBase next)
         {
-            CommandBase next = new UnionType { Value = NextTask }.ClientCommandBase;
+            next = NextTask;
             NextTask = null;
             onReceiveTask();
-            return next;
+        }
+        /// <summary>
+        /// 接收数据回调处理任务
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="currentTaskTimestamp"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void OnReceiveTask(ref CommandBase next, ref long currentTaskTimestamp)
+        {
+            next = NextTask;
+            currentTaskTimestamp = TaskTimestamp;
+            NextTask = null;
+            onReceiveTask();
         }
         /// <summary>
         /// 回调处理

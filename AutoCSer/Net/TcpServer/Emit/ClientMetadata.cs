@@ -31,6 +31,10 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// </summary>
         internal readonly MethodInfo MethodClientGetTcpClientMethod;
         /// <summary>
+        /// TCP 客户端等待连接初始化检测函数信息
+        /// </summary>
+        internal readonly MethodInfo MethodClientCheckWaitConnectedMethod;
+        /// <summary>
         /// TCP 服务客户端同步调用套接字发送对象函数信息
         /// </summary>
         internal readonly MethodInfo ClientGetSenderMethod;
@@ -106,6 +110,7 @@ namespace AutoCSer.Net.TcpServer.Emit
             MethodClientType = methodClientType;
             ClientTypeName = clientType.fullName();
             MethodClientGetTcpClientMethod = methodClientType.GetProperty(TcpClientName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).GetGetMethod();
+            MethodClientCheckWaitConnectedMethod = methodClientType.GetMethod("_CheckWaitConnected_", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             //ClientGetSenderMethod = clientType.GetProperty("Sender", BindingFlags.Public | BindingFlags.Instance).GetGetMethod();
             ClientGetSenderMethod = clientGetSenderMethod;
             GetParameterGenericType = getParameterGenericType;

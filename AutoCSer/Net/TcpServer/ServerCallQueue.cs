@@ -86,7 +86,19 @@ namespace AutoCSer.Net.TcpServer
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 do
                 {
-                    value = value.SingleRunTask();
+                    try
+                    {
+                        do
+                        {
+                            value.SingleRunTask(ref value);
+                        }
+                        while (value != null);
+                        break;
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    }
                 }
                 while (value != null);
             }

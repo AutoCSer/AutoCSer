@@ -95,9 +95,8 @@ namespace AutoCSer.Threading
                     {
                         do
                         {
-                            value.RunTask();
+                            value.RunTask(ref value);
                             if (isDisposed) return;
-                            value = value.LinkNext;
                         }
                         while (value != null);
                         break;
@@ -107,7 +106,6 @@ namespace AutoCSer.Threading
                         AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
                     if (isDisposed) return;
-                    value = value.LinkNext;
                 }
             }
             while (!isDisposed);

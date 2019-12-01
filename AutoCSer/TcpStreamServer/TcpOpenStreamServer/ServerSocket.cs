@@ -37,16 +37,24 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         /// <summary>
         /// TCP 服务端套接字任务处理
         /// </summary>
+        /// <param name="next"></param>
         /// <param name="currentTaskTimestamp"></param>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal ServerSocket RunTask(ref long currentTaskTimestamp)
+        internal void RunTask(ref ServerSocket next, ref long currentTaskTimestamp)
         {
-            ServerSocket value = NextTask;
+            next = NextTask;
             currentTaskTimestamp = TaskTimestamp;
-            runTask();
+            bool isStart = false;
             NextTask = null;
-            return value;
+            try
+            {
+                isStart = IsVerifyMethod ? isCommand() : isVerifyCommand();
+
+            }
+            finally
+            {
+                if (!isStart) Close();
+            }
         }
         /// <summary>
         /// TCP 服务端套接字任务错误处理
@@ -166,15 +174,6 @@ namespace AutoCSer.Net.TcpOpenStreamServer
 #if !DOTNET2
             ServerSocketTask.Task.Add(this);
 #endif
-        }
-        /// <summary>
-        /// TCP 服务端套接字任务处理
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private void runTask()
-        {
-            if (IsVerifyMethod ? isCommand() : isVerifyCommand()) return;
-            Close();
         }
 #if DOTNET2
         /// <summary>

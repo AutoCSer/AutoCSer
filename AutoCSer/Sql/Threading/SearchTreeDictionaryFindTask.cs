@@ -44,7 +44,7 @@ namespace AutoCSer.Sql.Threading
         /// 查找匹配记录集合
         /// </summary>
         /// <param name="connection"></param>
-        internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+        internal override void RunLinkQueueTask(ref DbConnection connection)
         {
             try
             {
@@ -54,7 +54,6 @@ namespace AutoCSer.Sql.Threading
             {
                 wait.Set();
             }
-            return LinkNext;
         }
         /// <summary>
         /// 获取匹配记录集合

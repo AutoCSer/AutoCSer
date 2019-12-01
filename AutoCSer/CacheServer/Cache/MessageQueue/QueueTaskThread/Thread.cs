@@ -70,16 +70,15 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
                     {
                         do
                         {
-                            value = value.RunTask();
+                            value.RunTask(ref value);
                         }
                         while (value != null);
                         break;
                     }
                     catch (Exception error)
                     {
-                        value.MessageQueue.Cache.TcpServer.AddLog(error);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
-                    value = value.LinkNext;
                 }
                 while (value != null);
             }

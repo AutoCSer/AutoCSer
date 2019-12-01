@@ -25,14 +25,7 @@ namespace AutoCSer.CacheServer.ServerCall
         /// </summary>
         public override void Call()
         {
-            try
-            {
-                getter.GetQueue();
-            }
-            catch (Exception error)
-            {
-                getter.Cache.TcpServer.AddLog(error);
-            }
+            getter.GetQueue();
         }
     }
 }

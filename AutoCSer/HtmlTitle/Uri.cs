@@ -67,6 +67,21 @@ namespace AutoCSer.Net.HtmlTitle
             onGet(null);
         }
         /// <summary>
+        /// 取消调用
+        /// </summary>
+        /// <param name="next"></param>
+        public void Cancel(ref Uri next)
+        {
+            next = LinkNext;
+            Action<string> onGet = this.onGet;
+            UriString = null;
+            UriBytes.SetNull();
+            LinkNext = null;
+            this.onGet = null;
+            AutoCSer.Threading.RingPool<Uri>.Default.PushNotNull(this);
+            onGet(null);
+        }
+        /// <summary>
         /// 获取HTML标题回调
         /// </summary>
         /// <param name="title">HTML标题</param>
@@ -89,16 +104,19 @@ namespace AutoCSer.Net.HtmlTitle
             Uri value = this;
             do
             {
-                Uri nextValue = value.LinkNext;
                 try
                 {
-                    value.Cancel();
+                    do
+                    {
+                        value.Cancel(ref value);
+                    }
+                    while (value != null);
+                    break;
                 }
                 catch (Exception error)
                 {
                     log.Add(Log.LogType.Error, error);
                 }
-                value = nextValue;
             }
             while (value != null);
         }

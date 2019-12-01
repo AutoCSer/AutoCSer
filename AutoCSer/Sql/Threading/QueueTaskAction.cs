@@ -15,18 +15,9 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        /// <returns>下一个 SQL 队列任务</returns>
-        internal override QueueTask RunTask()
+        internal override void RunTask()
         {
-            try
-            {
-                Action();
-            }
-            catch (Exception error)
-            {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
-            }
-            return LinkNext;
+            Action();
         }
     }
     /// <summary>
@@ -46,18 +37,9 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        /// <returns>下一个 SQL 队列任务</returns>
-        internal override QueueTask RunTask()
+        internal override void RunTask()
         {
-            try
-            {
-                Action(Parameter);
-            }
-            catch (Exception error)
-            {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
-            }
-            return LinkNext;
+            Action(Parameter);
         }
     }
 }

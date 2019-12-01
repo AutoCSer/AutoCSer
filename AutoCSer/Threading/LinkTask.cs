@@ -22,7 +22,8 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 执行任务
         /// </summary>
-        ILinkTask SingleRunLinkTask();
+        /// <param name="next">下一个任务节点</param>
+        void SingleRunLinkTask(ref ILinkTask next);
     }
     /// <summary>
     /// 链表任务
@@ -138,7 +139,19 @@ namespace AutoCSer.Threading
                 }
                 do
                 {
-                    value = value.SingleRunLinkTask();
+                    try
+                    {
+                        do
+                        {
+                            value.SingleRunLinkTask(ref value);
+                        }
+                        while (value != null);
+                        break;
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    }
                 }
                 while (value != null);
             }

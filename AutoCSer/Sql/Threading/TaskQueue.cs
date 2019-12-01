@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Extension;
+using System;
 
 namespace AutoCSer.Sql.Threading
 {
@@ -48,7 +49,19 @@ namespace AutoCSer.Sql.Threading
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 do
                 {
-                    value = value.RunTask();
+                    try
+                    {
+                        do
+                        {
+                            value.RunTask(ref value);
+                        }
+                        while (value != null);
+                        break;
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    }
                 }
                 while (value != null);
             }

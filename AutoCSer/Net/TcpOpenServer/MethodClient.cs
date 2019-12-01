@@ -15,15 +15,19 @@ namespace AutoCSer.Net.TcpOpenServer
         /// </summary>
         public Client<clientType> _TcpClient_ { get; protected set; }
         /// <summary>
+        /// 客户端等待连接
+        /// </summary>
+        public TcpServer.ClientWaitConnected _WaitConnected_ { get; protected set; }
+        /// <summary>
         /// 是否已经释放资源
         /// </summary>
-        private int _isDisposed_;
+        private int isDisposed;
         /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()
         {
-            if (System.Threading.Interlocked.CompareExchange(ref _isDisposed_, 1, 0) == 0) _TcpClient_.Dispose();
+            if (System.Threading.Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0) _TcpClient_.Dispose();
         }
     }
 }

@@ -2937,7 +2937,8 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="left">加法左值</param>
                 /// <param name="right">加法右值</param>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void SetSum(int left, int right)
+                public 
+                void SetSum(int left, int right)
                 {
                     TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                     {

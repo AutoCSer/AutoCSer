@@ -54,8 +54,19 @@ namespace AutoCSer.Net.TcpServer
                 ClientCommand.CommandBase value = Interlocked.Exchange(ref head, null);
                 do
                 {
-                    currentTaskTimestamp = value.TaskTimestamp;
-                    value = value.OnReceiveTask();
+                    try
+                    {
+                        do
+                        {
+                            value.OnReceiveTask(ref value, ref currentTaskTimestamp);
+                        }
+                        while (value != null);
+                        break;
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    }
                 }
                 while (value != null);
             }

@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.Cache.Counter
             /// 获取缓存数据
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 try
                 {
@@ -59,7 +59,6 @@ namespace AutoCSer.Sql.Cache.Counter
                     if (Value == null) Value = nullValue;
                     if (System.Threading.Interlocked.CompareExchange(ref continuation, Pub.EmptyAction, null) != null) new Task(continuation).Start();
                 }
-                return LinkNext;
             }
         }
         /// <summary>

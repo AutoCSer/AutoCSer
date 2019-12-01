@@ -772,7 +772,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// 计算回调测试
                 /// </summary>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addCustomSerialize(AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize value)
+                public 
+                void addCustomSerialize(AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize value)
                 {
                     TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
                     {
@@ -788,7 +789,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// 计算测试结束
                 /// </summary>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addCustomSerializeFinally()
+                public 
+                void addCustomSerializeFinally()
                 {
                     _TcpClient_.Sender.CallOnly(_c4);
                 }
@@ -862,7 +864,8 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 /// 计算回调测试
                 /// </summary>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                public void addRegister(int left, int right)
+                public 
+                void addRegister(int left, int right)
                 {
                     TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                     {

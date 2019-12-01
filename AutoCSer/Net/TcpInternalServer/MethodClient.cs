@@ -15,6 +15,10 @@ namespace AutoCSer.Net.TcpInternalServer
         /// </summary>
         public Client<clientType> _TcpClient_ { get; protected set; }
         /// <summary>
+        /// 客户端等待连接
+        /// </summary>
+        public TcpServer.ClientWaitConnected _WaitConnected_ { get; protected set; }
+        /// <summary>
         /// 是否已经释放资源
         /// </summary>
         private int _isDisposed_;

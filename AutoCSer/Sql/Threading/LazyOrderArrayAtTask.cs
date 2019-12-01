@@ -48,7 +48,7 @@ namespace AutoCSer.Sql.Threading
         /// 获取记录
         /// </summary>
         /// <param name="connection"></param>
-        internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+        internal override void RunLinkQueueTask(ref DbConnection connection)
         {
             try
             {
@@ -58,7 +58,6 @@ namespace AutoCSer.Sql.Threading
             {
                 wait.Set();
             }
-            return LinkNext;
         }
         /// <summary>
         /// 获取数据记录

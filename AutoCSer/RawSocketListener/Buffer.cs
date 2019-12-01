@@ -116,5 +116,17 @@ namespace AutoCSer.Net.RawSocketListener
         {
             return array.GetArray(getValue);
         }
+        /// <summary>
+        /// 数据包处理
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="onPacket"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void OnPacket(ref Buffer next, Action<Buffer> onPacket)
+        {
+            next = LinkNext;
+            LinkNext = null;
+            onPacket(this);
+        }
     }
 }

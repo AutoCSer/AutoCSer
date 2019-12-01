@@ -160,14 +160,7 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
             Socket = null;
             OutputParameter.Value = default(outputParameterType);
             if ((Interlocked.Increment(ref FreeLock) & 1) == 0) free();
-            try
-            {
-                callback.Call(ref outputParameter);
-            }
-            catch (Exception error)
-            {
-                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
-            }
+            callback.Call(ref outputParameter);
         }
         /// <summary>
         /// 回调处理
@@ -182,7 +175,15 @@ namespace AutoCSer.Net.TcpStreamServer.ClientCommand
         /// <param name="state"></param>
         private void threadPoolOnReceive(object state)
         {
-            onReceive();
+            ClientSocket socket = Socket;
+            try
+            {
+                onReceive();
+            }
+            catch (Exception error)
+            {
+                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+            }
         }
     }
 }

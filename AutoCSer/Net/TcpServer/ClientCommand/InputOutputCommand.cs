@@ -140,14 +140,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
             Socket = null;
             OutputParameter.Value = default(outputParameterType);
             AutoCSer.Threading.RingPool<InputOutputCommand<inputParameterType, outputParameterType>>.Default.PushNotNull(this);
-            try
-            {
-                callback.Call(ref outputParameter);
-            }
-            catch (Exception error)
-            {
-                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
-            }
+            callback.Call(ref outputParameter);
         }
         /// <summary>
         /// 回调处理
@@ -162,7 +155,15 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// <param name="state"></param>
         private void threadPoolOnReceive(object state)
         {
-            onReceive();
+            ClientSocket socket = Socket;
+            try
+            {
+                onReceive();
+            }
+            catch (Exception error)
+            {
+                socket.Log.Add(AutoCSer.Log.LogType.Error, error);
+            }
         }
     }
 }

@@ -107,7 +107,7 @@ namespace AutoCSer.Sql.Threading
                     {
                         do
                         {
-                            value = value.RunLinkQueueTask(ref connection);
+                            value.RunLinkQueueTask(ref connection, ref value);
                         }
                         while (value != null);
                         break;
@@ -117,9 +117,6 @@ namespace AutoCSer.Sql.Threading
                         client.CloseErrorConnection(ref connection);
                         AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
-                    LinkQueueTaskNode next = value.LinkNext;
-                    value.LinkNext = null;
-                    value = next;
                 }
                 while (value != null);
             }

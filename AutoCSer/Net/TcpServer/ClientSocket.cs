@@ -343,7 +343,7 @@ namespace AutoCSer.Net.TcpServer
         {
             if (CommandPool == null)
             {
-                CommandPool = new CommandPool(ClientCreator.Attribute.GetCommandPoolBitSize, ClientCommand.KeepCommand.CommandPoolIndex, ClientCreator.CommandClient.MaxTimeoutSeconds, ClientCreator.CommandClient.Log);
+                CommandPool = new CommandPool((Client)ClientCreator.CommandClient);
                 CommandPool.Array[ClientCommand.KeepCommand.MergeIndex].Command = new UnionType { Value = Sender.Outputs.Head }.ClientCommand;
                 CommandPool.Array[ClientCommand.KeepCommand.CustomDataIndex].Command = new ClientCommand.CustomDataCommand(this, ClientCommand.KeepCommand.KeepCallbackCommandInfo);
             }

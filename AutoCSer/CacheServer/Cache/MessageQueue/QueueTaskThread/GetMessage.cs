@@ -39,11 +39,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 获取当前读取数据标识
         /// </summary>
-        /// <returns></returns>
-        internal override Node RunTask()
+        internal override void RunTask()
         {
             reader.Get(this);
-            return LinkNext;
         }
     }
 }

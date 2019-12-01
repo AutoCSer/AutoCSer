@@ -31,25 +31,17 @@ namespace AutoCSer.CacheServer.ServerCall
         /// </summary>
         public override void Call()
         {
-            try
+            switch (type)
             {
-                switch (type)
-                {
-                    //case CacheManagerServerCallType.Loaded: Cache.Loaded(); return;
-                    case CacheManagerServerCallType.Dispose: cache.DisposeTcpQueue(); return;
-                    case CacheManagerServerCallType.SetCanWrite: cache.CanWrite = true; return;
-                    case CacheManagerServerCallType.CancelCanWrite: cache.CanWrite = false; return;
-                    //case CacheManagerServerCallType.Timeout:
-                    //    for (CacheTimeout timeout = CacheTimeout.Timeouts.End; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
-                    //    return;
-                    case CacheManagerServerCallType.CreateNewFileStreamError: cache.CreateNewFileStreamError(); return;
-                    case CacheManagerServerCallType.CreateNewFileStreamCheckQueue: cache.NewFile.CheckQueue(); return;
-                }
-
-            }
-            catch (Exception error)
-            {
-                cache.TcpServer.AddLog(error);
+                //case CacheManagerServerCallType.Loaded: Cache.Loaded(); return;
+                case CacheManagerServerCallType.Dispose: cache.DisposeTcpQueue(); return;
+                case CacheManagerServerCallType.SetCanWrite: cache.CanWrite = true; return;
+                case CacheManagerServerCallType.CancelCanWrite: cache.CanWrite = false; return;
+                //case CacheManagerServerCallType.Timeout:
+                //    for (CacheTimeout timeout = CacheTimeout.Timeouts.End; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
+                //    return;
+                case CacheManagerServerCallType.CreateNewFileStreamError: cache.CreateNewFileStreamError(); return;
+                case CacheManagerServerCallType.CreateNewFileStreamCheckQueue: cache.NewFile.CheckQueue(); return;
             }
         }
     }

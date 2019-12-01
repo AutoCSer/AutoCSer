@@ -232,9 +232,17 @@ namespace AutoCSer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static TimeSpan GetTimestampTimeSpan(long startTimestamp)
         {
-            long timestamp = Stopwatch.GetTimestamp() - startTimestamp;
-            if (Stopwatch.IsHighResolution) return new TimeSpan(timestamp * TimeSpan.TicksPerSecond / Stopwatch.Frequency);
-            return new TimeSpan(timestamp);
+            return new TimeSpan(GetTicksByTimestamp(Stopwatch.GetTimestamp() - startTimestamp));
+        }
+        /// <summary>
+        /// 时间戳转时钟周期
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static long GetTicksByTimestamp(long timestamp)
+        {
+            return Stopwatch.IsHighResolution ? timestamp * TimeSpan.TicksPerSecond / Stopwatch.Frequency : timestamp;
         }
     }
 }

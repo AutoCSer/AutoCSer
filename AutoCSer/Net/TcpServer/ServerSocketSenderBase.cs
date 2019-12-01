@@ -133,17 +133,7 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CallOnCloseTask()
         {
-            if (OnCloseTask != null)
-            {
-                try
-                {
-                    OnCloseTask();
-                }
-                catch (Exception error)
-                {
-                    VirtualAddLog(error);
-                }
-            }
+            if (OnCloseTask != null) OnCloseTask();
         }
         /// <summary>
         /// 错误日志处理

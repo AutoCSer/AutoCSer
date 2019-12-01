@@ -149,10 +149,9 @@ namespace AutoCSer.Sql.LogStream
         /// 执行任务
         /// </summary>
         /// <param name="connection"></param>
-        internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+        internal override void RunLinkQueueTask(ref DbConnection connection)
         {
             onLoaded();
-            return LinkNext;
         }
         /// <summary>
         /// 缓存加载完毕
@@ -205,10 +204,9 @@ namespace AutoCSer.Sql.LogStream
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 Log.add(OnLog, IsQueue);
-                return LinkNext;
             }
         }
         /// <summary>
@@ -232,10 +230,9 @@ namespace AutoCSer.Sql.LogStream
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 Log.update(Value, MemberMap);
-                return LinkNext;
             }
         }
         /// <summary>

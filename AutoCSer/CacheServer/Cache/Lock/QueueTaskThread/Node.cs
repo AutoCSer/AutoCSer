@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
 {
@@ -22,7 +23,17 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
         /// <summary>
         /// 锁任务操作
         /// </summary>
-        /// <returns></returns>
-        internal abstract Node RunTask();
+        internal abstract void RunTask();
+        /// <summary>
+        /// 锁任务操作
+        /// </summary>
+        /// <param name="next"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void RunTask(ref Node next)
+        {
+            next = LinkNext;
+            LinkNext = null;
+            RunTask();
+        }
     }
 }

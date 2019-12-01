@@ -258,7 +258,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             /// 获取分页记录集合
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 try
                 {
@@ -268,7 +268,6 @@ namespace AutoCSer.Sql.Cache.Whole.Event
                 {
                     wait.Set();
                 }
-                return LinkNext;
             }
             /// <summary>
             /// 获取分页记录集合

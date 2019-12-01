@@ -2,8 +2,8 @@
 using AutoCSer.Log;
 using System.Threading;
 using AutoCSer.Extension;
-using System.Runtime.CompilerServices;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpServer
 {
@@ -39,6 +39,10 @@ namespace AutoCSer.Net.TcpServer
                 return customDataCommandInfo;
             }
         }
+        /// <summary>
+        /// 命令超时触发事件
+        /// </summary>
+        public event Action OnTimeout;
 #if !NOJIT
         /// <summary>
         /// TCP 服务客户端
@@ -57,6 +61,14 @@ namespace AutoCSer.Net.TcpServer
         {
             maxCustomDataSize = attribute.GetMaxCustomDataSize <= 0 ? int.MaxValue : attribute.GetMaxCustomDataSize;
             this.maxTimeoutSeconds = maxTimeoutSeconds;
+        }
+        /// <summary>
+        /// 命令超时触发事件
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void CallOnTimeout()
+        {
+            if (OnTimeout != null) OnTimeout();
         }
 
         ///// <summary>

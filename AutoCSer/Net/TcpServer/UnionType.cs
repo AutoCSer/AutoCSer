@@ -49,7 +49,7 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务器端同步调用
         /// </summary>
         [FieldOffset(0)]
-        public ServerCall ServerCall;
+        public ServerCallBase ServerCallBase;
         /// <summary>
         /// TCP 服务套接字数据发送
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Extension;
+using System;
 
 namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
 {
@@ -47,16 +48,15 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
                     {
                         do
                         {
-                            value = value.RunTask();
+                            value.RunTask(ref value);
                         }
                         while (value != null);
                         break;
                     }
                     catch (Exception error)
                     {
-                        value.Lock.Cache.TcpServer.AddLog(error);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
-                    value = value.LinkNext;
                 }
                 while (value != null);
             }

@@ -67,11 +67,12 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
         /// </summary>
         /// <param name="attribute">TCP 调用服务器端配置信息</param>
         /// <param name="verifyMethod">TCP 验证方法</param>
+        /// <param name="waitConnectedOnCheckSocketVersion">等待连接套接字初始化处理</param>
         /// <param name="clientRoute">TCP 客户端路由</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
         /// <returns>TCP 客户端</returns>
-        public static interfaceType Create(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
+        public static interfaceType Create(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<interfaceType, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool> verifyMethod = null, Action<TcpServer.ClientSocketEventParameter> waitConnectedOnCheckSocketVersion = null, AutoCSer.Net.TcpServer.ClientLoadRoute<ClientSocketSender> clientRoute = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
         {
             if (errorString != null) throw new Exception(errorString);
             if (clientType == null) throw new InvalidCastException();
@@ -79,7 +80,11 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
             interfaceType interfaceClient = (interfaceType)(object)client;
             if (attribute == null) attribute = defaultServerAttribute;
             client._TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<interfaceType>(interfaceClient, attribute, maxTimeoutSeconds, onCustomData, log, clientRoute, verifyMethod);
-            if (attribute.IsAutoClient) client._TcpClient_.TryCreateSocket();
+            if (defaultServerAttribute.GetClientWaitConnectedMilliseconds == 0)
+            {
+                if (attribute.IsAutoClient) client._TcpClient_.TryCreateSocket();
+            }
+            else client._WaitConnected_ = client._TcpClient_.CreateWaitConnected(attribute.GetClientWaitConnectedMilliseconds, waitConnectedOnCheckSocketVersion);
             return interfaceClient;
         }
 

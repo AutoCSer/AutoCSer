@@ -58,16 +58,15 @@ namespace AutoCSer.Net.TcpInternalServer
                     {
                         do
                         {
-                            value = value.RunTask(ref currentTaskTimestamp);
+                            value.RunTask(ref value, ref currentTaskTimestamp);
                         }
                         while (value != null);
                         break;
                     }
                     catch (Exception error)
                     {
-                        value.Server.AddLog(error);
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
                     }
-                    value = value.ErrorTask();
                 }
                 while (value != null);
             }

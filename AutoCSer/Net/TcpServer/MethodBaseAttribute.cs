@@ -123,6 +123,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal virtual bool GetIsClientAwaiter { get { return false; } }
         /// <summary>
+        /// 客户端是否否执行等待连接操作
+        /// </summary>
+        internal virtual bool GetClientWaitConnected { get { return false; } }
+        /// <summary>
         /// 默认为 true 表示对于 属性 / 字段 仅仅生成获取数据的代理，否则生成设置数据的代理（如果属性可写）。
         /// </summary>
         public bool IsOnlyGetMember = true;

@@ -78,8 +78,7 @@ namespace AutoCSer.Net.RawSocketListener
                     {
                         while (value != null)
                         {
-                            onPacket(value);
-                            value = value.LinkNext;
+                            value.OnPacket(ref value, onPacket);
                         }
                         break;
                     }
@@ -87,7 +86,6 @@ namespace AutoCSer.Net.RawSocketListener
                     {
                         log.Add(Log.LogType.Error, error);
                     }
-                    value = value.LinkNext;
                 }
                 while (true);
             }

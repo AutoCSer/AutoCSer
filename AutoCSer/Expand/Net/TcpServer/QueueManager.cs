@@ -14,14 +14,21 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected internal readonly queueType[] Queues;
         /// <summary>
+        /// 日志接口
+        /// </summary>
+        protected readonly AutoCSer.Log.ILog log;
+        /// <summary>
         /// 是否已经释放资源
         /// </summary>
         protected volatile bool isDisposed;
         /// <summary>
         /// 队列管理器
         /// </summary>
-        protected QueueManager(int queueCount)
+        /// <param name="queueCount"></param>
+        /// <param name="log"></param>
+        protected QueueManager(int queueCount, AutoCSer.Log.ILog log)
         {
+            this.log = log ?? AutoCSer.Log.Pub.Log;
             Queues = new queueType[queueCount <= 0 ? AutoCSer.Threading.Pub.CpuCount : queueCount];
         }
         /// <summary>
@@ -29,7 +36,8 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="queueCount">队列数量，默认为 0 标识 CPU 核心数量</param>
         /// <param name="isBackground">是否后台线程</param>
-        public QueueManager(int queueCount = 0, bool isBackground = true) : this(queueCount)
+        /// <param name="log">日志接口</param>
+        public QueueManager(int queueCount = 0, bool isBackground = true, AutoCSer.Log.ILog log = null) : this(queueCount, log)
         {
             for (int index = 0; index != Queues.Length; ++index) Queues[index] = createQueue(isBackground);
         }
@@ -90,7 +98,8 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="queueCount">队列数量，默认为 0 标识 CPU 核心数量</param>
         /// <param name="isBackground">是否后台线程</param>
-        public QueueManager(int queueCount = 0, bool isBackground = true) : base(queueCount, isBackground) { }
+        /// <param name="log">日志接口</param>
+        public QueueManager(int queueCount = 0, bool isBackground = true, AutoCSer.Log.ILog log = null) : base(queueCount, isBackground, log) { }
         /// <summary>
         /// 创建 TCP 服务器端同步调用队列处理
         /// </summary>
@@ -98,7 +107,7 @@ namespace AutoCSer.Net.TcpServer
         /// <returns>TCP 服务器端同步调用队列处理</returns>
         protected override ServerCallCanDisposableQueue createQueue(bool isBackground)
         {
-            return new ServerCallCanDisposableQueue(isBackground);
+            return new ServerCallCanDisposableQueue(isBackground, log);
         }
     }
     /// <summary>
@@ -120,7 +129,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="maxDataCount">最大数据数量</param>
         /// <param name="queueCount">队列数量，默认为 0 标识 CPU 核心数量</param>
         /// <param name="isBackground">是否后台线程</param>
-        public QueueManager(int maxDataCount, int queueCount = 0, bool isBackground = true) : base(queueCount)
+        /// <param name="log">日志接口</param>
+        public QueueManager(int maxDataCount, int queueCount = 0, bool isBackground = true, AutoCSer.Log.ILog log = null) : base(queueCount, log)
         {
             if (maxDataCount <= 0) throw new IndexOutOfRangeException();
             this.maxDataCount = maxDataCount;

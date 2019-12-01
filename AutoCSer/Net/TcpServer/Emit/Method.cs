@@ -81,6 +81,13 @@ namespace AutoCSer.Net.TcpServer.Emit
         internal readonly bool IsClientAwaiter;
 #endif
         /// <summary>
+        /// 客户端是否等待连接
+        /// </summary>
+        internal bool IsClientWaitConnected
+        {
+            get { return ServerAttribute.GetClientWaitConnectedMilliseconds != 0 && Attribute.GetClientWaitConnected && !Attribute.IsVerifyMethod; }
+        }
+        /// <summary>
         /// 服务端自定义队列关键字参数
         /// </summary>
         internal ParameterInfo ServerCallQueueKeyParameter;

@@ -3,7 +3,7 @@
 namespace AutoCSer
 {
     /// <summary>
-    /// 可控逻辑值
+    /// 可空逻辑值
     /// </summary>
     internal enum NullableBool : byte
     {

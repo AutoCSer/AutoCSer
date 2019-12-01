@@ -22,8 +22,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 读取任务操作
         /// </summary>
-        /// <returns></returns>
-        internal override Node RunTask()
+        internal override void RunTask()
         {
             Buffer value = head;
             do
@@ -32,7 +31,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
                 {
                     do
                     {
-                        value = value.Append();
+                        value.Append(ref value);
                     }
                     while (value != null);
                     break;
@@ -41,10 +40,8 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
                 {
                     MessageQueue.Cache.TcpServer.AddLog(error);
                 }
-                value = value.LinkNext;
             }
             while (value != null);
-            return LinkNext;
         }
     }
 }

@@ -15,20 +15,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 获取当前读取数据标识
         /// </summary>
-        /// <returns></returns>
-        internal override Node RunTask()
+        internal override void RunTask()
         {
-            Node next = LinkNext;
-            try
-            {
-                DistributionFileReader.QueueOnTimer();
-            }
-            catch (Exception error)
-            {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
-            }
-            LinkNext = null;
-            return next;
+            DistributionFileReader.QueueOnTimer();
         }
     }
 }

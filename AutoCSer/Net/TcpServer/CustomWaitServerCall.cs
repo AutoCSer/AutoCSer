@@ -28,10 +28,6 @@ namespace AutoCSer.Net.TcpServer
             {
                 Task();
             }
-            catch (Exception error)
-            {
-                Sender.VirtualAddLog(error);
-            }
             finally { Wait.Set(); }
         }
     }

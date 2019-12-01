@@ -107,14 +107,11 @@ namespace AutoCSer.Sql.Cache.Whole
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
                 Sql.Table<valueType, modelType> table = countMember.table;
                 table.Client.Update(table, ref connection, value, countMember.memberMap, ref Query, true);
-                LinkNext = null;
                 Push();
-                return next;
             }
             /// <summary>
             /// 释放对象
@@ -155,18 +152,15 @@ namespace AutoCSer.Sql.Cache.Whole
             /// 执行任务
             /// </summary>
             /// <param name="connection"></param>
-            internal override Threading.LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
-                Threading.LinkQueueTaskNode next = LinkNext;
                 try
                 {
                     Sql.Table<valueType, modelType> table = countMember.table;
                     table.Client.Update(table, ref connection, countMember.updateValue, countMember.memberMap, ref Query, true);
                 }
                 finally { countMember.check(ref connection); }
-                LinkNext = null;
                 Push();
-                return next;
             }
             /// <summary>
             /// 释放对象

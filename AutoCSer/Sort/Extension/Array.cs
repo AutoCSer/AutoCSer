@@ -210,7 +210,7 @@ namespace AutoCSer.Extension
                 }
             }
             if (writeIndex != count) sort.Sort(0, writeIndex - 1);
-            Array.Clear(newValues, count, newValues.Length - count);
+            if (AutoCSer.DynamicArray<valueType>.IsClearArray) Array.Clear(newValues, count, newValues.Length - count);
             return new SubArray<valueType>(0, count, newValues);
         }
         /// <summary>

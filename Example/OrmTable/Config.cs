@@ -64,7 +64,7 @@ namespace AutoCSer.Example.OrmTable
                 return new AutoCSer.Sql.Connection
                 {
                     Type = Sql.ClientKind.Sql2008,
-                    ConnectionString = "server=122.49.32.118;database=yh_marketing;User Id=yhAzure.Alpha;password=x1FlqqnI59BaHWrca8-SBq_w5c2xSfQJ"
+                    ConnectionString = "server=127.0.0.1;database=AutoCSerExample;User Id=Example;password=Example"
                 };
             }
         }

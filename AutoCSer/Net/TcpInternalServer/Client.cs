@@ -3,8 +3,9 @@ using AutoCSer.Log;
 using AutoCSer.Extension;
 using System.Threading;
 using System.Net;
-using System.Runtime.CompilerServices;
 using AutoCSer.Net.TcpServer;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Net.TcpInternalServer
 {
@@ -158,6 +159,18 @@ namespace AutoCSer.Net.TcpInternalServer
         {
             if (clientRoute == null) clientCreator.OnSetSocket();
             else clientRoute.OnSetSocket();
+        }
+        /// <summary>
+        /// 创建客户端等待连接
+        /// </summary>
+        /// <param name="waitMilliseconds">等待毫秒数</param>
+        /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
+        /// <returns>客户端等待连接</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public ClientWaitConnected CreateWaitConnected(uint waitMilliseconds, Action<ClientSocketEventParameter> onCheckSocketVersion = null)
+        {
+            TryCreateSocket();
+            return new ClientWaitConnected(this, waitMilliseconds, onCheckSocketVersion);
         }
         /// <summary>
         /// 发送自定义数据

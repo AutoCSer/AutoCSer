@@ -2086,7 +2086,8 @@ namespace AutoCSer.CacheServer
                 /// </summary>
                 /// <param name="parameter">数据结构定义节点操作参数</param>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                internal void OperationAsynchronousOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
+                internal 
+                void OperationAsynchronousOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
                 {
                     TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
                     {
@@ -2169,7 +2170,8 @@ namespace AutoCSer.CacheServer
                 /// </summary>
                 /// <param name="parameter">数据结构定义节点操作参数</param>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                internal void OperationOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
+                internal 
+                void OperationOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
                 {
                     TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
                     {
@@ -2826,7 +2828,8 @@ namespace AutoCSer.CacheServer
                 /// </summary>
                 /// <param name="parameter">数据结构定义节点查询参数</param>
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                internal void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                internal 
+                void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
                 {
                     TcpInternalServer._p11 _inputParameter_ = new TcpInternalServer._p11
                     {
@@ -4316,7 +4319,8 @@ namespace AutoCSer.CacheServer
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c11 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 11 + 128, InputParameterIndex = 6, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
 
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-                internal void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
+                internal 
+                void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
                 {
                     TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
                     {

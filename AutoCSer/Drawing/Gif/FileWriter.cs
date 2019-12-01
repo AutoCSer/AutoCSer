@@ -46,7 +46,7 @@ namespace AutoCSer.Drawing.Gif
         /// <summary>
         /// 当前图像色彩数量
         /// </summary>
-        private ReusableDictionary<Color, int> colorIndexs;
+        private Dictionary<Color, int> colorIndexs;
         /// <summary>
         /// 日志处理
         /// </summary>
@@ -125,7 +125,7 @@ namespace AutoCSer.Drawing.Gif
             }
             colors = new Color[(int)Width * Height];
             colorCounts = new int[colors.Length];
-            colorIndexs = ReusableDictionary<Color>.Create<int>();
+            colorIndexs = DictionaryCreator<Color>.Create<int>();
         }
         /// <summary>
         /// 释放文件
@@ -279,7 +279,7 @@ namespace AutoCSer.Drawing.Gif
                 byte* bitmapFixed = (byte*)bitmap.Scan0, currentBitmap = bitmapFixed + bitmap.Stride * (bitmapTopOffset - 1) + (bitmapLeftOffset + width) * 3;
                 Color* currentColor = colorFixed;
                 int bitMapSpace = bitmap.Stride - (width << 1) - width;
-                colorIndexs.Empty();
+                colorIndexs.Clear();
                 for (int colorIndex, row = height; row != 0; --row)
                 {
                     currentBitmap += bitMapSpace;
@@ -289,7 +289,7 @@ namespace AutoCSer.Drawing.Gif
                         if (colorIndexs.TryGetValue(color, out colorIndex)) ++colorCountFixed[colorIndex];
                         else
                         {
-                            colorIndexs.Set(color, colorIndex = (int)(currentColor - colorFixed));
+                            colorIndexs.Add(color, colorIndex = (int)(currentColor - colorFixed));
                             colorCountFixed[colorIndex] = 1;
                         }
                         *currentColor++ = color;
@@ -326,7 +326,7 @@ namespace AutoCSer.Drawing.Gif
                             *currentBuffer++ = color.Red;
                             *currentBuffer++ = color.Blue;
                             *currentBuffer++ = color.Green;
-                            colorIndexs.Set(color, currentColorIndex++);
+                            colorIndexs[color] = currentColorIndex++;
                         }
                         *(bufferFixed + bufferIndex + (maxColorCount << 1) + maxColorCount) = (byte)pixel;
                         if (!checkBuffer(bufferFixed, (maxColorCount << 1) + maxColorCount + 1)) return false;
@@ -341,7 +341,7 @@ namespace AutoCSer.Drawing.Gif
                     try
                     {
                         IntSortIndex* indexFixed = (IntSortIndex*)(buffer + indexCount), currentSortIndex = indexFixed;
-                        foreach (KeyValue<Color, int> colorIndex in colorIndexs.KeyValues)
+                        foreach (KeyValuePair<Color, int> colorIndex in colorIndexs)
                         {
                             int color0 = colorIndex.Key.Value;
                             int color3 = ((color0 >> 3) & 0x111111) * 0x1020400;
@@ -405,20 +405,20 @@ namespace AutoCSer.Drawing.Gif
                         {
                             byte* currentBuffer = fileBufferFixed + bufferIndex;
                             IntSortIndex* lastSortIndex = indexFixed, endSortIndex = indexFixed + indexCount;
-                            while (*(colorCountFixed + (*lastSortIndex).Index) < minColorCount) colorIndexs.Set(*(colorFixed + (*lastSortIndex++).Index), 0);
+                            while (*(colorCountFixed + (*lastSortIndex).Index) < minColorCount) colorIndexs[*(colorFixed + (*lastSortIndex++).Index)] = 0;
                             if (*(colorCountFixed + (*lastSortIndex).Index) == minColorCount && --minColorCounts == 0) ++minColorCount;
                             Color outputColor = *(colorFixed + (*lastSortIndex).Index);
                             *currentBuffer++ = outputColor.Red;
                             *currentBuffer++ = outputColor.Blue;
                             *currentBuffer++ = outputColor.Green;
-                            colorIndexs.Set(outputColor, 0);
-                            for (--maxColorCount; *(colorCountFixed + (*--endSortIndex).Index) < minColorCount; colorIndexs.Set(*(colorFixed + (*endSortIndex).Index), maxColorCount)) ;
+                            colorIndexs[outputColor] = 0;
+                            for (--maxColorCount; *(colorCountFixed + (*--endSortIndex).Index) < minColorCount; colorIndexs[*(colorFixed + (*endSortIndex).Index)] = maxColorCount) ;
                             if (*(colorCountFixed + (*endSortIndex).Index) == minColorCount && --minColorCounts == 0) ++minColorCount;
-                            colorIndexs.Set(*(colorFixed + (*endSortIndex).Index), maxColorCount++);
+                            colorIndexs[*(colorFixed + (*endSortIndex).Index)] = maxColorCount++;
                             int currentColorIndex = 0;
                             for (int* lastColorCount = colorCountFixed + (*endSortIndex).Index; lastSortIndex != endSortIndex; )
                             {
-                                for (*lastColorCount = 0; *(colorCountFixed + (*++lastSortIndex).Index) >= minColorCount; colorIndexs.Set(outputColor, ++currentColorIndex))
+                                for (*lastColorCount = 0; *(colorCountFixed + (*++lastSortIndex).Index) >= minColorCount; colorIndexs[outputColor] = ++currentColorIndex)
                                 {
                                     if (*(colorCountFixed + (*lastSortIndex).Index) == minColorCount && --minColorCounts == 0) ++minColorCount;
                                     outputColor = *(colorFixed + (*lastSortIndex).Index);
@@ -432,7 +432,7 @@ namespace AutoCSer.Drawing.Gif
                                 while (*(colorCountFixed + (*++nextSortIndex).Index) < minColorCount) ;
                                 for (int lastColorCode = (*(lastSortIndex - 1)).Value, nextColorCode = (*nextSortIndex).Value; lastSortIndex != nextSortIndex; ++lastSortIndex)
                                 {
-                                    colorIndexs.Set(*(colorFixed + (*lastSortIndex).Index), (*lastSortIndex).Value - lastColorCode <= nextColorCode - (*lastSortIndex).Value ? currentColorIndex : (currentColorIndex + 1));
+                                    colorIndexs[*(colorFixed + (*lastSortIndex).Index)] = (*lastSortIndex).Value - lastColorCode <= nextColorCode - (*lastSortIndex).Value ? currentColorIndex : (currentColorIndex + 1);
                                 }
                                 if (lastSortIndex != endSortIndex)
                                 {
@@ -441,7 +441,7 @@ namespace AutoCSer.Drawing.Gif
                                     *currentBuffer++ = outputColor.Red;
                                     *currentBuffer++ = outputColor.Blue;
                                     *currentBuffer++ = outputColor.Green;
-                                    colorIndexs.Set(outputColor, ++currentColorIndex);
+                                    colorIndexs[outputColor] = ++currentColorIndex;
                                 }
                             }
                             outputColor = *(colorFixed + (*lastSortIndex).Index);

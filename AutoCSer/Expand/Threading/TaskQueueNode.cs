@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Threading
 {
@@ -15,5 +16,16 @@ namespace AutoCSer.Threading
         /// 执行任务
         /// </summary>
         public abstract void RunTask();
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <param name="next"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void RunTask(ref TaskQueueNode next)
+        {
+            next = LinkNext;
+            LinkNext = null;
+            RunTask();
+        }
     }
 }

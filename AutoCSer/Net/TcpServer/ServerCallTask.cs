@@ -54,7 +54,19 @@ namespace AutoCSer.Net.TcpServer
                 ServerCallBase value = Interlocked.Exchange(ref head, null);
                 do
                 {
-                    value = value.SingleRunTask(ref currentTaskTimestamp);
+                    try
+                    {
+                        do
+                        {
+                            value.SingleRunTask(ref value, ref currentTaskTimestamp);
+                        }
+                        while (value != null);
+                        break;
+                    }
+                    catch (Exception error)
+                    {
+                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
+                    }
                 }
                 while (value != null);
             }

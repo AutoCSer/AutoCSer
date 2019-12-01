@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script language="javascript" type="text/javascript" src="/Js/load.js?v=04DFC765"></script>
+    <script language="javascript" type="text/javascript" src="/Js/load.js?v=04E9A0E2"></script>
     <title>前后端一体 WEB 视图框架 - C# 高性能自动化服务端框架 - 凹凸架构</title>
         <style type="text/css">
         a{text-decoration: none;}
@@ -11,7 +11,7 @@
 </head>
 <body>
     <p>
-        AutoCSer 包含一个高效的 WEB 框架与一个可嵌入的高性能 <a href="/WebView/HttpServer.html?v=4DFC765">HTTP 服务器</a>组件，它不兼容 ASP.NET / MVC 不依赖于 IIS，需要引用 <a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.WebView.dll
+        AutoCSer 包含一个高效的 WEB 框架与一个可嵌入的高性能 <a href="/WebView/HttpServer.html?v=4E9A0E2">HTTP 服务器</a>组件，它不兼容 ASP.NET / MVC 不依赖于 IIS，需要引用 <a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\Packet\*\AutoCSer.dll + AutoCSer.WebView.dll
     </p>
     <p>
         对于 WEB 框架主要考虑的问题可能是如何根据数据与模板生成目标 HTML，由服务端生成 HTML 的被称为后端框架，由客户端（主要是 JavaScript 脚本）生成 HTML 的被称为前端框架。
@@ -29,40 +29,40 @@
         <br />
         <br />一般来说前端框架相对于后端框架一般就有以下缺点：
         <br />. SEO 不友好。
-        <br />. 客户端组件不容易维护，所谓重构火葬场（<a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a> 的前端渲染引擎在使用 TypeScript 之前一直处于打补丁的模式就是这个原因）。
+        <br />. 客户端组件不容易维护，所谓重构火葬场（<a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a> 的前端渲染引擎在使用 TypeScript 之前一直处于打补丁的模式就是这个原因）。
         <br />. 客户端至少需要请求两次服务器（有些前端引擎甚至要发起一堆的请求），而且不能保证模板与数据的匹配。
         <br />. 客户端占用内存大，渲染不如后端框架效率高（特别是第一次加载页面时可能会让用户产生明显的等待感），渲染性能依赖于浏览器的脚本引擎（比如 IE6 这种古老的浏览器会非常卡）。
         <br />. 给服务端程序制造麻烦，比如数据的循环引用问题，与数据的筛选与重组的问题。
     </p>
     <p>
-        <a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a> 的 WEB 视图框架，是前后端一体的自动化处理框架，它包含一个后端模板引擎与一个前端 MV 模板引擎，两个模板引擎采用基本一致的模板规则，它在拥有前端框架的优点的同时解决了前端框架的部分缺陷问题：
+        <a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a> 的 WEB 视图框架，是前后端一体的自动化处理框架，它包含一个后端模板引擎与一个前端 MV 模板引擎，两个模板引擎采用基本一致的模板规则，它在拥有前端框架的优点的同时解决了前端框架的部分缺陷问题：
         <br />. 后端引擎针对搜索引擎输出 HTML 用于解决 SEO 问题，但是对于搜索引擎的识别依赖于已知的 User-Agent 的模糊匹配，可能不能识别新的或者小众的搜索引擎。
         <br />. HTML 模板不仅可以作为前端渲染引擎的输入数据，对于后端引擎而言它还是类似 GraphQL 的一种输出数据筛选器，后端引擎不仅可以输出 HTML，而且可以将使用到的数据输出为 JSON（不是单纯的 JSON，存在框架依赖需要 eval），所以不论页面数据关系多复杂，客户端都只需要自动的一次性请求数据（包括所有被模板引用到的数据）。
         <br />. 不用担心数据的循环引用问题，告别垃圾数据的筛选与重组问题，而且会在编译期报告模板与数据的匹配问题。
         <br />. 支持通过类型标识申明配置 <b>[AutoCSer.WebView.ClientType]</b> 使客户端识别与合并同一个数据对象。
-        <br /><b>该框架需要在工程项目中配置<a href="/CodeGenerator.html?v=4DFC765">静态代码生成</a></b>。
+        <br /><b>该框架需要在工程项目中配置<a href="/CodeGenerator.html?v=4E9A0E2">静态代码生成</a></b>。
     </p>
     <p>
         1. 在目标项目中添加一个继承自 <b>AutoCSer.WebView.Config</b> 的 WEB 视图项目申明配置的 class，并申明 WEB 视图代码生成配置 <b>[AutoCSer.WebView.Config]</b>。
-        <div> 参考示例 <a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\WebConfig.cs</a></div>
+        <div> 参考示例 <a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode0" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','0');">WebView\WebConfig.cs</a></div>
     </p>
     <p>
         2. 根据需求添加 WEB 应用项，支持 3 种应用模式：
-        <br />. <a href="/WebView/View.html?v=4DFC765">WEB 视图页面</a> 是框架的核心应用模式，本质是在<b>前后端分离</b>模式的基础上配合<b>自动化数据 API</b> 的实现，对应于传统的动态 HTML 页面。
-        <br />. <a href="/WebView/Ajax.html?v=4DFC765">AJAX 调用函数</a>，输出 JSON 数据，用于前端界面交互或者类 WEB API 接口调用。
-        <br />. <a href="/WebView/Call.html?v=4DFC765">HTTP 调用函数</a>，用于解决以上两种应用模式不能覆盖的问题（比如 单纯的重定向、文件上传 等），简单的说就是手动处理 HTTP 响应。
+        <br />. <a href="/WebView/View.html?v=4E9A0E2">WEB 视图页面</a> 是框架的核心应用模式，本质是在<b>前后端分离</b>模式的基础上配合<b>自动化数据 API</b> 的实现，对应于传统的动态 HTML 页面。
+        <br />. <a href="/WebView/Ajax.html?v=4E9A0E2">AJAX 调用函数</a>，输出 JSON 数据，用于前端界面交互或者类 WEB API 接口调用。
+        <br />. <a href="/WebView/Call.html?v=4E9A0E2">HTTP 调用函数</a>，用于解决以上两种应用模式不能覆盖的问题（比如 单纯的重定向、文件上传 等），简单的说就是手动处理 HTTP 响应。
     </p>
     <p>
-        3. 给该工程项目配置<a href="/CodeGenerator.html?v=4DFC765">静态代码生成</a>并编译项目，然后将生成的 WEB 应用代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中，其中包含一个继承自 <b>AutoCSer.Net.HttpDomainServer.ViewServer&lt;sessionType&gt;</b> 的 WebServer 类型。
+        3. 给该工程项目配置<a href="/CodeGenerator.html?v=4E9A0E2">静态代码生成</a>并编译项目，然后将生成的 WEB 应用代理层代码源文件 <b>{项目名称}.AutoCSer.cs</b> 添加到项目中，其中包含一个继承自 <b>AutoCSer.Net.HttpDomainServer.ViewServer&lt;sessionType&gt;</b> 的 WebServer 类型。
     </p>
     <p>
-        4. 将上一步生成的 WebServer 添加到本地宿主模式的 <a href="/WebView/HttpServer.html?v=4DFC765">HTTP 服务器</a>。 
-        <div> 参考示例 <a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\Program.cs</a></div>
+        4. 将上一步生成的 WebServer 添加到本地宿主模式的 <a href="/WebView/HttpServer.html?v=4E9A0E2">HTTP 服务器</a>。 
+        <div> 参考示例 <a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\Example\<a id="GetCode1" href="javascript:AutoCSer.Web.Include.GetCode.Get('Example','1');">WebView\Program.cs</a></div>
     </p>
     <p>
         短连接性能测试项目
-        <br /><a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerPerformance\AutoCSer.TestCase.WebPerformance
-        <br /><a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientPerformance\AutoCSer.TestCase.WebPerformanceClient
+        <br /><a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerPerformance\AutoCSer.TestCase.WebPerformance
+        <br /><a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientPerformance\AutoCSer.TestCase.WebPerformanceClient
         <br />由于 ab 测试客户端采用单线程轮询模式，而创建连接代价比较大，无法做有效的短连接压力测试，下面分别贴出自带客户端与 ab 的压力测试结果供参考
         <br /><img @src="//f.autocser.com/WebView/Index1000.png" alt="1024 并发短连接吞吐性能测试" />
         <br /><img @src="//f.autocser.com/WebView/Index1000ab.png" alt="ab 1000 并发短连接吞吐性能测试" />
@@ -75,9 +75,9 @@
         <br /><img @src="//f.autocser.com/WebView/Index100abk.Core.png" alt="ab 100 长连接吞吐性能测试" />
     </p>
     <p>
-        客户端 pipeline 长连接性能测试项目（HTTP 服务端没有做流水线设计支持，对于需要高吞吐的需求应该使用 <a href="/TcpServer/InterfaceServer.html?v=4DFC765">TCP 接口服务框架</a> 或者 <a href="/TcpServer/MethodServer.html?v=4DFC765">TCP 函数服务框架</a>）
-        <br /><a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerPerformance\AutoCSer.TestCase.HttpFilePerformance
-        <br /><a href="/Index.html?v=4DFC765" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientPerformance\AutoCSer.TestCase.HttpFilePerformanceClient
+        客户端 pipeline 长连接性能测试项目（HTTP 服务端没有做流水线设计支持，对于需要高吞吐的需求应该使用 <a href="/TcpServer/InterfaceServer.html?v=4E9A0E2">TCP 接口服务框架</a> 或者 <a href="/TcpServer/MethodServer.html?v=4E9A0E2">TCP 函数服务框架</a>）
+        <br /><a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpServerPerformance\AutoCSer.TestCase.HttpFilePerformance
+        <br /><a href="/Index.html?v=4E9A0E2" title="Go to the home page to download">AutoCSer</a>\TestCase\TcpClientPerformance\AutoCSer.TestCase.HttpFilePerformanceClient
     </p>
 </body>
 </html>

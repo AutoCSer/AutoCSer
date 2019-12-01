@@ -28,7 +28,7 @@ namespace AutoCSer.Sql.Threading
             /// </summary>
             /// <param name="connection"></param>
             /// <returns></returns>
-            internal override LinkQueueTaskNode RunLinkQueueTask(ref DbConnection connection)
+            internal override void RunLinkQueueTask(ref DbConnection connection)
             {
                 throw new NotImplementedException();
             }

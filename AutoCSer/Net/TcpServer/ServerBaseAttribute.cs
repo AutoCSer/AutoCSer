@@ -169,6 +169,11 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal abstract bool GetIsJsonSerialize { get; }
         /// <summary>
+        /// 客户端等待连接毫秒数，默认为 0 表示等待直到成功或者失败
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual uint GetClientWaitConnectedMilliseconds { get { return 0; } }
+        /// <summary>
         /// 默认为 true 表示在创建服务对象的时候自动启动监听，否则需要手动 Start
         /// </summary>
         public bool IsAutoServer = true;

@@ -353,6 +353,7 @@
     <Compile Include="Net\TcpServer\ClientSocketEventParameter.cs" />
     <Compile Include="Net\TcpServer\ClientSocketSenderBase.cs" />
     <Compile Include="Net\TcpServer\ClientTaskType.cs" />
+    <Compile Include="Net\TcpServer\ClientWaitConnected.cs" />
     <Compile Include="Net\TcpServer\CommandBuffer.cs" />
     <Compile Include="Net\TcpServer\CommandInfoBase.cs" />
     <Compile Include="Net\TcpServer\CommandPool.cs" />

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AutoCSer</AssemblyName>
     <RootNamespace>AutoCSer</RootNamespace>
-    <Version>1.1.48</Version>
+    <Version>1.1.49</Version>
     <PackageId>AutoCSer.NetStandard</PackageId>
     <Authors>肖进</Authors>
     <Company />
@@ -418,6 +418,7 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Net\TcpServer\ClientSocketSender.cs" />
     <Compile Include="Net\TcpServer\ClientSocketSenderBase.cs" />
     <Compile Include="Net\TcpServer\ClientTaskType.cs" />
+    <Compile Include="Net\TcpServer\ClientWaitConnected.cs" />
     <Compile Include="Net\TcpServer\CommandBase.cs" />
     <Compile Include="Net\TcpServer\CommandBuffer.cs" />
     <Compile Include="Net\TcpServer\CommandFlags.cs" />

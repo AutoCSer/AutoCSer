@@ -97,8 +97,16 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal override bool GetIsClientAwaiter { get { return IsClientAwaiter; } }
         /// <summary>
-        /// 默认为 true 表示服务端异步回调创建输出需要开启线程任务
+        /// 默认为 false 表示客户端不否执行等待连接操作，否则在服务配置 ClientWaitConnectedMilliseconds 不为 0 时生效
         /// </summary>
+        public bool ClientWaitConnected;
+        /// <summary>
+        /// 客户端是否否执行等待连接操作
+        /// </summary>
+        internal override bool GetClientWaitConnected { get { return ClientWaitConnected; } }
+        /// <summary>
+                                                                                      /// 默认为 true 表示服务端异步回调创建输出需要开启线程任务
+                                                                                      /// </summary>
         public bool IsServerAsynchronousCallbackBuildOutputThread = true;
     }
 }

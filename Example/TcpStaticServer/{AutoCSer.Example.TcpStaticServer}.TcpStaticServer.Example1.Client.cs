@@ -452,6 +452,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticClient
                     config.ServerAttribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), false);
                 }
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, 0, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
+                if (config.ServerAttribute.IsAutoClient) TcpClient.TryCreateSocket();
                 TcpClient.ClientCompileSerialize(new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p1), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p6), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p7), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p9), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p2), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p4), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p5), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p8), null }
                     , new System.Type[] { typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p10), typeof(AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p11), null }

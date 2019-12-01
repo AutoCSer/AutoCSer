@@ -123,13 +123,14 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 数据操作回调
         /// </summary>
-        /// <returns></returns>
+        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Buffer Append()
+        internal void Append(ref Buffer next)
         {
+            next = LinkNext;
+            LinkNext = null;
             callback();
             Node.Append(this);
-            return LinkNext;
         }
     }
 }

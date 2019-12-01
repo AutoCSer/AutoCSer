@@ -20,14 +20,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         public override void Call()
         {
-            try
-            {
-                Task();
-            }
-            catch (Exception error)
-            {
-                Sender.VirtualAddLog(error);
-            }
+            Task();
         }
     }
 }
