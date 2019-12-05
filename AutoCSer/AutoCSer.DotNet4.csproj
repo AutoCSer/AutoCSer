@@ -587,6 +587,8 @@
     <Compile Include="Threading\LockLastDictionary.cs" />
     <Compile Include="Threading\Pub.cs" />
     <Compile Include="Threading\QueueTaskThread.cs" />
+    <Compile Include="Threading\QueueTaskLinkThread.cs" />
+    <Compile Include="Threading\TaskLinkNode.cs" />
     <Compile Include="Threading\RingPool.cs" />
     <Compile Include="Threading\Thread.cs" />
     <Compile Include="Threading\ThreadPool.cs" />
@@ -595,6 +597,7 @@
     <Compile Include="Threading\TimerTask.cs" />
     <Compile Include="Threading\TimerTaskInfo.cs" />
     <Compile Include="Threading\TimerTaskThreadType.cs" />
+    <Compile Include="Threading\TimestampTaskLinkNode.cs" />
     <Compile Include="Threading\UnionType.cs" />
     <Compile Include="Threading\WaitHandle.cs" />
     <Compile Include="Threading\Link.AutoCSer.cs" />

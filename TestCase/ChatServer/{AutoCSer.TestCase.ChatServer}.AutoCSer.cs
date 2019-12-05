@@ -156,7 +156,7 @@ namespace AutoCSer.TestCase.ChatServer
                 sealed class _s0 : AutoCSer.Net.TcpOpenServer.ServerCall<_s0, AutoCSer.TestCase.ChatServer.Server>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.ChatData.Message> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.getMessage(Sender, AsynchronousCallback);
@@ -166,7 +166,7 @@ namespace AutoCSer.TestCase.ChatServer
                 sealed class _s1 : AutoCSer.Net.TcpOpenServer.ServerCall<_s1, AutoCSer.TestCase.ChatServer.Server>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.TestCase.ChatData.UserLogin> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.getUser(Sender, AsynchronousCallback);
@@ -195,7 +195,7 @@ namespace AutoCSer.TestCase.ChatServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -225,7 +225,7 @@ namespace AutoCSer.TestCase.ChatServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -255,7 +255,7 @@ namespace AutoCSer.TestCase.ChatServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)

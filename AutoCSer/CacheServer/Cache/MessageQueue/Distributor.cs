@@ -26,7 +26,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         {
             base.OnRemoved();
             onRemoved();
-            if (reader != null) QueueTaskThread.Thread.Default.Add(new QueueTaskThread.DisposeReader(reader));
+            if (reader != null) new QueueTaskThread.DisposeReader(reader).AddQueueTaskLinkThread();
         }
         /// <summary>
         /// 获取下一个节点

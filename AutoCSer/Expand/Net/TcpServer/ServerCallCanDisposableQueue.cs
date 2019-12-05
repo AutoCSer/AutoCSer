@@ -90,7 +90,7 @@ namespace AutoCSer.Net.TcpServer
                         while (value != null)
                         {
                             current = null;
-                            value.SingleRunTask(ref value);
+                            value.RunTask(ref value);
                         }
                         break;
                     }

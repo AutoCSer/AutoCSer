@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 空操作任务
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             throw new NotImplementedException();
         }

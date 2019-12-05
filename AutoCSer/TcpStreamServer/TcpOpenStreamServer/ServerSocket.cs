@@ -49,7 +49,6 @@ namespace AutoCSer.Net.TcpOpenStreamServer
             try
             {
                 isStart = IsVerifyMethod ? isCommand() : isVerifyCommand();
-
             }
             finally
             {

@@ -29,7 +29,7 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
         /// <summary>
         /// 释放锁
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             Lock.Exit(this);
         }

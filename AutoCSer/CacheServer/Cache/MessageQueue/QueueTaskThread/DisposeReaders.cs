@@ -23,7 +23,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
         /// <summary>
         /// 释放队列数据 读文件
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             foreach (FileReader reader in readers.Values) reader.Dispose();
         }

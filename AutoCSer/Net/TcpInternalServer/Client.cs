@@ -163,14 +163,13 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 创建客户端等待连接
         /// </summary>
-        /// <param name="waitMilliseconds">等待毫秒数</param>
         /// <param name="onCheckSocketVersion">TCP 客户端套接字初始化处理</param>
         /// <returns>客户端等待连接</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public ClientWaitConnected CreateWaitConnected(uint waitMilliseconds, Action<ClientSocketEventParameter> onCheckSocketVersion = null)
+        public ClientWaitConnected CreateWaitConnected(Action<ClientSocketEventParameter> onCheckSocketVersion = null)
         {
             TryCreateSocket();
-            return new ClientWaitConnected(this, waitMilliseconds, onCheckSocketVersion);
+            return new ClientWaitConnected(this, onCheckSocketVersion);
         }
         /// <summary>
         /// 发送自定义数据

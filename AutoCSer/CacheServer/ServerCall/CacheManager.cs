@@ -29,7 +29,7 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 缓存管理
         /// </summary>
-        public override void Call()
+        public override void RunTask()
         {
             switch (type)
             {

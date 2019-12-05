@@ -55,7 +55,7 @@ namespace AutoCSer.Net.TcpServer.ClientCommand
         /// </summary>
         /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public void SingleRunLinkTask(ref AutoCSer.Threading.ILinkTask next)
+        public void RunTask(ref AutoCSer.Threading.ILinkTask next)
         {
             next = NextTask;
             NextTask = null;

@@ -164,7 +164,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                 asynchronousCallbackFieldBuilder = serverCallTypeBuilder.DefineField("AsynchronousCallback", asynchronousCallbackFieldType, FieldAttributes.Public);
                                 #endregion
                                 #region public override void Call()
-                                MethodBuilder callMethodBuilder = serverCallTypeBuilder.DefineMethod("Call", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), null);
+                                MethodBuilder callMethodBuilder = serverCallTypeBuilder.DefineMethod("RunTask", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), null);
                                 #endregion
                                 ILGenerator callGenerator = callMethodBuilder.GetILGenerator();
                                 #region serverValue.@MethodName(Sender, inputParameter.@ParameterName, AsynchronousCallback);
@@ -367,7 +367,7 @@ namespace AutoCSer.Net.TcpServer.Emit
                                 getGenerator.Emit(OpCodes.Ret);
 
                                 #region public override void Call()
-                                MethodBuilder callMethodBuilder = serverCallTypeBuilder.DefineMethod("Call", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), null);
+                                MethodBuilder callMethodBuilder = serverCallTypeBuilder.DefineMethod("RunTask", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, typeof(void), null);
                                 #endregion
                                 ILGenerator callGenerator = callMethodBuilder.GetILGenerator();
                                 #region AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName> value = new AutoCSer.Net.TcpServer.ReturnValue<@OutputParameterTypeName>();
@@ -616,7 +616,10 @@ namespace AutoCSer.Net.TcpServer.Emit
                                 if (method.ServerCallQueue == null)
                                 {
                                     methodGenerator.int32((byte)method.ServerTask);
-                                    if (method.ParameterType == null) methodGenerator.call(Metadata.ServerCallCallMethod);
+                                    if (method.ParameterType == null)
+                                    {
+                                        methodGenerator.call(Metadata.ServerCallCallMethod);
+                                    }
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);

@@ -328,7 +328,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -364,7 +364,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -397,7 +397,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -430,7 +430,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -460,7 +460,7 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -775,12 +775,14 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 public 
                 void addCustomSerialize(AutoCSer.TestCase.TcpInternalServerPerformance.ClientCustomSerialize value)
                 {
-                    TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
                     {
-                        
-                        p0 = value,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c3, ref _inputParameter_);
+                        TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                        {
+                            
+                            p0 = value,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c3, ref _inputParameter_);
+                    }
                 }
 
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _c4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 0, IsSendOnly = 1, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Synchronous };
@@ -792,7 +794,9 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 public 
                 void addCustomSerializeFinally()
                 {
-                    _TcpClient_.Sender.CallOnly(_c4);
+                    {
+                        _TcpClient_.Sender.CallOnly(_c4);
+                    }
                 }
 
 
@@ -867,14 +871,16 @@ namespace AutoCSer.TestCase.TcpInternalServerPerformance
                 public 
                 void addRegister(int left, int right)
                 {
-                    TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                     {
-                        
-                        p0 = left,
-                        
-                        p1 = right,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c7, ref _inputParameter_);
+                        TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
+                        {
+                            
+                            p0 = left,
+                            
+                            p1 = right,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c7, ref _inputParameter_);
+                    }
                 }
 
 

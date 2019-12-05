@@ -38,7 +38,7 @@ namespace AutoCSer.Net.TcpServer
             }
             else
             {
-                end.NextTask = value;
+                end.LinkNext = value;
                 end = value;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
@@ -51,7 +51,7 @@ namespace AutoCSer.Net.TcpServer
         internal bool CheckAdd(ServerCallBase value)
         {
             while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-            if (value.NextTask == null && value != end)
+            if (value.LinkNext == null && value != end)
             {
                 if (head == null)
                 {
@@ -62,7 +62,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 else
                 {
-                    end.NextTask = value;
+                    end.LinkNext = value;
                     end = value;
                     System.Threading.Interlocked.Exchange(ref queueLock, 0);
                 }
@@ -90,7 +90,7 @@ namespace AutoCSer.Net.TcpServer
                     {
                         do
                         {
-                            value.SingleRunTask(ref value);
+                            value.RunTask(ref value);
                         }
                         while (value != null);
                         break;

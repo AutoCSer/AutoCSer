@@ -113,21 +113,23 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
                     #region IF IsClientWaitConnected
-                    if (!/*PUSH:AutoParameter*/
-                    @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.WaitConnected.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
+                    if (/*PUSH:AutoParameter*/
+                    @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.WaitConnected.WaitConnected())
                     #endregion IF IsClientWaitConnected
-                    #region IF InputParameterIndex
-                    /*PUSH:AutoParameter*/
-                    @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
                     {
-                        #region LOOP InputParameters
-                        /*PUSH:Parameter*/
-                        @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
-                        #endregion LOOP InputParameters
-                    };
-                    #endregion IF InputParameterIndex
-                    /*PUSH:AutoParameter*/
-                    @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                        #region IF InputParameterIndex
+                        /*PUSH:AutoParameter*/
+                        @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _inputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
+                        {
+                            #region LOOP InputParameters
+                            /*PUSH:Parameter*/
+                            @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
+                            #endregion LOOP InputParameters
+                        };
+                        #endregion IF InputParameterIndex
+                        /*PUSH:AutoParameter*/
+                        @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                    }
                     #endregion NOT Attribute.IsExpired
                 }
                 #endregion IF IsClientSendOnly
@@ -574,23 +576,29 @@ namespace AutoCSer.CodeGenerator.Template
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.VersionExpired.ToString());
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
+                        #region IF IsClientSendOnly
+                        #region IF IsClientWaitConnected
+                        if (/*PUSH:AutoParameter*/
+                        @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.WaitConnected.WaitConnected())
+                        #endregion IF IsClientWaitConnected
+                        {
+                            /*PUSH:AutoParameter*/
+                            @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _sendOnlyInputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
+                            {
+                                #region LOOP InputParameters
+                                /*PUSH:Parameter*/
+                                @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
+                                #endregion LOOP InputParameters
+                            };
+                            /*PUSH:AutoParameter*/
+                            @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand, ref _sendOnlyInputParameter_);
+                        }
+                        #endregion IF IsClientSendOnly
+                        #region NOT IsClientSendOnly
                         #region IF IsClientWaitConnected
                         if (!/*PUSH:AutoParameter*/
                         @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.WaitConnected.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
                         #endregion IF IsClientWaitConnected
-                        #region IF IsClientSendOnly
-                        /*PUSH:AutoParameter*/
-                        @DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName _sendOnlyInputParameter_ = new /*PUSH:AutoParameter*/@DefaultNamespace/*PUSH:AutoParameter*/.@ParameterPart/**/.@ServerName/**/.@InputParameterTypeName
-                        {
-                            #region LOOP InputParameters
-                            /*PUSH:Parameter*/
-                            @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
-                            #endregion LOOP InputParameters
-                        };
-                        /*PUSH:AutoParameter*/
-                        @DefaultNamespace/*PUSH:AutoParameter*/.@ClientPart/**/.@ServerName/**/.TcpClient.Sender.CallOnly(@StaticMethodIdentityCommand, ref _sendOnlyInputParameter_);
-                        #endregion IF IsClientSendOnly
-                        #region NOT IsClientSendOnly
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
                         {
@@ -876,7 +884,7 @@ namespace AutoCSer.CodeGenerator.Template
                     }
                 }
                 #endregion NOT IsAsynchronousCallback
-                public override void Call()
+                public override void RunTask()
                 {
                     #region IF IsAsynchronousCallback
                     #region IF MethodIsReturn
@@ -1066,7 +1074,7 @@ namespace AutoCSer.CodeGenerator.Template
                 #endregion NOT IsSegmentation
                 TcpClient = new AutoCSer.Net.TcpStaticServer.Client(config.ServerAttribute, @MaxTimeoutSeconds, config.OnCustomData, config.Log, config.ClientRoute, config.VerifyMethod);
                 #region IF IsCreateClientWaitConnected
-                WaitConnected = TcpClient.CreateWaitConnected(config.ServerAttribute.GetClientWaitConnectedMilliseconds, config.WaitConnectedOnCheckSocketVersion);
+                WaitConnected = TcpClient.CreateWaitConnected(config.WaitConnectedOnCheckSocketVersion);
                 #endregion IF IsCreateClientWaitConnected
                 #region NOT IsCreateClientWaitConnected
                 if (config.ServerAttribute.IsAutoClient) TcpClient.TryCreateSocket();

@@ -780,7 +780,7 @@ namespace AutoCSer.CacheServer
                 sealed class _s0 : AutoCSer.Net.TcpInternalServer.ServerCall<_s0, AutoCSer.CacheServer.MasterServer>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.CacheReturnParameter> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.GetCache(AsynchronousCallback);
@@ -810,7 +810,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p6> value = new AutoCSer.Net.TcpServer.ReturnValue<_p6>();
                         if (Sender.IsSocket)
@@ -843,7 +843,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p7> value = new AutoCSer.Net.TcpServer.ReturnValue<_p7>();
                         if (Sender.IsSocket)
@@ -876,7 +876,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p9> value = new AutoCSer.Net.TcpServer.ReturnValue<_p9>();
                         if (Sender.IsSocket)
@@ -909,7 +909,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p9> value = new AutoCSer.Net.TcpServer.ReturnValue<_p9>();
                         if (Sender.IsSocket)
@@ -924,7 +924,7 @@ namespace AutoCSer.CacheServer
                 sealed class _s7 : AutoCSer.Net.TcpInternalServer.ServerCall<_s7, AutoCSer.CacheServer.MasterServer, _p8>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.OperationAsynchronous(inputParameter.p0, AsynchronousCallback);
@@ -934,7 +934,7 @@ namespace AutoCSer.CacheServer
                 sealed class _s8 : AutoCSer.Net.TcpInternalServer.ServerCall<_s8, AutoCSer.CacheServer.MasterServer, _p10>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.OperationAsynchronous(inputParameter.p0, AsynchronousCallback);
@@ -959,7 +959,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket) get(ref value);
@@ -970,7 +970,7 @@ namespace AutoCSer.CacheServer
                 sealed class _s10 : AutoCSer.Net.TcpInternalServer.ServerCall<_s10, AutoCSer.CacheServer.MasterServer, _p8>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.OperationAsynchronousStream(inputParameter.p0, AsynchronousCallback);
@@ -980,7 +980,7 @@ namespace AutoCSer.CacheServer
                 sealed class _s11 : AutoCSer.Net.TcpInternalServer.ServerCall<_s11, AutoCSer.CacheServer.MasterServer, _p10>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.ReturnParameter> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.OperationAsynchronousStream(inputParameter.p0, AsynchronousCallback);
@@ -1005,7 +1005,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket) get(ref value);
@@ -1034,7 +1034,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p9> value = new AutoCSer.Net.TcpServer.ReturnValue<_p9>();
                         if (Sender.IsSocket)
@@ -1067,7 +1067,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p9> value = new AutoCSer.Net.TcpServer.ReturnValue<_p9>();
                         if (Sender.IsSocket)
@@ -1114,7 +1114,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p6> value = new AutoCSer.Net.TcpServer.ReturnValue<_p6>();
                         if (Sender.IsSocket)
@@ -1144,7 +1144,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -1174,7 +1174,7 @@ namespace AutoCSer.CacheServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -2089,12 +2089,14 @@ namespace AutoCSer.CacheServer
                 internal 
                 void OperationAsynchronousOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
                 {
-                    TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
                     {
-                        
-                        p0 = parameter,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c9, ref _inputParameter_);
+                        TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c9, ref _inputParameter_);
+                    }
                 }
 
 
@@ -2173,12 +2175,14 @@ namespace AutoCSer.CacheServer
                 internal 
                 void OperationOnly(AutoCSer.CacheServer.OperationParameter.OperationNode parameter)
                 {
-                    TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
                     {
-                        
-                        p0 = parameter,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c12, ref _inputParameter_);
+                        TcpInternalServer._p8 _inputParameter_ = new TcpInternalServer._p8
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c12, ref _inputParameter_);
+                    }
                 }
 
 
@@ -2831,12 +2835,14 @@ namespace AutoCSer.CacheServer
                 internal 
                 void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
                 {
-                    TcpInternalServer._p11 _inputParameter_ = new TcpInternalServer._p11
                     {
-                        
-                        p0 = parameter,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c25, ref _inputParameter_);
+                        TcpInternalServer._p11 _inputParameter_ = new TcpInternalServer._p11
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c25, ref _inputParameter_);
+                    }
                 }
 
 
@@ -3583,7 +3589,7 @@ namespace AutoCSer.CacheServer
                 sealed class _s2 : AutoCSer.Net.TcpInternalServer.ServerCall<_s2, AutoCSer.CacheServer.SlaveServer>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<AutoCSer.CacheServer.CacheReturnParameter> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.GetCache(AsynchronousCallback);
@@ -4322,12 +4328,14 @@ namespace AutoCSer.CacheServer
                 internal 
                 void QueryOnly(AutoCSer.CacheServer.OperationParameter.QueryNode parameter)
                 {
-                    TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
                     {
-                        
-                        p0 = parameter,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c11, ref _inputParameter_);
+                        TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
+                        {
+                            
+                            p0 = parameter,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c11, ref _inputParameter_);
+                    }
                 }
 
 

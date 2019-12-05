@@ -222,7 +222,6 @@
     <Compile Include="Threading\QueueTaskAction.cs" />
     <Compile Include="Threading\SearchTreeDictionaryFindTask.cs" />
     <Compile Include="Threading\SearchTreeDictionaryPageTask.cs" />
-    <Compile Include="Threading\TaskQueue.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="UnionType.cs" />
     <Compile Include="UpdateMemberMap.cs" />

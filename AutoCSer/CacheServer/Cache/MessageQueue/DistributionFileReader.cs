@@ -529,7 +529,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal static void OnTimer()
         {
-            if (readerCount != 0 && Interlocked.CompareExchange(ref isTimer, 1, 0) == 0) QueueTaskThread.Thread.Default.Add(queueOnTimer);
+            if (readerCount != 0 && Interlocked.CompareExchange(ref isTimer, 1, 0) == 0) queueOnTimer.AddQueueTaskLinkThread();
         }
         /// <summary>
         /// 定时器触发消息处理超时检测

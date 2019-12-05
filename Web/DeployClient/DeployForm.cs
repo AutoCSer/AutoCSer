@@ -275,6 +275,7 @@ namespace AutoCSer.Web.DeployClient
         {
             openDirectory(@"..\..\..\..\TestCase\TcpServerPerformance\bin\Release\");
             openDirectory(@"..\..\..\..\TestCase\TcpSimpleServerPerformance\bin\Release\");
+            openDirectory(@"..\..\..\..\TestCase\CacheServerPerformance\bin\Release\");
             openDirectory(@"..\..\..\..\TestCase\WebPerformance\bin\Release\");
 
             openProcess(@"..\..\..\..\Example\BinarySerialize\bin\Release\AutoCSer.Example.BinarySerialize.exe");

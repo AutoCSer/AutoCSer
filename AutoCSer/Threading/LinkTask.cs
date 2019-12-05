@@ -23,7 +23,7 @@ namespace AutoCSer.Threading
         /// 执行任务
         /// </summary>
         /// <param name="next">下一个任务节点</param>
-        void SingleRunLinkTask(ref ILinkTask next);
+        void RunTask(ref ILinkTask next);
     }
     /// <summary>
     /// 链表任务
@@ -143,7 +143,7 @@ namespace AutoCSer.Threading
                     {
                         do
                         {
-                            value.SingleRunLinkTask(ref value);
+                            value.RunTask(ref value);
                         }
                         while (value != null);
                         break;

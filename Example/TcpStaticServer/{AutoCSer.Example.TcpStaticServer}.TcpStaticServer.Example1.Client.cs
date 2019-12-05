@@ -227,16 +227,18 @@ namespace AutoCSer.Example.TcpStaticServer
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 public static void SetSum1(int left, int right)
                 {
-                    
-                    AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3 _inputParameter_ = new AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3
                     {
                         
-                        p0 = left,
+                        AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3 _inputParameter_ = new AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/._p3
+                        {
+                            
+                            p0 = left,
+                            
+                            p1 = right,
+                        };
                         
-                        p1 = right,
-                    };
-                    
-                    AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/.TcpClient.Sender.CallOnly(_c2, ref _inputParameter_);
+                        AutoCSer.Example.TcpStaticServer.TcpStaticClient/**/.Example1/**/.TcpClient.Sender.CallOnly(_c2, ref _inputParameter_);
+                    }
                 }
 
             }

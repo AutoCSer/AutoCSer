@@ -32,7 +32,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             try
             {
@@ -49,7 +49,7 @@ namespace AutoCSer.Sql.Threading
             if (action != null)
             {
                 DomainUnloadTransaction value = new DomainUnloadTransaction { action = action };
-                if (AutoCSer.DomainUnload.Unloader.TransactionStart(true)) TaskQueue.Default.Add(value);
+                if (AutoCSer.DomainUnload.Unloader.TransactionStart(true)) value.AddQueueTaskLinkThread();
                 throw new InvalidOperationException();
             }
         }
@@ -73,7 +73,7 @@ namespace AutoCSer.Sql.Threading
             if (action != null)
             {
                 DomainUnloadTransaction<parameterType> value = new DomainUnloadTransaction<parameterType> { Action = action, Parameter = parameter };
-                if (AutoCSer.DomainUnload.Unloader.TransactionStart(true)) TaskQueue.Default.Add(value);
+                if (AutoCSer.DomainUnload.Unloader.TransactionStart(true)) value.AddQueueTaskLinkThread();
                 throw new InvalidOperationException();
             }
         }
@@ -147,7 +147,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             try
             {

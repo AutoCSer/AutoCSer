@@ -93,7 +93,7 @@ namespace AutoCSer.TestCase.Nuget
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         if (Sender.IsSocket)

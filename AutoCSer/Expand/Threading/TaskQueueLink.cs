@@ -5,20 +5,22 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 任务队列链表，用户低优先级任务
     /// </summary>
-    public sealed class TaskQueueLink
+    /// <typeparam name="taskType">任务节点类型</typeparam>
+    public sealed class TaskQueueLink<taskType>
+        where taskType : TaskLinkNode<taskType>
     {
         /// <summary>
         /// 任务队列
         /// </summary>
-        private readonly AutoCSer.Threading.TaskQueue queue;
+        private readonly AutoCSer.Threading.TaskQueue<taskType> queue;
         /// <summary>
         /// 首节点
         /// </summary>
-        private TaskQueueNode head;
+        private taskType head;
         /// <summary>
         /// 尾节点
         /// </summary>
-        private TaskQueueNode end;
+        private taskType end;
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
@@ -27,7 +29,7 @@ namespace AutoCSer.Threading
         /// 任务队列链表节点
         /// </summary>
         /// <param name="queue">任务队列</param>
-        internal TaskQueueLink(AutoCSer.Threading.TaskQueue queue)
+        internal TaskQueueLink(AutoCSer.Threading.TaskQueue<taskType> queue)
         {
             this.queue = queue;
         }
@@ -35,7 +37,7 @@ namespace AutoCSer.Threading
         /// 添加任务
         /// </summary>
         /// <param name="node"></param>
-        public void Add(TaskQueueNode node)
+        public void Add(taskType node)
         {
             if (node != null)
             {
@@ -44,7 +46,7 @@ namespace AutoCSer.Threading
                 {
                     head = end = node;
                     System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                    queue.Add(new TaskQueueLinkNode(this));
+                    queue.Add(this);
                 }
                 else
                 {
@@ -57,9 +59,9 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 执行任务
         /// </summary>
-        internal void RunTask()
+        public void RunTask()
         {
-            TaskQueueNode node = head, next = head.LinkNext;
+            taskType node = head, next = head.LinkNext;
             if (next == null)
             {
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
@@ -73,7 +75,7 @@ namespace AutoCSer.Threading
             }
             finally
             {
-                if (next != null) queue.Add(new TaskQueueLinkNode(this));
+                if (next != null) queue.Add(this);
             }
         }
     }

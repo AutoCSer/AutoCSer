@@ -18,7 +18,7 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 调用处理
         /// </summary>
-        public override void Call()
+        public override void RunTask()
         {
             Task();
         }

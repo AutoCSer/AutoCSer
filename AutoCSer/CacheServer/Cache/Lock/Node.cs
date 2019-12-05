@@ -41,7 +41,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
         internal override void OnRemoved()
         {
             base.OnRemoved();
-            QueueTaskThread.Thread.Default.Add(new QueueTaskThread.Dispose(this));
+            new QueueTaskThread.Dispose(this).AddQueueTaskLinkThread();
         }
         /// <summary>
         /// 释放锁节点
@@ -95,7 +95,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
                         {
                             QueueTaskThread.TryEnter enter = new QueueTaskThread.TryEnter(this);
                             enter.LinkNode = new LinkNode(this, ref parser);
-                            QueueTaskThread.Thread.Default.Add(enter);
+                            enter.AddQueueTaskLinkThread();
                         }
                     }
                     else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
@@ -107,7 +107,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
                         {
                             QueueTaskThread.Enter enter = new QueueTaskThread.Enter(this);
                             enter.LinkNode = new LinkNode(this, ref parser);
-                            QueueTaskThread.Thread.Default.Add(enter);
+                            enter.AddQueueTaskLinkThread();
                         }
                     }
                     else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
@@ -115,7 +115,7 @@ namespace AutoCSer.CacheServer.Cache.Lock
                 case OperationParameter.OperationType.Remove:
                     if (parser.ValueData.Type == ValueData.DataType.ULong)
                     {
-                        if (parser.OnReturn != null) QueueTaskThread.Thread.Default.Add(new QueueTaskThread.Exit(this, ref parser));
+                        if (parser.OnReturn != null) new QueueTaskThread.Exit(this, ref parser).AddQueueTaskLinkThread();
                     }
                     else parser.ReturnParameter.ReturnType = ReturnType.ValueDataLoadError;
                     return;

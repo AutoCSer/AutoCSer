@@ -44,7 +44,11 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// </summary>
         public void Dispose()
         {
-            if (System.Threading.Interlocked.CompareExchange(ref _isDisposed_, 1, 0) == 0) _TcpClient_.Dispose();
+            if (System.Threading.Interlocked.CompareExchange(ref _isDisposed_, 1, 0) == 0)
+            {
+                _TcpClient_.Dispose();
+                if (_WaitConnected_ != null) _WaitConnected_.Dispose();
+            }
         }
     }
 }

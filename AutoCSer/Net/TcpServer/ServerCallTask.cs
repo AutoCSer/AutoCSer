@@ -26,7 +26,7 @@ namespace AutoCSer.Net.TcpServer
             {
                 if ((headValue = head) == null)
                 {
-                    value.NextTask = null;
+                    value.LinkNext = null;
                     if (Interlocked.CompareExchange(ref head, value, null) == null)
                     {
                         waitHandle.Set();
@@ -35,7 +35,7 @@ namespace AutoCSer.Net.TcpServer
                 }
                 else
                 {
-                    value.NextTask = headValue;
+                    value.LinkNext = headValue;
                     if (Interlocked.CompareExchange(ref head, value, headValue) == headValue) return;
                 }
                 AutoCSer.Threading.ThreadYield.YieldOnly();
@@ -58,7 +58,7 @@ namespace AutoCSer.Net.TcpServer
                     {
                         do
                         {
-                            value.SingleRunTask(ref value, ref currentTaskTimestamp);
+                            value.RunTask(ref value, ref currentTaskTimestamp);
                         }
                         while (value != null);
                         break;

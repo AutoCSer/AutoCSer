@@ -6,7 +6,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
     /// <summary>
     /// 消息队列读取操作任务
     /// </summary>
-    internal abstract class Node : AutoCSer.Threading.Link<Node>
+    internal abstract class Node : AutoCSer.Threading.TaskLinkNode<Node>
     {
         /// <summary>
         /// 消息队列节点
@@ -21,19 +21,26 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
             MessageQueue = messageQueue;
         }
         /// <summary>
-        /// 读取任务操作
+        /// 添加到消息队列读取操作队列线程
         /// </summary>
-        internal abstract void RunTask();
-        /// <summary>
-        /// 读取任务操作
-        /// </summary>
-        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void RunTask(ref Node next)
+        internal void AddQueueTaskLinkThread()
         {
-            next = LinkNext;
-            LinkNext = null;
-            RunTask();
+            queueTaskLinkThread.Add(this);
         }
+        /// <summary>
+        /// 添加到消息队列读取操作队列线程
+        /// </summary>
+        /// <param name="end"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void AddQueueTaskLinkThread(Node end)
+        {
+            queueTaskLinkThread.Add(this, end);
+        }
+
+        /// <summary>
+        /// 消息队列读取操作队列线程
+        /// </summary>
+        private static readonly AutoCSer.Threading.QueueTaskLinkThread<Node> queueTaskLinkThread = new AutoCSer.Threading.QueueTaskLinkThread<Node>();
     }
 }

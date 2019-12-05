@@ -84,7 +84,7 @@ namespace AutoCSer.Net.TcpOpenServer.Emit
             {
                 if (attribute.IsAutoClient) client._TcpClient_.TryCreateSocket();
             }
-            else client._WaitConnected_ = client._TcpClient_.CreateWaitConnected(attribute.GetClientWaitConnectedMilliseconds, waitConnectedOnCheckSocketVersion);
+            else client._WaitConnected_ = client._TcpClient_.CreateWaitConnected(waitConnectedOnCheckSocketVersion);
             return interfaceClient;
         }
 

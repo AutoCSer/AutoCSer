@@ -61,7 +61,7 @@ namespace AutoCSer.Deploy
                 AutoCSer.Net.TcpServer.ServerCallback<Log> onLog = client.OnLog ?? AutoCSer.Net.TcpServer.ServerCallback<Log>.Null.Default;
                 log.Type = LogType.CreateBakDirectory;
                 isLog |= onLog.Callback(log);
-                (BakDirectory = new DirectoryInfo(Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + Identity.Index.toString() + "_" + Identity.Identity.toString()))).Create();
+                (BakDirectory = new DirectoryInfo(Server.GetBakDirectoryName(ref Identity))).Create();
                 log.Type = LogType.OnCreateBakDirectory;
                 isLog |= onLog.Callback(log);
                 while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)

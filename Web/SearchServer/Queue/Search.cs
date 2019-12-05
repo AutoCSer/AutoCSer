@@ -8,7 +8,7 @@ namespace AutoCSer.Web.SearchServer.Queue
     /// <summary>
     /// 搜索
     /// </summary>
-    internal sealed class Search : TaskQueueNode
+    internal sealed class Search : Node
     {
         /// <summary>
         /// 最大搜索文本长度

@@ -68,13 +68,9 @@ namespace AutoCSer.Net.TcpServer
         /// 释放命令索引池
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void disposeCommandPool()
+        protected void disposeCommandPoolTimeout()
         {
-            if (CommandPool != null)
-            {
-                CommandPool.DisposeTimeout();
-                CommandPool = null;
-            }
+            if (CommandPool != null) CommandPool.DisposeTimeout();
         }
         /// <summary>
         /// 设置 TCP 服务客户端套接字数据发送

@@ -446,7 +446,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             QueueTaskThread.Node end, head;
             Monitor.Enter(onStartQueueLock);
             head = onStartQueue.GetClear(out end);
-            if (head != null) QueueTaskThread.Thread.Default.Add(head, end);
+            if (head != null) head.AddQueueTaskLinkThread(end);
             isStartQueue = true;
             Monitor.Exit(onStartQueueLock);
         }
@@ -457,7 +457,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OnStart(QueueTaskThread.Node node)
         {
-            if (isStartQueue) QueueTaskThread.Thread.Default.Add(node);
+            if (isStartQueue) node.AddQueueTaskLinkThread();
             else onStart(node);
         }
         /// <summary>
@@ -469,7 +469,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
             Monitor.Enter(onStartQueueLock);
             try
             {
-                if (isStartQueue) QueueTaskThread.Thread.Default.Add(node);
+                if (isStartQueue) node.AddQueueTaskLinkThread();
                 else onStartQueue.Push(node);
             }
             finally { Monitor.Exit(onStartQueueLock); }
@@ -648,11 +648,11 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                         {
                             do
                             {
-                                head = head.Callback();
+                                head.Callback(ref head);
                             }
                             while (head != null);
                         }
-                        else QueueTaskThread.Thread.Default.Add(new QueueTaskThread.Append(head));
+                        else new QueueTaskThread.Append(head).AddQueueTaskLinkThread();
                         callbackTime = Date.NowTime.Now;
                     }
                     if (this.isNeedDispose != 0)

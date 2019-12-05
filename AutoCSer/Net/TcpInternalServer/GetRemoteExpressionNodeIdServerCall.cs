@@ -11,7 +11,7 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <summary>
         /// 调用处理
         /// </summary>
-        public override void Call()
+        public override void RunTask()
         {
             if (Sender.IsSocket)
             {

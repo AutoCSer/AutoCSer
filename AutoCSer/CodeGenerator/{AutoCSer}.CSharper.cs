@@ -13300,7 +13300,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }");
             }
             _code_.Add(@"
-                    public override void Call()
+                    public override void RunTask()
                     {");
             _if_ = false;
                     if (_value2_.IsAsynchronousCallback)
@@ -14062,7 +14062,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(attribute.GetClientWaitConnectedMilliseconds, waitConnectedOnCheckSocketVersion);");
+                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(waitConnectedOnCheckSocketVersion);");
             }
             _if_ = false;
                 if (!(bool)IsCreateClientWaitConnected)
@@ -14442,8 +14442,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+                    if (_WaitConnected_.WaitConnected())");
             }
+            _code_.Add(@"
+                    {");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {
@@ -14452,12 +14454,12 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    TcpInternalServer.");
+                        TcpInternalServer.");
             _code_.Add(_value2_.InputParameterTypeName);
             _code_.Add(@" _inputParameter_ = new TcpInternalServer.");
             _code_.Add(_value2_.InputParameterTypeName);
             _code_.Add(@"
-                    {");
+                        {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
                     _value3_ = _value2_.InputParameters;
@@ -14469,7 +14471,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
                         {
             _code_.Add(@"
-                        ");
+                            ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value5_ = _value4_.Parameter;
@@ -14481,7 +14483,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        ");
+                            ");
             _code_.Add(_value5_.ParameterName);
             }
                 }
@@ -14507,10 +14509,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                    };");
+                        };");
             }
             _code_.Add(@"
-                    _TcpClient_.Sender.CallOnly(");
+                        _TcpClient_.Sender.CallOnly(");
             _code_.Add(_value2_.MethodIdentityCommand);
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -14521,7 +14523,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", ref _inputParameter_");
             }
-            _code_.Add(@");");
+            _code_.Add(@");
+                    }");
             }
             _code_.Add(@"
                 }");
@@ -17948,6 +17951,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
+                    if (_value3_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
                     if (_value3_.IsClientWaitConnected)
                     {
                         _if_ = true;
@@ -17955,22 +17965,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+                        if (_WaitConnected_.WaitConnected())");
             }
-            _if_ = false;
-                    if (_value3_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
             _code_.Add(@"
-                        TcpInternalServer.");
+                        {
+                            TcpInternalServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@" _sendOnlyInputParameter_ = new TcpInternalServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@"
-                        {");
+                            {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value4_;
                     _value4_ = _value3_.InputParameters;
@@ -17982,7 +17986,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value5_ in _value4_)
                         {
             _code_.Add(@"
-                            ");
+                                ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value6_ = _value5_.Parameter;
@@ -17994,7 +17998,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                            ");
+                                ");
             _code_.Add(_value6_.ParameterName);
             }
                 }
@@ -18020,10 +18024,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                        };
-                        _TcpClient_.Sender.CallOnly(");
+                            };
+                            _TcpClient_.Sender.CallOnly(");
             _code_.Add(_value3_.MethodIdentityCommand);
-            _code_.Add(@", ref _sendOnlyInputParameter_);");
+            _code_.Add(@", ref _sendOnlyInputParameter_);
+                        }");
             }
             _if_ = false;
                 if (_value3_.IsClientSendOnly == 0)
@@ -18032,6 +18037,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                    if (_value3_.IsClientWaitConnected)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+            }
             _code_.Add(@"
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
@@ -18417,6 +18432,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
+                    if (_value3_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
                     if (_value3_.IsClientWaitConnected)
                     {
                         _if_ = true;
@@ -18424,22 +18446,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+                        if (_WaitConnected_.WaitConnected())");
             }
-            _if_ = false;
-                    if (_value3_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
             _code_.Add(@"
-                        TcpInternalServer.");
+                        {
+                            TcpInternalServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@" _sendOnlyInputParameter_ = new TcpInternalServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@"
-                        {");
+                            {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value4_;
                     _value4_ = _value3_.InputParameters;
@@ -18451,7 +18467,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value5_ in _value4_)
                         {
             _code_.Add(@"
-                            ");
+                                ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value6_ = _value5_.Parameter;
@@ -18463,7 +18479,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                            ");
+                                ");
             _code_.Add(_value6_.ParameterName);
             }
                 }
@@ -18489,10 +18505,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                        };
-                        _TcpClient_.Sender.CallOnly(");
+                            };
+                            _TcpClient_.Sender.CallOnly(");
             _code_.Add(_value3_.MethodIdentityCommand);
-            _code_.Add(@", ref _sendOnlyInputParameter_);");
+            _code_.Add(@", ref _sendOnlyInputParameter_);
+                        }");
             }
             _if_ = false;
                 if (_value3_.IsClientSendOnly == 0)
@@ -18501,6 +18518,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                    if (_value3_.IsClientWaitConnected)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+            }
             _code_.Add(@"
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
@@ -30312,7 +30339,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }");
             }
             _code_.Add(@"
-                    public override void Call()
+                    public override void RunTask()
                     {");
             _if_ = false;
                     if (_value2_.IsAsynchronousCallback)
@@ -31073,7 +31100,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(attribute.GetClientWaitConnectedMilliseconds, waitConnectedOnCheckSocketVersion);");
+                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(waitConnectedOnCheckSocketVersion);");
             }
             _if_ = false;
                 if (!(bool)IsCreateClientWaitConnected)
@@ -31450,8 +31477,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+                    if (_WaitConnected_.WaitConnected())");
             }
+            _code_.Add(@"
+                    {");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {
@@ -31460,12 +31489,12 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    TcpOpenServer.");
+                        TcpOpenServer.");
             _code_.Add(_value2_.InputParameterTypeName);
             _code_.Add(@" _inputParameter_ = new TcpOpenServer.");
             _code_.Add(_value2_.InputParameterTypeName);
             _code_.Add(@"
-                    {");
+                        {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
                     _value3_ = _value2_.InputParameters;
@@ -31477,7 +31506,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
                         {
             _code_.Add(@"
-                        ");
+                            ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value5_ = _value4_.Parameter;
@@ -31489,7 +31518,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        ");
+                            ");
             _code_.Add(_value5_.ParameterName);
             }
                 }
@@ -31515,10 +31544,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                    };");
+                        };");
             }
             _code_.Add(@"
-                    _TcpClient_.Sender.CallOnly(");
+                        _TcpClient_.Sender.CallOnly(");
             _code_.Add(_value2_.MethodIdentityCommand);
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
@@ -31529,7 +31558,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", ref _inputParameter_");
             }
-            _code_.Add(@");");
+            _code_.Add(@");
+                    }");
             }
             _code_.Add(@"
                 }");
@@ -34951,6 +34981,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
+                    if (_value3_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
                     if (_value3_.IsClientWaitConnected)
                     {
                         _if_ = true;
@@ -34958,22 +34995,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+                        if (_WaitConnected_.WaitConnected())");
             }
-            _if_ = false;
-                    if (_value3_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
             _code_.Add(@"
-                        TcpOpenServer.");
+                        {
+                            TcpOpenServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@" _sendOnlyInputParameter_ = new TcpOpenServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@"
-                        {");
+                            {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value4_;
                     _value4_ = _value3_.InputParameters;
@@ -34985,7 +35016,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value5_ in _value4_)
                         {
             _code_.Add(@"
-                            ");
+                                ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value6_ = _value5_.Parameter;
@@ -34997,7 +35028,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                            ");
+                                ");
             _code_.Add(_value6_.ParameterName);
             }
                 }
@@ -35023,10 +35054,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                        };
-                        _TcpClient_.Sender.CallOnly(");
+                            };
+                            _TcpClient_.Sender.CallOnly(");
             _code_.Add(_value3_.MethodIdentityCommand);
-            _code_.Add(@", ref _sendOnlyInputParameter_);");
+            _code_.Add(@", ref _sendOnlyInputParameter_);
+                        }");
             }
             _if_ = false;
                 if (_value3_.IsClientSendOnly == 0)
@@ -35035,6 +35067,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                    if (_value3_.IsClientWaitConnected)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+            }
             _code_.Add(@"
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
@@ -35417,6 +35459,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
+                    if (_value3_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
                     if (_value3_.IsClientWaitConnected)
                     {
                         _if_ = true;
@@ -35424,22 +35473,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+                        if (_WaitConnected_.WaitConnected())");
             }
-            _if_ = false;
-                    if (_value3_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
             _code_.Add(@"
-                        TcpOpenServer.");
+                        {
+                            TcpOpenServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@" _sendOnlyInputParameter_ = new TcpOpenServer.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@"
-                        {");
+                            {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value4_;
                     _value4_ = _value3_.InputParameters;
@@ -35451,7 +35494,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value5_ in _value4_)
                         {
             _code_.Add(@"
-                            ");
+                                ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value6_ = _value5_.Parameter;
@@ -35463,7 +35506,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                            ");
+                                ");
             _code_.Add(_value6_.ParameterName);
             }
                 }
@@ -35489,10 +35532,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                        };
-                        _TcpClient_.Sender.CallOnly(");
+                            };
+                            _TcpClient_.Sender.CallOnly(");
             _code_.Add(_value3_.MethodIdentityCommand);
-            _code_.Add(@", ref _sendOnlyInputParameter_);");
+            _code_.Add(@", ref _sendOnlyInputParameter_);
+                        }");
             }
             _if_ = false;
                 if (_value3_.IsClientSendOnly == 0)
@@ -35501,6 +35545,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }
             if (_if_)
             {
+            _if_ = false;
+                    if (_value3_.IsClientWaitConnected)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+            }
             _code_.Add(@"
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
@@ -45853,7 +45907,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    if (!");
+                    if (");
                 {
                     AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
                     _value3_ = AutoParameter;
@@ -45873,8 +45927,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(ClientPart);
             _code_.Add(@"/**/.");
             _code_.Add(ServerName);
-            _code_.Add(@"/**/.WaitConnected.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+            _code_.Add(@"/**/.WaitConnected.WaitConnected())");
             }
+            _code_.Add(@"
+                    {");
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {
@@ -45883,7 +45939,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    ");
+                        ");
                 {
                     AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
                     _value3_ = AutoParameter;
@@ -45895,7 +45951,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    ");
+                        ");
             _code_.Add(_value3_.DefaultNamespace);
             }
                 }
@@ -45926,7 +45982,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"/**/.");
             _code_.Add(_value2_.InputParameterTypeName);
             _code_.Add(@"
-                    {");
+                        {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value3_;
                     _value3_ = _value2_.InputParameters;
@@ -45938,7 +45994,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value4_ in _value3_)
                         {
             _code_.Add(@"
-                        ");
+                            ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value5_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value5_ = _value4_.Parameter;
@@ -45950,7 +46006,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        ");
+                            ");
             _code_.Add(_value5_.ParameterName);
             }
                 }
@@ -45976,10 +46032,10 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                    };");
+                        };");
             }
             _code_.Add(@"
-                    ");
+                        ");
                 {
                     AutoCSer.CodeGenerator.ProjectParameter _value3_ = default(AutoCSer.CodeGenerator.ProjectParameter);
                     _value3_ = AutoParameter;
@@ -45991,7 +46047,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                    ");
+                        ");
             _code_.Add(_value3_.DefaultNamespace);
             }
                 }
@@ -46010,7 +46066,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             {
             _code_.Add(@", ref _inputParameter_");
             }
-            _code_.Add(@");");
+            _code_.Add(@");
+                    }");
             }
             _code_.Add(@"
                 }");
@@ -50101,6 +50158,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _if_ = false;
+                    if (_value3_.IsClientSendOnly != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
                     if (_value3_.IsClientWaitConnected)
                     {
                         _if_ = true;
@@ -50108,7 +50172,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        if (!");
+                        if (");
                 {
                     AutoCSer.CodeGenerator.ProjectParameter _value4_ = default(AutoCSer.CodeGenerator.ProjectParameter);
                     _value4_ = AutoParameter;
@@ -50128,17 +50192,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(ClientPart);
             _code_.Add(@"/**/.");
             _code_.Add(ServerName);
-            _code_.Add(@"/**/.WaitConnected.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
+            _code_.Add(@"/**/.WaitConnected.WaitConnected())");
             }
-            _if_ = false;
-                    if (_value3_.IsClientSendOnly != 0)
-                    {
-                        _if_ = true;
-                }
-            if (_if_)
-            {
             _code_.Add(@"
-                        ");
+                        {
+                            ");
                 {
                     AutoCSer.CodeGenerator.ProjectParameter _value4_ = default(AutoCSer.CodeGenerator.ProjectParameter);
                     _value4_ = AutoParameter;
@@ -50150,7 +50208,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                        ");
+                            ");
             _code_.Add(_value4_.DefaultNamespace);
             }
                 }
@@ -50181,7 +50239,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"/**/.");
             _code_.Add(_value3_.InputParameterTypeName);
             _code_.Add(@"
-                        {");
+                            {");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameterPair[] _value4_;
                     _value4_ = _value3_.InputParameters;
@@ -50193,7 +50251,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         foreach (AutoCSer.CodeGenerator.Metadata.MethodParameterPair _value5_ in _value4_)
                         {
             _code_.Add(@"
-                            ");
+                                ");
                 {
                     AutoCSer.CodeGenerator.Metadata.MethodParameter _value6_ = default(AutoCSer.CodeGenerator.Metadata.MethodParameter);
                     _value6_ = _value5_.Parameter;
@@ -50205,7 +50263,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                            ");
+                                ");
             _code_.Add(_value6_.ParameterName);
             }
                 }
@@ -50231,8 +50289,48 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
             _code_.Add(@"
-                        };
-                        ");
+                            };
+                            ");
+                {
+                    AutoCSer.CodeGenerator.ProjectParameter _value4_ = default(AutoCSer.CodeGenerator.ProjectParameter);
+                    _value4_ = AutoParameter;
+            _if_ = false;
+                    if (_value4_ != null)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                            ");
+            _code_.Add(_value4_.DefaultNamespace);
+            }
+                }
+            _code_.Add(@".");
+            _code_.Add(ClientPart);
+            _code_.Add(@"/**/.");
+            _code_.Add(ServerName);
+            _code_.Add(@"/**/.TcpClient.Sender.CallOnly(");
+            _code_.Add(_value3_.StaticMethodIdentityCommand);
+            _code_.Add(@", ref _sendOnlyInputParameter_);
+                        }");
+            }
+            _if_ = false;
+                if (_value3_.IsClientSendOnly == 0)
+                {
+                    _if_ = true;
+                }
+            if (_if_)
+            {
+            _if_ = false;
+                    if (_value3_.IsClientWaitConnected)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@"
+                        if (!");
                 {
                     AutoCSer.CodeGenerator.ProjectParameter _value4_ = default(AutoCSer.CodeGenerator.ProjectParameter);
                     _value4_ = AutoParameter;
@@ -50252,17 +50350,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(ClientPart);
             _code_.Add(@"/**/.");
             _code_.Add(ServerName);
-            _code_.Add(@"/**/.TcpClient.Sender.CallOnly(");
-            _code_.Add(_value3_.StaticMethodIdentityCommand);
-            _code_.Add(@", ref _sendOnlyInputParameter_);");
+            _code_.Add(@"/**/.WaitConnected.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());");
             }
-            _if_ = false;
-                if (_value3_.IsClientSendOnly == 0)
-                {
-                    _if_ = true;
-                }
-            if (_if_)
-            {
             _code_.Add(@"
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
@@ -52141,7 +52230,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 }");
             }
             _code_.Add(@"
-                public override void Call()
+                public override void RunTask()
                 {");
             _if_ = false;
                     if (_value2_.IsAsynchronousCallback)
@@ -53098,7 +53187,7 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             if (_if_)
             {
             _code_.Add(@"
-                WaitConnected = TcpClient.CreateWaitConnected(config.ServerAttribute.GetClientWaitConnectedMilliseconds, config.WaitConnectedOnCheckSocketVersion);");
+                WaitConnected = TcpClient.CreateWaitConnected(config.WaitConnectedOnCheckSocketVersion);");
             }
             _if_ = false;
                 if (!(bool)IsCreateClientWaitConnected)

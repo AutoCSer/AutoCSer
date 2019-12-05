@@ -91,7 +91,7 @@ namespace AutoCSer.Example.TcpRegisterClient
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
                         if (Sender.IsSocket)

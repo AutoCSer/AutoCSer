@@ -69,7 +69,7 @@ namespace AutoCSer.Net.TcpOpenServer
                 ClientCreator.CommandClient.AddLog(error);
             }
             CloseFree();
-            disposeCommandPool();
+            disposeCommandPoolTimeout();
         }
         /// <summary>
         /// 版本有效性检测

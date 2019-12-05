@@ -96,20 +96,21 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         /// <summary>
         /// 回调
         /// </summary>
-        /// <returns></returns>
+        /// <param name="next"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal Buffer Callback()
+        internal void Callback(ref Buffer next)
         {
             FreeBuffer();
-            return callback();
+            callback(ref next);
         }
         /// <summary>
         /// 回调
         /// </summary>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private Buffer callback()
+        private void callback(ref Buffer next)
         {
+            next = LinkNext;
+            LinkNext = null;
             if (onReturn != null)
             {
                 ReturnParameter returnParameter = new ReturnParameter();
@@ -117,7 +118,6 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
                 onReturn.Callback(returnParameter);
                 onReturn = null;
             }
-            return LinkNext;
         }
 
         /// <summary>
@@ -127,9 +127,7 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Append(ref Buffer next)
         {
-            next = LinkNext;
-            LinkNext = null;
-            callback();
+            callback(ref next);
             Node.Append(this);
         }
     }

@@ -8,6 +8,7 @@ using System.Reflection;
 using AutoCSer.Extension;
 using System.Diagnostics;
 using AutoCSer.Net.TcpInternalServer;
+using System.Text.RegularExpressions;
 
 namespace AutoCSer.Deploy
 {
@@ -770,6 +771,35 @@ namespace AutoCSer.Deploy
             using (EventWaitHandle processWait = new EventWaitHandle(false, EventResetMode.ManualReset, Name ?? GetProcessEventWaitHandleName()))
             {
                 processWait.Set();
+            }
+        }
+        /// <summary>
+        /// 获取备份文件夹名称
+        /// </summary>
+        /// <param name="indetity"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static string GetBakDirectoryName(ref IndexIdentity indetity)
+        {
+            return Date.NowTime.Set().ToString("yyyyMMddHHmmss_" + indetity.Index.toString() + "_" + indetity.Identity.toString());
+        }
+        /// <summary>
+        /// 备份文件夹名称正则表达式
+        /// </summary>
+        private static readonly Regex BakDirectoryNameRegex = new Regex(@"^\d{14}_\d+_\d+$", RegexOptions.Compiled);
+        /// <summary>
+        /// 备份文件夹根目录
+        /// </summary>
+        public static readonly DirectoryInfo BootBakDirectory = new DirectoryInfo("A").Parent;
+        /// <summary>
+        /// 清理备份文件夹
+        /// </summary>
+        /// <param name="DeleteTime"></param>
+        public static void DeleteBakDirectory(DateTime DeleteTime)
+        {
+            foreach (DirectoryInfo Directory in BootBakDirectory.GetDirectories())
+            {
+                if (Directory.CreationTimeUtc < DeleteTime && BakDirectoryNameRegex.IsMatch(Directory.Name)) Directory.Delete(true);
             }
         }
     }

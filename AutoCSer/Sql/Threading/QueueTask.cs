@@ -6,30 +6,15 @@ namespace AutoCSer.Sql.Threading
     /// <summary>
     /// SQL 队列任务
     /// </summary>
-    public abstract class QueueTask : AutoCSer.Threading.Link<QueueTask>
+    public abstract class QueueTask : AutoCSer.Threading.TaskLinkNode<QueueTask>
     {
-        /// <summary>
-        /// 运行任务
-        /// </summary>
-        internal abstract void RunTask();
-        /// <summary>
-        /// 运行任务
-        /// </summary>
-        /// <param name="next">下一个 SQL 队列任务</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void RunTask(ref QueueTask next)
-        {
-            next = LinkNext;
-            LinkNext = null;
-            RunTask();
-        }
         /// <summary>
         /// 添加任务
         /// </summary>
         /// <param name="action"></param>
         public static void Add(Action action)
         {
-            if (action != null) TaskQueue.Background.Add(new QueueTaskAction { Action = action });
+            if (action != null) new QueueTaskAction { Action = action }.AddBackgroundQueueTaskLinkThread();
         }
         /// <summary>
         /// 添加任务
@@ -48,7 +33,32 @@ namespace AutoCSer.Sql.Threading
         /// <param name="parameter">参数</param>
         public static void Add<parameterType>(Action<parameterType> action, ref parameterType parameter)
         {
-            if (action != null) TaskQueue.Background.Add(new QueueTaskAction<parameterType> { Action = action, Parameter = parameter });
+            if (action != null) new QueueTaskAction<parameterType> { Action = action, Parameter = parameter }.AddBackgroundQueueTaskLinkThread();
         }
+
+        /// <summary>
+        /// 添加 SQL 队列任务
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void AddQueueTaskLinkThread()
+        {
+            queueTaskLinkThread.Add(this);
+        }
+        /// <summary>
+        /// 添加 SQL 队列任务
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void AddBackgroundQueueTaskLinkThread()
+        {
+            backgroundQueueTaskLinkThread.Add(this);
+        }
+        /// <summary>
+        /// SQL 队列处理
+        /// </summary>
+        private static readonly AutoCSer.Threading.QueueTaskLinkThread<QueueTask> queueTaskLinkThread = new AutoCSer.Threading.QueueTaskLinkThread<QueueTask>(false);
+        /// <summary>
+        /// SQL 队列处理
+        /// </summary>
+        private static readonly AutoCSer.Threading.QueueTaskLinkThread<QueueTask> backgroundQueueTaskLinkThread = new AutoCSer.Threading.QueueTaskLinkThread<QueueTask>(true);
     }
 }

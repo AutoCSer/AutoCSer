@@ -20,9 +20,9 @@ namespace AutoCSer.CacheServer.Cache.MessageQueue.QueueTaskThread
             this.head = head;
         }
         /// <summary>
-        /// 读取任务操作
+        /// 添加数据任务操作
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             Buffer value = head;
             do

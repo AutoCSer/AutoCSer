@@ -154,7 +154,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -791,7 +791,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 sealed class _s9 : AutoCSer.Net.TcpInternalServer.ServerCall<_s9, AutoCSer.Deploy.Server>
                 {
                     internal AutoCSer.Net.TcpServer.ServerCallback<byte[]> AsynchronousCallback;
-                    public override void Call()
+                    public override void RunTask()
                     {
                         
                         serverValue.customPush(Sender, AsynchronousCallback);
@@ -819,7 +819,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p15> value = new AutoCSer.Net.TcpServer.ReturnValue<_p15>();
                         if (Sender.IsSocket)
@@ -854,7 +854,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p19> value = new AutoCSer.Net.TcpServer.ReturnValue<_p19>();
                         if (Sender.IsSocket)

@@ -763,7 +763,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         if (Sender.IsSocket)
@@ -1042,7 +1042,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         if (Sender.IsSocket)
@@ -1356,7 +1356,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
                         if (Sender.IsSocket)
@@ -1388,7 +1388,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
                         if (Sender.IsSocket)
@@ -1418,7 +1418,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -1875,7 +1875,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         if (Sender.IsSocket)
@@ -2197,7 +2197,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
                         if (Sender.IsSocket)
@@ -2229,7 +2229,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
                         if (Sender.IsSocket)
@@ -2259,7 +2259,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -2291,7 +2291,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p1> value = new AutoCSer.Net.TcpServer.ReturnValue<_p1>();
                         if (Sender.IsSocket)
@@ -2321,7 +2321,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)
@@ -2657,7 +2657,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         if (Sender.IsSocket)
@@ -2879,7 +2879,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket) get(ref value);
@@ -2940,14 +2940,16 @@ namespace AutoCSer.Example.TcpInternalServer
                 public 
                 void SetSum(int left, int right)
                 {
-                    TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
                     {
-                        
-                        p0 = left,
-                        
-                        p1 = right,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c0, ref _inputParameter_);
+                        TcpInternalServer._p1 _inputParameter_ = new TcpInternalServer._p1
+                        {
+                            
+                            p0 = left,
+                            
+                            p1 = right,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c0, ref _inputParameter_);
+                    }
                 }
 
                 static TcpInternalClient()
@@ -3049,7 +3051,7 @@ namespace AutoCSer.Example.TcpInternalServer
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
                         if (Sender.IsSocket)

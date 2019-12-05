@@ -50,7 +50,7 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 搜索树字典获取数据
         /// </summary>
-        public override void Call()
+        public override void RunTask()
         {
             ReturnParameter returnParameter = default(ReturnParameter);
             try

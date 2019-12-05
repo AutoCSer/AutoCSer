@@ -39,7 +39,7 @@ namespace AutoCSer.Threading
             WaitHandle.Set(0);
             threadHandle = new System.Threading.Thread(run, AutoCSer.Threading.ThreadPool.TinyStackSize);
             if (isBackground) threadHandle.IsBackground = true;
-            if(isStart) threadHandle.Start();
+            if (isStart) threadHandle.Start();
         }
         /// <summary>
         /// 任务线程处理

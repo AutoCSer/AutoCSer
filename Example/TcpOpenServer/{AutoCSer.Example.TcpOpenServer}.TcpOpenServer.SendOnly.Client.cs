@@ -64,14 +64,16 @@ namespace AutoCSer.Example.TcpOpenServer.TcpClient
                 [System.Runtime.CompilerServices.MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
                 public void SetSum(int left, int right)
                 {
-                    TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
                     {
-                        
-                        left = left,
-                        
-                        right = right,
-                    };
-                    _TcpClient_.Sender.CallOnly(_c0, ref _inputParameter_);
+                        TcpOpenServer._p1 _inputParameter_ = new TcpOpenServer._p1
+                        {
+                            
+                            left = left,
+                            
+                            right = right,
+                        };
+                        _TcpClient_.Sender.CallOnly(_c0, ref _inputParameter_);
+                    }
                 }
 
                 static TcpOpenClient()

@@ -87,7 +87,6 @@
     <Compile Include="Cache\Lock\QueueTaskThread\Enter.cs" />
     <Compile Include="Cache\Lock\QueueTaskThread\Exit.cs" />
     <Compile Include="Cache\Lock\QueueTaskThread\Node.cs" />
-    <Compile Include="Cache\Lock\QueueTaskThread\Thread.cs" />
     <Compile Include="Cache\Lock\QueueTaskThread\TryEnter.cs" />
     <Compile Include="Cache\MessageQueue\DistributionConfig.cs" />
     <Compile Include="Cache\MessageQueue\DistributionFileReader.cs" />
@@ -121,7 +120,6 @@
     <Compile Include="Cache\MessageQueue\QueueTaskThread\GetIdentity.cs" />
     <Compile Include="Cache\MessageQueue\QueueTaskThread\Node.cs" />
     <Compile Include="Cache\MessageQueue\QueueTaskThread\SetIdentity.cs" />
-    <Compile Include="Cache\MessageQueue\QueueTaskThread\Thread.cs" />
     <Compile Include="Cache\MessageQueue\Consumers.cs" />
     <Compile Include="Cache\NodeInfo.cs" />
     <Compile Include="Cache\Value\Binary.cs" />

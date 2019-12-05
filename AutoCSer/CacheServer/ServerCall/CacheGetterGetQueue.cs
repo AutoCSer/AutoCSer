@@ -23,7 +23,7 @@ namespace AutoCSer.CacheServer.ServerCall
         /// <summary>
         /// 获取缓存操作队列
         /// </summary>
-        public override void Call()
+        public override void RunTask()
         {
             getter.GetQueue();
         }

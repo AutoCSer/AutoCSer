@@ -15,7 +15,7 @@ namespace AutoCSer.CacheServer.Cache.Lock.QueueTaskThread
         /// <summary>
         /// 释放锁节点
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             Lock.Dispose();
         }

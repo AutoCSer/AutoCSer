@@ -6,7 +6,9 @@ namespace AutoCSer.Threading
     /// <summary>
     /// 任务队列
     /// </summary>
-    public sealed class TaskQueue : IDisposable
+    /// <typeparam name="taskType">任务节点类型</typeparam>
+    public class TaskQueue<taskType> : IDisposable
+        where taskType : TaskLinkNode<taskType>
     {
         /// <summary>
         /// 等待事件
@@ -19,11 +21,11 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 队列头部
         /// </summary>
-        private TaskQueueNode head;
+        private taskType head;
         /// <summary>
         /// 队列尾部
         /// </summary>
-        private TaskQueueNode end;
+        private taskType end;
         /// <summary>
         /// 弹出节点访问锁
         /// </summary>
@@ -55,7 +57,7 @@ namespace AutoCSer.Threading
         /// 添加任务
         /// </summary>
         /// <param name="value"></param>
-        public void Add(TaskQueueNode value)
+        public void Add(taskType value)
         {
             if (value.LinkNext != null) throw new InvalidOperationException();
 
@@ -75,6 +77,14 @@ namespace AutoCSer.Threading
             }
         }
         /// <summary>
+        /// 添加任务队列链表
+        /// </summary>
+        /// <param name="link"></param>
+        public virtual void Add(TaskQueueLink<taskType> link)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
         /// TCP 服务器端同步调用任务处理
         /// </summary>
         private void run()
@@ -83,7 +93,7 @@ namespace AutoCSer.Threading
             {
                 waitHandle.Wait();
                 while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                TaskQueueNode value = head;
+                taskType value = head;
                 end = null;
                 head = null;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
@@ -115,9 +125,9 @@ namespace AutoCSer.Threading
         /// 创建任务队列链表
         /// </summary>
         /// <returns></returns>
-        public TaskQueueLink CreateLink()
+        public TaskQueueLink<taskType> CreateLink()
         {
-            return new TaskQueueLink(this);
+            return new TaskQueueLink<taskType>(this);
         }
     }
 }

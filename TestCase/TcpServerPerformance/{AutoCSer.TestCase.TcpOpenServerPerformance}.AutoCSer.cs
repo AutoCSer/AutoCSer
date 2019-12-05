@@ -253,7 +253,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -287,7 +287,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -320,7 +320,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -353,7 +353,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
                         if (Sender.IsSocket)
@@ -383,7 +383,7 @@ namespace AutoCSer.TestCase.TcpOpenServerPerformance
                             Sender.AddLog(error);
                         }
                     }
-                    public override void Call()
+                    public override void RunTask()
                     {
                         AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
                         if (Sender.IsSocket)

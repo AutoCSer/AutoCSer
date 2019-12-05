@@ -405,6 +405,7 @@
     <Compile Include="NET2.0\Stopwatch.cs" />
     <Compile Include="NET2.0\TcpServerMethodAttribute.cs" />
     <Compile Include="NET2.0\Type.cs" />
+    <Compile Include="NET2.0\WaitHandle.cs" />
     <Compile Include="Net\BufferIndex.cs" />
     <Compile Include="Net\HostPort.cs" />
     <Compile Include="Net\Http\HeaderName.cs" />
@@ -694,6 +695,8 @@
     <Compile Include="Threading\LockLastDictionary.cs" />
     <Compile Include="Threading\Pub.cs" />
     <Compile Include="Threading\QueueTaskThread.cs" />
+    <Compile Include="Threading\QueueTaskLinkThread.cs" />
+    <Compile Include="Threading\TaskLinkNode.cs" />
     <Compile Include="Threading\RingPool.cs" />
     <Compile Include="Threading\Thread.cs" />
     <Compile Include="Threading\ThreadPool.cs" />
@@ -703,6 +706,7 @@
     <Compile Include="Threading\TimerTask.cs" />
     <Compile Include="Threading\TimerTaskInfo.cs" />
     <Compile Include="Threading\TimerTaskThreadType.cs" />
+    <Compile Include="Threading\TimestampTaskLinkNode.cs" />
     <Compile Include="Threading\UnionType.cs" />
     <Compile Include="Threading\WaitHandle.cs" />
     <Compile Include="TimeoutCount.cs" />

@@ -396,7 +396,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
                         Sender.AddLog(error);
                     }
                 }
-                public override void Call()
+                public override void RunTask()
                 {
                     AutoCSer.Net.TcpServer.ReturnValue<_p6> value = new AutoCSer.Net.TcpServer.ReturnValue<_p6>();
                     if (Sender.IsSocket)

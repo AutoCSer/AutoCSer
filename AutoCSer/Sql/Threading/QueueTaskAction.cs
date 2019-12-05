@@ -15,7 +15,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             Action();
         }
@@ -37,7 +37,7 @@ namespace AutoCSer.Sql.Threading
         /// <summary>
         /// 运行任务
         /// </summary>
-        internal override void RunTask()
+        public override void RunTask()
         {
             Action(Parameter);
         }

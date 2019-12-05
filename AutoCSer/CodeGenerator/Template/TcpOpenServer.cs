@@ -307,7 +307,7 @@ namespace AutoCSer.CodeGenerator.Template
                         }
                     }
                     #endregion NOT IsAsynchronousCallback
-                    public override void Call()
+                    public override void RunTask()
                     {
                         #region IF IsAsynchronousCallback
                         #region IF MethodIsReturn
@@ -464,7 +464,7 @@ namespace AutoCSer.CodeGenerator.Template
                     }
                     _TcpClient_ = new AutoCSer.Net.TcpOpenServer.Client<TcpOpenClient>(this, attribute, @MaxTimeoutSeconds, onCustomData, log, clientRoute/*IF:OpenClientRouteType*/ ?? new @OpenClientRouteType()/*IF:OpenClientRouteType*//*IF:IsVerifyMethod*/, verifyMethod/*IF:IsTimeVerify*/ ?? (Func<TcpOpenClient, AutoCSer.Net.TcpOpenServer.ClientSocketSender, bool>)_timerVerify_/*IF:IsTimeVerify*//*IF:IsVerifyMethod*/);
                     #region IF IsCreateClientWaitConnected
-                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(attribute.GetClientWaitConnectedMilliseconds, waitConnectedOnCheckSocketVersion);
+                    _WaitConnected_ = _TcpClient_.CreateWaitConnected(waitConnectedOnCheckSocketVersion);
                     #endregion IF IsCreateClientWaitConnected
                     #region NOT IsCreateClientWaitConnected
                     if (attribute.IsAutoClient) _TcpClient_.TryCreateSocket();
@@ -511,18 +511,20 @@ namespace AutoCSer.CodeGenerator.Template
                     #endregion IF Attribute.IsExpired
                     #region NOT Attribute.IsExpired
                     #region IF IsClientWaitConnected
-                    if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
+                    if (_WaitConnected_.WaitConnected())
                     #endregion IF IsClientWaitConnected
-                    #region IF InputParameterIndex
-                    TcpOpenServer.@InputParameterTypeName _inputParameter_ = new TcpOpenServer.@InputParameterTypeName
                     {
-                        #region LOOP InputParameters
-                        /*PUSH:Parameter*/
-                        @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
-                        #endregion LOOP InputParameters
-                    };
-                    #endregion IF InputParameterIndex
-                    _TcpClient_.Sender.CallOnly(@MethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                        #region IF InputParameterIndex
+                        TcpOpenServer.@InputParameterTypeName _inputParameter_ = new TcpOpenServer.@InputParameterTypeName
+                        {
+                            #region LOOP InputParameters
+                            /*PUSH:Parameter*/
+                            @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
+                            #endregion LOOP InputParameters
+                        };
+                        #endregion IF InputParameterIndex
+                        _TcpClient_.Sender.CallOnly(@MethodIdentityCommand/*IF:InputParameterIndex*/, ref _inputParameter_/*IF:InputParameterIndex*/);
+                    }
                     #endregion NOT Attribute.IsExpired
                 }
                 #endregion IF IsClientSendOnly
@@ -976,20 +978,25 @@ namespace AutoCSer.CodeGenerator.Template
                         throw new Exception(AutoCSer.Net.TcpServer.ReturnType.VersionExpired.ToString());
                         #endregion IF Attribute.IsExpired
                         #region NOT Attribute.IsExpired
+                        #region IF IsClientSendOnly
+                        #region IF IsClientWaitConnected
+                        if (_WaitConnected_.WaitConnected())
+                        #endregion IF IsClientWaitConnected
+                        {
+                            TcpOpenServer.@InputParameterTypeName _sendOnlyInputParameter_ = new TcpOpenServer.@InputParameterTypeName
+                            {
+                                #region LOOP InputParameters
+                                /*PUSH:Parameter*/
+                                @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
+                                #endregion LOOP InputParameters
+                            };
+                            _TcpClient_.Sender.CallOnly(@MethodIdentityCommand, ref _sendOnlyInputParameter_);
+                        }
+                        #endregion IF IsClientSendOnly
+                        #region NOT IsClientSendOnly
                         #region IF IsClientWaitConnected
                         if (!_WaitConnected_.WaitConnected()) throw new Exception(AutoCSer.Net.TcpServer.ReturnType.WaitConnectedTimeout.ToString());
                         #endregion IF IsClientWaitConnected
-                        #region IF IsClientSendOnly
-                        TcpOpenServer.@InputParameterTypeName _sendOnlyInputParameter_ = new TcpOpenServer.@InputParameterTypeName
-                        {
-                            #region LOOP InputParameters
-                            /*PUSH:Parameter*/
-                            @ParameterName/*PUSH:Parameter*/ = /*NOTE*/(FullName)(object)/*NOTE*//*PUSH:MethodParameter*/@ParameterName/*PUSH:MethodParameter*/,
-                            #endregion LOOP InputParameters
-                        };
-                        _TcpClient_.Sender.CallOnly(@MethodIdentityCommand, ref _sendOnlyInputParameter_);
-                        #endregion IF IsClientSendOnly
-                        #region NOT IsClientSendOnly
                         AutoCSer.Net.TcpServer.AutoWaitReturnValue _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue.Pop();
                         try
                         {

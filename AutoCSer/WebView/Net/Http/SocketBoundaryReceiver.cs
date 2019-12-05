@@ -467,7 +467,7 @@ namespace AutoCSer.Net.Http
         /// 执行任务
         /// </summary>
         /// <param name="next"></param>
-        public void SingleRunLinkTask(ref AutoCSer.Threading.ILinkTask next)
+        public void RunTask(ref AutoCSer.Threading.ILinkTask next)
         {
             next = NextLinkTask;
             NextLinkTask = null;
