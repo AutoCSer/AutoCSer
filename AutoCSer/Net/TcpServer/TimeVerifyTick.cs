@@ -27,20 +27,20 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 检测当前时间戳
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="ticks"></param>
+        /// <param name="senderTimeVerifyTicks"></param>
         /// <returns></returns>
-        public bool Check(ServerSocketSenderBase sender, ref long ticks)
+        public bool Check(ref long ticks, ref long senderTimeVerifyTicks)
         {
-            if (ticks <= lastVerifyTicks && ticks != sender.TimeVerifyTicks)
+            if (ticks <= lastVerifyTicks && ticks != senderTimeVerifyTicks)
             {
-                if (sender.TimeVerifyTicks == 0)
+                if (senderTimeVerifyTicks == 0)
                 {
                     while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
-                    sender.TimeVerifyTicks = ++lastVerifyTicks;
+                    senderTimeVerifyTicks = ++lastVerifyTicks;
                     System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
                 }
-                ticks = sender.TimeVerifyTicks;
+                ticks = senderTimeVerifyTicks;
                 return false;
             }
             return true;

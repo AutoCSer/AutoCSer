@@ -14,13 +14,14 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务类型</param>
+        /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public async Task AddTaskAsync(Action task, TcpServer.ServerTaskType taskType)
+        public async Task AddTaskAsync(Action task, TcpServer.ServerTaskType taskType, byte callQueueIndex = 0)
         {
             if (task != null)
             {
                 CustomTaskAsyncServerCall serverCall = new CustomTaskAsyncServerCall(this, task);
-                if (addTask(serverCall, taskType)) await serverCall;
+                if (addTask(serverCall, taskType, callQueueIndex)) await serverCall;
             }
         }
     }

@@ -127,11 +127,7 @@ namespace AutoCSer.Net
         {
             if (Interlocked.CompareExchange(ref Socket, null, socket) == socket)
             {
-#if DotNetStandard
                 AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
-#else
-                socket.Dispose();
-#endif
             }
         }
         /// <summary>
@@ -142,14 +138,7 @@ namespace AutoCSer.Net
         {
             Socket socket = Socket;
             Socket = null;
-            if (socket != null)
-            {
-#if DotNetStandard
-                AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
-#else
-                socket.Dispose();
-#endif
-            }
+            if (socket != null) AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
         }
         ///// <summary>
         ///// 释放套接字

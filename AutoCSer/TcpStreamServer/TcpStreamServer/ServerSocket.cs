@@ -30,7 +30,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
         internal ServerSocket(serverType server)
-            : base(server.BinaryDeSerializeConfig, server.CallQueue, AutoCSer.Net.TcpServer.Server.DefaultVerifyMethodCount)
+            : base(server.BinaryDeSerializeConfig, server.CallQueueArray, server.CallQueue, server.CallQueueLink, AutoCSer.Net.TcpServer.Server.DefaultVerifyMethodCount)
         {
             Server = server;
         }

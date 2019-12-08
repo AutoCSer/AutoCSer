@@ -38,7 +38,7 @@ namespace AutoCSer.Net.TcpStreamServer
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
         internal Server(TcpServer.ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log)
-            : base(attribute, verify, log, false, false)
+            : base(attribute, verify, log, 0, false, false)
         {
         }
         /// <summary>

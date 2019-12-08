@@ -26,7 +26,6 @@ namespace AutoCSer.Net.RawSocketListener
         /// </summary>
         private Socket socket;
 #if DOTNET2
-
         /// <summary>
         /// 接收数据异步回调
         /// </summary>
@@ -36,6 +35,10 @@ namespace AutoCSer.Net.RawSocketListener
         /// </summary>
         private SocketError socketError;
 #else
+        /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        private readonly EventHandler<SocketAsyncEventArgs> onReceiveAsyncCallback;
         /// <summary>
         /// 异步套接字操作
         /// </summary>
@@ -103,12 +106,11 @@ namespace AutoCSer.Net.RawSocketListener
             maxBufferIndex = BufferPool.Size - packetSize;
             this.log = log ?? AutoCSer.Log.Pub.Log;
             ipEndPoint = new IPEndPoint(ipAddress, 0);
-#if DOTNET2
             onReceiveAsyncCallback = onReceive;
-#else
+#if !DOTNET2
             async = AutoCSer.Net.SocketAsyncEventArgsPool.Get();
             async.UserToken = this;
-            async.Completed += onReceive;
+            async.Completed += onReceiveAsyncCallback;
 #endif
             queueTask = new QueueTask(onPacket, this.log);
             AutoCSer.Threading.ThreadPool.TinyBackground.FastStart(start);
@@ -129,11 +131,7 @@ namespace AutoCSer.Net.RawSocketListener
         {
             if (socket != null)
             {
-#if DotNetStandard
-                AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(socket);
-#else
-                socket.Dispose();
-#endif
+                AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(socket);
                 socket = null;
             }
         }
@@ -151,7 +149,7 @@ namespace AutoCSer.Net.RawSocketListener
 #if !DOTNET2
             if (async != null)
             {
-                async.Completed -= onReceive;
+                async.Completed -= onReceiveAsyncCallback;
                 AutoCSer.Net.SocketAsyncEventArgsPool.PushNotNull(ref async);
             }
 #endif

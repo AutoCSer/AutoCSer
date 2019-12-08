@@ -21,7 +21,9 @@ namespace AutoCSer.CodeGenerator.Template
         private const ushort MaxTimeoutSeconds = 0;
         private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
         private const AutoCSer.Net.TcpServer.ClientTaskType ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.Timeout;
-        private const bool IsCallQueue = false;
+        private const int CallQueueCount = 0;
+        private const byte CallQueueIndex = 0;
+        private const bool IsCallQueueLink = false;
         private const bool IsSynchronousVerifyMethod = false;
         private static Type.FullName GetRemoteMethodName(MemberType.FullName MemberName) { return null; }
         #endregion NOTE
@@ -680,7 +682,7 @@ namespace AutoCSer.CodeGenerator.Template
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public @ServerName(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:ServerCallQueueType*/, @ServerCallQueueType.FullName serverCallQueue = null/*IF:ServerCallQueueType*/, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, /*IF:ServerCallQueueType*/serverCallQueue ?? new @ServerCallQueueType.FullName()/*IF:ServerCallQueueType*//*NOTE*/ ?? /*NOTE*//*NOT:ServerCallQueueType*/null/*NOT:ServerCallQueueType*/, onCustomData, log, @IsCallQueue, @IsSynchronousVerifyMethod)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("@ServerRegisterName"/*IF:TcpServerAttributeType*/, typeof(@TcpServerAttributeType)/*IF:TcpServerAttributeType*/, true)), verify, /*IF:ServerCallQueueType*/serverCallQueue ?? new @ServerCallQueueType.FullName()/*IF:ServerCallQueueType*//*NOTE*/ ?? /*NOTE*//*NOT:ServerCallQueueType*/null/*NOT:ServerCallQueueType*/, onCustomData, log, @CallQueueCount, @IsCallQueueLink, @IsSynchronousVerifyMethod)
             {
                 setCommandData(@MethodIndexs.Length);
                 #region LOOP MethodIndexs
@@ -744,7 +746,7 @@ namespace AutoCSer.CodeGenerator.Template
                                 serverCall.Set(sender, @QueueName/**/.Get(sender, ref inputParameter./*PUSH:ServerCallQueueKeyParameter*/@ParameterName/*PUSH:ServerCallQueueKeyParameter*/)/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                 #endregion PUSH QueueType
                                 #region NOT QueueType
-                                serverCall.Set(sender, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                serverCall.Set(sender, @ServerTask/*IF:CallQueueIndex*/, @CallQueueIndex/*IF:CallQueueIndex*//*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                 #endregion NOT QueueType
                                 #endregion IF IsMethodServerCall
                                 #region NOT IsMethodServerCall
@@ -762,7 +764,7 @@ namespace AutoCSer.CodeGenerator.Template
                                 (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, @QueueName/**/.Get(sender, ref inputParameter./*PUSH:ServerCallQueueKeyParameter*/@ParameterName/*PUSH:ServerCallQueueKeyParameter*/)/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                 #endregion PUSH QueueType
                                 #region NOT QueueType
-                                (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, @ServerTask/*IF:CallQueueIndex*/, @CallQueueIndex/*IF:CallQueueIndex*//*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                 #endregion NOT QueueType
                                 #endregion IF IsMethodServerCall
                                 #region NOT IsMethodServerCall

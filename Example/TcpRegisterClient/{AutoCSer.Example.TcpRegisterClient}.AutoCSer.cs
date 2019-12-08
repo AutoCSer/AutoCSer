@@ -33,7 +33,7 @@ namespace AutoCSer.Example.TcpRegisterClient
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("ITestServer", typeof(AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("ITestServer", typeof(AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value = value ?? new AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer();
                     setCommandData(1);

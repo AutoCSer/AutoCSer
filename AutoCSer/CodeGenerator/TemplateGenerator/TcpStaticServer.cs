@@ -875,8 +875,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                             methods.Length = 0;
                             methodIndexs = TcpMethod.CheckIdentity(methodIndexs, null, getRememberIdentityName(), method => method.Method.MethodKeyFullName);
                             if (methodIndexs == null) return;
-                            int index = 0;
-                            IsVerifyMethod = IsCallQueue = false;
+                            int index = CallQueueCount = 0;
+                            IsVerifyMethod = false;
+                            IsCallQueueLink = ServiceAttribute.GetRemoteExpressionServerTask == Net.TcpServer.ServerTaskType.QueueLink;
+                            if (ServiceAttribute.GetRemoteExpressionServerTask == Net.TcpServer.ServerTaskType.Queue || ServiceAttribute.GetRemoteExpressionServerTask == Net.TcpServer.ServerTaskType.QueueLink)
+                            {
+                                CallQueueCount = (int)ServiceAttribute.GetRemoteExpressionCallQueueIndex + 1;
+                            }
                             parameterBuilder.Clear(ServiceAttribute.IsSimpleSerialize);
                             QueueTypeBuilder queueTypeBuilder = new QueueTypeBuilder();
                             foreach (TcpMethod method in methodIndexs)
@@ -896,7 +901,11 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                     parameterBuilder.Add(method);
                                     queueTypeBuilder.Add(method);
 
-                                    IsCallQueue |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue;
+                                    IsCallQueueLink |= method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.QueueLink;
+                                    if (method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.Queue || method.Attribute.ServerTaskType == Net.TcpServer.ServerTaskType.QueueLink)
+                                    {
+                                        CallQueueCount = Math.Max((int)method.Attribute.GetServerQueueIndex + 1, CallQueueCount);
+                                    }
                                     MaxTimeoutSeconds = Math.Max(MaxTimeoutSeconds, method.Attribute.GetClientTimeoutSeconds);
 
                                     //if (method.IsAsynchronousCallback && method.Attribute.ServerTaskType != Net.TcpServer.ServerTaskType.Synchronous)

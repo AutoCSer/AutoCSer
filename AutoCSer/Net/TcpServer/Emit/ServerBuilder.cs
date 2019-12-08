@@ -45,21 +45,24 @@ namespace AutoCSer.Net.TcpServer.Emit
                 ConstructorBuilder constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, constructorParameterTypes);
                 ILGenerator constructorGenerator = constructorBuilder.GetILGenerator();
                 Label serverAttributeNotNull = constructorGenerator.DefineLabel();
-                bool isCallQueue = false, isSynchronousVerifyMethod = false, isVerifyMethod = false;
+                int callQueueCount = 0;
+                bool isSynchronousVerifyMethod = false, isCallQueueLink = attribute.GetRemoteExpressionServerTask == Net.TcpServer.ServerTaskType.QueueLink;
+                if (attribute.GetRemoteExpressionServerTask == Net.TcpServer.ServerTaskType.Queue || attribute.GetRemoteExpressionServerTask == Net.TcpServer.ServerTaskType.QueueLink)
+                {
+                    callQueueCount = (int)attribute.GetRemoteExpressionCallQueueIndex + 1;
+                }
                 foreach (Method<attributeType, methodAttributeType, serverSocketSenderType> method in methods)
                 {
                     if (method != null)
                     {
-                        if (method.Attribute.ServerTaskType == ServerTaskType.Queue)
+                        isCallQueueLink |= method.Attribute.ServerTaskType == ServerTaskType.QueueLink;
+                        if (method.Attribute.ServerTaskType == ServerTaskType.Queue || method.Attribute.ServerTaskType == ServerTaskType.QueueLink)
                         {
-                            isCallQueue = true;
-                            if (isVerifyMethod) break;
+                            callQueueCount = Math.Max((int)method.Attribute.GetServerQueueIndex + 1, callQueueCount);
                         }
                         if (method.Attribute.IsVerifyMethod)
                         {
-                            isVerifyMethod = true;
                             if (method.Attribute.ServerTaskType == ServerTaskType.Synchronous && !method.IsAsynchronousCallback) isSynchronousVerifyMethod = true;
-                            if (isCallQueue) break;
                         }
                     }
                 }
@@ -70,7 +73,8 @@ namespace AutoCSer.Net.TcpServer.Emit
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 4);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 5);
                 constructorGenerator.Emit(OpCodes.Ldarg_S, 6);
-                constructorGenerator.int32(isCallQueue ? 1 : 0);
+                constructorGenerator.int32(callQueueCount);
+                constructorGenerator.int32(isCallQueueLink ? 1 : 0);
                 constructorGenerator.int32(isSynchronousVerifyMethod ? 1 : 0);
                 constructorGenerator.Emit(OpCodes.Call, Metadata.ServerConstructorInfo);
                 #endregion
@@ -537,11 +541,16 @@ namespace AutoCSer.Net.TcpServer.Emit
                                     if (method.ServerCallQueue == null)
                                     {
                                         methodGenerator.int32((byte)method.ServerTask);
-                                        if (method.ParameterType == null) methodGenerator.call(Metadata.ServerCallCallMethod);
+                                        byte callQueueIndex = method.CallQueueIndex;
+                                        if (callQueueIndex != 0) methodGenerator.int32(callQueueIndex);
+                                        if (method.ParameterType == null)
+                                        {
+                                            methodGenerator.call(callQueueIndex == 0 ? Metadata.ServerCallCallMethod : Metadata.ServerCallCallQueueMethod);
+                                        }
                                         else
                                         {
                                             methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                            methodGenerator.call(serverCallTypeBuilder.GetMethod("CallEmit", BindingFlags.Instance | BindingFlags.Public));
+                                            methodGenerator.call(serverCallTypeBuilder.GetMethod(callQueueIndex == 0 ? "CallEmit" : "CallQueueEmit", BindingFlags.Instance | BindingFlags.Public));
                                         }
                                     }
                                     else
@@ -616,14 +625,16 @@ namespace AutoCSer.Net.TcpServer.Emit
                                 if (method.ServerCallQueue == null)
                                 {
                                     methodGenerator.int32((byte)method.ServerTask);
+                                    byte callQueueIndex = method.CallQueueIndex;
+                                    if (callQueueIndex != 0) methodGenerator.int32(callQueueIndex);
                                     if (method.ParameterType == null)
                                     {
-                                        methodGenerator.call(Metadata.ServerCallCallMethod);
+                                        methodGenerator.call(callQueueIndex == 0 ? Metadata.ServerCallCallMethod : Metadata.ServerCallCallQueueMethod);
                                     }
                                     else
                                     {
                                         methodGenerator.Emit(OpCodes.Ldloca_S, parameterLocalBuilder);
-                                        methodGenerator.call(serverCallTypeBuilder.GetMethod("CallEmit", BindingFlags.Instance | BindingFlags.Public));
+                                        methodGenerator.call(serverCallTypeBuilder.GetMethod(callQueueIndex == 0 ? "CallEmit" : "CallQueueEmit", BindingFlags.Instance | BindingFlags.Public));
                                     }
                                 }
                                 else

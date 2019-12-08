@@ -284,6 +284,22 @@ namespace AutoCSer.Net.TcpServer.Emit
             }
         }
         /// <summary>
+        /// 独占 TCP 服务器端同步调用队列编号
+        /// </summary>
+        internal byte CallQueueIndex
+        {
+            get
+            {
+                switch(Attribute.ServerTaskType)
+                {
+                    case ServerTaskType.Queue:
+                    case ServerTaskType.QueueLink:
+                        return Attribute.GetServerQueueIndex;
+                }
+                return 0;
+            }
+        }
+        /// <summary>
         /// 是否定义服务器端调用
         /// </summary>
         internal bool IsMethodServerCall

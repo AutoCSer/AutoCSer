@@ -263,8 +263,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                         methods.Length = 0;
                         methodIndexs = TcpMethod.CheckIdentity(methodIndexs, null, getRememberIdentityName(), method => method.Method.MethodKeyFullName);
                         if (methodIndexs == null) return;
-                        int index = 0;
-                        IsVerifyMethod = IsCallQueue = false;
+                        int index = CallQueueCount = 0;
+                        IsVerifyMethod = IsCallQueueLink = false;
                         parameterBuilder.Clear(ServiceAttribute.IsSimpleSerialize);
                         foreach (TcpMethod method in methodIndexs)
                         {

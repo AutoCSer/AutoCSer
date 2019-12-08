@@ -41,13 +41,16 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 ClientCreator.CommandClient.SocketWait.Reset();
                 ClientSocket socket = new ClientSocket(this);
                 ClientCreator.CreateSocket = socket;
-                if (ClientCreator.CommandClient.IsDisposed != 0) socket.DisposeSocket();
+                if (ClientCreator.CommandClient.IsDisposed == 0) return;
+                socket.DisposeSocket();
             }
+            ClientCreator.CommandClient.SocketWait.Set();
+
         }
         /// <summary>
         /// 释放接收数据缓冲区与异步事件对象
         /// </summary>
-        private void close()
+        protected override void close()
         {
             isClose = true;
             try
@@ -58,7 +61,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 if (receiveAsyncEventArgs == null) DisposeSocket();
                 else
                 {
-                    receiveAsyncEventArgs.Completed -= onReceive;
+                    receiveAsyncEventArgs.Completed -= onReceiveAsyncCallback;
                     DisposeSocket();
                     SocketAsyncEventArgsPool.PushNotNull(ref receiveAsyncEventArgs);
                 }
@@ -69,17 +72,6 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 ClientCreator.CommandClient.AddLog(error);
             }
             CloseFree();
-        }
-        /// <summary>
-        /// 版本有效性检测
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private int checkCreate()
-        {
-            if ((ClientCreator.CommandClient.IsDisposed | (CreateVersion ^ ClientCreator.CreateVersion)) == 0) return 1;
-            close();
-            return 0;
         }
         /// <summary>
         /// 创建 TCP 服务客户端套接字
@@ -95,7 +87,6 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 {
                     isSleep = false;
                     Thread.Sleep(ClientCreator.CommandClient.FristTryCreateSleep);
-                    if (checkCreate() == 0) return;
                 }
                 try
                 {
@@ -106,13 +97,12 @@ namespace AutoCSer.Net.TcpInternalStreamServer
 #endif
                     Socket.Connect(ipAddress, port);
                     if (checkCreate() == 0) return;
-#if DOTNET2
                     if (onReceiveAsyncCallback == null) onReceiveAsyncCallback = onReceive;
-#else
+#if !DOTNET2
                     if (receiveAsyncEventArgs == null)
                     {
                         receiveAsyncEventArgs = SocketAsyncEventArgsPool.Get();
-                        receiveAsyncEventArgs.Completed += onReceive;
+                        receiveAsyncEventArgs.Completed += onReceiveAsyncCallback;
                     }
 #endif
                     if (ReceiveBuffer.Buffer == null) ClientCreator.CommandClient.ReceiveBufferPool.Get(ref ReceiveBuffer);
@@ -146,16 +136,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                                 return;
                             }
                         }
-                        if (Socket != null)
-                        {
-#if DotNetStandard
-                            AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
-#else
-                            Socket.Dispose();
-#endif
-                            Socket = null;
-                        }
-                        ClientCreator.CommandClient.SocketWait.PulseReset();
+                        VerifyMethodSleep();
                         return;
                     }
                 }
@@ -167,8 +148,11 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                         ClientCreator.CommandClient.Log.Add(AutoCSer.Log.LogType.Debug, error, ClientCreator.Attribute.ServerName + " 客户端 TCP 连接失败 " + ipAddress.ToString() + ":" + port.toString());
                     }
                 }
-                ClientCreator.CommandClient.SocketWait.PulseReset();
-                if (isReceiveAsync) return;
+                if (isReceiveAsync)
+                {
+                    VerifyMethodSleep();
+                    return;
+                }
                 CreateSleep();
             }
             while (true);
@@ -225,11 +209,14 @@ namespace AutoCSer.Net.TcpInternalStreamServer
             }
             if (CheckCreateVersion())
             {
-                //Console.WriteLine("... CreateNew ...");
                 close();
                 CreateNew();
             }
-            else close();
+            else
+            {
+                close();
+                if (CreateVersion == ClientCreator.CreateVersion) ClientCreator.CommandClient.SocketWait.Set();
+            }
             freeCommandQueue();
         }
     }

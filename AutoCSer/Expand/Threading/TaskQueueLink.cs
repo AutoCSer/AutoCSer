@@ -3,7 +3,7 @@
 namespace AutoCSer.Threading
 {
     /// <summary>
-    /// 任务队列链表，用户低优先级任务
+    /// 任务队列链表，用于低优先级任务
     /// </summary>
     /// <typeparam name="taskType">任务节点类型</typeparam>
     public sealed class TaskQueueLink<taskType>

@@ -28,8 +28,41 @@ namespace AutoCSer.Net.TcpStaticServer
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
+                case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
                 case TcpServer.ServerTaskType.Queue: socket.Server.CallQueue.Add(this); return;
+                case TcpServer.ServerTaskType.QueueLink: socket.Server.CallQueueLink.Add(this); return;
             }
+        }
+        /// <summary>
+        /// 设置参数
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="taskType"></param>
+        /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Set(TcpInternalServer.ServerSocketSender socket, TcpServer.ServerTaskType taskType, byte callQueueIndex)
+        {
+            this.Sender = socket;
+            CommandIndex = socket.ServerSocket.CommandIndex;
+            //CommandFlags = CommandIdentity.GetCommandFlags();
+            switch (taskType)
+            {
+                case TcpServer.ServerTaskType.Queue: socket.Server.CallQueueArray[callQueueIndex].Key.Add(this); return;
+                case TcpServer.ServerTaskType.QueueLink: socket.Server.CallQueueArray[callQueueIndex].Value.Add(this); return;
+            }
+        }
+        /// <summary>
+        /// 设置参数
+        /// </summary>
+        /// <param name="sender">套接字</param>
+        /// <param name="queue">自定义队列</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Set(TcpInternalServer.ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallQueue queue)
+        {
+            this.Sender = sender;
+            CommandIndex = sender.ServerSocket.CommandIndex;
+            //CommandFlags = CommandIdentity.GetCommandFlags();
+            queue.Add(this);
         }
         /// <summary>
         /// 获取服务器端调用
@@ -82,7 +115,29 @@ namespace AutoCSer.Net.TcpStaticServer
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
+                case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
                 case TcpServer.ServerTaskType.Queue: sender.Server.CallQueue.Add(this); return;
+                case TcpServer.ServerTaskType.QueueLink: sender.Server.CallQueueLink.Add(this); return;
+            }
+        }
+        /// <summary>
+        /// 设置参数
+        /// </summary>
+        /// <param name="sender">套接字</param>
+        /// <param name="taskType"></param>
+        /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
+        /// <param name="inputParameter">输入参数</param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public void Set(TcpInternalServer.ServerSocketSender sender, TcpServer.ServerTaskType taskType, byte callQueueIndex, ref inputParameterType inputParameter)
+        {
+            this.Sender = sender;
+            CommandIndex = sender.ServerSocket.CommandIndex;
+            //CommandFlags = CommandIdentity.GetCommandFlags();
+            this.inputParameter = inputParameter;
+            switch (taskType)
+            {
+                case TcpServer.ServerTaskType.Queue: sender.Server.CallQueueArray[callQueueIndex].Key.Add(this); return;
+                case TcpServer.ServerTaskType.QueueLink: sender.Server.CallQueueArray[callQueueIndex].Value.Add(this); return;
             }
         }
         /// <summary>

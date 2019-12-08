@@ -191,8 +191,9 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="serverCall">TCP 服务器端同步调用任务</param>
         /// <param name="taskType">任务类型</param>
+        /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <returns>是否添加成功</returns>
-        private bool addTask(ServerCall serverCall, TcpServer.ServerTaskType taskType)
+        private bool addTask(ServerCall serverCall, TcpServer.ServerTaskType taskType, byte callQueueIndex)
         {
             switch (taskType)
             {
@@ -200,7 +201,15 @@ namespace AutoCSer.Net.TcpServer
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(serverCall); return true;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(serverCall); return true;
-                case TcpServer.ServerTaskType.Queue: ServerSocket.CallQueue.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(serverCall); return true;
+                case TcpServer.ServerTaskType.Queue:
+                    if (callQueueIndex == 0) ServerSocket.CallQueue.Add(serverCall);
+                    else ServerSocket.CallQueueArray[callQueueIndex].Key.Add(serverCall);
+                    return true;
+                case TcpServer.ServerTaskType.QueueLink:
+                    if (callQueueIndex == 0) ServerSocket.CallQueueLink.Add(serverCall);
+                    else ServerSocket.CallQueueArray[callQueueIndex].Value.Add(serverCall);
+                    return true;
             }
             return false;
         }
@@ -209,26 +218,28 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务类型</param>
+        /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <returns>是否添加成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool AddTask(Action task, TcpServer.ServerTaskType taskType)
+        public bool AddTask(Action task, TcpServer.ServerTaskType taskType, byte callQueueIndex = 0)
         {
-            return task != null && addTask(new CustomServerCall { Sender = this, Task = task }, taskType);
+            return task != null && addTask(new CustomServerCall { Sender = this, Task = task }, taskType, callQueueIndex);
         }
         /// <summary>
         /// 添加自定义 TCP 服务器端同步调用任务
         /// </summary>
         /// <param name="task">任务委托</param>
         /// <param name="taskType">任务类型</param>
+        /// <param name="callQueueIndex">独占 TCP 服务器端同步调用队列编号</param>
         /// <returns>是否添加成功</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public bool AddWaitTask(Action task, TcpServer.ServerTaskType taskType)
+        public bool AddWaitTask(Action task, TcpServer.ServerTaskType taskType, byte callQueueIndex = 0)
         {
             if (task != null)
             {
                 CustomWaitServerCall serverCall = new CustomWaitServerCall { Sender = this, Task = task };
                 serverCall.Wait.Set(0);
-                if (addTask(serverCall, taskType))
+                if (addTask(serverCall, taskType, callQueueIndex))
                 {
                     serverCall.Wait.Wait();
                     return true;

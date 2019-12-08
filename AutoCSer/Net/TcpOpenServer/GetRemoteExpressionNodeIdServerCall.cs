@@ -20,21 +20,29 @@ namespace AutoCSer.Net.TcpOpenServer
         /// 设置参数
         /// </summary>
         /// <param name="sender">套接字</param>
-        /// <param name="taskType"></param>
+        /// <param name="attribute"></param>
         /// <param name="inputParameter">输入参数</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Set(ServerSocketSender sender, TcpServer.ServerTaskType taskType, RemoteType[] inputParameter)
+        internal void Set(ServerSocketSender sender, ref TcpServer.ServerAttributeCache attribute, RemoteType[] inputParameter)
         {
             this.Sender = sender;
             CommandIndex = sender.ServerSocket.CommandIndex;
             this.inputParameter = inputParameter;
-            switch (taskType)
+            switch (attribute.RemoteExpressionTask)
             {
                 case TcpServer.ServerTaskType.ThreadPool: if (!System.Threading.ThreadPool.QueueUserWorkItem(ThreadPoolCall)) AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.Timeout: AutoCSer.Threading.LinkTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpTask: TcpServer.ServerCallTask.Task.Add(this); return;
                 case TcpServer.ServerTaskType.TcpQueue: TcpServer.ServerCallQueue.Default.Add(this); return;
-                case TcpServer.ServerTaskType.Queue: sender.Server.CallQueue.Add(this); return;
+                case TcpServer.ServerTaskType.TcpQueueLink: TcpServer.ServerCallQueue.DefaultLink.Add(this); return;
+                case TcpServer.ServerTaskType.Queue:
+                    if (attribute.RemoteExpressionCallQueueIndex == 0) sender.Server.CallQueue.Add(this);
+                    else sender.Server.CallQueueArray[attribute.RemoteExpressionCallQueueIndex].Key.Add(this);
+                    return;
+                case TcpServer.ServerTaskType.QueueLink:
+                    if (attribute.RemoteExpressionCallQueueIndex == 0) sender.Server.CallQueueLink.Add(this);
+                    else sender.Server.CallQueueArray[attribute.RemoteExpressionCallQueueIndex].Value.Add(this);
+                    return;
             }
         }
         /// <summary>

@@ -40,6 +40,10 @@ namespace AutoCSer.Net.TcpServer
         protected AsyncCallback onReceiveAsyncCallback;
 #else
         /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        protected EventHandler<SocketAsyncEventArgs> onReceiveAsyncCallback;
+        /// <summary>
         /// 接收数据套接字异步事件对象
         /// </summary>
         protected SocketAsyncEventArgs receiveAsyncEventArgs;
@@ -201,7 +205,7 @@ namespace AutoCSer.Net.TcpServer
             if (socket != null)
             {
                 ClientCreator.OnDisposeSocket(this);
-                AutoCSer.Net.TcpServer.CommandBuffer.CloseClientNotNull(socket);
+                AutoCSer.Net.TcpServer.CommandBuffer.ShutdownClient(socket);
             }
         }
         /// <summary>
@@ -259,29 +263,51 @@ namespace AutoCSer.Net.TcpServer
         /// <summary>
         /// 创建 TCP 服务客户端套接字失败休眠
         /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void CreateSleep()
         {
-            //ClientCreator.CommandClient.SocketWait.PulseReset();
-            //Thread.Sleep(0);
-            //CommandClient.SocketWait.Reset();
+            ClientCreator.CommandClient.SocketWait.PulseReset();
             if (Socket != null)
             {
-                //try
-                //{
-                //    Socket.Shutdown(SocketShutdown.Both);
-                //}
-                //catch { AutoCSer.Log.CatchCount.Add(AutoCSer.Log.CatchCount.Type.TcpClientSocket_Dispose); }
-                //finally { Socket.Dispose(); }
-#if DotNetStandard
-                AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
-#else
-                Socket.Dispose();
-#endif
+                AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
                 Socket = null;
             }
             Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
         }
+        /// <summary>
+        /// 验证失败休眠
+        /// </summary>
+        internal void VerifyMethodSleep()
+        {
+            if (CreateVersion == ClientCreator.CreateVersion)
+            {
+                ClientCreator.CommandClient.SocketWait.PulseReset();
+                Thread.Sleep(ClientCreator.CommandClient.TryCreateSleep);
+            }
+            if (Socket != null)
+            {
+                AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
+                Socket = null;
+            }
+        }
+        /// <summary>
+        /// 版本有效性检测
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        protected int checkCreate()
+        {
+            if (ClientCreator.CommandClient.IsDisposed == 0)
+            {
+                if (CreateVersion == ClientCreator.CreateVersion) return 1;
+            }
+            close();
+            if (CreateVersion == ClientCreator.CreateVersion) ClientCreator.CommandClient.SocketWait.Set();
+            return 0;
+        }
+        /// <summary>
+        /// 关闭客户端
+        /// </summary>
+        protected abstract void close();
         /// <summary>
         /// 重置心跳检测
         /// </summary>

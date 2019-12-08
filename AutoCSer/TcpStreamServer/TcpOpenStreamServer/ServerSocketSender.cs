@@ -18,6 +18,10 @@ namespace AutoCSer.Net.TcpOpenStreamServer
         private AsyncCallback onSendAsyncCallback;
 #else
         /// <summary>
+        /// 发送数据异步回调
+        /// </summary>
+        private EventHandler<SocketAsyncEventArgs> onSendAsyncCallback;
+        /// <summary>
         /// 发送数据异步事件
         /// </summary>
         private SocketAsyncEventArgs sendAsyncEventArgs;
@@ -71,7 +75,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                     if (sendAsyncEventArgs == null) ServerSocket.DisposeSocket();
                     else
                     {
-                        sendAsyncEventArgs.Completed -= onSend;
+                        sendAsyncEventArgs.Completed -= onSendAsyncCallback;
                         ServerSocket.DisposeSocket();
                         SocketAsyncEventArgsPool.PushNotNull(ref sendAsyncEventArgs);
                     }
@@ -105,7 +109,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
 #else
                     if (sendAsyncEventArgs != null)
                     {
-                        sendAsyncEventArgs.Completed -= onSend;
+                        sendAsyncEventArgs.Completed -= onSendAsyncCallback;
                         ServerSocket.DisposeSocket();
                         SocketAsyncEventArgsPool.PushNotNull(ref sendAsyncEventArgs);
                     }
@@ -252,16 +256,16 @@ namespace AutoCSer.Net.TcpOpenStreamServer
 #endif
             if (IsSocket)
             {
+                if (onSendAsyncCallback == null) onSendAsyncCallback = onSend;
 #if DOTNET2
                 SocketError socketError;
-                if (onSendAsyncCallback == null) onSendAsyncCallback = onSend;
                 Socket.BeginSend(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError, onSendAsyncCallback, Socket);
                 if (socketError == SocketError.Success) return TcpOpenServer.SendState.Asynchronous;
 #else
                 if (sendAsyncEventArgs == null)
                 {
                     sendAsyncEventArgs = SocketAsyncEventArgsPool.Get();
-                    sendAsyncEventArgs.Completed += onSend;
+                    sendAsyncEventArgs.Completed += onSendAsyncCallback;
                 }
 #if !DotNetStandard
                 while (Interlocked.CompareExchange(ref sendAsyncLock, 1, 0) != 0) Thread.Sleep(0);

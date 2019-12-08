@@ -3,13 +3,14 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using AutoCSer.Threading;
 
 namespace AutoCSer.Net.TcpServer
 {
     /// <summary>
     /// TCP 服务器端同步调用队列处理
     /// </summary>
-    public class ServerCallQueue : AutoCSer.Threading.QueueTaskThread<ServerCallBase>
+    public class ServerCallQueue : AutoCSer.Threading.QueueTaskLinkThread<ServerCallBase>
     {
         /// <summary>
         /// TCP 服务器端同步调用队列处理
@@ -23,91 +24,51 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="isBackground">是否后台线程</param>
         public ServerCallQueue(bool isBackground = true) : this(isBackground, true) { }
         /// <summary>
-        /// 添加任务
+        /// 低优先级任务节点
         /// </summary>
-        /// <param name="value"></param>
-        internal void Add(ServerCallBase value)
+        internal sealed class ServerCallLink : ServerCallBase
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-            if (head == null)
+            /// <summary>
+            /// 低优先级任务队列链表
+            /// </summary>
+            private readonly LowPriorityLink link;
+            /// <summary>
+            /// 低优先级任务节点
+            /// </summary>
+            /// <param name="link">低优先级任务队列链表</param>
+            internal ServerCallLink(LowPriorityLink link)
             {
-                end = value;
-                head = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                WaitHandle.Set();
+                this.link = link;
             }
-            else
+            /// <summary>
+            /// 执行任务
+            /// </summary>
+            public override void RunTask()
             {
-                end.LinkNext = value;
-                end = value;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                link.RunTask();
             }
         }
         /// <summary>
-        /// 添加任务
+        /// 添加低优先级任务队列链表
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        internal bool CheckAdd(ServerCallBase value)
+        /// <param name="link"></param>
+        internal override void Add(LowPriorityLink link)
         {
-            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-            if (value.LinkNext == null && value != end)
-            {
-                if (head == null)
-                {
-                    end = value;
-                    head = value;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                    WaitHandle.Set();
-                }
-                else
-                {
-                    end.LinkNext = value;
-                    end = value;
-                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                }
-                return true;
-            }
-            System.Threading.Interlocked.Exchange(ref queueLock, 0);
-            return false;
-        }
-        /// <summary>
-        /// TCP 服务器端同步调用任务处理
-        /// </summary>
-        protected override void run()
-        {
-            do
-            {
-                WaitHandle.Wait();
-                while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                ServerCallBase value = head;
-                end = null;
-                head = null;
-                System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                do
-                {
-                    try
-                    {
-                        do
-                        {
-                            value.RunTask(ref value);
-                        }
-                        while (value != null);
-                        break;
-                    }
-                    catch (Exception error)
-                    {
-                        AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
-                    }
-                }
-                while (value != null);
-            }
-            while (true);
+            Add(new ServerCallLink(link));
         }
 
         /// <summary>
         /// TCP 服务器端同步调用队列处理
         /// </summary>
-        internal static readonly ServerCallQueue Default = new ServerCallQueue();
+        internal static readonly ServerCallQueue Default;
+        /// <summary>
+        /// TCP 服务器端同步调用低优先级队列处理
+        /// </summary>
+        internal static readonly LowPriorityLink DefaultLink;
+        static ServerCallQueue()
+        {
+            Default = new ServerCallQueue();
+            DefaultLink = Default.CreateLink();
+        }
     }
 }

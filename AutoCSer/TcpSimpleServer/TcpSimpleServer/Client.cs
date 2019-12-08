@@ -315,7 +315,7 @@ namespace AutoCSer.Net.TcpSimpleServer
         {
             if (Socket != null)
             {
-                AutoCSer.Net.TcpServer.CommandBuffer.CloseClientNotNull(Socket);
+                AutoCSer.Net.TcpServer.CommandBuffer.ShutdownClient(Socket);
                 Socket = null;
             }
         }

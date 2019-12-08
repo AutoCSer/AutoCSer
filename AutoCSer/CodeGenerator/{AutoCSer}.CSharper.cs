@@ -11329,7 +11329,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"null");
             }
             _code_.Add(@", onCustomData, log, ");
-            _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(CallQueueCount.ToString());
+            _code_.Add(@", ");
+            _code_.Add(IsCallQueueLink ? "true" : "false");
             _code_.Add(@", ");
             _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
@@ -11937,6 +11939,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.MethodStreamName);
             _code_.Add(@"()).Set(sender, Value, ");
             _code_.Add(_value2_.ServerTask);
+            _if_ = false;
+                    if (_value2_.CallQueueIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value2_.CallQueueIndex.ToString());
+            }
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {
@@ -28369,7 +28381,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"null");
             }
             _code_.Add(@", onCustomData, log, ");
-            _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(CallQueueCount.ToString());
+            _code_.Add(@", ");
+            _code_.Add(IsCallQueueLink ? "true" : "false");
             _code_.Add(@", ");
             _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
@@ -28977,6 +28991,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.MethodStreamName);
             _code_.Add(@"()).Set(sender, Value, ");
             _code_.Add(_value2_.ServerTask);
+            _if_ = false;
+                    if (_value2_.CallQueueIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value2_.CallQueueIndex.ToString());
+            }
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {
@@ -50714,7 +50738,9 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(@"null");
             }
             _code_.Add(@", onCustomData, log, ");
-            _code_.Add(IsCallQueue ? "true" : "false");
+            _code_.Add(CallQueueCount.ToString());
+            _code_.Add(@", ");
+            _code_.Add(IsCallQueueLink ? "true" : "false");
             _code_.Add(@", ");
             _code_.Add(IsSynchronousVerifyMethod ? "true" : "false");
             _code_.Add(@")
@@ -51039,6 +51065,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                                 serverCall.Set(sender, ");
             _code_.Add(_value2_.ServerTask);
             _if_ = false;
+                    if (_value2_.CallQueueIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value2_.CallQueueIndex.ToString());
+            }
+            _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {
                         _if_ = true;
@@ -51269,6 +51305,16 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
             _code_.Add(_value2_.MethodStreamName);
             _code_.Add(@"()).Set(sender, ");
             _code_.Add(_value2_.ServerTask);
+            _if_ = false;
+                    if (_value2_.CallQueueIndex != 0)
+                    {
+                        _if_ = true;
+                }
+            if (_if_)
+            {
+            _code_.Add(@", ");
+            _code_.Add(_value2_.CallQueueIndex.ToString());
+            }
             _if_ = false;
                     if (_value2_.InputParameterIndex != 0)
                     {

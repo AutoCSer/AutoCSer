@@ -28,6 +28,14 @@ namespace AutoCSer.Net.Http
         private AsyncCallback onSendAsyncCallback;
 #else
         /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        private EventHandler<SocketAsyncEventArgs> onReceiveAsyncCallback;
+        /// <summary>
+        /// 发送数据异步回调
+        /// </summary>
+        private EventHandler<SocketAsyncEventArgs> onSendAsyncCallback;
+        /// <summary>
         /// 接收数据套接字异步事件对象
         /// </summary>
         private SocketAsyncEventArgs receiveAsyncEventArgs;
@@ -54,14 +62,13 @@ namespace AutoCSer.Net.Http
         internal Socket()
         {
             HttpHeader = Header = new SocketHeader(this);
-#if DOTNET2
             onReceiveAsyncCallback = onReceive;
             onSendAsyncCallback = onSend;
-#else
+#if !DOTNET2
             receiveAsyncEventArgs = SocketAsyncEventArgsPool.Get();
             sendAsyncEventArgs = SocketAsyncEventArgsPool.Get();
-            receiveAsyncEventArgs.Completed += onReceive;
-            sendAsyncEventArgs.Completed += onSend;
+            receiveAsyncEventArgs.Completed += onReceiveAsyncCallback;
+            sendAsyncEventArgs.Completed += onSendAsyncCallback;
 #endif
         }
         /// <summary>
@@ -89,8 +96,8 @@ namespace AutoCSer.Net.Http
 #if DOTNET2
                 onReceiveAsyncCallback = onSendAsyncCallback = null;
 #else
-                receiveAsyncEventArgs.Completed -= onReceive;
-                sendAsyncEventArgs.Completed -= onSend;
+                receiveAsyncEventArgs.Completed -= onReceiveAsyncCallback;
+                sendAsyncEventArgs.Completed -= onSendAsyncCallback;
                 SocketAsyncEventArgsPool.PushNotNull(ref receiveAsyncEventArgs);
                 SocketAsyncEventArgsPool.PushNotNull(ref sendAsyncEventArgs);
 #endif

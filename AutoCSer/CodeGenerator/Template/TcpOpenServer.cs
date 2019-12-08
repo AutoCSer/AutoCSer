@@ -29,7 +29,9 @@ namespace AutoCSer.CodeGenerator.Template
             private const int OutputParameterIndex = 0;
             private const ushort TimeoutSeconds = 0;
             private const ushort MaxTimeoutSeconds = 0;
-            private const bool IsCallQueue = false;
+            private const int CallQueueCount = 0;
+            private const byte CallQueueIndex = 0;
+            private const bool IsCallQueueLink = false;
             private const bool IsSynchronousVerifyMethod = false;
             public void SetTcpServer(AutoCSer.Net.TcpOpenServer.Server commandServer) { }
             #endregion NOTE
@@ -77,7 +79,7 @@ namespace AutoCSer.CodeGenerator.Template
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpOpenServer(AutoCSer.Net.TcpOpenServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null/*IF:Type.Type.IsPublic*/, @Type.FullName value = null/*IF:Type.Type.IsPublic*//*IF:ServerCallQueueType*/, @ServerCallQueueType.FullName serverCallQueue = null/*IF:ServerCallQueueType*/, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, /*IF:ServerCallQueueType*/serverCallQueue ?? new @ServerCallQueueType.FullName()/*IF:ServerCallQueueType*//*NOTE*/ ?? /*NOTE*//*NOT:ServerCallQueueType*/null/*NOT:ServerCallQueueType*/, onCustomData, log, @IsCallQueue, @IsSynchronousVerifyMethod)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpOpenServer.ServerAttribute.GetConfig("@ServerRegisterName", typeof(@Type.FullName))), verify, /*IF:ServerCallQueueType*/serverCallQueue ?? new @ServerCallQueueType.FullName()/*IF:ServerCallQueueType*//*NOTE*/ ?? /*NOTE*//*NOT:ServerCallQueueType*/null/*NOT:ServerCallQueueType*/, onCustomData, log, @CallQueueCount, @IsCallQueueLink, @IsSynchronousVerifyMethod)
                 {
                     Value =/*IF:Type.Type.IsPublic*/ value ?? /*IF:Type.Type.IsPublic*/new @Type.FullName();
                     setCommandData(@MethodIndexs.Length);
@@ -165,7 +167,7 @@ namespace AutoCSer.CodeGenerator.Template
                                     (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, Value, @QueueName/**/.Get(sender, ref inputParameter./*PUSH:ServerCallQueueKeyParameter*/@ParameterName/*PUSH:ServerCallQueueKeyParameter*/)/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                     #endregion PUSH QueueType
                                     #region NOT QueueType
-                                    (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, Value, @ServerTask/*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
+                                    (@MethodStreamName/**/.Pop() ?? new @MethodStreamName()).Set(sender, Value, @ServerTask/*IF:CallQueueIndex*/, @CallQueueIndex/*IF:CallQueueIndex*//*IF:InputParameterIndex*/, ref inputParameter/*IF:InputParameterIndex*/);
                                     #endregion NOT QueueType
                                     #endregion IF IsMethodServerCall
                                     #region NOT IsMethodServerCall

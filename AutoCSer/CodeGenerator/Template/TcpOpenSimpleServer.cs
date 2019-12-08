@@ -28,7 +28,6 @@ namespace AutoCSer.CodeGenerator.Template
             private const int InputParameterIndex = 0;
             private const int OutputParameterIndex = 0;
             private const ushort TimeoutSeconds = 0;
-            private const bool IsCallQueue = false;
             private const bool IsSynchronousVerifyMethod = false;
             public void SetTcpServer(AutoCSer.Net.TcpOpenSimpleServer.Server commandServer) { }
             #endregion NOTE

@@ -71,11 +71,7 @@ namespace AutoCSer.Net.Http
         {
             if (socket != null)
             {
-#if DotNetStandard
-                AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
-#else
-                socket.Dispose();
-#endif
+                AutoCSer.Net.TcpServer.CommandBase.ShutdownServer(socket);
                 socket = null;
             }
         }
@@ -199,11 +195,7 @@ namespace AutoCSer.Net.Http
         {
             if (socket != null)
             {
-#if DotNetStandard
-                AutoCSer.Net.TcpServer.CommandBase.CloseServer(socket);
-#else
-                socket.Dispose();
-#endif
+                AutoCSer.Net.TcpServer.CommandBase.ShutdownServer(socket);
                 socket = null;
             }
         }

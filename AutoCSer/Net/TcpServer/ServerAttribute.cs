@@ -17,5 +17,14 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         [AutoCSer.Metadata.Ignore]
         internal override ServerTaskType GetRemoteExpressionServerTask { get { return RemoteExpressionServerTask; } }
+        /// <summary>
+        /// 远程表达式服务器端独占 TCP 同步调用队列编号，默认为 0
+        /// </summary>
+        public byte RemoteExpressionCallQueueIndex;
+        /// <summary>
+        /// 远程表达式服务器端独占 TCP 同步调用队列编号
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override byte GetRemoteExpressionCallQueueIndex { get { return RemoteExpressionCallQueueIndex; } }
     }
 }

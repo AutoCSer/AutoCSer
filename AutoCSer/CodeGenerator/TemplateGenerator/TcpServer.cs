@@ -262,6 +262,21 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     }
                 }
                 /// <summary>
+                /// 独占 TCP 服务器端同步调用队列编号
+                /// </summary>
+                public byte CallQueueIndex
+                {
+                    get
+                    {
+                        switch (Attribute.ServerTaskType)
+                        {
+                            case AutoCSer.Net.TcpServer.ServerTaskType.Queue:
+                            case AutoCSer.Net.TcpServer.ServerTaskType.QueueLink: return Attribute.GetServerQueueIndex;
+                        }
+                        return 0;
+                    }
+                }
+                /// <summary>
                 /// 是否定义服务器端调用
                 /// </summary>
                 public virtual bool IsMethodServerCall
@@ -866,9 +881,13 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                 get { return AutoCSer.Net.TcpServer.Server.CommandStartIndex; }
             }
             /// <summary>
-            /// 是否提供独占的 TCP 服务器端同步调用队列
+            /// 独占的 TCP 服务器端同步调用队列数量
             /// </summary>
-            public bool IsCallQueue;
+            public int CallQueueCount;
+            /// <summary>
+            /// 是否提供独占的 TCP 服务器端同步调用队列（低优先级）
+            /// </summary>
+            public bool IsCallQueueLink;
             /// <summary>
             /// 仅程序集可见
             /// </summary>

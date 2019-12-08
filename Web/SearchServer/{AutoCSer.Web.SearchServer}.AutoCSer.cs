@@ -284,7 +284,7 @@ namespace AutoCSer.Web.SearchServer.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public SearchServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SearchServer", typeof(AutoCSer.Web.SearchServer.Server), true)), verify, null, onCustomData, log, false, true)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("SearchServer", typeof(AutoCSer.Web.SearchServer.Server), true)), verify, null, onCustomData, log, 0, false, true)
             {
                 setCommandData(3);
                 setCommand(0);

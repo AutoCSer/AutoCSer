@@ -20,7 +20,10 @@ namespace AutoCSer.Net.TcpInternalServer.Emit
             , ((Func<uint, AutoCSer.Net.TcpServer.ReturnType, bool>)ParameterGenericType.ServerSocketSender.PushNoThread).Method
             , ((Func<TcpServer.OutputInfo, TcpServer.ServerCallback>)ParameterGenericType.ServerSocketSender.GetCallback).Method
             , ((Func<TcpServer.OutputInfo, Func<TcpServer.ReturnValue, bool>>)ParameterGenericType.ServerSocketSender.GetCallbackEmit).Method
-            , ((Action<Exception>)ParameterGenericType.ServerSocketSender.AddLog).Method);
+            , ((Action<Exception>)ParameterGenericType.ServerSocketSender.AddLog).Method
+            , ((Action<ServerSocketSender, object, TcpServer.ServerTaskType>)ServerCall.Null.Default.Call).Method
+            , ((Action<ServerSocketSender, object, TcpServer.ServerTaskType, byte>)ServerCall.Null.Default.Call).Method
+            );
     }
     /// <summary>
     /// TCP 服务

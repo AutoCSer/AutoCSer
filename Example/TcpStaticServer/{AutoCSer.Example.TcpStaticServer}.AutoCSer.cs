@@ -2318,7 +2318,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public Example1(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example1", typeof(AutoCSer.Example.TcpStaticServer.RefOut), true)), verify, null, onCustomData, log, 0, false, false)
             {
                 setCommandData(24);
                 setCommand(0);
@@ -3840,7 +3840,7 @@ namespace AutoCSer.Example.TcpStaticServer.TcpStaticServer
             /// <param name="onCustomData">自定义数据包处理</param>
             /// <param name="log">日志接口</param>
             public Example2(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example2", typeof(AutoCSer.Example.TcpStaticServer.SendOnly), true)), verify, null, onCustomData, log, false, false)
+                : base(attribute ?? (attribute = AutoCSer.Net.TcpStaticServer.ServerAttribute.GetConfig("Example2", typeof(AutoCSer.Example.TcpStaticServer.SendOnly), true)), verify, null, onCustomData, log, 0, false, false)
             {
                 setCommandData(2);
                 setCommand(0);

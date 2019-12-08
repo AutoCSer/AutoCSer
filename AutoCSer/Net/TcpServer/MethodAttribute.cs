@@ -35,8 +35,17 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="taskType"></param>
         internal override void SetServerTaskType(ServerTaskType taskType) { ServerTask = taskType; }
         /// <summary>
-        /// 客户端异步任务类型，默认为 Timeout
+        /// 独占 TCP 服务器端同步调用队列编号，默认为 0
         /// </summary>
+        public byte ServerQueueIndex;
+        /// <summary>
+        /// 独占 TCP 服务器端同步调用队列编号
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override byte GetServerQueueIndex { get { return ServerQueueIndex; } }
+        /// <summary>
+                                                                                   /// 客户端异步任务类型，默认为 Timeout
+                                                                                   /// </summary>
         public ClientTaskType ClientTask = ClientTaskType.Timeout;
         /// <summary>
         /// 客户端异步任务类型

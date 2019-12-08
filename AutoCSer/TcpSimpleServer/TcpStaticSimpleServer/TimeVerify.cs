@@ -12,13 +12,9 @@ namespace AutoCSer.Net.TcpStaticSimpleServer
         where verifyType : TimeVerify<verifyType>
     {
         /// <summary>
-        /// 最后一次验证时间
+        /// 验证时间戳
         /// </summary>
-        private static long lastVerifyTicks = Date.NowTime.UtcNow.Ticks - 1;
-        /// <summary>
-        /// 最后一次验证时间访问锁
-        /// </summary>
-        private static int lastVerifyTickLock;
+        private static TcpServer.TimeVerifyTick timeVerifyTick = new TcpServer.TimeVerifyTick(Date.NowTime.UtcNow.Ticks - 1);
         /// <summary>
         /// 时间验证函数
         /// </summary>
@@ -34,26 +30,11 @@ namespace AutoCSer.Net.TcpStaticSimpleServer
             if (server.CheckVerifyString()) return true;
             if (md5Data != null && md5Data.Length == 16)
             {
-                if (ticks <= lastVerifyTicks && ticks != socket.TimeVerifyTicks)
-                {
-                    if (socket.TimeVerifyTicks == 0)
-                    {
-                        while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
-                        socket.TimeVerifyTicks = ++lastVerifyTicks;
-                        System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
-                    }
-                    ticks = socket.TimeVerifyTicks;
-                    return false;
-                }
+                if (!timeVerifyTick.Check(ref ticks, ref socket.TimeVerifyTicks)) return false;
                 TcpServer.ServerBaseAttribute attribute = server.Attribute;
                 if (TcpServer.TimeVerifyServer.IsMd5(TcpServer.TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
                 {
-                    if (ticks > lastVerifyTicks)
-                    {
-                        while (System.Threading.Interlocked.CompareExchange(ref lastVerifyTickLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.Yield(AutoCSer.Threading.ThreadYield.Type.TimeVerifyServerSetTicks);
-                        if (ticks > lastVerifyTicks) lastVerifyTicks = ticks;
-                        System.Threading.Interlocked.Exchange(ref lastVerifyTickLock, 0);
-                    }
+                    timeVerifyTick.Set(ticks);
                     if (attribute.IsMarkData) socket.MarkData = server.ServerAttribute.VerifyHashCode ^ randomPrefix;
                     return true;
                 }

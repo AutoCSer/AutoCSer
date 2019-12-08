@@ -343,19 +343,6 @@ namespace AutoCSer.Net.TcpServer
                 CommandPool.Array[ClientCommand.KeepCommand.MergeIndex].Command = new UnionType { Value = Sender.Outputs.Head }.ClientCommand;
                 CommandPool.Array[ClientCommand.KeepCommand.CustomDataIndex].Command = new ClientCommand.CustomDataCommand(this, ClientCommand.KeepCommand.KeepCallbackCommandInfo);
             }
-            //if (CommandPool.Array == null)
-            //{
-            //    CommandPool.Reset(1 << CommandClient.Attribute.GetCommandPoolBitSize);
-            //    object arrayLock = CommandPool.ArrayLock;
-            //    Monitor.Enter(arrayLock);
-            //    try
-            //    {
-            //        CommandPool.PoolIndex = ClientCommand.KeepCommand.CommandPoolIndex;
-            //        CommandPool.Array[ClientCommand.KeepCommand.MergeIndex].Command = Sender.Outputs.Head;
-            //        CommandPool.Array[ClientCommand.KeepCommand.CustomDataIndex].Command = new ClientCommand.CustomDataCommand(this, ClientCommand.KeepCommand.KeepCallbackCommandInfo);
-            //    }
-            //    finally { Monitor.Exit(arrayLock); }
-            //}
             return verifyMethod(ClientCreator.CommandClient);
         }
         /// <summary>

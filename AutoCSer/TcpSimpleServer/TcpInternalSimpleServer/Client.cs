@@ -109,8 +109,8 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
                 {
                     if (!isVerifyMethod) closeSocket();
                     Monitor.Exit(SocketLock);
-                    CloseClient(socket);
-                    CloseClient(oldSocket);
+                    if (socket != null) ShutdownClient(socket);
+                    if (oldSocket != null) ShutdownClient(oldSocket);
                 }
             }
         }

@@ -453,7 +453,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Asynchronous", typeof(AutoCSer.Example.TcpInternalServer.Asynchronous))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Asynchronous", typeof(AutoCSer.Example.TcpInternalServer.Asynchronous))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Asynchronous();
                     setCommandData(1);
@@ -702,7 +702,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalServer.ClientAsynchronous))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientAsynchronous", typeof(AutoCSer.Example.TcpInternalServer.ClientAsynchronous))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.ClientAsynchronous();
                     setCommandData(1);
@@ -981,7 +981,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalServer.ClientTaskAsync))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.ClientTaskAsync", typeof(AutoCSer.Example.TcpInternalServer.ClientTaskAsync))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.ClientTaskAsync();
                     setCommandData(1);
@@ -1262,7 +1262,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Field", typeof(AutoCSer.Example.TcpInternalServer.Field))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Field", typeof(AutoCSer.Example.TcpInternalServer.Field))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Field();
                     setCommandData(3);
@@ -1622,7 +1622,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.KeepCallback", typeof(AutoCSer.Example.TcpInternalServer.KeepCallback))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.KeepCallback", typeof(AutoCSer.Example.TcpInternalServer.KeepCallback))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.KeepCallback();
                     setCommandData(1);
@@ -1814,7 +1814,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalServer.NoAttribute))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.NoAttribute", typeof(AutoCSer.Example.TcpInternalServer.NoAttribute))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.NoAttribute();
                     setCommandData(1);
@@ -2063,7 +2063,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Property", typeof(AutoCSer.Example.TcpInternalServer.Property))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Property", typeof(AutoCSer.Example.TcpInternalServer.Property))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Property();
                     setCommandData(5);
@@ -2594,7 +2594,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.RefOut", typeof(AutoCSer.Example.TcpInternalServer.RefOut))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.RefOut", typeof(AutoCSer.Example.TcpInternalServer.RefOut))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.RefOut();
                     setCommandData(1);
@@ -2825,7 +2825,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.SendOnly", typeof(AutoCSer.Example.TcpInternalServer.SendOnly))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.SendOnly", typeof(AutoCSer.Example.TcpInternalServer.SendOnly))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.SendOnly();
                     setCommandData(1);
@@ -2990,7 +2990,7 @@ namespace AutoCSer.Example.TcpInternalServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Static", typeof(AutoCSer.Example.TcpInternalServer.Static))), verify, null, onCustomData, log, false, false)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("AutoCSer.Example.TcpInternalServer.Static", typeof(AutoCSer.Example.TcpInternalServer.Static))), verify, null, onCustomData, log, 0, false, false)
                 {
                     Value =new AutoCSer.Example.TcpInternalServer.Static();
                     setCommandData(1);

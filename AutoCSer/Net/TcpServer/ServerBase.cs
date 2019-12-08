@@ -36,9 +36,17 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         public int Port { get; internal set; }
         /// <summary>
+        /// TCP 服务器端同步调用队列数组
+        /// </summary>
+        internal readonly KeyValue<ServerCallCanDisposableQueue, ServerCallCanDisposableQueue.LowPriorityLink>[] CallQueueArray;
+        /// <summary>
         /// TCP 服务器端同步调用队列
         /// </summary>
         internal readonly ServerCallCanDisposableQueue CallQueue;
+        /// <summary>
+        /// TCP 服务器端同步调用队列（低优先级）
+        /// </summary>
+        internal readonly ServerCallCanDisposableQueue.LowPriorityLink CallQueueLink;
         /// <summary>
         /// 添加任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
         /// </summary>
@@ -100,13 +108,39 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="attribute">TCP服务调用配置</param>
         /// <param name="verify">获取客户端请求线程调用类型</param>
         /// <param name="log">日志接口</param>
-        /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
+        /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
+        /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
-        internal ServerBase(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
+        internal ServerBase(ServerBaseAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
             : base(attribute, attribute.GetReceiveBufferSize, attribute.GetSendBufferSize, attribute.GetServerSendBufferMaxSize, log)
         {
             this.verify = verify;
-            if (isCallQueue) CallQueue = new ServerCallCanDisposableQueue(true, Log);
+            if (callQueueCount > 0)
+            {
+                if (callQueueCount == 1)
+                {
+                    CallQueue = new ServerCallCanDisposableQueue(true, Log);
+                    if (isCallQueueLink) CallQueueLink = CallQueue.CreateLink();
+                }
+                else
+                {
+                    CallQueueArray = new KeyValue<ServerCallCanDisposableQueue, Threading.QueueTaskLinkThread<ServerCallBase>.LowPriorityLink>[Math.Min(callQueueCount, 256)];
+                    if (isCallQueueLink)
+                    {
+                        for (int index = 0; index != CallQueueArray.Length; ++index)
+                        {
+                            ServerCallCanDisposableQueue callQueue = new ServerCallCanDisposableQueue(true, Log);
+                            CallQueueArray[index].Set(callQueue, callQueue.CreateLink());
+                        }
+                        CallQueueLink = CallQueueArray[0].Value;
+                    }
+                    else
+                    {
+                        for (int index = 0; index != CallQueueArray.Length; ++index) CallQueueArray[index].Key = new ServerCallCanDisposableQueue(true, Log);
+                    }
+                    CallQueue = CallQueueArray[0].Key;
+                }
+            }
             ServerAttribute.Set(attribute);
             Port = attribute.Port;
             IpAddress = HostPort.HostToIPAddress(attribute.Host, Log);
@@ -128,7 +162,11 @@ namespace AutoCSer.Net.TcpServer
                     AutoCSer.DomainUnload.Unloader.Remove(this, DomainUnload.Type.TcpCommandBaseDispose, false);
                     StopListen();
                 }
-                if (CallQueue != null) CallQueue.Dispose();
+                if (CallQueueArray != null)
+                {
+                    foreach (KeyValue<ServerCallCanDisposableQueue, ServerCallCanDisposableQueue.LowPriorityLink> callQueue in CallQueueArray) callQueue.Key.Dispose();
+                }
+                else if (CallQueue != null) CallQueue.Dispose();
             }
         }
         /// <summary>
@@ -138,11 +176,7 @@ namespace AutoCSer.Net.TcpServer
         {
             if (Socket != null)
             {
-#if DotNetStandard
-                AutoCSer.Net.TcpServer.CommandBase.CloseServer(Socket);
-#else
-                Socket.Dispose();
-#endif
+                ShutdownServer(Socket);
                 Socket = null;
             }
             Unmanaged.Free(ref commandData);

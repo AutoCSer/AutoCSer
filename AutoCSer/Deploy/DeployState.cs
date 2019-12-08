@@ -60,5 +60,9 @@ namespace AutoCSer.Deploy
         /// 未知任务类型
         /// </summary>
         UnknownTaskType,
+        /// <summary>
+        /// 自定义任务失败
+        /// </summary>
+        CustomError,
     }
 }

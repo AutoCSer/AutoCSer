@@ -33,6 +33,10 @@ namespace AutoCSer.Net.TcpSimpleServer
         protected IAsyncResult asyncEventArgs;
 #else
         /// <summary>
+        /// 套接字异步回调
+        /// </summary>
+        protected EventHandler<SocketAsyncEventArgs> asyncCallback;
+        /// <summary>
         /// 套接字异步事件对象
         /// </summary>
         protected SocketAsyncEventArgs asyncEventArgs;

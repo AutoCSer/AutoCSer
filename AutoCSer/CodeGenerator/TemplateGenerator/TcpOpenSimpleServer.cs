@@ -129,8 +129,8 @@ namespace AutoCSer.CodeGenerator.TemplateGenerator
                     MethodIndexs = methodArray.ToArray();
                     MethodIndexs = TcpMethod.CheckIdentity(MethodIndexs, Attribute.CommandIdentityEnmuType, getRememberIdentityName(Attribute.CommandIdentityEnmuType == null ? Attribute.GenericType ?? Type : null), method => method.Method.MethodKeyFullName);
                     if (MethodIndexs == null) return;
-                    int methodIndex = 0;
-                    IsVerifyMethod = IsCallQueue = false;
+                    int methodIndex = CallQueueCount = 0;
+                    IsVerifyMethod = IsCallQueueLink = false;
                     ParameterBuilder parameterBuilder = new ParameterBuilder { IsSimpleSerialize = Attribute.IsSimpleSerialize };
                     foreach (TcpMethod method in MethodIndexs)
                     {

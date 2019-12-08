@@ -67,11 +67,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         if (this.Socket != null)
                         {
                             this.Socket = null;
-#if DotNetStandard
-                            AutoCSer.Net.TcpServer.CommandBase.CloseServer(listenSocket);
-#else
-                            listenSocket.Dispose();
-#endif
+                            ShutdownServer(listenSocket);
                         }
                         return;
                     }
@@ -128,11 +124,7 @@ namespace AutoCSer.Net.TcpOpenStreamServer
                         if (this.Socket != null)
                         {
                             this.Socket = null;
-#if DotNetStandard
-                            AutoCSer.Net.TcpServer.CommandBase.CloseServer(listenSocket);
-#else
-                            listenSocket.Dispose();
-#endif
+                            ShutdownServer(listenSocket);
                         }
                         return;
                     }

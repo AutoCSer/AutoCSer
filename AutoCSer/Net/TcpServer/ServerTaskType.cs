@@ -28,8 +28,16 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         TcpQueue,
         /// <summary>
+        /// TCP 任务队列（低优先级），适用于无阻塞的快速任务处理。
+        /// </summary>
+        TcpQueueLink,
+        /// <summary>
         /// 服务独占任务队列，适用于无阻塞的快速任务处理。
         /// </summary>
         Queue,
+        /// <summary>
+        /// 服务独占任务队列（低优先级），适用于无阻塞的快速任务处理。
+        /// </summary>
+        QueueLink,
     }
 }

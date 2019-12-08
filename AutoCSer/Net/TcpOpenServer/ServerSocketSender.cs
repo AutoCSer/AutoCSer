@@ -18,6 +18,10 @@ namespace AutoCSer.Net.TcpOpenServer
         private AsyncCallback onSendAsyncCallback;
 #else
         /// <summary>
+        /// 发送数据异步回调
+        /// </summary>
+        private EventHandler<SocketAsyncEventArgs> onSendAsyncCallback;
+        /// <summary>
         /// 发送数据异步事件
         /// </summary>
         private SocketAsyncEventArgs sendAsyncEventArgs;
@@ -136,7 +140,7 @@ namespace AutoCSer.Net.TcpOpenServer
                     if (sendAsyncEventArgs == null) ServerSocket.DisposeSocket();
                     else
                     {
-                        sendAsyncEventArgs.Completed -= onSend;
+                        sendAsyncEventArgs.Completed -= onSendAsyncCallback;
                         ServerSocket.DisposeSocket();
                         SocketAsyncEventArgsPool.PushNotNull(ref sendAsyncEventArgs);
                     }
@@ -170,7 +174,7 @@ namespace AutoCSer.Net.TcpOpenServer
 #else
                     if (sendAsyncEventArgs != null)
                     {
-                        sendAsyncEventArgs.Completed -= onSend;
+                        sendAsyncEventArgs.Completed -= onSendAsyncCallback;
                         //ServerSocket.DisposeSocket();
                         SocketAsyncEventArgsPool.PushNotNull(ref sendAsyncEventArgs);
                     }
@@ -310,16 +314,16 @@ namespace AutoCSer.Net.TcpOpenServer
 #endif
             if (IsSocket)
             {
+                if (onSendAsyncCallback == null) onSendAsyncCallback = onSend;
 #if DOTNET2
                 SocketError socketError;
-                if (onSendAsyncCallback == null) onSendAsyncCallback = onSend;
                 Socket.BeginSend(sendData.Array, sendData.Start, sendData.Length, SocketFlags.None, out socketError, onSendAsyncCallback, Socket);
                 if (socketError == SocketError.Success) return SendState.Asynchronous;
 #else
                 if (sendAsyncEventArgs == null)
                 {
                     sendAsyncEventArgs = SocketAsyncEventArgsPool.Get();
-                    sendAsyncEventArgs.Completed += onSend;
+                    sendAsyncEventArgs.Completed += onSendAsyncCallback;
                 }
 #if !DotNetStandard
                 while (Interlocked.CompareExchange(ref sendAsyncLock, 1, 0) != 0) Thread.Sleep(0);
@@ -445,7 +449,7 @@ namespace AutoCSer.Net.TcpOpenServer
                         TcpServer.ReturnValue<RemoteExpression.ServerNodeIdChecker.Output> outputParameter = new RemoteExpression.ServerNodeIdChecker.Output { Return = RemoteExpression.Node.Get(inputParameter.Types) };
                         Push<RemoteExpression.ServerNodeIdChecker.Output>(ServerSocket.CommandIndex, IsBuildOutputThread ? RemoteExpression.ServerNodeIdChecker.Output.OutputThreadInfo : RemoteExpression.ServerNodeIdChecker.Output.OutputInfo, ref outputParameter);
                     }
-                    else (AutoCSer.Threading.RingPool<GetRemoteExpressionNodeIdServerCall>.Default.Pop() ?? new GetRemoteExpressionNodeIdServerCall()).Set(this, Server.ServerAttribute.RemoteExpressionTask, inputParameter.Types);
+                    else (AutoCSer.Threading.RingPool<GetRemoteExpressionNodeIdServerCall>.Default.Pop() ?? new GetRemoteExpressionNodeIdServerCall()).Set(this, ref Server.ServerAttribute, inputParameter.Types);
                     return;
                 }
                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -474,7 +478,7 @@ namespace AutoCSer.Net.TcpOpenServer
                         TcpServer.ReturnValue<RemoteExpression.ReturnValue.Output> outputParameter = new RemoteExpression.ReturnValue.Output { Return = inputParameter.GetReturnValue() };
                         Push<RemoteExpression.ReturnValue.Output>(ServerSocket.CommandIndex, IsBuildOutputThread ? RemoteExpression.ReturnValue.Output.OutputThreadInfo : RemoteExpression.ReturnValue.Output.OutputInfo, ref outputParameter);
                     }
-                    else (AutoCSer.Threading.RingPool<GetRemoteExpressionServerCall>.Default.Pop() ?? new GetRemoteExpressionServerCall()).Set(this, Server.ServerAttribute.RemoteExpressionTask, ref inputParameter);
+                    else (AutoCSer.Threading.RingPool<GetRemoteExpressionServerCall>.Default.Pop() ?? new GetRemoteExpressionServerCall()).Set(this, ref Server.ServerAttribute, ref inputParameter);
                     return;
                 }
                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;

@@ -86,37 +86,50 @@ namespace AutoCSer.Net.TcpServer
         /// 关闭套接字
         /// </summary>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal static void CloseClient(Socket socket)
+        internal static void ShutdownClient(Socket socket)
         {
-            if (socket != null) CloseClientNotNull(socket);
+            shutdown(socket, CatchCount.Type.TcpServerClientSocket_Dispose);
         }
         /// <summary>
         /// 关闭套接字
         /// </summary>
-        internal static void CloseClientNotNull(Socket socket)
+        private static void shutdown(Socket socket, CatchCount.Type type)
         {
             try
             {
                 socket.Shutdown(SocketShutdown.Both);
             }
-            catch { AutoCSer.Log.CatchCount.Add(CatchCount.Type.TcpServerClientSocket_Dispose); }
+            catch { AutoCSer.Log.CatchCount.Add(type); }
             finally { socket.Dispose(); }
         }
-#if DotNetStandard
+        /// <summary>
+        /// 关闭套接字
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal static void ShutdownServer(Socket socket)
+        {
+            shutdown(socket, CatchCount.Type.TcpServerSocket_Dispose);
+        }
         /// <summary>
         /// 关闭套接字
         /// </summary>
         /// <param name="socket"></param>
+#if !DotNetStandard
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+#endif
         internal static void CloseServer(Socket socket)
         {
+#if DotNetStandard
             try
             {
                 socket.Shutdown(SocketShutdown.Both);
             }
             catch { AutoCSer.Log.CatchCount.Add(CatchCount.Type.TcpServerSocket_Dispose); }
             finally { socket.Dispose(); }
-        }
+#else
+            socket.Dispose();
 #endif
+        }
         /// <summary>
         /// 变换数据
         /// </summary>

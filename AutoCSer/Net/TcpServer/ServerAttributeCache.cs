@@ -36,6 +36,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal ServerTaskType RemoteExpressionTask;
         /// <summary>
+        /// 远程表达式服务器端独占 TCP 同步调用队列编号
+        /// </summary>
+        internal byte RemoteExpressionCallQueueIndex;
+        /// <summary>
         /// 设置配置数据
         /// </summary>
         /// <param name="attribute"></param>
@@ -48,6 +52,7 @@ namespace AutoCSer.Net.TcpServer
             OutputSleep = attribute.GetServerOutputSleep;
             IsBuildOutputThread = attribute.GetIsServerBuildOutputThread;
             RemoteExpressionTask = attribute.GetRemoteExpressionServerTask;
+            RemoteExpressionCallQueueIndex = attribute.GetRemoteExpressionCallQueueIndex;
         }
     }
 }

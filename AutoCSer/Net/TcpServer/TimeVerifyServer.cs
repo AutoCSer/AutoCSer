@@ -117,7 +117,7 @@ namespace AutoCSer.Net.TcpServer
         {
             if (md5Data != null && md5Data.Length == 16)
             {
-                if (!timeVerifyTick.Check(sender, ref ticks)) return false;
+                if (!timeVerifyTick.Check(ref ticks, ref sender.TimeVerifyTicks)) return false;
                 if (TimeVerifyServer.IsMd5(TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     timeVerifyTick.Set(ticks);

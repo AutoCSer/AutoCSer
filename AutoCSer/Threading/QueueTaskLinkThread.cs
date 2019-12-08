@@ -7,7 +7,7 @@ namespace AutoCSer.Threading
     /// 队列链表任务线程
     /// </summary>
     /// <typeparam name="taskType"></typeparam>
-    internal class QueueTaskLinkThread<taskType> : QueueTaskThread<taskType>
+    public class QueueTaskLinkThread<taskType> : QueueTaskThread<taskType>
         where taskType : TaskLinkNode<taskType>
     {
         /// <summary>
@@ -36,6 +36,34 @@ namespace AutoCSer.Threading
                 end = value;
                 System.Threading.Interlocked.Exchange(ref queueLock, 0);
             }
+        }
+        /// <summary>
+        /// 添加任务
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal bool CheckAdd(taskType value)
+        {
+            while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+            if (value.LinkNext == null && value != end)
+            {
+                if (head == null)
+                {
+                    end = value;
+                    head = value;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    WaitHandle.Set();
+                }
+                else
+                {
+                    end.LinkNext = value;
+                    end = value;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                }
+                return true;
+            }
+            System.Threading.Interlocked.Exchange(ref queueLock, 0);
+            return false;
         }
         /// <summary>
         /// 添加任务
@@ -91,6 +119,98 @@ namespace AutoCSer.Threading
                 while (value != null);
             }
             while (true);
+        }
+
+        /// <summary>
+        /// 低优先级任务队列链表
+        /// </summary>
+        internal sealed class LowPriorityLink
+        {
+            /// <summary>
+            /// 任务队列
+            /// </summary>
+            private readonly QueueTaskLinkThread<taskType> queue;
+            /// <summary>
+            /// 首节点
+            /// </summary>
+            private taskType head;
+            /// <summary>
+            /// 尾节点
+            /// </summary>
+            private taskType end;
+            /// <summary>
+            /// 弹出节点访问锁
+            /// </summary>
+            private int queueLock;
+            /// <summary>
+            /// 任务队列链表节点
+            /// </summary>
+            /// <param name="queue">任务队列</param>
+            internal LowPriorityLink(QueueTaskLinkThread<taskType> queue)
+            {
+                this.queue = queue;
+            }
+            /// <summary>
+            /// 添加任务
+            /// </summary>
+            /// <param name="node"></param>
+            internal void Add(taskType node)
+            {
+                if (node != null)
+                {
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    if (head == null)
+                    {
+                        head = end = node;
+                        System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                        queue.Add(this);
+                    }
+                    else
+                    {
+                        end.LinkNext = node;
+                        end = node;
+                        System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    }
+                }
+            }
+            /// <summary>
+            /// 执行任务
+            /// </summary>
+            internal void RunTask()
+            {
+                taskType node = head, next = head.LinkNext;
+                if (next == null)
+                {
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    head = next = head.LinkNext;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                }
+                else head = next;
+                try
+                {
+                    node.RunTask();
+                }
+                finally
+                {
+                    if (next != null) queue.Add(this);
+                }
+            }
+        }
+        /// <summary>
+        /// 添加低优先级任务队列链表
+        /// </summary>
+        /// <param name="link"></param>
+        internal virtual void Add(LowPriorityLink link)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 创建低优先级任务队列链表
+        /// </summary>
+        /// <returns></returns>
+        internal LowPriorityLink CreateLink()
+        {
+            return new LowPriorityLink(this);
         }
     }
 }

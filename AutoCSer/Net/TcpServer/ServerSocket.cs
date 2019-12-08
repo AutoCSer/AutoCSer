@@ -15,9 +15,17 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         private readonly AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig;
         /// <summary>
+        /// TCP 服务器端同步调用队列数组
+        /// </summary>
+        internal readonly KeyValue<ServerCallCanDisposableQueue, ServerCallCanDisposableQueue.LowPriorityLink>[] CallQueueArray;
+        /// <summary>
         /// TCP 服务器端同步调用队列
         /// </summary>
         internal readonly ServerCallCanDisposableQueue CallQueue;
+        /// <summary>
+        /// TCP 服务器端同步调用队列（低优先级）
+        /// </summary>
+        internal readonly ServerCallCanDisposableQueue.LowPriorityLink CallQueueLink;
         /// <summary>
         /// 命令位图
         /// </summary>
@@ -36,6 +44,10 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         protected IAsyncResult receiveAsyncEventArgs;
 #else
+        /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        protected EventHandler<SocketAsyncEventArgs> onReceiveAsyncCallback;
         /// <summary>
         /// 接收数据套接字异步事件对象
         /// </summary>
@@ -128,12 +140,16 @@ namespace AutoCSer.Net.TcpServer
         /// TCP 服务端套接字
         /// </summary>
         /// <param name="binaryDeSerializeConfig">二进制反序列化配置参数</param>
+        /// <param name="callQueueArray">TCP 服务器端同步调用队列数组</param>
         /// <param name="callQueue">TCP 服务器端同步调用队列</param>
+        /// <param name="callQueueLink">TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="verifyMethodCount">验证函数调用次数</param>
-        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig, ServerCallCanDisposableQueue callQueue, byte verifyMethodCount)
+        internal ServerSocket(AutoCSer.BinarySerialize.DeSerializeConfig binaryDeSerializeConfig, KeyValue<ServerCallCanDisposableQueue, ServerCallCanDisposableQueue.LowPriorityLink>[] callQueueArray, ServerCallCanDisposableQueue callQueue, ServerCallCanDisposableQueue.LowPriorityLink callQueueLink, byte verifyMethodCount)
         {
             this.binaryDeSerializeConfig = binaryDeSerializeConfig;
+            CallQueueArray = callQueueArray;
             CallQueue = callQueue;
+            CallQueueLink = callQueueLink;
             this.verifyMethodCount = verifyMethodCount;
         }
         /// <summary>
@@ -262,7 +278,7 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         /// <param name="server">TCP调用服务端</param>
         internal ServerSocket(serverType server)
-            : base(server.BinaryDeSerializeConfig, server.CallQueue, server.VerifyMethodCount)
+            : base(server.BinaryDeSerializeConfig, server.CallQueueArray, server.CallQueue, server.CallQueueLink, server.VerifyMethodCount)
         {
             Server = server;
             //if (server.VerifyCommandIdentity == 0) IsVerifyMethod = true;

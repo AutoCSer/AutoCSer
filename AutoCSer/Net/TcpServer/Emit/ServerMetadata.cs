@@ -113,6 +113,10 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// </summary>
         internal readonly MethodInfo ServerCallCallMethod;
         /// <summary>
+        /// TCP 服务器端同步调用函数信息
+        /// </summary>
+        internal readonly MethodInfo ServerCallCallQueueMethod;
+        /// <summary>
         /// 获取自定义队列函数信息
         /// </summary>
         internal readonly MethodInfo GetServerCallQueueMethod;
@@ -140,14 +144,16 @@ namespace AutoCSer.Net.TcpServer.Emit
         /// <param name="serverSocketSenderGetCallbackMethod">TCP 服务器端同步调用套接字获取异步回调函数信息</param>
         /// <param name="serverSocketSenderGetCallbackEmitMethod">TCP 服务器端同步调用套接字获取异步回调函数信息</param>
         /// <param name="serverSocketSenderAddLogMethod">TCP 服务器端同步调用套接字错误日志处理函数信息</param>
+        /// <param name="serverCallCallMethod">TCP 服务器端同步调用函数信息</param>
+        /// <param name="serverCallCallQueueMethod">TCP 服务器端同步调用函数信息</param>
         internal ServerMetadata(Type serverType, Type serverAttributeType, Type senderType, Type serverCallType
             , Func<Type, ParameterGenericType> getParameterGenericType, Func<Type, Type, ReturnParameterGenericType> getOutputParameterGenericType
             , MethodInfo serverSocketSenderPushMethod, MethodInfo serverSocketSenderPushReturnTypeMethod, MethodInfo serverSocketSenderPushReturnValueMethod
             , MethodInfo serverSocketSenderPushNoThreadMethod, MethodInfo serverSocketSenderGetCallbackMethod, MethodInfo serverSocketSenderGetCallbackEmitMethod
-            , MethodInfo serverSocketSenderAddLogMethod)
+            , MethodInfo serverSocketSenderAddLogMethod, MethodInfo serverCallCallMethod, MethodInfo serverCallCallQueueMethod)
             : base(serverType, senderType)
         {
-            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog), typeof(bool), typeof(bool) });
+            ServerConstructorInfo = serverType.GetConstructor(new Type[] { serverAttributeType, typeof(Func<System.Net.Sockets.Socket, bool>), typeof(AutoCSer.Net.TcpServer.IServerCallQueueSet), typeof(Action<SubArray<byte>>), typeof(AutoCSer.Log.ILog), typeof(int), typeof(bool), typeof(bool) });
             GetParameterGenericType = getParameterGenericType;
             GetOutputParameterGenericType = getOutputParameterGenericType;
 
@@ -165,7 +171,8 @@ namespace AutoCSer.Net.TcpServer.Emit
             ServerCallServerValueField = serverCallType.GetField("serverValue", BindingFlags.NonPublic | BindingFlags.Instance);
             ServerCallPushMethod = serverCallType.GetMethod("push", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             ServerCallPopNewMethod = serverCallType.GetMethod("PopNew", BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
-            ServerCallCallMethod = serverCallType.GetMethod("Call", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+            ServerCallCallMethod = serverCallCallMethod;// serverCallType.GetMethod("Call", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+            ServerCallCallQueueMethod = serverCallCallQueueMethod;
             GetServerCallQueueMethod = serverType.GetMethod("getServerCallQueue", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 

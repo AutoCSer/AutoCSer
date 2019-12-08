@@ -46,11 +46,12 @@ namespace AutoCSer.Net.TcpInternalServer
         /// <param name="serverCallQueue">自定义队列</param>
         /// <param name="onCustomData">自定义数据包处理</param>
         /// <param name="log">日志接口</param>
-        /// <param name="isCallQueue">是否提供独占的 TCP 服务器端同步调用队列</param>
+        /// <param name="callQueueCount">独占的 TCP 服务器端同步调用队列数量</param>
+        /// <param name="isCallQueueLink">是否提供独占的 TCP 服务器端同步调用队列（低优先级）</param>
         /// <param name="isSynchronousVerifyMethod">验证函数是否同步调用</param>
         [AutoCSer.IOS.Preserve(Conditional = true)]
-        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, bool isCallQueue, bool isSynchronousVerifyMethod)
-            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, isCallQueue, isSynchronousVerifyMethod)
+        public Server(ServerAttribute attribute, Func<System.Net.Sockets.Socket, bool> verify, AutoCSer.Net.TcpServer.IServerCallQueueSet serverCallQueue, Action<SubArray<byte>> onCustomData, ILog log, int callQueueCount, bool isCallQueueLink, bool isSynchronousVerifyMethod)
+            : base(attribute, verify, serverCallQueue, onCustomData, log, AutoCSer.Threading.Thread.CallType.TcpInternalServerGetSocket, callQueueCount, isCallQueueLink, isSynchronousVerifyMethod)
         {
             if (!attribute.IsServer) Log.Add(AutoCSer.Log.LogType.Warn, "配置未指明的 TCP 服务端 " + ServerAttribute.ServerName);
         }
@@ -118,11 +119,7 @@ namespace AutoCSer.Net.TcpInternalServer
                             if (this.Socket != null)
                             {
                                 this.Socket = null;
-#if DotNetStandard
-                                AutoCSer.Net.TcpServer.CommandBase.CloseServer(listenSocket);
-#else
-                                listenSocket.Dispose();
-#endif
+                                ShutdownServer(listenSocket);
                             }
                             return;
                         }
@@ -158,11 +155,7 @@ namespace AutoCSer.Net.TcpInternalServer
                             if (this.Socket != null)
                             {
                                 this.Socket = null;
-#if DotNetStandard
-                                AutoCSer.Net.TcpServer.CommandBase.CloseServer(listenSocket);
-#else
-                                listenSocket.Dispose();
-#endif
+                                ShutdownServer(listenSocket);
                             }
                             return;
                         }

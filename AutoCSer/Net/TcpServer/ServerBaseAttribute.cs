@@ -207,6 +207,11 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal virtual ServerTaskType GetRemoteExpressionServerTask { get { return ServerTaskType.Timeout; } }
         /// <summary>
+        /// 远程表达式服务器端独占 TCP 同步调用队列编号
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual byte GetRemoteExpressionCallQueueIndex { get { return 0; } }
+        /// <summary>
         /// 服务端创建输出是否开启线程
         /// </summary>
         [AutoCSer.Metadata.Ignore]

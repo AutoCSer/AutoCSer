@@ -19,6 +19,10 @@ namespace AutoCSer.Net.Http
         private AsyncCallback onReceiveAsyncCallback;
 #else
         /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        private EventHandler<SocketAsyncEventArgs> onReceiveAsyncCallback;
+        /// <summary>
         /// 异步套接字操作
         /// </summary>
         private SocketAsyncEventArgs socketAsyncEventArgs;
@@ -30,11 +34,10 @@ namespace AutoCSer.Net.Http
         internal SocketBoundaryReceiver(Socket socket)
             : base(socket)
         {
-#if DOTNET2
             onReceiveAsyncCallback = onReceive;
-#else
+#if !DOTNET2
             socketAsyncEventArgs = SocketAsyncEventArgsPool.Get();
-            socketAsyncEventArgs.Completed += onReceive;
+            socketAsyncEventArgs.Completed += onReceiveAsyncCallback;
 #endif
         }
 #if !DOTNET2
@@ -44,7 +47,7 @@ namespace AutoCSer.Net.Http
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void Free()
         {
-            socketAsyncEventArgs.Completed -= onReceive;
+            socketAsyncEventArgs.Completed -= onReceiveAsyncCallback;
             SocketAsyncEventArgsPool.PushNotNull(ref socketAsyncEventArgs);
         }
 #endif

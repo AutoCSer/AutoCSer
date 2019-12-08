@@ -32,6 +32,11 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="taskType"></param>
         internal virtual void SetServerTaskType(ServerTaskType taskType) { }
         /// <summary>
+        /// 独占 TCP 服务器端同步调用队列编号
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual byte GetServerQueueIndex { get { return 0; } }
+        /// <summary>
         /// 客户端异步任务类型
         /// </summary>
         [AutoCSer.Metadata.Ignore]

@@ -114,26 +114,26 @@ namespace AutoCSer.Threading
             if (thread == null) new Thread(this, task, taskType);
             else thread.RunTask(task, taskType);
         }
-        /// <summary>
-        /// 获取一个线程并执行任务
-        /// </summary>
-        /// <param name="task">任务委托</param>
-        /// <param name="taskType">任务委托调用类型</param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void CheckStart(object task, AutoCSer.Threading.Thread.CallType taskType)
-        {
-            Thread thread = threads.Pop();
-            if (thread == null)
-            {
-                System.Threading.Thread.Sleep(0);
-                if ((thread = threads.Pop()) == null)
-                {
-                    new Thread(this, task, taskType);
-                    return;
-                }
-            }
-            thread.RunTask(task, taskType);
-        }
+        ///// <summary>
+        ///// 获取一个线程并执行任务
+        ///// </summary>
+        ///// <param name="task">任务委托</param>
+        ///// <param name="taskType">任务委托调用类型</param>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal void CheckStart(object task, AutoCSer.Threading.Thread.CallType taskType)
+        //{
+        //    Thread thread = threads.Pop();
+        //    if (thread == null)
+        //    {
+        //        System.Threading.Thread.Sleep(0);
+        //        if ((thread = threads.Pop()) == null)
+        //        {
+        //            new Thread(this, task, taskType);
+        //            return;
+        //        }
+        //    }
+        //    thread.RunTask(task, taskType);
+        //}
         /// <summary>
         /// 获取一个线程并执行任务
         /// </summary>

@@ -74,11 +74,8 @@ namespace AutoCSer.Net.TcpServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void DisposeSocket()
         {
-#if DotNetStandard
-            AutoCSer.Net.TcpServer.CommandBase.CloseClient(socket.Socket);
-#else
-            socket.Socket.Dispose();
-#endif
+            System.Net.Sockets.Socket socket = this.socket.Socket;
+            if (socket != null) AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(socket);
         }
     }
 }

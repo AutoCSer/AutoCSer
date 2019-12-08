@@ -74,7 +74,7 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
                 if (asyncEventArgs == null) DisposeSocket();
                 else
                 {
-                    asyncEventArgs.Completed -= onSocket;
+                    asyncEventArgs.Completed -= asyncCallback;
                     DisposeSocket();
                     SocketAsyncEventArgsPool.PushNotNull(ref asyncEventArgs);
                 }
@@ -104,10 +104,9 @@ namespace AutoCSer.Net.TcpOpenSimpleServer
             Server.ReceiveBufferPool.Get(ref Buffer);
             OutputStream = (OutputSerializer = BinarySerialize.Serializer.YieldPool.Default.Pop() ?? new BinarySerialize.Serializer()).SetTcpServer();
 
-#if DOTNET2
             asyncCallback = onSocket;
-#else
-            asyncEventArgs.Completed += onSocket;
+#if !DOTNET2
+            asyncEventArgs.Completed += asyncCallback;
             asyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, bufferSize);
 #endif
             if (Server.VerifyCommandIdentity == 0)

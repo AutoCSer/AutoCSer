@@ -22,6 +22,10 @@ namespace AutoCSer.Net.Http
         private AsyncCallback onReceiveAsyncCallback;
 #else
         /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        private EventHandler<SocketAsyncEventArgs> onReceiveAsyncCallback;
+        /// <summary>
         /// 接收数据套接字异步事件对象
         /// </summary>
         private SocketAsyncEventArgs receiveAsyncEventArgs;
@@ -38,11 +42,10 @@ namespace AutoCSer.Net.Http
             : base()
         {
             httpSocket = socket;
-#if DOTNET2
             onReceiveAsyncCallback = onReceive;
-#else
+#if !DOTNET2
             receiveAsyncEventArgs = SocketAsyncEventArgsPool.Get();
-            receiveAsyncEventArgs.Completed += onReceive;
+            receiveAsyncEventArgs.Completed += onReceiveAsyncCallback;
             receiveAsyncEventArgs.SetBuffer(Buffer.Buffer, Buffer.StartIndex, ReceiveBufferSize);
 #endif
         }
@@ -53,7 +56,7 @@ namespace AutoCSer.Net.Http
         internal void Free()
         {
 #if !DOTNET2
-            receiveAsyncEventArgs.Completed -= onReceive;
+            receiveAsyncEventArgs.Completed -= onReceiveAsyncCallback;
             SocketAsyncEventArgsPool.PushNotNull(ref receiveAsyncEventArgs);
 #endif
             Buffer.Free();

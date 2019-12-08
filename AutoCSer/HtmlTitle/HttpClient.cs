@@ -71,6 +71,10 @@ Host: ").getBytes();
         private IPEndPoint ipEndPoint;
 #else
         /// <summary>
+        /// 接收数据异步回调
+        /// </summary>
+        private readonly EventHandler<SocketAsyncEventArgs> socketCallback;
+        /// <summary>
         /// 异步套接字操作
         /// </summary>
         private SocketAsyncEventArgs socketAsync;
@@ -183,11 +187,10 @@ Host: ").getBytes();
             bufferSize = task.BufferSize - sizeof(int);
             task.BufferPool.Get(ref buffer);
             hostBufferPool.Get(ref hostBuffer);
-#if DOTNET2
             socketCallback = onSocket;
-#else
+#if !DOTNET2
             socketAsync = AutoCSer.Net.SocketAsyncEventArgsPool.Get();
-            socketAsync.Completed += onSocket;
+            socketAsync.Completed += socketCallback;
             socketAsync.SetBuffer(buffer.Buffer, buffer.StartIndex, bufferSize);
 #endif
         }
@@ -200,7 +203,7 @@ Host: ").getBytes();
 #if !DOTNET2
             if (socketAsync != null)
             {
-                socketAsync.Completed -= onSocket;
+                socketAsync.Completed -= socketCallback;
                 AutoCSer.Net.SocketAsyncEventArgsPool.PushNotNull(ref socketAsync);
             }
 #endif
@@ -224,11 +227,7 @@ Host: ").getBytes();
                 //DisposeSocket();
                 if (Socket != null)
                 {
-#if DotNetStandard
-                    AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
-#else
-                    Socket.Dispose();
-#endif
+                    AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
                     Socket = null;
                 }
                 this.uri = null;
@@ -869,11 +868,7 @@ Host: ").getBytes();
                                         }
                                         Buffer.BlockCopy(hostBuffer.Buffer, hostBuffer.StartIndex, uri.Buffer, uri.StartIndex + hostIndex, hostSize);
                                         Buffer.BlockCopy(buffer.Buffer, (int)(start - bufferFixed), uri.Buffer, uri.StartIndex + hostSize + hostIndex, length);
-#if DotNetStandard
-                                    AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
-#else
-                                        Socket.Dispose();
-#endif
+                                        AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
                                         Socket = null;
                                         SubArray<byte> uriArray = new SubArray<byte>(uri.StartIndex, uriLength, uri.Buffer);
                                         get(ref uriArray, port, true);
@@ -887,11 +882,7 @@ Host: ").getBytes();
                                     try
                                     {
                                         Buffer.BlockCopy(buffer.Buffer, (int)(start - bufferFixed), uri.Buffer, uri.StartIndex, length);
-#if DotNetStandard
-                                    AutoCSer.Net.TcpServer.CommandBase.CloseClientNotNull(Socket);
-#else
-                                        Socket.Dispose();
-#endif
+                                        AutoCSer.Net.TcpServer.CommandBase.ShutdownClient(Socket);
                                         Socket = null;
                                         SubArray<byte> uriArray = new SubArray<byte>(uri.StartIndex, length, uri.Buffer);
                                         get(ref uriArray, 0, true);

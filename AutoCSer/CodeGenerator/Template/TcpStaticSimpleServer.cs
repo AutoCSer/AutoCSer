@@ -17,7 +17,6 @@ namespace AutoCSer.CodeGenerator.Template
         private const int OutputParameterIndex = 0;
         private const ushort TimeoutSeconds = 0;
         private const AutoCSer.Net.TcpServer.ServerTaskType ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Timeout;
-        private const bool IsCallQueue = false;
         private const bool IsSynchronousVerifyMethod = false;
         #endregion NOTE
 

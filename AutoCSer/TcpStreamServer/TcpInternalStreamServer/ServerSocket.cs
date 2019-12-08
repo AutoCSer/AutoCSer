@@ -33,7 +33,7 @@ namespace AutoCSer.Net.TcpInternalStreamServer
                 if (receiveAsyncEventArgs == null) DisposeSocket();
                 else
                 {
-                    receiveAsyncEventArgs.Completed -= onReceive;
+                    receiveAsyncEventArgs.Completed -= onReceiveAsyncCallback;
                     DisposeSocket();
                     SocketAsyncEventArgsPool.PushNotNull(ref receiveAsyncEventArgs);
                 }
@@ -83,10 +83,9 @@ namespace AutoCSer.Net.TcpInternalStreamServer
 #endif
             Server.ReceiveBufferPool.Get(ref ReceiveBuffer);
             Sender = new ServerSocketSender(this);
-#if DOTNET2
             onReceiveAsyncCallback = onReceive;
-#else
-            receiveAsyncEventArgs.Completed += onReceive;
+#if !DOTNET2
+            receiveAsyncEventArgs.Completed += onReceiveAsyncCallback;
             receiveAsyncEventArgs.SetBuffer(ReceiveBuffer.Buffer, ReceiveBuffer.StartIndex, receiveBufferSize);
 #endif
             if (Server.VerifyCommandIdentity == 0)
