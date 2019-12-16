@@ -4,6 +4,7 @@ using System.Threading;
 using AutoCSer.Log;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
+using System.Net;
 
 namespace AutoCSer.Net.TcpRegister
 {
@@ -31,21 +32,9 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         private readonly object registerLock = new object();
         /// <summary>
-        /// 客户端创建等待事件
-        /// </summary>
-        private AutoCSer.Threading.WaitHandle createWait;
-        /// <summary>
-        /// TCP 服务端标识
-        /// </summary>
-        private ClientId clientId;
-        /// <summary>
         /// 客户端轮询
         /// </summary>
-        private Action<TcpServer.ReturnValue<Log>> logHandle;
-        /// <summary>
-        /// 客户端保持回调
-        /// </summary>
-        private TcpServer.KeepCallback logKeep;
+        private readonly Action<TcpServer.ReturnValue<ServerLog>> logHandle;
         /// <summary>
         /// TCP 服务信息集合
         /// </summary>
@@ -57,15 +46,11 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP 内部服务集合
         /// </summary>
-        private LeftArray<IServer> servers;
+        private readonly HashSet<IServer> servers;
         /// <summary>
-        /// 是否客户端错误
+        /// 客户端保持回调
         /// </summary>
-        private bool isClientErrorLog;
-        /// <summary>
-        /// 服务是否加载完毕
-        /// </summary>
-        private bool isRegisterLoaded;
+        private TcpServer.KeepCallback logKeep;
         /// <summary>
         /// TCP 注册服务客户端
         /// </summary>
@@ -75,28 +60,12 @@ namespace AutoCSer.Net.TcpRegister
 #if NoAutoCSer
             throw new Exception(); 
 #else
-            //attribute = AutoCSer.config.pub.LoadConfig(new AutoCSer.code.cSharp.tcpServer(), serviceName);
-            //attribute.IsIdentityCommand = true;
-            //attribute.TcpRegister = null;
             this.serviceName = serviceName;
-            createWait.Set(0);
+            servers = HashSetCreator.CreateAny<IServer>();
             registerClient = new Server.TcpInternalClient(TcpInternalServer.ServerAttribute.GetConfig(serviceName, typeof(AutoCSer.Net.TcpRegister.Server)));
-            //isNewClientErrorLog = true;
             logHandle = onLog;
             checkSocketVersion = registerClient._TcpClient_.CreateCheckSocketVersion(onNewSocket);
 #endif
-        }
-        /// <summary>
-        /// 关闭 TCP 注册服务客户端
-        /// </summary>
-        private void close()
-        {
-#if NoAutoCSer
-            throw new Exception();
-#else
-            registerClient.Dispose();
-#endif
-            clientId.Tick = 0;
         }
         /// <summary>
         /// TCP 客户端套接字初始化处理
@@ -109,83 +78,28 @@ namespace AutoCSer.Net.TcpRegister
 #else
             if (parameter.Type == TcpServer.ClientSocketEventParameter.EventType.SetSocket)
             {
-                isClientErrorLog = false;
-                do
+                try
                 {
-                    try
+                    if (logKeep != null)
                     {
-                        if (isClientErrorLog)
-                        {
-                            isClientErrorLog = false;
-                            clientId.Tick = 0;
-                        }
-                        if (clientId.Tick == 0)
-                        {
-                            clientId = registerClient.register();
-                            if (clientId.Tick != 0) createWait.Set();
-                        }
-                        if (clientId.Tick != 0)
-                        {
-                            if (logKeep != null)
-                            {
-                                logKeep.Dispose();
-                                logKeep = null;
-                            }
-                            if (serverSets.Count != 0)
-                            {
-                                Monitor.Enter(serverSetLock);
-                                try
-                                {
-                                    LeftArray<HashString> removeKeys = new LeftArray<HashString>(serverSets.Count);
-                                    foreach (KeyValuePair<HashString, ClientServerSet> serverSet in serverSets)
-                                    {
-                                        if (serverSet.Value.Clear()) removeKeys.Add(serverSet.Key);
-                                    }
-                                    foreach (HashString name in removeKeys) serverSets.Remove(name);
-                                }
-                                finally { Monitor.Exit(serverSetLock); }
-                            }
-                            isRegisterLoaded = false;
-                            if ((logKeep = registerClient.getLog(clientId, logHandle)) != null)
-                            {
-                                byte isError = 0;
-                                foreach (IServer server in servers)
-                                {
-                                    Monitor.Enter(registerLock);
-                                    try
-                                    {
-                                        ServerInfo serverInfo = server.TcpRegisterInfo;
-                                        long clientTick = clientId.Tick;
-                                        if (serverInfo != null && serverInfo.RegisterTick != clientTick)
-                                        {
-                                            serverInfo.ClientIndex = clientId.Index;
-                                            serverInfo.ClientIdentity = clientId.Identity;
-                                            if (registerClient.checkRegister(clientTick, serverInfo).Value) serverInfo.RegisterTick = clientTick;
-                                            else if (isError == 0)
-                                            {
-                                                isError = 1;
-                                                if (registerClient.checkRegister(clientTick, serverInfo).Value) serverInfo.RegisterTick = clientTick;
-                                            }
-                                        }
-                                    }
-                                    catch (Exception error)
-                                    {
-                                        isError = 1;
-                                        server.AddLog(error);
-                                    }
-                                    finally { Monitor.Exit(registerLock); }
-                                }
-                                return;
-                            }
-                        }
+                        logKeep.Dispose();
+                        logKeep = null;
                     }
-                    catch (Exception error)
+                    if ((logKeep = registerClient.getLog(logHandle)) != null)
                     {
-                        registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Debug, error, null, true);
+                        Monitor.Enter(registerLock);
+                        try
+                        {
+                            foreach (IServer server in servers) registerClient.appendLog(server.CreateServerLog(LogType.RegisterServer));
+                        }
+                        finally { Monitor.Exit(registerLock); }
                     }
-                    Thread.Sleep(registerClient._TcpClient_.TryCreateSleep);
+                    else registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, "TCP 注册服务客户端 " + serviceName + " 获取日志失败");
                 }
-                while (registerClient._TcpClient_.IsDisposed == 0);
+                catch (Exception error)
+                {
+                    registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, error, null, true);
+                }
             }
 #endif
         }
@@ -193,24 +107,17 @@ namespace AutoCSer.Net.TcpRegister
         /// 客户端轮询
         /// </summary>
         /// <param name="result">轮询结果</param>
-        private void onLog(TcpServer.ReturnValue<Log> result)
+        private void onLog(TcpServer.ReturnValue<ServerLog> result)
         {
             if (result.Type == TcpServer.ReturnType.Success)
             {
-                switch (result.Value.Type)
+                switch (result.Value.LogType)
                 {
                     case LogType.RegisterServer: registerServer(result.Value); return;
                     case LogType.RemoveServer: removeServer(result.Value); return;
-                    case LogType.RegisterLoaded:
-                        isRegisterLoaded = true;
-                        Monitor.Enter(serverSetLock);
-                        try
-                        {
-                            foreach (ClientServerSet serverSet in serverSets.Values) serverSet.OnLoaded();
-                        }
-                        finally { Monitor.Exit(serverSetLock); }
+                    default:
+                        registerClient._TcpClient_.Log.Add(AutoCSer.Log.LogType.Error, "未知的 TCP 内部注册服务更新日志类型 " + result.Value.toJson());
                         return;
-                    case LogType.ClientError: isClientErrorLog = true; return;
                 }
             }
         }
@@ -218,14 +125,14 @@ namespace AutoCSer.Net.TcpRegister
         /// 注册服务
         /// </summary>
         /// <param name="log"></param>
-        private void registerServer(Log log)
+        private void registerServer(ServerLog log)
         {
-            HashString name = log.Server.Name;
+            HashString name = log.Name;
             ClientServerSet serverSet;
             Monitor.Enter(serverSetLock);
             try
             {
-                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Add(log, isRegisterLoaded);
+                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Add(log);
                 else serverSets.Add(name, serverSet = new ClientServerSet(log));
             }
             finally { Monitor.Exit(serverSetLock); }
@@ -234,14 +141,14 @@ namespace AutoCSer.Net.TcpRegister
         /// 注销服务
         /// </summary>
         /// <param name="log"></param>
-        private void removeServer(Log log)
+        private void removeServer(ServerLog log)
         {
-            HashString name = log.Server.Name;
+            HashString name = log.Name;
             ClientServerSet serverSet;
             Monitor.Enter(serverSetLock);
             try
             {
-                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Remove(log, isRegisterLoaded);
+                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Remove(log);
             }
             finally { Monitor.Exit(serverSetLock); }
         }
@@ -256,11 +163,11 @@ namespace AutoCSer.Net.TcpRegister
             Monitor.Enter(serverSetLock);
             try
             {
-                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Add(client, isRegisterLoaded);
+                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Add(client);
                 else
                 {
                     serverSets.Add(name, serverSet = new ClientServerSet(client));
-                    if (isRegisterLoaded) client.OnServerChange(null);
+                    client.OnServerChange(null);
                 }
             }
             finally { Monitor.Exit(serverSetLock); }
@@ -276,40 +183,11 @@ namespace AutoCSer.Net.TcpRegister
             Monitor.Enter(serverSetLock);
             try
             {
-                if (serverSets.TryGetValue(name, out serverSet) && serverSet.Remove(client)) serverSets.Remove(name);
+                if (serverSets.TryGetValue(name, out serverSet)) serverSet.Remove(client);
             }
             finally { Monitor.Exit(serverSetLock); }
         }
 
-        /// <summary>
-        /// 获取服务端口
-        /// </summary>
-        /// <typeparam name="serverAttributeType"></typeparam>
-        /// <param name="attribute"></param>
-        /// <returns></returns>
-        internal bool GetPort<serverAttributeType>(serverAttributeType attribute)
-            where serverAttributeType : TcpServer.ServerBaseAttribute
-        {
-            if (clientId.Tick != 0)
-            {
-                Monitor.Enter(registerLock);
-                try
-                {
-#if NoAutoCSer
-                    throw new Exception();
-#else
-                    attribute.ClientRegisterPort = registerClient.getPort(clientId, attribute.ClientRegisterHost).Value;
-#endif
-                }
-                finally { Monitor.Exit(registerLock); }
-                if (attribute.ClientRegisterPort != 0)
-                {
-                    attribute.Port = attribute.ClientRegisterPort;
-                    return true;
-                }
-            }
-            return false;
-        }
         /// <summary>
         /// 注册TCP服务端
         /// </summary>
@@ -320,20 +198,12 @@ namespace AutoCSer.Net.TcpRegister
 #if NoAutoCSer
             throw new Exception();
 #else
-            ServerInfo serverInfo = server.CreateServerInfo();
-            serverInfo.ClientIndex = clientId.Index;
-            serverInfo.ClientIdentity = clientId.Identity;
+            ServerLog serverInfo = server.CreateServerLog(LogType.RegisterServer);
             Monitor.Enter(registerLock);
             try
             {
                 servers.Add(server);
-                long tick = clientId.Tick;
-                if (registerClient.register(tick, serverInfo).Value)
-                {
-                    server.TcpRegisterInfo = serverInfo;
-                    serverInfo.RegisterTick = tick;
-                    return true;
-                }
+                if (registerClient.appendLog(serverInfo).Value) return true;
             }
             catch (Exception error)
             {
@@ -350,36 +220,27 @@ namespace AutoCSer.Net.TcpRegister
         internal void RemoveRegister(IServer server)
         {
 #if NoAutoCSer
-                throw new Exception();
+            throw new Exception();
 #else
-            if (server.TcpRegisterInfo != null)
+            ServerLog log = server.CreateServerLog(LogType.RemoveServer);
+            Monitor.Enter(registerLock);
+            try
             {
-                Monitor.Enter(registerLock);
-                try
-                {
-                    if (server.TcpRegisterInfo != null)
-                    {
-                        servers.RemoveToEnd(server);
-                        if (registerClient.removeRegister(clientId.Tick, server.TcpRegisterInfo).Type == AutoCSer.Net.TcpServer.ReturnType.Success) server.TcpRegisterInfo = null;
-                    }
-                }
-                catch (Exception error)
-                {
-                    server.AddLog(error);
-                }
-                finally { Monitor.Exit(registerLock); }
+                servers.Remove(server);
+                registerClient.appendLog(log);
             }
+            catch (Exception error)
+            {
+                server.AddLog(error);
+            }
+            finally { Monitor.Exit(registerLock); }
 #endif
         }
 
         /// <summary>
         /// TCP注册服务客户端缓存
         /// </summary>
-        private static readonly Dictionary<HashString, Client> clients = DictionaryCreator.CreateHashString<Client>();
-        /// <summary>
-        /// TCP注册服务客户端 访问锁
-        /// </summary>
-        private static readonly object clientsLock = new object();
+        private static readonly AutoCSer.Threading.LockEquatableLastDictionary<HashString, Client> clients = new AutoCSer.Threading.LockEquatableLastDictionary<HashString, Client>();
         /// <summary>
         /// 获取 TCP 注册服务客户端
         /// </summary>
@@ -390,54 +251,21 @@ namespace AutoCSer.Net.TcpRegister
         {
             if (!string.IsNullOrEmpty(serviceName))
             {
-                int count = int.MinValue;
-                Client client = null;
+                Client client;
                 HashString nameKey = serviceName;
-                Monitor.Enter(clientsLock);
+                if (clients.TryGetValueEnter(ref nameKey, out client)) return client;
                 try
                 {
-                    if (!clients.TryGetValue(nameKey, out client))
-                    {
-                        try
-                        {
-                            client = new Client(serviceName);
-                        }
-                        catch (Exception error)
-                        {
-                            Log.Add(AutoCSer.Log.LogType.Error, error);
-                        }
-                        if (client != null)
-                        {
-                            count = clients.Count;
-                            clients.Add(nameKey, client);
-                        }
-                    }
+                    clients.SetOnly(ref nameKey, client = new Client(serviceName));
                 }
-                finally { Monitor.Exit(clientsLock); }
-                if (count == 0) AutoCSer.DomainUnload.Unloader.Add(null, AutoCSer.DomainUnload.Type.TcpRegisterClientClose);
-                if (client != null)
+                catch (Exception error)
                 {
-                    client.createWait.Wait();
-                    return client;
+                    Log.Add(AutoCSer.Log.LogType.Error, error);
                 }
+                finally { clients.Exit(); }
+                return client;
             }
             return null;
-        }
-        /// <summary>
-        /// 关闭 TCP 注册服务客户端
-        /// </summary>
-        internal static void Close()
-        {
-            Monitor.Enter(clientsLock);
-            try
-            {
-                if (clients.Count != 0)
-                {
-                    foreach (Client client in clients.Values) client.close();
-                    clients.Clear();
-                }
-            }
-            finally { Monitor.Exit(clientsLock); }
         }
     }
 }

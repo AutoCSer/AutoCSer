@@ -16,9 +16,9 @@ namespace AutoCSer.Net.TcpRegister
         [FieldOffset(0)]
         public object Value;
         /// <summary>
-        /// TCP 内部注册写服务配置
+        /// 客户端信息
         /// </summary>
         [FieldOffset(0)]
-        public Config Config;
+        public ClientInfo ClientInfo;
     }
 }

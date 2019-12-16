@@ -56,9 +56,19 @@
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
     <Compile Include="DeployState.cs" />
+    <Compile Include="Diagnostics\ConfigLoader.cs" />
+    <Compile Include="Diagnostics\NET4.5\ProcessCopyClient.cs" />
+    <Compile Include="Diagnostics\ProcessCopyClient.cs" />
+    <Compile Include="Diagnostics\ProcessCopyConfig.cs" />
+    <Compile Include="Diagnostics\ProcessCopyer.cs" />
+    <Compile Include="Diagnostics\ProcessCopyerServerCall.cs" />
+    <Compile Include="Diagnostics\ProcessCopySaveCache.cs" />
+    <Compile Include="Diagnostics\ProcessCopyServer.cs" />
+    <Compile Include="Diagnostics\UnionType.cs" />
     <Compile Include="Directory.cs" />
     <Compile Include="FileSource.cs" />
     <Compile Include="FileTime.cs" />
+    <Compile Include="IndexValuePool.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="NET4.5\ClientDeploy.cs" />
@@ -78,15 +88,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AutoCSer.NetStandard.NoJIT.csproj" />
-  </ItemGroup>
-
-</Project>
-IT.csproj" />
-  </ItemGroup>
-
-</Project>
-ect>
-IT.csproj" />
   </ItemGroup>
 
 </Project>

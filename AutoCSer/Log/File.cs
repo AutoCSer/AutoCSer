@@ -558,7 +558,7 @@ namespace AutoCSer.Log
 
         static File()
         {
-            ++Date.NowTime.Count;
+            Date.NowTime.OnTimeFlag = true;
         }
     }
 }

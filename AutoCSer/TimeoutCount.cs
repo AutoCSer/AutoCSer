@@ -188,7 +188,7 @@ namespace AutoCSer
         internal static YieldLink OnTimerLink;
         static TimeoutCount()
         {
-            ++Date.NowTime.Count;
+            Date.NowTime.OnTimeFlag = true;
         }
     }
 }

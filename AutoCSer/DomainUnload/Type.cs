@@ -21,10 +21,6 @@ namespace AutoCSer.DomainUnload
         /// </summary>
         TcpCommandBaseDispose,
         /// <summary>
-        /// 关闭 TCP 内部注册服务客户端
-        /// </summary>
-        TcpRegisterClientClose,
-        /// <summary>
         /// 释放线程池
         /// </summary>
         ThreadPoolDispose,

@@ -79,6 +79,21 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal bool CheckAdd(ILinkTask value)
+        {
+            if (value.NextLinkTask == null)
+            {
+                Add(value);
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 添加任务
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private int addNullHead(ILinkTask value)
         {
             if (head != null) System.Threading.Thread.Sleep(0);

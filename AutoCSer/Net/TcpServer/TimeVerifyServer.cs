@@ -22,7 +22,20 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="randomPrefix"></param>
         /// <param name="ticks"></param>
         /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         public static byte[] Md5(string value, ulong randomPrefix, long ticks)
+        {
+            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider()) return Md5(md5, value, randomPrefix, ticks);
+        }
+        /// <summary>
+        /// MD5加密
+        /// </summary>
+        /// <param name="md5"></param>
+        /// <param name="value"></param>
+        /// <param name="randomPrefix"></param>
+        /// <param name="ticks"></param>
+        /// <returns></returns>
+        internal static byte[] Md5(MD5CryptoServiceProvider md5, string value, ulong randomPrefix, long ticks)
         {
             SubBuffer.PoolBufferFull buffer = default(SubBuffer.PoolBufferFull);
             SubBuffer.Pool.GetBuffer(ref buffer, (value.Length << 1) + (sizeof(ulong) + sizeof(long)));
@@ -36,7 +49,7 @@ namespace AutoCSer.Net.TcpServer
                     *(long*)(start + sizeof(ulong)) = ticks;
                     AutoCSer.Extension.StringExtension.SimpleCopyNotNull64(valueFixed, (char*)(start + (sizeof(ulong) + sizeof(long))), value.Length);
                 }
-                using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider()) return md5.ComputeHash(buffer.Buffer, buffer.StartIndex, (value.Length << 1) + (sizeof(ulong) + sizeof(long)));
+                return md5.ComputeHash(buffer.Buffer, buffer.StartIndex, (value.Length << 1) + (sizeof(ulong) + sizeof(long)));
             }
             finally { buffer.PoolBuffer.Free(); }
         }
@@ -58,9 +71,9 @@ namespace AutoCSer.Net.TcpServer
     /// <summary>
     /// 时间验证服务
     /// </summary>
-    public abstract unsafe class TimeVerifyServer<serverType, serverSocketType, serverSocketSenderType>
+    public abstract unsafe class TimeVerifyServer<serverType, serverSocketType, serverSocketSenderType> : IDisposable
 #if !NOJIT
-        : ISetTcpServer<serverType>
+        , ISetTcpServer<serverType>
 #endif
         where serverType : Server<serverType, serverSocketSenderType>
         where serverSocketType : ServerSocket<serverType, serverSocketType, serverSocketSenderType>
@@ -86,9 +99,24 @@ namespace AutoCSer.Net.TcpServer
             this.server = server;
         }
         /// <summary>
+        /// MD5 加密
+        /// </summary>
+        private MD5CryptoServiceProvider md5;
+        /// <summary>
         /// 验证时间戳
         /// </summary>
         private TimeVerifyTick timeVerifyTick = new TimeVerifyTick(Date.NowTime.UtcNow.Ticks - 1);
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public virtual void Dispose()
+        {
+            if (md5 != null)
+            {
+                md5.Dispose();
+                md5 = null;
+            }
+        }
         /// <summary>
         /// 时间验证函数
         /// </summary>
@@ -98,8 +126,8 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="md5Data">MD5 数据</param>
         /// <param name="ticks">验证时钟周期</param>
         /// <returns>是否验证成功</returns>
-        [AutoCSer.Net.TcpOpenServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
-        [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
+        [AutoCSer.Net.TcpOpenServer.Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
+        [Method(IsVerifyMethod = true, ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, CommandIdentity = TimeVerifyServer.CommandIdentity)]
         protected virtual bool verify(serverSocketSenderType sender, string userID, ulong randomPrefix, byte[] md5Data, ref long ticks)
         {
             return server.CheckVerifyString() || verify(sender, randomPrefix, server.Attribute.VerifyString, md5Data, ref ticks);
@@ -118,7 +146,8 @@ namespace AutoCSer.Net.TcpServer
             if (md5Data != null && md5Data.Length == 16)
             {
                 if (!timeVerifyTick.Check(ref ticks, ref sender.TimeVerifyTicks)) return false;
-                if (TimeVerifyServer.IsMd5(TimeVerifyServer.Md5(verifyString, randomPrefix, ticks), md5Data) == 0)
+                if (md5 == null) md5 = new MD5CryptoServiceProvider();
+                if (TimeVerifyServer.IsMd5(TimeVerifyServer.Md5(md5, verifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     timeVerifyTick.Set(ticks);
                     if (!server.Attribute.IsMarkData || sender.SetMarkData(server.ServerAttribute.VerifyHashCode ^ randomPrefix)) return true;

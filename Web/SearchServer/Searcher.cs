@@ -26,7 +26,7 @@ namespace AutoCSer.Web.SearchServer
         /// <summary>
         /// 搜索处理队列
         /// </summary>
-        internal static readonly TaskQueue<Queue.Node> SearchTaskQueue = new TaskQueue<Queue.Node>();
+        internal static readonly QueueTaskLinkThread<Queue.Node> SearchTaskQueue = new QueueTaskLinkThread<Queue.Node>();
         unsafe static Searcher()
         {
             if (File.Exists(AutoCSer.Web.Config.Search.WordFileName))

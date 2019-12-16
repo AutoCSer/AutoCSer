@@ -18,10 +18,6 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         internal ServerInfo Server;
         /// <summary>
-        /// 客户端错误
-        /// </summary>
-        internal static readonly Log ClientError = new Log { Type = LogType.ClientError };
-        /// <summary>
         /// 注册服务加载完毕
         /// </summary>
         internal static readonly Log RegisterLoaded = new Log { Type = LogType.RegisterLoaded };

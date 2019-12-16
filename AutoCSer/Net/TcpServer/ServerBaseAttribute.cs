@@ -49,6 +49,11 @@ namespace AutoCSer.Net.TcpServer
         [AutoCSer.Metadata.Ignore]
         internal virtual bool GetIsSingleRegister { get { return true; } }
         /// <summary>
+        /// true 表示主服务，否则为可替换服务
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal virtual bool GetIsMainRegister { get { return false; } }
+        /// <summary>
         /// 服务默认验证字符串，AutoCSer.Net.Tcp.TimeVerifyServer 用到了该字符串。
         /// </summary>
         public string VerifyString;

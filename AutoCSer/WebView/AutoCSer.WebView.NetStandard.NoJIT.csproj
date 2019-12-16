@@ -164,7 +164,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AutoCSer.NetStandard.NoJIT.csproj" />
+    <ProjectReference Include="..\Deploy\AutoCSer.Deploy.NetStandard.NoJIT.csproj" />
   </ItemGroup>
 
 </Project>

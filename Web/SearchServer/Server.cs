@@ -24,7 +24,7 @@ namespace AutoCSer.Web.SearchServer
         [AutoCSer.Net.TcpStaticServer.SerializeBoxMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous)]
         internal static void Search(string key, AutoCSer.Net.TcpServer.ServerCallback<SearchItem[]> onSearch)
         {
-            Searcher.SearchTaskQueue.Add(new Queue.Search(key, onSearch));
+            Searcher.SearchTaskQueue.CheckAdd(new Queue.Search(key, onSearch));
         }
 
         /// <summary>

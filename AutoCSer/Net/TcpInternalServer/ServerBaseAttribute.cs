@@ -228,6 +228,15 @@ namespace AutoCSer.Net.TcpInternalServer
             get { return IsSingleRegister; }
         }
         /// <summary>
+        /// 默认为 false 表示为可替换服务，true 表示主服务
+        /// </summary>
+        public bool IsMainRegister = false;
+        /// <summary>
+        /// true 表示主服务，否则为可替换服务
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override bool GetIsMainRegister { get { return IsMainRegister; } }
+        /// <summary>
         /// 服务端自定义队列类型，需要继承自 AutoCSer.Net.TcpServer.IServerCallQueueSet
         /// </summary>
         [AutoCSer.Metadata.Ignore]

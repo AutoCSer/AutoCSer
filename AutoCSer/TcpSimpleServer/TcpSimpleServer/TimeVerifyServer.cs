@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using AutoCSer.Extension;
+using System.Security.Cryptography;
 
 namespace AutoCSer.Net.TcpSimpleServer
 {
@@ -36,6 +37,10 @@ namespace AutoCSer.Net.TcpSimpleServer
             this.server = server;
         }
         /// <summary>
+        /// MD5 加密
+        /// </summary>
+        private MD5CryptoServiceProvider md5;
+        /// <summary>
         /// 验证时间戳
         /// </summary>
         private TcpServer.TimeVerifyTick timeVerifyTick = new TcpServer.TimeVerifyTick(Date.NowTime.UtcNow.Ticks - 1);
@@ -55,7 +60,8 @@ namespace AutoCSer.Net.TcpSimpleServer
             {
                 if (!timeVerifyTick.Check(ref ticks, ref socket.TimeVerifyTicks)) return false;
                 TcpServer.ServerBaseAttribute attribute = server.Attribute;
-                if (AutoCSer.Net.TcpServer.TimeVerifyServer.IsMd5(AutoCSer.Net.TcpServer.TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
+                if (md5 == null) md5 = new MD5CryptoServiceProvider();
+                if (AutoCSer.Net.TcpServer.TimeVerifyServer.IsMd5(AutoCSer.Net.TcpServer.TimeVerifyServer.Md5(md5, attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     timeVerifyTick.Set(ticks);
                     if (attribute.IsMarkData) socket.MarkData = server.ServerAttribute.VerifyHashCode ^ randomPrefix;

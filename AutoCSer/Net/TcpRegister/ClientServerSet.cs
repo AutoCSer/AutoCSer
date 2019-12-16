@@ -28,77 +28,62 @@ namespace AutoCSer.Net.TcpRegister
         /// 客户端 TCP 服务信息集合
         /// </summary>
         /// <param name="log"></param>
-        internal ClientServerSet(Log log)
+        internal ClientServerSet(ServerLog log)
         {
             serverSet = new ServerSet(log);
         }
-        /// <summary>
-        /// 清除数据
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool Clear()
-        {
-            if (clients.Length == 0) return true;
-            if (serverSet != null) serverSet.ClientClear();
-            return false;
-        }
+        ///// <summary>
+        ///// 清除数据
+        ///// </summary>
+        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        //internal bool Clear()
+        //{
+        //    if (clients.Length == 0) return true;
+        //    if (serverSet != null) serverSet.ClientClear();
+        //    return false;
+        //}
         /// <summary>
         /// 添加 TCP 客户端
         /// </summary>
         /// <param name="client">TCP 客户端</param>
-        /// <param name="isLoaded"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Add(IClient client, bool isLoaded)
+        internal void Add(IClient client)
         {
             clients.Add(client);
-            if (isLoaded) client.OnServerChange(serverSet != null && serverSet.Server != null ? serverSet : null);
+            client.OnServerChange(serverSet != null && serverSet.Server != null ? serverSet : null);
         }
         /// <summary>
         /// 移除 TCP 客户端
         /// </summary>
         /// <param name="client"></param>
-        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool Remove(IClient client)
+        internal void Remove(IClient client)
         {
             clients.Remove(client);
-            return clients.Count == 0 && (serverSet == null || serverSet.Server == null);
         }
         /// <summary>
         /// 添加服务
         /// </summary>
         /// <param name="log"></param>
-        /// <param name="isLoaded"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void Add(Log log, bool isLoaded)
+        internal void Add(ServerLog log)
         {
-            if (serverSet == null) serverSet = new ServerSet(log);
-            else if (serverSet.Server == null) serverSet.Server = log;
-            else serverSet.Add(log);
-            if (isLoaded) onServerChange(serverSet);
+            bool isMainChanged;
+            if (serverSet == null)
+            {
+                serverSet = new ServerSet(log);
+                isMainChanged = true;
+            }
+            else serverSet.Add(log, out isMainChanged);
+            if (isMainChanged) onServerChange(serverSet);
         }
         /// <summary>
         /// 移除服务
         /// </summary>
         /// <param name="log"></param>
-        /// <param name="isLoaded"></param>
-        /// <returns></returns>
-        internal bool Remove(Log log, bool isLoaded)
+        internal void Remove(ServerLog log)
         {
-            if (serverSet != null)
-            {
-                Log oldLog = serverSet.Server;
-                if (oldLog != null)
-                {
-                    if (serverSet.Remove(log.Server) == oldLog && serverSet.Server != null && isLoaded)
-                    {
-                        onServerChange(serverSet);
-                        return false;
-                    }
-                    if (serverSet.Server != null) return false;
-                }
-            }
-            return clients.Length == 0;
+            if (serverSet != null && serverSet.Remove(log)) onServerChange(serverSet);
         }
         /// <summary>
         /// TCP 服务更新
@@ -106,15 +91,8 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="serverSet"></param>
         private void onServerChange(ServerSet serverSet)
         {
+            if (serverSet.Server == null) serverSet = null;
             foreach (IClient client in clients) client.OnServerChange(serverSet);
-        }
-        /// <summary>
-        /// 服务加载完毕
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnLoaded()
-        {
-            onServerChange(serverSet != null && serverSet.Server != null ? serverSet : null);
         }
     }
 }

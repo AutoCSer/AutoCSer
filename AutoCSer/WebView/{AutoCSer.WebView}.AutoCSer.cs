@@ -41,7 +41,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.HttpDomainServer.Session<valueType> value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpSession", typeof(AutoCSer.Net.HttpDomainServer.Session<valueType>))), verify, null, onCustomData, log, 0, false, true)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpSession", typeof(AutoCSer.Net.HttpDomainServer.Session<valueType>))), verify, null, onCustomData, log, 1, true, false)
                 {
                     Value = value ?? new AutoCSer.Net.HttpDomainServer.Session<valueType>();
                     setCommandData(6);
@@ -72,13 +72,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p2 _outputParameter_ = new _p2();
-                                    
-                                    valueType Return;
-                                    
-                                    Return = Value.Get(inputParameter.p0);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c0, ref _outputParameter_);
+                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -97,16 +91,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p4 _outputParameter_ = new _p4();
-                                    
-                                    bool Return;
-                                    
-                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
-                                    if (Return) sender.SetVerifyMethod();
-                                    
-                                    _outputParameter_.p0 = inputParameter.p1;
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c1, ref _outputParameter_);
+                                    (_s1/**/.Pop() ?? new _s1()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -125,13 +110,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p5 inputParameter = new _p5();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p2 _outputParameter_ = new _p2();
-                                    
-                                    valueType Return;
-                                    
-                                    Return = Value.Get(inputParameter.p0, inputParameter.p1);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c2, ref _outputParameter_);
+                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -150,9 +129,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    
-                                    Value.Remove(inputParameter.p0);
-                                    sender.Push();
+                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.QueueLink, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -171,13 +148,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p5 inputParameter = new _p5();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p6 _outputParameter_ = new _p6();
-                                    
-                                    AutoCSer.Net.HttpDomainServer.SessionId Return;
-                                    
-                                    Return = Value.Set(inputParameter.p0, inputParameter.p1);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c4, ref _outputParameter_);
+                                    (_s4/**/.Pop() ?? new _s4()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -196,13 +167,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p5 inputParameter = new _p5();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p7 _outputParameter_ = new _p7();
-                                    
-                                    bool Return;
-                                    
-                                    Return = Value.TryGet(inputParameter.p0, out _outputParameter_.p0);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c5, ref _outputParameter_);
+                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -217,11 +182,203 @@ namespace AutoCSer.Net.HttpDomainServer
                         default: return;
                     }
                 }
+                sealed class _s0 : AutoCSer.Net.TcpInternalServer.ServerCall<_s0, AutoCSer.Net.HttpDomainServer.Session<valueType>, _p1>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
+                    {
+                        try
+                        {
+                            
+                            valueType Return;
+
+                            
+                            Return = serverValue.Get(inputParameter.p0);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c0, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
+                sealed class _s1 : AutoCSer.Net.TcpInternalServer.ServerCall<_s1, AutoCSer.Net.HttpDomainServer.Session<valueType>, _p3>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
+                    {
+                        try
+                        {
+                            
+                            bool Return;
+
+                            
+                            Return = serverValue.verify(Sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
+
+                            if (Return) Sender.SetVerifyMethod();
+                            
+                            value.Value.p0 = inputParameter.p1;
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c1, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                sealed class _s2 : AutoCSer.Net.TcpInternalServer.ServerCall<_s2, AutoCSer.Net.HttpDomainServer.Session<valueType>, _p5>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
+                    {
+                        try
+                        {
+                            
+                            valueType Return;
+
+                            
+                            Return = serverValue.Get(inputParameter.p0, inputParameter.p1);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c2, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsBuildOutputThread = true };
+                sealed class _s3 : AutoCSer.Net.TcpInternalServer.ServerCall<_s3, AutoCSer.Net.HttpDomainServer.Session<valueType>, _p1>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.Remove(inputParameter.p0);
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, value.Type);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
+                sealed class _s4 : AutoCSer.Net.TcpInternalServer.ServerCall<_s4, AutoCSer.Net.HttpDomainServer.Session<valueType>, _p5>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p6> value)
+                    {
+                        try
+                        {
+                            
+                            AutoCSer.Net.HttpDomainServer.SessionId Return;
+
+                            
+                            Return = serverValue.Set(inputParameter.p0, inputParameter.p1);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p6> value = new AutoCSer.Net.TcpServer.ReturnValue<_p6>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c4, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
+                sealed class _s5 : AutoCSer.Net.TcpInternalServer.ServerCall<_s5, AutoCSer.Net.HttpDomainServer.Session<valueType>, _p5>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p7> value)
+                    {
+                        try
+                        {
+                            
+                            bool Return;
+
+                            
+                            Return = serverValue.TryGet(inputParameter.p0, out value.Value.p0);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p7> value = new AutoCSer.Net.TcpServer.ReturnValue<_p7>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c5, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 7, IsBuildOutputThread = true };
                 static TcpInternalServer()
                 {
@@ -724,7 +881,7 @@ namespace AutoCSer.Net.HttpDomainServer
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.Net.HttpRegister.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpServerRegister", typeof(AutoCSer.Net.HttpRegister.Server))), verify, null, onCustomData, log, 0, false, true)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("HttpServerRegister", typeof(AutoCSer.Net.HttpRegister.Server))), verify, null, onCustomData, log, 1, false, false)
                 {
                     Value = value ?? new AutoCSer.Net.HttpRegister.Server();
                     setCommandData(6);
@@ -755,13 +912,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p1 inputParameter = new _p1();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p2 _outputParameter_ = new _p2();
-                                    
-                                    AutoCSer.Net.HttpRegister.RegisterState Return;
-                                    
-                                    Return = Value.start(inputParameter.p2, inputParameter.p3, inputParameter.p0, inputParameter.p1);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c0, ref _outputParameter_);
+                                    (_s0/**/.Pop() ?? new _s0()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -780,16 +931,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p4 _outputParameter_ = new _p4();
-                                    
-                                    bool Return;
-                                    
-                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
-                                    if (Return) sender.SetVerifyMethod();
-                                    
-                                    _outputParameter_.p0 = inputParameter.p1;
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c1, ref _outputParameter_);
+                                    (_s1/**/.Pop() ?? new _s1()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -808,13 +950,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p5 inputParameter = new _p5();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p2 _outputParameter_ = new _p2();
-                                    
-                                    AutoCSer.Net.HttpRegister.RegisterState Return;
-                                    
-                                    Return = Value.start(inputParameter.p2, inputParameter.p3, inputParameter.p0, inputParameter.p1);
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c2, ref _outputParameter_);
+                                    (_s2/**/.Pop() ?? new _s2()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -833,9 +969,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p6 inputParameter = new _p6();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    
-                                    Value.stop(inputParameter.p0);
-                                    sender.Push();
+                                    (_s3/**/.Pop() ?? new _s3()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -854,9 +988,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p7 inputParameter = new _p7();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    
-                                    Value.stop(inputParameter.p0);
-                                    sender.Push();
+                                    (_s4/**/.Pop() ?? new _s4()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -875,9 +1007,7 @@ namespace AutoCSer.Net.HttpDomainServer
                                 _p8 inputParameter = new _p8();
                                 if (sender.DeSerialize(ref data, ref inputParameter, true))
                                 {
-                                    
-                                    Value.stopListen(inputParameter.p0);
-                                    sender.Push();
+                                    (_s5/**/.Pop() ?? new _s5()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -892,11 +1022,197 @@ namespace AutoCSer.Net.HttpDomainServer
                         default: return;
                     }
                 }
+                sealed class _s0 : AutoCSer.Net.TcpInternalServer.ServerCall<_s0, AutoCSer.Net.HttpRegister.Server, _p1>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
+                    {
+                        try
+                        {
+                            
+                            AutoCSer.Net.HttpRegister.RegisterState Return;
+
+                            
+                            Return = serverValue.start(inputParameter.p2, inputParameter.p3, inputParameter.p0, inputParameter.p1);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c0, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                sealed class _s1 : AutoCSer.Net.TcpInternalServer.ServerCall<_s1, AutoCSer.Net.HttpRegister.Server, _p3>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
+                    {
+                        try
+                        {
+                            
+                            bool Return;
+
+                            
+                            Return = serverValue.verify(Sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
+
+                            if (Return) Sender.SetVerifyMethod();
+                            
+                            value.Value.p0 = inputParameter.p1;
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c1, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                sealed class _s2 : AutoCSer.Net.TcpInternalServer.ServerCall<_s2, AutoCSer.Net.HttpRegister.Server, _p5>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p2> value)
+                    {
+                        try
+                        {
+                            
+                            AutoCSer.Net.HttpRegister.RegisterState Return;
+
+                            
+                            Return = serverValue.start(inputParameter.p2, inputParameter.p3, inputParameter.p0, inputParameter.p1);
+
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p2> value = new AutoCSer.Net.TcpServer.ReturnValue<_p2>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c2, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                sealed class _s3 : AutoCSer.Net.TcpInternalServer.ServerCall<_s3, AutoCSer.Net.HttpRegister.Server, _p6>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.stop(inputParameter.p0);
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, value.Type);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c3 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
+                sealed class _s4 : AutoCSer.Net.TcpInternalServer.ServerCall<_s4, AutoCSer.Net.HttpRegister.Server, _p7>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.stop(inputParameter.p0);
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, value.Type);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c4 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
+                sealed class _s5 : AutoCSer.Net.TcpInternalServer.ServerCall<_s5, AutoCSer.Net.HttpRegister.Server, _p8>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue value)
+                    {
+                        try
+                        {
+                            
+
+                            serverValue.stopListen(inputParameter.p0);
+
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue value = new AutoCSer.Net.TcpServer.ReturnValue();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, value.Type);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c5 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 0, IsBuildOutputThread = true };
                 static TcpInternalServer()
                 {

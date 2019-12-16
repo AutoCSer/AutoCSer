@@ -125,18 +125,6 @@ namespace AutoCSer.Net.TcpServer
         {
             return (commandIndex & TcpServer.Server.CommandIndexAnd) | ((uint)(byte)type << TcpServer.Server.CommandIndexBits);
         }
-        /// <summary>
-        /// 添加 TCP 任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
-        /// </summary>
-        /// <param name="call">TCP 服务器端同步调用</param>
-        public static void AppendTcpQueue(ServerCallBase call)
-        {
-            if (call != null)
-            {
-                if (AutoCSer.Net.TcpServer.ServerCallQueue.Default.CheckAdd(call)) return;
-                throw new InvalidOperationException();
-            }
-        }
         static Server()
         {
             JsonConfig = AutoCSer.Json.ConfigLoader.GetUnion(typeof(AutoCSer.Json.SerializeConfig)).SerializeConfig;

@@ -27,7 +27,9 @@ namespace AutoCSer.Example.TcpRegisterClient
                         RegisterClientTestServer test = new RegisterClientTestServer();
                         do
                         {
-                            AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer.TcpInternalServer newServer = new RegisterClientTestServer.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute), null, test);
+                            AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute);
+                            attribute.Port = 30000 + test.Version;
+                            AutoCSer.Example.TcpRegisterClient.RegisterClientTestServer.TcpInternalServer newServer = new RegisterClientTestServer.TcpInternalServer(attribute, null, test);
                             if (newServer.IsListen)
                             {
                                 if (server != null) server.Dispose();
@@ -47,7 +49,7 @@ Version:" + test.Version.toString());
                                 Console.ReadKey();
                                 return;
                             }
-                            ++test.Version;
+                            test = new RegisterClientTestServer { Version = test.Version + 1 };
                         }
                         while (true);
                     }

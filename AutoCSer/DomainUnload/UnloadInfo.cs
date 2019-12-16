@@ -36,7 +36,6 @@ namespace AutoCSer.DomainUnload
                 case Type.Action: new AutoCSer.Threading.UnionType { Value = Unload }.Action(); return;
                 case Type.LogFileDispose: new AutoCSer.Log.UnionType { Value = Unload }.File.Dispose(); return;
                 case Type.TcpCommandBaseDispose: new AutoCSer.Net.TcpServer.UnionType { Value = Unload }.CommandBase.Dispose(); return;
-                case Type.TcpRegisterClientClose: AutoCSer.Net.TcpRegister.Client.Close(); return;
                 case Type.ThreadPoolDispose: new AutoCSer.Threading.UnionType { Value = Unload }.ThreadPool.Dispose(); return;
             }
         }

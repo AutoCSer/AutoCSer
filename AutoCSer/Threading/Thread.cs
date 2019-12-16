@@ -89,10 +89,6 @@ namespace AutoCSer.Threading
             /// </summary>
             LinkTaskRun,
             /// <summary>
-            /// 进程文件复制
-            /// </summary>
-            ProcessCopyer,
-            /// <summary>
             /// 创建 TCP 服务客户端套接字
             /// </summary>
             TcpClientSocketBaseCreate,
@@ -178,7 +174,6 @@ namespace AutoCSer.Threading
                     case CallType.FileStreamWriterDispose: new AutoCSer.IO.UnionType { Value = Value }.FileStreamWriter.Dispose(); return;
                     case CallType.FileStreamWriteFile: new AutoCSer.IO.UnionType { Value = Value }.FileStreamWriter.WriteFile(); return;
                     case CallType.LinkTaskRun: new UnionType { Value = Value }.LinkTask.Run(); return;
-                    case CallType.ProcessCopyer: new AutoCSer.Diagnostics.UnionType { Value = Value }.ProcessCopyer.Copy(); return;
                     case CallType.TcpClientSocketBaseCreate: new AutoCSer.Net.TcpServer.UnionType { Value = Value }.ClientSocketBase.Create(); return;
                     case CallType.TcpClientSocketSenderVirtualBuildOutput: new AutoCSer.Net.TcpServer.UnionType { Value = Value }.ClientSocketSenderBase.VirtualBuildOutput(); return;
                     case CallType.TcpInternalClientSocketSenderBuildOutput: new AutoCSer.Net.TcpInternalServer.UnionType { Value = Value }.ClientSocketSender.BuildOutput(); return;

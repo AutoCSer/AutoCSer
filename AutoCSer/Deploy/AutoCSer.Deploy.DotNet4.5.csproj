@@ -63,9 +63,19 @@
     <Compile Include="DeployInfo.cs" />
     <Compile Include="DeployResult.cs" />
     <Compile Include="DeployState.cs" />
+    <Compile Include="Diagnostics\ConfigLoader.cs" />
+    <Compile Include="Diagnostics\NET4.5\ProcessCopyClient.cs" />
+    <Compile Include="Diagnostics\ProcessCopyClient.cs" />
+    <Compile Include="Diagnostics\ProcessCopyConfig.cs" />
+    <Compile Include="Diagnostics\ProcessCopyer.cs" />
+    <Compile Include="Diagnostics\ProcessCopySaveCache.cs" />
+    <Compile Include="Diagnostics\ProcessCopyServer.cs" />
+    <Compile Include="Diagnostics\ProcessCopyerServerCall.cs" />
+    <Compile Include="Diagnostics\UnionType.cs" />
     <Compile Include="Directory.cs" />
     <Compile Include="FileSource.cs" />
     <Compile Include="FileTime.cs" />
+    <Compile Include="IndexValuePool.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="NET4.5\ClientDeploy.cs" />
@@ -90,6 +100,7 @@
       <Name>AutoCSer.DotNet4.5</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if exist "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectDir)..\CodeGenerator\bin\Release\DotNet4.5\AutoCSer.CodeGenerator.exe" "$(ProjectName)" "$(ProjectDir) " "$(TargetPath) " "$(TargetName)"</PostBuildEvent>

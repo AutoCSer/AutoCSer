@@ -439,5 +439,62 @@ namespace AutoCSer.Threading
                 return false;
             }
         }
+
+        /// <summary>
+        /// 简单队列
+        /// </summary>
+        public struct SimpleQueue
+        {
+            /// <summary>
+            /// 首节点
+            /// </summary>
+            private valueType head;
+            /// <summary>
+            /// 尾节点
+            /// </summary>
+            private valueType end;
+            /// <summary>
+            /// 添加节点
+            /// </summary>
+            /// <param name="next">尾节点</param>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            public void Append(valueType next)
+            {
+                if (head == null) head = end = next;
+                else
+                {
+                    end.LinkNext = next;
+                    end = next;
+                }
+            }
+            /// <summary>
+            /// 获取首节点并清除队列
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+            public valueType GetClear()
+            {
+                valueType value = head;
+                head = end = null;
+                return value;
+            }
+
+            /// <summary>
+            /// 获取队列节点集合
+            /// </summary>
+            /// <param name="head">队列首节点</param>
+            /// <returns></returns>
+            public static System.Collections.Generic.IEnumerable<valueType> GetQueue(valueType head)
+            {
+                do
+                {
+                    valueType next = head.LinkNext;
+                    head.LinkNext = null;
+                    yield return head;
+                    head = next;
+                }
+                while (head != null);
+            }
+        }
     }
 }

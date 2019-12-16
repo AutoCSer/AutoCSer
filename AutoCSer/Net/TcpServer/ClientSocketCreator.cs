@@ -164,12 +164,9 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="serverSet"></param>
         internal void OnServerChange(TcpRegister.ServerSet serverSet)
         {
-            TcpRegister.ServerInfo server = serverSet.Server.Server;
+            TcpRegister.ServerLog server = serverSet.Server;
             IPAddress ipAddress = HostPort.HostToIPAddress(server.Host, CommandClient.Log);
-            if (server.Port == Port && ipAddress.Equals(IpAddress))
-            {
-                if (!server.IsCheckRegister) TryCreateSocket();
-            }
+            if (server.Port == Port && ipAddress.Equals(IpAddress)) TryCreateSocket();
             else
             {
                 Host = server.Host;

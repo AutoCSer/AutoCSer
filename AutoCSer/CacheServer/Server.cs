@@ -7,7 +7,7 @@ namespace AutoCSer.CacheServer
     /// <summary>
     /// 缓存服务基类
     /// </summary>
-    public abstract class Server : AutoCSer.Net.TcpInternalServer.TimeVerifyServer, IDisposable
+    public abstract class Server : AutoCSer.Net.TcpInternalServer.TimeVerifyServer
     {
         /// <summary>
         /// 缓存管理
@@ -16,8 +16,9 @@ namespace AutoCSer.CacheServer
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             if (Cache != null)
             {
                 Cache.Dispose();

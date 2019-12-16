@@ -205,7 +205,7 @@ namespace AutoCSer.Net.TcpServer
         }
         static ClientCheckTimer()
         {
-            ++Date.NowTime.Count;
+            Date.NowTime.OnTimeFlag = true;
         }
     }
 }

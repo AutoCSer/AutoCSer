@@ -19,14 +19,14 @@ namespace AutoCSer.Net
         /// 发布程序集环境检测服务 8987
         /// </summary>
         DeployAssemblyEnvironmentCheck = 9000 - 13,
-        /// <summary>
-        /// K-V 数据库从服务 8988
-        /// </summary>
-        KeyValueStreamSlaveServer = 9000 - 12,
-        /// <summary>
-        /// K-V 数据库主服务 8989
-        /// </summary>
-        KeyValueStreamMasterServer = 9000 - 11,
+        ///// <summary>
+        ///// K-V 数据库从服务 8988
+        ///// </summary>
+        //KeyValueStreamSlaveServer = 9000 - 12,
+        ///// <summary>
+        ///// K-V 数据库主服务 8989
+        ///// </summary>
+        //KeyValueStreamMasterServer = 9000 - 11,
         /// <summary>
         /// 可持久化缓存从服务 8990
         /// </summary>

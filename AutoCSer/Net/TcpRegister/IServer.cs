@@ -13,13 +13,10 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="error"></param>
         void AddLog(Exception error);
         /// <summary>
-        /// TCP 服务注册信息
-        /// </summary>
-        ServerInfo TcpRegisterInfo { get; set; }
-        /// <summary>
         /// 创建 TCP 服务注册信息
         /// </summary>
+        /// <param name="logType">TCP 内部注册服务更新日志类型</param>
         /// <returns></returns>
-        ServerInfo CreateServerInfo();
+        ServerLog CreateServerLog(LogType logType);
     }
 }

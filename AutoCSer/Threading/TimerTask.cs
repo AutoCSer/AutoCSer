@@ -146,7 +146,7 @@ namespace AutoCSer.Threading
 
         static TimerTask()
         {
-            ++Date.NowTime.Count;
+            Date.NowTime.OnTimeFlag = true;
         }
     }
 }

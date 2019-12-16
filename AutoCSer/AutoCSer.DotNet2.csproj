@@ -102,12 +102,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Date.AutoCSer.cs" />
-    <Compile Include="Diagnostics\ConfigLoader.cs" />
-    <Compile Include="Diagnostics\ProcessCopyClient.cs" />
-    <Compile Include="Diagnostics\ProcessCopyConfig.cs" />
-    <Compile Include="Diagnostics\ProcessCopyer.cs" />
-    <Compile Include="Diagnostics\ProcessCopyServer.cs" />
-    <Compile Include="Diagnostics\UnionType.cs" />
     <Compile Include="DictionaryCreator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -399,6 +393,7 @@
     </Compile>
     <Compile Include="NET2.0\FileStream.cs" />
     <Compile Include="NET2.0\Func.cs" />
+    <Compile Include="NET2.0\HashAlgorithm.cs" />
     <Compile Include="NET2.0\HashSet.cs" />
     <Compile Include="NET2.0\MethodImpl.cs" />
     <Compile Include="NET2.0\Socket.cs" />
@@ -483,24 +478,15 @@
     <Compile Include="Net\TcpOpenServer\TimeVerifyClient.cs" />
     <Compile Include="Net\TcpOpenServer\TimeVerifyServer.cs" />
     <Compile Include="Net\TcpOpenServer\UnionType.cs" />
-    <Compile Include="Net\TcpRegister\Cache.cs" />
     <Compile Include="Net\TcpRegister\Client.cs" />
-    <Compile Include="Net\TcpRegister\ClientId.cs" />
     <Compile Include="Net\TcpRegister\ClientInfo.cs" />
     <Compile Include="Net\TcpRegister\ClientServerSet.cs" />
-    <Compile Include="Net\TcpRegister\Config.cs" />
-    <Compile Include="Net\TcpRegister\ConfigLoader.cs" />
     <Compile Include="Net\TcpRegister\IClient.cs" />
     <Compile Include="Net\TcpRegister\IServer.cs" />
-    <Compile Include="Net\TcpRegister\Log.cs" />
     <Compile Include="Net\TcpRegister\LogType.cs" />
-    <Compile Include="Net\TcpRegister\PortCache.cs" />
-    <Compile Include="Net\TcpRegister\Ports.cs" />
-    <Compile Include="Net\TcpRegister\RegisterState.cs" />
     <Compile Include="Net\TcpRegister\Server.cs" />
-    <Compile Include="Net\TcpRegister\ServerInfo.cs" />
+    <Compile Include="Net\TcpRegister\ServerLog.cs" />
     <Compile Include="Net\TcpRegister\ServerSet.cs" />
-    <Compile Include="Net\TcpRegister\ServerSetCache.cs" />
     <Compile Include="Net\TcpRegister\UnionType.cs" />
     <Compile Include="Net\TcpServer\AutoWaitReturnValue.cs" />
     <Compile Include="Net\TcpServer\Awaiter.cs" />

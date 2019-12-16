@@ -17,11 +17,11 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP 服务注册信息
         /// </summary>
-        internal ServerInfo Server;
+        internal ServerLog Server;
         /// <summary>
         /// TCP 服务注册信息集合
         /// </summary>
-        internal ServerInfo[] Servers;
+        internal ServerLog[] Servers;
         /// <summary>
         /// 设置 TCP 服务信息集合缓存信息
         /// </summary>

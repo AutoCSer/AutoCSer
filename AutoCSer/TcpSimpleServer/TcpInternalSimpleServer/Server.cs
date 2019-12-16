@@ -13,24 +13,46 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
     public abstract unsafe partial class Server : TcpSimpleServer.Server<Server, ServerSocket>, TcpRegister.IServer
     {
         /// <summary>
+        /// TCP 内部注册随机标识
+        /// </summary>
+        private readonly ulong RegisterRandom = AutoCSer.Random.Default.SecureNextULong() ^ (ulong)AutoCSer.Random.Hash;
+        /// <summary>
         /// TCP 内部注册服务客户端
         /// </summary>
         private TcpRegister.Client tcpRegisterClient;
         /// <summary>
-        /// TCP 服务注册信息
+        /// TCP 内部注册服务日志
         /// </summary>
-        TcpRegister.ServerInfo TcpRegister.IServer.TcpRegisterInfo { get; set; }
+        private TcpRegister.ServerLog tcpRegisterServerLog;
         /// <summary>
         /// 创建 TCP 服务注册信息
         /// </summary>
+        /// <param name="logType">TCP 内部注册服务更新日志类型</param>
         /// <returns></returns>
-        TcpRegister.ServerInfo TcpRegister.IServer.CreateServerInfo()
+        TcpRegister.ServerLog TcpRegister.IServer.CreateServerLog(TcpRegister.LogType logType)
         {
-            return new TcpRegister.ServerInfo
+            if (logType == TcpRegister.LogType.RegisterServer)
             {
+                if (tcpRegisterServerLog == null) tcpRegisterServerLog = createServerLog(logType);
+                return tcpRegisterServerLog;
+            }
+            return createServerLog(logType);
+        }
+        /// <summary>
+        /// 创建 TCP 服务注册信息
+        /// </summary>
+        /// <param name="logType">TCP 内部注册服务更新日志类型</param>
+        /// <returns></returns>
+        private TcpRegister.ServerLog createServerLog(TcpRegister.LogType logType)
+        {
+            return new TcpRegister.ServerLog
+            {
+                Random = RegisterRandom,
                 Host = Attribute.ClientRegisterHost,
                 Port = Attribute.ClientRegisterPort,
                 IsSingle = Attribute.GetIsSingleRegister,
+                IsMain = Attribute.GetIsMainRegister,
+                LogType = logType,
                 Name = ServerAttribute.ServerName,
             };
         }

@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoCSer.NetStandard" Version="1.1.53" />
+    <PackageReference Include="AutoCSer.NetStandard" Version="1.1.54" />
   </ItemGroup>
 
 </Project>

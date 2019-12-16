@@ -294,7 +294,7 @@ namespace AutoCSer.Threading
         static ThreadPool()
         {
             AutoCSer.Pub.ClearCaches += clearCache;
-            ++Date.NowTime.Count;
+            Date.NowTime.OnTimeFlag = true;
         }
     }
 }

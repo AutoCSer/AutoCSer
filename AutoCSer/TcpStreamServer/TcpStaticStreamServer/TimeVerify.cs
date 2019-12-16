@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 
 namespace AutoCSer.Net.TcpStaticStreamServer
 {
@@ -9,6 +10,10 @@ namespace AutoCSer.Net.TcpStaticStreamServer
     public abstract class TimeVerify<verifyType>
         where verifyType : TimeVerify<verifyType>
     {
+        /// <summary>
+        /// MD5 加密
+        /// </summary>
+        private static MD5CryptoServiceProvider md5;
         /// <summary>
         /// 验证时间戳
         /// </summary>
@@ -30,7 +35,8 @@ namespace AutoCSer.Net.TcpStaticStreamServer
             {
                 if (!timeVerifyTick.Check(ref ticks, ref sender.TimeVerifyTicks)) return false;
                 TcpServer.ServerBaseAttribute attribute = server.Attribute;
-                if (TcpServer.TimeVerifyServer.IsMd5(TcpServer.TimeVerifyServer.Md5(attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
+                if (md5 == null) md5 = new MD5CryptoServiceProvider();
+                if (TcpServer.TimeVerifyServer.IsMd5(TcpServer.TimeVerifyServer.Md5(md5, attribute.VerifyString, randomPrefix, ticks), md5Data) == 0)
                 {
                     timeVerifyTick.Set(ticks);
                     if (!attribute.IsMarkData || sender.SetMarkData(server.ServerAttribute.VerifyHashCode ^ randomPrefix)) return true;

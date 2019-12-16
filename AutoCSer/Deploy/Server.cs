@@ -142,7 +142,7 @@ namespace AutoCSer.Deploy
         /// <param name="SwitchFile"></param>
         public void Switch(FileInfo SwitchFile)
         {
-            this.TcpServer.StopListen();
+            server.StopListen();
             try
             {
                 if (BeforeSwitch != null) BeforeSwitch();

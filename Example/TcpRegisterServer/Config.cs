@@ -21,16 +21,5 @@ namespace AutoCSer.Example.TcpRegisterServer
                 return attribute;
             }
         }
-        /// <summary>
-        /// TCP 内部注册服务配置
-        /// </summary>
-        [AutoCSer.Config.Member]
-        internal static AutoCSer.Net.TcpRegister.Config TcpRegisterConfig
-        {
-            get
-            {
-                return new AutoCSer.Net.TcpRegister.Config { PortStart = 10000, PortEnd = 20000 };
-            }
-        }
     }
 }

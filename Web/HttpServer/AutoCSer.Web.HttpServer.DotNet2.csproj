@@ -54,6 +54,10 @@
       <Project>{3C17CC5A-ED1B-431C-83FE-B2B780B1F4B9}</Project>
       <Name>AutoCSer.DotNet2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AutoCSer\Deploy\AutoCSer.Deploy.DotNet2.csproj">
+      <Project>{7B97EF4D-B898-4A06-822A-632EF70B20F7}</Project>
+      <Name>AutoCSer.Deploy.DotNet2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AutoCSer\WebView\AutoCSer.WebView.DotNet2.csproj">
       <Project>{66F24F55-C44F-4A75-AA5A-19A7B8BE14FA}</Project>
       <Name>AutoCSer.WebView.DotNet2</Name>

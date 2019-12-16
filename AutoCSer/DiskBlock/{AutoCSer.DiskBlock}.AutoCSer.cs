@@ -38,7 +38,7 @@ namespace AutoCSer.DiskBlock
                 /// <param name="onCustomData">自定义数据包处理</param>
                 /// <param name="log">日志接口</param>
                 public TcpInternalServer(AutoCSer.Net.TcpInternalServer.ServerAttribute attribute = null, Func<System.Net.Sockets.Socket, bool> verify = null, AutoCSer.DiskBlock.Server value = null, Action<SubArray<byte>> onCustomData = null, AutoCSer.Log.ILog log = null)
-                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DiskBlock", typeof(AutoCSer.DiskBlock.Server))), verify, null, onCustomData, log, 0, false, true)
+                    : base(attribute ?? (attribute = AutoCSer.Net.TcpInternalServer.ServerAttribute.GetConfig("DiskBlock", typeof(AutoCSer.DiskBlock.Server))), verify, null, onCustomData, log, 1, false, false)
                 {
                     Value = value ?? new AutoCSer.DiskBlock.Server();
                     setCommandData(3);
@@ -87,16 +87,7 @@ namespace AutoCSer.DiskBlock
                                 _p3 inputParameter = new _p3();
                                 if (sender.DeSerialize(ref data, ref inputParameter))
                                 {
-                                    _p4 _outputParameter_ = new _p4();
-                                    
-                                    bool Return;
-                                    
-                                    Return = Value.verify(sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
-                                    if (Return) sender.SetVerifyMethod();
-                                    
-                                    _outputParameter_.p0 = inputParameter.p1;
-                                    _outputParameter_.Return = Return;
-                                    sender.Push(_c1, ref _outputParameter_);
+                                    (_s1/**/.Pop() ?? new _s1()).Set(sender, Value, AutoCSer.Net.TcpServer.ServerTaskType.Queue, ref inputParameter);
                                     return;
                                 }
                                 returnType = AutoCSer.Net.TcpServer.ReturnType.ServerDeSerializeError;
@@ -133,6 +124,41 @@ namespace AutoCSer.DiskBlock
                     }
                 }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c0 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 2, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
+                sealed class _s1 : AutoCSer.Net.TcpInternalServer.ServerCall<_s1, AutoCSer.DiskBlock.Server, _p3>
+                {
+                    private void get(ref AutoCSer.Net.TcpServer.ReturnValue<_p4> value)
+                    {
+                        try
+                        {
+                            
+                            bool Return;
+
+                            
+                            Return = serverValue.verify(Sender, inputParameter.p2, inputParameter.p3, inputParameter.p0, ref inputParameter.p1);
+
+                            if (Return) Sender.SetVerifyMethod();
+                            
+                            value.Value.p0 = inputParameter.p1;
+                            value.Value.Return = Return;
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
+                        }
+                        catch (Exception error)
+                        {
+                            value.Type = AutoCSer.Net.TcpServer.ReturnType.ServerException;
+                            Sender.AddLog(error);
+                        }
+                    }
+                    public override void RunTask()
+                    {
+                        AutoCSer.Net.TcpServer.ReturnValue<_p4> value = new AutoCSer.Net.TcpServer.ReturnValue<_p4>();
+                        if (Sender.IsSocket)
+                        {
+                            get(ref value);
+                            Sender.Push(CommandIndex, _c1, ref value);
+                        }
+                        push(this);
+                    }
+                }
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c1 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 4, IsSimpleSerializeOutputParamter = true, IsBuildOutputThread = true };
                 private static readonly AutoCSer.Net.TcpServer.OutputInfo _c2 = new AutoCSer.Net.TcpServer.OutputInfo { OutputParameterIndex = 6, IsBuildOutputThread = true };
                 static TcpInternalServer()

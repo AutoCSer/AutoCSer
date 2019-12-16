@@ -214,6 +214,10 @@
       <Project>{384CC69B-D0AF-4A82-806F-19C91F852E6C}</Project>
       <Name>AutoCSer.DotNet4</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Deploy\AutoCSer.Deploy.DotNet4.csproj">
+      <Project>{22D543FB-F2F9-4CEB-A1BF-5941E1B966E3}</Project>
+      <Name>AutoCSer.Deploy.DotNet4</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

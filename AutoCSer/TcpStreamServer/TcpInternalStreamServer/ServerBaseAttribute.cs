@@ -187,10 +187,16 @@ namespace AutoCSer.Net.TcpInternalStreamServer
         /// true 表示只允许注册一个 TCP 服务实例（单例服务，其它服务的注册将失败），但 false 并不代表支持负载均衡（仅仅是在客户端访问某个服务端失败时可以切换到其他服务端连接）。
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal override bool GetIsSingleRegister
-        {
-            get { return IsSingleRegister; }
-        }
+        internal override bool GetIsSingleRegister { get { return IsSingleRegister; } }
+        /// <summary>
+        /// 默认为 false 表示为可替换服务，true 表示主服务
+        /// </summary>
+        public bool IsMainRegister = false;
+        /// <summary>
+        /// true 表示主服务，否则为可替换服务
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override bool GetIsMainRegister { get { return IsMainRegister; } }
         /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>

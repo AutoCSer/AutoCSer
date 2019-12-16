@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using AutoCSer.Extension;
 
@@ -41,6 +42,21 @@ namespace AutoCSer.Net.TcpServer
                 AutoCSer.Threading.ThreadYield.YieldOnly();
             }
             while (true);
+        }
+        /// <summary>
+        /// 添加任务
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal bool CheckAdd(ServerCallBase value)
+        {
+            if (value.LinkNext == null)
+            {
+                Add(value);
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// TCP 服务器端同步调用任务处理

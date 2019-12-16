@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using AutoCSer.Extension;
 
 namespace AutoCSer.Net.TcpRegister
 {
@@ -12,131 +13,125 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// TCP 服务注册信息
         /// </summary>
-        internal Log Server;
+        internal ServerLog Server;
         /// <summary>
         /// TCP 服务注册信息集合
         /// </summary>
-        internal LeftArray<Log> Servers;
+        internal LeftArray<ServerLog> Servers;
         /// <summary>
         /// TCP 服务信息集合
         /// </summary>
-        /// <param name="log"></param>
-        internal ServerSet(Log log)
+        /// <param name="server"></param>
+        internal ServerSet(ServerLog server)
         {
-            Server = log;
-        }
-        /// <summary>
-        /// TCP 服务信息集合
-        /// </summary>
-        /// <param name="cache"></param>
-        /// <param name="registerServer"></param>
-        internal ServerSet(ServerSetCache cache, Server registerServer)
-        {
-            Server = new Log { Type = LogType.RegisterServer, Server = cache.Server };
-            registerServer.SetIpPort(cache.Server);
-            if (cache.Servers != null)
-            {
-                Servers.PrepLength(cache.Servers.Length);
-                foreach (ServerInfo server in cache.Servers)
-                {
-                    Servers.UnsafeAdd(new Log { Type = LogType.RegisterServer, Server = server });
-                    registerServer.SetIpPort(server);
-                }
-            }
+            Server = server;
         }
         /// <summary>
         /// 添加 TCP 服务注册信息
         /// </summary>
-        /// <param name="log"></param>
-        internal void Add(Log log)
+        /// <param name="server"></param>
+        /// <param name="isMainChanged">主服务是否被修改</param>
+        /// <returns>日志是否需要推送到客户端</returns>
+        internal bool Add(ServerLog server, out bool isMainChanged)
         {
-            if (log.Server.IsSingle)
+            if (Server == null)
             {
-                Server = log;
-                Servers.ClearOnlyLength();
+                Server = server;
+                return isMainChanged = true;
             }
-            else
+            server.Name = Server.Name;
+            if (server.IsSingle ^ Server.IsSingle)
             {
-                if (!Server.Server.IsSingle) Servers.Add(Server);
-                Server = log;
-                Servers.Remove(value => !value.Server.IsSingle);
+                AutoCSer.Log.Pub.Log.Add(Log.LogType.Warn, "TCP 服务 " + server.Name + " 单实例定义冲突 " + server.IsSingle.ToString());
             }
+            if (server.HostPortEquals(Server))
+            {
+                if (server.Random == Server.Random) return isMainChanged = false;
+                if (server.IsSingle) Servers.Length = 0;
+                Server = server;
+                isMainChanged = false;
+                return true;
+            }
+            if (server.IsSingle || Server.IsSingle)
+            {
+                Servers.Length = 0;
+                Server = server;
+                return isMainChanged = true;
+            }
+            int index = indexOf(server);
+            if (!Server.IsMain || server.IsMain)
+            {
+                Server.IsMain = false;
+                if (index < 0) Servers.Add(Server);
+                else Servers.Array[index] = Server;
+                Server = server;
+                return isMainChanged = true;
+            }
+            isMainChanged = false;
+            if (index < 0)
+            {
+                Servers.Add(server);
+                return true;
+            }
+            if (server.Random == Servers.Array[index].Random) return false;
+            Servers.Array[index] = server;
+            return true;
         }
         /// <summary>
-        /// 失败重连检测 TCP 服务注册信息
+        /// 查找匹配服务位置
         /// </summary>
-        /// <param name="log"></param>
-        /// <returns>是否添加成功</returns>
-        internal bool Check(Log log)
+        /// <param name="server"></param>
+        /// <returns></returns>
+        private int indexOf(ServerLog server)
         {
-            if (Server != null)
+            if (Servers.Length == 0) return -1;
+            int count = Servers.Length;
+            ServerLog[] serverArray = Servers.Array;
+            foreach (ServerLog nextServer in serverArray)
             {
-                if (Server.Server.HostPortEquals(log.Server))
-                {
-                    Server = log;
-                    return false;
-                }
-                int count = Servers.Length;
-                if (count != 0)
-                {
-                    foreach (Log server in Servers.Array)
-                    {
-                        if (server.Server.HostPortEquals(log.Server))
-                        {
-                            Servers.Array[Servers.Length - count] = log;
-                            return false;
-                        }
-                        if (--count == 0) break;
-                    }
-                }
+                if (server.HostPortEquals(nextServer)) return Servers.Length - count;
+                if (--count == 0) return -1;
             }
-            Add(log);
-            return true;
+            return -1;
         }
         /// <summary>
         /// TCP 内部注册服务日志初始化回调
         /// </summary>
         /// <param name="onLog"></param>
+        /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnLog(AutoCSer.Net.TcpServer.ServerCallback<Log> onLog)
+        internal bool OnLog(AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
         {
-            foreach (Log log in Servers) onLog.Callback(log);
-            onLog.Callback(Server);
+            foreach (ServerLog log in Servers)
+            {
+                if (!onLog.Callback(log)) return false;
+            }
+            return onLog.Callback(Server);
         }
         /// <summary>
         /// 移除 TCP 服务注册信息
         /// </summary>
         /// <param name="server"></param>
-        /// <returns></returns>
-        internal Log Remove(ServerInfo server)
+        /// <returns>主服务是否被修改</returns>
+        internal bool Remove(ServerLog server)
         {
-            Log log = null;
-            if (this.Server.Server.ClientEquals(server))
+            if (Server != null)
             {
-                log = this.Server;
-                if (Servers.Length == 0) this.Server = null;
-                else this.Server = Servers.UnsafePop();
-            }
-            else
-            {
-                int index = Servers.IndexOf(value => value.Server.ClientEquals(server));
-                if (index != -1)
+                if (server.HostPortEquals(Server))
                 {
-                    log = Servers.Array[index];
-                    Servers.RemoveAt(index);
+                    if (server.Random == Server.Random)
+                    {
+                        Server = Servers.Length == 0 ? null : Servers.Array[--Servers.Length];
+                        return true;
+                    }
+                }
+                else
+                {
+                    int index = indexOf(server);
+                    if (index >= 0 && server.Random == Servers.Array[index].Random) Servers.Array[index] = Servers.Array[--Servers.Length];
                 }
             }
-            return log;
-        }
-
-        /// <summary>
-        /// 客户端清除数据
-        /// </summary>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ClientClear()
-        {
-            Server = null;
-            Servers.ClearOnlyLength();
+            return false;
         }
     }
 }

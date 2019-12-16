@@ -123,6 +123,15 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
             get { return IsSingleRegister; }
         }
         /// <summary>
+        /// 默认为 false 表示为可替换服务，true 表示主服务
+        /// </summary>
+        public bool IsMainRegister = false;
+        /// <summary>
+        /// true 表示主服务，否则为可替换服务
+        /// </summary>
+        [AutoCSer.Metadata.Ignore]
+        internal override bool GetIsMainRegister { get { return IsMainRegister; } }
+        /// <summary>
         /// 二进制反序列化数组最大长度
         /// </summary>
         public int BinaryDeSerializeMaxArraySize = AutoCSer.BinarySerialize.DeSerializer.DefaultConfig.MaxArraySize;

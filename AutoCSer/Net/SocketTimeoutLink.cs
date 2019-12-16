@@ -364,7 +364,7 @@ namespace AutoCSer.Net
             }
             static TimerLink()
             {
-                ++Date.NowTime.Count;
+                Date.NowTime.OnTimeFlag = true;
             }
         }
     }

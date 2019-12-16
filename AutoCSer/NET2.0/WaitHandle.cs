@@ -3,7 +3,7 @@
 namespace AutoCSer.Extension
 {
     /// <summary>
-    /// 等待事件
+    /// 释放资源
     /// </summary>
     internal static class WaitHandleExtension
     {

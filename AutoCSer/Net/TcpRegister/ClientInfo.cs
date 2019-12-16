@@ -7,45 +7,15 @@ namespace AutoCSer.Net.TcpRegister
     /// <summary>
     /// 客户端信息
     /// </summary>
-    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    internal struct ClientInfo
+    internal sealed class ClientInfo
     {
-        /// <summary>
-        /// 索引编号
-        /// </summary>
-        internal int Identity;
         /// <summary>
         /// TCP 内部注册服务更新日志回调
         /// </summary>
-        private AutoCSer.Net.TcpServer.ServerCallback<Log> onLog;
+        internal AutoCSer.Net.TcpServer.ServerCallback<ServerLog> OnLog;
         /// <summary>
-        /// 设置 TCP 内部注册服务更新日志回调
+        /// 是否需要移除
         /// </summary>
-        /// <param name="identity"></param>
-        /// <param name="onLog"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool Set(int identity, AutoCSer.Net.TcpServer.ServerCallback<Log> onLog)
-        {
-            if (Identity == identity)
-            {
-                this.onLog = onLog;
-                return true;
-            }
-            return false;
-        }
-        /// <summary>
-        /// 更新日志回调
-        /// </summary>
-        /// <param name="log"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void OnLog(Log log)
-        {
-            if (onLog != null && !onLog.Callback(log))
-            {
-                ++Identity;
-                onLog = null;
-            }
-        }
+        internal bool IsRemove;
     }
 }

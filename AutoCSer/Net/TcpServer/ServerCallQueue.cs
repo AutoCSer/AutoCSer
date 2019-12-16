@@ -52,7 +52,7 @@ namespace AutoCSer.Net.TcpServer
         /// 添加低优先级任务队列链表
         /// </summary>
         /// <param name="link"></param>
-        internal override void Add(LowPriorityLink link)
+        public override void Add(LowPriorityLink link)
         {
             Add(new ServerCallLink(link));
         }

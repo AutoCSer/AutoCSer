@@ -48,18 +48,6 @@ namespace AutoCSer.Net.TcpServer
         /// </summary>
         internal readonly ServerCallCanDisposableQueue.LowPriorityLink CallQueueLink;
         /// <summary>
-        /// 添加任务队列（不允许添加重复的任务实例，否则可能造成严重后果）
-        /// </summary>
-        /// <param name="call">TCP 服务器端同步调用</param>
-        public void AppendQueue(ServerCallBase call)
-        {
-            if (call != null)
-            {
-                if (CallQueue.CheckAdd(call)) return;
-                throw new InvalidOperationException();
-            }
-        }
-        /// <summary>
         /// 命令位图
         /// </summary>
         private Pointer.Size commandData;
@@ -230,15 +218,6 @@ namespace AutoCSer.Net.TcpServer
                 }
                 if (attribute.ClientRegisterHost == null) attribute.ClientRegisterHost = attribute.Host;
                 if (attribute.ClientRegisterPort == 0) attribute.ClientRegisterPort = attribute.Port;
-                if (attribute.ClientRegisterPort == 0)
-                {
-                    if (tcpRegisterClient.GetPort(attribute)) Port = attribute.Port;
-                    else
-                    {
-                        Log.Add(AutoCSer.Log.LogType.Error, "TCP 内部服务 " + attribute.ServerName + " 端口获取失败");
-                        return false;
-                    }
-                }
             }
             return true;
         }

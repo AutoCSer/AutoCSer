@@ -5,6 +5,9 @@ using AutoCSer.Extension;
 
 namespace AutoCSer.CodeGenerator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Program
     {
         /// <summary>

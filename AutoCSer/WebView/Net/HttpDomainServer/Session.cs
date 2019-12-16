@@ -2,6 +2,7 @@
 using System.Threading;
 using AutoCSer.Extension;
 using System.Runtime.CompilerServices;
+using AutoCSer.Net.TcpServer;
 
 namespace AutoCSer.Net.HttpDomainServer
 {
@@ -56,12 +57,16 @@ namespace AutoCSer.Net.HttpDomainServer
     /// <summary>
     /// 会话标识
     /// </summary>
-    public abstract unsafe class Session : TcpInternalServer.TimeVerifyServer, IDisposable
+    public abstract unsafe class Session : TcpInternalServer.TimeVerifyServer
     {
         /// <summary>
         /// 服务名称
         /// </summary>
         internal const string ServerName = "HttpSession";
+        /// <summary>
+        /// 单次超时检测数据量
+        /// </summary>
+        internal const int TimeoutRefreshCount = 1 << 16;
         /// <summary>
         /// 超时时钟周期
         /// </summary>
@@ -86,15 +91,27 @@ namespace AutoCSer.Net.HttpDomainServer
             refreshSeconds = Math.Max(refreshMinutes, 1) * 60;
             //refreshTicks = new TimeSpan(0, refreshMinutes, 0).Ticks;
             //timerTask.Default.Add(this, thread.callType.HttpSessionRefreshTimeout, date.nowTime.Now.AddTicks(refreshTicks));
-            isTimer = refreshSeconds;
+            SetTimeoutRefreshSeconds();
             PushNotNull(this);
         }
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-            if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0) PopNotNull(this);
+            if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
+            {
+                PopNotNull(this);
+                base.Dispose();
+            }
+        }
+        /// <summary>
+        /// 重置超时刷新秒数
+        /// </summary>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal void SetTimeoutRefreshSeconds()
+        {
+            Interlocked.Exchange(ref isTimer, refreshSeconds);
         }
         /// <summary>
         /// 是否已经触发定时任务
@@ -106,11 +123,7 @@ namespace AutoCSer.Net.HttpDomainServer
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         internal void OnTimer()
         {
-            if (Interlocked.Decrement(ref isTimer) == 0)
-            {
-                RefreshTimeout();
-                isTimer = refreshSeconds;
-            }
+            if (Interlocked.Decrement(ref isTimer) == 0) RefreshTimeout();
         }
         /// <summary>
         /// 超时检测
@@ -227,15 +240,6 @@ namespace AutoCSer.Net.HttpDomainServer
             /// </summary>
             public uint Identity;
             /// <summary>
-            /// 检测会话是否有效
-            /// </summary>
-            /// <param name="sessionId"></param>
-            /// <returns></returns>
-            public bool Check(ref SessionId sessionId)
-            {
-                return Identity == sessionId.IndexIdentity && ((Low ^ sessionId.Low) | (High ^ sessionId.High)) == 0 && Timeout != DateTime.MinValue;
-            }
-            /// <summary>
             /// 设置会话信息
             /// </summary>
             /// <param name="sessionId"></param>
@@ -273,7 +277,7 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <param name="timeout"></param>
             /// <param name="value"></param>
             /// <returns></returns>
-            public bool Get(ref SessionId sessionId, DateTime timeout, ref valueType value)
+            public bool Get(ref SessionId sessionId, DateTime timeout, out valueType value)
             {
                 if (((Low ^ sessionId.Low) | (High ^ sessionId.High) | (Identity ^ sessionId.IndexIdentity)) == 0 && Timeout != DateTime.MinValue)
                 {
@@ -281,6 +285,7 @@ namespace AutoCSer.Net.HttpDomainServer
                     Timeout = timeout;
                     return true;
                 }
+                value = default(valueType);
                 return false;
             }
             /// <summary>
@@ -325,7 +330,7 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <summary>
             /// Session值索引池
             /// </summary>
-            public AutoCSer.Threading.IndexValuePool<Value> IndexPool;
+            public AutoCSer.IndexValuePool<Value> IndexPool;
             /// <summary>
             /// 超时时钟周期
             /// </summary>
@@ -342,24 +347,17 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <summary>
             /// 超时检测
             /// </summary>
-            public void Refresh()
+            /// <param name="endIndex">结束位置</param>
+            public void Refresh(int endIndex)
             {
-                int index = IndexPool.PoolIndex;
-                while (index != 0)
+                int startIndex = Math.Max(endIndex - TimeoutRefreshCount, 0);
+                DateTime now = Date.NowTime.Now;
+                Value[] array = IndexPool.Array;
+                do
                 {
-                    object arrayLock = IndexPool.ArrayLock;
-                    Monitor.Enter(arrayLock);
-                    DateTime now = Date.NowTime.Now;
-                    if (index > IndexPool.PoolIndex) index = IndexPool.PoolIndex;
-                    try
-                    {
-                        for (int endIndex = Math.Max(index - 1024, 0); index != endIndex; )
-                        {
-                            if (IndexPool.Array[--index].CheckTimeout(now)) IndexPool.FreeContinue(index);
-                        }
-                    }
-                    finally { Monitor.Exit(arrayLock); }
+                    if (array[--endIndex].CheckTimeout(now)) IndexPool.Free(endIndex);
                 }
+                while (endIndex != startIndex);
             }
             /// <summary>
             /// 设置Session值
@@ -367,38 +365,19 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <param name="sessionId">Session名称</param>
             /// <param name="value">值</param>
             /// <returns>是否设置成功</returns>
-            public unsafe int Set(ref SessionId sessionId, valueType value)
+            public bool Set(ref SessionId sessionId, valueType value)
             {
-                if (sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length && IndexPool.Array[sessionId.Index].Check(ref sessionId))
-                {
-                    object arrayLock = IndexPool.ArrayLock;
-                    Monitor.Enter(arrayLock);
-                    if (IndexPool.Array[sessionId.Index].Set(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), value))
-                    {
-                        Monitor.Exit(arrayLock);
-                        return 1;
-                    }
-                    Monitor.Exit(arrayLock);
-                }
-                return 0;
+                return sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length && IndexPool.Array[sessionId.Index].Set(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), value);
             }
             /// <summary>
             /// 设置Session值
             /// </summary>
             /// <param name="sessionId">Session名称</param>
             /// <param name="value">值</param>
-            /// <returns>Session是否被更新</returns>
-            public unsafe bool New(ref SessionId sessionId, valueType value)
+            public void New(ref SessionId sessionId, valueType value)
             {
-                object arrayLock = IndexPool.ArrayLock;
-                Monitor.Enter(arrayLock);
-                try
-                {
-                    sessionId.Index = IndexPool.GetIndexContinue();
-                    IndexPool.Array[sessionId.Index].New(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), value);
-                }
-                finally { Monitor.Exit(arrayLock); }
-                return true;
+                sessionId.Index = IndexPool.GetIndex();
+                IndexPool.Array[sessionId.Index].New(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), value);
             }
             /// <summary>
             /// 获取Session值
@@ -408,15 +387,11 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <returns>是否存在返回值</returns>
             public bool TryGet(ref SessionId sessionId, out valueType value)
             {
-                value = default(valueType);
                 if (sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length)
                 {
-                    object arrayLock = IndexPool.ArrayLock;
-                    Monitor.Enter(arrayLock);
-                    bool isValue = IndexPool.Array[sessionId.Index].Get(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), ref value);
-                    Monitor.Exit(arrayLock);
-                    return isValue;
+                    return IndexPool.Array[sessionId.Index].Get(ref sessionId, Date.NowTime.Now.AddTicks(timeoutTicks), out value);
                 }
+                value = default(valueType);
                 return false;
             }
             /// <summary>
@@ -425,12 +400,72 @@ namespace AutoCSer.Net.HttpDomainServer
             /// <param name="sessionId">Session名称</param>
             public void Remove(ref SessionId sessionId)
             {
-                if (sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length)
+                if (sessionId.Low != 0 && (uint)sessionId.Index < (uint)IndexPool.Array.Length && IndexPool.Array[sessionId.Index].Remove(ref sessionId))
                 {
-                    object arrayLock = IndexPool.ArrayLock;
-                    Monitor.Enter(arrayLock);
-                    if (IndexPool.Array[sessionId.Index].Remove(ref sessionId)) IndexPool.FreeExit(sessionId.Index);
-                    else Monitor.Exit(arrayLock);
+                    IndexPool.Free(sessionId.Index);
+                }
+            }
+        }
+        /// <summary>
+        /// 超时检测
+        /// </summary>
+        private sealed class RefreshTimeoutServerCall : ServerCallBase
+        {
+            /// <summary>
+            /// 会话标识服务
+            /// </summary>
+            private readonly Session<valueType> server;
+            /// <summary>
+            /// Session值索引池索引
+            /// </summary>
+            private int poolIndex;
+            /// <summary>
+            /// Session值索引池数组检测最后位置
+            /// </summary>
+            private int endIndex;
+            /// <summary>
+            /// 超时检测
+            /// </summary>
+            /// <param name="server"></param>
+            internal RefreshTimeoutServerCall(Session<valueType> server)
+            {
+                this.server = server;
+                Pool[] valuePool = server.valuePool;
+                poolIndex = valuePool.Length - 1;
+                endIndex = valuePool[poolIndex].IndexPool.ArrayIndex;
+            }
+            /// <summary>
+            /// 超时检测
+            /// </summary>
+            /// <param name="serverCall"></param>
+            private RefreshTimeoutServerCall(RefreshTimeoutServerCall serverCall)
+            {
+                this.server = serverCall.server;
+                this.poolIndex = serverCall.poolIndex;
+                this.endIndex = serverCall.endIndex - TimeoutRefreshCount;
+            }
+            /// <summary>
+            /// 超时检测
+            /// </summary>
+            public override void RunTask()
+            {
+                try
+                {
+                    Pool[] valuePool = server.valuePool;
+                    while (endIndex <= 0)
+                    {
+                        if (--poolIndex >= 0) endIndex = valuePool[poolIndex].IndexPool.ArrayIndex;
+                        else
+                        {
+                            server.SetTimeoutRefreshSeconds();
+                            return;
+                        }
+                    }
+                    server.valuePool[poolIndex].Refresh(endIndex);
+                }
+                finally
+                {
+                    if (poolIndex >= 0) server.TcpServer.CallQueueLink.Add(new RefreshTimeoutServerCall(this));
                 }
             }
         }
@@ -452,14 +487,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         internal unsafe override void RefreshTimeout()
         {
-            try
-            {
-                for (int index = valuePool.Length; index != 0; valuePool[--index].Refresh()) ;
-            }
-            catch (Exception error)
-            {
-                AutoCSer.Log.Pub.Log.Add(Log.LogType.Error, error);
-            }
+            server.CallQueueLink.Add(new RefreshTimeoutServerCall(this));
         }
         /// <summary>
         /// 设置Session值
@@ -480,10 +508,11 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <returns>Session是否被更新</returns>
         public unsafe bool Set(ref SessionId sessionId, valueType value)
         {
-            if (sessionId.Ticks != (ulong)AutoCSer.Date.StartTime.Ticks || valuePool[(byte)sessionId.Low].Set(ref sessionId, value) == 0)
+            if (sessionId.Ticks != (ulong)AutoCSer.Date.StartTime.Ticks || !valuePool[(byte)sessionId.Low].Set(ref sessionId, value))
             {
                 sessionId.NewNoIndex();
-                return valuePool[(byte)sessionId.Low].New(ref sessionId, value);
+                valuePool[(byte)sessionId.Low].New(ref sessionId, value);
+                return true;
             }
             return false;
         }
@@ -494,7 +523,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <param name="value">值</param>
         /// <returns>Session名称</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         public unsafe SessionId Set(SessionId sessionId, valueType value)
         {
             Set(ref sessionId, value);
@@ -531,7 +560,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <param name="value">返回值</param>
         /// <returns>是否存在返回值</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         public bool TryGet(SessionId sessionId, out valueType value)
         {
             return TryGet(ref sessionId, out value);
@@ -542,7 +571,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <param name="sessionId">Session名称</param>
         /// <returns>返回值</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         public valueType Get(SessionId sessionId)
         {
             valueType value;
@@ -556,7 +585,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// <param name="nullValue">默认空值</param>
         /// <returns>返回值</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         public valueType Get(SessionId sessionId, valueType nullValue)
         {
             valueType value;
@@ -580,7 +609,7 @@ namespace AutoCSer.Net.HttpDomainServer
         /// </summary>
         /// <param name="sessionId">Session名称</param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.QueueLink, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         public void Remove(SessionId sessionId)
         {
             Remove(ref sessionId);

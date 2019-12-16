@@ -1,5 +1,6 @@
 ﻿using AutoCSer.Extension;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace AutoCSer.Threading
 {
@@ -15,7 +16,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="isBackground">是否后台线程</param>
         /// <param name="isStart">是否启动线程</param>
-        internal QueueTaskLinkThread(bool isBackground = true, bool isStart = true) : base(isBackground, isStart) { }
+        public QueueTaskLinkThread(bool isBackground = true, bool isStart = true) : base(isBackground, isStart) { }
         /// <summary>
         /// 添加任务
         /// </summary>
@@ -42,7 +43,7 @@ namespace AutoCSer.Threading
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        internal bool CheckAdd(taskType value)
+        public bool CheckAdd(taskType value)
         {
             while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
             if (value.LinkNext == null && value != end)
@@ -124,7 +125,7 @@ namespace AutoCSer.Threading
         /// <summary>
         /// 低优先级任务队列链表
         /// </summary>
-        internal sealed class LowPriorityLink
+        public sealed class LowPriorityLink
         {
             /// <summary>
             /// 任务队列
@@ -154,24 +155,52 @@ namespace AutoCSer.Threading
             /// 添加任务
             /// </summary>
             /// <param name="node"></param>
+            [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
             internal void Add(taskType node)
             {
                 if (node != null)
                 {
                     while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
-                    if (head == null)
-                    {
-                        head = end = node;
-                        System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                        queue.Add(this);
-                    }
-                    else
-                    {
-                        end.LinkNext = node;
-                        end = node;
-                        System.Threading.Interlocked.Exchange(ref queueLock, 0);
-                    }
+                    add(node);
                 }
+            }
+            /// <summary>
+            /// 添加任务
+            /// </summary>
+            /// <param name="node"></param>
+            private void add(taskType node)
+            {
+                if (head == null)
+                {
+                    head = end = node;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    queue.Add(this);
+                }
+                else
+                {
+                    end.LinkNext = node;
+                    end = node;
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                }
+            }
+            /// <summary>
+            /// 添加任务
+            /// </summary>
+            /// <param name="node"></param>
+            /// <returns></returns>
+            public bool CheckAdd(taskType node)
+            {
+                if (node != null)
+                {
+                    while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
+                    if (node.LinkNext == null && node != end)
+                    {
+                        add(node);
+                        return true;
+                    }
+                    System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                }
+                return false;
             }
             /// <summary>
             /// 执行任务
@@ -184,15 +213,25 @@ namespace AutoCSer.Threading
                     while (System.Threading.Interlocked.CompareExchange(ref queueLock, 1, 0) != 0) AutoCSer.Threading.ThreadYield.YieldOnly();
                     head = next = head.LinkNext;
                     System.Threading.Interlocked.Exchange(ref queueLock, 0);
+                    node.LinkNext = null;
+                    try
+                    {
+                        node.RunTask();
+                    }
+                    finally
+                    {
+                        if (next != null) queue.Add(this);
+                    }
                 }
-                else head = next;
-                try
+                else
                 {
-                    node.RunTask();
-                }
-                finally
-                {
-                    if (next != null) queue.Add(this);
+                    head = next;
+                    node.LinkNext = null;
+                    try
+                    {
+                        node.RunTask();
+                    }
+                    finally { queue.Add(this); }
                 }
             }
         }
@@ -200,7 +239,7 @@ namespace AutoCSer.Threading
         /// 添加低优先级任务队列链表
         /// </summary>
         /// <param name="link"></param>
-        internal virtual void Add(LowPriorityLink link)
+        public virtual void Add(LowPriorityLink link)
         {
             throw new NotImplementedException();
         }
@@ -208,7 +247,8 @@ namespace AutoCSer.Threading
         /// 创建低优先级任务队列链表
         /// </summary>
         /// <returns></returns>
-        internal LowPriorityLink CreateLink()
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public LowPriorityLink CreateLink()
         {
             return new LowPriorityLink(this);
         }

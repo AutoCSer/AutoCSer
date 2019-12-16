@@ -56,19 +56,15 @@ namespace AutoCSer.Net.TcpInternalSimpleServer
         {
             if (serverSet != null)
             {
-                TcpRegister.ServerInfo server = serverSet.Server.Server;
+                TcpRegister.ServerLog server = serverSet.Server;
                 IPAddress ipAddress = HostPort.HostToIPAddress(server.Host, Log);
-                if (server.Port == Port && ipAddress.Equals(IpAddress))
-                {
-                    if (!server.IsCheckRegister) createSocket();
-                }
-                else
+                if (server.Port != Port || !ipAddress.Equals(IpAddress))
                 {
                     Host = server.Host;
                     IpAddress = ipAddress;
                     Port = server.Port;
-                    createSocket();
                 }
+                createSocket();
             }
         }
         /// <summary>

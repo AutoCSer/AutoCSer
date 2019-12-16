@@ -15,7 +15,7 @@ namespace AutoCSer.Net.HttpRegister
     /// HTTP 注册管理服务
     /// </summary>
     [AutoCSer.Net.TcpInternalServer.Server(Name = Server.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.HttpServerRegister)]
-    public partial class Server : TcpInternalServer.TimeVerifyServer, IDisposable
+    public partial class Server : TcpInternalServer.TimeVerifyServer
     {
         /// <summary>
         /// 服务名称
@@ -135,10 +135,11 @@ namespace AutoCSer.Net.HttpRegister
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             if (Interlocked.CompareExchange(ref isDisposed, 1, 0) == 0)
             {
+                base.Dispose();
                 server.Dispose();
                 if (LocalDomainServer == null)
                 {
@@ -209,7 +210,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <param name="domain">域名信息</param>
         /// <param name="isShareAssembly">是否共享程序集</param>
         /// <returns>域名服务启动状态</returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private RegisterState start(string assemblyFile, string serverTypeName, Domain domain, bool isShareAssembly)
         {
@@ -224,7 +225,7 @@ namespace AutoCSer.Net.HttpRegister
         /// <param name="domains">域名信息集合</param>
         /// <param name="isShareAssembly">是否共享程序集</param>
         /// <returns>域名服务启动状态</returns>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
         private unsafe RegisterState start(string assemblyFile, string serverTypeName, Domain[] domains, bool isShareAssembly)
         {
@@ -570,7 +571,7 @@ namespace AutoCSer.Net.HttpRegister
         /// 停止域名服务
         /// </summary>
         /// <param name="domains">域名信息集合</param>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private void stop(Domain[] domains)
         {
             if (domains != null)
@@ -582,7 +583,7 @@ namespace AutoCSer.Net.HttpRegister
         /// 停止域名服务
         /// </summary>
         /// <param name="domain">域名信息</param>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private void stop(Domain domain)
         {
             byte[] domainData = domain.DomainData;
@@ -624,7 +625,7 @@ namespace AutoCSer.Net.HttpRegister
         /// 停止所有端口监听
         /// </summary>
         /// <param name="isStop"></param>
-        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
+        [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
         private void stopListen(bool isStop)
         {
             if (isStop)

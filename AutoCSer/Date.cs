@@ -160,14 +160,13 @@ namespace AutoCSer
                             for (AutoCSer.TimeoutCount timeout = AutoCSer.TimeoutCount.OnTimerLink.End; timeout != null; timeout = timeout.DoubleLinkPrevious) timeout.OnTimer();
                             if (IsOnTime)
                             {
-                                if (TcpSimpleServerOnTime != null) TcpSimpleServerOnTime.OnTimer();
-                                if (CacheServerOnTime != null) CacheServerOnTime.OnTimer();
                                 if (SqlOnTime != null) SqlOnTime.OnTimer();
                                 if (WebViewOnTime != null) WebViewOnTime.OnTimer();
+                                if (CacheServerOnTime != null) CacheServerOnTime.OnTimer();
+                                if (TcpSimpleServerOnTime != null) TcpSimpleServerOnTime.OnTimer();
                             }
 
                             AutoCSer.Threading.TimerTask.Default.OnTimer(Now);
-                            for (AutoCSer.Net.TcpRegister.Server server = AutoCSer.Net.TcpRegister.Server.ServerEnd; server != null; server = server.DoubleLinkPrevious) server.OnTimer();
                             if (Date.OnTime != null) Date.OnTime();
                         }
                         catch (Exception error)
@@ -183,13 +182,13 @@ namespace AutoCSer
             /// 激活计时器
             /// </summary>
             [AutoCSer.IOS.Preserve(Conditional = true)]
-            internal static int Count;
+            public static bool OnTimeFlag;
 
             static NowTime()
             {
                 UtcNow = (Now = DateTime.Now).localToUniversalTime();
 #if !Serialize
-                NextSecondTicks = (Now.Ticks / TimeSpan.TicksPerSecond) * TimeSpan.TicksPerSecond + TimeSpan.TicksPerSecond;
+                NextSecondTicks = ((Now.Ticks / TimeSpan.TicksPerSecond) + 1) * TimeSpan.TicksPerSecond;
 #endif
                 timer = new Timer(refreshTime, null, TimerInterval = 1000L - Now.Millisecond, -1);
             }
