@@ -8,16 +8,16 @@ namespace AutoCSer.Deploy
     /// 部署信息
     /// </summary>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Auto)]
-    internal struct DeployInfo
+    internal sealed class DeployInfo
     {
-        /// <summary>
-        /// 部署信息索引编号
-        /// </summary>
-        internal int Identity;
         /// <summary>
         /// 客户端信息
         /// </summary>
-        internal ClientObject Client;
+        internal readonly ClientObject Client;
+        /// <summary>
+        /// 发布编号
+        /// </summary>
+        internal readonly int Index;
         /// <summary>
         /// 文件数据源
         /// </summary>
@@ -31,115 +31,43 @@ namespace AutoCSer.Deploy
         /// </summary>
         internal LeftArray<Task> Tasks;
         /// <summary>
-        /// 设置客户端
+        /// 部署信息
         /// </summary>
-        /// <param name="client"></param>
-        /// <returns>部署信息索引编号</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal int Set(ClientObject client)
+        /// <param name="client">客户端信息</param>
+        /// <param name="index">发布编号</param>
+        internal DeployInfo(ClientObject client, int index)
         {
             Client = client;
-            return Identity;
-        }
-        /// <summary>
-        /// 清除部署信息
-        /// </summary>
-        internal void Clear()
-        {
-            if (Timer != null)
-            {
-                Timer.IsCancel = true;
-                Timer = null;
-            }
-            Files = null;
-            Tasks.ClearOnlyLength();
-            ++Identity;
-        }
-        /// <summary>
-        /// 清除部署信息
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool Clear(int identity)
-        {
-            if (Identity == identity)
-            {
-                Clear();
-                return true;
-            }
-            return false;
-        }
-        /// <summary>
-        /// 设置文件数据源
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool SetFiles(int identity, byte[][] files)
-        {
-            if (Identity == identity)
-            {
-                Files = files;
-                return true;
-            }
-            return false;
-        }
-        /// <summary>
-        /// 添加任务
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <param name="task"></param>
-        /// <returns>任务索引编号,-1表示失败</returns>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal int AddTask(int identity, Task task)
-        {
-            if (Identity == identity)
-            {
-                int index = Tasks.Length;
-                Tasks.Add(task);
-                return index;
-            }
-            return -1;
+            Index = index;
         }
         /// <summary>
         /// 启动部署
         /// </summary>
-        /// <param name="identity"></param>
         /// <param name="time"></param>
         /// <param name="timer"></param>
         /// <returns></returns>
-        internal DeployState Start(int identity, DateTime time, Timer timer)
+        internal DeployState Start(DateTime time, Timer timer)
         {
-            if (Identity == identity)
+            if (Tasks.Length != 0 && Timer == null)
             {
-                if (Tasks.Length != 0 && Timer == null)
-                {
-                    (Timer = timer).DeployInfo = this;
-                    if (time == default(DateTime)) return timer.Start();
-                    AutoCSer.Threading.TimerTask.Default.Add(timer.StartTimer, time);
-                    return DeployState.Success;
-                }
-                return DeployState.Canceled;
+                (Timer = timer).DeployInfo = this;
+                if (time == default(DateTime)) return timer.Start();
+                AutoCSer.Threading.TimerTask.Default.Add(timer.StartTimer, time);
+                return DeployState.Success;
             }
-            return DeployState.IdentityError;
+            return DeployState.Canceled;
         }
-        ///// <summary>
-        ///// 获取部署服务端标识
-        ///// </summary>
-        ///// <param name="identity"></param>
-        ///// <param name="clientId"></param>
-        ///// <returns></returns>
-        //[MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        //internal bool GetClientId(int identity, ref IndexIdentity clientId)
-        //{
-        //    if (Identity == identity)
-        //    {
-        //        clientId = ClientId;
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        /// <summary>
+        /// 添加任务
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns>任务索引编号,-1表示失败</returns>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        internal int AddTask(Task task)
+        {
+            int index = Tasks.Length;
+            Tasks.Add(task);
+            return index;
+        }
     }
 }

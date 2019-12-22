@@ -8,7 +8,7 @@ namespace AutoCSer.Deploy
     /// <summary>
     /// 任务信息
     /// </summary>
-    internal sealed class Task
+    public sealed class Task
     {
         /// <summary>
         /// TCP 内部服务套接字数据发送
@@ -51,8 +51,16 @@ namespace AutoCSer.Deploy
         /// </summary>
         internal bool IsWaitRun;
         /// <summary>
-        /// 自定义参数数据
+        /// 切换服务相对目录名称
         /// </summary>
+        internal string SwitchDirectoryName;
+        /// <summary>
+        /// 更新服务相对目录名称
+        /// </summary>
+        internal string UpdateDirectoryName;        
+        /// <summary>
+                                                  /// 自定义参数数据
+                                                  /// </summary>
         internal byte[] CustomData;
         /// <summary>
         /// 运行任务
@@ -74,7 +82,8 @@ namespace AutoCSer.Deploy
                     break;
                 case TaskType.AssemblyFile: assemblyFile(timer); break;
                 case TaskType.WaitRunSwitch: wait(timer); break;
-                case TaskType.Custom: return timer.Server.CustomTask.Call(timer.Server, Sender, this);
+                case TaskType.UpdateSwitchFile: updateSwitchFile(timer); break;
+                case TaskType.Custom: return timer.Server.CallCustomTask(Sender, this);
                 default: return DeployState.UnknownTaskType;
             }
             return DeployState.Success;
@@ -104,19 +113,26 @@ namespace AutoCSer.Deploy
         /// <param name="timer"></param>
         private void run(Timer timer)
         {
-            if (!ServerDirectory.Exists) ServerDirectory.Create();
-            string serverDirectoryName = ServerDirectory.fullName(), runFileName = serverDirectoryName + (RunFileName ?? FileIndexs[0].Key);
-            DirectoryInfo otherServerDirectory = new DirectoryInfo(serverDirectoryName + Server.DefaultSwitchDirectoryName);
-            if (otherServerDirectory.Exists && !canWrite(runFileName))
+            FileInfo runFileInfo = new FileInfo(Path.Combine(ServerDirectory.FullName, RunFileName));
+            if (runFileInfo.Exists)
             {
-                ServerDirectory = otherServerDirectory;
-                runFileName = otherServerDirectory.fullName() + (RunFileName ?? FileIndexs[0].Key);
-                IsRunOther = true;
+                Thread.Sleep(RunSleep);
+                if (IsWaitRun) runFileInfo.WaitProcessDirectory();
+                else runFileInfo.StartProcessDirectory();
             }
-            assemblyFile(timer);
-            Thread.Sleep(RunSleep);
-            if (IsWaitRun) new FileInfo(runFileName).WaitProcessDirectory();
-            else new FileInfo(runFileName).StartProcessDirectory();
+            //if (!ServerDirectory.Exists) ServerDirectory.Create();
+            //string serverDirectoryName = ServerDirectory.fullName(), runFileName = serverDirectoryName + (RunFileName ?? FileIndexs[0].Key);
+            //DirectoryInfo otherServerDirectory = new DirectoryInfo(serverDirectoryName + Server.DefaultSwitchDirectoryName);
+            //if (otherServerDirectory.Exists && !canWrite(runFileName))
+            //{
+            //    ServerDirectory = otherServerDirectory;
+            //    runFileName = otherServerDirectory.fullName() + (RunFileName ?? FileIndexs[0].Key);
+            //    IsRunOther = true;
+            //}
+            //assemblyFile(timer);
+            //Thread.Sleep(RunSleep);
+            //if (IsWaitRun) new FileInfo(runFileName).WaitProcessDirectory();
+            //else new FileInfo(runFileName).StartProcessDirectory();
         }
         /// <summary>
         /// 写文件
@@ -166,6 +182,18 @@ namespace AutoCSer.Deploy
                 }
                 while (true);
             }
+        }
+        /// <summary>
+        /// 发布切换更新
+        /// </summary>
+        /// <param name="timer"></param>
+        private void updateSwitchFile(Timer timer)
+        {
+            if (ServerDirectory == null && RunFileName == string.Empty)
+            {
+                AutoCSer.Threading.ThreadPool.TinyBackground.Start(() => timer.Server.OnDeployServerUpdated(null, SwitchDirectoryName, UpdateDirectoryName));
+            }
+            else Server.UpdateSwitchFile(ServerDirectory.FullName, RunFileName, SwitchDirectoryName, UpdateDirectoryName).StartProcessDirectory();
         }
     }
 }

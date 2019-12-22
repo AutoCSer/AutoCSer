@@ -3,13 +3,14 @@ using System.Threading;
 using AutoCSer.Extension;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace AutoCSer.Web.SearchServer
 {
     /// <summary>
     /// 搜索服务
     /// </summary>
-    [AutoCSer.Net.TcpStaticServer.Server(Name = Server.ServerName, Host = "127.0.0.1", IsServer = true)]
+    [AutoCSer.Net.TcpStaticServer.Server(Name = Server.ServerName, Host = "127.0.0.1", Port = 8992, IsServer = true)]
     public partial class Server : AutoCSer.Net.TcpStaticServer.TimeVerify<Server>
     {
         /// <summary>
@@ -40,7 +41,8 @@ namespace AutoCSer.Web.SearchServer
         /// </summary>
         internal static void CreateSearchServer()
         {
-            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server));
+            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server), false);
+            if (new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).Name == AutoCSer.Deploy.Server.DefaultSwitchDirectoryName) serverAttribute.Port += 10000;
             do
             {
                 try

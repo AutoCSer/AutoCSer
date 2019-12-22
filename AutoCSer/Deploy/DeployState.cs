@@ -16,9 +16,17 @@ namespace AutoCSer.Deploy
         /// </summary>
         Success,
         /// <summary>
+        /// 创建任务失败
+        /// </summary>
+        CreateError,
+        /// <summary>
         /// 部署启动失败
         /// </summary>
         StartError,
+        /// <summary>
+        /// 获取文件差异失败
+        /// </summary>
+        GetFileDifferentError,
         /// <summary>
         /// 设置文件数据源失败
         /// </summary>
@@ -39,15 +47,15 @@ namespace AutoCSer.Deploy
         /// 添加等待运行 WaitRunSwitch 任务失败
         /// </summary>
         AddWaitRunSwitchError,
+        /// <summary>
+        /// 添加发布切换更新 UpdateSwitchFile 任务失败
+        /// </summary>
+        AddUpdateSwitchFileError,
 
         /// <summary>
         /// 添加自定义任务失败
         /// </summary>
         AddCustomError,
-        /// <summary>
-        /// 部署索引标识错误
-        /// </summary>
-        IdentityError,
         /// <summary>
         /// 部署任务已经被取消
         /// </summary>

@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyEnvironment\AddCheckTask.cs" />
     <Compile Include="AssemblyEnvironment\CheckClient.cs" />
     <Compile Include="AssemblyEnvironment\Checker.cs" />
     <Compile Include="AssemblyEnvironment\CheckResult.cs" />

@@ -40,8 +40,4 @@
     <Compile Include="InternalStreamServer.Emit.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
-  </ItemGroup>
-
 </Project>

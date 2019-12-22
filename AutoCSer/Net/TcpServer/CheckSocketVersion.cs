@@ -63,7 +63,9 @@ namespace AutoCSer.Net.TcpServer
         /// <param name="parameter">TCP 客户端套接字事件参数</param>
         private void onClientSocket(ClientSocketEventParameter parameter)
         {
-            if (parameter.Type != ClientSocketEventParameter.EventType.SetSocket || parameter.Socket.IsSocketVersion(ref socket))
+            if (parameter.Type == ClientSocketEventParameter.EventType.SetSocket
+                ? parameter.Socket.IsSocketVersion(ref socket)
+                : object.ReferenceEquals(parameter.Socket, socket))
             {
                 onCheckSocketVersion(parameter);
             }

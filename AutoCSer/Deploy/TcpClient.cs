@@ -65,31 +65,36 @@ namespace AutoCSer.Deploy
         {
             try
             {
-                if (parameter.Type == AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket)
+                switch (parameter.Type)
                 {
-                    try
-                    {
-                        if (logKeepCallback != null)
+                    case AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SetSocket:
+                        try
                         {
-                            logKeepCallback.Dispose();
-                            logKeepCallback = null;
-                        }
+                            if (logKeepCallback != null)
+                            {
+                                logKeepCallback.Dispose();
+                                logKeepCallback = null;
+                            }
 #if NoAutoCSer
                         throw new Exception();
 #else
-                        //ClientId = TcpInternalClient.register();
-                        //logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
-                        logKeepCallback = TcpInternalClient.getLog(onLog);
+                            //ClientId = TcpInternalClient.register();
+                            //logKeepCallback = TcpInternalClient.getLog(ClientId, onLog);
+                            logKeepCallback = TcpInternalClient.getLog(onLog);
 #endif
-                        IsClient = true;
-                        return;
-                    }
-                    catch (Exception error)
-                    {
-                        AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
-                        checkSocketVersion.DisposeSocket();
-                    }
-                    IsClient = false;
+                            IsClient = true;
+                            return;
+                        }
+                        catch (Exception error)
+                        {
+                            AutoCSer.Log.Pub.Log.Add(AutoCSer.Log.LogType.Error, error);
+                            checkSocketVersion.DisposeSocket();
+                        }
+                        IsClient = false;
+                        break;
+                    case AutoCSer.Net.TcpServer.ClientSocketEventParameter.EventType.SocketDisposed:
+                        IsClient = false;
+                        break;
                 }
             }
             finally

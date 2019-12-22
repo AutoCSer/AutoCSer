@@ -11,10 +11,6 @@ namespace AutoCSer.Deploy
     internal sealed class Timer
     {
         /// <summary>
-        /// 部署信息索引标识
-        /// </summary>
-        internal IndexIdentity Identity;
-        /// <summary>
         /// 部署服务
         /// </summary>
         internal Server Server;
@@ -51,9 +47,8 @@ namespace AutoCSer.Deploy
         internal DeployState Start()
         {
             if (IsCancel) return DeployState.Canceled;
-            //IndexIdentity clientId = new IndexIdentity();
             ClientObject client = DeployInfo.Client;
-            Log log = new Log { Identity = Identity };
+            Log log = new Log { DeployIndex = DeployInfo.Index };
             bool isLog = true;
             try
             {
@@ -61,7 +56,7 @@ namespace AutoCSer.Deploy
                 AutoCSer.Net.TcpServer.ServerCallback<Log> onLog = client.OnLog ?? AutoCSer.Net.TcpServer.ServerCallback<Log>.Null.Default;
                 log.Type = LogType.CreateBakDirectory;
                 isLog |= onLog.Callback(log);
-                (BakDirectory = new DirectoryInfo(Server.GetBakDirectoryName(ref Identity))).Create();
+                (BakDirectory = new DirectoryInfo(Server.GetBakDirectoryName(DeployInfo.Index))).Create();
                 log.Type = LogType.OnCreateBakDirectory;
                 isLog |= onLog.Callback(log);
                 while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)
@@ -84,7 +79,7 @@ namespace AutoCSer.Deploy
             }
             finally
             {
-                Server.Clear(ref Identity);
+                //Server.Clear(ref Identity);
                 if (Error == null) log.Type = LogType.Completed;
                 else
                 {

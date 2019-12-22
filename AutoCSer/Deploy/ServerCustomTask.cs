@@ -8,21 +8,7 @@ namespace AutoCSer.Deploy
     /// <summary>
     /// 自定义任务调用
     /// </summary>
-    public interface IServerCustomTask
-    {
-        /// <summary>
-        /// 发布服务更新以后的后续处理
-        /// </summary>
-        /// <param name="server"></param>
-        /// <param name="sender"></param>
-        /// <param name="customData"></param>
-        /// <returns></returns>
-        DeployState OnDeployServerUpdated(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, byte[] customData);
-    }
-    /// <summary>
-    /// 自定义任务调用
-    /// </summary>
-    internal class ServerCustomTask
+    public class ServerCustomTask
     {
         /// <summary>
         /// 调用自定义任务
@@ -31,7 +17,7 @@ namespace AutoCSer.Deploy
         /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        internal virtual DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task) { return DeployState.Success; }
+        public virtual DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task) { return DeployState.Success; }
         /// <summary>
         /// 自定义任务调用
         /// </summary>
@@ -39,13 +25,13 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 默认空任务
         /// </summary>
-        internal static readonly ServerCustomTask Null = new ServerCustomTask();
+        public static readonly ServerCustomTask Null = new ServerCustomTask();
     }
     /// <summary>
     /// 自定义任务调用
     /// </summary>
     /// <typeparam name="valueType"></typeparam>
-    internal sealed class ServerCustomTask<valueType> : ServerCustomTask
+    public sealed class ServerCustomTask<valueType> : ServerCustomTask
     {
         /// <summary>
         /// 任务目标对象
@@ -59,7 +45,7 @@ namespace AutoCSer.Deploy
         /// 自定义任务调用
         /// </summary>
         /// <param name="value">任务目标对象</param>
-        internal ServerCustomTask(valueType value)
+        public ServerCustomTask(valueType value)
         {
             this.value = value;
             foreach (MethodInfo method in typeof(valueType).GetMethods(BindingFlags.Instance | BindingFlags.Public))
@@ -94,7 +80,7 @@ namespace AutoCSer.Deploy
         /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        internal override DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task)
+        public override DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task)
         {
             return tasks[task.RunFileName](value, server, sender, task.CustomData);
         }

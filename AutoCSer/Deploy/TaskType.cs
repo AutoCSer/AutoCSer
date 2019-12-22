@@ -27,7 +27,11 @@ namespace AutoCSer.Deploy
         /// 等待运行程序切换结束
         /// </summary>
         WaitRunSwitch,
-        
+        /// <summary>
+        /// 发布切换更新
+        /// </summary>
+        UpdateSwitchFile,
+
         /// <summary>
         /// 自定义任务处理
         /// </summary>

@@ -73,18 +73,12 @@ namespace AutoCSer.Web.DeployServer
             AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetVerifyTcpServerAttribute(typeof(AutoCSer.Deploy.Server));
             serverAttribute.Host = AutoCSer.Web.Config.Pub.ServerListenIp;
             serverAttribute.IsServer = true;
-            AutoCSer.Deploy.Server serverTarget = new AutoCSer.Deploy.Server();
-            serverTarget.BeforeSwitch += () =>
-            {
-                switchEvent.Set();
-                exitEvent.WaitOne();
-            };
-            serverTarget.SetCustomTask(new ServerCustomTask());
-            using (AutoCSer.Deploy.Server.TcpInternalServer server = new AutoCSer.Deploy.Server.TcpInternalServer(serverAttribute, null, serverTarget))
+            using (AutoCSer.Deploy.Server.TcpInternalServer server = new AutoCSer.Deploy.Server.TcpInternalServer(serverAttribute, null, new Server(switchEvent, exitEvent)))
             {
                 if (server.IsListen)
                 {
                     Console.WriteLine("部署服务 启动成功 " + serverAttribute.Host + ":" + serverAttribute.Port.toString());
+                    //AutoCSer.Deploy.Server.DeleteBakDirectory(Date.UtcNow.AddDays(-30));
                     switchEvent.WaitOne();
                 }
                 else Console.WriteLine("部署服务 启动失败 " + serverAttribute.Host + ":" + serverAttribute.Port.toString());

@@ -46,7 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
     <ProjectReference Include="..\TcpStreamServerPerformance\AutoCSer.TestCase.TcpInternalStreamServerPerformance.NetCore.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Net.TcpServer;
+using System;
 
 namespace AutoCSer.Deploy
 {
@@ -16,5 +17,9 @@ namespace AutoCSer.Deploy
         /// 部署状态
         /// </summary>
         public DeployState State;
+        /// <summary>
+        /// 远程状态
+        /// </summary>
+        public ReturnType ReturnType;
     }
 }

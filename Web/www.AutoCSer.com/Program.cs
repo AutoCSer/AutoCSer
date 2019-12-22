@@ -11,7 +11,7 @@ namespace AutoCSer.Web
         static void Main(string[] args)
         {
 #if DOTNET2
-            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpRegisterAttribute(typeof(AutoCSer.Net.HttpRegister.Server));
+            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpRegisterAttribute(typeof(AutoCSer.Net.HttpRegister.Server), true);
             AutoCSer.Net.HostPort serverListen = new AutoCSer.Net.HostPort { Host = AutoCSer.Web.Config.Pub.ServerListenIp, Port = 80 };
 
             HttpDomain main = new HttpDomain

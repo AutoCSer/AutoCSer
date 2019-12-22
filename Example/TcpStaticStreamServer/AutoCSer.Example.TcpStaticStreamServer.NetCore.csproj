@@ -54,7 +54,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AutoCSer\AutoCSer.NetStandard.csproj" />
-    <ProjectReference Include="..\..\AutoCSer\TcpStreamServer\AutoCSer.TcpStreamServer.NetStandard.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

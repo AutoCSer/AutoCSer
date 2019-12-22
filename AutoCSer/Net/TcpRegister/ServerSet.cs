@@ -19,6 +19,35 @@ namespace AutoCSer.Net.TcpRegister
         /// </summary>
         internal LeftArray<ServerLog> Servers;
         /// <summary>
+        /// 服务信息数量
+        /// </summary>
+        public int Count
+        {
+            get { return (Server != null ? 1 : 0) + Servers.Length; }
+        }
+        /// <summary>
+        /// 获取服务
+        /// </summary>
+        /// <param name="index">位置索引</param>
+        /// <returns></returns>
+        public ServerLog this[int index]
+        {
+            get
+            {
+                if (index == 0) return Server;
+                return Servers[ - 1];
+            }
+        }
+        /// <summary>
+        /// 获取
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ServerLog> GetServers()
+        {
+            if (Server != null) yield return Server;
+            foreach (ServerLog server in Servers) yield return server;
+        }
+        /// <summary>
         /// TCP 服务信息集合
         /// </summary>
         /// <param name="server"></param>

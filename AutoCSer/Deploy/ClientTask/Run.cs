@@ -6,12 +6,16 @@ namespace AutoCSer.Deploy.ClientTask
     /// 写文件 exe/dll/pdb 并运行程序 任务信息
     /// </summary>
     [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
-    public sealed class Run : WebFile
+    public sealed class Run : Task
     {
         /// <summary>
         /// 任务类型
         /// </summary>
         public override TaskType Type { get { return TaskType.Run; } }
+        /// <summary>
+        /// 服务器端目录
+        /// </summary>
+        public string ServerPath;
         /// <summary>
         /// 运行文件名称
         /// </summary>

@@ -39,21 +39,21 @@ namespace AutoCSer.Deploy
 #else
             if (TcpClient.IsClient)
             {
-                //AutoCSer.Net.IndexIdentity identity = TcpClient.TcpInternalClient.create(TcpClient.ClientId);
-                AutoCSer.Net.IndexIdentity identity = TcpClient.TcpInternalClient.create();
-                bool isClear = false;
+                AutoCSer.Net.TcpServer.ReturnValue<int> indexReuslt = TcpClient.TcpInternalClient.create();
+                if (indexReuslt.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
+                {
+                    return new DeployResult { Index = -1, State = DeployState.CreateError, ReturnType = indexReuslt.Type };
+                }
                 try
                 {
                     Client client = TcpClient.Client;
                     Dictionary<HashString, FileSource> fileSources = DictionaryCreator.CreateHashString<FileSource>();
                     ClientTaskInfo[] tasks = new ClientTaskInfo[Tasks.Length];
+                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.Directory> getFileDifferentReuslt;
                     for (int taskIndex = 0; taskIndex != Tasks.Length; ++taskIndex)
                     {
                         switch (Tasks[taskIndex].Type)
                         {
-                            case TaskType.Run:
-                                appendSource(fileSources, (ClientTask.Run)Tasks[taskIndex], ref tasks[taskIndex]);
-                                break;
                             case TaskType.AssemblyFile:
                                 appendSource(fileSources, (ClientTask.WebFile)Tasks[taskIndex], ref tasks[taskIndex]);
                                 break;
@@ -61,75 +61,99 @@ namespace AutoCSer.Deploy
                                 ClientTask.File file = (ClientTask.File)Tasks[taskIndex];
                                 DirectoryInfo clientDirectory = new DirectoryInfo(file.ClientPath);
                                 Directory directory = Directory.Create(clientDirectory, client.Config.FileLastWriteTime, file.SearchPatterns);
-                                tasks[taskIndex].Directory = TcpClient.TcpInternalClient.getFileDifferent(directory, file.ServerPath);
+                                getFileDifferentReuslt = TcpClient.TcpInternalClient.getFileDifferent(directory, file.ServerPath);
+                                if (getFileDifferentReuslt.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
+                                {
+                                    return new DeployResult { Index = -1, State = DeployState.GetFileDifferentError, ReturnType = getFileDifferentReuslt.Type };
+                                }
+                                tasks[taskIndex].Directory = getFileDifferentReuslt.Value;
                                 tasks[taskIndex].Directory.Load(clientDirectory);
                                 break;
                             case TaskType.WebFile:
                                 ClientTask.WebFile webFile = (ClientTask.WebFile)Tasks[taskIndex];
                                 DirectoryInfo webClientDirectory = new DirectoryInfo(webFile.ClientPath);
                                 Directory webDirectory = Directory.CreateWeb(webClientDirectory, client.Config.FileLastWriteTime);
-                                tasks[taskIndex].Directory = TcpClient.TcpInternalClient.getFileDifferent(webDirectory, webFile.ServerPath);
+                                getFileDifferentReuslt = TcpClient.TcpInternalClient.getFileDifferent(webDirectory, webFile.ServerPath);
+                                if (getFileDifferentReuslt.Type != AutoCSer.Net.TcpServer.ReturnType.Success)
+                                {
+                                    return new DeployResult { Index = -1, State = DeployState.GetFileDifferentError, ReturnType = getFileDifferentReuslt.Type };
+                                }
+                                tasks[taskIndex].Directory = getFileDifferentReuslt.Value;
                                 tasks[taskIndex].Directory.Load(webClientDirectory);
                                 break;
                         }
                     }
 
-                    if (fileSources.Count != 0 && !TcpClient.TcpInternalClient.setFileSource(identity, fileSources.getArray(value => value.Value.Data)))
+                    if (fileSources.Count != 0)
                     {
-                        return new DeployResult { Index = -1, State = DeployState.SetFileSourceError };
+                        AutoCSer.Net.TcpServer.ReturnValue<bool> result = TcpClient.TcpInternalClient.setFileSource(fileSources.getArray(value => value.Value.Data));
+                        if (!result.Value) return new DeployResult { Index = -1, State = DeployState.SetFileSourceError, ReturnType = result.Type };
                     }
                     for (int taskIndex = 0; taskIndex != Tasks.Length; ++taskIndex)
                     {
+                        AutoCSer.Net.TcpServer.ReturnValue<int> result;
                         switch (Tasks[taskIndex].Type)
                         {
                             case TaskType.Run:
-                                if ((tasks[taskIndex].TaskIndex = TcpClient.TcpInternalClient.addRun(identity, tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.Run)Tasks[taskIndex])) == -1)
-                                {
-                                    return new DeployResult { Index = -1, State = DeployState.AddRunError };
-                                }
+                                result = TcpClient.TcpInternalClient.addRun( (ClientTask.Run)Tasks[taskIndex]);
+                                if (result.Type == AutoCSer.Net.TcpServer.ReturnType.Success) tasks[taskIndex].TaskIndex = result.Value;
                                 break;
                             case TaskType.WebFile:
                             case TaskType.File:
-                                if (TcpClient.TcpInternalClient.addFiles(identity, tasks[taskIndex].Directory, (ClientTask.WebFile)Tasks[taskIndex], Tasks[taskIndex].Type) == -1)
-                                {
-                                    return new DeployResult { Index = -1, State = DeployState.AddFileError };
-                                }
+                                result = TcpClient.TcpInternalClient.addFiles(tasks[taskIndex].Directory, (ClientTask.WebFile)Tasks[taskIndex], Tasks[taskIndex].Type);
                                 break;
                             case TaskType.AssemblyFile:
-                                if (TcpClient.TcpInternalClient.addAssemblyFiles(identity, tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.AssemblyFile)Tasks[taskIndex]) == -1)
-                                {
-                                    return new DeployResult { Index = -1, State = DeployState.AddAssemblyFileError };
-                                }
+                                result = TcpClient.TcpInternalClient.addAssemblyFiles(tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.AssemblyFile)Tasks[taskIndex]);
                                 break;
                             case TaskType.WaitRunSwitch:
-                                if (TcpClient.TcpInternalClient.addWaitRunSwitch(identity, tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex) == -1)
-                                {
-                                    return new DeployResult { Index = -1, State = DeployState.AddWaitRunSwitchError };
-                                }
+                                result = TcpClient.TcpInternalClient.addWaitRunSwitch(tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex);
+                                break;
+                            case TaskType.UpdateSwitchFile:
+                                result = TcpClient.TcpInternalClient.addUpdateSwitchFile((ClientTask.UpdateSwitchFile)Tasks[taskIndex]);
                                 break;
                             case TaskType.Custom:
-                                if (TcpClient.TcpInternalClient.addCustom(identity, (ClientTask.Custom)Tasks[taskIndex]) == -1)
-                                {
-                                    return new DeployResult { Index = -1, State = DeployState.AddCustomError };
-                                }
+                                result = TcpClient.TcpInternalClient.addCustom((ClientTask.Custom)Tasks[taskIndex]);
                                 break;
+                            default: return new DeployResult { Index = -1, State = DeployState.UnknownTaskType, ReturnType = AutoCSer.Net.TcpServer.ReturnType.Unknown };
+                        }
+                        if (result.Type != AutoCSer.Net.TcpServer.ReturnType.Success || result.Value == -1)
+                        {
+                            return new DeployResult { Index = -1, State = getErrorState(Tasks[taskIndex].Type), ReturnType = result.Type };
                         }
                     }
-                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.DeployState> result = TcpClient.TcpInternalClient.start(identity, startTime);
-                    if (result.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
+                    AutoCSer.Net.TcpServer.ReturnValue<AutoCSer.Deploy.DeployState> startResult = TcpClient.TcpInternalClient.start(startTime);
+                    if (startResult.Type == AutoCSer.Net.TcpServer.ReturnType.Success)
                     {
-                        isClear = checkIsClear(result.Value);
-                        return new DeployResult { Index = identity.Index, State = result.Value };
+                        return new DeployResult { Index = indexReuslt.Value, State = startResult.Value, ReturnType = AutoCSer.Net.TcpServer.ReturnType.Success };
                     }
-                    return new DeployResult { Index = -1, State = DeployState.StartError };
+                    return new DeployResult { Index = -1, State = DeployState.StartError, ReturnType = startResult.Type };
                 }
                 finally
                 {
-                    if (isClear) TcpClient.TcpInternalClient.clear(identity);// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
+                    TcpClient.TcpInternalClient.cancel();// && TcpClient.TcpInternalClient.clear(identity).Type != AutoCSer.Net.TcpServer.ReturnType.Success
                 }
             }
 #endif
             return new DeployResult { Index = -1, State = DeployState.NoClient };
+        }
+        /// <summary>
+        /// 获取错误状态
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static DeployState getErrorState(TaskType type)
+        {
+            switch (type)
+            {
+                case TaskType.Run: return DeployState.AddRunError;
+                case TaskType.WebFile:
+                case TaskType.File: return DeployState.AddFileError;
+                case TaskType.AssemblyFile: return DeployState.AddAssemblyFileError;
+                case TaskType.WaitRunSwitch: return DeployState.AddWaitRunSwitchError;
+                case TaskType.UpdateSwitchFile: return DeployState.AddUpdateSwitchFileError;
+                case TaskType.Custom: return DeployState.AddCustomError;
+                default: return DeployState.UnknownTaskType;
+            }
         }
         /// <summary>
         /// 判断部署是否需要清理操作
@@ -141,23 +165,22 @@ namespace AutoCSer.Deploy
             switch (state)
             {
                 case DeployState.Success:
-                case DeployState.IdentityError:
                 case DeployState.Canceled:
                 case DeployState.Exception:
                     return true;
             }
             return false;
         }
-        /// <summary>
-        /// 添加文件数据源
-        /// </summary>
-        /// <param name="fileSources"></param>
-        /// <param name="run"></param>
-        /// <param name="serverTask"></param>
-        private void appendSource(Dictionary<HashString, FileSource> fileSources, ClientTask.Run run, ref ClientTaskInfo serverTask)
-        {
-            appendSource(fileSources, run, ref serverTask, run.FileName);
-        }
+        ///// <summary>
+        ///// 添加文件数据源
+        ///// </summary>
+        ///// <param name="fileSources"></param>
+        ///// <param name="run"></param>
+        ///// <param name="serverTask"></param>
+        //private void appendSource(Dictionary<HashString, FileSource> fileSources, ClientTask.Run run, ref ClientTaskInfo serverTask)
+        //{
+        //    appendSource(fileSources, run, ref serverTask, run.FileName);
+        //}
         /// <summary>
         /// 添加文件数据源
         /// </summary>

@@ -77,16 +77,12 @@
     <Compile Include="TemplateGenerator\SqlTable.cs" />
     <Compile Include="TemplateGenerator\TcpInternalServer.cs" />
     <Compile Include="TemplateGenerator\TcpInternalSimpleServer.cs" />
-    <Compile Include="TemplateGenerator\TcpInternalStreamServer.cs" />
-    <Compile Include="TemplateGenerator\TcpOpenStreamServer.cs" />
     <Compile Include="TemplateGenerator\TcpOpenServer.cs" />
     <Compile Include="TemplateGenerator\TcpOpenSimpleServer.cs" />
     <Compile Include="TemplateGenerator\TcpServer.cs" />
     <Compile Include="TemplateGenerator\TcpSimpleServer.cs" />
-    <Compile Include="TemplateGenerator\TcpStaticStreamServer.cs" />
     <Compile Include="TemplateGenerator\TcpStaticServer.cs" />
     <Compile Include="TemplateGenerator\TcpStaticSimpleServer.cs" />
-    <Compile Include="TemplateGenerator\TcpStreamServer.cs" />
     <Compile Include="TemplateGenerator\TypeDefinition.cs" />
     <Compile Include="TemplateGenerator\WebCall.cs" />
     <Compile Include="TemplateGenerator\WebPath.cs" />
@@ -99,11 +95,8 @@
     <Compile Include="Template\SqlTable.cs" />
     <Compile Include="Template\TcpInternalServer.cs" />
     <Compile Include="Template\TcpInternalSimpleServer.cs" />
-    <Compile Include="Template\TcpInternalStreamServer.cs" />
-    <Compile Include="Template\TcpOpenStreamServer.cs" />
     <Compile Include="Template\TcpOpenSimpleServer.cs" />
     <Compile Include="Template\TcpOpenServer.cs" />
-    <Compile Include="Template\TcpStaticStreamServer.cs" />
     <Compile Include="Template\TcpStaticSimpleServer.cs" />
     <Compile Include="Template\TcpStaticServer.cs" />
     <Compile Include="Template\WebCall.cs" />
@@ -178,10 +171,6 @@
     <ProjectReference Include="..\TcpSimpleServer\AutoCSer.TcpSimpleServer.DotNet4.5.csproj">
       <Project>{e647a356-94ca-496f-8993-bd61c23dcffb}</Project>
       <Name>AutoCSer.TcpSimpleServer.DotNet4.5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TcpStreamServer\AutoCSer.TcpStreamServer.DotNet4.5.csproj">
-      <Project>{b9aa460a-6b0e-45fb-8fb2-721abcb6d20e}</Project>
-      <Name>AutoCSer.TcpStreamServer.DotNet4.5</Name>
     </ProjectReference>
     <ProjectReference Include="..\WebView\AutoCSer.WebView.DotNet4.5.csproj">
       <Project>{408f9930-7c6f-4335-8a5b-fdcb4dce261f}</Project>

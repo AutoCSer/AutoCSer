@@ -7,49 +7,49 @@ namespace AutoCSer.Net.TcpRegister
     /// <summary>
     /// TCP 服务注册信息
     /// </summary>
-    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
+    [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false, IsAnonymousFields = true)]
     public sealed class ServerLog
     {
         /// <summary>
         /// 随机标识
         /// </summary>
-        internal ulong Random;
+        public ulong Random { get; internal set; }
         /// <summary>
         /// TCP服务名称标识
         /// </summary>
-        internal string Name;
+        public string Name { get; internal set; }
         /// <summary>
         /// 主机名称或者IP地址
         /// </summary>
-        internal string Host;
+        public string Host { get; internal set; }
         /// <summary>
         /// 端口号
         /// </summary>
-        internal int Port;
+        public int Port { get; internal set; }
         /// <summary>
         /// TCP 服务主机与端口信息
         /// </summary>
-        internal HostPort HostPort
+        public HostPort HostPort
         {
             get { return new HostPort { Host = Host, Port = Port }; }
         }
         /// <summary>
         /// 是否只允许一个 TCP 服务实例
         /// </summary>
-        internal bool IsSingle;
+        public bool IsSingle { get; internal set; }
         /// <summary>
         /// 是否主服务
         /// </summary>
-        internal bool IsMain;
+        public bool IsMain { get; internal set; }
         /// <summary>
         /// 日志类型
         /// </summary>
-        internal LogType LogType;
+        public LogType LogType { get; internal set; }
         /// <summary>
         /// 主机名称转换成IP地址
         /// </summary>
         /// <returns>是否转换成功</returns>
-        internal bool HostToIpAddress()
+        public bool HostToIpAddress()
         {
             IPAddress ipAddress = HostPort.HostToIPAddress(Host);
             if (ipAddress == null) return false;
@@ -62,7 +62,7 @@ namespace AutoCSer.Net.TcpRegister
         /// <param name="server"></param>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal bool HostPortEquals(ServerLog server)
+        public bool HostPortEquals(ServerLog server)
         {
             return Port == server.Port && Host == server.Host;
         }

@@ -40,6 +40,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyEnvironment\AddCheckTask.cs" />
     <Compile Include="AssemblyEnvironment\CheckClient.cs" />
     <Compile Include="AssemblyEnvironment\Checker.cs" />
     <Compile Include="AssemblyEnvironment\CheckResult.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="ClientTask\File.cs" />
     <Compile Include="ClientTask\Run.cs" />
     <Compile Include="ClientTask\Task.cs" />
+    <Compile Include="ClientTask\UpdateSwitchFile.cs" />
     <Compile Include="ClientTask\WaitRunSwitch.cs" />
     <Compile Include="ClientTask\WebFile.cs" />
     <Compile Include="ConfigLoader.cs" />

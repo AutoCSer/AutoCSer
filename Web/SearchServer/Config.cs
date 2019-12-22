@@ -16,7 +16,7 @@ namespace AutoCSer.Web.SearchServer
         {
             get
             {
-                return AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server));
+                return AutoCSer.Web.Config.Pub.GetTcpStaticRegisterAttribute(typeof(AutoCSer.Web.SearchServer.Server), false);
             }
         }
     }

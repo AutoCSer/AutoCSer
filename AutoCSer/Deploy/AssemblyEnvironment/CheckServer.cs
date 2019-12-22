@@ -8,7 +8,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
     /// <summary>
     /// 程序集环境检测服务
     /// </summary>
-    [AutoCSer.Net.TcpInternalServer.Server(Name = CheckServer.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.DeployAssemblyEnvironmentCheck, MinCompressSize = 1024)]
+    [AutoCSer.Net.TcpInternalServer.Server(Name = CheckServer.ServerName, Host = "127.0.0.1", Port = (int)ServerPort.DeployAssemblyEnvironmentCheck, MinCompressSize = 1024, ClientWaitConnectedMilliseconds = 1000)]
     public partial class CheckServer : AutoCSer.Net.TcpInternalServer.TimeVerifyServer
     {
         /// <summary>
@@ -21,16 +21,12 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// </summary>
         private readonly Dictionary<int, CheckTask> tasks = DictionaryCreator.CreateInt<CheckTask>();
         /// <summary>
-        /// 程序集环境检测任务集合 访问锁
-        /// </summary>
-        private readonly object taskLock = new object();
-        /// <summary>
         /// 获取程序集环境检测任务
         /// </summary>
         /// <param name="tick"></param>
         /// <param name="taskId"></param>
         /// <returns></returns>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Synchronous, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false, ClientWaitConnected = true, ClientTimeoutSeconds = 1)]
         private CheckTask get(long tick, int taskId)
         {
             CheckTask task;
@@ -40,40 +36,32 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// 设置程序集环境检测结果
         /// </summary>
         /// <param name="result"></param>
-        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.ThreadPool, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false)]
+        [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox, IsClientAwaiter = false, ClientWaitConnected = true, ClientTimeoutSeconds = 1)]
         private void setResult(CheckResult result)
         {
             CheckTask task;
             if (result.Tick == AutoCSer.Date.StartTime.Ticks && tasks.TryGetValue(result.TaskId, out task))
             {
-                Monitor.Enter(taskLock);
                 tasks.Remove(result.TaskId);
-                Monitor.Exit(taskLock);
                 task.Result = result;
                 task.WaitHandle.Set();
             }
+        }
+        /// <summary>
+        /// 添加程序集环境检测任务
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        internal int Add(CheckTask task)
+        {
+            int taskId = Interlocked.Increment(ref CheckServer.taskId);
+            tasks.Add(taskId, task);
+            return taskId;
         }
 
         /// <summary>
         /// 程序集环境检测任务编号
         /// </summary>
         private static int taskId;
-        /// <summary>
-        /// 添加程序集环境检测任务
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        internal int Check(CheckTask task)
-        {
-            task.WaitHandle.Set(0);
-            int taskId = Interlocked.Increment(ref CheckServer.taskId);
-            Monitor.Enter(taskLock);
-            try
-            {
-                tasks.Add(taskId, task);
-            }
-            finally { Monitor.Exit(taskLock); }
-            return taskId;
-        }
     }
 }

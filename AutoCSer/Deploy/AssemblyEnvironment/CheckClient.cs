@@ -21,7 +21,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
             try
             {
                 ReturnValue<CheckTask> task = client.get(result.Tick, result.TaskId);
-                if (task.Type == ReturnType.Success) task.Value.Check(result);
+                if (task.Type == ReturnType.Success) task.Value.Check(ref result);
             }
             finally
             {

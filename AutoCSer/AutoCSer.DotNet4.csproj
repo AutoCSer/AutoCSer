@@ -561,7 +561,6 @@
     <Compile Include="Threading\AutoWaitHandle.cs" />
     <Compile Include="Threading\ConfigLoader.cs" />
     <Compile Include="Threading\DoubleLink.cs" />
-    <Compile Include="Threading\IndexValuePool.cs" />
     <Compile Include="Threading\Interlocked.cs" />
     <Compile Include="Threading\Link.cs" />
     <Compile Include="Threading\LinkTask.cs" />

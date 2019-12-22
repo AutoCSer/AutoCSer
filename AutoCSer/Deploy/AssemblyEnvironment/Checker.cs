@@ -33,9 +33,38 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// <returns></returns>
         public CheckResult Check(CheckTask task)
         {
-            int taskId = CheckServer.Check(task);
-            checkFile.StartProcessDirectory(AutoCSer.Date.StartTime.Ticks.toString() + " " + taskId.toString());
-            task.WaitHandle.Wait();
+            using (task.WaitHandle = new System.Threading.AutoResetEvent(false))
+            {
+                check(task);
+                task.WaitHandle.WaitOne();
+            }
+            return task.Result;
+        }
+        /// <summary>
+        /// 添加程序集环境检测任务
+        /// </summary>
+        /// <param name="task"></param>
+        private void check(CheckTask task)
+        {
+            AddCheckTask addCheckTask = new AddCheckTask(CheckServer, task);
+            addCheckTask.CheckCall(AutoCSer.Net.TcpServer.ServerTaskType.Queue, CheckServer.TcpServer);
+            task.WaitHandle.WaitOne();
+            checkFile.StartProcessDirectory(AutoCSer.Date.StartTime.Ticks.toString() + " " + addCheckTask.TaskId.toString());
+
+        }
+        /// <summary>
+        /// 添加程序集环境检测任务
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="millisecondsTimeout"></param>
+        /// <returns></returns>
+        public CheckResult Check(CheckTask task, int millisecondsTimeout)
+        {
+            using (task.WaitHandle = new System.Threading.AutoResetEvent(false))
+            {
+                check(task);
+                task.WaitHandle.WaitOne(millisecondsTimeout);
+            }
             return task.Result;
         }
     }

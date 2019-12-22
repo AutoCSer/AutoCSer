@@ -11,9 +11,9 @@ namespace AutoCSer.Deploy
     public struct Log
     {
         /// <summary>
-        /// 部署信息索引标识
+        /// 发布编号
         /// </summary>
-        public IndexIdentity Identity;
+        public int DeployIndex;
         /// <summary>
         /// 当前任务标识
         /// </summary>

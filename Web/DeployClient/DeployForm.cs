@@ -47,9 +47,13 @@ namespace AutoCSer.Web.DeployClient
             {
                 htmlTasks[0],
                 htmlTasks[1],
-                new AutoCSer.Deploy.ClientTask.Run
+                new AutoCSer.Deploy.ClientTask.AssemblyFile
                 {
                     ClientPath = webReleaseDirectory.FullName,
+                    ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\bin\Release\",
+                },
+                new AutoCSer.Deploy.ClientTask.Run
+                {
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\bin\Release\",
                     FileName = "AutoCSer.Web.exe",
                 }
@@ -64,18 +68,26 @@ namespace AutoCSer.Web.DeployClient
                     ClientPath = webReleaseDirectory.FullName,
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"www.AutoCSer.com\bin\Release\"
                 },
-                new AutoCSer.Deploy.ClientTask.Run
+                new AutoCSer.Deploy.ClientTask.AssemblyFile
                 {
                     ClientPath = new DirectoryInfo(@"..\..\..\HttpServer\bin\Release\").FullName,
+                    ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"HttpServer\bin\Release\" + AutoCSer.Deploy.Server.DefaultUpdateDirectoryName,
+                },
+                new AutoCSer.Deploy.ClientTask.UpdateSwitchFile
+                {
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"HttpServer\bin\Release\",
                     FileName = "AutoCSer.Web.HttpServer.exe",
                 }
             };
             AutoCSer.Deploy.ClientTask.Task[] searchTasks = new AutoCSer.Deploy.ClientTask.Task[]
             {
-                new AutoCSer.Deploy.ClientTask.Run
+                new AutoCSer.Deploy.ClientTask.AssemblyFile
                 {
                     ClientPath = new DirectoryInfo(@"..\..\..\SearchServer\bin\Release\").FullName,
+                    ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"SearchServer\bin\Release\" + AutoCSer.Deploy.Server.DefaultUpdateDirectoryName,
+                },
+                new AutoCSer.Deploy.ClientTask.UpdateSwitchFile
+                {
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath + @"SearchServer\bin\Release\",
                     FileName = "AutoCSer.Web.SearchServer.exe",
                 }
@@ -112,10 +124,7 @@ namespace AutoCSer.Web.DeployClient
                     ServerPath = AutoCSer.Web.Config.Deploy.ServerPath +@"DeployServer\bin\Release\" + AutoCSer.Deploy.Server.DefaultUpdateDirectoryName,
                     SearchPatterns = new string[]{ "*.*" }
                 },
-                new AutoCSer.Deploy.ClientTask.Custom
-                {
-                    CallName = "OnDeployServerUpdated",
-                }
+                new AutoCSer.Deploy.ClientTask.UpdateSwitchFile { FileName = string.Empty }
             };
             AutoCSer.Deploy.ClientTask.Task[] gameWebTasks = new AutoCSer.Deploy.ClientTask.Task[]
             {
@@ -140,9 +149,10 @@ namespace AutoCSer.Web.DeployClient
                     ServerPath = AutoCSer.Web.Config.GameServer.Path + AutoCSer.Deploy.Server.DefaultUpdateDirectoryName,
                     SearchPatterns = new string[]{ "*.*" }
                 },
-                new AutoCSer.Deploy.ClientTask.Custom
+                new AutoCSer.Deploy.ClientTask.UpdateSwitchFile
                 {
-                    CallName = "OnGameServerUpdated",
+                    ServerPath = AutoCSer.Web.Config.GameServer.Path,
+                    FileName = "AutoCSer.GameServer.exe",
                 }
             };
             AutoCSer.Deploy.ClientDeploy[] deploys = new AutoCSer.Deploy.ClientDeploy[]

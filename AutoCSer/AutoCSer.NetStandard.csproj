@@ -525,7 +525,6 @@ AutoCSer 是一个以高效率为目标向导的整体开发框架。主要包�
     <Compile Include="Threading\AutoWaitHandle.cs" />
     <Compile Include="Threading\ConfigLoader.cs" />
     <Compile Include="Threading\DoubleLink.cs" />
-    <Compile Include="Threading\IndexValuePool.cs" />
     <Compile Include="Threading\Interlocked.cs" />
     <Compile Include="Threading\Link.AutoCSer.cs" />
     <Compile Include="Threading\Link.cs" />

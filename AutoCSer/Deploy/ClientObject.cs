@@ -15,5 +15,9 @@ namespace AutoCSer.Deploy
         /// 自定义推送
         /// </summary>
         public AutoCSer.Net.TcpServer.ServerCallback<byte[]> OnCustomPush { get; internal set; }
+        /// <summary>
+        /// 当前发布信息
+        /// </summary>
+        internal DeployInfo CurrentDeploy;
     }
 }

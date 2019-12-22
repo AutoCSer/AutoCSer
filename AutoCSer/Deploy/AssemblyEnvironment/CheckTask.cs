@@ -31,7 +31,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// 程序集环境检测任务等待锁
         /// </summary>
         [AutoCSer.Metadata.Ignore]
-        internal AutoCSer.Threading.AutoWaitHandle WaitHandle;
+        internal System.Threading.AutoResetEvent WaitHandle;
         /// <summary>
         /// 程序集环境检测结果
         /// </summary>
@@ -42,17 +42,17 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        internal void Check(CheckResult result)
+        public void Check(ref CheckResult result)
         {
             switch(CheckType)
             {
                 case CheckType.IsType:
-                    Type type = loadType();
+                    Type type = LoadType();
                     result.IsResult = true;
                     result.Result = type == null ? "0" : "1";
                     return;
-                case CheckType.GetField: getField(result); return;
-                case CheckType.GetProperty: getProperty(result); return;
+                case CheckType.GetField: GetField(ref result); return;
+                case CheckType.GetProperty: GetProperty(ref result); return;
             }
         }
         /// <summary>
@@ -60,16 +60,16 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// </summary>
         /// <returns></returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        private Type loadType()
+        public Type LoadType()
         {
             return Assembly.LoadFrom(LoadAssemblyFileName).GetType(TypeFullName);
         }
         /// <summary>
         /// 获取静态字段值
         /// </summary>
-        private void getField(CheckResult result)
+        public void GetField(ref CheckResult result)
         {
-            Type type = loadType();
+            Type type = LoadType();
             if (type != null)
             {
                 FieldInfo field = type.GetField(MemberName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
@@ -84,9 +84,9 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
         /// <summary>
         /// 获取静态属性值
         /// </summary>
-        private void getProperty(CheckResult result)
+        public void GetProperty(ref CheckResult result)
         {
-            Type type = loadType();
+            Type type = LoadType();
             if (type != null)
             {
                 PropertyInfo property = type.GetProperty(MemberName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);

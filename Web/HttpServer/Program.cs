@@ -1,60 +1,13 @@
 ﻿using System;
 using System.Threading;
 using AutoCSer.Extension;
+using System.IO;
 
 namespace AutoCSer.Web.HttpServer
 {
-    class Program
+    class Program : AutoCSer.Deploy.SwitchProcess
     {
-        static void Main(string[] args)
-        {
-            //System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = (IntPtr)1;
-            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpRegisterAttribute(typeof(AutoCSer.Net.HttpRegister.Server)); 
-            byte isStopListen = 0;
-            do
-            {
-                try
-                {
-                    using (AutoCSer.Net.HttpRegister.Server serverValue = new AutoCSer.Net.HttpRegister.Server())
-                    {
-                        serverValue.OnLoadCacheDomain += () =>
-                        {
-                            if (isStopListen == 0)
-                            {
-                                isStopListen = 1;
-                                try
-                                {
-                                    using (AutoCSer.Net.HttpRegister.Server.TcpInternalClient client = new AutoCSer.Net.HttpRegister.Server.TcpInternalClient(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute)))
-                                    {
-                                        client.stopListen(false);
-                                        client.stopListen(true);
-                                    }
-                                }
-                                catch { }
-                            }
-                        };
-                        serverValue.OnStopListen += exit;
-                        using (AutoCSer.Net.HttpRegister.Server.TcpInternalServer server = new AutoCSer.Net.HttpRegister.Server.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute), null, serverValue))
-                        {
-                            if (server.IsListen)
-                            {
-                                Console.WriteLine("HTTP 服务启动成功 " + serverAttribute.Host + ":" + server.Port.toString());
-                                AutoCSer.Diagnostics.ProcessCopyClient.Guard();
-                                AutoCSer.Web.Config.Pub.ConsoleCommand();
-                                AutoCSer.Diagnostics.ProcessCopyClient.Remove();
-                                return;
-                            }
-                        }
-                    }
-                }
-                catch (Exception error)
-                {
-                    Console.WriteLine(error.ToString());
-                }
-                Thread.Sleep(1000);
-            }
-            while (true);
-        }
+        private Program(string[] args) : base(args) { }
         /// <summary>
         /// 退出服务进程
         /// </summary>
@@ -66,6 +19,42 @@ namespace AutoCSer.Web.HttpServer
                 Thread.Sleep(1000);
                 Environment.Exit(-1);
             });
+        }
+        protected override void onStart()
+        {
+            AutoCSer.Threading.ThreadPool.TinyBackground.Start(() => AutoCSer.Web.Config.Pub.ConsoleCommand(ExitEvent));
+            AutoCSer.Threading.ThreadPool.TinyBackground.Start(createHttpServer);
+        }
+        private static void createHttpServer()
+        {
+            AutoCSer.Net.TcpInternalServer.ServerAttribute serverAttribute = AutoCSer.Web.Config.Pub.GetTcpRegisterAttribute(typeof(AutoCSer.Net.HttpRegister.Server), false);
+            if (new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory).Name == AutoCSer.Deploy.Server.DefaultSwitchDirectoryName) serverAttribute.Port += 10000;
+            do
+            {
+                try
+                {
+                    using (AutoCSer.Net.HttpRegister.Server.TcpInternalServer server = new AutoCSer.Net.HttpRegister.Server.TcpInternalServer(AutoCSer.MemberCopy.Copyer<AutoCSer.Net.TcpInternalServer.ServerAttribute>.MemberwiseClone(serverAttribute)))
+                    {
+                        if (server.IsListen)
+                        {
+                            Console.WriteLine("HTTP 服务启动成功 " + serverAttribute.Host + ":" + server.Port.toString());
+                            return;
+                        }
+                        Console.WriteLine("Search 服务启动失败 " + serverAttribute.Host + ":" + server.Port.toString());
+                    }
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.ToString());
+                }
+                Thread.Sleep(1000);
+            }
+            while (true);
+        }
+        static void Main(string[] args)
+        {
+            //System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = (IntPtr)1;
+            new Program(args).Start();
         }
     }
 }

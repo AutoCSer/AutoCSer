@@ -87,12 +87,13 @@ namespace AutoCSer.Web.Config
         /// 获取默认 TCP 内部服务配置
         /// </summary>
         /// <param name="serverType"></param>
+        /// <param name="isClearPort"></param>
         /// <returns></returns>
-        public static ServerAttribute GetTcpRegisterAttribute(Type serverType)
+        public static ServerAttribute GetTcpRegisterAttribute(Type serverType, bool isClearPort)
         {
             ServerAttribute attribute = GetVerifyTcpServerAttribute(serverType);
             attribute.TcpRegister = TcpRegister;
-            attribute.Port = 0;
+            if (isClearPort) attribute.Port = 0;
             return attribute;
         }
         /// <summary>
@@ -111,12 +112,13 @@ namespace AutoCSer.Web.Config
         /// 获取默认 TCP 内部服务配置
         /// </summary>
         /// <param name="serverType"></param>
+        /// <param name="isClearPort"></param>
         /// <returns></returns>
-        public static ServerAttribute GetTcpStaticRegisterAttribute(Type serverType)
+        public static ServerAttribute GetTcpStaticRegisterAttribute(Type serverType, bool isClearPort)
         {
             ServerAttribute attribute = GetVerifyTcpStaticServerAttribute(serverType);
             attribute.TcpRegister = TcpRegister;
-            attribute.Port = 0;
+            if (isClearPort) attribute.Port = 0;
             return attribute;
         }
         /// <summary>

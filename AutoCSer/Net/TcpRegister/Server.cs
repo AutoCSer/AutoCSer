@@ -38,11 +38,11 @@ namespace AutoCSer.Net.TcpRegister
         /// <summary>
         /// 客户端集合
         /// </summary>
-        private LeftArray<ClientInfo> clients;
+        protected LeftArray<ClientInfo> clients;
         /// <summary>
         /// TCP 服务信息集合
         /// </summary>
-        private readonly Dictionary<HashString, ServerSet> serverSets = DictionaryCreator.CreateHashString<ServerSet>();
+        protected readonly Dictionary<HashString, ServerSet> serverSets = DictionaryCreator.CreateHashString<ServerSet>();
         /// <summary>
         /// 时间验证函数
         /// </summary>
@@ -57,7 +57,7 @@ namespace AutoCSer.Net.TcpRegister
         {
             if (base.verify(sender, userID, randomPrefix, md5Data, ref ticks))
             {
-                ClientInfo client = new ClientInfo();
+                ClientInfo client = createClient();
                 clients.Add(client);
                 sender.ClientObject = client;
                 return true;
@@ -65,12 +65,29 @@ namespace AutoCSer.Net.TcpRegister
             return false;
         }
         /// <summary>
+        /// 创建客户端信息
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ClientInfo createClient()
+        {
+            return new ClientInfo();
+        }
+        /// <summary>
+        /// 设置只读模式
+        /// </summary>
+        /// <param name="sender"></param>
+        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
+        public static void SetReadCommand(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
+        {
+            sender.SetCommand((int)command.getLog);
+        }
+        /// <summary>
         /// TCP 服务端轮询
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="onLog">TCP 服务注册通知委托</param>
         [TcpServer.KeepCallbackMethod(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.QueueLink, ClientTask = AutoCSer.Net.TcpServer.ClientTaskType.TcpQueue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private void getLog(ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
+        protected virtual void getLog(ServerSocketSender sender, AutoCSer.Net.TcpServer.ServerCallback<ServerLog> onLog)
         {
             ClientInfo client = new UnionType { Value = sender.ClientObject }.ClientInfo;
             foreach (ServerSet serverSet in serverSets.Values)
@@ -84,21 +101,12 @@ namespace AutoCSer.Net.TcpRegister
             client.OnLog = onLog;
         }
         /// <summary>
-        /// 设置只读模式
-        /// </summary>
-        /// <param name="sender"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        public static void SetReadCommand(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender)
-        {
-            sender.SetCommand((int)command.getLog);
-        }
-        /// <summary>
         /// 注册 TCP 服务信息
         /// </summary>
         /// <param name="server">TCP 服务信息</param>
         /// <returns>注册状态</returns>
         [TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        private bool appendLog(ServerLog server)
+        protected virtual bool appendLog(ServerLog server)
         {
             if (server != null && server.HostToIpAddress())
             {
@@ -134,7 +142,7 @@ namespace AutoCSer.Net.TcpRegister
         /// 日志回调处理
         /// </summary>
         /// <param name="log"></param>
-        private void onLog(ServerLog log)
+        protected virtual void onLog(ServerLog log)
         {
             ClientInfo[] clientArray = clients.Array;
             for (int index = clients.Length; index != 0;)
