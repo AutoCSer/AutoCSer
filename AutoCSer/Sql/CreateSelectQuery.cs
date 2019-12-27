@@ -14,7 +14,7 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 查询条件表达式
         /// </summary>
-        internal Expression<Func<modelType, bool>> Where;
+        internal WhereExpression Where;
         /// <summary>
         /// 排序表达式集合,false为升序,true为降序
         /// </summary>
@@ -40,7 +40,20 @@ namespace AutoCSer.Sql
         /// <param name="where"></param>
         internal CreateSelectQuery(Expression<Func<modelType, bool>> where)
         {
-            Where = where;
+            Where = default(WhereExpression);
+            Where.TryConvert(where.Body);
+            Orders = null;
+            SqlFieldOrders = null;
+            GetCount = 0;
+        }
+        /// <summary>
+        /// 创建查询信息
+        /// </summary>
+        /// <param name="where"></param>
+        internal CreateSelectQuery(Expression where)
+        {
+            Where = default(WhereExpression);
+            Where.Expression = where;
             Orders = null;
             SqlFieldOrders = null;
             GetCount = 0;
@@ -52,7 +65,7 @@ namespace AutoCSer.Sql
         /// <param name="order"></param>
         internal CreateSelectQuery(int getCount, KeyValue<Field, bool> order)
         {
-            Where = null;
+            Where = default(WhereExpression);
             Orders = null;
             SqlFieldOrders = null;
             GetCount = getCount;
@@ -65,12 +78,12 @@ namespace AutoCSer.Sql
         /// <param name="query"></param>
         internal unsafe void WriteWhere(Table sqlTable, CharStream sqlStream, ref SelectQuery<modelType> query)
         {
-            if (Where != null)
+            if (!Where.IsWhereTrue)
             {
                 sqlStream.PrepLength(6);
                 sqlStream.ByteSize += 6 * sizeof(char);
                 int length = sqlStream.Length;
-                sqlTable.Client.GetSql(Where, sqlStream, ref query);
+                sqlTable.Client.GetSql(Where.Expression, sqlStream, ref query);
                 if (length == sqlStream.Length) sqlStream.ByteSize -= 6 * sizeof(char);
                 else
                 {

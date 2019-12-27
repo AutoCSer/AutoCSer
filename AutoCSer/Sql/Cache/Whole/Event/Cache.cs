@@ -47,7 +47,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             /// </summary>
             /// <param name="cache"></param>
             /// <param name="where"></param>
-            internal ResetTask(Cache<valueType, modelType> cache, Expression<Func<modelType, bool>> where)
+            internal ResetTask(Cache<valueType, modelType> cache, Expression where)
             {
                 byte isQuery = 0;
                 try
@@ -150,7 +150,7 @@ namespace AutoCSer.Sql.Cache.Whole.Event
         /// </summary>
         /// <param name="expression"></param>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        protected void reset(Expression<Func<modelType, bool>> expression)
+        protected void reset(Expression expression)
         {
             ResetTask task = new ResetTask(this, expression);
             SqlTable.AddQueue(task);

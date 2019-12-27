@@ -85,7 +85,6 @@
     <Compile Include="ServerCustomTask.cs" />
     <Compile Include="SwitchProcess.cs" />
     <Compile Include="SwitchWait.cs" />
-    <Compile Include="Task.cs" />
     <Compile Include="TaskType.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="Timer.cs" />

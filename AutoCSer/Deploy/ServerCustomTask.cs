@@ -14,10 +14,9 @@ namespace AutoCSer.Deploy
         /// 调用自定义任务
         /// </summary>
         /// <param name="server"></param>
-        /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        public virtual DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task) { return DeployState.Success; }
+        public virtual DeployState Call(Server server, ClientTask.Custom task) { return DeployState.Success; }
         /// <summary>
         /// 自定义任务调用
         /// </summary>
@@ -77,12 +76,11 @@ namespace AutoCSer.Deploy
         /// 调用自定义任务
         /// </summary>
         /// <param name="server"></param>
-        /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        public override DeployState Call(Server server, AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task)
+        public override DeployState Call(Server server, ClientTask.Custom task)
         {
-            return tasks[task.RunFileName](value, server, sender, task.CustomData);
+            return tasks[task.CallName](value, server, task.Sender, task.CustomData);
         }
     }
 }

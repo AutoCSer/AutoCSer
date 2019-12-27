@@ -65,7 +65,7 @@ namespace AutoCSer.Sql.MsSql
             sqlStream.SimpleWriteNotNull(" from[");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
             sqlStream.SimpleWriteNotNull("]with(nolock)");
-            sqlTool.Client.GetSql(createQuery.Where, sqlStream, ref query);
+            sqlTool.Client.GetSql(createQuery.Where.Expression, sqlStream, ref query);
             if (query.IndexFieldName == null) query.SetIndex(fieldName, fieldSqlName);
             sqlStream.SimpleWriteNotNull(")as T where ");
             sqlStream.SimpleWriteNotNull(orderOverName);
@@ -102,7 +102,7 @@ namespace AutoCSer.Sql.MsSql
             sqlStream.SimpleWriteNotNull(" from[");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
             sqlStream.SimpleWriteNotNull("]with(nolock)");
-            sqlTool.Client.GetSql(createQuery.Where, sqlStream, ref query);
+            sqlTool.Client.GetSql(createQuery.Where.Expression, sqlStream, ref query);
             if (query.IndexFieldName == null) query.SetIndex(fieldName, fieldSqlName);
             sqlStream.SimpleWriteNotNull(")as T where ");
             sqlStream.SimpleWriteNotNull(orderOverName);

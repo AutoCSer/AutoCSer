@@ -83,7 +83,6 @@
     <Compile Include="NET4.5\ClientDeploy.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="SwitchProcess.cs" />
-    <Compile Include="Task.cs" />
     <Compile Include="TaskType.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="Timer.cs" />

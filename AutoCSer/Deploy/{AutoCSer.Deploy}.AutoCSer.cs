@@ -837,7 +837,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             int Return;
 
                             
-                            Return = serverValue.addAssemblyFiles(Sender, inputParameter.p1, inputParameter.p0);
+                            Return = serverValue.addAssemblyFiles(Sender, inputParameter.p0);
 
                             value.Value.Return = Return;
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -903,7 +903,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             int Return;
 
                             
-                            Return = serverValue.addFiles(Sender, inputParameter.p1, inputParameter.p0, inputParameter.p2);
+                            Return = serverValue.addFiles(Sender, inputParameter.p0);
 
                             value.Value.Return = Return;
                             value.Type = AutoCSer.Net.TcpServer.ReturnType.Success;
@@ -1159,7 +1159,6 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 internal struct _p3
                 {
                     public AutoCSer.Deploy.ClientTask.AssemblyFile p0;
-                    public AutoCSer.KeyValue<string,int>[] p1;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -1201,8 +1200,6 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 internal struct _p6
                 {
                     public AutoCSer.Deploy.ClientTask.WebFile p0;
-                    public AutoCSer.Deploy.Directory p1;
-                    public AutoCSer.Deploy.TaskType p2;
                 }
                 [AutoCSer.BinarySerialize.Serialize(IsMemberMap = false, IsReferenceMember = false)]
                 [AutoCSer.Metadata.BoxSerialize]
@@ -1465,11 +1462,10 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 /// <summary>
                 /// 写文件
                 /// </summary>
-                /// <param name="files">文件集合</param>
                 /// <param name="assemblyFile">写文件 exe/dll/pdb 任务信息</param>
                 /// <returns>任务索引编号,-1表示失败</returns>
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<int> addAssemblyFiles(AutoCSer.KeyValue<string,int>[] files, AutoCSer.Deploy.ClientTask.AssemblyFile assemblyFile)
+                AutoCSer.Net.TcpServer.ReturnValue<int> addAssemblyFiles(AutoCSer.Deploy.ClientTask.AssemblyFile assemblyFile)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4>.Pop();
                     try
@@ -1479,8 +1475,6 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                         {
                             TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                             {
-                                
-                                p1 = files,
                                 
                                 p0 = assemblyFile,
                             };
@@ -1500,11 +1494,10 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 /// <summary>
                 /// 写文件
                 /// </summary>
-                /// <param name="files">文件集合</param>
                 /// <param name="assemblyFile">写文件 exe/dll/pdb 任务信息</param>
                 /// <returns>任务索引编号,-1表示失败</returns>
                 public 
-                AutoCSer.Net.TcpServer.AwaiterBox<int> addAssemblyFilesAwaiter(AutoCSer.KeyValue<string,int>[] files, AutoCSer.Deploy.ClientTask.AssemblyFile assemblyFile)
+                AutoCSer.Net.TcpServer.AwaiterBox<int> addAssemblyFilesAwaiter(AutoCSer.Deploy.ClientTask.AssemblyFile assemblyFile)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -1512,8 +1505,6 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                     {
                         TcpInternalServer._p3 _inputParameter_ = new TcpInternalServer._p3
                         {
-                            
-                            p1 = files,
                             
                             p0 = assemblyFile,
                         };
@@ -1591,14 +1582,12 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                 private static readonly AutoCSer.Net.TcpServer.CommandInfo _a4 = new AutoCSer.Net.TcpServer.CommandInfo { Command = 4 + 128, InputParameterIndex = 6, TaskType = AutoCSer.Net.TcpServer.ClientTaskType.Timeout, IsSimpleSerializeOutputParamter = true };
 
                 /// <summary>
-                /// 添加web任务(css/js/html)
+                /// 写文件
                 /// </summary>
-                /// <param name="directory">目录信息</param>
                 /// <param name="webFile">写文件任务信息</param>
-                /// <param name="taskType">任务类型</param>
                 /// <returns>任务索引编号,-1表示失败</returns>
                 public 
-                AutoCSer.Net.TcpServer.ReturnValue<int> addFiles(AutoCSer.Deploy.Directory directory, AutoCSer.Deploy.ClientTask.WebFile webFile, AutoCSer.Deploy.TaskType taskType)
+                AutoCSer.Net.TcpServer.ReturnValue<int> addFiles(AutoCSer.Deploy.ClientTask.WebFile webFile)
                 {
                     AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4> _wait_ = AutoCSer.Net.TcpServer.AutoWaitReturnValue<TcpInternalServer._p4>.Pop();
                     try
@@ -1609,11 +1598,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                             TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
                             {
                                 
-                                p1 = directory,
-                                
                                 p0 = webFile,
-                                
-                                p2 = taskType,
                             };
                             TcpInternalServer._p4 _outputParameter_ = new TcpInternalServer._p4
                             {
@@ -1629,14 +1614,12 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                     return new AutoCSer.Net.TcpServer.ReturnValue<int> { Type = AutoCSer.Net.TcpServer.ReturnType.ClientException };
                 }
                 /// <summary>
-                /// 添加web任务(css/js/html)
+                /// 写文件
                 /// </summary>
-                /// <param name="directory">目录信息</param>
                 /// <param name="webFile">写文件任务信息</param>
-                /// <param name="taskType">任务类型</param>
                 /// <returns>任务索引编号,-1表示失败</returns>
                 public 
-                AutoCSer.Net.TcpServer.AwaiterBox<int> addFilesAwaiter(AutoCSer.Deploy.Directory directory, AutoCSer.Deploy.ClientTask.WebFile webFile, AutoCSer.Deploy.TaskType taskType)
+                AutoCSer.Net.TcpServer.AwaiterBox<int> addFilesAwaiter(AutoCSer.Deploy.ClientTask.WebFile webFile)
                 {
                     AutoCSer.Net.TcpServer.AwaiterBox<int> _awaiter_ = new AutoCSer.Net.TcpServer.AwaiterBox<int>();
                     AutoCSer.Net.TcpInternalServer.ClientSocketSender _socket_ = _TcpClient_.Sender;
@@ -1645,11 +1628,7 @@ namespace AutoCSer.Deploy.AssemblyEnvironment
                         TcpInternalServer._p6 _inputParameter_ = new TcpInternalServer._p6
                         {
                             
-                            p1 = directory,
-                            
                             p0 = webFile,
-                            
-                            p2 = taskType,
                         };
                         AutoCSer.Net.TcpServer.ReturnType _returnType_;
                         AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int> _outputParameter_ = default(AutoCSer.Net.TcpServer.AwaiterReturnValueBox<int>);

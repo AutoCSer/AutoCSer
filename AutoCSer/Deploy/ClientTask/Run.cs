@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AutoCSer.Extension;
+using System;
+using System.IO;
+using System.Threading;
 
 namespace AutoCSer.Deploy.ClientTask
 {
@@ -28,5 +31,23 @@ namespace AutoCSer.Deploy.ClientTask
         /// 是否等待运行程序结束
         /// </summary>
         public bool IsWait;
+
+        /// <summary>
+        /// 写文件并运行程序
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <returns></returns>
+        internal override DeployState Call(Timer timer)
+        {
+            FileInfo runFileInfo = new FileInfo(Path.Combine(ServerPath, FileName));
+            if (runFileInfo.Exists)
+            {
+                Thread.Sleep(Sleep);
+                if (IsWait) runFileInfo.WaitProcessDirectory();
+                else runFileInfo.StartProcessDirectory();
+                return DeployState.Success;
+            }
+            return DeployState.NotFoundFile;
+        }
     }
 }

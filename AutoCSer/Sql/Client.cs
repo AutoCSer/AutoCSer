@@ -376,11 +376,11 @@ namespace AutoCSer.Sql
         /// <param name="expression">委托关联表达式</param>
         /// <param name="sqlStream">SQL表达式流</param>
         /// <param name="query">查询信息</param>
-        internal virtual void GetSql<modelType>(LambdaExpression expression, CharStream sqlStream, ref SelectQuery<modelType> query)
+        internal virtual void GetSql<modelType>(Expression expression, CharStream sqlStream, ref SelectQuery<modelType> query)
             where modelType : class
         {
             AutoCSer.Sql.MsSql.ExpressionConverter expressionConverter = new AutoCSer.Sql.MsSql.ExpressionConverter { SqlStream = sqlStream, ConstantConverter = constantConverter };
-            expressionConverter.Convert(expression.Body);
+            expressionConverter.Convert(expression);
             if (query.IndexFieldName == null) query.SetIndex(expressionConverter.FirstMemberName, expressionConverter.FirstMemberSqlName);
         }
         /// <summary>

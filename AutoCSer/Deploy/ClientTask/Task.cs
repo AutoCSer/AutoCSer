@@ -11,5 +11,12 @@ namespace AutoCSer.Deploy.ClientTask
         /// 任务类型
         /// </summary>
         public abstract TaskType Type { get; }
+
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <returns></returns>
+        internal abstract DeployState Call(Timer timer);
     }
 }

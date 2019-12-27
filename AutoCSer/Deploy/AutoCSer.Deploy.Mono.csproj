@@ -72,7 +72,6 @@
     <Compile Include="Log.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="Task.cs" />
     <Compile Include="TaskType.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="Timer.cs" />

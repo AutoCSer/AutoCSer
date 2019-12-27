@@ -29,7 +29,7 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 任务集合
         /// </summary>
-        internal LeftArray<Task> Tasks;
+        internal LeftArray<ClientTask.Task> Tasks;
         /// <summary>
         /// 部署信息
         /// </summary>
@@ -63,7 +63,7 @@ namespace AutoCSer.Deploy
         /// <param name="task"></param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal int AddTask(Task task)
+        internal int AddTask(ClientTask.Task task)
         {
             int index = Tasks.Length;
             Tasks.Add(task);

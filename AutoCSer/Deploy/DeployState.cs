@@ -61,6 +61,10 @@ namespace AutoCSer.Deploy
         /// </summary>
         Canceled,
         /// <summary>
+        /// 没有找到文件
+        /// </summary>
+        NotFoundFile,
+        /// <summary>
         /// 执行异常
         /// </summary>
         Exception,

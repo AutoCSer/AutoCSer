@@ -20,5 +20,20 @@ namespace AutoCSer.Deploy.ClientTask
         /// 自定义参数数据
         /// </summary>
         public byte[] CustomData;
+
+        /// <summary>
+        /// TCP 内部服务套接字数据发送
+        /// </summary>
+        [AutoCSer.BinarySerialize.IgnoreMember]
+        internal AutoCSer.Net.TcpInternalServer.ServerSocketSender Sender;
+        /// <summary>
+        /// 自定义任务处理
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <returns></returns>
+        internal override DeployState Call(Timer timer)
+        {
+            return timer.Server.CallCustomTask(this);
+        }
     }
 }

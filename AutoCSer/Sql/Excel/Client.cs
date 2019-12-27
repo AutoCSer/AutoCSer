@@ -239,7 +239,7 @@ namespace AutoCSer.Sql.Excel
         /// <param name="expression">委托关联表达式</param>
         /// <param name="sqlStream">SQL表达式流</param>
         /// <param name="query">查询信息</param>
-        internal override void GetSql<modelType>(LambdaExpression expression, CharStream sqlStream, ref SelectQuery<modelType> query)
+        internal override void GetSql<modelType>(Expression expression, CharStream sqlStream, ref SelectQuery<modelType> query)
         {
             throw new InvalidOperationException();
         }

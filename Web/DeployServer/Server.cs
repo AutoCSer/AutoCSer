@@ -42,12 +42,11 @@ namespace AutoCSer.Web.DeployServer
         /// <summary>
         /// 自定义任务处理
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        public override Deploy.DeployState CallCustomTask(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Deploy.Task task)
+        public override Deploy.DeployState CallCustomTask(Deploy.ClientTask.Custom task)
         {
-            return customTask.Call(this, sender, task);
+            return customTask.Call(this, task);
         }
     }
 }

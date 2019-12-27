@@ -573,12 +573,12 @@ update[");
             sqlStream.SimpleWriteNotNull(sqlTool.TableName);
             sqlStream.WriteNotNull("]with(nolock)where ");
             int whereSize, whereIndex;
-            if (createQuery.Where == null) whereSize = whereIndex = 0;
+            if (createQuery.Where.IsWhereTrue) whereSize = whereIndex = 0;
             else
             {
                 sqlStream.Write('(');
                 whereIndex = sqlStream.Length;
-                sqlTool.Client.GetSql(createQuery.Where, sqlStream, ref query);
+                sqlTool.Client.GetSql(createQuery.Where.Expression, sqlStream, ref query);
                 if ((whereSize = sqlStream.Length - whereIndex) == 0) sqlStream.ByteSize -= sizeof(char);
                 else sqlStream.Write(")and ");
             }

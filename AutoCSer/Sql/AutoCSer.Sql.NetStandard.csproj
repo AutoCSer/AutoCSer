@@ -58,6 +58,10 @@
     <Compile Include="Cache\Whole\Timer.cs" />
     <Compile Include="Cache\Whole\TimerWhere.cs" />
     <Compile Include="ClientKind.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionCalculator.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionComparator.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionFloatCalculator.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionNegateCalculator.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
     <Compile Include="Extension\EmitGenerator.Sql.cs" />
@@ -216,6 +220,8 @@
     <Compile Include="UpdateMemberMap.cs" />
     <Compile Include="UpdateQuery.cs" />
     <Compile Include="WaitSetValue.cs" />
+    <Compile Include="WhereExpression.cs" />
+    <Compile Include="{AutoCSer.Sql}.CombinationTemplate.cs" />
   </ItemGroup>
 
   <ItemGroup>

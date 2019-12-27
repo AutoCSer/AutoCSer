@@ -83,10 +83,14 @@ namespace AutoCSer.Deploy
                                 break;
                             case TaskType.WebFile:
                             case TaskType.File:
-                                result = await TcpClient.TcpInternalClient.addFilesAwaiter(tasks[taskIndex].Directory, (ClientTask.WebFile)Tasks[taskIndex], Tasks[taskIndex].Type);
+                                ClientTask.WebFile webFile = (ClientTask.WebFile)Tasks[taskIndex];
+                                webFile.Directory = tasks[taskIndex].Directory;
+                                result = await TcpClient.TcpInternalClient.addFilesAwaiter(webFile);
                                 break;
                             case TaskType.AssemblyFile:
-                                result = await TcpClient.TcpInternalClient.addAssemblyFilesAwaiter(tasks[taskIndex].FileIndexs.ToArray(), (ClientTask.AssemblyFile)Tasks[taskIndex]);
+                                ClientTask.AssemblyFile assemblyFile = (ClientTask.AssemblyFile)Tasks[taskIndex];
+                                assemblyFile.FileIndexs = tasks[taskIndex].FileIndexs.ToArray();
+                                result = await TcpClient.TcpInternalClient.addAssemblyFilesAwaiter(assemblyFile);
                                 break;
                             case TaskType.WaitRunSwitch:
                                 result = await TcpClient.TcpInternalClient.addWaitRunSwitchAwaiter(tasks[((ClientTask.WaitRunSwitch)Tasks[taskIndex]).TaskIndex].TaskIndex);

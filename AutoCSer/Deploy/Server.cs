@@ -208,21 +208,16 @@ namespace AutoCSer.Deploy
             return directory;
         }
         /// <summary>
-        /// 添加web任务(css/js/html)
+        /// 写文件
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="directory">目录信息</param>
         /// <param name="webFile">写文件任务信息</param>
-        /// <param name="taskType">任务类型</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Directory directory, ClientTask.WebFile webFile, TaskType taskType)
+        protected virtual int addFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.WebFile webFile)
         {
             DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
-            if (deployInfo != null)
-            {
-                return deployInfo.AddTask(new Task { Directory = directory, ServerDirectory = new DirectoryInfo(webFile.ServerPath), Type = taskType });
-            }
+            if (deployInfo != null) return deployInfo.AddTask(webFile);
             return -1;
         }
         /// <summary>
@@ -233,13 +228,10 @@ namespace AutoCSer.Deploy
         /// <param name="assemblyFile">写文件 exe/dll/pdb 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]
-        protected virtual int addAssemblyFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, KeyValue<string, int>[] files, ClientTask.AssemblyFile assemblyFile)
+        protected virtual int addAssemblyFiles(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.AssemblyFile assemblyFile)
         {
             DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
-            if (deployInfo != null)
-            {
-                return deployInfo.AddTask(new Task { FileIndexs = files, ServerDirectory = new DirectoryInfo(assemblyFile.ServerPath), Type = TaskType.AssemblyFile });
-            }
+            if (deployInfo != null) return deployInfo.AddTask(assemblyFile);
             return -1;
         }
         /// <summary>
@@ -252,10 +244,7 @@ namespace AutoCSer.Deploy
         protected virtual int addRun(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.Run run)
         {
             DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
-            if (deployInfo != null)
-            {
-                return deployInfo.AddTask(new Task { ServerDirectory = new DirectoryInfo(run.ServerPath), Type = TaskType.Run, RunFileName = run.FileName, RunSleep = run.Sleep, IsWaitRun = run.IsWait });
-            }
+            if (deployInfo != null) return deployInfo.AddTask(run);
             return -1;
         }
         /// <summary>
@@ -268,7 +257,10 @@ namespace AutoCSer.Deploy
         protected virtual int addWaitRunSwitch(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, int taskIndex)
         {
             DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
-            if (deployInfo != null) return deployInfo.AddTask(new Task { TaskIndex = taskIndex, Type = TaskType.WaitRunSwitch });
+            if (deployInfo != null)
+            {
+                return deployInfo.AddTask(new ClientTask.WaitRunSwitch { TaskIndex = taskIndex });
+            }
             return -1;
         }
         /// <summary>
@@ -281,10 +273,7 @@ namespace AutoCSer.Deploy
         protected virtual int addUpdateSwitchFile(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, ClientTask.UpdateSwitchFile updateSwitchFile)
         {
             DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
-            if (deployInfo != null)
-            {
-                return deployInfo.AddTask(new Task { ServerDirectory = updateSwitchFile.ServerPath == null ? null : new DirectoryInfo(updateSwitchFile.ServerPath), Type = TaskType.UpdateSwitchFile, RunFileName = updateSwitchFile.FileName, SwitchDirectoryName = updateSwitchFile.SwitchDirectoryName, UpdateDirectoryName = updateSwitchFile.UpdateDirectoryName });
-            }
+            if (deployInfo != null) return deployInfo.AddTask(updateSwitchFile);
             return -1;
         }
         /// <summary>
@@ -299,7 +288,8 @@ namespace AutoCSer.Deploy
             DeployInfo deployInfo = ((ClientObject)sender.ClientObject).CurrentDeploy;
             if (deployInfo != null)
             {
-                return deployInfo.AddTask(new Task { Sender = sender, RunFileName = custom.CallName, CustomData = custom.CustomData, Type = TaskType.Custom });
+                custom.Sender = sender;
+                return deployInfo.AddTask(custom);
             }
             return -1;
         }
@@ -316,10 +306,9 @@ namespace AutoCSer.Deploy
         /// <summary>
         /// 自定义任务处理
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        public virtual DeployState CallCustomTask(AutoCSer.Net.TcpInternalServer.ServerSocketSender sender, Task task)
+        public virtual DeployState CallCustomTask(ClientTask.Custom task)
         {
             return DeployState.CustomError;
         }
@@ -414,29 +403,49 @@ namespace AutoCSer.Deploy
         /// <returns>当前检测文件</returns>
         public static FileInfo UpdateSwitchFile(string deployPath, string checkFileName, string switchDirectoryName = DefaultSwitchDirectoryName, string updateDirectoryName = DefaultUpdateDirectoryName)
         {
-            DirectoryInfo Directory = new DirectoryInfo(deployPath), MoveToDirectory = Directory;
-            DirectoryInfo SwitchDirectory = new DirectoryInfo(Path.Combine(Directory.FullName, switchDirectoryName ?? DefaultSwitchDirectoryName));
-            FileInfo FileInfo = new FileInfo(Path.Combine(Directory.FullName, checkFileName));
-            if (FileInfo.Exists)
+            string otherFileName;
+            return UpdateSwitchFile(deployPath, checkFileName, switchDirectoryName, updateDirectoryName, out otherFileName);
+        }
+        /// <summary>
+        /// 发布切换更新，返回当前检测文件
+        /// </summary>
+        /// <param name="deployPath">发布目标路径</param>
+        /// <param name="checkFileName">检测文件名称</param>
+        /// <param name="switchDirectoryName">切换服务相对目录名称</param>
+        /// <param name="updateDirectoryName">更新服务相对目录名称</param>
+        /// <param name="otherFileName">另外一个待运行文件名称</param>
+        /// <returns>当前检测文件</returns>
+        internal static FileInfo UpdateSwitchFile(string deployPath, string checkFileName, string switchDirectoryName, string updateDirectoryName, out string otherFileName)
+        {
+            DirectoryInfo directory = new DirectoryInfo(deployPath), moveToDirectory = directory;
+            DirectoryInfo switchDirectory = new DirectoryInfo(Path.Combine(directory.FullName, switchDirectoryName ?? DefaultSwitchDirectoryName)), otherDirectory = switchDirectory;
+            FileInfo fileInfo = new FileInfo(Path.Combine(directory.FullName, checkFileName));
+            if (fileInfo.Exists)
             {
-                if (SwitchDirectory.Exists)
+                if (switchDirectory.Exists)
                 {
-                    FileInfo SwitchFileInfo = new FileInfo(Path.Combine(SwitchDirectory.FullName, FileInfo.Name));
-                    if (!SwitchFileInfo.Exists || SwitchFileInfo.LastWriteTimeUtc < FileInfo.LastWriteTimeUtc) MoveToDirectory = SwitchDirectory;
+                    FileInfo switchFileInfo = new FileInfo(Path.Combine(switchDirectory.FullName, fileInfo.Name));
+                    if (!switchFileInfo.Exists || switchFileInfo.LastWriteTimeUtc < fileInfo.LastWriteTimeUtc)
+                    {
+                        moveToDirectory = switchDirectory;
+                        otherDirectory = directory;
+                    }
                 }
                 else
                 {
-                    SwitchDirectory.Create();
-                    MoveToDirectory = SwitchDirectory;
+                    switchDirectory.Create();
+                    moveToDirectory = switchDirectory;
+                    otherDirectory = directory;
                 }
             }
-            foreach (FileInfo File in new DirectoryInfo(Path.Combine(Directory.FullName, updateDirectoryName ?? DefaultUpdateDirectoryName)).GetFiles())
+            foreach (FileInfo file in new DirectoryInfo(Path.Combine(directory.FullName, updateDirectoryName ?? DefaultUpdateDirectoryName)).GetFiles())
             {
-                FileInfo RemoveFile = new FileInfo(Path.Combine(MoveToDirectory.FullName, File.Name));
-                if (RemoveFile.Exists) RemoveFile.Delete();
-                File.MoveTo(RemoveFile.FullName);
+                FileInfo removeFile = new FileInfo(Path.Combine(moveToDirectory.FullName, file.Name));
+                if (removeFile.Exists) removeFile.Delete();
+                file.MoveTo(removeFile.FullName);
             }
-            return new FileInfo(Path.Combine(MoveToDirectory.FullName, FileInfo.Name));
+            otherFileName = Path.Combine(otherDirectory.FullName, fileInfo.Name);
+            return new FileInfo(Path.Combine(moveToDirectory.FullName, fileInfo.Name));
         }
 #if !DotNetStandard
         /// <summary>

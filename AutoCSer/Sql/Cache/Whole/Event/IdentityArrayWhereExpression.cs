@@ -34,13 +34,15 @@ namespace AutoCSer.Sql.Cache.Whole.Event
             : base(sqlTool, memberCache, group, baseIdentity, false)
         {
             if (isValue == null) throw new ArgumentNullException();
+            CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(isValue);
+            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) throw new InvalidCastException();
             this.isValue = isValue.Compile();
 
             sqlTool.OnInserted += onInserted;
             sqlTool.OnUpdated += onUpdated;
             sqlTool.OnDeleted += onDeleted;
 
-            reset(isValue);
+            if (!createQuery.Where.IsWhereFalse) reset(createQuery.Where.NullExpression);
         }
         /// <summary>
         /// 增加数据

@@ -61,10 +61,10 @@ namespace AutoCSer.Deploy
                 isLog |= onLog.Callback(log);
                 while (TaskIndex != DeployInfo.Tasks.Length && !IsCancel)
                 {
-                    Task task = DeployInfo.Tasks.Array[TaskIndex];
+                    ClientTask.Task task = DeployInfo.Tasks.Array[TaskIndex];
                     log.Set(TaskIndex, task.Type);
                     isLog |= onLog.Callback(log);
-                    DeployState state = task.Run(this);
+                    DeployState state = task.Call(this);
                     log.Type = LogType.OnRun;
                     isLog |= onLog.Callback(log);
                     if (state != DeployState.Success) return state;

@@ -943,8 +943,11 @@ namespace AutoCSer.Sql
         public LeftArray<tableType> Select(Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
         {
             if (IsOnlyQueue) return SelectQueue(where, memberMap);
-            SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
+            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
+            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
+
+            SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
             Client.GetSelectQuery(this, memberMap, ref createQuery, ref selectQuery);
             DbConnection connection = null;
             try
@@ -1030,10 +1033,13 @@ namespace AutoCSer.Sql
         /// <returns>数据库记录集合</returns>
         public LeftArray<tableType> SelectQueue(Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
         {
+            CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
+            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
+            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
+
             Selecter selecter = (Selecter.YieldPool.Default.Pop() as Selecter) ?? new Selecter();
             try
             {
-                CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
                 Client.GetSelectQuery(selecter.Table = this, memberMap, ref createQuery, ref selecter.Query);
                 AddQueue(selecter);
                 return selecter.Wait();
@@ -1050,6 +1056,9 @@ namespace AutoCSer.Sql
         internal LeftArray<tableType> SelectQueue(ref DbConnection connection, Expression<Func<modelType, bool>> where = null, MemberMap<modelType> memberMap = null)
         {
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
+            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
+            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
+
             SelectQuery<modelType> query = default(SelectQuery<modelType>);
             Client.GetSelectQuery(this, memberMap, ref createQuery, ref query);
             return SelectQueue(ref connection, ref query);
@@ -1086,8 +1095,11 @@ namespace AutoCSer.Sql
         public LeftArray<tableType> Select(Func<DbDataReader, tableType> readValue, Expression<Func<modelType, bool>> where = null)
         {
             if (IsOnlyQueue) return SelectQueue(readValue, where);
-            SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
             CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
+            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
+            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
+
+            SelectQuery<modelType> selectQuery = default(SelectQuery<modelType>);
             Client.GetSelectQuery(this, ref createQuery, ref selectQuery);
             DbConnection connection = null;
             try
@@ -1185,13 +1197,16 @@ namespace AutoCSer.Sql
         /// </summary>
         /// <param name="readValue">读取数据委托</param>
         /// <param name="where">查询条件</param>
-        /// <returns>数据库记录集合</returns>
+        /// <returns>数据库记录集合，IsNull 表示失败</returns>
         public LeftArray<tableType> SelectQueue(Func<DbDataReader, tableType> readValue, Expression<Func<modelType, bool>> where = null)
         {
+            CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
+            if (createQuery.Where.Type == WhereExpression.ConvertType.Unknown) return default(LeftArray<tableType>);
+            if (createQuery.Where.IsWhereFalse) return new LeftArray<tableType>(0, NullValue<tableType>.Array);
+
             CustomSelecter selecter = (CustomSelecter.YieldPool.Default.Pop() as CustomSelecter) ?? new CustomSelecter();
             try
             {
-                CreateSelectQuery<modelType> createQuery = new CreateSelectQuery<modelType>(where);
                 selecter.Set(this, readValue);
                 Client.GetSelectQuery(this, ref createQuery, ref selecter.Query);
                 AddQueue(selecter);

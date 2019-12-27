@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoCSer.Extension;
+using System;
 
 namespace AutoCSer.Deploy.ClientTask
 {
@@ -28,5 +29,25 @@ namespace AutoCSer.Deploy.ClientTask
         /// 更新服务相对目录名称
         /// </summary>
         public string UpdateDirectoryName;
+
+        /// <summary>
+        /// 另外一个待运行文件名称
+        /// </summary>
+        [AutoCSer.BinarySerialize.IgnoreMember]
+        internal string WaitFile;
+        /// <summary>
+        /// 发布切换更新
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <returns></returns>
+        internal override DeployState Call(Timer timer)
+        {
+            if (ServerPath == null && FileName == string.Empty)
+            {
+                AutoCSer.Threading.ThreadPool.TinyBackground.Start(() => timer.Server.OnDeployServerUpdated(null, SwitchDirectoryName, UpdateDirectoryName));
+            }
+            else Server.UpdateSwitchFile(ServerPath, FileName, SwitchDirectoryName, UpdateDirectoryName, out WaitFile).StartProcessDirectory();
+            return DeployState.Success;
+        }
     }
 }

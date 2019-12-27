@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Threading;
 
 namespace AutoCSer.Deploy.ClientTask
 {
@@ -16,5 +18,29 @@ namespace AutoCSer.Deploy.ClientTask
         /// 任务信息索引位置
         /// </summary>
         public int TaskIndex;
+
+        /// <summary>
+        /// 等待运行程序切换结束
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <returns></returns>
+        internal override DeployState Call(Timer timer)
+        {
+            FileInfo file = new FileInfo(((UpdateSwitchFile)timer.DeployInfo.Tasks.Array[TaskIndex]).WaitFile);
+            if (file.Exists)
+            {
+                do
+                {
+                    try
+                    {
+                        using (FileStream fileStream = file.OpenWrite()) return DeployState.Success;
+                    }
+                    catch { }
+                    Thread.Sleep(1);
+                }
+                while (true);
+            }
+            return DeployState.Success;
+        }
     }
 }
