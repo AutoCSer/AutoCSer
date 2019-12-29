@@ -31,11 +31,10 @@ namespace AutoCSer.Email
         /// <returns>是否合法</returns>
         private bool check(Content content)
         {
-            return content != null && content.Subject != null && content.Body != null && content.SendTo != null
-                && From != null && Password != null && Smtp.Server != null
+            return content != null && content.Subject != null && content.Body != null && content.SendTo != null && Smtp.Server != null
                 && content.Subject.Length != 0 && content.Body.Length != 0
                 && Password.Length != 0 && Smtp.Server.Length != 0
-                && content.SendTo.IndexOf('@') > 0 && From.IndexOf('@') > 0;
+                && (From == null || From.IndexOf('@') > 0) && content.SendTo.IndexOf('@') > 0;
         }
         /// <summary>
         /// 获取STMP客户端
@@ -89,7 +88,7 @@ namespace AutoCSer.Email
             bool isSend = false;
             if (check(content))
             {
-                using (MailMessage message = new MailMessage(From, content.SendTo, content.Subject, content.Body))
+                using (MailMessage message = new MailMessage(content.From ?? From, content.SendTo, content.Subject, content.Body))
                 {
                     try
                     {
@@ -119,7 +118,7 @@ namespace AutoCSer.Email
                 MailMessage message = null;
                 try
                 {
-                    message = new MailMessage(From, content.SendTo, content.Subject, content.Body);
+                    message = new MailMessage(content.From ?? From, content.SendTo, content.Subject, content.Body);
                     message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;//如果发送失败，SMTP 服务器将发送 失败邮件告诉我
                     (AutoCSer.Threading.RingPool<EventSender>.Default.Pop() ?? new EventSender()).Send(message, getSmtp(message, content), onSend, log);
                     return true;

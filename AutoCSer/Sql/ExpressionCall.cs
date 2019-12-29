@@ -9,6 +9,15 @@ namespace AutoCSer.Sql
     public static class ExpressionCall
     {
         /// <summary>
+        /// SQL 函数调用
+        /// </summary>
+        /// <typeparam name="valueType"></typeparam>
+        /// <param name="FucntionName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static valueType Call<valueType>(string FucntionName, params object[] parameters) { return default(valueType); }
+
+        /// <summary>
         /// 计数
         /// </summary>
         /// <typeparam name="valueType"></typeparam>
@@ -24,9 +33,9 @@ namespace AutoCSer.Sql
         /// <typeparam name="valueType"></typeparam>
         /// <param name="value"></param>
         /// <returns>求和</returns>
-        public static int Sum<valueType>(valueType value)
+        public static valueType Sum<valueType>(valueType value)
         {
-            return 0;
+            return default(valueType);
         }
         /// <summary>
         /// 获取当前时间

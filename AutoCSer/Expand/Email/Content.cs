@@ -8,6 +8,10 @@ namespace AutoCSer.Email
     public sealed class Content
     {
         /// <summary>
+        /// 发件人邮箱
+        /// </summary>
+        public string From;
+        /// <summary>
         /// 收件人邮箱
         /// </summary>
         public string SendTo;

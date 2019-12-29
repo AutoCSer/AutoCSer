@@ -60,6 +60,7 @@
     <Compile Include="Cache\Whole\Timer.cs" />
     <Compile Include="Cache\Whole\TimerWhere.cs" />
     <Compile Include="CombinationTemplateConfig.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionNotCalculator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionNegateCalculator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionFloatCalculator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionCalculator.cs" />

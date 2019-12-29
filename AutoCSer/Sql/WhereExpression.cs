@@ -49,18 +49,30 @@ namespace AutoCSer.Sql
             Unknown
         }
         /// <summary>
-        /// 空引用类型
+        /// 异常类型
         /// </summary>
-        internal enum NullReferenceType : byte
+        internal enum ExceptionType : byte
         {
             /// <summary>
-            /// 成员表达式目标对象
+            /// 目标对象为 null
             /// </summary>
-            MemberAccessTarget = 1,
+            TargetIsNull = 1,
             /// <summary>
-            /// 函数调用目标对象
+            /// 数组不是常量
             /// </summary>
-            MethodCallTarget,
+            ArrayNotConstant,
+            /// <summary>
+            /// 目标对象不是数组
+            /// </summary>
+            TargetNotArray,
+            /// <summary>
+            /// 数组索引不是 int 常量
+            /// </summary>
+            ArrayIndexNotInt,
+            /// <summary>
+            /// 数组索引超出范围
+            /// </summary>
+            ArrayIndexOutOfRange,
         }
         /// <summary>
         /// 条件表达式
@@ -73,11 +85,11 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 未知表达式类型
         /// </summary>
-        internal ExpressionType UnknownExpression;
+        internal ExpressionType UnknownType;
         /// <summary>
         /// 空引用类型
         /// </summary>
-        internal NullReferenceType NullReference;
+        internal ExceptionType Exception;
         ///// <summary>
         ///// 表达式转换是否错误
         ///// </summary>
@@ -128,11 +140,22 @@ namespace AutoCSer.Sql
         /// <summary>
         /// 正常表达式
         /// </summary>
-        internal Expression NormalExpression
+        public Expression NormalExpression
         {
             get { return Type != ConvertType.Unknown ? Expression : null; }
         }
-
+        /// <summary>
+        /// 条件表达式重组
+        /// </summary>
+        /// <param name="expression"></param>
+        public WhereExpression(Expression expression)
+        {
+            Expression = expression;
+            Type = ConvertType.Expression;
+            UnknownType = 0;
+            Exception = 0;
+            if (expression != null) Convert();
+        }
         /// <summary>
         /// 转换表达式
         /// </summary>
@@ -167,7 +190,7 @@ namespace AutoCSer.Sql
                 case ExpressionType.OrElse: convertOrElse(); return;
                 case ExpressionType.AndAlso: convertAndAlso(); return;
                 case ExpressionType.Not: convertNot(); return;
-                case ExpressionType.Equal: 
+                case ExpressionType.Equal:
                 case ExpressionType.NotEqual:
                 case ExpressionType.GreaterThanOrEqual:
                 case ExpressionType.GreaterThan:
@@ -189,6 +212,9 @@ namespace AutoCSer.Sql
                     convertBinaryExpression();
                     return;
                 case ExpressionType.MemberAccess: convertMemberAccess(); return;
+                case ExpressionType.ArrayLength: convertArrayLength(); return;
+                case ExpressionType.ArrayIndex: convertArrayIndex(); return;
+                case ExpressionType.Coalesce: convertCoalesce(); return;
                 case ExpressionType.Unbox: convertUnbox(); return;
                 case ExpressionType.Negate:
                 case ExpressionType.NegateChecked:
@@ -205,7 +231,7 @@ namespace AutoCSer.Sql
 
                 case ExpressionType.UnaryPlus:
                 case ExpressionType.Constant: Type = ConvertType.Expression; return;
-                default: Type = ConvertType.Unknown; UnknownExpression = Expression.NodeType; return;
+                default: Type = ConvertType.Unknown; UnknownType = Expression.NodeType; return;
             }
         }
 
@@ -231,7 +257,7 @@ namespace AutoCSer.Sql
             Convert();
             if (Type != ConvertType.Unknown)
             {
-                switch(getLogicType())
+                switch (getLogicType())
                 {
                     case LogicType.False:
                         Expression = binaryExpression.Right;
@@ -323,20 +349,33 @@ namespace AutoCSer.Sql
             Convert();
             if (Type != ConvertType.Unknown)
             {
-                switch(getLogicType())
+                if (Expression.NodeType == ExpressionType.Constant)
                 {
-                    case LogicType.True: Expression = constantFalse; break;
-                    case LogicType.False: Expression = constantTrue; break;
-                    default:
-                        if (Type == ConvertType.Expression)
+                    object value = Expression.GetConstantValue();
+                    if (value != null)
+                    {
+                        System.Type systemType = value.GetType();
+                        if (systemType == typeof(bool))
                         {
-                            Expression = unaryExpression;
+                            Expression = (bool)value ? constantFalse : constantTrue;
+                            Type = ConvertType.ConvertExpression;
                             return;
                         }
-                        Expression = Expression.Not(Expression);
-                        break;
+                        Func<object, object> calculator;
+                        if (notCalculators.TryGetValue(systemType, out calculator))
+                        {
+                            Expression = Expression.Constant(calculator(value));
+                            Type = ConvertType.ConvertExpression;
+                            return;
+                        }
+                    }
                 }
-                Type = ConvertType.ConvertExpression;
+                if (Type == ConvertType.Expression) Expression = unaryExpression;
+                else
+                {
+                    Expression = Expression.Not(Expression);
+                    Type = ConvertType.ConvertExpression;
+                }
             }
         }
         /// <summary>
@@ -354,7 +393,7 @@ namespace AutoCSer.Sql
                 Convert();
                 if (Type != ConvertType.Unknown)
                 {
-                    switch(binaryExpression.NodeType)
+                    switch (binaryExpression.NodeType)
                     {
                         case ExpressionType.Equal:
                             if (convertEqual(ref left))
@@ -687,17 +726,18 @@ namespace AutoCSer.Sql
         private void convertMemberAccess()
         {
             MemberExpression memberExpression = new UnionType { Value = Expression }.MemberExpression;
-            if (memberExpression.Expression != null && typeof(ParameterExpression).IsAssignableFrom(memberExpression.Expression.GetType()))
+            //if (memberExpression.Expression != null && typeof(ParameterExpression).IsAssignableFrom(memberExpression.Expression.GetType()))
+            if (memberExpression.Expression != null && memberExpression.Expression.NodeType == ExpressionType.Parameter)
             {
                 Type = ConvertType.Expression;
             }
-            else convertMemberAccess(memberExpression);
+            else ConvertMemberAccess(memberExpression);
         }
         /// <summary>
         /// 成员表达式
         /// </summary>
         /// <param name="memberExpression"></param>
-        private void convertMemberAccess(MemberExpression memberExpression)
+        internal void ConvertMemberAccess(MemberExpression memberExpression)
         {
             object target = null;
             if (memberExpression.Expression != null)
@@ -709,7 +749,7 @@ namespace AutoCSer.Sql
                 target = Expression.GetConstantValue();
                 if (target == null)
                 {
-                    NullReference = NullReferenceType.MemberAccessTarget;
+                    Exception = ExceptionType.TargetIsNull;
                     goto UNKNOWN;
                 }
             }
@@ -729,19 +769,118 @@ namespace AutoCSer.Sql
             }
         UNKNOWN:
             Type = ConvertType.Unknown;
-            UnknownExpression = ExpressionType.MemberAccess;
+            UnknownType = ExpressionType.MemberAccess;
             Expression = memberExpression;
         }
         /// <summary>
-        /// 成员表达式
+        /// 数组长度表达式
         /// </summary>
-        /// <param name="memberExpression"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ConvertMemberAccess(MemberExpression memberExpression)
+        private void convertArrayLength()
         {
-            Expression = memberExpression;
-            Type = ConvertType.Expression;
-            convertMemberAccess(memberExpression);
+            UnaryExpression unaryExpression = new UnionType { Value = Expression }.UnaryExpression;
+            Expression = unaryExpression.Operand;
+            Array array = convertArray(ExpressionType.ArrayLength);
+            if (array != null)
+            {
+                Expression = Expression.Constant(array.Length);
+                Type = ConvertType.ConvertExpression;
+            }
+        }
+        /// <summary>
+        /// 转换为数组
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private Array convertArray(ExpressionType type)
+        {
+            Convert();
+            if (Type != ConvertType.Unknown)
+            {
+                if (Expression.NodeType == ExpressionType.Constant)
+                {
+                    object array = Expression.GetConstantValue();
+                    if (array != null)
+                    {
+                        if (array.GetType().IsArray) return (Array)array;
+                        Exception = ExceptionType.TargetNotArray;
+                    }
+                    else Exception = ExceptionType.TargetIsNull;
+                }
+                else Exception = ExceptionType.ArrayNotConstant;
+                Type = ConvertType.Unknown;
+                UnknownType = type;
+            }
+            return null;
+        }
+        /// <summary>
+        /// 数组索引表达式
+        /// </summary>
+        private void convertArrayIndex()
+        {
+            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            Expression = binaryExpression.Left;
+            Array array = convertArray(ExpressionType.ArrayIndex);
+            if (array != null)
+            {
+                Expression = binaryExpression.Right;
+                if (Type != ConvertType.Unknown)
+                {
+                    if (Expression.NodeType == ExpressionType.Constant)
+                    {
+                        object indexObject = Expression.GetConstantValue();
+                        if (indexObject != null && indexObject.GetType() == typeof(int))
+                        {
+                            int index = (int)indexObject;
+                            if ((uint)index < array.Length)
+                            {
+                                Expression = Expression.Constant(array.GetValue(index));
+                                Type = ConvertType.ConvertExpression;
+                                return;
+                            }
+                            Exception = ExceptionType.ArrayIndexOutOfRange;
+                        }
+                        else Exception = ExceptionType.ArrayIndexNotInt;
+                    }
+                    else Exception = ExceptionType.ArrayIndexNotInt;
+                    Type = ConvertType.Unknown;
+                    UnknownType = ExpressionType.ArrayIndex;
+                }
+            }
+        }
+        /// <summary>
+        /// ?? 表达式（isnull）
+        /// </summary>
+        private void convertCoalesce()
+        {
+            BinaryExpression binaryExpression = new UnionType { Value = Expression }.BinaryExpression;
+            Expression = binaryExpression.Left;
+            Convert();
+            if (Type != ConvertType.Unknown)
+            {
+                if (Expression.NodeType == ExpressionType.Constant)
+                {
+                    if (Expression.GetConstantValue() == null)
+                    {
+                        Expression = binaryExpression.Right;
+                        Convert();
+                    }
+                    Type = ConvertType.ConvertExpression;
+                    return;
+                }
+                if (Type == ConvertType.Expression)
+                {
+                    Expression = binaryExpression;
+                    return;
+                }
+                Expression left = Expression;
+                Expression = binaryExpression.Right;
+                Convert();
+                if (Type != ConvertType.Unknown)
+                {
+                    Expression = Expression.Coalesce(left, Expression);
+                    Type = ConvertType.ConvertExpression;
+                }
+            }
         }
         /// <summary>
         /// 拆箱表达式
@@ -896,17 +1035,6 @@ namespace AutoCSer.Sql
             }
         }
         /// <summary>
-        /// 类型转换表达式
-        /// </summary>
-        /// <param name="unaryExpression"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ConvertConvert(UnaryExpression unaryExpression)
-        {
-            Expression = unaryExpression;
-            Type = ConvertType.Expression;
-            convertConvert(unaryExpression);
-        }
-        /// <summary>
         /// 三元表达式
         /// </summary>
         private void convertConditional()
@@ -984,14 +1112,14 @@ namespace AutoCSer.Sql
                 Type = ConvertType.Expression;
                 return;
             }
-            convertCall(methodCallExpression, method);
+            ConvertCall(methodCallExpression, method);
         }
         /// <summary>
         /// 函数表达式
         /// </summary>
         /// <param name="methodCallExpression"></param>
         /// <param name="method"></param>
-        private void convertCall(MethodCallExpression methodCallExpression, MethodInfo method)
+        internal void ConvertCall(MethodCallExpression methodCallExpression, MethodInfo method)
         {
             object target = null;
             if (methodCallExpression.Object != null)
@@ -1003,7 +1131,7 @@ namespace AutoCSer.Sql
                 target = Expression.GetConstantValue();
                 if (target == null)
                 {
-                    NullReference = NullReferenceType.MethodCallTarget;
+                    Exception = ExceptionType.TargetIsNull;
                     goto UNKNOWN;
                 }
             }
@@ -1026,20 +1154,8 @@ namespace AutoCSer.Sql
             return;
         UNKNOWN:
             Type = ConvertType.Unknown;
-            UnknownExpression = ExpressionType.Call;
+            UnknownType = ExpressionType.Call;
             Expression = methodCallExpression;
-        }
-        /// <summary>
-        /// 函数表达式
-        /// </summary>
-        /// <param name="methodCallExpression"></param>
-        /// <param name="method"></param>
-        [MethodImpl(AutoCSer.MethodImpl.AggressiveInlining)]
-        internal void ConvertCall(MethodCallExpression methodCallExpression, MethodInfo method)
-        {
-            Expression = methodCallExpression;
-            Type = ConvertType.Expression;
-            convertCall(methodCallExpression, method);
         }
 
         /// <summary>
@@ -1063,6 +1179,10 @@ namespace AutoCSer.Sql
         /// 常量计算器集合
         /// </summary>
         private static readonly Dictionary<System.Type, Func<ExpressionType, object, object>> unaryCalculators;
+        /// <summary>
+        /// 常量计算器集合
+        /// </summary>
+        private static readonly Dictionary<System.Type, Func<object, object>> notCalculators;
         static WhereExpression()
         {
             comparators = DictionaryCreator.CreateOnly<System.Type, Func<ExpressionType, object, object, LogicType>>();
@@ -1105,6 +1225,16 @@ namespace AutoCSer.Sql
             unaryCalculators.Add(typeof(double), calculateDouble);
             unaryCalculators.Add(typeof(float), calculateFloat);
             unaryCalculators.Add(typeof(decimal), calculateDecimal);
+
+            notCalculators = DictionaryCreator.CreateOnly<System.Type, Func<object, object>>();
+            notCalculators.Add(typeof(ulong), calculateNotULong);
+            notCalculators.Add(typeof(long), calculateNotLong);
+            notCalculators.Add(typeof(uint), calculateNotUInt);
+            notCalculators.Add(typeof(int), calculateNotInt);
+            notCalculators.Add(typeof(ushort), calculateNotUShort);
+            notCalculators.Add(typeof(short), calculateNotShort);
+            notCalculators.Add(typeof(byte), calculateNotByte);
+            notCalculators.Add(typeof(sbyte), calculateNotSByte);
         }
     }
 }

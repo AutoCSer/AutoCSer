@@ -23,6 +23,7 @@
     <DefineConstants>TRACE;MONO;Sql;DotNetStandard;RELEASE;NETSTANDARD2_0</DefineConstants>
     <OutputPath>bin\Release\NetStandard\</OutputPath>
     <DocumentationFile>bin\Release\NetStandard\AutoCSer.Sql.xml</DocumentationFile>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,6 +63,7 @@
     <Compile Include="CombinationTemplate\WhereExpressionComparator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionFloatCalculator.cs" />
     <Compile Include="CombinationTemplate\WhereExpressionNegateCalculator.cs" />
+    <Compile Include="CombinationTemplate\WhereExpressionNotCalculator.cs" />
     <Compile Include="Emit\CastType.cs" />
     <Compile Include="Emit\NullableConstructor.cs" />
     <Compile Include="Extension\EmitGenerator.Sql.cs" />

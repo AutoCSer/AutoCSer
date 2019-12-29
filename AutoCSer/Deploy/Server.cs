@@ -224,7 +224,6 @@ namespace AutoCSer.Deploy
         /// 写文件
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="files">文件集合</param>
         /// <param name="assemblyFile">写文件 exe/dll/pdb 任务信息</param>
         /// <returns>任务索引编号,-1表示失败</returns>
         [AutoCSer.Net.TcpServer.Method(ServerTask = AutoCSer.Net.TcpServer.ServerTaskType.Queue, ParameterFlags = AutoCSer.Net.TcpServer.ParameterFlags.SerializeBox)]

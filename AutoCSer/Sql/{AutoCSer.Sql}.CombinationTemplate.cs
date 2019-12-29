@@ -902,4 +902,137 @@ namespace AutoCSer.Sql
     }
 }
 
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotLong(object value)
+        {
+            return ~(long)value;
+        }
+    }
+}
+
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotUInt(object value)
+        {
+            return ~(uint)value;
+        }
+    }
+}
+
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotInt(object value)
+        {
+            return ~(int)value;
+        }
+    }
+}
+
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotUShort(object value)
+        {
+            return ~(ushort)value;
+        }
+    }
+}
+
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotShort(object value)
+        {
+            return ~(short)value;
+        }
+    }
+}
+
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotByte(object value)
+        {
+            return ~(byte)value;
+        }
+    }
+}
+
+namespace AutoCSer.Sql
+{
+    /// <summary>
+    /// 条件表达式重组
+    /// </summary>
+    public partial struct WhereExpression
+    {
+        /// <summary>
+        /// 计算器
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object calculateNotSByte(object value)
+        {
+            return ~(sbyte)value;
+        }
+    }
+}
+
 #endif
