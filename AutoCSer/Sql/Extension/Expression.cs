@@ -48,13 +48,14 @@ namespace AutoCSer.Extension
                     System.Reflection.MethodInfo method = methodCallExpression.Method;
                     if (method.ReflectedType == typeof(Sql.ExpressionCall))
                     {
-                        switch (method.Name)
-                        {
-                            case "In":
-                            case "NotIn":
-                            case "Like":
-                                return false;
-                        }
+                        return method.ReturnType != typeof(bool);
+                        //switch (method.Name)
+                        //{
+                        //    case "In":
+                        //    case "NotIn":
+                        //    case "Like":
+                        //        return false;
+                        //}
                     }
                     //else if (AutoCSer.Sql.MsSql.ExpressionConverter.IsStringContains(method)) return false;
                     return true;

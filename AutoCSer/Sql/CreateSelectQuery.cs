@@ -41,7 +41,7 @@ namespace AutoCSer.Sql
         internal CreateSelectQuery(Expression<Func<modelType, bool>> where)
         {
             Where = default(WhereExpression);
-            Where.TryConvert(where.Body);
+            if (where != null) Where.TryConvert(where.Body);
             Orders = null;
             SqlFieldOrders = null;
             GetCount = 0;
